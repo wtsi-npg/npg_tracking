@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batches>
+  <batch>
+    <id>42</id>
+    <lanes>
+      <lane position="1">
+        <control name="PhiX" id="157"/>
+      </lane>
+      <lane position="2">
+        <control name="PhiX" id="157"/>
+      </lane>
+      <lane position="3">
+        <control name="PhiX" id="157"/>
+      </lane>
+      <lane position="4">
+        <control name="PhiX" id="157"/>
+      </lane>
+      <lane position="5">
+        <control name="PhiX" id="157"/>
+      </lane>
+      <lane position="6">
+        <control name="PhiX" id="157"/>
+      </lane>
+      <lane position="7">
+        <control name="PhiX" id="157"/>
+      </lane>
+      <lane position="8">
+        <control name="PhiX" id="157"/>
+      </lane>
+    </lanes>
+  </batch>
+</batches>

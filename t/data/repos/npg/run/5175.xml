@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="5175" batch_id="7582" id_instrument="12" expected_cycle_count="161" actual_cycle_count="160" priority="1" id_run_pair="0" is_paired="0" team="joint" id_instrument_format="4" flowcell_id="" name="IL9_05175" loader="sh2" loading_date="2010-08-18" run_folder="100818_IL9_05175">
+ <instrument id_instrument="12" name="IL9" id_instrument_format="4" external_name="EAS130" serial="" iscurrent="0" />
+ <run_lanes><run_lane id_run_lane="40980" id_run="5175" tile_count="120" tracks="2" position="1" />
+<run_lane id_run_lane="40981" id_run="5175" tile_count="120" tracks="2" position="2" />
+<run_lane id_run_lane="40982" id_run="5175" tile_count="120" tracks="2" position="3" />
+<run_lane id_run_lane="40983" id_run="5175" tile_count="120" tracks="2" position="4" />
+<run_lane id_run_lane="40984" id_run="5175" tile_count="120" tracks="2" position="5" />
+<run_lane id_run_lane="40985" id_run="5175" tile_count="120" tracks="2" position="6" />
+<run_lane id_run_lane="40986" id_run="5175" tile_count="120" tracks="2" position="7" />
+<run_lane id_run_lane="40987" id_run="5175" tile_count="120" tracks="2" position="8" />
+</run_lanes>
+ <current_run_status id_run_status="69694" id_run="5175" date="2010-09-02 13:14:02" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_statuses>
+ <run_status id_run_status="69694" id_run="5175" date="2010-09-02 13:14:02" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_status id_run_status="69693" id_run="5175" date="2010-09-02 13:13:07" id_run_status_dict="12" id_user="7" username="pipeline" iscurrent="0" description="run archived" />
+ <run_status id_run_status="69659" id_run="5175" date="2010-09-01 21:01:09" id_run_status_dict="18" id_user="7" username="pipeline" iscurrent="0" description="archival in progress" />
+ <run_status id_run_status="69651" id_run="5175" date="2010-09-01 17:57:44" id_run_status_dict="17" id_user="54" username="pipeline" iscurrent="0" description="archival pending" />
+ <run_status id_run_status="69550" id_run="5175" date="2010-08-31 12:23:48" id_run_status_dict="19" id_user="62" username="pipeline" iscurrent="0" description="qc review pending" />
+ <run_status id_run_status="69464" id_run="5175" date="2010-08-28 00:15:47" id_run_status_dict="9" id_user="7" username="pipeline" iscurrent="0" description="analysis complete" />
+ <run_status id_run_status="69432" id_run="5175" date="2010-08-27 09:12:45" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="69364" id_run="5175" date="2010-08-26 10:03:28" id_run_status_dict="7" id_user="7" username="pipeline" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="69335" id_run="5175" date="2010-08-26 06:36:32" id_run_status_dict="6" id_user="7" username="pipeline" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="69285" id_run="5175" date="2010-08-26 04:59:24" id_run_status_dict="4" id_user="7" username="pipeline" iscurrent="0" description="run complete" />
+ <run_status id_run_status="68690" id_run="5175" date="2010-08-18 11:38:30" id_run_status_dict="2" id_user="7" username="pipeline" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="68689" id_run="5175" date="2010-08-18 11:36:12" id_run_status_dict="1" id_user="56" username="pipeline" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="9535" id_run="5175" id_annotation="9925" date="2010-08-19 08:16:21" id_user="52" username="jb2" comment="Note fro analysis... lane 8 is a 96 tag...however, there appears to have been a failure at linerisation/blocking, as lane 8 doesn&#x27;t appear to have worked ( fine at sybr qc check). Syringes/pumping checked on GA and are fine.
+  This lane will be repeated on another flowcell." attachment_name="" run_current_ok="" current_cycle="16" />
+ <annotation id_run_annotation="9536" id_run="5175" id_annotation="9926" date="2010-08-19 08:21:18" id_user="52" username="jb2" comment="RTA showing poorer focus quality for bases c/g/t in lanes 2,3 5,6,7" attachment_name="" run_current_ok="" current_cycle="16" />
+ <annotation id_run_annotation="9587" id_run="5175" id_annotation="9977" date="2010-08-23 10:25:44" id_user="9" username="ah1" comment="Except for lane 8." attachment_name="" run_current_ok="1" current_cycle="100" />
+ <annotation id_run_annotation="9705" id_run="5175" id_annotation="10103" date="2010-09-01 17:51:21" id_user="54" username="svvd" comment="76 cyc PE run: Lane 8 - FAIL; Rest - PASS. Yield of 28.3 Gbases. %Error rates of 0.26 (R1) and 0.18 (R2). Lane 8 is a complete failure -poor intensity - poor %PF." attachment_name="" run_current_ok="" current_cycle="" />
+ </annotations>
+ <tags>
+   <tag id_tag="20" description="multiplex" />
+   <tag id_tag="17" description="paired_read" />
+   <tag id_tag="16" description="rta" />
+ </tags>
+</run>

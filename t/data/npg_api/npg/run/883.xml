@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="883" batch_id="1536" id_instrument="13" expected_cycle_count="37" actual_cycle_count="37" priority="1" id_run_pair="901" is_paired="1" is_dev="0" id_instrument_format="1" name="IL10_0883" loader="st1" loading_date="2008-06-12" run_folder="080612_IL10_0883">
+ <instrument id_instrument="13" name="IL10" id_instrument_format="4" external_name="" serial="" iscurrent="0" />
+ <run_lanes><run_lane id_run_lane="6747" id_run="883" tile_count="330" tracks="3" id_project="653" projectname="FUSE" auto_analyse="1" position="1" />
+<run_lane id_run_lane="6748" id_run="883" tile_count="330" tracks="3" id_project="653" projectname="FUSE" auto_analyse="1" position="2" />
+<run_lane id_run_lane="6749" id_run="883" tile_count="330" tracks="3" id_project="653" projectname="FUSE" auto_analyse="1" position="3" />
+<run_lane id_run_lane="6750" id_run="883" tile_count="330" tracks="3" id_project="411" projectname="FUSE" auto_analyse="1" position="4" />
+<run_lane id_run_lane="6751" id_run="883" tile_count="330" tracks="3" id_project="653" projectname="FUSE" auto_analyse="1" position="5" />
+<run_lane id_run_lane="6752" id_run="883" tile_count="330" tracks="3" id_project="653" projectname="FUSE" auto_analyse="1" position="6" />
+<run_lane id_run_lane="6753" id_run="883" tile_count="330" tracks="3" id_project="653" projectname="FUSE" auto_analyse="1" position="7" />
+<run_lane id_run_lane="6754" id_run="883" tile_count="330" tracks="3" id_project="653" projectname="FUSE" auto_analyse="1" position="8" />
+</run_lanes>
+ <current_run_status id_run_status="14084" id_run="883" date="2008-06-30 15:51:24" id_run_status_dict="20" id_user="27" username="mdf" iscurrent="1" description="qc complete" />
+ <run_statuses>
+ <run_status id_run_status="14084" id_run="883" date="2008-06-30 15:51:24" id_run_status_dict="20" id_user="27" username="mdf" iscurrent="1" description="qc complete" />
+ <run_status id_run_status="14023" id_run="883" date="2008-06-30 11:34:10" id_run_status_dict="19" id_user="27" username="mdf" iscurrent="0" description="qc review pending" />
+ <run_status id_run_status="13903" id_run="883" date="2008-06-27 21:36:42" id_run_status_dict="12" id_user="7" username="mdf" iscurrent="0" description="run archived" />
+ <run_status id_run_status="13883" id_run="883" date="2008-06-27 19:04:42" id_run_status_dict="18" id_user="7" username="mdf" iscurrent="0" description="archival in progress" />
+ <run_status id_run_status="13875" id_run="883" date="2008-06-27 19:03:34" id_run_status_dict="17" id_user="6" username="mdf" iscurrent="0" description="archival pending" />
+ <run_status id_run_status="13874" id_run="883" date="2008-06-27 19:01:18" id_run_status_dict="20" id_user="6" username="mdf" iscurrent="0" description="qc complete" />
+ <run_status id_run_status="13558" id_run="883" date="2008-06-21 06:45:01" id_run_status_dict="9" id_user="7" username="mdf" iscurrent="0" description="analysis complete" />
+ <run_status id_run_status="13498" id_run="883" date="2008-06-20 08:32:58" id_run_status_dict="7" id_user="7" username="mdf" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="13188" id_run="883" date="2008-06-16 14:19:55" id_run_status_dict="15" id_user="7" username="mdf" iscurrent="0" description="analysis prelim complete" />
+ <run_status id_run_status="13181" id_run="883" date="2008-06-16 13:03:21" id_run_status_dict="14" id_user="7" username="mdf" iscurrent="0" description="analysis prelim" />
+ <run_status id_run_status="13178" id_run="883" date="2008-06-16 12:52:05" id_run_status_dict="6" id_user="7" username="mdf" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="13177" id_run="883" date="2008-06-16 12:52:04" id_run_status_dict="11" id_user="7" username="mdf" iscurrent="0" description="run mirrored" />
+ <run_status id_run_status="13159" id_run="883" date="2008-06-16 11:14:23" id_run_status_dict="4" id_user="7" username="mdf" iscurrent="0" description="run complete" />
+ <run_status id_run_status="12966" id_run="883" date="2008-06-12 14:30:26" id_run_status_dict="2" id_user="7" username="mdf" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="12965" id_run="883" date="2008-06-12 14:22:10" id_run_status_dict="1" id_user="17" username="mdf" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="1228" id_run="883" id_annotation="1254" date="2008-06-27 19:03:15" id_user="6" username="ts6" comment="Wow! A stonking 4.5G Malaria run. Perfect. (Well, the second read didn&#x27;t set up, but data looks excellent all the same)." attachment_name="" run_current_ok="" current_cycle="" />
+ </annotations>
+ <tags>
+   <tag id_tag="17" description="paired_read" />
+ </tags>
+</run>

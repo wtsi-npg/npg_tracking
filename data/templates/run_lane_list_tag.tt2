@@ -1,0 +1,9 @@
+<fieldset id="current_tags">
+  <legend>Tags on this lane</legend>
+[% FOREACH tag = model.tags %][% tag %] [% END %] 2008 andy good gorilla raah
+<br /><a href="javascript:toggleTagForm();">Add Tags</a>
+</fieldset>
+<div id="tagger_form" style="display:none;">
+<form id="tag_form" method="post" action="">
+[% PROCESS tag_form_ajax.tt2 %]
+</div>

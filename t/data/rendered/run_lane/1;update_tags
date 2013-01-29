@@ -1,0 +1,9 @@
+<div>
+Run 1 tagged.
+<br /><br />
+Please click <a href="/cgi-bin/npg/run/1">here</a> to continue.
+
+<script type="text/javascript">
+ document.location.href = '/cgi-bin/npg/run/1';
+</script>
+</div>

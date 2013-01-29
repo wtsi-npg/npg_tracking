@@ -1,0 +1,62 @@
+<!--begin $Id: user_read.tt2 15395 2012-03-27 12:38:46Z mg8 $-->
+[%- username = model.username -%]
+<h2>Profile for <i>[% view.realname(username) %]</i></h2>
+<ul>
+ <li>Username: [% username %]</li>
+ <li><a href="https://helix.wtgc.org/people?uid=[% username %]">Phonebook</a></li>
+ <li>User Id:  [% model.id_user %]</li>
+ <li>RF ID registered: <img src="/icons/silk/[% IF model.rfid %]tick[% ELSE %]cross[% END %].png" alt="[% IF model.rfid %]Registered[% ELSE %]No[% END %]" title="[% IF model.rfid %]Registered[% ELSE %]NO[% END %]" />
+   [% IF requestor.id_user == model.id_user %]<form method=post action="[% SCRIPT_NAME %]/user/[% model.id_user %]" id="update_rfid_form"><input type="hidden" name="id_user" value="[% model.id_user %]" /><input type="hidden" name="username" value="[% username %]" />
+   <ul>
+     <li>
+     [% IF model.rfid %]Change[% ELSE %]Register[% END %] RF ID: <input type="text" name="rfid_tag" value="" /> <input type="submit" value="[% IF model.rfid %]Change[% ELSE %]Register[% END %]" />
+     </li>
+    </ul></form>
+    [% END %]
+ </li>
+ <li>Group[% IF model.usergroups.size > 1; 's'; END %]:
+  <ul>[% FOREACH usergroup = model.usergroups %]
+   <li>
+[% IF usergroup.is_public %]
+ <form method="post" action="[% SCRIPT_NAME %]/user2usergroup/[% usergroup.id_user_usergroup %];delete" id="unsubscribe_from_[% usergroup.groupname %]_form">
+  <a href="[% SCRIPT_NAME %]/usergroup/[% usergroup.groupname %]">[% usergroup.groupname %]</a> ([% usergroup.description %]) <input type="submit" value="unsubscribe" />
+ </form>
+[% ELSE %]
+ <a href="[% SCRIPT_NAME %]/usergroup/[% usergroup.groupname %]">[% usergroup.groupname %]</a> ([% usergroup.description %])
+[% END %]
+
+</li>[% END %]
+[% IF requestor.id_user == model.id_user %]
+[% IF model.public_usergroups %]
+   <li>
+    <form method="post" action="[% SCRIPT_NAME %]/user2usergroup/" id="subscribe_to_usergroup_form">
+<select id="id_usergroup" name="id_usergroup">[% FOREACH usergroup = model.public_usergroups %]
+ <option value="[% usergroup.id_usergroup %]">[% usergroup.groupname %] ([% usergroup.description %])</option>[% END %]
+</select><input type="submit" value="subscribe" />
+    </form>
+   </li>
+[% END %]
+[% END %]
+  </ul>
+ </li>
+</ul>
+<table id="runs_loaded" class="sortable zebra">
+  <caption>Runs Loaded</caption>
+  <thead>
+    <tr>
+    <th>Instrument</th>
+    <th>Run ID</th>
+    <th>Date Loaded</th>
+    </tr>
+  </thead>
+  <tbody>
+    [% FOREACH run = model.runs_loaded %]
+    <tr>
+    <td>[% run.instrument %]</td>
+    <td><a href="[% SCRIPT_NAME %]/run/[% run.id_run %]">[% run.id_run %]</a></td>
+    <td>[% run.date %]</td>
+    </tr>
+    [% END %]
+  </tbody>
+</table>
+<!--end $Id: user_read.tt2 15395 2012-03-27 12:38:46Z mg8 $-->

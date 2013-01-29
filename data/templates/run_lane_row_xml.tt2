@@ -1,0 +1,5 @@
+[% SET earliest = run_lane.run.id_run -%]
+[% IF run_lane.run.is_paired && run_lane.run.id_run_pair && run_lane.run.id_run_pair < run_lane.run.id_run -%]
+[%   SET earliest = run_lane.run.id_run_pair -%]
+[% END -%]
+<run_lane id_run_lane="[% run_lane.id_run_lane %]" id_run="[% run_lane.id_run %]" tile_count="[% run_lane.tile_count %]" tracks="[% run_lane.tracks %]" position="[% run_lane.position %]" />

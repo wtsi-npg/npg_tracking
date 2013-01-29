@@ -1,0 +1,8 @@
+alter table user2usergroup add column level tinyint unsigned;
+insert into usergroup(groupname,is_public,description) values ('loaders',0,'Machine Loaders');
+
+---------
+-- R&D flag for runs
+--
+alter table run add column is_dev tinyint(1) unsigned default 0 not null;
+update run set is_dev=1 WHERE id_instrument IN (select id_instrument from instrument where name IN ('IL1','IL2','IL3'));

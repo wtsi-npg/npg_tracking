@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="7753" batch_id="16442" id_instrument="68" expected_cycle_count="158" actual_cycle_count="158" priority="1" id_run_pair="0" is_paired="0" team="A" id_instrument_format="10" flowcell_id="C0JV1ACXX" folder_name="120322_HS1_07753_B_C0JV1ACXX" folder_path_glob="/{export,nfs}/sf23/ILorHSany_sf23/*/" name="HS1_07753" loader="sh2" loading_date="2012-03-22" run_folder="120322_HS1_07753_B_C0JV1ACXX">
+ <instrument id_instrument="68" name="HS1" id_instrument_format="10" external_name="" serial="" iscurrent="1" />
+ <run_lanes><run_lane id_run_lane="61130" id_run="7753" tile_count="48" tracks="6" position="1" />
+<run_lane id_run_lane="61131" id_run="7753" tile_count="48" tracks="6" position="2" />
+<run_lane id_run_lane="61132" id_run="7753" tile_count="48" tracks="6" position="3" />
+<run_lane id_run_lane="61133" id_run="7753" tile_count="48" tracks="6" position="4" />
+<run_lane id_run_lane="61134" id_run="7753" tile_count="48" tracks="6" position="5" />
+<run_lane id_run_lane="61135" id_run="7753" tile_count="48" tracks="6" position="6" />
+<run_lane id_run_lane="61136" id_run="7753" tile_count="48" tracks="6" position="7" />
+<run_lane id_run_lane="61137" id_run="7753" tile_count="48" tracks="6" position="8" />
+</run_lanes>
+ <current_run_status id_run_status="103824" id_run="7753" date="2012-04-11 16:44:48" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_statuses>
+ <run_status id_run_status="103824" id_run="7753" date="2012-04-11 16:44:48" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_status id_run_status="103823" id_run="7753" date="2012-04-11 16:44:38" id_run_status_dict="12" id_user="7" username="pipeline" iscurrent="0" description="run archived" />
+ <run_status id_run_status="103819" id_run="7753" date="2012-04-11 16:38:25" id_run_status_dict="18" id_user="7" username="pipeline" iscurrent="0" description="archival in progress" />
+ <run_status id_run_status="103813" id_run="7753" date="2012-04-11 16:17:49" id_run_status_dict="26" id_user="82" username="pipeline" iscurrent="0" description="qc in progress" />
+ <run_status id_run_status="103815" id_run="7753" date="2012-04-11 15:23:56" id_run_status_dict="17" id_user="82" username="pipeline" iscurrent="0" description="archival pending" />
+ <run_status id_run_status="103402" id_run="7753" date="2012-04-04 09:51:00" id_run_status_dict="19" id_user="7" username="pipeline" iscurrent="0" description="qc review pending" />
+ <run_status id_run_status="103401" id_run="7753" date="2012-04-04 09:50:57" id_run_status_dict="9" id_user="7" username="pipeline" iscurrent="0" description="analysis complete" />
+ <run_status id_run_status="103166" id_run="7753" date="2012-04-01 17:13:28" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="103112" id_run="7753" date="2012-03-31 17:58:27" id_run_status_dict="7" id_user="7" username="pipeline" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="103109" id_run="7753" date="2012-03-31 16:50:31" id_run_status_dict="11" id_user="7" username="pipeline" iscurrent="0" description="run mirrored" />
+ <run_status id_run_status="103110" id_run="7753" date="2012-03-31 16:50:31" id_run_status_dict="6" id_user="7" username="pipeline" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="103069" id_run="7753" date="2012-03-31 09:05:56" id_run_status_dict="4" id_user="7" username="pipeline" iscurrent="0" description="run complete" />
+ <run_status id_run_status="102468" id_run="7753" date="2012-03-22 12:24:01" id_run_status_dict="2" id_user="7" username="pipeline" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="102445" id_run="7753" date="2012-03-22 10:43:36" id_run_status_dict="1" id_user="56" username="pipeline" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="27436" id_run="7753" id_annotation="25860" date="2012-03-23 09:26:44" id_user="9" username="ah1" comment="Early days but looks okay from here." attachment_name="" run_current_ok="1" current_cycle="8" />
+ <annotation id_run_annotation="27451" id_run="7753" id_annotation="25880" date="2012-03-23 12:04:49" id_user="28" username="pav" comment="" attachment_name="" run_current_ok="1" current_cycle="11" />
+ <annotation id_run_annotation="27514" id_run="7753" id_annotation="25937" date="2012-03-24 15:42:06" id_user="33" username="ajw" comment="" attachment_name="" run_current_ok="1" current_cycle="35" />
+ <annotation id_run_annotation="27572" id_run="7753" id_annotation="25947" date="2012-03-25 15:33:14" id_user="33" username="ajw" comment="" attachment_name="" run_current_ok="1" current_cycle="54" />
+ <annotation id_run_annotation="27602" id_run="7753" id_annotation="25952" date="2012-03-26 14:38:42" id_user="56" username="sh2" comment="" attachment_name="" run_current_ok="1" current_cycle="74" />
+ <annotation id_run_annotation="27684" id_run="7753" id_annotation="25983" date="2012-03-27 16:46:59" id_user="33" username="ajw" comment="" attachment_name="" run_current_ok="1" current_cycle="84" />
+ <annotation id_run_annotation="27744" id_run="7753" id_annotation="26001" date="2012-03-28 12:07:14" id_user="11" username="tkb" comment="" attachment_name="" run_current_ok="1" current_cycle="101" />
+ <annotation id_run_annotation="27821" id_run="7753" id_annotation="26032" date="2012-03-29 09:40:45" id_user="11" username="tkb" comment="" attachment_name="" run_current_ok="1" current_cycle="119" />
+ <annotation id_run_annotation="27876" id_run="7753" id_annotation="26078" date="2012-03-30 14:18:21" id_user="56" username="sh2" comment="" attachment_name="" run_current_ok="1" current_cycle="143" />
+ <annotation id_run_annotation="28410" id_run="7753" id_annotation="26461" date="2012-04-11 16:24:11" id_user="82" username="mk9" comment="QC Complete" attachment_name="" run_current_ok="" current_cycle="" />
+ </annotations>
+ <tags>
+   <tag id_tag="23" description="fc_slotB" />
+   <tag id_tag="43" description="loaded_r2" />
+   <tag id_tag="20" description="multiplex" />
+   <tag id_tag="17" description="paired_read" />
+   <tag id_tag="16" description="rta" />
+   <tag id_tag="41" description="verified_fc" />
+   <tag id_tag="42" description="verified_r1" />
+   <tag id_tag="46" description="verified_r2" />
+ </tags>
+</run>

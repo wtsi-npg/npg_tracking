@@ -1,0 +1,23 @@
+alter table run add column id_instrument_format bigint unsigned;
+alter table run add constraint `r_idif` foreign key (`id_instrument_format`) references `instrument_format` (`id_instrument_format`) on delete no action on update no action;
+
+begin;
+
+update run set id_instrument_format=(select id_instrument_format from instrument_format where model='1G') where id_instrument in(select i.id_instrument from instrument i, instrument_format ift where i.id_instrument_format=ift.id_instrument_format and ift.model='1G');
+
+update run r,
+       run_status rs,
+       (select id_instrument,
+               min(date) AS date
+        from   instrument_status
+        where  comment like '%GA2 upgrade%'
+        group by id_instrument) i
+SET    r.id_instrument_format=(select id_instrument_format from instrument_format where model='1G')
+WHERE  r.id_instrument = i.id_instrument
+AND    rs.id_run       = r.id_run
+AND    r.id_instrument_format is null
+AND    rs.date <= i.date;
+
+update run set id_instrument_format=(select id_instrument_format from instrument_format where model='HK') where id_instrument in(select i.id_instrument from instrument i, instrument_format ift where i.id_instrument_format=ift.id_instrument_format and ift.model='HK') and id_instrument_format is null;
+
+commit;

@@ -1,0 +1,7 @@
+<!--begin $Id: run_create.tt2 3114 2008-09-30 15:52:45Z rmp $-->
+Run [% model.id_run %] saved ok.
+Please click <a href="[% SCRIPT_NAME %]/run/[% model.id_run %]">here</a> to continue.
+<script type="text/javascript">
+  document.location.href = "[% SCRIPT_NAME %]/run/[% model.id_run %]";
+</script>
+<!--end $Id: run_create.tt2 3114 2008-09-30 15:52:45Z rmp $-->

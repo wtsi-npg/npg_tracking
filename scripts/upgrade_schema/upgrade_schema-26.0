@@ -1,0 +1,5 @@
+ALTER TABLE `instrument_format` ADD COLUMN `default_tiles` INTEGER UNSIGNED NOT NULL DEFAULT 0 AFTER `iscurrent`;
+ALTER TABLE `instrument_format` ADD COLUMN `default_columns` INTEGER UNSIGNED NOT NULL DEFAULT 0 AFTER `default_tiles`;
+
+update instrument_format set default_tiles=330, default_columns=3 where model='1G';
+update instrument_format set default_tiles=100, default_columns=2 where model='HK';

@@ -1,0 +1,218 @@
+#!/usr/bin/env perl
+#########
+# Author:        jo3
+# Maintainer:    $Author: mg8 $
+# Created:       2010-07-22
+# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
+# Id:            $Id: staging_area_monitor 16549 2013-01-23 16:49:39Z mg8 $
+# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/bin/staging_area_monitor $
+
+package staging_area_monitor;
+
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use Carp;
+use English qw(-no_match_vars);
+use POSIX qw(strftime);
+use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/msx; $r; };
+use Monitor::Staging;
+use Monitor::RunFolder::Staging;
+use npg_tracking::Schema;
+
+Readonly::Scalar my $SECONDS_PER_MINUTE => 60;
+Readonly::Scalar my $SLEEP_INTERVAL     => $SECONDS_PER_MINUTE * 15;
+
+
+local $OUTPUT_AUTOFLUSH = 1;
+
+
+my %previous_size_of;
+
+my $monitor   = Monitor::Staging->new();
+my @area_list = $monitor->validate_areas(@ARGV);
+
+croak 'No valid arguments' if scalar @area_list == 0;
+
+my $iteration = 0;
+while (1) {
+    my %checked;
+
+    print {*STDOUT} strftime '%a %b %e %T %Y%n', localtime or carp $OS_ERROR;
+
+    foreach my $area (@area_list) {
+
+        foreach my $run_path ( $monitor->find_live_incoming($area) ) {
+            print {*STDOUT} "\t$run_path" or carp $OS_ERROR;
+
+            my $folder = Monitor::RunFolder::Staging->
+                           new( runfolder_path => $run_path, );
+
+            # If we don't remember seeing it before set the staging tag, folder name and glob;
+            if ( not defined $previous_size_of{$run_path} ) {
+                $folder->update_folder();
+                $folder->run_db_row->
+                    set_tag( $folder->username(), 'staging' );
+                $previous_size_of{$run_path} = 0;
+            }
+
+            my $run_status = $folder->current_run_status_description();
+            print {*STDOUT} "\t$run_status\n" or carp $OS_ERROR;
+
+
+            # Could delete the directory here. Leave it for now.
+            next if $run_status eq 'data discarded';
+
+            if ( $run_status eq 'run pending' ) {
+                $folder->fallback_update();
+                next;
+            }
+
+            if ( $run_status eq 'run in progress' ) {
+
+                $folder->cycle_lag($run_path) ? $folder->run_db_row->set_tag( $folder->username(), 'copying_problem' )
+                                              : $folder->run_db_row->unset_tag( $folder->username(), 'copying_problem' );
+
+                $folder->fallback_update();
+
+                next;
+            }
+
+            if ( $run_status eq 'run complete' ) {
+
+                $folder->cycle_lag($run_path) ? $folder->run_db_row->set_tag( $folder->username(), 'copying_problem' )
+                                              : $folder->run_db_row->unset_tag( $folder->username(), 'copying_problem' );
+
+                # Integrity check - got everything.
+                next if $folder->cycle_lag($run_path);
+                next if !$folder->validate_run_complete();
+                $checked{$run_path}++;
+
+                $folder->fallback_update();
+
+                my ( $total_size, $latest_mod ) = $folder->monitor_stats();
+
+                # Check that no file is 'in the future'.
+                if ( $latest_mod > time ) {
+                    $previous_size_of{$run_path} = $total_size;
+
+                    print {*STDOUT} "\tNot done: 'future' file $latest_mod\n"
+                        or carp $OS_ERROR;
+
+                    next;
+                }
+
+                # Check that there's been no activity since last time.
+                if ( $total_size != $previous_size_of{$run_path} ) {
+
+                    printf {*STDOUT} "\tSizes not equal: %d %d\n",
+                        $previous_size_of{$run_path}, $total_size
+                        or carp $OS_ERROR;
+
+                    $previous_size_of{$run_path} = $total_size;
+                    next;
+                }
+
+                if ($ENV{dev} && $ENV{dev} ne 'live') {
+		    next;
+		}
+                $folder->mark_as_mirrored();
+                $folder->move_to_analysis();
+            }
+        }
+    }
+
+    # Clean out %previous_size so that it doesn't grow and grow.
+    foreach my $completed_runpath ( keys %previous_size_of ) {
+        next if defined $checked{$completed_runpath};
+        delete $previous_size_of{$completed_runpath};
+    }
+
+    sleep $SLEEP_INTERVAL;
+}
+
+
+1;
+
+__END__
+
+
+=head1 NAME
+
+staging_area_monitor - monitor incoming runs for problems and completion
+
+=head1 VERSION
+
+$Revision: 16549 $
+
+=head1 SYNOPSIS
+
+    staging_area_monitor [0] [1] ... [8]
+OR:
+    staging_area_monitor [/nfs/sf10] [/nfs/sf8] ...
+
+In the first version the integer is taken as an array index. The array is
+maintained in @npg_tracking::illumina::run::folder::location::STAGING_AREAS, any integer
+that is greater than the last element's index will be ignored.
+
+In the second version a test is done to see that the argument is a directory
+on the filesystem. Any argument that is not a directory will be ignored.
+
+Both argument types can be mixed also.
+
+=head1 DESCRIPTION
+
+Monitor one or more staging areas supplied as commandline arguments.
+
+The script runs an infinite loop so do not call it via a crontab.
+
+Check the number of cycles mirrored is not lagging behind the actual cycle
+count. Tag the run as 'copying_problem' if it is, remove the tag if it isn't.
+
+If the run has a status of 'run complete' check to make sure that all activity
+has stopped (no change in the sum of file sizes, no modtimes in advance of the
+present). When this is the case run some validation checks, set the status to
+'run mirrored', move the run folder to 'analysis', and set the status to
+'analysis pending'.
+
+=head1 SUBROUTINES/METHODS
+
+None
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+Methods that the script calls read $ENV{dev} to decide whether to work with
+the 'live' or 'dev' databases. If it's 'dev' the script will carry out all the
+same functions but will not make any file-system changes.
+
+=head1 INCOMPATIBILITIES
+
+None known.
+
+=head1 BUGS AND LIMITATIONS
+
+None known. Yet.
+
+=head1 AUTHOR
+
+John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (C) 2010 GRL, by John O'Brien
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

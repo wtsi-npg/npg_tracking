@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<asset api_version="0.6">
+  <id>3033734</id>
+  <type>LibraryTube</type>
+  <name>BS_3hrsomuleSm_202790 3033734</name>
+  <public_name></public_name>
+  <qc_state>pending</qc_state>
+  <sample_id>1121926</sample_id>
+  <sample study_id="1811" library_id="3033734" library_name="BS_3hrsomuleSm_202790 3033734" sample_id="1121926" project_id="810">
+    <insert_size from="150" to="500"/>
+  </sample>
+  <children>
+    <id>3213730</id>
+    <id>3323725</id>
+  </children>
+  <parents>
+    <id>3145063</id>
+  </parents>
+  <requests>
+    <request>
+      <id>3156170</id>
+      <properties>
+        <property>
+          <key>fragment_size_required_from</key>
+          <name>Fragment size required (from)</name>
+          <value>150</value>
+        </property>
+        <property>
+          <key>read_length</key>
+          <name>Read length</name>
+          <value>75</value>
+        </property>
+        <property>
+          <key>fragment_size_required_to</key>
+          <name>Fragment size required (to)</name>
+          <value>500</value>
+        </property>
+      </properties>
+    </request>
+    <request>
+      <id>3456759</id>
+      <properties>
+        <property>
+          <key>fragment_size_required_from</key>
+          <name>Fragment size required (from)</name>
+          <value>150</value>
+        </property>
+        <property>
+          <key>read_length</key>
+          <name>Read length</name>
+          <value>75</value>
+        </property>
+        <property>
+          <key>fragment_size_required_to</key>
+          <name>Fragment size required (to)</name>
+          <value>500</value>
+        </property>
+      </properties>
+    </request>
+    <request>
+      <id>3456767</id>
+      <properties>
+        <property>
+          <key>fragment_size_required_from</key>
+          <name>Fragment size required (from)</name>
+          <value>150</value>
+        </property>
+        <property>
+          <key>read_length</key>
+          <name>Read length</name>
+          <value>75</value>
+        </property>
+        <property>
+          <key>fragment_size_required_to</key>
+          <name>Fragment size required (to)</name>
+          <value>500</value>
+        </property>
+      </properties>
+    </request>
+  </requests>
+</asset>

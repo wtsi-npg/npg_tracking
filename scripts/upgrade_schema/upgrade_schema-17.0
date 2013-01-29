@@ -1,0 +1,20 @@
+-------------
+- change to qc pass/fail to qc complete and let tick-boxes determine good/bad
+-
+update run_status_dict set description = 'qc complete' where id_run_status_dict = 20;
+update run_status set id_run_status_dict = 20 where id_run_status_dict = 13;
+delete from run_status_dict where id_run_status_dict = 13;
+
+CREATE TABLE `run_lane_annotation` (
+  `id_run_lane_annotation` bigint(20) unsigned NOT NULL auto_increment,
+  `id_run_lane` bigint(20) unsigned NOT NULL,
+  `id_annotation` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY  (`id_run_lane_annotation`),
+  KEY `rla_idrunlane` (`id_run_lane`),
+  KEY `rla_ida` (`id_annotation`),
+  CONSTRAINT `rla_ida` FOREIGN KEY (`id_annotation`) REFERENCES `annotation` (`id_annotation`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `rla_idrunlane` FOREIGN KEY (`id_run_lane`) REFERENCES `run_lane` (`id_run_lane`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into usergroup(groupname, is_public, description) values ('approvers',0,'Instrument Approvals');
+insert into instrument_status_dict(description) values ('request approval'), ('planned maintenance');

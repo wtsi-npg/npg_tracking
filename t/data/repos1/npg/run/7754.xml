@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="7754" batch_id="16467" id_instrument="90" expected_cycle_count="206" actual_cycle_count="206" priority="1" id_run_pair="0" is_paired="0" team="RAD" id_instrument_format="11" flowcell_id="MS0002052-00300" folder_name="120322_MS1_7754_A_MS0002052-00300" folder_path_glob="/{export,nfs}/sf45/ILorHSorMS_sf45/*/" name="MS1_7754" loader="nh4" loading_date="2012-03-22" run_folder="120322_MS1_7754_A_MS0002052-00300">
+ <instrument id_instrument="90" name="MS1" id_instrument_format="11" external_name="" serial="" iscurrent="0" />
+ <run_lanes><run_lane id_run_lane="61138" id_run="7754" tile_count="12" tracks="1" position="1" />
+</run_lanes>
+ <current_run_status id_run_status="106852" id_run="7754" date="2012-06-21 17:40:43" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_statuses>
+ <run_status id_run_status="106852" id_run="7754" date="2012-06-21 17:40:43" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_status id_run_status="106845" id_run="7754" date="2012-06-21 17:27:12" id_run_status_dict="12" id_user="7" username="pipeline" iscurrent="0" description="run archived" />
+ <run_status id_run_status="106843" id_run="7754" date="2012-06-21 17:25:27" id_run_status_dict="18" id_user="7" username="pipeline" iscurrent="0" description="archival in progress" />
+ <run_status id_run_status="106837" id_run="7754" date="2012-06-21 17:18:57" id_run_status_dict="17" id_user="7" username="pipeline" iscurrent="0" description="archival pending" />
+ <run_status id_run_status="106836" id_run="7754" date="2012-06-21 17:18:54" id_run_status_dict="9" id_user="7" username="pipeline" iscurrent="0" description="analysis complete" />
+ <run_status id_run_status="106834" id_run="7754" date="2012-06-21 16:51:30" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="106832" id_run="7754" date="2012-06-21 16:47:35" id_run_status_dict="7" id_user="7" username="pipeline" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="102533" id_run="7754" date="2012-03-23 10:41:01" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="0" description="qc complete" />
+ <run_status id_run_status="102532" id_run="7754" date="2012-03-23 10:40:51" id_run_status_dict="12" id_user="7" username="pipeline" iscurrent="0" description="run archived" />
+ <run_status id_run_status="102531" id_run="7754" date="2012-03-23 10:38:51" id_run_status_dict="18" id_user="7" username="pipeline" iscurrent="0" description="archival in progress" />
+ <run_status id_run_status="102529" id_run="7754" date="2012-03-23 10:28:18" id_run_status_dict="17" id_user="11" username="pipeline" iscurrent="0" description="archival pending" />
+ <run_status id_run_status="102524" id_run="7754" date="2012-03-23 10:11:41" id_run_status_dict="26" id_user="11" username="pipeline" iscurrent="0" description="qc in progress" />
+ <run_status id_run_status="102519" id_run="7754" date="2012-03-23 08:41:11" id_run_status_dict="19" id_user="7" username="pipeline" iscurrent="0" description="qc review pending" />
+ <run_status id_run_status="102518" id_run="7754" date="2012-03-23 08:41:07" id_run_status_dict="9" id_user="7" username="pipeline" iscurrent="0" description="analysis complete" />
+ <run_status id_run_status="102517" id_run="7754" date="2012-03-23 08:16:58" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="102516" id_run="7754" date="2012-03-23 08:10:56" id_run_status_dict="7" id_user="7" username="pipeline" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="102514" id_run="7754" date="2012-03-23 08:03:04" id_run_status_dict="11" id_user="7" username="pipeline" iscurrent="0" description="run mirrored" />
+ <run_status id_run_status="102515" id_run="7754" date="2012-03-23 08:03:04" id_run_status_dict="6" id_user="7" username="pipeline" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="102513" id_run="7754" date="2012-03-23 07:37:47" id_run_status_dict="4" id_user="7" username="pipeline" iscurrent="0" description="run complete" />
+ <run_status id_run_status="102472" id_run="7754" date="2012-03-22 13:30:23" id_run_status_dict="2" id_user="7" username="pipeline" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="102446" id_run="7754" date="2012-03-22 10:47:49" id_run_status_dict="1" id_user="76" username="pipeline" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="27442" id_run="7754" id_annotation="25867" date="2012-03-23 10:30:19" id_user="11" username="tkb" comment="QC complete" attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="30279" id_run="7754" id_annotation="27823" date="2012-06-21 17:37:42" id_user="62" username="dj3" comment="Reran pipeline and archived for realignment request https://rt.sanger.ac.uk/Ticket/Display.html?id=270264" attachment_name="" run_current_ok="" current_cycle="" />
+ </annotations>
+ <tags>
+   <tag id_tag="20" description="multiplex" />
+   <tag id_tag="17" description="paired_read" />
+   <tag id_tag="16" description="rta" />
+   <tag id_tag="19" description="staging" />
+ </tags>
+</run>

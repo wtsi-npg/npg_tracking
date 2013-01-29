@@ -1,0 +1,45 @@
+drop table if exists sensor_data_instrument;
+drop table if exists sensor_instrument;
+drop table if exists sensor_data;
+drop table if exists sensor;
+
+create table sensor (
+	id_sensor bigint unsigned not null auto_increment primary key,
+	is_current tinyint(1) not null,
+	guid varchar(50) not null unique,
+	name varchar(10) not null unique,
+	description varchar(50)
+) engine=innodb;
+
+insert into sensor values(null, 1, 'BC3A8BD_nbAlinkEnc_0_6_TEMP', 'Temp 3', '');
+insert into sensor values(null, 1, 'BC3A8BD_nbAlinkEnc_1_1_TEMP', 'Temp 1', '');
+insert into sensor values(null, 1, 'BC3A8BD_nbAlinkEnc_1_3_TEMP', 'Temp 9', '');
+insert into sensor values(null, 1, 'BC3A8BD_nbAlinkEnc_1_2_TEMP', 'Temp 2', '');
+insert into sensor values(null, 1, 'BC3A8BD_nbAlinkEnc_0_5_TEMP', 'Temp 4', '');
+insert into sensor values(null, 1, 'BC3A8BD_nbAlinkEnc_0_3_TEMP', 'Temp 6', '');
+insert into sensor values(null, 1, 'BC3A8BD_nbAlinkEnc_0_4_TEMP', 'Temp 5', '');
+insert into sensor values(null, 1, 'BC3A8BD_nbAlinkEnc_0_2_TEMP', 'Temp 7', '');
+insert into sensor values(null, 1, 'BC3A8BD_nbAlinkEnc_0_1_TEMP', 'Temp 8', '');
+
+create table sensor_instrument (
+	id_sensor bigint unsigned not null,
+	id_instrument bigint unsigned not null,
+	constraint si_sensor foreign key (id_sensor) references sensor (id_sensor),
+	constraint si_instrument foreign key (id_instrument) references instrument (id_instrument)
+) engine=innodb;
+
+create table sensor_data (
+	id_sensor_data bigint unsigned not null auto_increment primary key,
+	date timestamp not null,
+	id_sensor bigint unsigned not null,
+	value double not null,
+	constraint sd_sensor foreign key (id_sensor) references sensor (id_sensor)
+) engine=innodb;
+
+create table sensor_data_instrument (
+	id_sensor_data bigint unsigned not null,
+	id_instrument bigint unsigned not null,
+	constraint sdi_sensor_data foreign key (id_sensor_data) references sensor_data (id_sensor_data),
+	constraint sdi_instrument foreign key (id_instrument) references instrument (id_instrument)
+) engine=innodb;
+

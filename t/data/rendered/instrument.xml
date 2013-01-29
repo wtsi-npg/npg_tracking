@@ -1,0 +1,61 @@
+X-Generated-By: ClearPress
+Content-type: text/xml; charset="UTF-8"
+
+<?xml version="1.0" encoding="utf-8"?>
+<instruments>
+<instrument id_instrument="4" name="IL2" id_instrument_format="4" external_name="eas37" serial="" iscurrent="1" current_instrument_status_description="up" ipaddr="192.168.255.4" instrument_comp="" mirroring_host="" staging_dir="" model="HK">
+<designations><designation id_designation="2" description="R&#x26;D" />
+</designations></instrument>
+
+<instrument id_instrument="6" name="IL3" id_instrument_format="4" external_name="eas92" serial="" iscurrent="1" current_instrument_status_description="down" ipaddr="192.168.255.6" instrument_comp="" mirroring_host="" staging_dir="" model="HK">
+<designations></designations></instrument>
+
+<instrument id_instrument="7" name="IL4" id_instrument_format="4" external_name="" serial="" iscurrent="1" current_instrument_status_description="down" ipaddr="192.168.255.9" instrument_comp="" mirroring_host="" staging_dir="" model="HK">
+<designations></designations></instrument>
+
+<instrument id_instrument="8" name="IL5" id_instrument_format="4" external_name="" serial="" iscurrent="1" current_instrument_status_description="wash required" ipaddr="192.168.255.10" instrument_comp="" mirroring_host="" staging_dir="" model="HK">
+<designations></designations></instrument>
+
+<instrument id_instrument="9" name="IL6" id_instrument_format="4" external_name="" serial="" iscurrent="1" current_instrument_status_description="down" ipaddr="192.168.255.11" instrument_comp="" mirroring_host="" staging_dir="" model="HK">
+<designations></designations></instrument>
+
+<instrument id_instrument="10" name="IL7" id_instrument_format="4" external_name="" serial="" iscurrent="1" current_instrument_status_description="up" ipaddr="192.168.255.12" instrument_comp="" mirroring_host="" staging_dir="" model="HK">
+<designations></designations></instrument>
+
+<instrument id_instrument="11" name="IL8" id_instrument_format="4" external_name="" serial="" iscurrent="1" current_instrument_status_description="up" ipaddr="192.168.255.13" instrument_comp="" mirroring_host="" staging_dir="" model="HK">
+<designations></designations></instrument>
+
+<instrument id_instrument="12" name="IL9" id_instrument_format="4" external_name="" serial="" iscurrent="1" current_instrument_status_description="up" ipaddr="192.168.255.14" instrument_comp="" mirroring_host="" staging_dir="" model="HK">
+<designations></designations></instrument>
+
+<instrument id_instrument="13" name="IL10" id_instrument_format="4" external_name="" serial="" iscurrent="1" current_instrument_status_description="up" ipaddr="192.168.255.15" instrument_comp="" mirroring_host="" staging_dir="" model="HK">
+<designations></designations></instrument>
+
+<instrument id_instrument="14" name="IL11" id_instrument_format="4" external_name="" serial="" iscurrent="1" current_instrument_status_description="planned maintenance" ipaddr="192.168.255.16" instrument_comp="" mirroring_host="" staging_dir="" model="HK">
+<designations></designations></instrument>
+
+<instrument id_instrument="31" name="IL28" id_instrument_format="4" external_name="EAS267" serial="" iscurrent="1" current_instrument_status_description="wash required" ipaddr="192.168.255.33" instrument_comp="il28win" mirroring_host="sf-1-1-08" staging_dir="/staging/IL28/incoming" model="HK">
+<designations><designation id_designation="2" description="R&#x26;D" />
+</designations></instrument>
+
+<instrument id_instrument="34" name="IL29" id_instrument_format="4" external_name="" serial="" iscurrent="1" current_instrument_status_description="wash required" ipaddr="192.168.255.34" instrument_comp="il29win" mirroring_host="sf-1-1-01" staging_dir="/staging/IL29/incoming" model="HK">
+<designations><designation id_designation="2" description="R&#x26;D" />
+<designation id_designation="3" description="Hot spare" />
+</designations></instrument>
+
+<instrument id_instrument="48" name="cBot1" id_instrument_format="7" external_name="" serial="" iscurrent="1" current_instrument_status_description="up" ipaddr="" instrument_comp="" mirroring_host="" staging_dir="" model="cBot">
+<designations></designations></instrument>
+
+<instrument id_instrument="35" name="HS1" id_instrument_format="10" external_name="" serial="" iscurrent="1" current_instrument_status_description="wash required" ipaddr="" instrument_comp="" mirroring_host="" staging_dir="" model="HiSeq">
+<designations></designations></instrument>
+
+<instrument id_instrument="36" name="HS2" id_instrument_format="10" external_name="" serial="" iscurrent="1" current_instrument_status_description="wash required" ipaddr="" instrument_comp="" mirroring_host="" staging_dir="" model="HiSeq">
+<designations></designations></instrument>
+
+<instrument id_instrument="64" name="HS3" id_instrument_format="10" external_name="" serial="" iscurrent="1" current_instrument_status_description="wash required" ipaddr="" instrument_comp="" mirroring_host="" staging_dir="" model="HiSeq">
+<designations></designations></instrument>
+
+<instrument id_instrument="90" name="MS1" id_instrument_format="11" external_name="" serial="" iscurrent="1" current_instrument_status_description="wash required" ipaddr="" instrument_comp="" mirroring_host="" staging_dir="" model="MiSeq">
+<designations></designations></instrument>
+
+</instruments>

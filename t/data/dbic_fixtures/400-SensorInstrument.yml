@@ -1,0 +1,15 @@
+---
+- id_sensor: 1
+  id_instrument: 3
+- id_sensor: 1
+  id_instrument: 5
+- id_sensor: 3
+  id_instrument: 3
+- id_sensor: 4
+  id_instrument: 5
+- id_sensor: 5
+  id_instrument: 5
+- id_sensor: 6
+  id_instrument: 5
+- id_sensor: 7
+  id_instrument: 5

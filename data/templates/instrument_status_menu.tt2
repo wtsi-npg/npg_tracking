@@ -1,0 +1,21 @@
+[% PROCESS instrument_top.tt2 
+           top_menu_index=0
+-%]
+[% labels    = ['graphical view', 'table view', ] -%]
+[% addresses = ['/graphical', '/textual'] -%]
+[% counts    = [0, 1] -%]
+<p class="npgmenu2">
+[% FOREACH count IN counts -%]
+[% IF count != 0 %]&nbsp;[% END -%]
+[% IF count == index -%]
+ <font class="npgmenu2-highlighted">  
+[% ELSE -%]
+<a href="[% SCRIPT_NAME %]/instrument[% addresses.$count %]">
+[% END -%]
+[% labels.$count -%]
+[% IF count == index %]</font>
+[% ELSE -%]
+ </a>  
+[% END -%]
+[% END -%]
+</p>

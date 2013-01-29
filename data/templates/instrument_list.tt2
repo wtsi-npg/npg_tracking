@@ -1,0 +1,2 @@
+<!-- default to instrument_list_graphical -->
+[% PROCESS instrument_list_graphical.tt2 %]

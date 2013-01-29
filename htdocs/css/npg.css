@@ -1,0 +1,544 @@
+/* no underline for text links */
+a, a:link, a:visited, a:hover {
+  text-decoration: none;
+}
+
+/* to make white space non-braking */
+.npg_nbsp {
+ white-space: nowrap;
+}
+
+div.rfloat { float: right; }
+div.lfloat { float: left; }
+div.clearfloats{ clear:both; }
+
+div#team_container {
+  border-radius: 30px 30px 15px 15px;
+  padding: 1px;
+}
+
+div.roundborder {
+ border: 1px solid #a1a1a1;
+ padding: 10px 30px; 
+ background-color: #dddddd;
+ border-radius: 15px;
+}
+
+div.roundborder th {
+ padding-right: 10px;
+ color: #2F4F4F;
+ font-size: 100%;
+ white-space: nowrap;
+}
+
+div.roundborder td {
+ color: #2F4F4F;
+ font-size: 100%;
+}
+
+div#team_container p {
+ font-size:   110%;
+ font-weight: bold;
+ text-align:  center;
+ color: #FFFFFF;
+ margin:      2px;
+}
+
+.team-a {
+ background-color: #BD900A;
+}
+
+.team-b {
+ background-color: #09BD36;
+}
+
+.team-c {
+ background-color: #0864BD;
+}
+
+.team-rad {
+ background-color: #BD0990;
+}
+
+.team-joint {
+ background-color: #777777;
+}
+
+#instrument_info_table {
+ width: 500px;
+}
+
+div.widgets_group {
+ border:1px solid #a1a1a1;
+ padding:5px 10px; 
+ border-radius:15px;
+ margin-bottom: 10px;
+}
+
+a.npg_menu {
+ background-color: #D9D9D9;
+ border:2px solid #a1a1a1;
+ border-radius:3px;
+ padding-right: 3px;
+ padding-left: 3px;
+}
+
+a.npg_menu_highlight {
+ background-color: #D9D9D9;
+ border:2px solid #E76CB2;
+ border-radius:3px;
+ padding-right: 3px;
+ padding-left: 3px;
+}
+
+/* passed manual qc */
+.pass {
+ background-color: #b5daff;
+}
+
+/* failed manual qc */
+.fail {
+ background-color: #f99389;
+}
+
+.smaller_font_85 {
+ font-size: 85%;
+}
+
+.page_title {
+ font-size: 130%;
+ font-weight: bold;
+ font-style: italic;
+ padding-bottom: 5px;
+ padding-top: 5px;
+}
+
+.r_and_d_watermark_container {
+ position: relative;
+ z-index: 0;
+}
+
+.r_and_d_watermark {
+  position: absolute;
+  right: 0px;
+  top: -5px;
+  font-weight: bold;
+  font-size: 20px;
+  color: #EFC9BC;
+  z-index: -1;
+}
+
+div#flowcell_slots {
+  margin: 5px 0 5px 0;
+  font-weight: bold;
+}
+
+#tabs {
+ padding-bottom: 5px;
+ padding-top: 15px;
+}
+
+.value_before_submit_button {
+ padding-right: 5px; 
+}
+
+div.run_menu {
+ padding-top: 8px;
+}
+
+#run_menu_container {
+ padding-top: 15px;
+}
+
+div.error_box {
+ border:2px solid red;
+}
+
+div.error_box h3 {
+ text-align:center;
+ font-weight:bold;
+}
+div.error_box p {
+ text-align:center;
+}
+
+div#floating_annotate_inner{
+ background-color:#e7edf3;
+ border:1px solid red;
+ width:33em;
+}
+
+div.table_overflow{
+ height:300px;
+ width:60em;
+ overflow:auto;
+ margin-bottom:1em;
+}
+
+ul.selector{
+ list-style:none;
+ border-bottom:1px solid #aaa;
+}
+
+ul.selector li{
+ display:inline;
+ background:#ddd;
+ padding:2px;
+ cursor:pointer;
+ font-weight:bolder;
+}
+
+ul.selector li:hover{
+ background:#eee;
+}
+
+ul.selector li.active{
+ background:#fff;
+ border:1px solid #aaa;
+ border-bottom:none;
+}
+
+fieldset ul li{
+ list-style:none;
+}
+
+ul.inline{
+ padding:0;
+ margin-left:0.2em;
+ display:inline;
+}
+
+ul.inline li{
+ margin:0;
+ list-style-type:none;
+ float:left;
+}
+
+ul.inline a{
+ margin:0 5px 0 0;
+ white-space:nowrap;
+ float:left;
+ text-decoration:none;
+}
+
+a.cloud{text-decoration:none}
+a.tag_bg{background-color:#e7edf3}
+a.selected{color:#fff;background-color:#a00}
+
+div#lanes_description {
+  margin-top: 10px;
+}
+
+div#listed_run_info {
+  margin-top: 10px;
+}
+
+div#run_lane_tag_form{
+  z-index:100;
+  position:absolute;
+  margin-left:10%;
+  width:70%;
+  border: 7px #788E4D;
+  padding: 10px 10px; 
+  background-color: #FFFFFF;
+  border-radius: 15px;
+  border-style: outset;
+}
+
+div#run_lane_tag_form fieldset {
+  width:90%;
+  margin-left:4%
+}
+
+div.tab{
+ float:left;
+ width:20%;
+ text-align:center;
+ border:solid;
+ border-width:1px;
+ font-style:bold;
+}
+
+div.current{
+ background-color:#e7edf3;
+}
+
+div.noncurrent{
+ background-color:#fff;
+ font-style:normal;
+}
+
+div.noncurrent a{
+ text-decoration:none;
+}
+
+div.noncurrent a:hover{
+ background:#999;
+ color:#FFF;
+}
+
+ul.instruments{
+ clear:left;
+ display:block;
+}
+
+ul.instrument_by_type > li {
+  list-style: none;
+  font-weight: bold;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10px;
+  width: 920px;
+}
+
+div#spinner{
+ width:100px;
+ height:100px;
+ position:absolute;
+ right:100px;
+}
+
+#main table.zebra{
+ caption-side:top;
+}
+
+ul.tree,ul.tree ul{
+ padding:0;
+ list-style-type:none;
+}
+
+ul.tree li{
+ padding-left:20px;
+}
+
+ul.tree li.opened{
+ background:url('/icons/silk/delete.png') no-repeat;
+}
+
+ul.tree li.closed{
+ background:url('/icons/silk/add.png') no-repeat;
+}
+
+ul#ret_selector{
+ width:660px;
+ list-style-type:none;
+ padding:0;
+}
+
+ul#ret_selector li{
+ float:left;
+ width:220px;
+ margin:0;
+}
+
+.runs_active_selection {
+ background-color: #FFFFBE;
+}
+
+/* probably, not needed */
+a.active{
+ background:#FFFFBE;
+}
+
+a.pill{
+/* float:right;*/
+ background:orange;
+ color:#d96713;
+ border:1px solid #d96713;
+ padding:1px;
+ text-transform:uppercase;
+ font-size:smaller;
+ text-decoration:none;
+}
+
+a.pill:hover{
+ color:#000;
+}
+/* begin add/edit form structure */
+#main dt{
+ height:1.5em;
+}
+
+form li,#main dt{
+ clear:both;
+}
+
+form li label,#main dt{
+ font-weight:bolder;
+ float:left;
+ width:14em;
+ display:block;
+}
+
+#main dd{
+ float:left;
+ padding-right:1px;
+ height:1.5em;
+ clear:top;
+}
+
+form li label.secondary{
+ width:6em;
+}
+
+form ul{
+ list-style-type:none;
+ padding:0;
+}
+
+form li{
+ margin:0;
+}
+/* end add/edit form structure */
+
+.scrolly{width:200px;height:3em;overflow:auto}
+
+dl.hitlist dd,dl.hitlist dt{clear:left}
+dl.hitlist div:hover dd{background:#dfd}
+dl.hitlist div:hover dt{border:1px solid #cfc;background:#dfd}
+dl.hitlist dt{border:1px solid #ccc;background:#ddd;padding:2px;margin-top:2px}
+
+span.hit{background:yellow}
+
+/* start scroll tbody */
+/* requires two renders of two copies of the table, so only suitable for small tables, and will lose the sortable columns */
+
+div#tableOuter{
+  height:300px;
+  width:60em;
+}
+
+.tableHeaderFixed{
+  background-color:white;
+  position:absolute;
+  position:0px;
+  height:41px;
+  overflow:hidden;
+  z-index:2;
+}
+.tableHeaderFixed thead th{
+  background-color:white;
+  border-bottom:solid 1px black;
+}
+
+.tableBodyScroll{
+  width:50em;
+  height:300px;
+  overflow:auto;
+  overflow-x:hidden;
+  position:absolute;
+  z-index:1;
+}
+
+/* end scroll tbody */
+
+/* datechooser for advanced search */
+.dateChooser td{
+ cursor:default;
+ text-align:center;
+}
+.dateChooser td.dateChooserActive:hover{
+ color:white;
+ background:#0A246A;
+}
+.dateChooser td.dateChooserActiveToday{
+ border:1px solid red;
+}
+.dateChooser th{
+ background:#aaa;
+ color:white;
+ width:18px;
+ border:none;
+}
+.dateChooser option,.dateChooser select{
+ font-size:10px;
+}
+.dateChooser{
+ border:2px outset #aaa;
+ background:white;
+ padding:1px;
+}
+.dateChooser table{
+ width:160px;
+}
+.select-free{
+ position:absolute;
+ z-index:10;
+ cursor:pointer;
+ overflow:hidden;
+ width:33em;
+}
+.select-free iframe{
+ display:none;
+ display/**/:block;
+ position:absolute;
+ top:0;
+ left:0;
+ z-index:-1;
+ filter:mask();
+ width:3000px;
+ height:3000px
+}
+/*end of datechooser*/
+
+
+/* styles for lower-level menues */
+font.npgmenu1-highlighted {
+  font-size:11pt;
+  font-weight:bold;
+}
+
+font.npgmenu1-highlighted a{
+  text-decoration:none;
+}
+
+p.npgmenu1 {
+  text-indent:20px;
+  margin-top:20px;
+  margin-bottom:0px;
+}
+
+font.npgmenu2-highlighted {
+  font-weight:bold;
+}
+
+font.npgmenu2-highlighted a{
+  text-decoration:none;
+}
+
+
+p.npgmenu2 {
+  text-indent:20px;
+  margin-top:0px;
+  margin-bottom:20px;
+}
+
+/* end of styles for lower-level menues */
+
+/* Sanger-less main menu */
+.main_menu_footer {
+  color: #AEB8C1;
+  background-color: #AEB8C1;
+  height: 2px;
+  border-bottom: 0px;
+  border-top: 0px;
+  text-align: left;
+  width: 100%;
+}
+
+.npg_title {
+  color: #074987;
+  font-weight: bold;
+  font-size: 120%;
+  padding: 5px 0px 5px 0px;
+}
+
+.medium_header {
+  font-weight: bold;
+  font-size: 110%;
+  color: #074987;
+}
+
+.dev_highlight {
+  color: #AA0000;
+}

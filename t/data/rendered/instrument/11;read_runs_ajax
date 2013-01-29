@@ -1,0 +1,27 @@
+<!--begin $Id: 11;read_runs_ajax 2662 2008-08-06 12:23:37Z rmp $-->
+
+<table id="runs" class="sortable zebra">
+ <caption>Runs</caption>
+ <thead>
+  <tr>
+   
+   <th>Name</th>
+   <th>Pair</th>
+   <th>Batch</th>
+   <th title="Expected Cycles">E. Cycles</th>
+   <th title="Actual Cycles">A. Cycles</th>
+   <th title="Priority">Pri</th>
+   <th title="Production Run">Prod</th>
+   <th>Status</th>
+   <th>Status Date</th>
+   <th>Status Operator</th>
+   <th>Loader</th>
+   <th>Loading Date</th>
+  </tr>
+ </thead>
+ <tbody>
+
+
+ </tbody>
+</table>
+<!--end $Id: 11;read_runs_ajax 2662 2008-08-06 12:23:37Z rmp $-->

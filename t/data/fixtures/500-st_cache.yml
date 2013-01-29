@@ -1,0 +1,41 @@
+---
+- content: PE PhiX
+  id_cache: 1
+  id_run: 11
+  type: library
+- content: NA12878-WG
+  id_cache: 2
+  id_run: 11
+  type: library
+- content: 1000Genomes-A2-TriosPilot
+  id_cache: 3
+  id_run: 11
+  type: project
+- content: PE PhiX
+  id_cache: 4
+  id_run: 11
+  type: library
+- content: NA12878-WG
+  id_cache: 5
+  id_run: 11
+  type: library
+- content: 1000Genomes-A2-TriosPilot
+  id_cache: 6
+  id_run: 11
+  type: project
+- content: PE PhiX
+  id_cache: 7
+  id_run: 11
+  type: library
+- content: New GGO
+  id_cache: 8
+  id_run: 8
+  type: library
+- content: Gorilla
+  id_cache: 9
+  id_run: 8
+  type: project
+- content: PE PhiX
+  id_cache: 10
+  id_run: 9951
+  type: library

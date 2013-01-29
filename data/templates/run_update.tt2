@@ -1,0 +1,10 @@
+<!-- begin $Id: run_update.tt2 13585 2011-07-07 13:23:08Z ajb $ -->
+<div>
+Run [% model.id_run %] updated.
+<br /><br />
+Please click <a href="[% SCRIPT_NAME %]/run/[% model.id_run %]">here</a> to continue.
+<script type="text/javascript">
+ document.location.href = "[% SCRIPT_NAME %]/run/[% model.id_run %]";
+</script>
+</div>
+<!-- end $Id: run_update.tt2 13585 2011-07-07 13:23:08Z ajb $ -->

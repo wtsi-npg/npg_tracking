@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sample api_version="0.6">
+  <id>7283</id>
+  <name>PD3918a</name>
+  <study_id>333</study_id>
+  <properties>
+    <property>
+      <name>Phenotype</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample purified</name>
+      <value></value>
+    </property>
+    <property>
+      <name>TAXON ID</name>
+      <value>9606</value>
+    </property>
+    <property>
+      <name>Country of origin</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Treatment</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Time Point</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Date of sample extraction</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample Description</name>
+      <value></value>
+    </property>
+    <property>
+      <name>ENA Sample Accession Number</name>
+      <value>EGAN00001001569</value>
+    </property>
+    <property>
+      <name>Common Name</name>
+      <value>Homo sapiens</value>
+    </property>
+    <property>
+      <name>Gender</name>
+      <value>Male</value>
+    </property>
+    <property>
+      <name>Mother</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Ethnicity</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Compound</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Cell Type</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Age</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Genotype</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Volume (&#181;l)</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Dose</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Organism Part</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Growth Condition</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Concentration</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Public Name</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Subject</name>
+      <value></value>
+    </property>
+    <property>
+      <name>RNAi</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Concentration determind by</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Is re-submitted?</name>
+      <value></value>
+    </property>
+    <property>
+      <name>DNA source</name>
+      <value>Genomic</value>
+    </property>
+    <property>
+      <name>Sample extraction method</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Disease</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sibling</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Strain</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Cohort</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Immunoprecipitate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Disease State</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample storage conditions</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample type</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Date of sample collection</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Developmental Stage</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Purification method</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample Visibility</name>
+      <value>Hold</value>
+    </property>
+    <property>
+      <name>GC content</name>
+      <value>Neutral</value>
+    </property>
+    <property>
+      <name>Father</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Plate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Geographical region</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Replicate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Organism</name>
+      <value>Human</value>
+    </property>
+    <property>
+      <name>Reference Genome</name>
+      <value></value>
+    </property>
+  </properties>
+  <assets>
+    <asset href="/assets/57427" id="57427"/>
+    <asset href="/assets/57428" id="57428"/>
+    <asset href="/assets/76384" id="76384"/>
+    <asset href="/assets/1423161" id="1423161"/>
+    <asset href="/assets/1423162" id="1423162"/>
+    <asset href="/assets/57439" id="57439"/>
+    <asset href="/assets/57440" id="57440"/>
+    <asset href="/assets/76402" id="76402"/>
+    <asset href="/assets/78588" id="78588"/>
+    <asset href="/assets/78589" id="78589"/>
+    <asset href="/assets/78590" id="78590"/>
+    <asset href="/assets/78591" id="78591"/>
+    <asset href="/assets/78593" id="78593"/>
+    <asset href="/assets/78595" id="78595"/>
+    <asset href="/assets/78596" id="78596"/>
+    <asset href="/assets/84842" id="84842"/>
+    <asset href="/assets/78599" id="78599"/>
+    <asset href="/assets/78600" id="78600"/>
+    <asset href="/assets/78601" id="78601"/>
+    <asset href="/assets/78602" id="78602"/>
+    <asset href="/assets/78603" id="78603"/>
+    <asset href="/assets/84843" id="84843"/>
+    <asset href="/assets/78607" id="78607"/>
+    <asset href="/assets/78608" id="78608"/>
+    <asset href="/assets/78609" id="78609"/>
+    <asset href="/assets/78611" id="78611"/>
+    <asset href="/assets/78613" id="78613"/>
+    <asset href="/assets/84844" id="84844"/>
+    <asset href="/assets/84845" id="84845"/>
+    <asset href="/assets/78619" id="78619"/>
+    <asset href="/assets/78620" id="78620"/>
+    <asset href="/assets/78621" id="78621"/>
+    <asset href="/assets/78622" id="78622"/>
+    <asset href="/assets/78623" id="78623"/>
+    <asset href="/assets/78624" id="78624"/>
+    <asset href="/assets/78625" id="78625"/>
+    <asset href="/assets/78626" id="78626"/>
+    <asset href="/assets/78627" id="78627"/>
+    <asset href="/assets/78629" id="78629"/>
+    <asset href="/assets/78630" id="78630"/>
+    <asset href="/assets/1423173" id="1423173"/>
+    <asset href="/assets/1423174" id="1423174"/>
+    <asset href="/assets/1424268" id="1424268"/>
+    <asset href="/assets/1424269" id="1424269"/>
+    <asset href="/assets/1424270" id="1424270"/>
+    <asset href="/assets/1424271" id="1424271"/>
+    <asset href="/assets/1424272" id="1424272"/>
+    <asset href="/assets/1424273" id="1424273"/>
+    <asset href="/assets/1424274" id="1424274"/>
+    <asset href="/assets/1424275" id="1424275"/>
+    <asset href="/assets/1424276" id="1424276"/>
+    <asset href="/assets/1424277" id="1424277"/>
+    <asset href="/assets/1424278" id="1424278"/>
+    <asset href="/assets/1424279" id="1424279"/>
+    <asset href="/assets/1424280" id="1424280"/>
+    <asset href="/assets/1424281" id="1424281"/>
+    <asset href="/assets/1424282" id="1424282"/>
+    <asset href="/assets/58144" id="58144"/>
+    <asset href="/assets/58145" id="58145"/>
+    <asset href="/assets/77460" id="77460"/>
+    <asset href="/assets/58156" id="58156"/>
+    <asset href="/assets/58157" id="58157"/>
+    <asset href="/assets/77471" id="77471"/>
+  </assets>
+  <study_id>333</study_id>
+</sample>

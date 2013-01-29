@@ -1,0 +1,42 @@
+CREATE TABLE `instrument_status_dict` (
+  `id_instrument_status_dict` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `description` CHAR(64) NOT NULL,
+  PRIMARY KEY (`id_instrument_status_dict`)
+)
+ENGINE = InnoDB
+CHARACTER SET utf8;
+
+CREATE TABLE `instrument_status` (
+  `id_instrument_status` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id_instrument` bigint UNSIGNED NOT NULL,
+  `id_instrument_status_dict` bigint UNSIGNED NOT NULL,
+  `date` DATETIME NOT NULL,
+  `id_user` BIGINT UNSIGNED NOT NULL,
+  `comment` text,
+  `iscurrent` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id_instrument_status`),
+  CONSTRAINT `is_idu` FOREIGN KEY `is_idu` (`id_user`)
+    REFERENCES `user` (`id_user`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `is_idi` FOREIGN KEY `is_idi` (`id_instrument`)
+    REFERENCES `instrument` (`id_instrument`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `is_idisd` FOREIGN KEY `is_idisd` (`id_instrument_status_dict`)
+    REFERENCES `instrument_status_dict` (`id_instrument_status_dict`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+)
+ENGINE = InnoDB
+CHARACTER SET utf8;
+
+insert into instrument_status_dict(description) values('up'),('down');
+
+insert into entity_type(id_entity_type,description,iscurrent) values(9,'instrument_status',1);
+insert into event_type(id_event_type,description,id_entity_type) values(7,'status change',9);
+
+insert into instrument_status(id_instrument,id_instrument_status_dict,date,id_user,comment,iscurrent) values(3,1,now(),1,'initial setup', 1);
+insert into instrument_status(id_instrument,id_instrument_status_dict,date,id_user,comment,iscurrent) values(4,1,now(),1,'initial setup', 1);
+insert into instrument_status(id_instrument,id_instrument_status_dict,date,id_user,comment,iscurrent) values(6,1,now(),1,'initial setup', 1);
+insert into instrument_status(id_instrument,id_instrument_status_dict,date,id_user,comment,iscurrent) values(5,2,now(),1,'initial setup', 1);

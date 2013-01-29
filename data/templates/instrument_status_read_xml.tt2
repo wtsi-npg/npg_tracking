@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<instrument_status id_instrument_status="[% model.id_instrument_status %]" id_instrument="[% model.id_instrument %]" date="[% model.date %]" id_instrument_status_dict="[% model.id_instrument_status_dict %]" id_user="[% model.id_user %]" iscurrent="[% model.iscurrent %]" description="[% model.instrument_status_dict.description %]" comment="[% model.comment %]" />

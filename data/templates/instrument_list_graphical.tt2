@@ -1,0 +1,72 @@
+
+[% PROCESS instrument_status_menu.tt2 
+           index=0
+%]
+
+[%- reqd_order_of_inst_type = ['MiSeq','HiSeq','GA-II','cBot'] -%]
+<ul class="instrument_by_type">
+[% FOREACH ins IN reqd_order_of_inst_type ; instruments = model.instruments.0.instrument_format.current_instruments_by_format.$ins -%]
+[% NEXT IF ! instruments.0 -%]
+
+  <li>Instrument Type: [% ins %]
+      <ul class="instruments inline">
+  	 <li><img style="width:110px;height:110px" src="[% SCRIPT_NAME %]/instrument/key.png" alt="status key" title="status key" /></li>
+	 [% fslash = '/';FOREACH instrument IN instruments -%]
+	    [% status = instrument.current_run.current_run_status.run_status_dict.description;
+               runs = [];
+               IF status;
+                 IF instrument.is_hiseq_instrument;
+                   map = instrument.fc_slots2current_runs;
+                   FOREACH slot IN map.keys.sort;
+                     IF map.$slot.size;
+                       runs.push(instrument.current_run_by_id(map.$slot.0));
+                     ELSE;
+                       runs.push('');
+                     END;
+                   END;
+                 ELSE;
+                   runs.push(instrument.current_run);
+                 END;
+               END;
+            %]
+	    <li id="instrument[% instrument.id_instrument %]"><a href="[% SCRIPT_NAME %]/instrument/[% instrument.name %]"> <img style="background:no-repeat url('/prodsoft/npg/gfx/spinner.gif');" src="[% SCRIPT_NAME %]/instrument/[% instrument.name %].png" alt="[% instrument.name %]" title="[% run_info=''; IF status; run_info = runs.0.name _ ' ' _ status; END; PROCESS instr_full_info %]" [% IF status %] usemap="#instmap[% instrument.name %]"[% END %] /></a>
+[%- IF status %]
+<map id="instmap[% instrument.name %]" name="instmap[% instrument.name %]">
+[%- count = 0;
+    coords = [0,80,110,110];
+    FOREACH run IN runs;
+      IF count > 0;
+        shift = 112;
+        coords.0 = coords.0 + shift;
+        coords.2 = coords.2 + shift;
+      END;
+      IF run;
+-%]
+<area shape="rect" coords="[% coords.join(',') %]" href="[% SCRIPT_NAME %]/run/[% run.id_run %]" alt="current run: [% run.name %]" title="current run: [% run.name %]"/>
+[%-   ELSE -%]
+<area shape="rect" coords="[% coords.join(',') %]" title="[%  PROCESS instr_full_info run_info='' %]"/> 
+[%-   END; 
+      count = count + 1;
+    END;
+    coords = [0,0,110,80];
+    IF instrument.is_hiseq_instrument;
+      shift = 55;
+      coords.0 = coords.0 + shift;
+      coords.2 = coords.2 + shift;
+    END;
+ -%]
+<area shape="rect" coords="[% coords.join(',') %]" href="[% SCRIPT_NAME %]/instrument/[% instrument.name %]" alt="[% instrument.name %]" title="[% instrument.name %]"/>
+</map>[% END %]
+	    </li>
+	 [% END %]
+       </ul>
+       <div class="clearfloats"></div>
+   </li>
+[% END %]		 
+</ul>
+<div class="clearfloats"></div>
+<hr />
+
+[%- BLOCK instr_full_info -%]
+[% instrument.name %] current: [% IF instrument.iscurrent %]yes[% ELSE %]no[% END %]; status: [%description =  instrument.current_instrument_status.description; comment = instrument.current_instrument_status.comment; description; IF description && comment; fslash; END; comment; IF !instrument.is_cbot_instrument %]; run: [% IF run_info; run_info; ELSE %]idle[% END; END %]
+[%- END -%]

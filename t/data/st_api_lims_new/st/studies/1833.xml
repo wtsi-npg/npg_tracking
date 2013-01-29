@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<study api_version="0.6">
+  <id>1833</id>
+  <name>SEQCAP_Whole_Genome_Sequencing_of_Crohns_Disease_Patients</name>
+  <active>true</active>
+  <user_id>86</user_id>
+  <followers>
+    <follower>
+      <login>ak6</login>
+      <email>ak6@sanger.ac.uk</email>
+      <name>Anja Kolb-Kokocinski</name>
+      <id>224</id>
+    </follower>
+    <follower>
+      <login>jr17</login>
+      <email>jr17@sanger.ac.uk</email>
+      <name>Joshua Randall</name>
+      <id>600</id>
+    </follower>
+    <follower>
+      <login>mercury</login>
+      <email>mercury-sequencescape@hgi-mercury.internal.sanger.ac.uk</email>
+      <name>Mercury Human Genetics Informatics Pipelines</name>
+      <id>638</id>
+    </follower>
+  </followers>
+  <managers>
+    <manager>
+      <login>sarah</login>
+      <email>sarah</email>
+      <name>Sarah Sims</name>
+      <id>137</id>
+    </manager>
+  </managers>
+  <owners>
+    <owner>
+      <login>dw2</login>
+      <email>dw2@sanger.ac.uk</email>
+      <name>Danielle Walker</name>
+      <id>86</id>
+    </owner>
+  </owners>
+  <!-- Family has been deprecated -->
+  <family_id></family_id>
+  <created_at>2011-05-17 11:32:34 +0100</created_at>
+  <updated_at>2011-05-19 11:55:10 +0100</updated_at>
+  <descriptors>
+    <descriptor>
+      <name>Comment regarding data release timing and approval</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>What is the data release strategy for this study?</name>
+      <value>managed</value>
+    </descriptor>
+    <descriptor>
+      <name>EGA Policy Accession Number</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>ArrayExpress Accession Number</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Title</name>
+      <value>Whole genome sequencing of Crohn's disease patients</value>
+    </descriptor>
+    <descriptor>
+      <name>SNP study ID</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Comment regarding prevention of data release and approval</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>EGA DAC Accession Number</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>ENA Study Accession Number</name>
+      <value>EGAS00001000065</value>
+    </descriptor>
+    <descriptor>
+      <name>HMDMC approval number</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Will you be using WTSI's standard access agreement?</name>
+      <value>Yes</value>
+    </descriptor>
+    <descriptor>
+      <name>Do any of the samples in this study contain human DNA?</name>
+      <value>Yes</value>
+    </descriptor>
+    <descriptor>
+      <name>ENA Project ID</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Has this been approved?</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Has the delay period been approved by the data sharing committee for this project?</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>SNP parent study ID</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Alignments in BAM</name>
+      <value>true</value>
+    </descriptor>
+    <descriptor>
+      <name>Abstract</name>
+      <value>We propose to begin sequencing whole genomes from population CD samples in mid 2011, to be ramped up in the first year of the QQ. The aim is to identiy low frequency and rare variation which contributes to CD risk but is not easily detectable by GWAS. Thes sequences will be compared to UK10K and Cambridge BioResource controls.</value>
+    </descriptor>
+    <descriptor>
+      <name>Study description</name>
+      <value>Population based sequencing of whole genomes of Crohn's disease patients.</value>
+    </descriptor>
+    <descriptor>
+      <name>Policy</name>
+      <value>https://www.sanger.ac.uk/datasharing/</value>
+    </descriptor>
+    <descriptor>
+      <name>Please explain the reason for delaying release (e.g., pre-existing collaborative agreement)</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Reason for delaying release</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?</name>
+      <value>No</value>
+    </descriptor>
+    <descriptor>
+      <name>Study Visibility</name>
+      <value>Hold</value>
+    </descriptor>
+    <descriptor>
+      <name>Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?</name>
+      <value>No</value>
+    </descriptor>
+    <descriptor>
+      <name>Delay for</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>How is the data release to be timed?</name>
+      <value>standard</value>
+    </descriptor>
+    <descriptor>
+      <name>Does this study require the removal of X chromosome and autosome sequence?</name>
+      <value>No</value>
+    </descriptor>
+    <descriptor>
+      <name>Number of gigabases per sample (minimum 0.15)</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>What is the reason for preventing data release?</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Study name abbreviation</name>
+      <value>SC_WGSC</value>
+    </descriptor>
+    <descriptor>
+      <name>Faculty Sponsor</name>
+      <value>Jeffrey Barrett</value>
+    </descriptor>
+    <descriptor>
+      <name>What sort of study is this?</name>
+      <value>genomic sequencing</value>
+    </descriptor>
+    <descriptor>
+      <name>Study Type</name>
+      <value>Whole Genome Sequencing</value>
+    </descriptor>
+    <descriptor>
+      <name>Reference Genome</name>
+      <value>Homo_sapiens (1000Genomes_hs37d5)</value>
+    </descriptor>
+  </descriptors>
+</study>
+

@@ -1,0 +1,37 @@
+#!/usr/local/bin/perl -wT
+#########
+# Author:        rmp
+# Maintainer:    $Author: mg8 $
+# Created:       2007-03-28
+# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
+# Id:            $Id: npg 16549 2013-01-23 16:49:39Z mg8 $
+# Source:        $Source: /repos/cvs/webcore/SHARED_docs/cgi-bin/docrep,v $
+# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/cgi-bin/npg $
+
+my @npg_libs;
+BEGIN {
+  my $libs_string = $ENV{'NPG_PERL5LIB'};
+  if ($libs_string) {
+    my @libs = split /:/smx, $libs_string;
+    foreach my $l (@libs) {
+      my ($dtl) = $l =~ /([a-z0-9\/\._\-]+)/i;
+      if ($dtl) {push @npg_libs, $dtl;}
+    }
+  }
+}
+
+use strict;
+use warnings;
+use lib @npg_libs;
+use if !@npg_libs, SangerPaths => qw(core trackingnpg);
+
+use npg::controller;
+use npg::util;
+
+our $VERSION = do { my @r = (q$LastChangedRevision: 16549 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
+
+$ENV{'PATH'} = join q(:), qw(/bin /usr/bin /usr/local/bin);
+
+npg::controller->handler(npg::util->new());
+
+0;

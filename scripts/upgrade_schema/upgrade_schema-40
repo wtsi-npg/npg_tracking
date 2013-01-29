@@ -1,0 +1,22 @@
+CREATE TABLE `mail_run_project_followers` (
+  `id_mail_run_project_followers` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id_run` BIGINT(20) UNSIGNED NOT NULL,
+  `run_complete_sent` DATETIME,
+  `run_archived_sent` DATETIME,
+  PRIMARY KEY (`id_mail_run_project_followers`),
+  UNIQUE INDEX run_index USING BTREE(`id_run`),
+  CONSTRAINT `run_mail` FOREIGN KEY `run_mail` (`id_run`)
+    REFERENCES `run` (`id_run`)
+)
+ENGINE = InnoDB
+CHARACTER SET utf8;
+
+insert into mail_run_project_followers (run_complete_sent, id_run)
+select date, id_run from run_status where id_run_status_dict = 4 order by id_run;
+
+replace into mail_run_project_followers (run_complete_sent, run_archived_sent, id_run)
+select a.run_complete, b.run_archived, a.id_run from
+( select id_run, date AS run_complete from run_status where id_run_status_dict = 4  ) a ,
+( select id_run, date AS run_archived from run_status where id_run_status_dict = 12 ) b
+where a.id_run = b.id_run order by a.id_run;
+

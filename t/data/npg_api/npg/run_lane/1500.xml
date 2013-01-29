@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run_lane id_run_lane="1500" id_run="194" tile_count="330" tracks="3" id_project="173" auto_analyse="1" position="8" >
+ <run id_run="194" id_instrument="13" priority="1" actual_cycle_count="0" expected_cycle_count="36" is_paired="1" id_run_pair="0" />
+ <project id_project="1" projectname="FUSE" repository="/fuse/mpsafs/all" />
+</run_lane>

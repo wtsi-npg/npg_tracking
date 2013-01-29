@@ -1,0 +1,7 @@
+<!--begin $Id: run_status_create.tt2 2662 2008-08-06 12:23:37Z rmp $-->
+Run status updated ok.
+Please click <a href="[% SCRIPT_NAME %]/run/[% model.id_run %]">here</a> to continue.
+<script type="text/javascript">
+  document.location.href = '[% SCRIPT_NAME %]/run/[% model.id_run %]';
+</script>
+<!--end $Id: run_status_create.tt2 2662 2008-08-06 12:23:37Z rmp $-->

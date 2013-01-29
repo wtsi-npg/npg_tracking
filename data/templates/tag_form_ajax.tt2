@@ -1,0 +1,28 @@
+<div>
+  <input type="hidden" name="tagged_already" value="[% FOREACH tag = model.tags %][% tag.tag | html %] [% END %]" />
+  <label>Current Tags:&nbsp;&nbsp;</label><input id="tags" name="tags" type="text" size="64" value="[% FOREACH tag = model.tags %][% tag.tag | html %] [% END %]" onkeyup="initTags();" onclick="initTags();" />
+  <div id="suggestions" style="display:none;">Suggestions:&nbsp;&nbsp;<div id="suggests"></div></div>
+  <div>
+    <input type="submit" value="save tags" />
+    <input type="button" name="cancel" value="cancel" onclick="javascript:toggleTagForm(); return false;" />
+  </div>
+</div></form>
+<div id="existing_tag_selector" class="existing_tags">Available Tags:&nbsp;&nbsp;
+ [%- background = 1;
+     FOREACH tag = model.all_tags_assigned_to_type;
+     frequency =  tag.frequency; 
+ -%]
+ <a class="cloud[% IF background %] tag_bg[% background = 0; ELSE; background = 1; END %]" id="tag_[% tag.tag | html %]" href="javascript:toggleTag('[% tag.tag | html %]');">[% tag.tag | html %]</a>
+ [%- END -%]
+</div>
+<script type="text/javascript">
+new Form.Element.Observer(
+  "tags",
+  2,
+  function(el,value) {
+    el_to_send = el
+    tag_observation(el_to_send,value)
+  }
+);
+
+</script>

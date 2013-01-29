@@ -1,0 +1,68 @@
+<br/>
+ <a href="/cgi-bin/npg/search/">basic</a> | advanced
+
+<br/><br/>
+<fieldset>
+ <legend>Advanced search parameters</legend>
+ <form id="searchform" method="get" action="/cgi-bin/npg/search/;list_advanced" onsubmit="Element.show('spinner');dosubmit(); return false;">  <input type="hidden" name="query" value="1" />
+  <fieldset>
+  <legend>Search For</legend>
+    <input type="checkbox" name="run_lanes" value="1"  />Run Lanes
+    <input type="checkbox" name="run_status" value="1"  />Run Status
+    <input type="checkbox" name="status_date" value="1"  />Run Status Date
+    <input type="checkbox" name="projects" value="1"  />Projects
+    <input type="checkbox" name="annotations" value="1"  />Annotations
+    <input type="checkbox" name="batches" value="1"  />Batches
+    <input type="checkbox" name="instruments" value="1"  />Instruments
+    <input type="checkbox" name="run_tags" value="1"  />Run Tags
+  </fieldset>
+  <fieldset>
+  <legend>Search conditions</legend>
+    <div id="text_inputs">
+    Run id: <input size="4" type="text" name="id_run" value="" /><br />
+    Batch id: <input size="4" type="text" name="batch_id" value="" /><br />
+    Library Name: <input size="20" type="text" name="libraryname" value="" /><br />
+    Projectname: <input size="20" type="text" name="projectname" value="" /><br />
+    Tags (space separated): <input size="20" type="text" name="tags" value="" /><br />
+    Loader: <input size="20" type="text" name="loader" value="" /><br />
+    Instrument Name: <input size="20" type="text" name="instrument" value="" /><br />
+    Annotation contains: <input size="20" type="text" name="annotation" value="" /><br />
+    Run Lanes (separate by commas):  <input size="20" type="text" name="run_lane" value="" />
+    </div>
+    <div id="check_inputs">
+    Development: <input type="checkbox" name="dev" value="1"  />
+    Run paired: <input type="checkbox" name="paired" value="1"  />
+    Run non-paired: <input type="checkbox" name="non_paired" value="1"  />
+    </div>
+    <div class="dates">
+    <select name="status">
+      <option value="">Select a run status
+      <option value="run pending">Run Pending
+      <option value="run complete">Run Complete
+      <option value="run cancelled">Run Cancelled
+      <option value="run mirrored">Run Mirrored
+      <option value="run archived">Run Archived
+      <option value="run quarantined">Run Quarantined
+      <option value="analysis pending">Analysis Pending
+      <option value="analysis complete">Analysis Complete
+    </select>
+    between:
+    <input id="from" name="from" size="10" maxlength="10" type="text" value=""><img src="/icons/silk/calendar_view_month.png" onclick="showChooser(this, 'from', 'chooserSpan', 2000, 2050, 'Y-m-d', false);">
+<div id="chooserSpan" class="dateChooser select-free" style="display: none; visibility: hidden; width: 160px;"></div>
+    and
+    <input id="to" name="to" size="10" maxlength="10" type="text" value=""><img src="/icons/silk/calendar_view_month.png" onclick="showChooser(this, 'to', 'chooserSpan', 2000, 2050, 'Y-m-d', false);">
+<div id="chooserSpan" class="dateChooser select-free" style="display: none; visibility: hidden; width: 160px;"></div>
+  </fieldset>
+  <input type="submit" value="Search" />&nbsp;&nbsp;<input type="reset" value="Reset Form" />
+ </form>
+</fieldset>
+<br />
+<div id="tableresults"></div>
+<script type="text/javascript">
+
+function dosubmit( ) {
+  new Ajax.Updater( 'tableresults', '/search/;list_advanced_ajax', { method: 'get',
+    parameters: $('searchform').serialize(),onComplete:function(){ Element.hide('spinner');  }} );
+}
+
+</script>

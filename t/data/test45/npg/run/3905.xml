@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="3905" batch_id="4775" id_instrument="22" expected_cycle_count="216" actual_cycle_count="216" priority="1" id_run_pair="0" is_paired="0" is_dev="0" id_instrument_format="4" name="IL19_3905" loader="ajw" loading_date="2009-10-13" run_folder="091013_IL19_3905">
+ <instrument id_instrument="22" name="IL19" id_instrument_format="4" external_name="" serial="" iscurrent="0" />
+ <run_lanes><run_lane id_run_lane="30792" id_run="3905" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="1" />
+<run_lane id_run_lane="30793" id_run="3905" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="2" />
+<run_lane id_run_lane="30794" id_run="3905" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="3" />
+<run_lane id_run_lane="30795" id_run="3905" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="4" />
+<run_lane id_run_lane="30796" id_run="3905" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="5" />
+<run_lane id_run_lane="30797" id_run="3905" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="6" />
+<run_lane id_run_lane="30798" id_run="3905" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="7" />
+<run_lane id_run_lane="30799" id_run="3905" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="8" />
+</run_lanes>
+ <current_run_status id_run_status="55787" id_run="3905" date="2009-11-09 15:12:02" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_statuses>
+ <run_status id_run_status="55787" id_run="3905" date="2009-11-09 15:12:02" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_status id_run_status="55786" id_run="3905" date="2009-11-09 15:11:58" id_run_status_dict="12" id_user="7" username="pipeline" iscurrent="0" description="run archived" />
+ <run_status id_run_status="55411" id_run="3905" date="2009-11-04 14:19:09" id_run_status_dict="18" id_user="7" username="pipeline" iscurrent="0" description="archival in progress" />
+ <run_status id_run_status="55409" id_run="3905" date="2009-11-04 14:13:24" id_run_status_dict="17" id_user="54" username="pipeline" iscurrent="0" description="archival pending" />
+ <run_status id_run_status="55388" id_run="3905" date="2009-11-04 08:58:12" id_run_status_dict="19" id_user="7" username="pipeline" iscurrent="0" description="qc review pending" />
+ <run_status id_run_status="55384" id_run="3905" date="2009-11-04 04:41:40" id_run_status_dict="9" id_user="7" username="pipeline" iscurrent="0" description="analysis complete" />
+ <run_status id_run_status="55324" id_run="3905" date="2009-11-03 12:02:41" id_run_status_dict="7" id_user="7" username="pipeline" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="55323" id_run="3905" date="2009-11-03 11:49:40" id_run_status_dict="6" id_user="54" username="pipeline" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="54998" id_run="3905" date="2009-10-29 12:25:12" id_run_status_dict="7" id_user="7" username="pipeline" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="54994" id_run="3905" date="2009-10-29 12:17:47" id_run_status_dict="6" id_user="54" username="pipeline" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="54655" id_run="3905" date="2009-10-25 01:33:31" id_run_status_dict="7" id_user="7" username="pipeline" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="54654" id_run="3905" date="2009-10-25 01:28:08" id_run_status_dict="6" id_user="7" username="pipeline" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="54653" id_run="3905" date="2009-10-25 01:28:05" id_run_status_dict="11" id_user="7" username="pipeline" iscurrent="0" description="run mirrored" />
+ <run_status id_run_status="54632" id_run="3905" date="2009-10-24 21:40:30" id_run_status_dict="4" id_user="7" username="pipeline" iscurrent="0" description="run complete" />
+ <run_status id_run_status="54060" id_run="3905" date="2009-10-13 14:09:30" id_run_status_dict="2" id_user="7" username="pipeline" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="54057" id_run="3905" date="2009-10-13 13:52:05" id_run_status_dict="1" id_user="33" username="pipeline" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="5965" id_run="3905" id_annotation="6272" date="2009-10-13 14:04:19" id_user="33" username="ajw" comment="Possible problems with Z stage motor causing random out of focus first base images. Consulted Illumnia, should be ok to go with the run" attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="6018" id_run="3905" id_annotation="6325" date="2009-10-19 15:13:19" id_user="33" username="ajw" comment="Possible problems with Z stage motor causing random out of focus first base images" attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="6109" id_run="3905" id_annotation="6418" date="2009-10-29 12:17:36" id_user="54" username="svvd" comment="Requeued for analysis - failed probably due to home directory lockup 2 days ago." attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="6171" id_run="3905" id_annotation="6481" date="2009-11-03 11:50:44" id_user="54" username="svvd" comment="Requeued for analysis - failed because this Phix wasn&#x27;t registered as control!" attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="6185" id_run="3905" id_annotation="6495" date="2009-11-04 14:12:30" id_user="54" username="svvd" comment="108 cyc PE runs: PASS. Yield of 26.9 Gbases. %Error rates of 1.6 (R1) and 2.6 (R2). " attachment_name="" run_current_ok="" current_cycle="" />
+ </annotations>
+ <tags>
+   <tag id_tag="17" description="paired_read" />
+   <tag id_tag="16" description="rta" />
+ </tags>
+</run>

@@ -1,0 +1,23 @@
+[% IF model.query %]
+[% IF model.advanced_search %]
+<table id="results" class="sortable zebra">
+ <caption>Query Results</caption>
+ <thead>
+  <tr>
+   [% FOREACH key = model.result_keys %]
+    <th>[% key %]</th>
+   [% END %]
+  </tr>
+ </thead>
+ <tbody>
+  [% FOREACH result = model.advanced_search %]
+  [% count = 0 %]
+  <tr>
+   [% FOREACH item = result %]<td>[% IF count == 0 %]<a href="[% SCRIPT_NAME %]/run/[% item %]">[% END %][% item %][% IF count == 0 %]</a>[% END %]</td>[% count = count + 1 %][% END %]
+  </tr>
+  [% END %]
+ </tbody>
+</table>
+
+[% END %]
+[% END %]

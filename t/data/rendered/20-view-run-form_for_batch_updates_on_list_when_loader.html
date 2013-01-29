@@ -1,0 +1,71 @@
+<form method="post" action="/cgi-bin/npg/run/group;update_statuses">
+<table id="runs" class="sortable zebra">
+ <caption>Runs</caption>
+ <thead>
+  <tr>
+   <th>Update</th>
+   <th>Name</th>
+   <th>Pair</th>
+   <th>Flowcell / Batch Id</th>
+   <th>Expected Cycles</th>
+   <th>Actual Cycles</th>
+   <th>Priority</th>
+   <th>Prdn</th>
+   <th>Status</th>
+   <th>Status Date</th>
+   <th>Status Operator</th>
+   <th>Loader</th>
+   <th>Loading Date</th>
+  </tr>
+ </thead>
+ <tbody>
+
+<tr>
+ <th><input type="checkbox" class="id_run_checkbox" name="id_runs" value="300" /></th>
+ <td><span style="display:none">0300</span><a href="/cgi-bin/npg/run/300">IL_TEST_0300</a></td>
+ <td>
+ <a href="/cgi-bin/npg/run/306">IL_TEST_0306</a>
+
+ </td>
+ <td><a href="http://psd-dev.internal.sanger.ac.uk:6700/batches/301">301</a></td>
+ <td>303</td>
+ <td>304</td>
+ <td>305</td>
+ <td><img src="/icons/silk/tick.png" alt="tick.png" title="yes" /></td>
+ <td></td>
+ <td></td>
+ <td></td>
+ <td>test_loader</td>
+ <td>2008-01-01</td>
+ <td>[<a href="/cgi-bin/npg/run/300">Run Details</a>]</td>
+</tr>
+
+<tr>
+   <td id="all_run_status_actions">
+    <a id="all_run_status_update" href="#" onClick="new_form('all_run_status'); return false;"><img src="/icons/silk/pencil_add.png" style="height:16px;width:16px;" alt="modify many run_status" title="modify many run_status" /></a>
+    <img id="all_run_status_spinner" style="display:none;height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />
+    <a style="display:none;" id="all_run_status_cancel" href="#" onClick="cancel_form('all_run_status'); return false;"><img src="/icons/silk/cancel.png" style="height:16px;width:16px;" alt="cancel" title="cancel" /></a>
+    <a style="display:none;" id="all_run_status_update_extra" href="#" onClick="new_form_extra('all_run_status'); return false;"><img src="/icons/silk/pencil_add.png" style="height:16px;width:16px;" alt="modify many run_status" title="modify many run_status" /></a>
+   </td>
+   <td style="text-align:left;" colspan="5"><div id="new_all_run_status"></div></td>
+  </tr>
+ </tbody>
+</table>
+<script type="text/javascript">
+function new_form(type) {
+ var el      = "new_" + type;
+ var spinner = type + "_spinner";
+ var update  = type + "_update";
+ var cancel  = type + "_cancel";
+ Element.show(spinner);
+ Element.hide(update);
+ new Ajax.Updater(el,'/cgi-bin/npg/run/;list_'+type+'_ajax',
+ {method:'get',
+  onComplete:function(){
+   Element.show(el);
+   new Effect.Highlight(el);
+   Element.hide(spinner);
+   Element.show(cancel);
+ }});
+}
+</script>

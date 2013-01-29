@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batch>
+  <id>19158</id>
+  <status>released</status>
+  <lanes>
+    <lane position="1" id="6148580" priority="0">
+      <pool id="5542248" name="01LP _CGP_RS_09-07-2012" request_id="4685891" qc_state="pass">
+        <sample sample_id="1448210" library_id="5542245" library_name="PD9926c_rs 5542245" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="121">
+            <index>144</index>
+            <expected_sequence>CCTGAGCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448211" library_id="5542246" library_name="PD9927c_rs 5542246" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="127">
+            <index>145</index>
+            <expected_sequence>CAGGCTAA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448212" library_id="5542247" library_name="PD9928c_rs 5542247" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="131">
+            <index>146</index>
+            <expected_sequence>CGGAGGAA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448208" library_id="5542243" library_name="PD9924c_rs 5542243" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="254">
+            <index>166</index>
+            <expected_sequence>AGGATTCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448209" library_id="5542244" library_name="PD9925c_rs 5542244" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="259">
+            <index>167</index>
+            <expected_sequence>AACTGGCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="6057120">
+        <sample sample_id="1255141" library_id="4405872" library_name="PhiX (10Jan12)" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="2" id="6148581" priority="0">
+      <pool id="5542248" name="01LP _CGP_RS_09-07-2012" request_id="4685892" qc_state="pass">
+        <sample sample_id="1448210" library_id="5542245" library_name="PD9926c_rs 5542245" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="121">
+            <index>144</index>
+            <expected_sequence>CCTGAGCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448211" library_id="5542246" library_name="PD9927c_rs 5542246" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="127">
+            <index>145</index>
+            <expected_sequence>CAGGCTAA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448212" library_id="5542247" library_name="PD9928c_rs 5542247" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="131">
+            <index>146</index>
+            <expected_sequence>CGGAGGAA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448208" library_id="5542243" library_name="PD9924c_rs 5542243" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="254">
+            <index>166</index>
+            <expected_sequence>AGGATTCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448209" library_id="5542244" library_name="PD9925c_rs 5542244" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="259">
+            <index>167</index>
+            <expected_sequence>AACTGGCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="6057120">
+        <sample sample_id="1255141" library_id="4405872" library_name="PhiX (10Jan12)" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="3" id="6148582" priority="0">
+      <pool id="5542248" name="01LP _CGP_RS_09-07-2012" request_id="4685893" qc_state="pass">
+        <sample sample_id="1448210" library_id="5542245" library_name="PD9926c_rs 5542245" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="121">
+            <index>144</index>
+            <expected_sequence>CCTGAGCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448211" library_id="5542246" library_name="PD9927c_rs 5542246" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="127">
+            <index>145</index>
+            <expected_sequence>CAGGCTAA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448212" library_id="5542247" library_name="PD9928c_rs 5542247" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="131">
+            <index>146</index>
+            <expected_sequence>CGGAGGAA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448208" library_id="5542243" library_name="PD9924c_rs 5542243" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="254">
+            <index>166</index>
+            <expected_sequence>AGGATTCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448209" library_id="5542244" library_name="PD9925c_rs 5542244" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="259">
+            <index>167</index>
+            <expected_sequence>AACTGGCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="6057120">
+        <sample sample_id="1255141" library_id="4405872" library_name="PhiX (10Jan12)" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="4" id="6148583" priority="0">
+      <pool id="5542248" name="01LP _CGP_RS_09-07-2012" request_id="4685894" qc_state="pass">
+        <sample sample_id="1448210" library_id="5542245" library_name="PD9926c_rs 5542245" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="121">
+            <index>144</index>
+            <expected_sequence>CCTGAGCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448211" library_id="5542246" library_name="PD9927c_rs 5542246" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="127">
+            <index>145</index>
+            <expected_sequence>CAGGCTAA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448212" library_id="5542247" library_name="PD9928c_rs 5542247" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="131">
+            <index>146</index>
+            <expected_sequence>CGGAGGAA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448208" library_id="5542243" library_name="PD9924c_rs 5542243" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="254">
+            <index>166</index>
+            <expected_sequence>AGGATTCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample sample_id="1448209" library_id="5542244" library_name="PD9925c_rs 5542244" library_type="No PCR" study_id="2236" project_id="764" consent_withdrawn="false">
+          <tag tag_id="259">
+            <index>167</index>
+            <expected_sequence>AACTGGCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="6057120">
+        <sample sample_id="1255141" library_id="4405872" library_name="PhiX (10Jan12)" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="5" id="6148585" priority="0">
+      <pool id="5860396" name="05TMDAMKL_CGP_WES_07_09_2012" request_id="4685897" qc_state="pass">
+        <sample sample_id="1477624" library_id="5860392" library_name="PD8952b2_pd 5860392" library_type="Agilent Pulldown" study_id="1713" project_id="730" consent_withdrawn="false">
+          <tag tag_id="184">
+            <index>12</index>
+            <expected_sequence>CTTGTACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample sample_id="1477625" library_id="5860393" library_name="PD8953b2_pd 5860393" library_type="Agilent Pulldown" study_id="1713" project_id="730" consent_withdrawn="false">
+          <tag tag_id="189">
+            <index>13</index>
+            <expected_sequence>TGGTTGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample sample_id="1477626" library_id="5860394" library_name="PD8956b2_pd 5860394" library_type="Agilent Pulldown" study_id="1713" project_id="730" consent_withdrawn="false">
+          <tag tag_id="195">
+            <index>14</index>
+            <expected_sequence>TCTCGGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample sample_id="1477627" library_id="5860395" library_name="PD9933b_pd 5860395" library_type="Agilent Pulldown" study_id="1713" project_id="730" consent_withdrawn="false">
+          <tag tag_id="200">
+            <index>15</index>
+            <expected_sequence>TAAGCGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="6057120">
+        <sample sample_id="1255141" library_id="4405872" library_name="PhiX (10Jan12)" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="6" id="6148584" priority="0">
+      <library id="6017341" name="PD10008a_rs 6017341" request_id="4685895" qc_state="pass">
+        <sample sample_id="1497902" library_id="6017341" library_name="PD10008a_rs 6017341" library_type="No PCR" study_id="401" project_id="1024" consent_withdrawn="false">
+          <insert_size from="300" to="500"/>
+        </sample>
+      </library>
+      <hyb_buffer id="6057120">
+        <sample sample_id="1255141" library_id="4405872" library_name="PhiX (10Jan12)" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="7" id="6148587" priority="0">
+      <pool id="6101246" name="82_241012_2" request_id="4710895" qc_state="fail">
+        <sample sample_id="1503343" library_id="6093519" library_name="her7_mut1 6093519" library_type="qPCR only" study_id="82" project_id="82" consent_withdrawn="false">
+          <tag tag_id="144">
+            <index>1</index>
+            <expected_sequence>ATCACGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="70" to="270"/>
+        </sample>
+        <sample sample_id="1503344" library_id="6093520" library_name="her7_wt1 6093520" library_type="qPCR only" study_id="82" project_id="82" consent_withdrawn="false">
+          <tag tag_id="149">
+            <index>2</index>
+            <expected_sequence>CGATGTTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="70" to="270"/>
+        </sample>
+        <sample sample_id="1503345" library_id="6093521" library_name="her7_mut2 6093521" library_type="qPCR only" study_id="82" project_id="82" consent_withdrawn="false">
+          <tag tag_id="153">
+            <index>3</index>
+            <expected_sequence>TTAGGCAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="70" to="270"/>
+        </sample>
+        <sample sample_id="1503346" library_id="6093522" library_name="her7_wt2 6093522" library_type="qPCR only" study_id="82" project_id="82" consent_withdrawn="false">
+          <tag tag_id="158">
+            <index>4</index>
+            <expected_sequence>TGACCACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="70" to="270"/>
+        </sample>
+        <sample sample_id="1503347" library_id="6093523" library_name="her7_mut3 6093523" library_type="qPCR only" study_id="82" project_id="82" consent_withdrawn="false">
+          <tag tag_id="162">
+            <index>5</index>
+            <expected_sequence>ACAGTGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="70" to="270"/>
+        </sample>
+        <sample sample_id="1503348" library_id="6093524" library_name="her7_wt3 6093524" library_type="qPCR only" study_id="82" project_id="82" consent_withdrawn="false">
+          <tag tag_id="167">
+            <index>6</index>
+            <expected_sequence>GCCAATGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="70" to="270"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="6057120">
+        <sample sample_id="1255141" library_id="4405872" library_name="PhiX (10Jan12)" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="8" id="6148586" priority="0">
+      <pool id="6101345" name="82_241012_3" request_id="4710894" qc_state="pass">
+        <sample sample_id="1503349" library_id="6093525" library_name="dag1_mut1 6093525" library_type="qPCR only" study_id="82" project_id="82" consent_withdrawn="false">
+          <tag tag_id="144">
+            <index>1</index>
+            <expected_sequence>ATCACGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="70" to="270"/>
+        </sample>
+        <sample sample_id="1503350" library_id="6093526" library_name="dag1_wt1 6093526" library_type="qPCR only" study_id="82" project_id="82" consent_withdrawn="false">
+          <tag tag_id="149">
+            <index>2</index>
+            <expected_sequence>CGATGTTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="70" to="270"/>
+        </sample>
+        <sample sample_id="1503351" library_id="6093527" library_name="dag1_mut2 6093527" library_type="qPCR only" study_id="82" project_id="82" consent_withdrawn="false">
+          <tag tag_id="153">
+            <index>3</index>
+            <expected_sequence>TTAGGCAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="70" to="270"/>
+        </sample>
+        <sample sample_id="1503352" library_id="6093528" library_name="dag1_wt2 6093528" library_type="qPCR only" study_id="82" project_id="82" consent_withdrawn="false">
+          <tag tag_id="158">
+            <index>4</index>
+            <expected_sequence>TGACCACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="70" to="270"/>
+        </sample>
+        <sample sample_id="1503353" library_id="6093529" library_name="dag1_mut3 6093529" library_type="qPCR only" study_id="82" project_id="82" consent_withdrawn="false">
+          <tag tag_id="162">
+            <index>5</index>
+            <expected_sequence>ACAGTGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="70" to="270"/>
+        </sample>
+        <sample sample_id="1503354" library_id="6093530" library_name="dag1_wt3 6093530" library_type="qPCR only" study_id="82" project_id="82" consent_withdrawn="false">
+          <tag tag_id="167">
+            <index>6</index>
+            <expected_sequence>GCCAATGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="70" to="270"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="6057120">
+        <sample sample_id="1255141" library_id="4405872" library_name="PhiX (10Jan12)" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+  </lanes>
+</batch>

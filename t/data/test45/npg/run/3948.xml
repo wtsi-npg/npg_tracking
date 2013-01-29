@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="3948" batch_id="4861" id_instrument="10" expected_cycle_count="115" actual_cycle_count="115" priority="1" id_run_pair="0" is_paired="0" is_dev="0" id_instrument_format="4" name="IL7_3948" loader="sh2" loading_date="2009-10-21" run_folder="091021_IL7_3948">
+ <instrument id_instrument="10" name="IL7" id_instrument_format="4" external_name="EAS122" serial="" iscurrent="0" />
+ <run_lanes><run_lane id_run_lane="31136" id_run="3948" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="1" />
+<run_lane id_run_lane="31137" id_run="3948" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="2" />
+<run_lane id_run_lane="31138" id_run="3948" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="3" />
+<run_lane id_run_lane="31139" id_run="3948" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="4" />
+<run_lane id_run_lane="31140" id_run="3948" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="5" />
+<run_lane id_run_lane="31141" id_run="3948" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="6" />
+<run_lane id_run_lane="31142" id_run="3948" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="7" />
+<run_lane id_run_lane="31143" id_run="3948" tile_count="120" tracks="2" id_project="1" projectname="FUSE" auto_analyse="1" position="8" />
+</run_lanes>
+ <current_run_status id_run_status="55254" id_run="3948" date="2009-11-02 11:37:40" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_statuses>
+ <run_status id_run_status="55254" id_run="3948" date="2009-11-02 11:37:40" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_status id_run_status="55253" id_run="3948" date="2009-11-02 11:37:35" id_run_status_dict="12" id_user="7" username="pipeline" iscurrent="0" description="run archived" />
+ <run_status id_run_status="55093" id_run="3948" date="2009-10-30 14:41:10" id_run_status_dict="18" id_user="7" username="pipeline" iscurrent="0" description="archival in progress" />
+ <run_status id_run_status="55092" id_run="3948" date="2009-10-30 14:29:56" id_run_status_dict="17" id_user="54" username="pipeline" iscurrent="0" description="archival pending" />
+ <run_status id_run_status="54958" id_run="3948" date="2009-10-28 22:24:05" id_run_status_dict="19" id_user="7" username="pipeline" iscurrent="0" description="qc review pending" />
+ <run_status id_run_status="54946" id_run="3948" date="2009-10-28 19:56:59" id_run_status_dict="9" id_user="7" username="pipeline" iscurrent="0" description="analysis complete" />
+ <run_status id_run_status="54884" id_run="3948" date="2009-10-28 05:42:41" id_run_status_dict="7" id_user="7" username="pipeline" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="54883" id_run="3948" date="2009-10-28 05:38:56" id_run_status_dict="6" id_user="7" username="pipeline" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="54882" id_run="3948" date="2009-10-28 05:38:54" id_run_status_dict="11" id_user="7" username="pipeline" iscurrent="0" description="run mirrored" />
+ <run_status id_run_status="54880" id_run="3948" date="2009-10-28 03:53:48" id_run_status_dict="4" id_user="7" username="pipeline" iscurrent="0" description="run complete" />
+ <run_status id_run_status="54458" id_run="3948" date="2009-10-21 11:51:15" id_run_status_dict="2" id_user="7" username="pipeline" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="54457" id_run="3948" date="2009-10-21 11:44:02" id_run_status_dict="1" id_user="56" username="pipeline" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="6022" id_run="3948" id_annotation="6329" date="2009-10-21 11:24:55" id_user="56" username="sh2" comment="lowish cluster numbers as per sybr green. 
+" attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="6132" id_run="3948" id_annotation="6442" date="2009-10-30 14:28:33" id_user="54" username="svvd" comment="54 cyc PE runs: Lane 6 - FAIL; Rest - PASS. Yield of 10.1 Gbases. %Error rates of 0.7 (R1) and 1.3 (R2). Lanes 4 &#x26; 5 are dense, but look okay. lane 6 is way too sparse (also poor %PF) and has very poor yield, but the quality looks good. Other sample lanes are also sparse, but have sufficient yield.  " attachment_name="" run_current_ok="" current_cycle="" />
+ </annotations>
+ <tags>
+   <tag id_tag="20" description="multiplex" />
+   <tag id_tag="17" description="paired_read" />
+   <tag id_tag="16" description="rta" />
+ </tags>
+</run>

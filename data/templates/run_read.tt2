@@ -1,0 +1,201 @@
+[%- annotation_writer = 0;
+    IF (requestor.is_member_of('annotators') || requestor.is_member_of('engineers')
+       || requestor.is_member_of('loaders') || requestor.is_member_of('manual_qc'));
+      annotation_writer = 1;
+    END;
+
+    run_folder = model.run_folder;
+    folder_path_glob = model.folder_path_glob;
+    IF folder_path_glob; run_folder = folder_path_glob _ run_folder; END;
+
+    batch_id = 0; TRY; batch_id=model.batch_id; END;
+    id_run = model.id_run;
+    earliest_id = (model.is_paired && model.id_run_pair && (model.id_run_pair < id_run)) ? model.id_run_pair : id_run;
+
+    is_miseq_instrument = model.instrument.is_miseq_instrument
+    flabel = is_miseq_instrument ? 'Reagent kit id' : 'Flowcell id';
+ -%]
+<div>
+<div class="lfloat roundborder">
+<div class="page_title"[% IF model.current_run_status.description == 'run pending'; st = ' style="color: #FF0000"'; st; END; %]>[% model.run_folder %]</div>
+<table class="npg_nbsp" id="listed_run_info">
+  <tr><th>Name</th><td><b>[% model.name %]</b></td></tr>
+[%- IF model.run_pair.id_run -%]
+ <tr><th>Paired run</th><td><a href="[% SCRIPT_NAME %]/run/[% model.run_pair.id_run %]">[% model.run_pair.name %]</a></td></tr>
+[%- ELSE -%]
+  [%- IF model.is_paired -%]
+ <tr><th>First-run of pair</th><td>&nbsp;</td></tr>
+  [%- ELSE -%]
+ <tr><th>Single run</th><td>one runfolder, [% IF model.is_paired_read == 1 %]paired read[% ELSIF model.is_paired_read == 0 %]single read [% ELSE %]data not available about single or paired read[% END %]</td></tr>
+  [%- END -%]
+[%- END -%]
+  <tr><th>Batch id</th><td>[% IF batch_id %]<a href="http://psd-production.internal.sanger.ac.uk:6600/batches/[% batch_id %]">[% batch_id %]</a>[% ELSE %]unknown[% END %]</td></tr>
+[% IF model.flowcell_id %]<tr><th>[% flabel %]</th><td>[% model.flowcell_id %]</td></tr>[% END -%]
+
+  <tr><th>Priority</th><td>
+[%- IF model.priority < 9 && requestor.is_member_of('manual_qc') || requestor.is_member_of('approvers') -%]
+  <form method="post" action="[% SCRIPT_NAME %]/run/[% id_run %];update"><div>
+    <input type="hidden" name="id_run" value="[% id_run %]" />
+    <span class="value_before_submit_button">[% model.priority %]</span>
+    <input type="hidden" name="priority" value="[% model.priority + 1 %]" />
+    <input type="submit" value="increase" />
+  </div></form>
+[%- ELSE -%]
+  [%- model.priority -%]
+[%- END %]</td></tr>
+  <tr><th>Instrument / platform</th><td><a href="[% SCRIPT_NAME %]/instrument/[% model.id_instrument %]">[% model.instrument.name %]</a>[% IF model.hiseq_slot %] Slot [% model.hiseq_slot %][% END %] / [% model.instrument_format.model %]</td></tr>
+  <tr><th>Cycle count actual / expected</th><td>[% model.actual_cycle_count %] / [% model.expected_cycle_count %]</td></tr>
+  <tr><th>Current status</th><td>
+[%- 
+current_status = model.current_run_status.description; 
+IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in progress') ) && requestor.is_member_of( 'manual_qc' ) -%]
+<form id="manual_qc" method="post" action="[% SCRIPT_NAME %]/run_status/;create"><div>
+  <input type="hidden" name="id_run" value="[% model.id_run %]" />
+  [% IF current_status == 'qc in progress';
+       FOREACH rsd = model.run_status_dict.run_status_dicts;
+         IF rsd.description == 'archival pending' -%]
+  <input type="hidden" name="id_run_status_dict" value="[% rsd.id_run_status_dict %]" />
+         [%- END -%]
+       [%- END -%]
+  <span class="value_before_submit_button">[% model.current_run_status.description %]</span><input type="submit" value="qc finished" id="submit_manual_qc_finish" style="display:none" />
+  [%- ELSE -%]
+    [%- FOREACH rsd = model.run_status_dict.run_status_dicts;
+          IF rsd.description == 'qc in progress' -%]
+  <input type="hidden" name="id_run_status_dict" value="[% rsd.id_run_status_dict %]" />
+          [%- END -%]
+    [%- END -%]
+  <span class="value_before_submit_button">[% model.current_run_status.description %]</span><input type="submit" value="start qc" id="submit_manual_qc_start" />
+  [%- END -%]
+</div></form>
+[%- ELSE -%]
+ [% model.current_run_status.description %]
+[%- END %]</td></tr>
+[%- status_changer = model.current_run_status.user.username;
+    real_person = status_changer != 'srpipe' && status_changer != 'pipeline' ? 1 : 0
+ -%]
+ <tr><th>Status changed by</th><td>[% IF real_person %]<a href="https://helix.wtgc.org/people?uid=[% status_changer %]">[% END; status_changer; IF real_person; %]</a>[% END %] [% model.current_run_status.date %]</td></tr>
+</table>
+</div>
+
+<div class="rfloat"><!-- open right floating panels div -->
+
+<div id="team_container" class="rfloat team-[% USE String(model.team); String.lower %]">
+<p class="team_name">team '[% model.team %]'</p>
+<div class="roundborder">[% PROCESS run_verified.tt2 %]</div>
+</div>
+<br style="clear:right" />
+
+<div id="run_menu_container">
+
+[%- IF model.is_in_staging -%]
+<div class="run_menu rfloat">
+<ul class="inline">
+   [%- IF !is_miseq_instrument && model.has_tag_with_value('rta') -%]
+   <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/locate_runfolder/[% run_folder %]/Data/Status.htm?redir">RTA Status</a></li>
+   [%- END -%]
+   <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/locate_runfolder/[% run_folder %]?redir">Run Folder</a></li>
+   [%- IF model.has_analysis_in_progress -%]
+   <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/locate_runfolder/[% run_folder %]/latest?redir">Latest Analysis</a></li>
+   <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/locate_runfolder/[% run_folder %]/ivc?redir">Latest IVC</a></li>
+   <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/locate_runfolder/[% run_folder %]/Latest_Summary/archive/qc/tileviz?redir">Tileviz</a></li>
+   [%- END -%]
+</ul>
+</div>
+<br style="clear:right" />
+[%- END -%]
+
+<div class="run_menu rfloat">
+<ul class="inline">
+  <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/mpsa_image/[% id_run %]/1/1/[% IF !is_miseq_instrument; '110'; END %]1.html">Image Browser</a></li>
+[%- IF !is_miseq_instrument && batch_id %]
+  <li><a class="npg_menu" href="http://psd-production.internal.sanger.ac.uk:6900/batches/search?id=[% batch_id %]">SybrGreen Images</a></li>
+[% END -%]
+ <li><a class="npg_menu" href="http://intweb.sanger.ac.uk/cgi-bin/prodsoft/npg_qc/npg_qc/summary/[% earliest_id %]">NPG QC</a></li>
+[%- IF model.has_analysis_in_progress %]
+ <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:1959/checks/runs/[% earliest_id %]">NPG SeqQC</a></li>
+[% END -%]
+</ul>
+</div>
+<br style="clear:right" />
+</div>
+
+<br style="clear:right" />
+</div><!-- close right floating panels div -->
+
+<div class="clearfloats"></div>
+</div><!-- close all panels div -->
+
+<div id="ss_ajax_status" ></div>
+<div id="ss_ajax_warning" style="display:none;background:#faa;width:600px;padding:5px;"></div>
+<div id="run_lane_tag_form" style="display:none;"></div>
+
+<div id="lanes_description" class="widgets_group">
+<table id="run_lanes" class="zebra">
+ <thead>
+  <tr>
+   <th>Lane</th>
+   <th>Tags</th>
+   <th>&nbsp;</th>
+  </tr>
+ </thead>
+ <tbody>
+[% FOREACH run_lane = model.run_lanes %]
+<tr>
+ <td>[% run_lane.position %]</td>
+ <td>[% IF requestor.is_member_of('manual_qc') -%]
+<a href="#" onclick="runLaneTagForm('[% run_lane.id_run_lane %]','[% run_lane.position %]','[% FOREACH tag = run_lane.tags %][% tag.tag %] [% END %]');return false;">Add</a> 
+[%- END %][% FOREACH tag = run_lane.tags %][% tag.tag | html %] [% END -%]
+</td>
+ <td><a href="[% SCRIPT_NAME %]/run_lane/[% run_lane.id_run_lane %]">View Lane</a></td>
+</tr>
+[% END %]
+ </tbody>
+</table>
+</div>
+
+<div class="widgets_group">
+<div id="tabs">
+  <div id="tag_tab" class="tab noncurrent"><a href="javascript:void(toggle_information('tag_tab'));">Tags</a></div>
+  <div id="status_history_tab" class="tab noncurrent"><a href="javascript:void(toggle_information('status_history_tab'));">Status History</a></div>
+  <div id="annotation_tab" class="tab current"><a href="javascript:void(toggle_information('annotation_tab'));">Annotations</a></div>
+  <div class="clearfloats"></div>
+</div>
+
+<div id="tags_box" class="info_box" style="display:none;">
+  <div id="current_tags">
+    [% FOREACH tag = model.tags %][% tag.tag | html %] [% END %]
+[%- IF requestor.is_member_of('annotators') -%]
+    <div><a href="javascript:toggleTagForm();javascript:initTags();">Add Tags</a></div>
+  </div>
+  <div id="tagger_form" style="display:none;">
+    <form id="tag_form" method="post" action="[% SCRIPT_NAME %]/run/[% model.id_run %];update_tags">
+    [% PROCESS tag_form_ajax.tt2 %]
+  </div>
+[%- ELSE -%]
+  </div>
+[%- END -%]
+</div>
+
+<div id="status" class="info_box" style="display:none;">
+[% PROCESS run_status_table.tt2 %]
+</div>
+
+<div id="annotation" class="info_box">
+[% PROCESS run_annotation_tables.tt2 %]
+</div>
+</div>
+
+<script type="text/javascript">
+  document.title='[% model.name %] Run Details';
+  var rAndDCodes = [% model.ajax_array_cost_group_values('R&D') %];
+  var id_run = [% model.id_run %];
+  var batch_id = [% model.batch_id %];
+  Event.observe(window,'load',things_to_do_on_load(id_run, batch_id, rAndDCodes));
+
+  function runLaneTagForm(id_run_lane, position, existing_tags) {
+    var form_div = $('run_lane_tag_form');
+    form_div.update('<form method="post" id="run_lane_tag_form_' + id_run_lane + '" action="[% SCRIPT_NAME %]/run_lane/' + id_run_lane + ';update_tags"><input type="hidden" name="tagged_already" value="' + existing_tags + '" /><fieldset width="50%">  <legend>Lane ' + position + ' tags</legend>  <input id="tags_lane_' + id_run_lane + '" name="tags" type="text" size="64" value="' + existing_tags + '" onkeyup="initTags();" onclick="initTags();" /><fieldset id="suggestions" style="display:none;">  <legend>Suggestions</legend>  <div id="suggests"></div></fieldset><div id="run_lane_atg_submit"><input type="submit" value="save" /><input type="button" name="cancel" value="cancel" onclick="closeRunLaneTagForm();return false;"></div></fieldset></form><fieldset>  <legend>Available lane tags</legend><div id="existing_tag_selector_lane_' + id_run_lane + '" class="existing_tags"> [% SET background = 1 %][% tag_counter = 0 %][% FOREACH tag = model.run_lanes.0.all_tags_assigned_to_type %][% IF tag_counter == 10 %]<br />[% tag_counter = 0%][% ELSE %][% tag_counter = tag_counter + 1 %][% END %]<a class="cloud[% IF background %] tag_bg[% background = 0 %][% ELSE %][% background = 1 %][% END %]" id="[% tag.tag | html %]" href="javascript:toggleTag(' + "'" + '[% tag.tag | html %]' + "'" + ',' + "'" + 'lane_' + id_run_lane + "'" + ');">[% tag.tag | html %]</a> [% END %]</div></fieldset>');
+    form_div.show();
+    initTags('lane_' + id_run_lane);
+  }
+</script>

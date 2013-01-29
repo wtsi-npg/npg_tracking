@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<instruments>[% FOREACH instrument = model.instruments %]
+<instrument id_instrument="[% instrument.id_instrument %]" name="[% instrument.name %]" id_instrument_format="[% instrument.id_instrument_format %]" external_name="[% instrument.external_name %]" serial="[% instrument.serial %]" iscurrent="[% instrument.iscurrent %]" current_instrument_status_description="[% instrument.current_instrument_status.instrument_status_dict.description %]" ipaddr="[% instrument.ipaddr %]" instrument_comp="[% instrument.instrument_comp %]" mirroring_host="[% instrument.mirroring_host %]" staging_dir="[% instrument.staging_dir %]" model="[% instrument.model %]">
+<designations>[% FOREACH designation = instrument.designations %]<designation id_designation="[% designation.id_designation %]" description="[% designation.description | xml_entity %]" />
+[% END %]</designations></instrument>
+[% END %]</instruments>

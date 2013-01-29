@@ -1,0 +1,591 @@
+[%
+   this_instr_id = model.id_instrument;
+   flabel = this_instr_id && model.instrument.is_miseq_instrument ? 'Reagent kit' : 'Flowcell';
+%]
+<form id="run_create_form" name="run_create_form" method="post" action="[% SCRIPT_NAME %]/run" onsubmit="return check_run();">
+<input type="hidden" value="no" id="id_run_pair" name="id_run_pair" />
+<input type="hidden" id="expected_cycle_count" name="expected_cycle_count" value="0" />
+<input type="hidden" id="priority" name="priority" value="1" />
+<input type="hidden" name="library_names" id="library_names" />
+<input type="hidden" name="study_names" id="study_names" />
+
+<div class="lfloat roundborder">
+<div class="page_title">New run by team
+<select id="team" name="team">
+[% known_team=model.team;
+   # Pre-select teams for now; default to joint
+   IF !known_team;
+     known_team = requestor.is_member_of('r+d') ? 'RAD' : 'joint';
+   END;
+   IF !known_team %]<option value="empty">Select team</option>[% END %]
+[% FOREACH team=model.teams %]<option value="[% team %]"[% IF known_team && known_team == team %] selected="selected"[% END %]>[% team %]</option>[% END %]
+</select></div>
+
+ <table>
+ <tr>
+  <th id="flowcell"><span id="label4flowcell_id">[% flabel %] id</span></th>
+  <td><input type="text" name="flowcell_id" id="flowcell_id" value="[% model.flowcell_id %]" size="9" />
+   <input id="validate_batch" value="Check [% USE String flabel; String.lower; %] or batch id" type="button" />
+  </td>
+ </tr>
+ <tr id="batch">
+   <th>Batch id</th>
+   <td><input type="text" name="batch_id" id="batch_id" value="[% model.batch_id %]" size="9"/></td>
+ </tr>
+ <tr id="paired_read_selecter">
+   <th>Paired read?</th>
+   <td><input type="checkbox" name="paired_read" id="paired_read" value="paired_read" checked="checked"  /></td>
+ </tr>
+ <tr id="multiplex_selecter">
+   <th>Multiplex run?</th>
+   <td><input type="checkbox" name="multiplex_run" id="multiplex_run" value="multiplex_run" /></td>
+ </tr>
+ </table>
+
+<div id="read_configuration">
+<table id="read_configuration_table">
+ <thead>
+  <tr>
+   <th>Read number</th>
+   <th>Read length</th>
+  </tr>
+ </thead>
+ <tbody>
+ [% FOREACH read = [1..3] %]
+  <tr id="read_cycle_row_[% read %]" >
+   <td> [% read %] </td>
+   <td>
+   <input type="text" id="read_cycle_[% read %]" name="read_cycle_[% read %]" class="read_cycle" size="3" />
+   </td>
+  </tr>
+  [% END %]
+ </tbody>
+</table>
+</div>
+</div>
+
+<div class="rfloat roundborder">
+<table width="300px">
+ <tr id="instrument_selector">
+   <th>Instrument</th>
+   <td><select onchange="ajax_instrument()" id="id_instrument" name="id_instrument">
+     [% IF !this_instr_id %]<option value="empty">Select instrument</option>[% END %]
+   [% FOREACH instrument = model.instruments; IF instrument.does_sequencing %]
+     <option value="[% instrument.id_instrument %]" [% IF this_instr_id && instrument.id_instrument == this_instr_id %]selected="selected"[% END %]>[% instrument.name %] [% instrument.current_instrument_status.instrument_status_dict.description %]</option>[% END %][% END %]
+   </select>
+   <div id="instrument_details" />
+   </td>
+ </tr>
+ <tr id="tracks_selector">
+   <th>Columns</th>
+   <td><select id="tracks" name="tracks">
+[% mif = model.instrument.instrument_format; FOREACH i = [1..6] %]<option value="[% i %]"[% IF mif.default_columns == i %] selected[% END %]>[% i %]</option>[% END %]
+   </select></td>
+ </tr>
+</table>
+</div>
+<div class="clearfloats"></div>
+
+<div id="ss_ajax_status""></div>
+<div id="ss_ajax_warning" style="display:none;background:#faa;width:600px;padding:5px;"></div>
+<div id="lane_definition">
+<table id="run_lanes">
+ <thead>
+  <tr>
+   <th>Lane</th>
+   <th>Num. Tiles</th>
+  </tr>
+ </thead>
+ <tbody>
+ [% positions = [1..8];
+    IF model.instrument.is_miseq_instrument; positions = [1]; END;
+    FOREACH position = positions %]
+  <tr>
+   <td>[% position %]</td>
+   <td class="npg_nbsp">
+      <input type="text" size="4" value="[% model.instrument.instrument_format.default_tiles %]" class="lane_tile_count" id="lane_[% position %]_tile_count" name="lane_[% position %]_tile_count" />
+      <a href="#" onclick="populate_tile_count('lane_[% position %]_tile_count');return false;"><img src="/icons/silk/arrow_out.png" style="border:none;padding: 0 0.5em 0 0.5em;" alt="arrow_out.png" title="copy to all" /></a>
+   </td>
+  </tr>
+  [% END %]
+ </tbody>
+</table>
+</div>
+<input type="button" value="Reset form" onclick="location.href='[% SCRIPT_NAME %]/run;add'" />
+<input type="submit" value="Create run" />
+</form>
+
+<script type="text/javascript">
+
+function check_run() {
+ if($F('team') == 'empty') {
+   alert('Please select team');
+   return false;
+ }
+ var eAll=$$('.lane_tile_count');
+ var c=0;
+ for(var i=0;i<eAll.length;i++){if(eAll[i].value)c++};
+ if(eAll.length==0||c!=eAll.length){
+  if(confirm('Run only uses '+c+' lanes? Probably, you forgot to select an instrument.')){return true;}else{return false;}
+ }
+ return true;
+}
+
+function _populate(cn,id){
+ var e=$(id);
+ if(!e)return;
+ var v=e.value;
+ var eAll=$A($$('.'+cn));
+ for(var i=0;i<eAll.length;i++){eAll[i].value=v;}
+}
+
+function populate_tile_count(id){return _populate('lane_tile_count',id);}
+
+function _instrument_is_miseq() {
+ var instrument_model = $F('instr_model');
+ if (instrument_model && instrument_model=='MiSeq') {
+  return true;
+ }
+ return false;
+}
+
+function ajax_instrument_tilelayout(instr_is_ms){
+ new Effect.Highlight('instrument_details');
+ var dc=$$('span.default_columns');
+ var tr=$A($('tracks'));
+ if(dc.length && tr.length){
+  for(var i=0;i<tr.length;i++){
+   tr[i].selected=false;
+   if(tr[i].value==dc[0].innerHTML){tr[i].selected=true;}
+  }
+  new Effect.Highlight('tracks');
+ }
+
+ var dt=$$('span.default_tiles');
+ if(dt.length){
+  var v=dt[0].innerHTML;
+  var eAll=$A($$('.lane_tile_count'));
+  for(var i=0;i<eAll.length;i++){
+   eAll[i].value=v;new Effect.Highlight(eAll[i]);
+   eAll[i].parentNode.parentNode.show();
+   if(instr_is_ms && i>0){eAll[i].parentNode.parentNode.hide(); eAll[i].value=0;}}
+  }
+}
+
+function ajax_instrument(labelsArray){
+ var d = new Date();
+ if ( $F('id_instrument') == 'empty' ) {
+   $('instrument_details').update('');
+ } else {
+   new Ajax.Updater('instrument_details','[% SCRIPT_NAME %]/instrument/'+$F('id_instrument')+'.ajax?milliseconds=' + d.getTime(),{
+     method:     'get',
+     onComplete: function(response) {
+       var instr_is_ms = _instrument_is_miseq();
+       ajax_instrument_tilelayout(instr_is_ms);
+       var label4flowcell = 'Flowcell';
+       if(instr_is_ms) { label4flowcell = 'Reagent kit'; }
+       $("label4flowcell_id").firstChild.nodeValue = label4flowcell + ' id';
+       $("validate_batch").value = 'Check ' + label4flowcell.toLowerCase() + ' or batch id';
+     }
+   });
+ }
+}
+
+function fetch_batch(e){
+ Event.stop(e);
+ clear_lanes(); 
+ var batch_id=$F('batch_id');
+ var flowcell_id=$F('flowcell_id');
+
+ if(!batch_id && !flowcell_id){
+   alert('No flowcell and batch id given');
+   return;
+ }
+ var url = 'http://psd-production.internal.sanger.ac.uk:6600/batches/';
+
+ if(flowcell_id){
+   url = url + 'find_batch_by_barcode/' + flowcell_id + '.xml';
+ }else if(batch_id){
+   url = url + batch_id + '.xml';
+ }
+ 
+ new Ajax.Request('[% SCRIPT_NAME %]/../reflector', {
+    requestHeaders: {Accept: 'application/xml, text/xml'},
+    parameters: { url: url },
+    onSuccess: function(transport){
+      var response = transport.responseXML;
+      if(!response){
+         _ss_ajax_warning('Problems connecting to Sequencescape!');
+         return;
+      }
+      var batch = response.getElementsByTagName('batch');
+
+      if(response && batch.length > 0 && response.getElementsByTagName('error').length==0){
+        $('ss_ajax_status').update('Retrieved batch data from Sequencescape.');
+        var returned_batch_id = _search_xml_element_by_name(response, 'id');
+        $('batch_id').value = returned_batch_id;
+        var laneDataHashByPosition = _batch_XML_DOM_to_hash(response);
+        $('ss_ajax_status').update('Coverted xml to hash');
+	     _add_columns_to_table('run_lanes', laneDataHashByPosition);	     
+	     $('ss_ajax_status').update('lane table updated');
+	     _get_library_name(laneDataHashByPosition);
+	     $('ss_ajax_status').update('library name cached');
+	     _update_multiplex_checkbox('multiplex_run', laneDataHashByPosition);
+	     $('ss_ajax_status').update('multiplex checked');
+	     var index_length;
+	     if($('multiplex_run').checked){
+	         index_length = _get_index_length(response);
+	     }
+	     _get_read_length_paired(laneDataHashByPosition, index_length);
+	     _update_read_cycle_row();
+	     $('ss_ajax_status').update('paired_read and read_length updated');
+             _set_priority(laneDataHashByPosition);
+
+	     // now get name info missing from batch.xml
+	     var url2name = new Hash();
+	     var study_names = new Hash();
+	     $$('a.sequencescape_id').pluck('href').map(function(l){url2name.set(l)});
+	     url2name.each(function(pair){
+	         new Ajax.Request('[% SCRIPT_NAME %]/../reflector', {
+              requestHeaders: {Accept: 'application/xml, text/xml'},
+	           parameters: { url: pair.key+'.xml' },
+              onSuccess: function(transport){
+	             var response = transport.responseXML;
+	             if(response){
+	               var name = _search_xml_element_by_name(response, 'name');
+	               var study = response.getElementsByTagName('study'); 
+	               if(study.length){
+	                  study_names.set(name, 1);
+	                  $('study_names').value = Object.toJSON(study_names);
+	               }
+		            if (name){
+		               $$('a.sequencescape_id').findAll(function(e){return e.href == pair.key}).each(function(e){
+		                  e.update(name);
+		                  e.removeClassName('sequencescape_id');
+		               });
+		            }
+	            }
+	          }
+          });
+	     });
+	$('ss_ajax_status').update('');
+      }else{
+         _ss_ajax_warning('No batch data from Sequencescape!');
+      }
+    },
+    onCreate: function(){ $('ss_ajax_status').update('<img style="height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />Getting Sequencescape batch data...') },
+    onFailure: function(){ _ss_ajax_warning('Something went wrong getting batch data from Sequencescape....') }   
+  });
+  beginrefresh();
+}
+
+function _ss_ajax_warning(comment){
+   $('ss_ajax_warning').appendChild(new Element('li').update(comment));
+   Element.show('ss_ajax_warning');
+   $('ss_ajax_status').update('');
+   return;
+}
+
+function clear_lanes(){
+ $('ss_ajax_status').update(''); 
+ $('run_lanes').getElementsBySelector('tr').each( function(rowel){
+    var rowchildren = rowel.childElements();
+    for(var i=2;i< rowchildren.length;i++){
+      rowel.removeChild(rowchildren[i]);
+    }
+ });
+ var rows = $A($$('.read_cycle'));
+ for(var i=0;i<rows.length;i++){
+    rows[i].value = '';
+ }
+ $('paired_read').checked=true;
+ $('multiplex_run').checked=false;
+ $('ss_ajax_warning').update('');
+ Element.hide('ss_ajax_warning');
+ _update_read_cycle_row();
+}
+
+//get libray names
+function _get_library_name(laneDataHashByPosition){
+   var library_names = new Hash();
+   laneDataHashByPosition.values().each(
+       function(lane){
+          library_names.set(lane.get('name'), 1);
+       }
+   );
+   $('library_names').value = Object.toJSON(library_names);
+}
+
+function _add_columns_to_table (run_lanes_table, laneDataHashByPosition) {
+  $(run_lanes_table).getElementsBySelector('tr').each( function(rowel){
+    var rowchildren = rowel.childElements();
+    var secondcell = rowchildren[1];
+    if( secondcell.match('th')){
+        $('ss_ajax_status').update("trying to insert th");
+        new Insertion.After( secondcell,'<th>Library</th><th>Request</th><th>Sample</th><th>Study</th><th>Project</th>');
+        $('ss_ajax_status').update("done insert th");
+    }else if ( secondcell.match('td')){
+        $('ss_ajax_status').update("trying to insert td");
+      var pos = rowchildren[0].innerHTML;
+      var laneData = laneDataHashByPosition.get(pos); 
+      if(laneData){      
+        new Insertion.After(secondcell,
+          '<td>'+ _html_link('assets', laneData.get('id'), laneData.get('name')) +'</td>'+
+          '<td>'+ _html_link('requests', laneData.get('request_id'), laneData.get('type')) +'</td>'+
+          '<td>'+ _html_link('samples', laneData.get('sample_id'), laneData.get('sample_name')) +'</td>'+
+          '<td>'+ _html_link('studies', laneData.get('study_id'), laneData.get('study_name')) +'</td>'+
+          '<td>'+ _html_link('projects', laneData.get('project_id'), laneData.get('project_name')) +'</td>'
+        );
+      } else {
+        rowel.remove();
+      }
+      $('ss_ajax_status').update("done insert td");
+    }
+  });
+}
+//choose the max value of each pool lane index length as the run index read length
+function _get_index_length (response){
+  var lane_list = response.getElementsByTagName('lane');
+  var index_length = 0;
+  for (var l=0;l<lane_list.length;l++){
+    var pool_list = lane_list[l].getElementsByTagName('pool');
+    if(pool_list.length == 0){
+      continue;
+    }
+    var index_length_by_lane = _get_index_length_by_lane(lane_list[l]);
+    if(index_length_by_lane > index_length){
+      index_length = index_length_by_lane;
+    }
+  }
+  return index_length;
+}
+
+//given a lane DOM, find tag list, trimming common suffix, 
+//return the tag length plus 1 as the index read length
+//if no tag or any problem, using default 9
+function _get_index_length_by_lane(lane){
+   var tag_list = [];
+   var tag_element_list=lane.getElementsByTagName('tag');
+   var position=lane.getAttribute('position');
+   for (var i=0;i<tag_element_list.length;i++){
+      var tag_element = tag_element_list[i];
+      var tag = _search_xml_element_by_name(tag_element, 'expected_sequence');
+      if(tag){
+        tag_list.push(tag);
+      }
+   }
+   var index_length;
+   if(tag_list.size() > 0){
+      index_length = _trim_tag_common_suffix(tag_list, position);
+   }
+   if(!index_length){
+      index_length = 8;
+   }
+   index_length++;
+   return index_length;
+}
+
+//return index read length of a lane based on the tag list after trimming common suffix
+function _trim_tag_common_suffix (tag_list, position){
+   //only one tag for one lane
+   if(tag_list.size() == 1){
+      $('ss_ajax_warning').appendChild(new Element('li').update('There is only one tag for lane ' + position + ' in this batch'));
+      Element.show('ss_ajax_warning');
+      return tag_list[0].length;
+   }
+
+   var tag_length = new Hash();
+   tag_list.each(function(tag){tag_length.set(tag.length, 1);});
+
+   //the given tags for this lane are different in length
+   if (tag_length.keys().size() != 1){
+     $('ss_ajax_warning').appendChild(new Element('li').update('The tags for lane ' + position + ' in this batch are different in length'));
+     Element.show('ss_ajax_warning');
+     return;
+   }
+
+   var tag_common_suffix_length = _tag_common_suffix_length(tag_list);
+   //all tags are the same
+   if(tag_length.get(tag_common_suffix_length)){
+     $('ss_ajax_warning').appendChild(new Element('li').update('The tags for lane ' + position + ' in this batch are the same'));
+     Element.show('ss_ajax_warning');
+      return;
+    }
+
+   //no common suffix
+   if(tag_common_suffix_length == 0){    
+     return tag_list[0].length;
+   }
+   
+   var trimmed_tag_list = new Hash();
+      
+   tag_list.each(function(tag){trimmed_tag_list.set(tag.substring(0, tag.length-tag_common_suffix_length),1);});
+ 
+   //tags are not unique after removing common suffix
+   if( trimmed_tag_list.keys().size() != tag_list.size() ){
+     $('ss_ajax_warning').appendChild(new Element('li').update('The tags for lane ' + position + ' in this batch are not unique after trimming the common suffix'));
+     Element.show('ss_ajax_warning');
+     return;
+   }
+   return tag_list[0].length - tag_common_suffix_length;
+}
+
+//find out common suffix length of a list of tags
+function _tag_common_suffix_length(tag_list){
+   var common_suffix_length = 0;
+   var tag_length = new Hash();
+   tag_list.each(function(tag){tag_length.set(tag, tag.length);});
+   var shortest_tag_length = tag_length.values().min();
+   while (common_suffix_length < shortest_tag_length){
+      common_suffix_length++;
+      var previous_suffix = tag_list[0].substring(tag_list[0].length-common_suffix_length);
+      for (var i =0; i<tag_list.length;i++){
+        if(! tag_list[i].endsWith(previous_suffix) ){
+          return common_suffix_length - 1;
+        }
+      }
+   }
+   return common_suffix_length;
+}
+
+//check any lane is pool or not, set multiplex or not
+function _update_multiplex_checkbox(multiplex_checkbox, laneDataHashByPosition){
+  var lanes =laneDataHashByPosition.values();
+  lanes.each(function (lane)
+    {var type = lane.get('type');
+     if(type == 'pool'){
+        $(multiplex_checkbox).checked = true;
+        return;
+     }
+    });
+}
+
+//inherit run priority from lanes
+//take the highest lane priority and add to it default run priority of 1
+function _set_priority (laneDataHashByPosition){
+  var lanes = laneDataHashByPosition.values();
+  var mpriority = 0;
+  lanes.each(function (lane)
+    {var pr = parseInt(lane.get('priority'), 10);
+     if(pr > mpriority){
+        mpriority = pr;
+     }
+    });
+  mpriority = mpriority + 1;
+  $('priority').value = mpriority;
+  return;
+}
+
+//set the run paired or single
+//and cycle number for each read
+//based on the first non-control lane's request
+function _get_read_length_paired(laneDataHashByPosition, index_length){ 
+   var lanes = laneDataHashByPosition.values();
+   for (var i=0;i<lanes.length;i++){
+       var lane = lanes[i];
+       var request_id = lane.get('request_id');
+       var type = lane.get('type');
+       if(type != 'control'){
+         if(_get_read_length_paired_by_request(request_id, index_length)){
+           return;
+         }
+       }
+   }
+}
+
+//given an request id, check with SS to find out each read length
+//and paired or single read
+//and set index cycle number using the given value
+function _get_read_length_paired_by_request(request_id, index_length){
+   var url = 'http://psd-production.internal.sanger.ac.uk:6600/batches';
+   url=url.replace(/batches/, '');
+   url = url+'requests/'+ request_id +'.xml';
+   new Ajax.Request('[% SCRIPT_NAME %]/../reflector', {
+       requestHeaders: {Accept: 'application/xml, text/xml'},
+	    parameters: { url: url},
+         onSuccess: function(transport){
+	        var response = transport.responseXML;
+	        var request_list = response.getElementsByTagName('request');
+	        if(response && request_list.length > 0){
+	          //read length
+	          var read_length=_search_xml_element_by_name(response, 'read_length');	          
+	          if(read_length){
+	              var read_cycle_1 = $('read_cycle_1').value;                
+                 if(read_length > read_cycle_1){
+                    $('read_cycle_1').value = read_length;
+                    var multiplex_run = $('multiplex_run').checked;
+                    if(multiplex_run){
+                       $('read_cycle_2').value = index_length;
+                       $('read_cycle_3').value = read_length;
+                    }else{
+                       $('read_cycle_2').value = read_length;
+                    }
+                 }                 
+               }
+               //paired read or not
+               var paired_read=_search_xml_element_by_name(response, 'template');
+               if(paired_read == 'Paired end sequencing'){
+                  $('paired_read').checked=true;
+               }else if(paired_read == 'Single ended sequencing'){
+                  $('paired_read').checked=false;
+               }
+               return 1;
+             }else{
+                 _ss_ajax_warning('No data for request '+ request_id+ ' from Sequencescape....') 
+             }
+	        },
+	        onFailure: function(){ _ss_ajax_warning('Something went wrong getting request '+ request_id+ ' data from Sequencescape....') }
+	       });
+	 return 0;
+}
+
+//create SS link based on the sercice type and id
+function _html_link (servicetype, id, text){
+  if(id != undefined){
+    if(text == undefined){
+      return '<a href="http://psd-production.internal.sanger.ac.uk:6600/batches/../'+servicetype+'/'+id+'" class="sequencescape_id">'+id+'</a>';
+    }else{
+      return '<a href="http://psd-production.internal.sanger.ac.uk:6600/batches/../'+servicetype+'/'+id+'">'+text+'</a>';
+    }
+  }
+  return (text == undefined ? id : text);
+}
+
+//show or hide read cycle input fields based on paired read and multiplex run not
+function _update_read_cycle_row(){
+  var num_reads = 1;
+  if( $('paired_read').checked ){
+    num_reads++;
+  }
+  if( $('multiplex_run').checked ){
+    num_reads++;
+  }
+  var rows = $$('.read_cycle');
+  for(var i=2;i<=rows.length;i++){
+    Element.hide('read_cycle_row_'+i);
+    rows[i-1].value = '';
+  }
+  for(var i=2;i<=num_reads;i++){
+     Element.show('read_cycle_row_'+i);
+  }
+}
+
+function handleKeyPress(e){
+ if (!e) e = window.event;
+ if (e && e.keyCode == 13){
+  // handle Enter key
+  // return false; here to cancel the event
+  Event.stop(e);
+ }
+}
+addEvent(window,'load',ajax_instrument);
+addEvent(window,'load', _update_read_cycle_row);
+addEvent($('batch_id'),'keypress',handleKeyPress);
+addEvent($('flowcell_id'),'keypress',handleKeyPress);
+addEvent($('validate_batch'),'click',fetch_batch);
+addEvent($('paired_read'), 'click', _update_read_cycle_row);
+addEvent($('multiplex_run'), 'click', _update_read_cycle_row);
+
+</script>
+<!--end $Id: run_add.tt2 16549 2013-01-23 16:49:39Z mg8 $-->
+

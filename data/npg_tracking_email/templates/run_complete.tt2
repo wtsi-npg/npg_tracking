@@ -1,0 +1,21 @@
+Run [% run %] has a status of run complete in NPG tracking.
+
+From the database system, the following project has the following lanes on this run
+
+[% project %]
+
+Lanes:
+
+[% FOREACH lane = lanes -%]
+Lane - [% lane.position %] : Library - [% lane.library %]
+[% END -%]
+
+You will be notified when this run reaches run archived.
+
+In the mean time, you can check the status of the run through NPG:
+
+[% PROCESS npg_tracking_web_url.tt2 %]/run/[% run %]
+
+Yours Faithfully
+
+New Pipeline Development

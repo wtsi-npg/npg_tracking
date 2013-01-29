@@ -1,0 +1,18 @@
+<h3>Cluster Stations</h3>
+<table id="cluster_stations" class="sortable zebra">
+ <caption>Cluster Stations</caption>
+ <thead>
+  <tr>
+    <th>Name</th>
+    <th>Status</th>
+  </tr>
+ </thead>
+ <tbody>
+  [% FOREACH cluster_station = model.instruments.list_cluster_station %]
+    <tr>
+      <th>[% cluster_station.name %]</th>
+      <th>[% cluster_station.status %]</th>
+    </tr>
+  [% END %]
+ </tbody>
+</table>

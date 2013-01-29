@@ -1,0 +1,93 @@
+#!/usr/local/bin/perl -w
+#########
+# Author:        Marina Gourtovaia
+# Maintainer:    $Author: js10 $
+# Created:       21 March 2012
+# Last Modified: $Date: 2012-03-20 12:02:08 +0000 (Tue, 20 Mar 2012) $
+# Id:            $Id: npg 15357 2012-03-20 12:02:08Z js10 $
+# Source:        $Source: /repos/cvs/webcore/SHARED_docs/cgi-bin/docrep,v $
+# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/branches/prerelease-70.0/cgi-bin/npg $
+
+use strict;
+use warnings;
+use Carp;
+
+my @files = qw /
+  authz_default.load
+  autoindex.conf
+  deflate.load
+  mime.conf	
+  perl.load
+  reqtimeout.load
+  status.load
+  alias.load
+  authz_groupfile.load
+  autoindex.load
+  dir.conf
+  mime.load	
+  setenvif.conf
+  auth_basic.load
+  authz_host.load
+  cgi.load
+  dir.load
+  negotiation.conf
+  setenvif.load
+  authn_file.load
+  authz_user.load
+  deflate.conf
+  env.load
+  negotiation.load
+  reqtimeout.conf	
+  status.conf
+/;
+
+my $install_base;
+my $perl_vars = $ENV{PERL_MM_OPT};
+if (!$perl_vars) {
+  croak 'PERL_MM_OPT env variable should be defined';
+}
+my @pairs = split /\s/smx, $perl_vars;
+foreach my $expr (@pairs) {
+  my @pair = split /=/smx, $expr;
+  if ($pair[0] eq q[INSTALL_BASE]) {
+    $install_base = $pair[1];
+    last;
+  }
+}
+
+if (!$install_base) {
+  croak 'Failed to get INSTALL_BASE';
+}
+
+my $web = join q[/], $install_base, q[web];
+my $root = join q[/], $web, q[npg];
+if (-e $root) {
+  `rm -rf $root`;
+}
+if (!-d $web) {
+  mkdir $web;
+}
+mkdir $root;
+mkdir join(q[/], $root, q[logs]);
+
+`cp -R data $root`;
+`cp -R htdocs $root`;
+
+my $path = q[/etc/apache2/mods-available];
+my $mods_dir = join q[/], $root, q[mods-enabled];
+if (-e $mods_dir) {
+  `rm -rf $mods_dir`;
+}
+
+if (-d q[mods-enabled]) {
+  `cp -R mods-enabled $mods_dir`;
+} else {
+  mkdir $mods_dir;
+  foreach my $file (@files) {
+    my $local = join q[/], $mods_dir, $file;
+    my $target = join q[/], $path, $file;
+    `ln -s $target $local`;
+  }
+}
+
+1;

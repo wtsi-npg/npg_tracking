@@ -1,0 +1,5 @@
+<form method="post" action="[% SCRIPT_NAME %]/instrument_status_annotation/;create">
+  <input type="hidden" name="id_instrument_status" value="[% model.id_instrument_status %]" />
+  <textarea style="float:left;" name="instrument_status_annotation" rows="3" cols="40"></textarea>
+  <input type="submit" value="save" />
+</form>

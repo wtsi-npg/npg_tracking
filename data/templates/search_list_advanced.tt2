@@ -1,0 +1,74 @@
+<!-- Start: $Id: search_list_advanced.tt2 14897 2012-01-11 14:52:00Z mg8 $ -->
+<br/>
+ <a href="[% SCRIPT_NAME %]/search/">basic</a> | advanced
+
+<br/><br/>
+<fieldset>
+ <legend>Advanced search parameters</legend>
+ <form id="searchform" method="get" action="[% SCRIPT_NAME %]/search/;list_advanced" onsubmit="Element.show('spinner');dosubmit(); return false;">
+  <input type="hidden" name="query" value="1" />
+  <fieldset>
+  <legend>Search For</legend>
+    <input type="checkbox" name="run_lanes" value="1" [% IF model.run_lanes %]checked="1"[% END %] />Run Lanes
+    <input type="checkbox" name="run_status" value="1" [% IF model.run_status %]checked="1"[% END %] />Run Status
+    <input type="checkbox" name="status_date" value="1" [% IF model.status_date %]checked="1"[% END %] />Run Status Date
+    <input type="checkbox" name="projects" value="1" [% IF model.projects %]checked="1"[% END %] />Projects
+    <input type="checkbox" name="annotations" value="1" [% IF model.annotations %]checked="1"[% END %] />Annotations
+    <input type="checkbox" name="batches" value="1" [% IF model.batches %]checked="1"[% END %] />Batches
+    <input type="checkbox" name="instruments" value="1" [% IF model.instruments %]checked="1"[% END %] />Instruments
+    <input type="checkbox" name="run_tags" value="1" [% IF model.tags %]checked="1"[% END %] />Run Tags
+  </fieldset>
+  <fieldset>
+  <legend>Search conditions</legend>
+    <div id="text_inputs">
+    Run id: <input size="4" type="text" name="id_run" value="[% model.id_run %]" /><br />
+    Batch id: <input size="4" type="text" name="batch_id" value="[% model.batch_id %]" /><br />
+    Library Name: <input size="20" type="text" name="libraryname" value="[% model.libraryname %]" /><br />
+    Projectname: <input size="20" type="text" name="projectname" value="[% model.projectname %]" /><br />
+    Tags (space separated): <input size="20" type="text" name="tags" value="[% model.tags %]" /><br />
+    Loader: <input size="20" type="text" name="loader" value="[% model.loader %]" /><br />
+    Instrument Name: <input size="20" type="text" name="instrument" value="[% model.instrument %]" /><br />
+    Annotation contains: <input size="20" type="text" name="annotation" value="[% model.annotation %]" /><br />
+    Run Lanes (separate by commas):  <input size="20" type="text" name="run_lane" value="[% model.run_lane %]" />
+    </div>
+    <div id="check_inputs">
+    Development: <input type="checkbox" name="dev" value="1" [% IF model.dev %]checked="1"[% END %] />
+    Run paired: <input type="checkbox" name="paired" value="1" [% IF model.paired %]checked="1"[% END %] />
+    Run non-paired: <input type="checkbox" name="non_paired" value="1" [% IF model.non_paired %]checked="1"[% END %] />
+    </div>
+    <div class="dates">
+    <select name="status">
+      <option value="">Select a run status</option>
+      <option value="run pending" [% IF model.status == "run pending" %]selected="" [% END %]>Run Pending</option>
+      <option value="run complete" [% IF model.status == "run complete" %]selected="" [% END %]>Run Complete</option>
+      <option value="run cancelled" [% IF model.status == "run cancelled" %]selected="" [% END %]>Run Cancelled</option>
+      <option value="run mirrored" [% IF model.status == "run mirrored" %]selected="" [% END %]>Run Mirrored</option>
+      <option value="run archived" [% IF model.status == "run archived" %]selected="" [% END %]>Run Archived</option>
+      <option value="run quarantined" [% IF model.status == "run quarantined" %]selected="" [% END %]>Run Quarantined</option>
+      <option value="analysis pending" [% IF model.status == "analysis pending" %]selected="" [% END %]>Analysis Pending</option>
+      <option value="analysis complete" [% IF model.status == "analysis complete" %]selected="" [% END %]>Analysis Complete</option>
+    </select>
+    between:
+    <input id="from" name="from" size="10" maxlength="10" type="text" value="[% model.from %]"><img src="/icons/silk/calendar_view_month.png" onclick="showChooser(this, 'from', 'chooserSpan', 2000, 2050, 'Y-m-d', false);"> 
+<div id="chooserSpan" class="dateChooser select-free" style="display: none; visibility: hidden; width: 160px;"></div>
+    and
+    <input id="to" name="to" size="10" maxlength="10" type="text" value="[% model.to %]"><img src="/icons/silk/calendar_view_month.png" onclick="showChooser(this, 'to', 'chooserSpan', 2000, 2050, 'Y-m-d', false);"> 
+<div id="chooserSpan" class="dateChooser select-free" style="display: none; visibility: hidden; width: 160px;"></div>
+    </div>
+  </fieldset>
+  <input type="submit" value="Search" />&nbsp;&nbsp;<input type="reset" value="Reset Form" />
+  <img id="spinner" style="display:none;height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />
+ </form>
+</fieldset>
+<br />
+<div id="tableresults">[% PROCESS search_list_advanced_ajax.tt2 %]</div>
+<script type="text/javascript">
+
+function dosubmit( ) {
+  new Ajax.Updater( 'tableresults', '[% SCRIPT_NAME %]/search/;list_advanced_ajax', { method: 'get',
+    parameters: $('searchform').serialize(),onComplete:function(){ Element.hide('spinner');  }} );
+}     
+
+</script>
+
+<!-- End: $Id: search_list_advanced.tt2 14897 2012-01-11 14:52:00Z mg8 $ -->

@@ -1,0 +1,10 @@
+<!-- begin $Id: run_lane_update_tags.tt2 3413 2008-11-11 17:50:59Z rmp $ -->
+<div>
+Run lane [% model.id_run_lane %] tagged.
+<br /><br />
+Please click <a href="[% SCRIPT_NAME %]/run/[% model.id_run %]">here</a> to continue.
+<script type="text/javascript">
+ document.location.href = '[% SCRIPT_NAME %]/run/[% model.id_run %]';
+</script>
+</div>
+<!-- end $Id: run_lane_update_tags.tt2 3413 2008-11-11 17:50:59Z rmp $ -->

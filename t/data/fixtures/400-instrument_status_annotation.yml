@@ -1,0 +1,7 @@
+---
+- id_annotation: 1
+  id_instrument_status: 5
+  id_instrument_status_annotation: 1
+- id_annotation: 2
+  id_instrument_status: 5
+  id_instrument_status_annotation: 2

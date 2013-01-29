@@ -1,0 +1,82 @@
+alter table run_lane add column good_bad tinyint(1) default NULL;
+update entity_type set iscurrent = 0 where description in ('flowcell', 'sample', 'library');
+insert into entity_type(description,iscurrent) values
+('run_lane',1),
+('user',1),
+('annotation',1),
+('run_lane_status',1),
+('tag',1);
+
+DROP TABLE tag_run;
+DROP TABLE tag_run_lane;
+
+CREATE TABLE `tag_run` (
+ `id_tag_run` bigint(20) unsigned NOT NULL auto_increment primary key,
+ `id_run` bigint(20) unsigned NOT NULL,
+ `id_tag` bigint(20) unsigned NOT NULL,
+ `id_user` bigint(20) unsigned NOT NULL,
+ `date` DATE NOT NULL,
+ KEY `tr_id_run` (`id_run`),
+ KEY `tr_id_tag` (`id_tag`),
+ KEY `tr_id_user` (`id_user`),
+ CONSTRAINT `tr_id_run` FOREIGN KEY (`id_run`) REFERENCES `run` (`id_run`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ CONSTRAINT `tr_id_tag` FOREIGN KEY (`id_tag`) REFERENCES `tag` (`id_tag`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ CONSTRAINT `tr_id_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tag_run_lane` (
+ `id_tag_run_lane` bigint(20) unsigned NOT NULL auto_increment primary key,
+ `id_run_lane` bigint(20) unsigned NOT NULL,
+ `id_tag` bigint(20) unsigned NOT NULL,
+ `id_user` bigint(20) unsigned NOT NULL,
+ `date` DATE NOT NULL,
+ KEY `trl_id_run_lane` (`id_run_lane`),
+ KEY `trl_id_tag` (`id_tag`),
+ KEY `trl_id_user` (`id_user`),
+ CONSTRAINT `trl_id_run_lane` FOREIGN KEY (`id_run_lane`) REFERENCES `run_lane` (`id_run_lane`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ CONSTRAINT `trl_id_tag` FOREIGN KEY (`id_tag`) REFERENCES `tag` (`id_tag`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ CONSTRAINT `trl_id_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `tag_frequency` (
+ `id_tag_frequency` bigint(20) unsigned NOT NULL auto_increment primary key,
+ `id_tag` bigint(20) unsigned NOT NULL,
+ `id_entity_type` bigint(20) unsigned NOT NULL,
+ `frequency` bigint(20) unsigned default 0 NOT NULL,
+ KEY `tf_id_tag` (`id_tag`),
+ KEY `tf_id_entity_type` (`id_entity_type`),
+ CONSTRAINT `tf_id_tag` FOREIGN KEY (`id_tag`) REFERENCES `tag` (`id_tag`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ CONSTRAINT `tf_id_entity_type` FOREIGN KEY (`id_entity_type`) REFERENCES `entity_type` (`id_entity_type`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ 
+insert into tag(id_tag, tag) values
+(1,'good'),
+(2,'bad'),
+(3,'requires_illumina_attention'),
+(4,'2G'),
+(5,'dev'),
+(6,'training'),
+(7,'all_control'),
+(8,'single_end'),
+(9,'paired_end'),
+(10,'all_phix'),
+(11,'all_ct427');
+
+insert into tag_frequency(id_tag, id_entity_type, frequency) values
+(1,1,0),
+(2,1,0),
+(3,1,0),
+(4,1,0),
+(5,1,0),
+(6,1,0),
+(7,1,0),
+(8,1,0),
+(9,1,0),
+(10,1,0),
+(11,1,0),
+(1,10,0),
+(2,10,0),
+(5,10,0),
+(6,10,0),
+(8,10,0),
+(9,10,0);

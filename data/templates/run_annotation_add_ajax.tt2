@@ -1,0 +1,78 @@
+<!--begin $Id: run_annotation_add_ajax.tt2 15220 2012-02-22 10:12:17Z mg8 $-->
+<form method="post" action="[% SCRIPT_NAME %]/run_annotation/;create" enctype="multipart/form-data">
+<div>
+ <input type="hidden" name="id_run" value="[% model.id_run %]" />
+<table>
+<tr>
+<td>
+ <label>Comment</label>
+</td>
+<td>
+ <textarea style="vertical-align:top" name="comment" rows="2" cols="80"></textarea>
+</td>
+</tr>
+<tr>
+<td>
+ <label>File Upload</label>
+</td>
+<td>
+ <input type="file" name="attachment" />
+</td>
+</tr>
+<tr>
+ <td>
+ <label>Current cycle</label>
+ <input type="text" name="current_cycle" size="3" value="[% IF model.current_run_status.description == 'run in progress' %][% model.actual_cycle_count %][% END %]"/>
+ </td>
+<td>
+ <label>Run currently ok</label>
+ <input type="radio" name="run_current_ok" value="1"/>
+ <label>Not ok</label>
+ <input type="radio" name="run_current_ok" value="0"/>
+</td>
+</tr>
+<tr>
+<td>
+  <label>Annotate Lanes</label><input type="checkbox" name="switch_to_lanes" id="switch_to_lanes" value="1" />
+</td>
+<td>
+  <div style="display:none;" id="lanes_annotation_selectors">
+[% FOREACH lane IN model.run_lanes -%]
+    <input type="checkbox" name="annotate_lanes" value="[% lane.position %]" /><label>[% lane.position %]</label>
+[% END -%]
+  </div>
+  <div id="instrument_annotation">
+   <label>Also add annotation to instrument</label>
+   <input type="checkbox" name="include_instrument" value="[% model.id_instrument %]" />
+  </div>
+</td>
+</tr>
+<tr>
+ <td colspan="2">
+ <input type="submit" value="save" />
+ <input type="button" name="cancel" value="cancel" onclick="cancel_form('run_annotation', 1); return false;" />
+ <span style="font-size:smaller">Enter links in comments as plain URLs, no formatting</span>
+ </td>
+</tr>
+</table>
+</div>
+</form>
+
+<script type="text/javascript">
+  new Form.Element.Observer(
+        'switch_to_lanes',
+        1, // seconds before acting
+        function(element, value) {
+          if ( value ) {
+            Element.show('lanes_annotation_selectors');
+            Element.hide('instrument_annotation');
+          } else {
+            Element.hide('lanes_annotation_selectors');
+            Element.show('instrument_annotation');
+          }
+        }
+  );
+
+</script>
+
+<!--end $Id: run_annotation_add_ajax.tt2 15220 2012-02-22 10:12:17Z mg8 $-->

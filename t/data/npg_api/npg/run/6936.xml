@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="6936" batch_id="13861" id_instrument="73" expected_cycle_count="208" actual_cycle_count="208" priority="3" id_run_pair="0" is_paired="0" is_dev="0" id_instrument_format="10" flowcell_id="C05F1ACXX" folder_name="111015_HS5_06936_A_C05F1ACXX" folder_path_glob="/{export,nfs}/sf30/ILorHSany_sf30/*/" name="HS5_06936" loader="tkb" loading_date="2011-10-15" run_folder="111015_HS5_06936_A_C05F1ACXX">
+ <instrument id_instrument="73" name="HS5" id_instrument_format="10" external_name="" serial="" iscurrent="1" />
+ <run_lanes><run_lane id_run_lane="55045" id_run="6936" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="1" />
+<run_lane id_run_lane="55046" id_run="6936" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="2" />
+<run_lane id_run_lane="55047" id_run="6936" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="3" />
+<run_lane id_run_lane="55048" id_run="6936" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="4" />
+<run_lane id_run_lane="55049" id_run="6936" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="5" />
+<run_lane id_run_lane="55050" id_run="6936" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="6" />
+<run_lane id_run_lane="55051" id_run="6936" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="7" />
+<run_lane id_run_lane="55052" id_run="6936" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="8" />
+</run_lanes>
+ <current_run_status id_run_status="93116" id_run="6936" date="2011-11-04 15:54:31" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_statuses>
+ <run_status id_run_status="93116" id_run="6936" date="2011-11-04 15:54:31" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_status id_run_status="93115" id_run="6936" date="2011-11-04 15:54:22" id_run_status_dict="12" id_user="7" username="pipeline" iscurrent="0" description="run archived" />
+ <run_status id_run_status="93101" id_run="6936" date="2011-11-04 13:19:55" id_run_status_dict="18" id_user="7" username="pipeline" iscurrent="0" description="archival in progress" />
+ <run_status id_run_status="93100" id_run="6936" date="2011-11-04 13:17:23" id_run_status_dict="17" id_user="73" username="pipeline" iscurrent="0" description="archival pending" />
+ <run_status id_run_status="93078" id_run="6936" date="2011-11-04 09:45:31" id_run_status_dict="19" id_user="7" username="pipeline" iscurrent="0" description="qc review pending" />
+ <run_status id_run_status="93077" id_run="6936" date="2011-11-04 09:45:31" id_run_status_dict="9" id_user="7" username="pipeline" iscurrent="0" description="analysis complete" />
+ <run_status id_run_status="92641" id_run="6936" date="2011-10-28 12:42:32" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="92640" id_run="6936" date="2011-10-28 12:42:17" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="92639" id_run="6936" date="2011-10-28 12:41:52" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="92638" id_run="6936" date="2011-10-28 12:41:35" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="92637" id_run="6936" date="2011-10-28 12:41:21" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="92636" id_run="6936" date="2011-10-28 12:41:08" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="92635" id_run="6936" date="2011-10-28 12:40:55" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="92634" id_run="6936" date="2011-10-28 12:40:25" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="92462" id_run="6936" date="2011-10-27 01:13:05" id_run_status_dict="7" id_user="7" username="pipeline" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="92452" id_run="6936" date="2011-10-26 23:54:20" id_run_status_dict="11" id_user="7" username="pipeline" iscurrent="0" description="run mirrored" />
+ <run_status id_run_status="92453" id_run="6936" date="2011-10-26 23:54:20" id_run_status_dict="6" id_user="7" username="pipeline" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="92409" id_run="6936" date="2011-10-26 14:24:38" id_run_status_dict="4" id_user="7" username="pipeline" iscurrent="0" description="run complete" />
+ <run_status id_run_status="91726" id_run="6936" date="2011-10-15 10:21:57" id_run_status_dict="2" id_user="7" username="pipeline" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="91721" id_run="6936" date="2011-10-15 09:45:42" id_run_status_dict="1" id_user="11" username="pipeline" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="19742" id_run="6936" id_annotation="20193" date="2011-10-16 17:14:51" id_user="57" username="lc2" comment="Early days in run" attachment_name="" run_current_ok="1" current_cycle="16" />
+ <annotation id_run_annotation="19791" id_run="6936" id_annotation="20235" date="2011-10-17 14:06:17" id_user="51" username="ips" comment="" attachment_name="" run_current_ok="1" current_cycle="33" />
+ <annotation id_run_annotation="19832" id_run="6936" id_annotation="20272" date="2011-10-18 13:55:44" id_user="51" username="ips" comment="" attachment_name="" run_current_ok="1" current_cycle="54" />
+ <annotation id_run_annotation="19884" id_run="6936" id_annotation="20298" date="2011-10-19 14:43:54" id_user="51" username="ips" comment="" attachment_name="" run_current_ok="1" current_cycle="75" />
+ <annotation id_run_annotation="19906" id_run="6936" id_annotation="20310" date="2011-10-20 08:42:51" id_user="11" username="tkb" comment="" attachment_name="" run_current_ok="1" current_cycle="91" />
+ <annotation id_run_annotation="19932" id_run="6936" id_annotation="20327" date="2011-10-20 11:21:02" id_user="9" username="ah1" comment="Lane 3 a little dense with 71%PF. R1 Prephasing 0.46 - 0.59. Signal to noise only 6 to 8 for 1st 2x cycles but then picks up." attachment_name="" run_current_ok="1" current_cycle="93" />
+ <annotation id_run_annotation="19987" id_run="6936" id_annotation="20363" date="2011-10-21 09:46:41" id_user="51" username="ips" comment="" attachment_name="" run_current_ok="1" current_cycle="108" />
+ <annotation id_run_annotation="20015" id_run="6936" id_annotation="20390" date="2011-10-24 14:13:28" id_user="15" username="js2" comment="" attachment_name="" run_current_ok="1" current_cycle="168" />
+ <annotation id_run_annotation="20044" id_run="6936" id_annotation="20427" date="2011-10-25 13:50:27" id_user="15" username="js2" comment="" attachment_name="" run_current_ok="1" current_cycle="188" />
+ <annotation id_run_annotation="20485" id_run="6936" id_annotation="20820" date="2011-11-04 13:18:27" id_user="73" username="nf2" comment="100 cycle multiplex PE HiSeq.
+257 Gbase yield.  PhiX spiked.
+" attachment_name="" run_current_ok="" current_cycle="" />
+ </annotations>
+ <tags>
+   <tag id_tag="22" description="fc_slotA" />
+   <tag id_tag="43" description="loaded_r2" />
+   <tag id_tag="20" description="multiplex" />
+   <tag id_tag="17" description="paired_read" />
+   <tag id_tag="16" description="rta" />
+   <tag id_tag="19" description="staging" />
+   <tag id_tag="41" description="verified_fc" />
+   <tag id_tag="42" description="verified_r1" />
+   <tag id_tag="46" description="verified_r2" />
+ </tags>
+</run>

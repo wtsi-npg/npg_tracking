@@ -1,0 +1,1 @@
+insert into event_type(description,id_entity_type) values('annotation', (select id_entity_type from entity_type where description='run_lane'));

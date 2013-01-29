@@ -1,0 +1,74 @@
+
+
+[% PROCESS instrument_make_change_menu.tt2 
+           index=0
+%]
+
+<div id="form_post">
+<form name="instrument_batch_update" method="POST" action="[% SCRIPT_NAME %]/instrument/group;update_statuses" onSubmit="return form_action();">
+  <div class="table_overflow">
+    [% PROCESS instrument_list_edit_statuses_instruments.tt2 %]
+  </div>
+<div style="width:60em;height:1em;text-align:right;">
+<a href="javascript:void(selectEntities('instrument'));">select all</a> | <a href="javascript:void(toggleEntities('instrument'));">toggle all</a>
+</div>
+<div id="tabs">
+<div id="update_group_status" class="tab current"><a href="javascript:void(toggle_instrument_forms('update_group_status'));">Update Group Status</a></div>
+<div id="update_group_instrument_mod" class="tab noncurrent"><a href="javascript:void(toggle_instrument_forms('update_group_instrument_mod'));">Update Group Instrument Modifications</a></div>
+<div class="clearfloats"></div>
+</div>
+<div id="form_selector">
+<div id="status_form">
+<fieldset style="width:58em;">
+ <div style="float:left;width:40em;margin:1em;">
+  <label for="comment">Comment:</label> <textarea name="comment" style="width:40em;height:8em;"></textarea>
+ </div>
+ <div style="float:left;margin:1em;">
+  <label for="id_instrument_status_dict">Status:</label> <select name="id_instrument_status_dict">
+[% FOREACH isd = model.instrument_status_dicts %]  <option value="[% isd.id_instrument_status_dict %]">[% isd.description %]</option>[% END %]
+ </select><br />
+  <input style="margin:1em;" type="submit" value="update instruments" onClick="document.pressed='isd_submit'" />
+ </div>
+</fieldset>
+</div>
+<div id="mod_form" style="display:none;">
+<fieldset style="width:58em;">
+  Type: <select name="id_instrument_mod_dict" id="id_instrument_mod_dict">[% FOREACH imd = model.instrument_mod_dicts %]<option value="[% imd.id_instrument_mod_dict %]">[% imd.description %] [% imd.revision %]</option>[% END %]</select>Is Current: <input type="checkbox" name="iscurrent" value="1" checked="1" /><input type="submit" value="update instruments" onClick="document.pressed='imd_submit'" />
+</fieldset>
+</div>
+</div>
+</form>
+</div>
+
+<script type="text/javascript">
+
+function form_action() {
+  if (document.pressed == 'isd_submit') {
+    document.instrument_batch_update.action = "[% SCRIPT_NAME %]/instrument/group;update_statuses"
+  }
+  else
+  if (document.pressed == 'imd_submit') {
+    document.instrument_batch_update.action = "[% SCRIPT_NAME %]/instrument_mod/group;update_mods"
+  }
+  return true;
+}
+function toggle_instrument_forms(open) {
+  if (open == 'update_group_status') {
+    Element.show('status_form');
+    Element.hide('mod_form');
+    $('update_group_status').removeClassName("noncurrent");
+    $('update_group_status').addClassName("current");
+    $('update_group_instrument_mod').removeClassName("current");
+    $('update_group_instrument_mod').addClassName("noncurrent");
+  }
+  if (open == 'update_group_instrument_mod') {
+    Element.show('mod_form');
+    Element.hide('status_form');
+    $('update_group_status').addClassName("noncurrent");
+    $('update_group_status').removeClassName("current");
+    $('update_group_instrument_mod').addClassName("current");
+    $('update_group_instrument_mod').removeClassName("noncurrent");
+  }
+}
+
+</script>

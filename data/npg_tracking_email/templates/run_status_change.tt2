@@ -1,0 +1,11 @@
+[% IF dev != 'live'; INCLUDE devel_header.tt2; END %]
+
+Run [% run %] now has a status of "[% status %]" in NPG tracking.
+
+[% INCLUDE lane_detail.tt2 -%]
+
+You can get more detail about the run through NPG:
+
+[% INCLUDE npg_tracking_web_url.tt2 %]/run/[% run %]
+
+[% INCLUDE signature.tt2 %]

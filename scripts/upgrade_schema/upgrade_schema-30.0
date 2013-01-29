@@ -1,0 +1,7 @@
+UPDATE st_cache SET type = 'library' WHERE type = 'sample';
+
+insert into usergroup(groupname,is_public,description) values ('errors',0,'mail on errors');
+insert into user(username) values ('new-seq-pipe');
+insert into user2usergroup(id_user,id_usergroup) values
+  ((SELECT id_user FROM user WHERE username = 'new-seq-pipe'),
+   (SELECT id_usergroup FROM usergroup WHERE groupname = 'errors'));

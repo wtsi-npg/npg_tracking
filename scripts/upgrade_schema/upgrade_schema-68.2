@@ -1,0 +1,12 @@
+drop table entity2reference_sequence;
+drop table reference_sequence;
+drop table project;
+
+alter table run_lane drop column auto_analyse;
+alter table run_lane drop column id_project;
+
+alter table run add column team char(10) NOT NULL;
+update run set team ='RAD' where is_dev = 1;
+update run set team = 'joint' where is_dev = 0;
+alter table run drop column is_dev;
+

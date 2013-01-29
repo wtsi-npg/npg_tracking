@@ -1,0 +1,54 @@
+# Add four fields to instrument that were previously hard-coded in srpipes.
+ALTER TABLE instrument ADD COLUMN `instrument_comp` VARCHAR(32), ADD COLUMN `mirroring_host` VARCHAR(16), ADD COLUMN `staging_dir` VARCHAR(128);
+
+# Create a 'designation' dictionary
+CREATE TABLE designation ( 
+    `id_designation` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `description` varchar(64) NOT NULL,
+    PRIMARY KEY (`id_designation`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+# Create a join table for instruments -> designation(s)
+CREATE TABLE instrument_designation (
+    `id_instrument_designation` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `id_instrument` BIGINT(20) UNSIGNED NOT NULL,
+    `id_designation` INT(11) UNSIGNED NOT NULL,
+    PRIMARY KEY (`id_instrument_designation`),
+    INDEX `id_ii` (`id_instrument`),
+    INDEX `id_id` (`id_designation`),
+    CONSTRAINT `id_ii` FOREIGN KEY (`id_instrument`)  REFERENCES `instrument`  (`id_instrument`)  ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT `id_id` FOREIGN KEY (`id_designation`) REFERENCES `designation` (`id_designation`) ON DELETE NO ACTION ON UPDATE NO ACTION
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+# Populate the dictionary with the values we have so far.
+INSERT INTO designation VALUES (2,'R&D'),(3,'Hot spare'),(4,'Accepted');
+
+# run_event* support has been redundant for about 20 releases!
+drop table run_event_attr;
+drop table run_event;
+drop table run_event_type;
+
+# analysis* tables dropped in r27
+drop table analysis_lane_qcal;
+drop table analysis_lane;
+drop table analysis;
+
+# Add cluster station instrument format.
+INSERT INTO instrument_format VALUES (NULL,10,'Cluster Station', 1, 0, 0);
+
+# addition of instrument_utilisation table
+CREATE TABLE `instrument_utilisation` (
+  `id_instrument_utilisation` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `total_insts` int(4) unsigned NOT NULL DEFAULT '0',
+  `perc_utilisation_total_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
+  `perc_uptime_total_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
+  `official_insts` int(4) unsigned NOT NULL DEFAULT '0',
+  `perc_utilisation_official_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
+  `perc_uptime_official_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
+  `prod_insts` int(4) unsigned NOT NULL DEFAULT '0',
+  `perc_utilisation_prod_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
+  `perc_uptime_prod_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
+  PRIMARY KEY (`id_instrument_utilisation`),
+  KEY `i_u_date` (`date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

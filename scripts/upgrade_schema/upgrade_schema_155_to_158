@@ -1,0 +1,177 @@
+CREATE TABLE `entity_type` (
+  `id_entity_type` bigint(20) unsigned NOT NULL auto_increment,
+  `description` char(64) NOT NULL,
+  `iscurrent` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY  (`id_entity_type`),
+  KEY `iscurrent` (`iscurrent`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `event_type` (
+  `id_event_type` bigint(20) unsigned NOT NULL auto_increment,
+  `description` char(64) NOT NULL,
+  `id_entity_type` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY  (`id_event_type`),
+  KEY `evt_entityt` (`id_entity_type`),
+  CONSTRAINT `evt_entityt` FOREIGN KEY (`id_entity_type`) REFERENCES `entity_type` (`id_entity_type`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `event` (
+  `id_event` bigint(20) unsigned NOT NULL auto_increment,
+  `id_event_type` bigint(20) unsigned NOT NULL,
+  `date` datetime NOT NULL,
+  `description` varchar(255) default NULL,
+  `entity_id` bigint(20) unsigned NOT NULL COMMENT 'the id of the entity having id_event_type.id_entity_type',
+  `id_user` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY  (`id_event`,`id_event_type`),
+  KEY `ev_u` (`id_user`),
+  CONSTRAINT `ev_u` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `event_type_subscriber` (
+  `id_event_type_subscriber` bigint(20) unsigned NOT NULL auto_increment,
+  `id_event_type` bigint(20) unsigned NOT NULL,
+  `id_usergroup` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY  USING BTREE (`id_event_type_subscriber`,`id_usergroup`,`id_event_type`),
+  KEY `evts_evt` (`id_event_type`),
+  KEY `evts_ug` (`id_usergroup`),
+  CONSTRAINT `evts_evt` FOREIGN KEY (`id_event_type`) REFERENCES `event_type` (`id_event_type`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `evts_ug` FOREIGN KEY (`id_usergroup`) REFERENCES `usergroup` (`id_usergroup`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `entity_type` VALUES (1,'run',1),(2,'instrument',1),(3,'flowcell',1),(4,'sample',1),(5,'library',1),(6,'run_status',1);
+INSERT INTO `event_type` VALUES (1,'status change',6);
+INSERT INTO `event_type_subscriber` VALUES (1,1,1);
+
+
+---------
+-- analysis_type
+--
+CREATE TABLE `analysis_type` (
+  `id_analysis_type` bigint(20) unsigned NOT NULL auto_increment,
+  `name` char(32) NOT NULL,
+  `iscurrent` tinyint(3) unsigned NOT NULL default '1',
+  PRIMARY KEY  (`id_analysis_type`,`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into analysis_type values(1,'None',1),
+(2,'MAQ',1),
+(3,'ELAND',1),
+(4,'PhageAlign',1),
+(5,'SSAHA2',1);
+
+---------
+-- analysis_target
+--
+CREATE TABLE analysis_target (
+  `id_analysis_target` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` CHAR(64) NOT NULL,
+  `id_taxonomy` BIGINT UNSIGNED NOT NULL,
+  `path` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id_analysis_target`, `name`),
+  CONSTRAINT `atidt_tidt` FOREIGN KEY `atidt_tidt` (`id_taxonomy`) REFERENCES `taxonomy` (`id_taxonomy`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE = InnoDB CHARACTER SET utf8;
+
+insert into analysis_target values(1,'none',1,'');
+
+ALTER TABLE analysis_target ADD COLUMN `iscurrent` TINYINT UNSIGNED NOT NULL DEFAULT 1 AFTER `id_taxonomy`;
+
+CREATE TABLE `library_analysis` (
+  `id_library_analysis` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id_library` BIGINT UNSIGNED NOT NULL,
+  `id_analysis_type` BIGINT UNSIGNED NOT NULL,
+  `id_analysis_target` BIGINT UNSIGNED NOT NULL,
+  `options` VARCHAR(255),
+  `comment` VARCHAR(255),
+  PRIMARY KEY (`id_library_analysis`),
+  CONSTRAINT `la_id_library` FOREIGN KEY `la_id_library` (`id_library`)
+    REFERENCES `library` (`id_library`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `la_id_analysis_type` FOREIGN KEY `la_id_analysis_type` (`id_analysis_type`)
+    REFERENCES `analysis_type` (`id_analysis_type`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `la_id_analysis_target` FOREIGN KEY `la_id_analysis_target` (`id_analysis_target`)
+    REFERENCES `analysis_target` (`id_analysis_target`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+)
+ENGINE = InnoDB
+CHARACTER SET utf8;
+
+---------
+-- sample type support from SampleSheet.xsd
+--
+
+ALTER TABLE `library` ADD COLUMN `size_min` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `external_id`;
+ALTER TABLE `library` ADD COLUMN `size_max` INT UNSIGNED NOT NULL DEFAULT 0 AFTER `size_min`;
+
+alter table library_type drop column size;
+
+CREATE TABLE `library_protocol` (
+  `id_library_protocol` bigint(20) unsigned NOT NULL auto_increment,
+  `description` char(64) NOT NULL,
+  PRIMARY KEY  (`id_library_protocol`,`description`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into library_protocol values(1,'Single End'),(2,'Paired End'),(3,'Paired End MQ');
+
+ALTER TABLE `library` ADD COLUMN `id_library_protocol` BIGINT UNSIGNED NOT NULL AFTER `size_max`;
+
+update library set id_library_protocol=2 where id_library_type=7;
+update library set id_library_protocol=3 where id_library_type=8;
+update library set id_library_protocol=1 where id_library_protocol=0;
+
+ALTER TABLE `library` ADD CONSTRAINT `lib_idlp` FOREIGN KEY `lib_idlp` (`id_library_protocol`)
+    REFERENCES `library_protocol` (`id_library_protocol`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+update library_type set description='Genomic' where id_library_type=1;
+update library set id_library_type=1 where id_library_type in (3,4,7,8);
+
+delete from library_type where id_library_type in (3,4,7,8);
+
+insert into library_type values(10,'PCR Amplicons'),
+(11,'cDNA'),
+(12,'Cell-Line'),
+(13,'Chip-Seq'),
+(14,'MeDIP');
+
+---------
+-- annotation support
+--
+CREATE TABLE `annotation` (
+  `id_annotation` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id_user` BIGINT UNSIGNED NOT NULL,
+  `date` DATETIME NOT NULL,
+  `comment` TEXT NOT NULL,
+  PRIMARY KEY (`id_annotation`),
+  CONSTRAINT `ann_idu` FOREIGN KEY `ann_idu` (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+)
+ENGINE = InnoDB
+CHARACTER SET utf8;
+
+insert into event_type(description,id_entity_type) values('annotation', 1);
+
+CREATE TABLE `run_annotation` (
+  `id_run_annotation` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id_run` BIGINT UNSIGNED NOT NULL,
+  `id_annotation` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id_run_annotation`),
+  CONSTRAINT `ra_idrun` FOREIGN KEY `ra_idrun` (`id_run`)
+    REFERENCES `run` (`id_run`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `ra_ida` FOREIGN KEY `ra_ida` (`id_annotation`)
+    REFERENCES `annotation` (`id_annotation`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+)
+ENGINE = InnoDB
+CHARACTER SET utf8;
+
+insert into user values(7,'pipeline');
+insert into usergroup(id_usergroup, groupname) values(2,'pipeline');
+insert into user2usergroup values(5,7,2);
+insert into event_type_subscriber(id_event_type,id_usergroup) values((select id_event_type from event_type where description='annotation'), (select id_usergroup from usergroup where groupname='admin'));

@@ -1,0 +1,106 @@
+[% id_instrument = model.id_instrument ? model.id_instrument : '';
+   target = (model.id_instrument && view.no_main_menu) ? 'target="runs_on_instrument" ' : '';
+%]
+<div class="roundborder">
+<div>
+<span class="page_title">Runs</span>
+ &middot;&middot;<a [%target %]href="[% SCRIPT_NAME %]/run/?id_run_status_dict=all&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[%id_instrument %]"  [% IF !model.id_run_status_dict || model.id_run_status_dict == 'all' %]class="runs_active_selection"[% END %]>all</a>&middot;&middot;
+ [% FOREACH rsd = model.current_run_status.run_status_dict.run_status_dicts -%]
+&middot;&middot;<a [%target %]href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% rsd.id_run_status_dict %]&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[% id_instrument %]"><span class="npg_nbsp [% IF rsd.id_run_status_dict == model.id_run_status_dict %]runs_active_selection[% END %]">[% rsd.description %]</span></a>&middot;&middot;
+ [% END -%]
+</div>
+[% IF !id_instrument %]
+<div>
+<span class="medium_header">Instrument Types</span>
+&middot;&middot;<a href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% model.id_run_status_dict %]&id_instrument_format=all" [% IF !model.id_instrument_format || model.id_instrument_format == 'all' %]class="runs_active_selection"[% END; target %]>all</a>&middot;&middot;
+ [% FOREACH ifs = model.instrument.instrument_format.instrument_formats; 
+      IF ifs.model != '1G' && ifs.is_used_sequencer_type -%]
+        &middot;&middot;<a href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% model.id_run_status_dict %]&id_instrument_format=[% ifs.id_instrument_format %]&id_instrument=[% id_instrument %]" [% IF ifs.id_instrument_format == model.id_instrument_format %]class="runs_active_selection"[% END %]>[% ifs.is_used_sequencer_type %]</a>&middot;&middot;
+      [%- END %]
+ [% END -%]
+</div>
+[% END %]
+
+<div class="smaller_font_85">
+<span class="medium_header ">Page: </span>
+[% i = 0 %]
+[% WHILE i * model.len < model.count_runs %]
+&middot;<a [% target %][% IF i == model.start / model.len%]class="active" [% END %] href="[% SCRIPT_NAME %]/[% model.table %][% IF model.id_instrument %]/[% model.id_instrument %][% END %]?id_run_status_dict=[% model.id_run_status_dict %]&len=[% model.len %]&start=[% i * model.len %]&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[% id_instrument %]" id="pagination_[% i+1 %]">[% i+1 %]</a>&middot;
+[% i = i + 1 %]
+[% END %]
+</div>
+</div>
+
+[%- loader = !id_instrument && (requestor.is_member_of('loaders') || requestor.is_member_of('annotators')) ? 1 : 0;
+    IF loader; -%]
+<form method="post" action="[% SCRIPT_NAME %]/run_annotation/;create_multiple_run_annotations" id="group_annotations">
+    [%- END -%]
+<table id="runs" class="sortable zebra">
+ <thead>
+  <tr>
+   [% IF loader %]<th>Annotate</th>[% END %]
+   <th>Name</th>
+   <th>Instrument</th>
+   <th>Batch</th>
+   <th title="Flowcell Verified">FC. Ver'd</th>
+   <th title="Reagents R1 Verified">R1 Ver'd</th>
+   <th title="Reagents R2 Verified">R2 Ver'd</th>
+   <th title="Cycles">Cycles</th>
+   <th title="Priority">Pri</th>
+   <th title="Team Name">Team</th>
+   <th>Status</th>
+   <th>Status Date</th>
+   <th>Status Operator</th>
+   <th>Loader</th>
+   <th>Loading Date</th>
+  </tr>
+ </thead>
+ <tbody>
+[% FOREACH run = model.runs %]
+<tr>
+ [% IF loader %]<th><input type="checkbox" class="id_run_checkbox" name="run_ids" value="[% run.id_run %]" /></th>[% END %]
+ <td><span style="display:none">[% USE String(run.id_run); String.format('%04d') %]</span><a href="[% SCRIPT_NAME %]/run/[% run.id_run %]">[% run.name %]</a></td>
+ <td><a href="[% SCRIPT_NAME %]/instrument/[% run.id_instrument %]">[% run.instrument.name %]</a>[% IF run.hiseq_slot %]  Slot [% run.hiseq_slot %][% END %]</td>
+ <td><a href="http://psd-production.internal.sanger.ac.uk:6600/batches/[% run.batch_id %]">[% run.batch_id %]</a></td>
+ <td>[% IF run.verified.flowcell %]<span style="display:none">1</span><img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<span style="display:none">0</span><img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
+ <td>[% IF run.verified.reagent1 %]<span style="display:none">1</span><img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<span style="display:none">0</span><img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
+ <td>[% IF run.verified.reagent2 %]<span style="display:none">1</span><img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<span style="display:none">0</span><img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
+ <td class="npg_nbsp">[% run.actual_cycle_count %] / [% run.expected_cycle_count %]</td>
+ <td>[% run.priority %]</td>
+ <td>[% run.team %]</td>
+ <td>[% run.current_run_status.description %]</td>
+ <td>[% run.current_run_status.date %]</td>
+ <td>[% run.current_run_status.user.username %]</td>
+ <td>[% run.loader_info.loader %]</td>
+ <td>[% run.loader_info.date %]</td>
+</tr>
+[%- END -%]
+ </tbody>
+</table>
+
+[%-IF loader -%]
+<div id="all_run_annotations">
+ <a name="annotations" id="all_run_annotations_update_extra" href="#annotations" onclick="new_form_extra('all_run_annotations'); return false;"><img src="/icons/silk/pencil_add.png" alt="annotate many runs" title="annotate multiple runs" /></a>
+ <div id="new_all_run_annotations" style="display:none;">
+   <input type="hidden" name="multiple_runs" value="1" />
+   <textarea style="vertical-align:top" name="comment" rows="2" cols="80"></textarea>
+   <div>
+   <label for="run_current_ok">Run currently ok</label>
+   <input type="radio" name="run_current_ok" value="1"/>
+   <label for="run_current_ok">Not ok</label>
+   <input type="radio" name="run_current_ok" value="0"/>
+   </div>
+   <div>
+   <label for="include_instruments">Add this annotation to instruments</label>
+   <input type="checkbox" name="include_instruments" value="1" />
+   </div>
+   <div>
+   <input type="submit" value="save" />
+   <input type="button" value="cancel" onclick="cancel_form('all_run_annotations', 1); return false;" />
+   </div>
+  </div>
+</div>
+</form>
+[%- END -%]
+
+

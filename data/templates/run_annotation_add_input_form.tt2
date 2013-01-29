@@ -1,0 +1,8 @@
+<!--begin $Id: run_annotation_add_input_form.tt2 2662 2008-08-06 12:23:37Z rmp $-->
+<div id="floating_annotate">
+  <form method="post" action="[% SCRIPT_NAME %]/run_annotation" enctype="multipart/form-data">
+  <input type="hidden" name="id_run" value="[% model.id_run %]" />
+  [% PROCESS annotation_input_box.tt2 %]
+  </form>
+</div>
+<!--end $Id: run_annotation_add_input_form.tt2 2662 2008-08-06 12:23:37Z rmp $-->

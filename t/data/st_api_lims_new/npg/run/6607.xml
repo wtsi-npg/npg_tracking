@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="6607" batch_id="12378" id_instrument="76" expected_cycle_count="158" actual_cycle_count="106" priority="1" id_run_pair="0" is_paired="0" is_dev="0" id_instrument_format="10" flowcell_id="B09KAABXX" name="HS14_06607" loader="ips" loading_date="2011-07-26" run_folder="110726_HS14_06607_B_B09KAABXX">
+ <instrument id_instrument="76" name="HS14" id_instrument_format="10" external_name="" serial="" iscurrent="1" />
+ <run_lanes><run_lane id_run_lane="52490" id_run="6607" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="1" />
+<run_lane id_run_lane="52491" id_run="6607" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="2" />
+<run_lane id_run_lane="52492" id_run="6607" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="3" />
+<run_lane id_run_lane="52493" id_run="6607" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="4" />
+<run_lane id_run_lane="52494" id_run="6607" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="5" />
+<run_lane id_run_lane="52495" id_run="6607" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="6" />
+<run_lane id_run_lane="52496" id_run="6607" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="7" />
+<run_lane id_run_lane="52497" id_run="6607" tile_count="32" tracks="4" id_project="1" projectname="FUSE" auto_analyse="1" position="8" />
+</run_lanes>
+ <current_run_status id_run_status="86147" id_run="6607" date="2011-07-26 11:27:20" id_run_status_dict="2" id_user="7" username="pipeline" iscurrent="1" description="run in progress" />
+ <run_statuses>
+ <run_status id_run_status="86147" id_run="6607" date="2011-07-26 11:27:20" id_run_status_dict="2" id_user="7" username="pipeline" iscurrent="1" description="run in progress" />
+ <run_status id_run_status="86123" id_run="6607" date="2011-07-26 10:23:11" id_run_status_dict="1" id_user="51" username="pipeline" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="16367" id_run="6607" id_annotation="17311" date="2011-07-27 10:16:33" id_user="52" username="jb2" comment="runs paused tuesday evening, resumed weds morning, as a precaution due to the possibility of a gas supply shutoff during the night, which would effect the heating" attachment_name="" run_current_ok="" current_cycle="7" />
+ <annotation id_run_annotation="16397" id_run="6607" id_annotation="17314" date="2011-07-27 13:48:17" id_user="9" username="ah1" comment="Early days so not much to see but looks okay from here." attachment_name="" run_current_ok="1" current_cycle="10" />
+ <annotation id_run_annotation="16411" id_run="6607" id_annotation="17328" date="2011-07-27 14:37:04" id_user="28" username="pav" comment="" attachment_name="" run_current_ok="1" current_cycle="11" />
+ <annotation id_run_annotation="16444" id_run="6607" id_annotation="17362" date="2011-07-28 14:35:39" id_user="51" username="ips" comment="run ok" attachment_name="" run_current_ok="" current_cycle="36" />
+ <annotation id_run_annotation="16495" id_run="6607" id_annotation="17384" date="2011-07-29 15:02:38" id_user="46" username="gkh" comment="Lane 7 G intensity below 1000 at cycle 35" attachment_name="" run_current_ok="1" current_cycle="62" />
+ <annotation id_run_annotation="16540" id_run="6607" id_annotation="17449" date="2011-07-30 15:44:50" id_user="46" username="gkh" comment="" attachment_name="" run_current_ok="1" current_cycle="83" />
+ <annotation id_run_annotation="16580" id_run="6607" id_annotation="17504" date="2011-07-31 17:18:41" id_user="46" username="gkh" comment="Lane 7 G intensity drops off at C84" attachment_name="" run_current_ok="1" current_cycle="106" />
+ </annotations>
+ <tags>
+   <tag id_tag="23" description="fc_slotB" />
+   <tag id_tag="20" description="multiplex" />
+   <tag id_tag="17" description="paired_read" />
+   <tag id_tag="16" description="rta" />
+   <tag id_tag="19" description="staging" />
+   <tag id_tag="35" description="verified" />
+ </tags>
+</run>

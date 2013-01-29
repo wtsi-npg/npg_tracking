@@ -1,0 +1,20 @@
+
+--
+-- New Table for instrument_status_annotation
+--
+
+SET character_set_client = utf8;
+CREATE TABLE `instrument_status_annotation` (
+  `id_instrument_status_annotation` bigint(20) unsigned NOT NULL auto_increment,
+  `id_instrument_status` bigint(20) unsigned NOT NULL,
+  `id_annotation` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY  (`id_instrument_status_annotation`),
+  UNIQUE INDEX (`id_instrument_status`, `id_annotation`),
+  CONSTRAINT `isa_ida` FOREIGN KEY (`id_annotation`) REFERENCES `annotation` (`id_annotation`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `isa_idis` FOREIGN KEY (`id_instrument_status`) REFERENCES `instrument_status` (`id_instrument_status`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `run_annotation` ADD COLUMN `run_current_ok` tinyint(1) unsigned DEFAULT NULL AFTER `id_annotation`;
+ALTER TABLE `run_annotation` ADD COLUMN `current_cycle` bigint(20) unsigned DEFAULT NULL AFTER `run_current_ok`;
+
+ALTER TABLE `instrument` ADD COLUMN `latest_contact` DATETIME DEFAULT NULL;

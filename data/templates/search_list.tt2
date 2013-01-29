@@ -1,0 +1,31 @@
+
+<br/>
+basic | <a href="[% SCRIPT_NAME %]/search/;list_advanced">advanced</a>
+
+<br/><br/>
+<fieldset style="width:20em">
+ <legend>Search for term</legend>
+ <form method="get" action="[% SCRIPT_NAME %]/search">
+  <input type="text" size="20" name="query" value="[% model.query %]" />
+  <input type="submit" value="search" />
+ </form>
+</fieldset>
+<br/>
+[% IF model.query %]
+<dl class="hitlist">
+[% FOREACH hit = model.results %]
+<div>
+ <dt><a href="[% SCRIPT_NAME %]/[% hit.0 %]/[% hit.1 %]">[% hit.0 %] [% hit.1 %]</a> ([% hit.2 %])</dt>
+ <dd>[% PERL %]my $str=$stash->get('hit.3');my $q=$stash->get('model.query');$str =~ s{$q}{<span class="hit">$q</span>}smixg; print $str;[% END %]</dd>
+</div>
+[% END %]
+</dl>
+[% ELSE %]
+<fieldset><legend>Examples</legend>
+ <ul>
+  <li>Batch Id <a href="[% SCRIPT_NAME %]/search?query=1002">1002</a></li>
+  <li>Run Id <a href="[% SCRIPT_NAME %]/search?query=582">582</a></li>
+  <li>Project name <a href="[% SCRIPT_NAME %]/search?query=triospilot">triospilot</a></li>
+ </ul>
+</fieldset>
+[% END %]

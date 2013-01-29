@@ -1,0 +1,112 @@
+#!/usr/bin/env perl
+#############
+# $Id: event_notifications 16411 2013-01-08 15:26:40Z mg8 $
+# Created By: ajb
+# Last Maintained By: $Author: mg8 $
+# Created On: 2010-02-10
+# Last Changed On: $Date: 2013-01-08 15:26:40 +0000 (Tue, 08 Jan 2013) $
+# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/bin/event_notifications $
+
+package event_notifications;
+
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use Carp;
+use English qw(-no_match_vars);
+
+use npg_tracking::Schema;
+use npg::email;
+use npg::email::event;
+
+use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16411 $ =~ /(\d+)/smx; $r; };
+
+
+my $schema = npg_tracking::Schema->connect();
+my $templates = "$Bin/../$npg::email::DEFAULT_TEMPLATE_LOCATION";
+
+my $todo_rs = $schema->resultset('Event')
+    ->search( { notification_sent => '0000-00-00 00:00:00' } );
+
+while ( my $job = $todo_rs->next() ) {
+    eval {
+      my $notify = npg::email::event->new(
+        {
+          event_row                => $job,
+          schema_connection        => $schema,
+          email_templates_location => $templates,
+        }
+      );
+      $notify->run();
+      1;
+    }
+    or do {
+      carp q{Event } . $job->id_event() . qq{ not processed\n$EVAL_ERROR};
+    };
+}
+
+1;
+
+
+__END__
+
+
+=head1 NAME
+
+event_notifications -- send notifications for events
+
+=head1 VERSION
+
+$Revision: 16411 $
+
+=head1 SYNOPSIS
+
+    C<<event_notifications>>
+
+=head1 DESCRIPTION
+
+Check the database for events that have a blank notification field (actually
+'0000-00-00 00:00:00'). Send an email, and inform Sequencescape if appropriate,
+and update the field with the current date/time.
+
+=head1 SUBROUTINES/METHODS
+
+None.
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+PERL5LIB should include the paths for npg::common and npg_tracking::Schema
+
+Set $ENV{dev} to get the script to use a dev or test database.
+
+=head1 INCOMPATIBILITIES
+
+None known.
+
+=head1 BUGS AND LIMITATIONS
+
+Please inform the author of any found.
+
+=head1 AUTHOR
+
+John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (C) 2011 GRL, by John O'Brien
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

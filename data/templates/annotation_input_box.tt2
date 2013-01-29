@@ -1,0 +1,8 @@
+<!--begin $Id: annotation_input_box.tt2 3225 2008-10-13 14:04:58Z rmp $ -->
+<div id="floating_annotate_inner">
+  <label for="annotation comment">Annotation:</label>
+  <textarea style="vertical-align:top" name="comment" rows="3" cols="40"></textarea>
+  <input type="submit" value="save" /><br />
+  <span style="font-size:smaller">Enter links in comments as plain URLs, no formatting</span>
+</div>
+<!--end $Id: annotation_input_box.tt2 3225 2008-10-13 14:04:58Z rmp $-->

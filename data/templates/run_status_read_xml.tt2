@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run_status id_run_status="[% model.id_run_status %]" id_run="[% model.id_run %]" date="[% model.date %]" id_run_status_dict="[% model.id_run_status_dict %]" id_user="[% model.id_user %]" iscurrent="[% model.iscurrent %]" description="[% model.run_status_dict.description %]" />

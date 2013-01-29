@@ -1,0 +1,11 @@
+[% IF dev != 'live'; INCLUDE devel_header.tt2; END %]
+
+Instrument [% instrument %] has had the following annotation added in NPG tracking.
+
+[% annotation %]
+
+You can get more detail about the instrument through NPG:
+
+[% INCLUDE npg_tracking_web_url.tt2 %]/instrument/[% instrument %]
+
+[% INCLUDE signature.tt2 %]

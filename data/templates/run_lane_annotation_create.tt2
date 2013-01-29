@@ -1,0 +1,25 @@
+<!-- begin $Id: run_lane_annotation_create.tt2 2662 2008-08-06 12:23:37Z rmp $ -->
+<div>
+  <h2>Saved Run Lane Annotation</h2>
+  <p>You have saved a run lane annotation for run lane [% model.id_run_lane %] (Run [% model.run_lane.run.name %], Lane [% model.run_lane.position %])</p>
+
+[% IF model.last_lane %]
+  <p>This is the last lane of [% model.run_lane.run.name %] to be qc reviewed. Please add an annotation for the run.</p>
+  [% SET model = model.run_lane.run %]
+  [% PROCESS run_annotation_add_input_form.tt2 %]
+[% ELSE %]
+  
+[% IF model.bad_lane == 1 %]
+  <p>Please click <a href="[% SCRIPT_NAME %]/run/[% model.run_lane.id_run %]">here</a> to return to the run page.
+  <script type="text/javascript">
+    document.location.href = '[% SCRIPT_NAME %]/run/[% model.run_lane.id_run %]';
+[% ELSE %]
+  <p>Please click <a href="[% SCRIPT_NAME %]/run_lane/[% model.id_run_lane %]">here</a> to return to the run lane page.
+  <script type="text/javascript">
+    document.location.href = '[% SCRIPT_NAME %]/run_lane/[% model.id_run_lane %]';
+[% END %]
+  </script>
+
+[% END %]
+</div>
+<!-- end $Id: run_lane_annotation_create.tt2 2662 2008-08-06 12:23:37Z rmp $ -->

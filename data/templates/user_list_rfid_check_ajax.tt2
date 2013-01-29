@@ -1,0 +1,16 @@
+[% IF model.id_user && model.is_member_of( 'loaders' ); rfid_username=model.username; rfid_realname=view.realname(rfid_username); -%]
+  Rfid accepted for [% rfid_realname %]
+  <div id="returned_username" style="display:none;" username="[% rfid_username %]">[% rfid_username %]</div>
+[% ELSE -%]
+  <div id="rfid_div">
+[% IF model.id_user -%]
+  [% rfid_realname %] is not a registered loader. Either you have not been added to the loaders group, or you should not be attempting to do any loader based actions.
+[% ELSE -%]
+  This rfid has not been registered. Please login through SSO and register/change on your user page.
+[% END -%]
+    <form>
+    rfid tag: <textarea value="" name="rfid" rows="1" cols="15" id="rf_id_input"></textarea>
+    </form>
+  </div>
+[% END -%]
+

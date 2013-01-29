@@ -1,0 +1,7 @@
+Instrument status updated ok.
+
+Please click <a href="[% SCRIPT_NAME %]/instrument/[% model.id_instrument %]">here</a> to continue.
+
+<script type="text/javascript">
+  document.location.href = '[% SCRIPT_NAME %]/instrument/[% model.id_instrument %]';
+</script>

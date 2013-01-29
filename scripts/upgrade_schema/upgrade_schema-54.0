@@ -1,0 +1,12 @@
+insert into entity_type (id_entity_type, description, iscurrent) values
+  (15, 'run_annotation', 1),
+  (16, 'run_lane_annotation', 1),
+  (17, 'instrument_annotation', 1);
+
+insert into event_type (description, id_entity_type) values
+  ('annotation', 15),
+  ('annotation', 16),
+  ('annotation', 17);
+
+
+ALTER TABLE `event` CHANGE COLUMN `notification_sent` `notification_sent` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00';

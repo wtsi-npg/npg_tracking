@@ -1,0 +1,49 @@
+<fieldset>
+  <legend>Select an admin option</legend>
+  <div id="admin_options">
+    <ul class="inline">
+      <li><a href="javascript:void(show_form('instrument_mod'))">[New Instrument Mod]</a></li>
+      <li><a href="javascript:void(show_form('instrument_status'))">[New Instrument Status]</a></li>
+      <li><a href="javascript:void(show_form('new_user'))">[New User]</a></li>
+      <li><a href="javascript:void(show_form('new_usergroup'))">[New Usergroup]</a></li>
+      <li><a href="javascript:void(show_form('new_entity_type'))">[New Entity Type]</a></li>
+      <li><a href="javascript:void(show_form('new_run_status'))">[New Run Status]</a></li>
+      <li><a href="javascript:void(show_form('add_to_usergroup'))">[Add User to Usergroup]</a></li>
+    </ul>
+    <div class="clearfloats"></div>
+    <div id="spinner" style="display:none;">
+      <img src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />
+    </div>
+  </div>
+</fieldset>
+<br /><br />
+<div id="form_space">
+  <fieldset>
+    <legend>Your choice will display here.</legend>
+  </fieldset>
+</div>
+<script type="text/javascript">
+  function show_form(form) {
+    if (form == 'instrument_mod') {
+      $('form_space').replace('<div id="form_space"><fieldset><legend>Enter new Instrument Mod</legend><form method="post" action="/cgi-bin/npg/administration/;create_instrument_mod"><label for="select existing mod description">Select a Mod Description:</label><select name="description"><option value="">-</option><option value="Mode Scrambler">Mode Scrambler</option><option value="Objective">Objective</option><option value="PE module">PE module</option><option value="Prism">Prism</option></select><label for="new mod description">Or new mod description:</label> <input type="text" name="new_description" /><br /><label for="new revision">New Revision:</label> <input type="text" name="revision" /> <input type="submit" value="New Mod" /></form></fieldset></div>');
+    }
+    if (form == 'instrument_status') {
+      $('form_space').replace('<div id="form_space"><fieldset><legend>Enter new Instrument Status</legend><form method="post" action="/cgi-bin/npg/administration/;create_instrument_status"><label for="new instrument status">New Instrument Status:</label> <input type="text" name="description" /><input type="submit" value="New Status" /></form></fieldset></div>');
+    }
+    if (form == 'new_user') {
+      $('form_space').replace('<div id="form_space"><fieldset><legend>Enter new User</legend><form method="post" action="/cgi-bin/npg/administration/;create_user"><label for="username">Username:</label> <input type="text" name="username" /><input type="submit" value="New User" /></form></fieldset></div>');
+    };
+    if (form == 'new_usergroup') {
+      $('form_space').replace('<div id="form_space"><fieldset><legend>Enter new Usergroup</legend><form method="post" action="/cgi-bin/npg/administration/;create_usergroup"><label for="groupname">Groupname:</label> <input type="text" name="groupname" /><label for="description">Description:</label> <input type="text" name="description" /><label for="is public">Is Public?</label> <select name="is_public" /><option value="0">No</option><option value="1">Yes</option></select><input type="submit" value="New Usergroup" /></form></fieldset></div>');
+    };
+    if (form == 'new_entity_type') {
+      $('form_space').replace('<div id="form_space"><fieldset><legend>Enter new Entity Type</legend><form method="post" action="/cgi-bin/npg/administration/;create_entity_type"><label for="description">Description:</label> <input type="text" name="description" /> <label for="iscurrent">IsCurrent?</label> <select name="iscurrent" /><option value="1">Yes</option><option value="0">No</option></select><input type="submit" value="New Entity Type" /></form></fieldset></div>');
+    };
+    if (form == 'new_run_status') {
+      $('form_space').replace('<div id="form_space"><fieldset><legend>Enter new Run Status</legend><form method="post" action="/cgi-bin/npg/administration/;create_run_status"><label for="description">Description:</label> <input type="text" name="description" /><input type="submit" value="New Run Status" /></form></fieldset></div>');
+    };
+    if (form == 'add_to_usergroup') {
+      $('form_space').replace('<div id="form_space"><fieldset><legend>Add User to Usergroup</legend><form method="post" action="/cgi-bin/npg/administration/;create_user_to_usergroup"><label for="user">User:</label> <select name="id_user"><option value="1">joe_admin</option><option value="2">public</option><option value="3">joe_loader</option><option value="4">joe_engineer</option><option value="5">joe_annotator</option><option value="6">joe_results</option><option value="7">pipeline</option><option value="8">joe_events</option></select><label for="usergroup">Usergroup:</label> <select name="id_usergroup"><option value="1">admin</option><option value="2">pipeline</option><option value="3">results</option><option value="4">events</option><option value="5">loaders</option><option value="6">engineers</option><option value="8">annotators</option></select> <input type="submit" value= "Add to Usergroup" /></form></fieldset></div>');
+    };
+  }
+</script>

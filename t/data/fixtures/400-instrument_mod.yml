@@ -1,0 +1,92 @@
+---
+- date_added: 2008-04-07 16:00:17
+  date_removed: 2008-04-08 17:00:17
+  id_instrument: 4
+  id_instrument_mod: 7
+  id_instrument_mod_dict: 1
+  id_user: 7
+  iscurrent: 1
+- date_added: 2008-04-08 17:00:17
+  date_removed: ~
+  id_instrument: 3
+  id_instrument_mod: 8
+  id_instrument_mod_dict: 7
+  id_user: 7
+  iscurrent: 1
+- date_added: 2008-04-08 17:00:17
+  date_removed: ~
+  id_instrument: 4
+  id_instrument_mod: 9
+  id_instrument_mod_dict: 6
+  id_user: 7
+  iscurrent: 1
+- date_added: 2008-04-08 17:00:17
+  date_removed: ~
+  id_instrument: 6
+  id_instrument_mod: 10
+  id_instrument_mod_dict: 7
+  id_user: 7
+  iscurrent: 1
+- date_added: 2008-04-08 17:00:17
+  date_removed: ~
+  id_instrument: 7
+  id_instrument_mod: 11
+  id_instrument_mod_dict: 7
+  id_user: 7
+  iscurrent: 1
+- date_added: 2008-04-08 17:00:17
+  date_removed: ~
+  id_instrument: 8
+  id_instrument_mod: 12
+  id_instrument_mod_dict: 7
+  id_user: 7
+  iscurrent: 1
+- date_added: 2008-04-08 17:00:17
+  date_removed: ~
+  id_instrument: 9
+  id_instrument_mod: 13
+  id_instrument_mod_dict: 7
+  id_user: 7
+  iscurrent: 1
+- date_added: 2008-04-08 17:00:17
+  date_removed: ~
+  id_instrument: 10
+  id_instrument_mod: 14
+  id_instrument_mod_dict: 7
+  id_user: 7
+  iscurrent: 1
+- date_added: 2008-04-08 17:00:17
+  date_removed: ~
+  id_instrument: 11
+  id_instrument_mod: 15
+  id_instrument_mod_dict: 7
+  id_user: 7
+  iscurrent: 1
+- date_added: 2008-04-08 17:00:17
+  date_removed: ~
+  id_instrument: 12
+  id_instrument_mod: 16
+  id_instrument_mod_dict: 7
+  id_user: 7
+  iscurrent: 1
+- date_added: 2008-04-08 17:00:17
+  date_removed: ~
+  id_instrument: 13
+  id_instrument_mod: 17
+  id_instrument_mod_dict: 7
+  id_user: 7
+  iscurrent: 1
+- date_added: 2010-05-15 17:00:17
+  date_removed: ~
+  id_instrument: 3
+  id_instrument_mod: 18
+  id_instrument_mod_dict: 11
+  id_user: 7
+  iscurrent: 1
+- date_added: 2010-09-16 11:19:47
+  date_removed: ~
+  id_instrument: 13
+  id_instrument_mod: 19
+  id_instrument_mod_dict: 11
+  id_user: 7
+  iscurrent: 1

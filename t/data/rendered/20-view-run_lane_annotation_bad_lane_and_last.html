@@ -1,0 +1,16 @@
+<div>
+<h2>Saved Run Lane Annotation</h2>
+<p>You have saved a run lane annotation for run lane 1 (Run IL1_0001, Lane 1)</p>
+<p>This is the last lane of IL1_0001 to be qc reviewed. Please add an annotation for the run.</p>
+<div id="floating_annotate">
+  <form method="post" action="/cgi-bin/npg/run_annotation" enctype="multipart/form-data">
+  <input type="hidden" name="id_run" value="1" />
+<div id="floating_annotate_inner">
+  <label for="annotation comment">Annotation:</label>
+  <textarea style="vertical-align:top" name="comment" rows="3" cols="40"></textarea>
+  <input type="submit" value="save" /><br />
+  <span style="font-size:smaller">Enter links in comments as plain URLs, no formatting</span>
+</div>
+  </form>
+</div>
+</div>

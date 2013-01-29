@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batch>
+  <id>3022</id>
+  <status>released</status>
+  <lanes>
+    <lane position="1" priority="0" id="1421689">
+      <library name="berg_no_pcr 1" request_id="2910076" id="52477" qc_state="pending">
+        <sample library_id="52477" sample_id="1888" project_id="155" library_type="No PCR" study_id="155" library_name="berg_no_pcr 1">
+          <bait id="2">
+            <name>Mouse all exon</name>
+          </bait>
+          <insert_size from="100" to="400"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="2" priority="0" id="1421691">
+      <library name="berg_no_pcr_tight 1" request_id="2910078" id="52479" qc_state="pending">
+        <sample library_id="52479" sample_id="1889" project_id="155" library_type="No PCR" study_id="155" library_name="berg_no_pcr_tight 1">
+          <insert_size from="150" to="250"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="3" priority="0" id="1421564">
+      <library name="E. multiloc gDNA 3" request_id="2909951" id="53181" qc_state="pass">
+        <sample library_id="53181" sample_id="1673" project_id="143" library_type="Long range" study_id="143" library_name="E. multiloc gDNA 3">
+          <insert_size from="3000" to="3000"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="4" priority="0" id="81323">
+      <control name="phiX_SI_SPRI 1" request_id="42544" id="79572">
+        <sample library_id="79572" sample_id="9831" project_id="" library_type="" study_id="" library_name="phiX_SI_SPRI 1"> 
+          <bait id="2">
+            <name>Mouse all exon</name>
+          </bait>
+        </sample>
+      </control>
+    </lane>
+    <lane position="5" priority="0" id="82807">
+      <library name="GGO500or 1" request_id="14170" id="50809" qc_state="pending">
+        <sample library_id="50809" sample_id="1266" project_id="33" library_type="High complexity and double size selected" study_id="33" library_name="GGO500or 1">
+          <insert_size from="450" to="500"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="6" priority="0" id="82808">
+      <library name="GGO500or 1" request_id="14171" id="50809" qc_state="pending">
+        <sample library_id="50809" sample_id="1266" project_id="33" library_type="High complexity and double size selected" study_id="33" library_name="GGO500or 1">
+          <insert_size from="450" to="500"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="7" priority="0" id="82809">
+      <library name="GGO500or 1" request_id="14172" id="50809" qc_state="pending">
+        <sample library_id="50809" sample_id="1266" project_id="33" library_type="High complexity and double size selected" study_id="33" library_name="GGO500or 1">
+          <insert_size from="450" to="500"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="8" priority="0" id="82810">
+      <library name="GGO500or 1" request_id="14173" id="50809" qc_state="pending">
+        <sample library_id="50809" sample_id="1266" project_id="33" library_type="High complexity and double size selected" study_id="33" library_name="GGO500or 1">
+          <insert_size from="450" to="500"/>
+        </sample>
+      </library>
+    </lane>
+  </lanes>
+</batch>

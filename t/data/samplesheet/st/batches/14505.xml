@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batch>
+  <id>14505</id>
+  <status>released</status>
+  <lanes>
+    <lane position="1" priority="0" id="3911772">
+      <library name="SriL3_66K_212889 3789277" request_id="3642560" id="3789277" qc_state="pass">
+        <sample library_type="qPCR only" study_id="521" library_id="3789277" sample_id="1289830" project_id="521" library_name="SriL3_66K_212889 3789277">
+          <insert_size from="300" to="400"/>
+        </sample>
+      </library>
+    </lane>
+  </lanes>
+</batch>

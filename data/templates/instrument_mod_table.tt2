@@ -1,0 +1,28 @@
+<table class="sortable zebra" id="instrument_mods">
+  <caption>Instrument Mods</caption>
+  <thead>
+    <tr>
+      <th>Instrument</th>
+      <th>Mode Scrambler</th>
+      <th>Objective</th>
+      <th>PE Module</th>
+      <th>Prism</th>
+      <th>Recipes</th>
+      <th>SCS</th>
+      <th>Tubing</th>
+      [% IF engineer %]<th>&nbsp;</th>[% END %]
+    </tr>
+  </thead>
+  <tbody>[% FOREACH instrument = model.instruments %]<tr>
+      <td><a href="[% SCRIPT_NAME %]/instrument/[% instrument.id_instrument %]">[% instrument.name %]</a></td>
+      <td>[% instrument.current_instrument_mods.mode_scrambler.revision %]</td>
+      <td>[% instrument.current_instrument_mods.objective.revision %]</td>
+      <td>[% instrument.current_instrument_mods.pe_module.revision %]</td>
+      <td>[% instrument.current_instrument_mods.prism.revision %]</td>
+      <td>[% instrument.current_instrument_mods.recipes.revision %]</td>
+      <td>[% instrument.current_instrument_mods.scs.revision %]</td>
+      <td>[% instrument.current_instrument_mods.tubing.revision %]</td>
+      [% IF engineer %]<td><input type="checkbox" id="id_instrument_[% instrument.id_instrument %]" class="id_instrument_checkbox" name="id_instrument" value="[% instrument.id_instrument %]" /</td>[% END %]
+    </tr>[% END %]
+  </tbody>
+</table>

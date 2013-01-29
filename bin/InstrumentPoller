@@ -1,0 +1,166 @@
+#!/usr/bin/env perl
+#########
+# Author:        jo3
+# Maintainer:    $Author: mg8 $
+# Created:       2010-04-28
+# Last Modified: $Date: 2013-01-07 11:04:50 +0000 (Mon, 07 Jan 2013) $
+# Id:            $Id: InstrumentPoller 16389 2013-01-07 11:04:50Z mg8 $
+# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/bin/InstrumentPoller $
+
+package InstrumentPoller;
+
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use Carp;
+use DateTime;
+use English qw(-no_match_vars);
+use File::Slurp;
+use autodie qw(:all);
+
+use npg_tracking::Schema;
+
+use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16389 $ =~ /(\d+)/smx; $r; };
+
+Readonly::Scalar my $LOG_ROOT => "$Bin/../logs/";
+
+
+my $schema = npg_tracking::Schema->connect();
+
+
+#Fetch the list of instruments.
+my $query = { iscurrent => 1, };
+if ( scalar @ARGV > 0 ) {
+
+    my ( @id_list, @name_list );
+    foreach my $arg (@ARGV) {
+        ( $arg =~ m/^ \d+ $/msx )
+            ? ( push @id_list, $arg + 0 ) : ( push @name_list, $arg );
+    }
+
+    $query->{'-or'} = [ 
+                        name          => { '-in' => [ @name_list ] },
+                        id_instrument => { '-in' => [ @id_list ]   },
+                      ];
+}
+
+
+my $instrument_rs = $schema->resultset('Instrument')->search($query);
+my $local_bin = $Bin;
+
+# Go through each instrument and fork the appropriate script.
+while ( my $instr = $instrument_rs->next() ) {
+
+    $instr->set_status_wash_requied_if_needed();
+
+    my $model = $instr->instrument_format->model();
+    my $id    = $instr->id_instrument();
+    my $name  = $instr->name();
+
+    my $log =
+        ( $ENV{dev} eq 'live' ) ? $LOG_ROOT : $ENV{HOME} . '/instr_logs/';
+    
+    ( -e $log ) || ( mkdir $log );
+
+    $log .= 'instrument_' . $name . '_monitor.log';
+    if (!-e $log) { `touch $log`; }
+
+    my $command =  $model eq 'HK' ? 'ga_II_checker' : lc $model . '_checker';
+    $command = $EXECUTABLE_NAME  . q[ ] . join(q[/], $local_bin, $command);
+    $command .= qq[ --ident $id];
+    checker_fork( $command, $log );
+}
+
+
+sub checker_fork {
+    my ( $command, $log ) = @_;
+
+    my $now = DateTime->now( time_zone => 'local' )->strftime( '%F %T' );
+    append_file( $log, "$now\n" );
+
+    eval {
+            system "$command 2>> $log";
+            1;
+         }
+         or do {
+            append_file( $log, $EVAL_ERROR, "\n" );
+         };
+
+    return;
+}
+
+
+1;
+
+
+__END__
+
+
+=head1 NAME
+
+instrument_poller - Poll instruments to get data updates.
+
+=head1 VERSION
+
+$Revision: 16389 $
+
+=head1 SYNOPSIS
+
+    C<perl instrument_poller [int1] [int2] ... [name1] [name2] ...>
+
+=head1 DESCRIPTION
+
+    This script forks other scripts to query current instruments for updates
+    to relevant data - the script it forks depends on the instrument format.
+
+    It can be called with a list of instrument identifiers. These can be any
+    mixture of unsigned integers corresponding to the database ids of the
+    instruments or the database names of the instruments. If any of these
+    identifiers are invalid (i.e. not found in the database) they will be
+    silently ignored. Duplicate entries are also ignored.
+
+    With no arguments, the script will get a list of all instruments from the
+    database.
+    
+    In either case it will silently skip instruments that are not marked
+    'iscurrent' in the database or that are not a GA-II, a HiSeq, or a cBot
+    model.
+
+=head1 SUBROUTINES/METHODS
+
+=head2 checker_fork
+
+    Take a string as the sole argument and fork to execute it.
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+    Set the environmental variable dev to 'dev' to use the development
+    database. Any other value, or undef, will use the live database.
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (C) 2010 GRL, by John O'Brien
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

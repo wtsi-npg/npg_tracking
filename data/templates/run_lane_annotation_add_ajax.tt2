@@ -1,0 +1,13 @@
+<!--begin $Id: run_lane_annotation_add_ajax.tt2 2662 2008-08-06 12:23:37Z rmp $-->
+<form method="post" action="[% SCRIPT_NAME %]/run_lane_annotation" enctype="multipart/form-data">
+ <input type="hidden" name="id_run_lane" value="[% model.id_run_lane %]" />
+ <label for="comment">Comment</label>
+ <textarea style="vertical-align:top" name="comment" rows="3" cols="40"></textarea><br />
+ <label for="attachment">File Upload</label>
+ <input type="file" name="attachment" />
+ <input type="submit" value="save" />
+</form>
+<span style="font-size:smaller">
+ Enter links in comments as plain URLs, no formatting
+</span>
+<!--end $Id: run_lane_annotation_add_ajax.tt2 2662 2008-08-06 12:23:37Z rmp $-->

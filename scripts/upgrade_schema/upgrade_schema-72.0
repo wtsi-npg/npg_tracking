@@ -1,0 +1,39 @@
+alter table instrument_status_dict add column iscurrent tinyint unsigned default 1 not null;
+update instrument_status_dict set iscurrent=0 where description='down';
+update instrument_status_dict set iscurrent=0 where description='planned maintenance';
+
+insert into instrument_status_dict (description) values ('planned repair');
+insert into instrument_status_dict (description) values ('down for repair');
+insert into instrument_status_dict (description) values ('planned service');
+insert into instrument_status_dict (description) values ('down for service'); 
+
+alter table run_status_dict add column iscurrent tinyint unsigned default 1 not null;
+alter table run_status_dict add column temporal_index smallint unsigned default null;
+
+# statuses not in use
+update run_status_dict set iscurrent=0 where description='analysis prelim';
+update run_status_dict set iscurrent=0 where description='analysis prelim complete';
+update run_status_dict set iscurrent=0 where description='run quarantined';
+
+# statuses in use ordered
+update run_status_dict set temporal_index=100 where description='run pending';
+update run_status_dict set temporal_index=120 where description='run in progress';
+update run_status_dict set temporal_index=130 where description='run on hold';
+update run_status_dict set temporal_index=140 where description='run cancelled';
+update run_status_dict set temporal_index=150 where description='run stopped early';
+update run_status_dict set temporal_index=160 where description='run complete';
+update run_status_dict set temporal_index=170 where description='run mirrored';
+update run_status_dict set temporal_index=200 where description='analysis pending';
+update run_status_dict set temporal_index=210 where description='analysis cancelled';
+update run_status_dict set temporal_index=220 where description='data discarded';
+update run_status_dict set temporal_index=230 where description='analysis on hold';
+update run_status_dict set temporal_index=240 where description='analysis in progress';
+update run_status_dict set temporal_index=250 where description='secondary analysis in progress';
+update run_status_dict set temporal_index=260 where description='analysis complete';
+update run_status_dict set temporal_index=300 where description='qc review pending';
+update run_status_dict set temporal_index=310 where description='qc in progress';
+update run_status_dict set temporal_index=320 where description='qc on hold';
+update run_status_dict set temporal_index=400 where description='archival pending';
+update run_status_dict set temporal_index=410 where description='archival in progress';
+update run_status_dict set temporal_index=420 where description='run archived';
+update run_status_dict set temporal_index=500 where description='qc complete';

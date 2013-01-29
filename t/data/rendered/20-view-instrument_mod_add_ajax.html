@@ -1,0 +1,17 @@
+<form method="post" action="/cgi-bin/npg/instrument_mod/;create">
+  <input type="hidden" name="id_instrument" value="3" />
+  Type: <select name="id_instrument_mod_dict" id="id_instrument_mod_dict">
+    <option value="10">Mode Scrambler MKIV</option>
+    <option value="8">Objective Custom</option>
+    <option value="9">Objective Lead Free</option>
+    <option value="1">PE module A</option>
+    <option value="2">PE module B</option>
+    <option value="3">PE module C</option>
+    <option value="4">PE module D</option>
+    <option value="5">PE module E</option>
+    <option value="6">PE module F</option>
+    <option value="7">Prism 67deg</option>
+  </select>
+  Is Current: <input type="checkbox" name="iscurrent" value="1" checked="1" />
+  <input type="submit" value="save" />
+</form>

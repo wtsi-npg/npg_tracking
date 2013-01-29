@@ -1,0 +1,10 @@
+CREATE TABLE `st_cache` (
+  `id_cache` bigint(20) unsigned NOT NULL auto_increment,
+  `id_run` bigint(20) unsigned NOT NULL default '0',
+  `type` char(64) NOT NULL default '',
+  `content` char(255) NOT NULL default '',
+  PRIMARY KEY  (`id_cache`),
+  KEY `stc_id_run` (`id_run`),
+  KEY `type` (`type`),
+  CONSTRAINT `stc_id_run` FOREIGN KEY (`id_run`) REFERENCES `run` (`id_run`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

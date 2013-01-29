@@ -1,0 +1,88 @@
+
+[% PROCESS instrument_status_menu.tt2 
+           index=1
+%]
+
+<table id="instruments" class="sortable zebra">
+ <!--<caption>Instruments</caption>-->
+ <thead>
+  <tr>
+   <th>Name</th>
+   <th>Model</th>
+   <th>External Name</th>
+   <th>Designation</th>
+   <th>Serial #</th>
+   <th>Is Current</th>
+   <th>Current Run</th>
+   <th>Current Status</th>
+   <th>Status Comment</th>
+  </tr>
+ </thead>
+ <tbody>
+[% FOREACH instrument = model.instruments %]
+  <tr>
+   <td><span style="display:none">[% USE String(instrument.id_instrument); String.format('%04d') %]</span><a href="[% SCRIPT_NAME %]/instrument/[% instrument.id_instrument %]">[% instrument.name %]</a></td>
+   <td>[% instrument.model %]</td>
+   <td>[% instrument.external_name %]</td>
+   <td>[% IF instrument.designations %][% FOREACH designation = instrument.designations %][% designation.description | html %]&nbsp;[% END %][% ELSE %]&nbsp;[% END %]</td>
+   <td>[% instrument.serial %]</td>
+   <td>[% IF instrument.iscurrent %]<img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
+   <td>[% PROCESS current_runs_info %]</td>
+   <td>[% instrument.current_instrument_status.instrument_status_dict.description %]</td>
+   <td>[% instrument.current_instrument_status.comment %]</td>
+  </tr>
+[% END %]
+ </tbody>
+</table>
+<h3>Instrument Utilisation and Uptime</h3>
+<table id="all_instrument_uptime" class="sortable zebra" style="float: left;">
+  <caption>Individual Instrument Uptime</caption>
+  <thead>
+   <tr>
+    <th>Instrument</th>
+    <th>Over 90 days</th>
+    <th>Over 30 days</th>
+   </tr>
+  </thead>
+  <tbody>
+   [% FOREACH instrument = model.instruments %]<tr>
+    <td><span style="display:none">[% USE String(instrument.id_instrument); String.format('%04d') %]</span>[% instrument.name %]</td>
+    <td>[% SET value = instrument.current_instrument_status.instrument_percentage_uptimes.0 %][% IF value < 50 %]<font color="red">[% value %]</font>[% ELSE %][% value %][% END %]</td>
+    <td>[% SET value = instrument.current_instrument_status.instrument_percentage_uptimes.1 %][% IF value < 50 %]<font color="red">[% value %]</font>[% ELSE %][% value %][% END %]</td>
+   </tr> 
+  [% END %]</tbody>
+</table>
+<div style="clear:both"/>
+
+[%- BLOCK current_runs_info -%]
+[%- idle = 'idle'; -%]
+[%- IF instrument.is_hiseq_instrument;
+       fc_map = instrument.fc_slots2current_runs;
+       count = 0;
+       comma_space = ', ';
+       new_line = '';
+       FOREACH fc_slot IN fc_map.keys.sort;
+-%]
+     [%- IF count != 0 %]<br />[% END -%]
+     [%- 'flowcell ' _ fc_slot.substr(7) _ ': '; loop_count = 0; -%]
+     [%- FOREACH current_run_id IN fc_map.$fc_slot;
+           current_run = instrument.current_run_by_id(current_run_id);
+           IF current_run;
+             IF loop_count; comma_space; END;
+             PROCESS run_info;
+             loop_count = loop_count + 1;
+           END;
+         END;
+         IF loop_count == 0; idle; END;
+     -%]
+     [%- count = count + 1 -%]
+   [%- END -%]
+[%- ELSE -%]
+  [%- current_run = instrument.current_run; PROCESS run_info -%]
+[%- END -%]
+[%- END -%]
+
+[%- BLOCK run_info -%]
+[%- status = current_run.current_run_status.description -%]
+[%- IF status %]<a href="[% SCRIPT_NAME %]/run/[% current_run.id_run %]">[% current_run.name %]</a> [% status %][% ELSE; idle; END -%]
+[%- END -%]

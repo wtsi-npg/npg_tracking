@@ -1,0 +1,24 @@
+create table tag (
+ id_tag bigint unsigned not null auto_increment primary key,
+ tag char(32) default '' not null unique
+) engine=innodb;
+
+create table tag_run (
+ id_tag_run bigint unsigned not null auto_increment primary key,
+ id_run bigint unsigned not null,
+ id_tag bigint unsigned not null,
+ KEY `tr_id_run` (`id_run`),
+ KEY `tr_id_tag` (`id_tag`),
+ CONSTRAINT `tr_id_run` FOREIGN KEY (`id_run`) REFERENCES `run` (`id_run`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ CONSTRAINT `tr_id_tag` FOREIGN KEY (`id_tag`) REFERENCES `tag` (`id_tag`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) engine=innodb;
+
+create table tag_run_lane (
+ id_tag_run_lane bigint unsigned not null auto_increment primary key,
+ id_run_lane bigint unsigned not null,
+ id_tag bigint unsigned not null,
+ KEY `trl_id_run_lane` (`id_run_lane`),
+ KEY `trl_id_tag` (`id_tag`),
+ CONSTRAINT `trl_id_run_lane` FOREIGN KEY (`id_run_lane`) REFERENCES `run_lane` (`id_run_lane`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+ CONSTRAINT `trl_id_tag` FOREIGN KEY (`id_tag`) REFERENCES `tag` (`id_tag`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) engine=innodb;

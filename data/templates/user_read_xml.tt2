@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<user id_user="[% model.id_user %]" username="[% model.username %]" is_requestor="[% requestor.username == model.username %]">
+ <usergroups>
+[% FOREACH usergroup = model.usergroups %]
+  <usergroup id_usergroup="[% usergroup.id_usergroup %]" groupname="[% usergroup.groupname %]" is_public="[% usergroup.is_public %]" description="[% usergroup.description %]" />
+[% END %]
+ </usergroups>
+</user>

@@ -1,0 +1,21 @@
+---
+- date: 2008-04-04
+  id_run_lane: 5
+  id_tag: 9
+  id_tag_run_lane: 1
+  id_user: 5
+- date: 2008-04-07
+  id_run_lane: 8
+  id_tag: 9
+  id_tag_run_lane: 2
+  id_user: 5
+- date: 2008-04-07
+  id_run_lane: 8
+  id_tag: 6
+  id_tag_run_lane: 3
+  id_user: 5
+- date: 2008-04-08
+  id_run_lane: 4
+  id_tag: 2
+  id_tag_run_lane: 4
+  id_user: 5

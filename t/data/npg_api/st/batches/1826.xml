@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batch>
+  <id>1826</id>
+  <status>released</status>
+  <lanes>
+    <lane position="1" priority="0" id="67374">
+      <library name="CD_spore-01 1" request_id="4084" id="52007" qc_state="pending">
+        <sample library_id="52007" sample_id="1335" project_id="122" library_type="Standard" study_id="122" library_name="CD_spore-01 1">
+          <insert_size from="100" to="200"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="2" priority="0" id="67863">
+      <library name="WT_ttp_Sty-06 1" request_id="6825" id="51905" qc_state="pending">
+        <sample library_id="51905" sample_id="1419" project_id="107" library_type="Standard" study_id="107" library_name="WT_ttp_Sty-06 1">
+          <insert_size from="200" to="250"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="3" priority="0" id="67864">
+      <library name="ompR_ttp_Sty-07 1" request_id="6826" id="51907" qc_state="pending">
+        <sample library_id="51907" sample_id="1420" project_id="107" library_type="Standard" study_id="107" library_name="ompR_ttp_Sty-07 1">
+          <insert_size from="200" to="250"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="4" priority="0" id="80585">
+      <control name="phiX_SI_SPRI" request_id="41806" id="79570">
+        <sample library_id="79570" sample_id="9829" project_id="" library_type="" study_id="" library_name="phiX_SI_SPRI">
+        </sample>
+      </control>
+    </lane>
+    <lane position="5" priority="0" id="69608">
+      <library name="ompR_ttp_Sty-07 1" request_id="11399" id="51907" qc_state="pending">
+        <sample library_id="51907" sample_id="1420" project_id="107" library_type="Standard" study_id="107" library_name="ompR_ttp_Sty-07 1">
+          <insert_size from="200" to="250"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="6" priority="0" id="67865">
+      <library name="WT_ttp_Sty-08 1" request_id="6827" id="51909" qc_state="pending">
+        <sample library_id="51909" sample_id="1421" project_id="107" library_type="Standard" study_id="107" library_name="WT_ttp_Sty-08 1">
+          <insert_size from="200" to="250"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="7" priority="0" id="67876">
+      <library name="untreated 1" request_id="6838" id="52023" qc_state="pending">
+        <sample library_id="52023" sample_id="1426" project_id="131" library_type="Small RNA" study_id="131" library_name="untreated 1">
+          <insert_size from="117" to="117"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="8" priority="0" id="67877">
+      <library name="high dose 1" request_id="6839" id="52025" qc_state="pending">
+        <sample library_id="52025" sample_id="1427" project_id="131" library_type="Small RNA" study_id="131" library_name="high dose 1">
+          <insert_size from="117" to="117"/>
+        </sample>
+      </library>
+    </lane>
+  </lanes>
+</batch>

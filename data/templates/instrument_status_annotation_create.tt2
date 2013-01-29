@@ -1,0 +1,5 @@
+Annotation created.
+Please click <a href="[% SCRIPT_NAME %]/instrument/[% model.instrument_status.id_instrument %]">here</a> to continue.
+<script type="text/javascript">
+  document.location.href = '[% SCRIPT_NAME %]/instrument/[% model.instrument_status.id_instrument %]';
+</script>

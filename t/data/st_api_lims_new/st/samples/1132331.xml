@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sample api_version="0.6">
+  <id>1132331</id>
+  <name>HiC_H_ON_DCJ</name>
+  <study_id>429</study_id>
+  <properties>
+    <property>
+      <name>Disease</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Subject</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Treatment</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Time Point</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Organism Part</name>
+      <value></value>
+    </property>
+    <property>
+      <name>RNAi</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Growth Condition</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Immunoprecipitate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>DNA source</name>
+      <value>Genomic</value>
+    </property>
+    <property>
+      <name>Geographical region</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Compound</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Disease State</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Cell Type</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Developmental Stage</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Gender</name>
+      <value>Not Applicable</value>
+    </property>
+    <property>
+      <name>Volume (&#181;l)</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Country of origin</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Phenotype</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Genotype</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample storage conditions</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample type</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Concentration determind by</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Concentration</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Purification method</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample purified</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample extraction method</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Date of sample extraction</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Date of sample collection</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Is re-submitted?</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sibling</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Cohort</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Dose</name>
+      <value></value>
+    </property>
+    <property>
+      <name>GC content</name>
+      <value>High AT</value>
+    </property>
+    <property>
+      <name>Replicate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Father</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Mother</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Plate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Ethnicity</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Organism</name>
+      <value>Plasmodium falciparum</value>
+    </property>
+    <property>
+      <name>Sample Visibility</name>
+      <value>Hold</value>
+    </property>
+    <property>
+      <name>Sample Description</name>
+      <value></value>
+    </property>
+    <property>
+      <name>ENA Sample Accession Number</name>
+      <value>ERS033158</value>
+    </property>
+    <property>
+      <name>TAXON ID</name>
+      <value>5833</value>
+    </property>
+    <property>
+      <name>Strain</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Common Name</name>
+      <value>Plasmodium falciparum</value>
+    </property>
+    <property>
+      <name>Public Name</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Age</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Reference Genome</name>
+      <value></value>
+    </property>
+  </properties>
+  <assets>
+    <asset href="/assets/2562950" id="2562950"/>
+    <asset href="/assets/3111679" id="3111679"/>
+    <asset href="/assets/3111688" id="3111688"/>
+    <asset href="/assets/3213734" id="3213734"/>
+    <asset href="/assets/3323727" id="3323727"/>
+  </assets>
+  <study_id>429</study_id>
+</sample>

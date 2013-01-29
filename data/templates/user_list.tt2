@@ -1,0 +1,10 @@
+<!--begin $Id: user_list.tt2 5919 2009-07-20 13:54:29Z ajb $-->
+[% IF model.util.requestor.id_user %]
+<script type="text/javascript">
+ document.location.href='[% SCRIPT_NAME %]/user/[% requestor.username %]';
+</script>
+[% ELSE %]
+<h2>Users</h2>
+<p>Please <a href="https://enigma.sanger.ac.uk/sso/login">log in</a> to edit your settings</p>
+[% END %]
+<!--end $Id: user_list.tt2 5919 2009-07-20 13:54:29Z ajb $-->

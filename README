@@ -1,0 +1,43 @@
+Illumina (Hiseq, MiSeq, GA) Sequencing Instruments Tracking
+===========================================================
+
+lib directory:
+---------------
+ npg:: - web application
+ npg_tracking:: DBIx binding to the tracking database
+ st::api:: - perl binding to LIMS XML feeds
+ Monitor:: - monitoring runfolders on staging servers up to the analysis pending stage
+ npg_testing:: supplimentary modules for testing
+
+bin directory:
+--------------
+ perl scripts
+
+cgi-bin directory
+-----------------
+ cgi scripts for the web app
+
+scripts
+-------
+ supplimentary scripts
+
+htdocs directory:
+-----------------
+ images and client-side scripts for the web app
+
+data directory:
+---------------
+ templates for the web app and some cron jobs
+ db config file for the web app
+ some icons
+ Apache web server config file
+ db schema dump
+
+t directory:
+------------
+ tests
+ test data
+ supplimentary scripts and modules for testing
+
+
+

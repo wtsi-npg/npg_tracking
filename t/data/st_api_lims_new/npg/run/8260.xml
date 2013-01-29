@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="8260" batch_id="17763" id_instrument="66" expected_cycle_count="208" actual_cycle_count="208" priority="1" id_run_pair="0" is_paired="0" team="A" id_instrument_format="10" flowcell_id="D0V27ACXX" folder_name="120810_HS2_08260_B_D0V27ACXX" folder_path_glob="/{export,nfs}/sf21/ILorHSany_sf21/*/" name="HS2_08260" loader="lc2" loading_date="2012-08-10" run_folder="120810_HS2_08260_B_D0V27ACXX">
+ <instrument id_instrument="66" name="HS2" id_instrument_format="10" external_name="" serial="" iscurrent="1" />
+ <run_lanes><run_lane id_run_lane="64367" id_run="8260" tile_count="48" tracks="6" position="1" />
+<run_lane id_run_lane="64368" id_run="8260" tile_count="48" tracks="6" position="2" />
+<run_lane id_run_lane="64369" id_run="8260" tile_count="48" tracks="6" position="3" />
+<run_lane id_run_lane="64370" id_run="8260" tile_count="48" tracks="6" position="4" />
+<run_lane id_run_lane="64371" id_run="8260" tile_count="48" tracks="6" position="5" />
+<run_lane id_run_lane="64372" id_run="8260" tile_count="48" tracks="6" position="6" />
+<run_lane id_run_lane="64373" id_run="8260" tile_count="48" tracks="6" position="7" />
+<run_lane id_run_lane="64374" id_run="8260" tile_count="48" tracks="6" position="8" />
+</run_lanes>
+ <current_run_status id_run_status="109903" id_run="8260" date="2012-08-24 09:19:59" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="1" description="secondary analysis in progress" />
+ <run_statuses>
+ <run_status id_run_status="109903" id_run="8260" date="2012-08-24 09:19:59" id_run_status_dict="24" id_user="7" username="pipeline" iscurrent="1" description="secondary analysis in progress" />
+ <run_status id_run_status="109856" id_run="8260" date="2012-08-23 11:26:08" id_run_status_dict="7" id_user="7" username="pipeline" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="109849" id_run="8260" date="2012-08-23 11:11:15" id_run_status_dict="11" id_user="7" username="pipeline" iscurrent="0" description="run mirrored" />
+ <run_status id_run_status="109850" id_run="8260" date="2012-08-23 11:11:15" id_run_status_dict="6" id_user="7" username="pipeline" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="109834" id_run="8260" date="2012-08-23 10:36:23" id_run_status_dict="4" id_user="7" username="pipeline" iscurrent="0" description="run complete" />
+ <run_status id_run_status="109150" id_run="8260" date="2012-08-10 13:20:50" id_run_status_dict="2" id_user="7" username="pipeline" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="109107" id_run="8260" date="2012-08-10 09:35:27" id_run_status_dict="1" id_user="57" username="pipeline" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="31957" id_run="8260" id_annotation="28932" date="2012-08-11 09:57:36" id_user="9" username="ah1" comment="Early days but looks okay from here." attachment_name="" run_current_ok="1" current_cycle="10" />
+ <annotation id_run_annotation="31989" id_run="8260" id_annotation="28964" date="2012-08-11 15:15:58" id_user="9" username="ah1" comment="R1 Prephasing 0.4 - 0.44." attachment_name="" run_current_ok="1" current_cycle="14" />
+ <annotation id_run_annotation="32001" id_run="8260" id_annotation="28976" date="2012-08-12 07:07:23" id_user="9" username="ah1" comment="" attachment_name="" run_current_ok="1" current_cycle="27" />
+ <annotation id_run_annotation="32055" id_run="8260" id_annotation="29036" date="2012-08-13 09:21:55" id_user="52" username="jb2" comment="" attachment_name="" run_current_ok="1" current_cycle="47" />
+ <annotation id_run_annotation="32104" id_run="8260" id_annotation="29064" date="2012-08-14 10:20:47" id_user="52" username="jb2" comment="" attachment_name="" run_current_ok="1" current_cycle="66" />
+ <annotation id_run_annotation="32133" id_run="8260" id_annotation="29074" date="2012-08-14 14:54:31" id_user="15" username="js2" comment="" attachment_name="" run_current_ok="1" current_cycle="70" />
+ <annotation id_run_annotation="32185" id_run="8260" id_annotation="29102" date="2012-08-15 14:46:24" id_user="52" username="jb2" comment="" attachment_name="" run_current_ok="1" current_cycle="88" />
+ <annotation id_run_annotation="32221" id_run="8260" id_annotation="29108" date="2012-08-16 08:43:43" id_user="52" username="jb2" comment="" attachment_name="" run_current_ok="1" current_cycle="101" />
+ <annotation id_run_annotation="32231" id_run="8260" id_annotation="29113" date="2012-08-16 14:32:33" id_user="15" username="js2" comment="" attachment_name="" run_current_ok="1" current_cycle="106" />
+ <annotation id_run_annotation="32268" id_run="8260" id_annotation="29137" date="2012-08-17 08:34:26" id_user="52" username="jb2" comment="" attachment_name="" run_current_ok="1" current_cycle="108" />
+ <annotation id_run_annotation="32298" id_run="8260" id_annotation="29146" date="2012-08-17 11:07:17" id_user="57" username="lc2" comment="Expired R2 kit used" attachment_name="" run_current_ok="" current_cycle="108" />
+ <annotation id_run_annotation="32344" id_run="8260" id_annotation="29161" date="2012-08-17 15:12:18" id_user="46" username="gkh" comment="" attachment_name="" run_current_ok="1" current_cycle="108" />
+ <annotation id_run_annotation="32368" id_run="8260" id_annotation="29167" date="2012-08-18 10:37:17" id_user="33" username="ajw" comment="" attachment_name="" run_current_ok="1" current_cycle="121" />
+ <annotation id_run_annotation="32405" id_run="8260" id_annotation="29188" date="2012-08-19 13:15:05" id_user="9" username="ah1" comment="C101 and C108 for lanes 2, 3 and 8 have lost most of between 1 and 3 swaths." attachment_name="" run_current_ok="1" current_cycle="140" />
+ <annotation id_run_annotation="32461" id_run="8260" id_annotation="29236" date="2012-08-20 10:22:57" id_user="52" username="jb2" comment="" attachment_name="" run_current_ok="1" current_cycle="156" />
+ <annotation id_run_annotation="32476" id_run="8260" id_annotation="29249" date="2012-08-20 13:37:59" id_user="15" username="js2" comment="" attachment_name="" run_current_ok="1" current_cycle="158" />
+ <annotation id_run_annotation="32523" id_run="8260" id_annotation="29294" date="2012-08-21 09:31:42" id_user="52" username="jb2" comment="" attachment_name="" run_current_ok="1" current_cycle="173" />
+ <annotation id_run_annotation="32550" id_run="8260" id_annotation="29310" date="2012-08-21 14:15:36" id_user="15" username="js2" comment="" attachment_name="" run_current_ok="1" current_cycle="176" />
+ <annotation id_run_annotation="32629" id_run="8260" id_annotation="29374" date="2012-08-22 13:40:39" id_user="15" username="js2" comment="" attachment_name="" run_current_ok="1" current_cycle="193" />
+ </annotations>
+ <tags>
+   <tag id_tag="23" description="fc_slotB" />
+   <tag id_tag="43" description="loaded_r2" />
+   <tag id_tag="20" description="multiplex" />
+   <tag id_tag="17" description="paired_read" />
+   <tag id_tag="16" description="rta" />
+   <tag id_tag="19" description="staging" />
+   <tag id_tag="41" description="verified_fc" />
+   <tag id_tag="42" description="verified_r1" />
+   <tag id_tag="46" description="verified_r2" />
+ </tags>
+</run>
+

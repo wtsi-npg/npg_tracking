@@ -1,0 +1,25 @@
+[% IF requestor.is_member_of('engineers') || requestor.is_member_of('annotators') || requestor.is_member_of('loaders') -%]
+  <tr>
+   <td id="instrument_status_actions">
+    <img id="instrument_status_spinner" style="display:none;height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />
+    <a style="display:none;" id="instrument_status_cancel" href="#" onClick="cancel_form('instrument_status'); return false;"><img src="/icons/silk/cancel.png" style="height:16px;width:16px;" alt="cancel" title="cancel" /></a>
+    <a id="instrument_status_update_extra" href="#" onClick="new_form_extra('instrument_status'); return false;"><img src="/icons/silk/pencil_add.png" style="height:16px;width:16px;" alt="add status" title="add status" /></a>
+   </td><td style="text-align:right;" colspan="5">
+     <div style="display:none" id="new_instrument_status">
+<form method="post" action="[% SCRIPT_NAME %]/instrument_status/;create">
+  <input type="hidden" name="id_instrument" value="[% model.id_instrument %]" />
+  <textarea style="float:left;" name="comment" rows="3" cols="50"></textarea>
+  <select name="id_instrument_status_dict" id="id_instrument_status_dict">
+  [% next_statuses =  model.possible_next_statuses;
+     FOREACH count IN next_statuses.keys.sort;
+       next_status = next_statuses.$count;
+       status = next_status.items;     
+  %]
+    <option value="[% status.1 %]">[% status.0 %]</option>
+  [% END %]
+  </select>
+  <input type="submit" value="save" />
+</form>
+     </div>
+  </tr>
+[%- END %]

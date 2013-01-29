@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run_annotation id_run_annotation="[% model.id_run_annotation %]" id_run="[% model.id_run %]" id_annotation="[% model.id_annotation %]" date="[% model.annotation.date %]" id_user="[% model.annotation.id_user %]" comment="[% model.annotation.comment %]" attachment_name="[% model.annotation.attachment_name %]" run_current_ok="[% model.run_current_ok %]" current_cycle="[% model.current_cycle %]"/>

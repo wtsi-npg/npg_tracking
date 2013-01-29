@@ -1,0 +1,5 @@
+The database reports the following lanes on this run:
+
+[% FOREACH lane = lanes -%]
+Lane - [% lane.position %]: Library - [% lane.library %]
+[% END %]

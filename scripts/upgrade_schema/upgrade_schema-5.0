@@ -1,0 +1,18 @@
+alter table run drop foreign key id_flowcell;
+alter table run drop column id_flowcell;
+alter table run add column batch_id bigint unsigned default 0;
+alter table run_lane drop foreign key id_fc_lane;
+alter table run_lane drop column id_flowcell_lane;
+alter table run_lane add column position int(10) unsigned default 0;
+drop table flowcell_lane;
+drop table flowcell;
+drop table sample;
+drop table library_analysis;
+drop table library;
+drop table library_type;
+drop table library_protocol;
+drop table flowcell_format_lane;
+drop table flowcell_format;
+drop table analysis_type;
+drop table analysis_target;
+drop table taxonomy;

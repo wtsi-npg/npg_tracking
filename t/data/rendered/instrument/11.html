@@ -1,0 +1,95 @@
+<div>
+ <div class="lfloat roundborder">
+ <div class="page_title">IL8 Instrument</div>
+ <table id="instrument_info_table">
+  <tr><th>Model</th><td><a href="/cgi-bin/npg/instrument_format/4">HK</a>&nbsp;</td></tr>
+  <tr><th>Manufacturer</th><td>Illumina</td></tr>
+  <tr><th>Designations</th><td></td></tr>
+  <tr><th>Current status</th><td>up&nbsp;</td></tr>
+  <tr><th>Status changed by</th><td><a href="https://helix.wtgc.org/people?uid=joe_admin">joe_admin</a>&nbsp;2007-10-02 11:02:52</td></tr>
+  <tr><th>Status comment</th><td>networked&nbsp;<</td></tr><tr><th>Latest annotation</th><td>&nbsp;</td></tr>
+ <tr><th>Annotated by</th><td><a href="https://helix.wtgc.org/people?uid=">public</a>&nbsp;</td></tr>
+ <tr><th>90 day uptime</th><td>100.00%</td></tr>
+  <tr><th>30 day uptime</th><td>100.00%</td></tr>
+ </table>
+ </div>
+ 
+ <div class="rfloat">
+ <img src="/cgi-bin/npg/instrument/11.png" alt="Instrument image" />
+ </div>
+ </div>
+ <div class="clearfloats"></div>
+ 
+ <ul class="selector" payload="inst_selector">
+  <li class="inst_selector active" payload="statuses">Status</li>
+  <li class="inst_selector" payload="mods">Upgrade History</li>
+  <li class="inst_selector" payload="annotations">Annotations</li>
+  <li class="inst_selector" payload="runs">Runs</li>
+ </ul>
+ 
+ <div>
+ 
+ <div id="selector_statuses">
+ <table id="status_history" class="sortable zebra">
+  <thead>
+   <tr>
+    <th>Date</th>
+    <th>Description</th>
+    <th>Operator</th>
+    <th>Comment</th>
+    <th>Annotation</th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <td>2007-10-02 11:02:52</td>
+    <td>up</td>
+    <td>joe_admin</td>
+    <td>networked </td>
+    <td>
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ </div>
+ 
+ <div id="selector_mods" style="display:none">
+ <table id="mods" class="sortable zebra">
+  <thead>
+   <tr>
+    <th>Type</th>
+    <th>Rev</th>
+    <th>Added</th>
+    <th>Removed</th>
+    <th>Operator</th>
+    <th>Is Current</th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr><td>Prism</td><td>67deg</td><td>2008-04-08 17:00:17</td><td></td><td>pipeline</td><td><img src="/icons/silk/tick.png" alt="tick.png" title="yes" /></td>
+   <td><form method="post" action="/cgi-bin/npg/instrument_mod/15;update"><input type="hidden" name="remove" value="1" /><input type="submit" value="Remove" /></form></td>
+   </tr>
+  </tbody>
+ </table>
+ </div>
+ 
+ <div id="selector_annotations" style="display:none">
+ <table id="annotations" class="sortable zebra">
+  <thead>
+   <tr>
+    <th>User</th>
+    <th>Date</th>
+    <th>Comment</th>
+   </tr>
+  </thead>
+  <tbody>
+  </tbody>
+ </table>
+ </div>
+ 
+ <div id="selector_runs" style="display:none">
+ <iframe width="100%" name="runs_on_instrument" height="300px" frameborder="0"  src="/cgi-bin/npg/run/?id_run_status_dict=all&id_instrument=11"></iframe>
+ </div>
+ </div>
+ </div>
+ </div>

@@ -1,0 +1,11 @@
+ALTER TABLE `run_read`
+    CHANGE column `order`
+        `read_order` INT(10) UNSIGNED DEFAULT '0';
+
+
+ALTER TABLE `tag` DROP INDEX `tag`;
+ALTER TABLE `tag` ADD UNIQUE INDEX `u_tag` (`tag`);
+    
+ALTER TABLE `run_read` DROP INDEX `uq_id_run_order`;
+ALTER TABLE `run_read`
+    ADD UNIQUE INDEX `uq_id_run_order` (`id_run`,`read_order`);

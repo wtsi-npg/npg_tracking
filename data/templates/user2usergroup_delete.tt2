@@ -1,0 +1,8 @@
+<!--begin $Id: user2usergroup_delete.tt2 2662 2008-08-06 12:23:37Z rmp $-->
+<div>
+You unsubscribed from <b>[% model.usergroup.groupname %]</b>.
+<script type="text/javascript">
+ document.location.href="[% SCRIPT_NAME %]/user/[% requestor.username %]";
+</script>
+</div>
+<!--end $Id: user2usergroup_delete.tt2 2662 2008-08-06 12:23:37Z rmp $-->

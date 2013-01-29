@@ -1,0 +1,26 @@
+INSERT INTO tag VALUES (DEFAULT,'copying_problem');
+
+INSERT INTO instrument_format (id_manufacturer,model,iscurrent,default_tiles,default_columns,days_between_washes, runs_between_washes) VALUES (10, 'HiSeq', 1, 32, 4, 28, 1);
+ALTER TABLE instrument_utilisation ADD COLUMN id_instrument_format BIGINT(20) UNSIGNED NOT NULL DEFAULT 4  AFTER perc_uptime_prod_insts , 
+  ADD CONSTRAINT inst_format
+  FOREIGN KEY (id_instrument_format )
+  REFERENCES instrument_format (id_instrument_format )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX inst_format (id_instrument_format ASC) 
+, DROP INDEX i_u_date 
+, ADD INDEX i_u_date (date ASC, id_instrument_format ASC) ;
+
+ALTER TABLE instrument_utilisation CHANGE COLUMN id_instrument_format id_instrument_format BIGINT(20) UNSIGNED NOT NULL  ;
+
+
+ALTER TABLE event CHANGE id_event id_event bigint(20) unsigned;
+ALTER TABLE event DROP PRIMARY KEY;
+ALTER TABLE event ADD PRIMARY KEY (id_event);
+ALTER TABLE event CHANGE id_event id_event bigint(20) unsigned auto_increment;
+ALTER TABLE event CHANGE id_event_type id_event_type bigint(20) unsigned NOT NULL default 0;
+ALTER TABLE event ADD FOREIGN KEY (id_event_type) REFERENCES event_type(id_event_type) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE event ADD COLUMN notification_sent TIMESTAMP  DEFAULT CURRENT_TIMESTAMP AFTER id_user;
+UPDATE event SET notification_sent=date WHERE notification_sent='0000-00-00 00:00:00';
+

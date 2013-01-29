@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="4254" batch_id="5347" id_instrument="35" expected_cycle_count="121" actual_cycle_count="67" priority="1" id_run_pair="0" is_paired="0" team="joint" id_instrument_format="4" name="IL30_4254" loader="pnc" loading_date="2010-01-09" run_folder="100109_IL30_4254">
+ <instrument id_instrument="35" name="IL30" id_instrument_format="4" external_name="" serial="" iscurrent="0" />
+ <run_lanes><run_lane id_run_lane="33600" id_run="4254" tile_count="120" tracks="2" position="1" />
+<run_lane id_run_lane="33601" id_run="4254" tile_count="120" tracks="2" position="2" />
+<run_lane id_run_lane="33602" id_run="4254" tile_count="120" tracks="2" position="3" />
+<run_lane id_run_lane="33603" id_run="4254" tile_count="120" tracks="2" position="4" />
+<run_lane id_run_lane="33604" id_run="4254" tile_count="120" tracks="2" position="5" />
+<run_lane id_run_lane="33605" id_run="4254" tile_count="120" tracks="2" position="6" />
+<run_lane id_run_lane="33606" id_run="4254" tile_count="120" tracks="2" position="7" />
+<run_lane id_run_lane="33607" id_run="4254" tile_count="120" tracks="2" position="8" />
+</run_lanes>
+ <current_run_status id_run_status="82035" id_run="4254" date="2011-05-25 18:14:37" id_run_status_dict="21" id_user="7" username="pipeline" iscurrent="1" description="data discarded" />
+ <run_statuses>
+ <run_status id_run_status="82035" id_run="4254" date="2011-05-25 18:14:37" id_run_status_dict="21" id_user="7" username="pipeline" iscurrent="1" description="data discarded" />
+ <run_status id_run_status="82011" id_run="4254" date="2011-05-25 16:06:40" id_run_status_dict="5" id_user="62" username="pipeline" iscurrent="0" description="run cancelled" />
+ <run_status id_run_status="58603" id_run="4254" date="2010-01-13 17:06:16" id_run_status_dict="8" id_user="62" username="pipeline" iscurrent="0" description="analysis on hold" />
+ <run_status id_run_status="58598" id_run="4254" date="2010-01-13 15:32:48" id_run_status_dict="5" id_user="10" username="pipeline" iscurrent="0" description="run cancelled" />
+ <run_status id_run_status="58495" id_run="4254" date="2010-01-09 15:23:00" id_run_status_dict="2" id_user="7" username="pipeline" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="58494" id_run="4254" date="2010-01-09 15:12:01" id_run_status_dict="1" id_user="14" username="pipeline" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="6835" id_run="4254" id_annotation="7175" date="2010-01-09 15:50:33" id_user="14" username="pnc" comment="PEM primer pump is possible on way out, this will need to be changed on R2 prep." attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="6872" id_run="4254" id_annotation="7212" date="2010-01-12 15:33:58" id_user="62" username="dj3" comment="Michael Quail wrote:
+ I guess discounting the phiX control we should have 7 samples lanes.
+ 5 normal multiplexed library sets with 6 bases of tag sequence and an extra superfluous 7 bases
+ 1 new PCR multiplexing set with 8 base tags BUT with 5 bases of sequence (ATCTC) before you get to the tag. The first 6 bases of the tag should be identical to the existing multiplexed tag set.
+ 1 new noPCR multiplexing tag set with 8 base tags and then an extra superfluous 5 bases. Again the first 6 bases of the tag should be identical to the existing multiplexed tag set.
+ All sequences are in the attached file on the &#x22;New indexing oligos PCR and not worksheet&#x22;
+" attachment_name="Illumina Library Oligos Oct 2009.xls" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="6894" id_run="4254" id_annotation="7234" date="2010-01-13 14:59:26" id_user="9" username="ah1" comment="R2 on hold as PE Module problems. Now upgraded to a PEMx2" attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="6896" id_run="4254" id_annotation="7236" date="2010-01-13 15:37:24" id_user="10" username="sl1" comment="stage error" attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="6897" id_run="4254" id_annotation="7237" date="2010-01-13 17:42:45" id_user="62" username="dj3" comment="Request via jb1, for sh16 : would like read one sequence for lanes 5 and 6 to check for GC analysis.
+
+Can also use this run to test single end multiplex analysis." attachment_name="" run_current_ok="" current_cycle="" />
+ </annotations>
+ <tags>
+   <tag id_tag="20" description="multiplex" />
+   <tag id_tag="17" description="paired_read" />
+   <tag id_tag="16" description="rta" />
+ </tags>
+</run>

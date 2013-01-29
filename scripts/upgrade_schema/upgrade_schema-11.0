@@ -1,0 +1,65 @@
+alter table instrument add column ipaddr char(15) default '';
+update instrument set ipaddr="192.168.255.3" where name="il1";
+update instrument set ipaddr="192.168.255.4" where name="il2";
+update instrument set ipaddr="192.168.255.6" where name="il3";
+update instrument set ipaddr="192.168.255.9" where name="il4";
+update instrument set ipaddr="192.168.255.10" where name="il5";
+update instrument set ipaddr="192.168.255.11" where name="il6";
+update instrument set ipaddr="192.168.255.12" where name="il7";
+update instrument set ipaddr="192.168.255.13" where name="il8";
+update instrument set ipaddr="192.168.255.14" where name="il9";
+update instrument set ipaddr="192.168.255.15" where name="il10";
+update instrument set ipaddr="192.168.255.16" where name="il11";
+update instrument set ipaddr="192.168.255.17" where name="il12";
+update instrument set ipaddr="192.168.255.18" where name="il13";
+update instrument set ipaddr="192.168.255.19" where name="il14";
+update instrument set ipaddr="192.168.255.20" where name="il15";
+update instrument set ipaddr="192.168.255.21" where name="il16";
+update instrument set ipaddr="192.168.255.22" where name="il17";
+update instrument set ipaddr="192.168.255.23" where name="il18";
+update instrument set ipaddr="192.168.255.24" where name="il19";
+update instrument set ipaddr="192.168.255.25" where name="il20";
+update instrument set ipaddr="192.168.255.26" where name="il21";
+update instrument set ipaddr="192.168.255.27" where name="il22";
+update instrument set ipaddr="192.168.255.28" where name="il23";
+update instrument set ipaddr="192.168.255.29" where name="il24";
+update instrument set ipaddr="192.168.255.30" where name="il25";
+update instrument set ipaddr="192.168.255.31" where name="il26";
+update instrument set ipaddr="192.168.255.32" where name="il27";
+update instrument set ipaddr="192.168.255.33" where name="il28";
+
+insert into instrument_status_dict(description) values('wash required');
+insert into instrument_status_dict(description) values('wash performed');
+
+---------
+-- create & populate 'engineers' usergroup
+--
+insert into usergroup(groupname,description) values('engineers', 'Illumina Engineers');
+insert into user2usergroup(id_user,id_usergroup) select u.id_user,ug.id_usergroup from user u,usergroup ug where username like '%@illumina.com' and groupname='engineers';
+insert into user2usergroup(id_user,id_usergroup) select u.id_user,ug.id_usergroup from user u,usergroup ug where username in ('rmp','ajb') and groupname='engineers';
+
+---------
+-- subscribe 'engineers' usergroup to instrument status-change events
+--
+insert into event_type_subscriber(id_event_type,id_usergroup) select 7, ug.id_usergroup from usergroup ug where ug.groupname='engineers';
+
+CREATE TABLE `ext_service` (
+  `id_ext_service` bigint(20) unsigned NOT NULL auto_increment,
+  `description` char(64) NOT NULL,
+  PRIMARY KEY  (`id_ext_service`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO ext_service(description) VALUES ('st_events');
+
+CREATE TABLE `event_type_service` (
+  `id_event_type_service` bigint(20) unsigned NOT NULL auto_increment,
+  `id_ext_service` bigint(20) unsigned NOT NULL,
+  `id_event_type` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY  (`id_event_type_service`),
+  KEY `ets_id_ext_service` (`id_ext_service`),
+  KEY `ets_id_event_type` (`id_event_type`),
+  CONSTRAINT `ets_id_ext_service` FOREIGN KEY (`id_ext_service`) REFERENCES `ext_service` (`id_ext_service`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `ets_id_event_type` FOREIGN KEY (`id_event_type`) REFERENCES `event_type` (`id_event_type`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO event_type_service(id_ext_service, id_event_type) VALUES (1, 1);

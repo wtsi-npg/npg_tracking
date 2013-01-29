@@ -1,0 +1,32 @@
+CREATE TABLE manual_qc_status (
+  id_manual_qc_status bigint(20) unsigned NOT NULL auto_increment,
+  date datetime NOT NULL,
+  iscurrent tinyint(1) unsigned NOT NULL,
+  id_user bigint(20) unsigned NOT NULL,
+  status tinyint(1) unsigned NOT NULL,
+  lims_object_id int(11) unsigned NOT NULL,
+  lims_object_type varchar(255) NOT NULL,
+  batch_id bigint(20) unsigned DEFAULT NULL,
+  position int(10) unsigned DEFAULT NULL,
+  referer varchar(255) DEFAULT NULL,
+  KEY mqc_lims_object_id_index (lims_object_id),
+  KEY mqc_lims_object_type_index (lims_object_type),
+  PRIMARY KEY  (id_manual_qc_status),
+  CONSTRAINT mqc_user FOREIGN KEY (id_user) REFERENCES user (id_user) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
+
+ALTER TABLE tag_run
+    ADD UNIQUE INDEX u_idrun_idtag (id_run, id_tag);
+
+insert into usergroup (groupname, is_public, description) values ('manual_qc', 0, 'Authorised to Do Manual QC');
+insert into user2usergroup (id_user, id_usergroup) values (54, 11);
+insert into user2usergroup (id_user, id_usergroup) values (64, 11);
+insert into user2usergroup (id_user, id_usergroup) values (62, 11);
+insert into user2usergroup (id_user, id_usergroup) values (9, 11);
+insert into user2usergroup (id_user, id_usergroup) values (27, 11);
+
+alter table run modify column id_instrument_format bigint(20) unsigned NOT NULL;
+
+
+
+

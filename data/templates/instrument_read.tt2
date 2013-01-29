@@ -1,0 +1,215 @@
+[% current_status    = model.current_instrument_status;
+   status_changed_by = current_status.user.username;
+   annotated_by      = model.latest_annotation.user.username;
+   title = model.name ? model.name : ''; 
+   title = title _ ' Instrument';
+ %]
+<div>
+<div class="lfloat roundborder">
+<div class="page_title">[% title %]</div>
+<table id="instrument_info_table">
+ <tr><th>Model</th><td><a href="[% SCRIPT_NAME %]/instrument_format/[% model.id_instrument_format %]">[% model.instrument_format.model %]</a>&nbsp;</td></tr>
+ <tr><th>Manufacturer</th><td>[% mname = model.manufacturer.name; mname = mname ? mname : '&nbsp;'; mname; %]</td></tr>
+ [% IF model.serial %]<tr><th>Serial Number</th><td>[% model.serial %]&nbsp;</td></tr>[% END %]
+ [% IF model.designations %]<tr><th>Designations</th><td>[% FOREACH designation = model.designations %][% designation.description | html %]&nbsp;[% END %]</td></tr>[% END %]
+
+ [% IF model.id_instrument_format == 7 %]
+   <tr><th>Latest contact</th><td>[% model.latest_contact %]</td></tr>
+   <tr><th>Percent complete</th><td>[% model.percent_complete %]</td></tr>
+ [% END %]
+
+ <tr><th>Current status</th><td>[% IF !model.iscurrent %]RETIRED INSTRUMENT[% ELSE; current_status.instrument_status_dict.description %]&nbsp;[% END %]</td></tr>
+ <tr><th>Status changed by</th><td><a href="https://helix.wtgc.org/people?uid=[% status_changed_by %]">[% view.realname(status_changed_by) %]</a>&nbsp;[% current_status.date %]</td></tr>
+ <tr><th>Status comment</th><td>[% current_status.comment %]&nbsp;</td></tr>
+[%- IF model.current_run;
+      IF model.is_hiseq_instrument;
+        fc_map = model.fc_slots2current_runs;
+        FOREACH fc_slot IN fc_map.keys.sort;
+          IF fc_map.$fc_slot.size;
+            id_run = fc_map.$fc_slot.0;
+            run = model.current_run_by_id(id_run);
+-%]
+<tr><th>Latest run flowcell [% fc_slot.substr(7) %]</th><td><a href="[% SCRIPT_NAME %]/run/[% id_run %]">[% run.name %]</a></td></tr>
+          [%- END;
+        END;
+      ELSE -%]
+<tr><th>Latest run</th><td><a href="[% SCRIPT_NAME %]/run/[% model.current_run.id_run %]">[% model.current_run.name %]</a></td></tr>
+      [%- END;
+END -%]
+<tr><th>Latest annotation</th><td>[% model.latest_annotation.comment %]&nbsp;</td></tr>
+<tr><th>Annotated by</th><td><a href="https://helix.wtgc.org/people?uid=[% annotated_by %]">[% view.realname(annotated_by) %]</a>&nbsp;</td></tr>
+<tr><th>90 day uptime</th><td>[% SET value = current_status.instrument_percentage_uptimes.0 %][% IF value < 50 %]<font color="red">[% value %]</font>[% ELSE %][% value %][% END %]%</td></tr>
+ <tr><th>30 day uptime</th><td>[% SET value = current_status.instrument_percentage_uptimes.1 %][% IF value < 50 %]<span style="color: #FF0000">[% value %]</span>[% ELSE %][% value %][% END %]%</td></tr>
+</table>
+</div>
+
+<div class="rfloat">
+<img src="[% SCRIPT_NAME %]/instrument/[% model.id_instrument %].png" alt="Instrument image" />
+</div>
+</div>
+<div class="clearfloats"></div>
+
+
+<ul class="selector" payload="inst_selector">
+ <li class="inst_selector active" payload="statuses">Status</li>
+ <li class="inst_selector" payload="mods">Upgrade History</li>
+ <li class="inst_selector" payload="annotations">Annotations</li>
+ <li class="inst_selector" payload="runs">Runs</li>
+</ul>
+
+<div>
+
+<div id="selector_statuses">
+<table id="status_history" class="sortable zebra">
+ <thead>
+  <tr>
+   <th>Date</th>
+   <th>Description</th>
+   <th>Operator</th>
+   <th>Comment</th>
+   <th>Annotation</th>
+  </tr>
+ </thead>
+ <tbody>
+[% PROCESS instrument_status_add.tt2 %]
+[% FOREACH instrument_status = model.instrument_statuses %]
+  <tr>
+   <td>[% instrument_status.date %]</td>
+   <td>[% instrument_status.description %]</td>
+   <td>[% instrument_status.user.username %]</td>
+   <td>[% instrument_status.comment %] </td>
+   <td>
+     [% FOREACH annotation = instrument_status.annotations %]
+        [% annotation.comment %] ( [% annotation.user.username %]-[% annotation.date %])<br/>
+     [% END %]
+   </td>
+   [% PROCESS instrument_status_annotation.tt2 %]
+  </tr>[% END %]
+ </tbody>
+</table>
+</div>
+
+<div id="selector_mods" style="display:none">
+<table id="mods" class="sortable zebra">
+ <thead>
+  <tr>
+   <th>Type</th>
+   <th>Rev</th>
+   <th>Added</th>
+   <th>Removed</th>
+   <th>Operator</th>
+   <th>Is Current</th>
+  </tr>
+ </thead>
+ <tbody>[% FOREACH imod = model.instrument_mods %]
+  <tr><td>[% imod.instrument_mod_dict.description %]</td><td>[% imod.instrument_mod_dict.revision %]</td><td>[% imod.date_added %]</td><td>[% imod.date_removed %]</td><td>[% imod.user.username %]</td><td>[% IF imod.iscurrent %]<img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
+  <td><form method="post" action="[% SCRIPT_NAME %]/instrument_mod/[% imod.id_instrument_mod %];update"><input type="hidden" name="remove" value="1" /><input type="submit" value="Remove" /></form></td>
+  </tr>[% END %]
+[% IF requestor.is_member_of('engineers') %]
+  <tr>
+   <td style="text-align:right;" colspan="5"><div id="new_instrument_mod"></div></td>
+   <td id="instrument_mod_actions">
+    <a id="instrument_mod_update" href="#" onClick="instrument_form('instrument_mod'); return false;"><img src="/icons/silk/pencil_add.png" style="height:16px;width:16px;" alt="add mod" title="add mod" /></a>
+    <img id="instrument_mod_spinner" style="display:none;height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />
+    <a style="display:none;" id="instrument_mod_cancel" href="#" onClick="cancel_form('instrument_mod'); return false;"><img src="/icons/silk/cancel.png" style="height:16px;width:16px;" alt="cancel" title="cancel" /></a>
+    <a style="display:none;" id="instrument_mod_update_extra" href="#" onClick="new_form_extra('instrument_mod'); return false;"><img src="/icons/silk/pencil_add.png" style="height:16px;width:16px;" alt="add mod" title="add mod" /></a>
+   </td>
+  </tr>[% END %]
+ </tbody>
+</table>
+</div>
+
+<div id="selector_annotations" style="display:none">
+<table id="annotations" class="sortable zebra">
+ <thead>
+  <tr>
+   <th>User</th>
+   <th>Date</th>
+   <th>Comment</th>
+  </tr>
+ </thead>
+ <tbody>[% FOREACH annotation = model.annotations %]
+  <tr>
+   <td>[% annotation.user.username %]</td>
+   <td>[% annotation.date %]</td>
+   <td>[% PROCESS annotation_comment_as_html.tt2 acomment = annotation.comment %]</td>
+  </tr>[% END %]
+[% IF requestor.is_member_of('engineers') || requestor.is_member_of('annotators') %]
+  <tr>
+   <td style="text-align:right;" colspan="3"><div id="new_instrument_annotation" style="display:none;">[% PROCESS instrument_annotation_add_ajax.tt2 %]</div></td>
+   <td id="instrument_annotation_actions">
+    <img id="instrument_annotation_spinner" style="display:none;height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />
+    <a style="display:none;" id="instrument_annotation_cancel" href="#" onClick="cancel_form('instrument_annotation'); return false;"><img src="/icons/silk/cancel.png" style="height:16px;width:16px;" alt="cancel" title="cancel" /></a>
+    <a id="instrument_annotation_update_extra" href="#" onClick="new_form_extra('instrument_annotation'); return false;"><img src="/icons/silk/pencil_add.png" style="height:16px;width:16px;" alt="add annotation" title="add annotation" /></a>
+   </td>
+  </tr>[% END %] </tbody>
+</table>
+</div>
+
+<div id="selector_runs" style="display:none">
+<iframe width="100%" name="runs_on_instrument" height="300px" frameborder="0"  src="[% SCRIPT_NAME %]/run/?id_run_status_dict=all&id_instrument=[% model.id_instrument %]"></iframe>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<script type="text/javascript">
+document.title='[% model.name %] Instrument Details';
+
+Event.observe(window,'load',init_selectors);
+
+function init_selectors(){
+ var sets=$A($$('.selector')); /*all selector sets*/
+ for(var i=0;i<sets.length;i++){
+  var setp=sets[i].getAttribute('payload');
+  var sels=$A($$('.'+setp)); /*all selectors in each set*/
+  for (var j=0;j<sels.length;j++) {
+   Event.observe(sels[j],'click',toggle_selector);
+  }
+ }
+}
+
+function toggle_selector(e){
+ var el=Event.element(e);
+ var sels=el.parentNode.getElementsByTagName('li');
+ for (var i=0;i<sels.length;i++) {
+  var p=sels[i].getAttribute('payload');
+  var d=$('selector_'+p);
+  if(d)d.hide();
+  sels[i].removeClassName('active');
+ }
+
+ el.addClassName('active');
+
+ var p=el.getAttribute('payload');
+ if(!p)return;
+
+ var d=$('selector_'+p);
+ if(!d)return;
+
+ d.show();
+ Event.stop(e);
+ return true;
+}
+
+function instrument_form(type) {	 
+  var el      = "new_" + type;	 
+  var spinner = type + "_spinner";	 
+  var update  = type + "_update";	 
+  var cancel  = type + "_cancel";	 
+  Element.show(spinner);	 
+  Element.hide(update);	 
+  new Ajax.Updater(el,'[% SCRIPT_NAME %]/'+type+'/;add_ajax',	 
+  {method:'get',	 
+   parameters:{id_instrument:[% model.id_instrument %]},	 
+   onComplete:function(){	 
+    Element.show(el);	 
+    Element.hide(spinner);	 
+    Element.show(cancel);	 
+    new Effect.Highlight(el);	 
+  }});	 
+ }
+
+</script>

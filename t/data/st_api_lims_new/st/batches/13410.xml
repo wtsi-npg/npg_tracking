@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batch>
+  <id>13410</id>
+  <status>released</status>
+  <lanes>
+    <lane position="1" priority="0" id="3625159">
+      <pool name="1_0595_1866_060911" request_id="3577089" project_id="891" id="3577557" study_id="1866" qc_state="pass">
+        <sample study_id="1866" library_id="3577552" library_name="DDD_MAIN5137673 3577552" library_type="Agilent Pulldown" sample_id="1163978" project_id="891">
+          <tag tag_id="26">
+            <index>2</index>
+            <expected_sequence>CGATGT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577553" library_name="DDD_MAIN5137680 3577553" library_type="Agilent Pulldown" sample_id="1163985" project_id="891">
+          <tag tag_id="29">
+            <index>5</index>
+            <expected_sequence>ACAGTG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577554" library_name="DDD_MAIN5137715 3577554" library_type="Agilent Pulldown" sample_id="1164020" project_id="891">
+          <tag tag_id="30">
+            <index>6</index>
+            <expected_sequence>GCCAAT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577555" library_name="DDD_MAIN5137717 3577555" library_type="Agilent Pulldown" sample_id="1164022" project_id="891">
+          <tag tag_id="31">
+            <index>7</index>
+            <expected_sequence>CAGATC</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577556" library_name="DDD_MAIN5137718 3577556" library_type="Agilent Pulldown" sample_id="1164023" project_id="891">
+          <tag tag_id="32">
+            <index>8</index>
+            <expected_sequence>ACTTGA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="3686021">
+        <control name="PhiX06Apr11" id="2389196"/>
+        <sample study_id="198" library_id="2389196" library_name="PhiX06Apr11" library_type="" sample_id="1255141" project_id="">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="2" priority="0" id="3625160">
+      <pool name="2_0595_1866_060911" request_id="3577100" project_id="891" id="3577573" study_id="1866" qc_state="pass">
+        <sample study_id="1866" library_id="3577567" library_name="DDD_MAIN5137730 3577567" library_type="Agilent Pulldown" sample_id="1164035" project_id="891">
+          <tag tag_id="25">
+            <index>1</index>
+            <expected_sequence>ATCACG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577568" library_name="DDD_MAIN5137731 3577568" library_type="Agilent Pulldown" sample_id="1164036" project_id="891">
+          <tag tag_id="26">
+            <index>2</index>
+            <expected_sequence>CGATGT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577569" library_name="DDD_MAIN5137734 3577569" library_type="Agilent Pulldown" sample_id="1164039" project_id="891">
+          <tag tag_id="28">
+            <index>4</index>
+            <expected_sequence>TGACCA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577570" library_name="DDD_MAIN5137735 3577570" library_type="Agilent Pulldown" sample_id="1164040" project_id="891">
+          <tag tag_id="29">
+            <index>5</index>
+            <expected_sequence>ACAGTG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577571" library_name="DDD_MAIN5137739 3577571" library_type="Agilent Pulldown" sample_id="1164044" project_id="891">
+          <tag tag_id="31">
+            <index>7</index>
+            <expected_sequence>CAGATC</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577572" library_name="DDD_MAIN5138053 3577572" library_type="Agilent Pulldown" sample_id="1164570" project_id="891">
+          <tag tag_id="32">
+            <index>8</index>
+            <expected_sequence>ACTTGA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="3686021">
+        <control name="PhiX06Apr11" id="2389196"/>
+        <sample study_id="198" library_id="2389196" library_name="PhiX06Apr11" library_type="" sample_id="1255141" project_id="">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="3" priority="0" id="3625167">
+      <pool name="2_0595_1866_060911" request_id="3578852" project_id="891" id="3577573" study_id="1866" qc_state="pass">
+        <sample study_id="1866" library_id="3577567" library_name="DDD_MAIN5137730 3577567" library_type="Agilent Pulldown" sample_id="1164035" project_id="891">
+          <tag tag_id="25">
+            <index>1</index>
+            <expected_sequence>ATCACG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577568" library_name="DDD_MAIN5137731 3577568" library_type="Agilent Pulldown" sample_id="1164036" project_id="891">
+          <tag tag_id="26">
+            <index>2</index>
+            <expected_sequence>CGATGT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577569" library_name="DDD_MAIN5137734 3577569" library_type="Agilent Pulldown" sample_id="1164039" project_id="891">
+          <tag tag_id="28">
+            <index>4</index>
+            <expected_sequence>TGACCA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577570" library_name="DDD_MAIN5137735 3577570" library_type="Agilent Pulldown" sample_id="1164040" project_id="891">
+          <tag tag_id="29">
+            <index>5</index>
+            <expected_sequence>ACAGTG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577571" library_name="DDD_MAIN5137739 3577571" library_type="Agilent Pulldown" sample_id="1164044" project_id="891">
+          <tag tag_id="31">
+            <index>7</index>
+            <expected_sequence>CAGATC</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577572" library_name="DDD_MAIN5138053 3577572" library_type="Agilent Pulldown" sample_id="1164570" project_id="891">
+          <tag tag_id="32">
+            <index>8</index>
+            <expected_sequence>ACTTGA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="3686021">
+        <control name="PhiX06Apr11" id="2389196"/>
+        <sample study_id="198" library_id="2389196" library_name="PhiX06Apr11" library_type="" sample_id="1255141" project_id="">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="4" priority="0" id="3625161">
+      <pool name="3_0595_1866_060911" request_id="3577104" project_id="891" id="3577590" study_id="1866" qc_state="pass">
+        <sample study_id="1866" library_id="3577582" library_name="DDD_MAIN5138070 3577582" library_type="Agilent Pulldown" sample_id="1164587" project_id="891">
+          <tag tag_id="25">
+            <index>1</index>
+            <expected_sequence>ATCACG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577583" library_name="DDD_MAIN5138092 3577583" library_type="Agilent Pulldown" sample_id="1164609" project_id="891">
+          <tag tag_id="26">
+            <index>2</index>
+            <expected_sequence>CGATGT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577584" library_name="DDD_MAIN5138094 3577584" library_type="Agilent Pulldown" sample_id="1164611" project_id="891">
+          <tag tag_id="27">
+            <index>3</index>
+            <expected_sequence>TTAGGC</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577585" library_name="DDD_MAIN5138096 3577585" library_type="Agilent Pulldown" sample_id="1164613" project_id="891">
+          <tag tag_id="28">
+            <index>4</index>
+            <expected_sequence>TGACCA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577586" library_name="DDD_MAIN5159652 3577586" library_type="Agilent Pulldown" sample_id="1195980" project_id="891">
+          <tag tag_id="30">
+            <index>6</index>
+            <expected_sequence>GCCAAT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577587" library_name="DDD_MAIN5159656 3577587" library_type="Agilent Pulldown" sample_id="1195984" project_id="891">
+          <tag tag_id="31">
+            <index>7</index>
+            <expected_sequence>CAGATC</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577588" library_name="DDD_MAIN5159657 3577588" library_type="Agilent Pulldown" sample_id="1195985" project_id="891">
+          <tag tag_id="32">
+            <index>8</index>
+            <expected_sequence>ACTTGA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="3686021">
+        <control name="PhiX06Apr11" id="2389196"/>
+        <sample study_id="198" library_id="2389196" library_name="PhiX06Apr11" library_type="" sample_id="1255141" project_id="">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="5" priority="0" id="3625168">
+      <pool name="3_0595_1866_060911" request_id="3578854" project_id="891" id="3577590" study_id="1866" qc_state="pass">
+        <sample study_id="1866" library_id="3577582" library_name="DDD_MAIN5138070 3577582" library_type="Agilent Pulldown" sample_id="1164587" project_id="891">
+          <tag tag_id="25">
+            <index>1</index>
+            <expected_sequence>ATCACG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577583" library_name="DDD_MAIN5138092 3577583" library_type="Agilent Pulldown" sample_id="1164609" project_id="891">
+          <tag tag_id="26">
+            <index>2</index>
+            <expected_sequence>CGATGT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577584" library_name="DDD_MAIN5138094 3577584" library_type="Agilent Pulldown" sample_id="1164611" project_id="891">
+          <tag tag_id="27">
+            <index>3</index>
+            <expected_sequence>TTAGGC</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577585" library_name="DDD_MAIN5138096 3577585" library_type="Agilent Pulldown" sample_id="1164613" project_id="891">
+          <tag tag_id="28">
+            <index>4</index>
+            <expected_sequence>TGACCA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577586" library_name="DDD_MAIN5159652 3577586" library_type="Agilent Pulldown" sample_id="1195980" project_id="891">
+          <tag tag_id="30">
+            <index>6</index>
+            <expected_sequence>GCCAAT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577587" library_name="DDD_MAIN5159656 3577587" library_type="Agilent Pulldown" sample_id="1195984" project_id="891">
+          <tag tag_id="31">
+            <index>7</index>
+            <expected_sequence>CAGATC</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577588" library_name="DDD_MAIN5159657 3577588" library_type="Agilent Pulldown" sample_id="1195985" project_id="891">
+          <tag tag_id="32">
+            <index>8</index>
+            <expected_sequence>ACTTGA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="3686021">
+        <control name="PhiX06Apr11" id="2389196"/>
+        <sample study_id="198" library_id="2389196" library_name="PhiX06Apr11" library_type="" sample_id="1255141" project_id="">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="6" priority="0" id="3625166">
+      <pool name="4_0595_1866_060911" request_id="3577119" project_id="891" id="3577599" study_id="1866" qc_state="pass">
+        <sample study_id="1866" library_id="3577591" library_name="DDD_MAIN5159658 3577591" library_type="Agilent Pulldown" sample_id="1195986" project_id="891">
+          <tag tag_id="25">
+            <index>1</index>
+            <expected_sequence>ATCACG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577592" library_name="DDD_MAIN5159659 3577592" library_type="Agilent Pulldown" sample_id="1195987" project_id="891">
+          <tag tag_id="26">
+            <index>2</index>
+            <expected_sequence>CGATGT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577593" library_name="DDD_MAIN5159660 3577593" library_type="Agilent Pulldown" sample_id="1195988" project_id="891">
+          <tag tag_id="27">
+            <index>3</index>
+            <expected_sequence>TTAGGC</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577594" library_name="DDD_MAIN5159663 3577594" library_type="Agilent Pulldown" sample_id="1195991" project_id="891">
+          <tag tag_id="28">
+            <index>4</index>
+            <expected_sequence>TGACCA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577595" library_name="DDD_MAIN5159664 3577595" library_type="Agilent Pulldown" sample_id="1195992" project_id="891">
+          <tag tag_id="29">
+            <index>5</index>
+            <expected_sequence>ACAGTG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577596" library_name="DDD_MAIN5159666 3577596" library_type="Agilent Pulldown" sample_id="1195994" project_id="891">
+          <tag tag_id="30">
+            <index>6</index>
+            <expected_sequence>GCCAAT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577597" library_name="DDD_MAIN5159669 3577597" library_type="Agilent Pulldown" sample_id="1195997" project_id="891">
+          <tag tag_id="31">
+            <index>7</index>
+            <expected_sequence>CAGATC</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577598" library_name="DDD_MAIN5159672 3577598" library_type="Agilent Pulldown" sample_id="1196000" project_id="891">
+          <tag tag_id="32">
+            <index>8</index>
+            <expected_sequence>ACTTGA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="3686021">
+        <control name="PhiX06Apr11" id="2389196"/>
+        <sample study_id="198" library_id="2389196" library_name="PhiX06Apr11" library_type="" sample_id="1255141" project_id="">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="7" priority="0" id="3625169">
+      <pool name="4_0595_1866_060911" request_id="3578856" project_id="891" id="3577599" study_id="1866" qc_state="pass">
+        <sample study_id="1866" library_id="3577591" library_name="DDD_MAIN5159658 3577591" library_type="Agilent Pulldown" sample_id="1195986" project_id="891">
+          <tag tag_id="25">
+            <index>1</index>
+            <expected_sequence>ATCACG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577592" library_name="DDD_MAIN5159659 3577592" library_type="Agilent Pulldown" sample_id="1195987" project_id="891">
+          <tag tag_id="26">
+            <index>2</index>
+            <expected_sequence>CGATGT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577593" library_name="DDD_MAIN5159660 3577593" library_type="Agilent Pulldown" sample_id="1195988" project_id="891">
+          <tag tag_id="27">
+            <index>3</index>
+            <expected_sequence>TTAGGC</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577594" library_name="DDD_MAIN5159663 3577594" library_type="Agilent Pulldown" sample_id="1195991" project_id="891">
+          <tag tag_id="28">
+            <index>4</index>
+            <expected_sequence>TGACCA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577595" library_name="DDD_MAIN5159664 3577595" library_type="Agilent Pulldown" sample_id="1195992" project_id="891">
+          <tag tag_id="29">
+            <index>5</index>
+            <expected_sequence>ACAGTG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577596" library_name="DDD_MAIN5159666 3577596" library_type="Agilent Pulldown" sample_id="1195994" project_id="891">
+          <tag tag_id="30">
+            <index>6</index>
+            <expected_sequence>GCCAAT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577597" library_name="DDD_MAIN5159669 3577597" library_type="Agilent Pulldown" sample_id="1195997" project_id="891">
+          <tag tag_id="31">
+            <index>7</index>
+            <expected_sequence>CAGATC</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3577598" library_name="DDD_MAIN5159672 3577598" library_type="Agilent Pulldown" sample_id="1196000" project_id="891">
+          <tag tag_id="32">
+            <index>8</index>
+            <expected_sequence>ACTTGA</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="3686021">
+        <control name="PhiX06Apr11" id="2389196"/>
+        <sample study_id="198" library_id="2389196" library_name="PhiX06Apr11" library_type="" sample_id="1255141" project_id="">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="8" priority="0" id="3625163">
+      <pool name="5_0595_1866_060911 " request_id="3577114" project_id="891" id="3578507" study_id="1866" qc_state="pass">
+        <sample study_id="1866" library_id="3578503" library_name="DDD_MAIN5159679 3578503" library_type="Agilent Pulldown" sample_id="1196007" project_id="891">
+          <tag tag_id="25">
+            <index>1</index>
+            <expected_sequence>ATCACG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3578504" library_name="DDD_MAIN5159684 3578504" library_type="Agilent Pulldown" sample_id="1196012" project_id="891">
+          <tag tag_id="26">
+            <index>2</index>
+            <expected_sequence>CGATGT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3578505" library_name="DDD_MAIN5159690 3578505" library_type="Agilent Pulldown" sample_id="1196018" project_id="891">
+          <tag tag_id="29">
+            <index>5</index>
+            <expected_sequence>ACAGTG</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+        <sample study_id="1866" library_id="3578506" library_name="DDD_MAIN5159695 3578506" library_type="Agilent Pulldown" sample_id="1196023" project_id="891">
+          <tag tag_id="30">
+            <index>6</index>
+            <expected_sequence>GCCAAT</expected_sequence>
+            <tag_group_id>3</tag_group_id>
+          </tag>
+          <insert_size from="100" to="400"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="3686021">
+        <control name="PhiX06Apr11" id="2389196"/>
+        <sample study_id="198" library_id="2389196" library_name="PhiX06Apr11" library_type="" sample_id="1255141" project_id="">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+  </lanes>
+</batch>

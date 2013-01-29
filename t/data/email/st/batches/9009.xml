@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batch>
+  <id>9009</id>
+  <status>released</status>
+  <lanes>
+    <lane position="1" priority="0" id="1726669">
+      <pool name="U3IM2311" request_id="2987402" id="1574214" qc_state="">
+        <sample study_id="641" sample_id="1027658" project_id="634" library_name="U3IM2311 1726669" library_type="Standard" library_id="1726669">
+          <tag tag_id="42">
+            <index>1</index>
+            <expected_sequence>ATCACGTTAT</expected_sequence>
+            <tag_group_id>4</tag_group_id>
+          </tag>
+          <insert_size from="150" to="250"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="2" priority="0" id="1726670">
+      <pool name="B11IM23" request_id="2987403" id="1574215" qc_state="">
+        <sample study_id="641" sample_id="1027659" project_id="634" library_name="B11IM23 1726670" library_type="Standard" library_id="1726670">
+          <tag tag_id="43">
+            <index>2</index>
+            <expected_sequence>CGATGTTTAT</expected_sequence>
+            <tag_group_id>4</tag_group_id>
+          </tag>
+          <insert_size from="150" to="250"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="3" priority="0" id="1726671">
+      <pool name="363MDA" request_id="2987404" id="1574216" qc_state="">
+        <sample study_id="641" sample_id="1027660" project_id="634" library_name="363MDA 1726671" library_type="Standard" library_id="1726671">
+          <tag tag_id="44">
+            <index>3</index>
+            <expected_sequence>TTAGGCATAT</expected_sequence>
+            <tag_group_id>4</tag_group_id>
+          </tag>
+          <insert_size from="150" to="250"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="4" priority="0" id="1726672">
+      <pool name="5291MDA" request_id="2987405" id="1574217" qc_state="">
+        <sample study_id="641" sample_id="1027661" project_id="634" library_name="5291MDA 1726672" library_type="Standard" library_id="1726672">
+          <tag tag_id="45">
+            <index>4</index>
+            <expected_sequence>TGACCACTAT</expected_sequence>
+            <tag_group_id>4</tag_group_id>
+          </tag>
+          <insert_size from="150" to="250"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="5" priority="0" id="1726673">
+      <pool name="7249MDA" request_id="2987406" id="1574218" qc_state="">
+        <sample study_id="641" sample_id="1027662" project_id="634" library_name="7249MDA 1726673" library_type="Standard" library_id="1726673">
+          <tag tag_id="46">
+            <index>5</index>
+            <expected_sequence>ACAGTGGTAT</expected_sequence>
+            <tag_group_id>4</tag_group_id>
+          </tag>
+          <insert_size from="150" to="250"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="6" priority="0" id="1726674">
+      <pool name="25a504" request_id="2987407" id="1574219" qc_state="">
+        <sample study_id="641" sample_id="1027663" project_id="634" library_name="25a504 1726674" library_type="Standard" library_id="1726674">
+          <tag tag_id="48">
+            <index>6</index>
+            <expected_sequence>GCCAATGTAT</expected_sequence>
+            <tag_group_id>4</tag_group_id>
+          </tag>
+          <insert_size from="150" to="250"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="7" priority="0" id="1726675">
+      <pool name="25D5016" request_id="2987408" id="1574220" qc_state="">
+        <sample study_id="641" sample_id="1027664" project_id="634" library_name="25D5016 1726675" library_type="Standard" library_id="1726675">
+          <tag tag_id="37">
+            <index>7</index>
+            <expected_sequence>CAGATCTGAT</expected_sequence>
+            <tag_group_id>4</tag_group_id>
+          </tag>
+          <insert_size from="150" to="250"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="8" priority="0" id="1726676">
+      <pool name="25a5016" request_id="2987409" id="1574221" qc_state="">
+        <sample study_id="641" sample_id="1027665" project_id="634" library_name="25a5016 1726676" library_type="Standard" library_id="1726676">
+          <tag tag_id="39">
+            <index>8</index>
+            <expected_sequence>ACTTGATGAT</expected_sequence>
+            <tag_group_id>4</tag_group_id>
+          </tag>
+          <insert_size from="150" to="250"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="9" priority="0" id="1726677">
+      <pool name="10000387" request_id="2987410" id="1574222" qc_state="">
+        <sample study_id="641" sample_id="1027666" project_id="634" library_name="10000387 1726677" library_type="Standard" library_id="1726677">
+          <tag tag_id="40">
+            <index>9</index>
+            <expected_sequence>GATCAGCGAT</expected_sequence>
+            <tag_group_id>4</tag_group_id>
+          </tag>
+          <insert_size from="150" to="250"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="10" priority="0" id="1726678">
+      <pool name="16H45sp" request_id="2987411" id="1574223" qc_state="">
+        <sample study_id="641" sample_id="1027667" project_id="634" library_name="16H45sp 1726678" library_type="Standard" library_id="1726678">
+          <tag tag_id="41">
+            <index>10</index>
+            <expected_sequence>TAGCTTGTAT</expected_sequence>
+            <tag_group_id>4</tag_group_id>
+          </tag>
+          <insert_size from="150" to="250"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="11" priority="0" id="1726679">
+      <pool name="16TT30sp" request_id="2987412" id="1574224" qc_state="">
+        <sample study_id="641" sample_id="1027668" project_id="634" library_name="16TT30sp 1726679" library_type="Standard" library_id="1726679">
+          <tag tag_id="47">
+            <index>11</index>
+            <expected_sequence>GGCTACAGAT</expected_sequence>
+            <tag_group_id>4</tag_group_id>
+          </tag>
+          <insert_size from="150" to="250"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="12" priority="0" id="1726680">
+      <pool name="16TT45sp" request_id="2987413" id="1574225" qc_state="">
+        <sample study_id="641" sample_id="1027669" project_id="634" library_name="16TT45sp 1726680" library_type="Standard" library_id="1726680">
+          <tag tag_id="38">
+            <index>12</index>
+            <expected_sequence>CTTGTACTAT</expected_sequence>
+            <tag_group_id>4</tag_group_id>
+          </tag>
+          <insert_size from="150" to="250"/>
+        </sample>
+      </pool>
+    </lane>
+  </lanes>
+</batch>

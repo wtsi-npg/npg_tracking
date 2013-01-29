@@ -1,0 +1,148 @@
+---
+- comment: initial setup
+  date: 2007-09-19 13:09:41
+  id_instrument: 3
+  id_instrument_status: 1
+  id_instrument_status_dict: 5
+  id_user: 1
+  iscurrent: 1
+- comment: initial setup
+  date: 2007-09-19 13:09:42
+  id_instrument: 4
+  id_instrument_status: 2
+  id_instrument_status_dict: 1
+  id_user: 1
+  iscurrent: 0
+- comment: initial setup
+  date: 2007-09-19 13:09:42
+  id_instrument: 6
+  id_instrument_status: 3
+  id_instrument_status_dict: 1
+  id_user: 1
+  iscurrent: 0
+- comment: initial setup
+  date: 2007-09-19 13:10:53
+  id_instrument: 7
+  id_instrument_status: 4
+  id_instrument_status_dict: 2
+  id_user: 1
+  iscurrent: 1
+- comment: initial setup
+  date: 2007-09-19 13:10:58
+  id_instrument: 8
+  id_instrument_status: 5
+  id_instrument_status_dict: 3
+  id_user: 1
+  iscurrent: 1
+- comment: initial setup
+  date: 2007-09-19 13:11:03
+  id_instrument: 9
+  id_instrument_status: 6
+  id_instrument_status_dict: 2
+  id_user: 1
+  iscurrent: 0
+- comment: initial setup
+  date: 2007-09-19 13:11:07
+  id_instrument: 10
+  id_instrument_status: 7
+  id_instrument_status_dict: 2
+  id_user: 1
+  iscurrent: 0
+- comment: cooked laser
+  date: 2007-09-20 15:00:53
+  id_instrument: 10
+  id_instrument_status: 8
+  id_instrument_status_dict: 2
+  id_user: 1
+  iscurrent: 0
+- comment: wash performed
+  date: 2007-09-20 15:01:11
+  id_instrument: 6
+  id_instrument_status: 9
+  id_instrument_status_dict: 4
+  id_user: 1
+  iscurrent: 0
+- comment: waiting for networking
+  date: 2007-09-20 15:02:52
+  id_instrument: 12
+  id_instrument_status: 10
+  id_instrument_status_dict: 2
+  id_user: 1
+  iscurrent: 0
+- comment: ok and up
+  date: 2007-09-20 15:02:52
+  id_instrument: 4
+  id_instrument_status: 11
+  id_instrument_status_dict: 1
+  id_user: 1
+  iscurrent: 1
+- comment: ok and up
+  date: 2007-09-20 15:02:52
+  id_instrument: 13
+  id_instrument_status: 12
+  id_instrument_status_dict: 4
+  id_user: 1
+  iscurrent: 0
+- comment: ok and up
+  date: 2007-09-20 15:02:53
+  id_instrument: 13
+  id_instrument_status: 13
+  id_instrument_status_dict: 1
+  id_user: 1
+  iscurrent: 1
+- comment: ok and up
+  date: 2007-09-20 15:02:53
+  id_instrument: 14
+  id_instrument_status: 14
+  id_instrument_status_dict: 6
+  id_user: 1
+  iscurrent: 1
+- comment: networked
+  date: 2007-10-02 11:02:52
+  id_instrument: 12
+  id_instrument_status: 15
+  id_instrument_status_dict: 1
+  id_user: 1
+  iscurrent: 1
+- comment: networked
+  date: 2007-10-02 11:02:52
+  id_instrument: 6
+  id_instrument_status: 16
+  id_instrument_status_dict: 2
+  id_user: 1
+  iscurrent: 1
+- comment: networked
+  date: 2007-10-02 11:02:52
+  id_instrument: 9
+  id_instrument_status: 17
+  id_instrument_status_dict: 2
+  id_user: 1
+  iscurrent: 1
+- comment: networked
+  date: 2007-10-02 11:02:52
+  id_instrument: 10
+  id_instrument_status: 18
+  id_instrument_status_dict: 1
+  id_user: 1
+  iscurrent: 1
+- comment: networked
+  date: 2007-10-02 11:02:52
+  id_instrument: 11
+  id_instrument_status: 19
+  id_instrument_status_dict: 1
+  id_user: 1
+  iscurrent: 1
+- comment: networked
+  date: 2007-10-02 11:02:52
+  id_instrument: 48
+  id_instrument_status: 20
+  id_instrument_status_dict: 4
+  id_user: 1
+  iscurrent: 1
+- comment: ok and up
+  date: 2007-10-02 12:02:52
+  id_instrument: 48
+  id_instrument_status: 21
+  id_instrument_status_dict: 1
+  id_user: 1
+  iscurrent: 1

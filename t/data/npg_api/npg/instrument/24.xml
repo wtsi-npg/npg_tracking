@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<instrument id_instrument="24" name="IL21" id_instrument_format="4" model="HK" external_name="" serial="" iscurrent="1" ipaddr="192.168.255.26" instrument_comp="il21win" mirroring_host="sf-1-1-06" staging_dir="/staging/IL21/incoming">
+  <designations>
+    <designation id_designation="3" description="Hot spare" />
+  </designations>
+</instrument>

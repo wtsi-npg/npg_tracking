@@ -1,0 +1,8 @@
+<!--begin $Id: instrument_mod_update_mods.tt2 2662 2008-08-06 12:23:37Z rmp $-->
+Updated mods ok.
+Click <a href="[% SCRIPT_NAME %]/instrument_mod">here</a> to continue.
+
+<script type="text/javascript">
+ document.location.href='[% SCRIPT_NAME %]/instrument_mod';
+</script>
+<!--end $Id: instrument_mod_update_mods.tt2 2662 2008-08-06 12:23:37Z rmp $-->

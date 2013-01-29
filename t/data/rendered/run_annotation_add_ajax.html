@@ -1,0 +1,55 @@
+ <form method="post" action="/cgi-bin/npg/run_annotation/;create" enctype="multipart/form-data">
+ <div>
+  <input type="hidden" name="id_run" value="42" />
+ <table>
+ <tr>
+ <td>
+  <label>Comment</label>
+ </td>
+ <td>
+  <textarea style="vertical-align:top" name="comment" rows="2" cols="80"></textarea>
+ </td>
+ </tr>
+ <tr>
+ <td>
+  <label>File Upload</label>
+ </td>
+ <td>
+  <input type="file" name="attachment" />
+ </td>
+ </tr>
+ <tr>
+  <td>
+  <label>Current cycle</label>
+  <input type="text" name="current_cycle" size="3" value=""/>
+  </td>
+ <td>
+  <label>Run currently ok</label>
+  <input type="radio" name="run_current_ok" value="1"/>
+  <label>Not ok</label>
+  <input type="radio" name="run_current_ok" value="0"/>
+ </td>
+ </tr>
+ <tr>
+ <td>
+   <label>Annotate Lanes</label><input type="checkbox" name="switch_to_lanes" id="switch_to_lanes" value="1" />
+ </td>
+ <td>
+   <div style="display:none;" id="lanes_annotation_selectors">
+   </div>
+   <div id="instrument_annotation">
+    <label>Also add annotation to instrument</label>
+    <input type="checkbox" name="include_instrument" value="" />
+   </div>
+ </td>
+ </tr>
+ <tr>
+  <td colspan="2">
+  <input type="submit" value="save" />
+  <input type="button" name="cancel" value="cancel" onclick="cancel_form('run_annotation', 1); return false;" />
+  <span style="font-size:smaller">Enter links in comments as plain URLs, no formatting</span>
+  </td>
+ </tr>
+ </table>
+ </div>
+ </form>

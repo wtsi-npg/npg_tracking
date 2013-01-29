@@ -1,0 +1,23 @@
+CREATE  TABLE `cost_group` (
+  `id_cost_group` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`id_cost_group`) ,
+  UNIQUE INDEX `name_UNIQUE` (`name`) )
+ENGINE = InnoDB;
+
+insert into cost_group (name) values ('R&D');
+
+CREATE  TABLE `cost_code` (
+  `id_cost_code` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `cost_code` VARCHAR(45) NOT NULL ,
+  `id_cost_group` BIGINT(20) UNSIGNED NOT NULL ,
+  PRIMARY KEY (`id_cost_code`) ,
+  UNIQUE INDEX `cost_code_UNIQUE` (`cost_code`) ,
+  CONSTRAINT `idx_id_cost_group`
+    FOREIGN KEY (`id_cost_group` )
+    REFERENCES `cost_group` (`id_cost_group` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+insert into cost_code(cost_code, id_cost_group) values ('S0696', 1), ('S0790', 1), ('S1546', 1); 

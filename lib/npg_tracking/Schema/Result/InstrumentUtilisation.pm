@@ -1,0 +1,233 @@
+package npg_tracking::Schema::Result::InstrumentUtilisation;
+
+# Created by DBIx::Class::Schema::Loader
+# DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+use strict;
+use warnings;
+
+use base 'DBIx::Class::Core';
+
+__PACKAGE__->load_components("InflateColumn::DateTime");
+
+=head1 NAME
+
+npg_tracking::Schema::Result::InstrumentUtilisation
+
+=cut
+
+__PACKAGE__->table("instrument_utilisation");
+
+=head1 ACCESSORS
+
+=head2 id_instrument_utilisation
+
+  data_type: 'bigint'
+  extra: {unsigned => 1}
+  is_auto_increment: 1
+  is_nullable: 0
+
+=head2 date
+
+  data_type: 'date'
+  is_nullable: 0
+
+=head2 total_insts
+
+  data_type: 'integer'
+  default_value: 0
+  extra: {unsigned => 1}
+  is_nullable: 0
+
+=head2 perc_utilisation_total_insts
+
+  data_type: 'float'
+  default_value: 0.00
+  extra: {unsigned => 1}
+  is_nullable: 0
+  size: [5,2]
+
+=head2 perc_uptime_total_insts
+
+  data_type: 'float'
+  default_value: 0.00
+  extra: {unsigned => 1}
+  is_nullable: 0
+  size: [5,2]
+
+=head2 official_insts
+
+  data_type: 'integer'
+  default_value: 0
+  extra: {unsigned => 1}
+  is_nullable: 0
+
+=head2 perc_utilisation_official_insts
+
+  data_type: 'float'
+  default_value: 0.00
+  extra: {unsigned => 1}
+  is_nullable: 0
+  size: [5,2]
+
+=head2 perc_uptime_official_insts
+
+  data_type: 'float'
+  default_value: 0.00
+  extra: {unsigned => 1}
+  is_nullable: 0
+  size: [5,2]
+
+=head2 prod_insts
+
+  data_type: 'integer'
+  default_value: 0
+  extra: {unsigned => 1}
+  is_nullable: 0
+
+=head2 perc_utilisation_prod_insts
+
+  data_type: 'float'
+  default_value: 0.00
+  extra: {unsigned => 1}
+  is_nullable: 0
+  size: [5,2]
+
+=head2 perc_uptime_prod_insts
+
+  data_type: 'float'
+  default_value: 0.00
+  extra: {unsigned => 1}
+  is_nullable: 0
+  size: [5,2]
+
+=head2 id_instrument_format
+
+  data_type: 'bigint'
+  extra: {unsigned => 1}
+  is_foreign_key: 1
+  is_nullable: 0
+
+=cut
+
+__PACKAGE__->add_columns(
+  "id_instrument_utilisation",
+  {
+    data_type => "bigint",
+    extra => { unsigned => 1 },
+    is_auto_increment => 1,
+    is_nullable => 0,
+  },
+  "date",
+  { data_type => "date", is_nullable => 0 },
+  "total_insts",
+  {
+    data_type => "integer",
+    default_value => 0,
+    extra => { unsigned => 1 },
+    is_nullable => 0,
+  },
+  "perc_utilisation_total_insts",
+  {
+    data_type => "float",
+    default_value => "0.00",
+    extra => { unsigned => 1 },
+    is_nullable => 0,
+    size => [5, 2],
+  },
+  "perc_uptime_total_insts",
+  {
+    data_type => "float",
+    default_value => "0.00",
+    extra => { unsigned => 1 },
+    is_nullable => 0,
+    size => [5, 2],
+  },
+  "official_insts",
+  {
+    data_type => "integer",
+    default_value => 0,
+    extra => { unsigned => 1 },
+    is_nullable => 0,
+  },
+  "perc_utilisation_official_insts",
+  {
+    data_type => "float",
+    default_value => "0.00",
+    extra => { unsigned => 1 },
+    is_nullable => 0,
+    size => [5, 2],
+  },
+  "perc_uptime_official_insts",
+  {
+    data_type => "float",
+    default_value => "0.00",
+    extra => { unsigned => 1 },
+    is_nullable => 0,
+    size => [5, 2],
+  },
+  "prod_insts",
+  {
+    data_type => "integer",
+    default_value => 0,
+    extra => { unsigned => 1 },
+    is_nullable => 0,
+  },
+  "perc_utilisation_prod_insts",
+  {
+    data_type => "float",
+    default_value => "0.00",
+    extra => { unsigned => 1 },
+    is_nullable => 0,
+    size => [5, 2],
+  },
+  "perc_uptime_prod_insts",
+  {
+    data_type => "float",
+    default_value => "0.00",
+    extra => { unsigned => 1 },
+    is_nullable => 0,
+    size => [5, 2],
+  },
+  "id_instrument_format",
+  {
+    data_type => "bigint",
+    extra => { unsigned => 1 },
+    is_foreign_key => 1,
+    is_nullable => 0,
+  },
+);
+__PACKAGE__->set_primary_key("id_instrument_utilisation");
+__PACKAGE__->add_unique_constraint("uidx_date_format", ["date", "id_instrument_format"]);
+
+=head1 RELATIONS
+
+=head2 instrument_format
+
+Type: belongs_to
+
+Related object: L<npg_tracking::Schema::Result::InstrumentFormat>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "instrument_format",
+  "npg_tracking::Schema::Result::InstrumentFormat",
+  { id_instrument_format => "id_instrument_format" },
+  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.06001 @ 2011-01-18 15:02:19
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:XS1mmvlXL/vYLi1XXzVIVA
+# Author:        david.jackson@sanger.ac.uk
+# Maintainer:    $Author: ajb $
+# Created:       2010-04-08
+# Last Modified: $Date: 2011-01-18 15:07:26 +0000 (Tue, 18 Jan 2011) $
+# Id:            $Id: InstrumentUtilisation.pm 12361 2011-01-18 15:07:26Z ajb $
+# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/InstrumentUtilisation.pm $
+
+use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 12361 $ =~ /(\d+)/mxs; $r; };
+
+1;
+

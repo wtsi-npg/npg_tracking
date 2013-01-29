@@ -1,0 +1,181 @@
+---
+- date: 2007-06-05 10:04:23
+  id_run: 1
+  id_run_status: 1
+  id_run_status_dict: 1
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 10:07:42
+  id_run: 1
+  id_run_status: 2
+  id_run_status_dict: 2
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 10:16:55
+  id_run: 1
+  id_run_status: 3
+  id_run_status_dict: 4
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 12:20:01
+  id_run: 1
+  id_run_status: 4
+  id_run_status_dict: 6
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 12:21:25
+  id_run: 1
+  id_run_status: 5
+  id_run_status_dict: 7
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 12:22:32
+  id_run: 1
+  id_run_status: 6
+  id_run_status_dict: 9
+  id_user: 1
+  iscurrent: 1
+- date: 2007-06-05 12:24:23
+  id_run: 3
+  id_run_status: 7
+  id_run_status_dict: 4
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 12:24:28
+  id_run: 4
+  id_run_status: 8
+  id_run_status_dict: 4
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 12:31:44
+  id_run: 5
+  id_run_status: 9
+  id_run_status_dict: 1
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 12:32:27
+  id_run: 5
+  id_run_status: 10
+  id_run_status_dict: 4
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 12:31:44
+  id_run: 11
+  id_run_status: 11
+  id_run_status_dict: 2
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 12:32:27
+  id_run: 12
+  id_run_status: 12
+  id_run_status_dict: 2
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 12:31:44
+  id_run: 11
+  id_run_status: 13
+  id_run_status_dict: 11
+  id_user: 1
+  iscurrent: 1
+- date: 2007-06-05 12:32:27
+  id_run: 12
+  id_run_status: 14
+  id_run_status_dict: 11
+  id_user: 1
+  iscurrent: 1
+- date: 2007-06-05 12:32:28
+  id_run: 5
+  id_run_status: 15
+  id_run_status_dict: 11
+  id_user: 1
+  iscurrent: 1
+- date: 2007-06-05 12:32:29
+  id_run: 13
+  id_run_status: 16
+  id_run_status_dict: 2
+  id_user: 1
+  iscurrent: 1
+- date: 2007-06-05 12:32:30
+  id_run: 14
+  id_run_status: 17
+  id_run_status_dict: 2
+  id_user: 1
+  iscurrent: 1
+- date: 2007-06-05 12:32:31
+  id_run: 15
+  id_run_status: 18
+  id_run_status_dict: 2
+  id_user: 1
+  iscurrent: 1
+- date: 2007-06-05 12:33:32
+  id_run: 16
+  id_run_status: 19
+  id_run_status_dict: 2
+  id_user: 1
+  iscurrent: 1
+- date: 2007-06-05 10:04:23
+  id_run: 95
+  id_run_status: 20
+  id_run_status_dict: 1
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 10:07:42
+  id_run: 95
+  id_run_status: 21
+  id_run_status_dict: 2
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 10:16:55
+  id_run: 95
+  id_run_status: 22
+  id_run_status_dict: 4
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 11:16:55
+  id_run: 95
+  id_run_status: 23
+  id_run_status_dict: 11
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 12:20:01
+  id_run: 95
+  id_run_status: 24
+  id_run_status_dict: 6
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 12:21:25
+  id_run: 95
+  id_run_status: 25
+  id_run_status_dict: 7
+  id_user: 1
+  iscurrent: 0
+- date: 2007-06-05 12:22:32
+  id_run: 95
+  id_run_status: 26
+  id_run_status_dict: 9
+  id_user: 1
+  iscurrent: 1
+- date: 2010-01-01 10:10:30
+  id_run: 9948
+  id_run_status: 27
+  id_run_status_dict: 4
+  id_user: 1
+  iscurrent: 1
+- date: 2010-01-01 10:10:33
+  id_run: 9949
+  id_run_status: 28
+  id_run_status_dict: 4
+  id_user: 1
+  iscurrent: 1
+- date: 2010-01-01 10:10:34
+  id_run: 9950
+  id_run_status: 29
+  id_run_status_dict: 4
+  id_user: 1
+  iscurrent: 1
+- date: 2010-01-01 10:10:34
+  id_run: 9951
+  id_run_status: 30
+  id_run_status_dict: 4
+  id_user: 1
+  iscurrent: 1

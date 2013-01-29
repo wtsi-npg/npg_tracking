@@ -1,0 +1,21 @@
+[Header],,,,,,,,,,
+IEMFileVersion,3,,,,,,,,,
+Investigator Name,MQ1,,,,,,,,,
+Project Name,nextera v2 KAPA,,,,,,,,,
+Experiment Name,7336,,,,,,,,,
+Date,10/01/2012,,,,,,,,,
+Workflow,Resequencing,,,,,,,,,
+Assay,Nextera,,,,,,,,,
+Description,,,,,,,,,,
+Chemistry,Amplicon,,,,,,,,,
+[Reads],,,,,,,,,,
+151,,,,,,,,,,
+151,,,,,,,,,,
+[Settings],,,,,,,,,,
+,,,,,,,,,,
+[Data],,,,,,,,,,
+Sample_ID,Sample_Name,Sample_Plate,Sample_Well,Sample_Project,index,I7_Index_ID,index2,I5_Index_ID,Description,GenomeFolder
+Nextera2BP_kapa,Nextera2BP_kapa,nexterav2kapa,A01,nexterav2 test,CGTACTAG,N702,CTCTCTAT,N502,,D:\Genomes\B_pertussis
+Nextera2SP_kapa,Nextera2SP_kapa,nexterav2kapa,A02,nexterav2 test,TCCTGAGC,N704,CTCTCTAT,N502,,D:\Genomes\gallinarum
+Nextera2TW20_kapa,Nextera2TW20_kapa,nexterav2kapa,A03,nexterav2 test,GGACTCCT,N705,CTCTCTAT,N502,,D:\Genomes\S_aureus_TW20
+Nextera23D7_kapa,Nextera23D7_kapa,nexterav2kapa,A04,nexterav2 test,TAGGCATG,N706,CTCTCTAT,N502,,D:\Genomes\3D7

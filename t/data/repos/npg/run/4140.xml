@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="4140" batch_id="5171" id_instrument="47" expected_cycle_count="216" actual_cycle_count="216" priority="1" id_run_pair="0" is_paired="0" team="joint" id_instrument_format="4" name="IL42_4140" loader="js2" loading_date="2009-12-02" run_folder="091202_IL42_4140">
+ <instrument id_instrument="47" name="IL42" id_instrument_format="4" external_name="" serial="" iscurrent="0" />
+ <run_lanes><run_lane id_run_lane="32688" id_run="4140" tile_count="120" tracks="2" position="1" />
+<run_lane id_run_lane="32689" id_run="4140" tile_count="120" tracks="2" position="2" />
+<run_lane id_run_lane="32690" id_run="4140" tile_count="120" tracks="2" position="3" />
+<run_lane id_run_lane="32691" id_run="4140" tile_count="120" tracks="2" position="4" />
+<run_lane id_run_lane="32692" id_run="4140" tile_count="120" tracks="2" position="5" />
+<run_lane id_run_lane="32693" id_run="4140" tile_count="120" tracks="2" position="6" />
+<run_lane id_run_lane="32694" id_run="4140" tile_count="120" tracks="2" position="7" />
+<run_lane id_run_lane="32695" id_run="4140" tile_count="120" tracks="2" position="8" />
+</run_lanes>
+ <current_run_status id_run_status="57990" id_run="4140" date="2009-12-21 14:55:45" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_statuses>
+ <run_status id_run_status="57990" id_run="4140" date="2009-12-21 14:55:45" id_run_status_dict="20" id_user="7" username="pipeline" iscurrent="1" description="qc complete" />
+ <run_status id_run_status="57989" id_run="4140" date="2009-12-21 14:55:12" id_run_status_dict="12" id_user="7" username="pipeline" iscurrent="0" description="run archived" />
+ <run_status id_run_status="57981" id_run="4140" date="2009-12-21 12:52:54" id_run_status_dict="18" id_user="7" username="pipeline" iscurrent="0" description="archival in progress" />
+ <run_status id_run_status="57978" id_run="4140" date="2009-12-21 12:38:58" id_run_status_dict="17" id_user="54" username="pipeline" iscurrent="0" description="archival pending" />
+ <run_status id_run_status="57717" id_run="4140" date="2009-12-15 09:38:52" id_run_status_dict="19" id_user="7" username="pipeline" iscurrent="0" description="qc review pending" />
+ <run_status id_run_status="57703" id_run="4140" date="2009-12-14 23:55:34" id_run_status_dict="9" id_user="7" username="pipeline" iscurrent="0" description="analysis complete" />
+ <run_status id_run_status="57647" id_run="4140" date="2009-12-14 01:35:31" id_run_status_dict="7" id_user="7" username="pipeline" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="57646" id_run="4140" date="2009-12-14 01:33:32" id_run_status_dict="6" id_user="7" username="pipeline" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="57645" id_run="4140" date="2009-12-14 01:33:30" id_run_status_dict="11" id_user="7" username="pipeline" iscurrent="0" description="run mirrored" />
+ <run_status id_run_status="57639" id_run="4140" date="2009-12-13 17:01:36" id_run_status_dict="4" id_user="7" username="pipeline" iscurrent="0" description="run complete" />
+ <run_status id_run_status="57123" id_run="4140" date="2009-12-02 14:46:44" id_run_status_dict="2" id_user="7" username="pipeline" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="57122" id_run="4140" date="2009-12-02 14:33:23" id_run_status_dict="1" id_user="15" username="pipeline" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="6469" id_run="4140" id_annotation="6781" date="2009-12-03 11:05:30" id_user="52" username="jb2" comment="Note... lanes 5-8 ran at maximum concentration" attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="6555" id_run="4140" id_annotation="6869" date="2009-12-10 17:20:31" id_user="9" username="ah1" comment="No problem seen at this point. Now on C154/216." attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="6666" id_run="4140" id_annotation="6983" date="2009-12-21 12:38:19" id_user="54" username="svvd" comment="108 cyc PE run: PASS. Yield of 26.7 Gbases. %Error rates of 1.6 (R1) and 0.8 (R2). Lanes 5 - 8 are sparse and are slightly short on yield. These lanes are tried at maximum concentration and cluster density can&#x27;t be improved, hence passing these." attachment_name="" run_current_ok="" current_cycle="" />
+ </annotations>
+ <tags>
+   <tag id_tag="17" description="paired_read" />
+   <tag id_tag="16" description="rta" />
+ </tags>
+</run>

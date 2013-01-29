@@ -1,0 +1,52 @@
+<!--begin $Id: manufacturer_read.tt2 2662 2008-08-06 12:23:37Z rmp $-->
+<h3>Manufacturer</h3>
+
+<ul>
+  <li>Name: [% model.name %]</li>
+  <li># Instruments: [% model.instrument_count %]</li>
+</ul>
+
+<table id="current_instruments" class="sortable zebra">
+  <caption>Current Instruments</caption>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Model</th>
+      <th>Manufacturer's Name</th>
+      <th>Serial #</th>
+      <th>Is Current</th>
+    </tr>
+  </thead>
+  <tbody>
+[% FOREACH instrument = model.current_instruments %]
+    <tr>
+      <td><a href="[% SCRIPT_NAME %]/instrument/[% instrument.id_instrument %]">[% instrument.name %]</a></td>
+      <td>[% instrument.model %]</td>
+      <td>[% instrument.external_name %]</td>
+      <td>[% instrument.serial %]</td>
+      <td>[% IF instrument.iscurrent %]<img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
+    </tr>
+[% END %]
+  </tbody>
+</table>
+
+<br />
+
+<table id="instrument_formats" class="sortable zebra">
+  <caption>Instrument Formats</caption>
+  <thead>
+    <tr>
+      <th>Model</th>
+      <th>Is Current</th>
+    </tr>
+  </thead>
+  <tbody>
+[% FOREACH instrument_format = model.instrument_formats %]
+    <tr>
+      <td><a href="[% SCRIPT_NAME %]/instrument_format/[% instrument_format.id_instrument_format %]">[% instrument_format.model %]</a></td>
+      <td>[% IF instrument_format.iscurrent %]<img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
+    </tr>
+[% END %]
+  </tbody>
+</table>
+<!--end $Id: manufacturer_read.tt2 2662 2008-08-06 12:23:37Z rmp $-->

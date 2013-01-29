@@ -1,0 +1,21 @@
+<h2>Usergroup <i>[% model.groupname %]</i></h2>
+<ul>
+ <li>Description: [% model.description %]</li>
+ <li>Public: [% IF model.is_public %]yes[% ELSE %]no[% END %]</li>
+</ul>
+
+<table id="members">
+ <caption>Group Members</caption>
+ <thead>
+  <tr><th>Username</th><th>Name</th><th>&nbsp;</th></tr>
+ </thead>
+ <tbody>
+ [% FOREACH user = model.users; username = user.username; realname = view.realname(username); %]
+  <tr>
+   <td>[% username %]</td><td>[% realname %]</td>
+   <td>[<a href="https://helix.wtgc.org/people?uid=[% username %]">Phonebook</a>]</td>
+   <td>[<a href="[% SCRIPT_NAME %]/user/[% username %]">Details</a>]</td>
+  </tr>
+ [% END %]
+ </tbody>
+</table>

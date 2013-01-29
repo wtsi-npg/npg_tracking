@@ -1,0 +1,4 @@
+insert into run_lane_status_dict (description) values
+  ('analysis in progress'),
+  ('analysis complete'),
+  ('manual qc complete');

@@ -1,0 +1,9 @@
+<!--begin $Id: manufacturer_create.tt2 2662 2008-08-06 12:23:37Z rmp $-->
+Saved manufacturer.
+
+Please click <a href="[% SCRIPT_NAME %]/manufacturer/[% model.id_manufacturer %]">here</a> to continue.
+
+<script type="text/javascript">
+  document.location.href = '[% SCRIPT_NAME %]/manufacturer/[% model.id_manufacturer %]';
+</script>
+<!--end $Id: manufacturer_create.tt2 2662 2008-08-06 12:23:37Z rmp $-->

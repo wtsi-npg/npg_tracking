@@ -1,0 +1,31 @@
+<table class="sortable zebra" id="instruments">
+ <caption>Instruments</caption>
+ <thead>
+  <tr>
+   <th>Name</th>
+   <th>Model</th>
+   <th>External&nbsp;Name</th>
+   <th>Serial&nbsp;#</th>
+   <th>Is&nbsp;Current</th>
+   <th>Current&nbsp;Run</th>
+   <th>Current&nbsp;Status</th>
+   <th>Status&nbsp;Comment</th>
+  </tr>
+ </thead>
+ <tbody>
+[% FOREACH instrument = model.instruments %]
+  <tr>
+   <td><span style="display:none">[% USE String(instrument.id_instrument); String.format('%04d') %]</span><a href="[% SCRIPT_NAME %]/instrument/[% instrument.id_instrument %]">[% instrument.name %]</a></td>
+   <td>[% instrument.model %]</td>
+   <td>[% instrument.external_name %]</td>
+   <td>[% instrument.serial %]</td>
+   <td>[% IF instrument.iscurrent %]<img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
+[% SET status = instrument.current_run.current_run_status.run_status_dict.description %]
+   <td>[% IF status %]<a href="[% SCRIPT_NAME %]/run/[% instrument.current_run.id_run %]">[% instrument.current_run.name %]</a> [% status %][% ELSE %]idle[% END %]</td>
+   <td>[% instrument.current_instrument_status.instrument_status_dict.description %]</td>
+   <td>[% instrument.current_instrument_status.comment %]</td>
+   <td><input type="checkbox" id="id_instrument_[% instrument.id_instrument %]" class="id_instrument_checkbox" name="id_instrument" value="[% instrument.id_instrument %]" /></td>
+  </tr>
+[% END %]
+ </tbody>
+</table>

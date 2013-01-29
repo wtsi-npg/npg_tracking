@@ -1,0 +1,104 @@
+---------
+-- project handling
+--
+CREATE TABLE `project` (
+  `id_project` bigint(20) unsigned NOT NULL auto_increment,
+  `projectname` char(128) NOT NULL,
+  PRIMARY KEY  (`id_project`,`projectname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into project(id_project,projectname) values(1,'Unspecified');
+
+ALTER TABLE library ADD COLUMN `id_project` BIGINT UNSIGNED NOT NULL AFTER `id_user`;
+update library set id_project = 1;
+
+alter table library ADD CONSTRAINT `lib_proj` FOREIGN KEY `lib_proj` (`id_project`)
+    REFERENCES `project` (`id_project`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+ALTER TABLE run_lane ADD COLUMN `id_project` BIGINT UNSIGNED NOT NULL;
+update run_lane set id_project = 1;
+
+alter table run_lane ADD CONSTRAINT `rl_proj` FOREIGN KEY `rl_proj` (`id_project`)
+    REFERENCES `project` (`id_project`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+---------
+-- allow referencing into external projects
+--
+ALTER TABLE `library` ADD COLUMN `external_id` CHAR(128) NOT NULL AFTER `id_project`,
+ ADD INDEX `external_id`(`external_id`);
+
+---------
+-- auto_analyse moved from run => run_lane
+--
+alter table run drop column auto_analyse;
+alter table run_lane add column auto_analyse tinyint(1) not null default '0';
+update run_lane set auto_analyse=1;
+
+
+---------
+-- Run events
+--
+CREATE TABLE `run_event_type` (
+  `id_run_event_type` bigint(20) unsigned NOT NULL auto_increment,
+  `description` char(128) default NULL,
+  PRIMARY KEY  (`id_run_event_type`),
+  UNIQUE KEY `ret_desc` (`description`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `run_event` (
+  `id_run_event` bigint(20) unsigned NOT NULL auto_increment,
+  `id_run` bigint(20) unsigned NOT NULL,
+  `id_run_event_type` bigint(20) unsigned NOT NULL,
+  `id_run_event_parent` bigint(20) unsigned NOT NULL,
+  `time_start` bigint(20) unsigned NOT NULL,
+  `time_stop` bigint(20) unsigned NOT NULL,
+  `time_duration` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY  (`id_run_event`),
+  KEY `re_id_r` (`id_run`),
+  KEY `id_ret` (`id_run_event_type`),
+  CONSTRAINT `id_ret` FOREIGN KEY (`id_run_event_type`) REFERENCES `run_event_type` (`id_run_event_type`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `re_id_r` FOREIGN KEY (`id_run`) REFERENCES `run` (`id_run`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `run_event_attr` (
+  `id_run_event_attr` bigint(20) unsigned NOT NULL auto_increment,
+  `id_run_event` bigint(20) unsigned NOT NULL,
+  `attr` char(32) character set latin1 NOT NULL,
+  `value` char(128) default NULL,
+  PRIMARY KEY  (`id_run_event_attr`),
+  KEY `id_re` (`id_run_event`),
+  KEY `rea_attr` (`attr`),
+  CONSTRAINT `id_re` FOREIGN KEY (`id_run_event`) REFERENCES `run_event` (`id_run_event`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+---------
+-- Run Lane Statuses
+--
+CREATE TABLE `run_lane_status_dict` (
+  `id_run_lane_status_dict` bigint(20) unsigned NOT NULL auto_increment,
+  `description` varchar(64) NOT NULL,
+  PRIMARY KEY  (`id_run_lane_status_dict`,`description`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `run_lane_status` (
+  `id_run_lane_status` bigint(20) unsigned NOT NULL auto_increment,
+  `id_run_lane` bigint(20) unsigned NOT NULL,
+  `date` datetime NOT NULL,
+  `id_user` bigint(20) unsigned default NULL,
+  `iscurrent` tinyint(1) NOT NULL,
+  `id_run_lane_status_dict` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY  (`id_run_lane_status`),
+  KEY `rls_rl` (`id_run_lane`),
+  KEY `rls_user` (`id_user`),
+  KEY `rls_rlsd` (`id_run_lane_status_dict`),
+  CONSTRAINT `rls_rlsd` FOREIGN KEY (`id_run_lane_status_dict`) REFERENCES `run_lane_status_dict` (`id_run_lane_status_dict`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `rls_rl` FOREIGN KEY (`id_run_lane`) REFERENCES `run_lane` (`id_run_lane`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `rls_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

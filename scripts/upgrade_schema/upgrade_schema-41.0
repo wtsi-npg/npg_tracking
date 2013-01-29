@@ -1,0 +1,1 @@
+ALTER TABLE `run` ADD COLUMN `flowcell_id` VARCHAR(64) DEFAULT NULL AFTER `id_instrument_format`;

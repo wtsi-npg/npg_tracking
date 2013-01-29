@@ -1,0 +1,890 @@
+CHANGES
+
+release 73.1
+- rename NPG_REFERENCE_REPOSITORY type to NPG_TRACKING_REFERENCE_REPOSITORY
+  to allow for the new and original npg_common modules to co-exist
+- npg_tracking::data::reference::list - do not export repository root since
+  this is only needed for testing
+
+release 73.0
+- ref&bait finders and runfolder modules - copies created under npg_tracking RT#306995
+  dependencies withing this svn project refactored to use new modules
+- Build.PL amended to install a version of CGI compatible with the post requests in tests
+- sample_description method added to the lims interface
+- ensure correct number of lanes in NPG (tracking GUI and the database) for HiSeq2500 RT#306985
+
+release 72.8
+- live and dev sections removed from the config file with db credentials
+- new instrument status 'wash in progress' RT#305630
+- tag from sample description for John Collins libraries RT#301185
+
+release 72.7
+- npg_common::roles::run, npg_common::roles::run::lane and npg_common::roles::run::lane::tag moved to npg_tracking::glossary; dependent code refactored
+- dependency on npg_common::roles::log removed
+
+release 72.6
+- ensure email templates are specified on the script level
+- staging monitor - cope with dev env variable being not set
+
+release 72.5
+- MiSeq samplesheet generation: list on-instrument genome reference files RT#301274
+- infer the tag sequence from a sample description - sample level only RT#301185
+- removed explicit dependency on /software/solexa
+- removed explicit dependency on npg_common::config
+- extended Build.PL to deploy 'data' element - contains email templates
+- moved npg_common::config::roles::db_connect to npg_tracking::util::db_connect
+  removed dependency of this role on npg_common::config
+  enabled parsing config files without top-level domain section (like live, dev)
+  config file is expected to be in .npg directory, which should be in the home
+  directory or, if $HOME is not defined, in the current directory
+- backed up npg_tracking::Schema by npg_tracking::util::db_connect
+
+release 72.4
+- Makefile.PL file replaced with Build.PL that can build all dependencies from scratch
+- db fixtures updated (NULLs removed)
+- possible to use local mysql test database without having socket specified in the
+  mysql configuration file 
+
+release 72.3
+- a fix to instrument uptime as exposed in xml feeds RT#301282: npg uptime numbers correct? 
+
+release 72.2
+- illumina sequencing failures ticket figures out what to do if no id_run option is given RT#161876
+
+release 72.1
+- bug fix for child scripts of instrument poller not pickign up the correct perl executable
+
+release 72.0
+- npg::samplesheet - OnlyGenerateFASTQ is no longer valid in settings
+- decription key is taken from the relevant portion of the config. file
+  rather than from the live section
+- changes to run under perl 5.14.2 and updated Moose, in particular, coping with variations in Moose error messages
+- staging monitor bug fix for getting file modification time    
+- iscurrent flag for both instrument and run statuses
+- four new statuses for instrument, 'planned repair', 'down for repair',
+  'planned service', 'down for service', replacing 'down' and 'planned maintenance'
+- instrument status rules explicitly defined and propagated
+- instrument status auto-assignment refactored to simplify further additions
+- wash required instrument status auto-assigned on the completion/cancellation
+  of the run rather than on the start of the run in both DBIx binding and Clearpress web app
+- DBIx binding definition of the idle instrument brought in line with the
+  web app definition, ie on reaching run mirrored
+- npg_testing namespace moved to this package
+- InstrumentPoller cron job to set 'wash required' status if it's due according to a schedule
+- cbots change status wash performed to up automatically
+- DBIx instrument creation creates an initial was required status for sequencing instruments
+- test to check that scripts compile
+
+release 71.4
+- Monitor::RunFolder::Staging - check_tiles falls back to checking bcls if there are no cif files
+release 71.3
+- Monitor::Roles::Cycle - use Intensities/BaseCalls/L001/C* when cifs are not copied and Intensities/L001/C* fails for getting the latest cycle
+
+release 71.2
+- st::api::lims
+    change associated_lims to descendants
+    change associated_child_lims to children
+    add methods for returning lists of ids for studies, samples, projects and libraries
+    add a method for returning a list of library types
+
+release 71.1
+- change contains_unconsented_human to more accurate contains_nonconsented_human
+- add contains_nonconsented_xahuman method for determining if a study has non consented X and autosome human data
+
+release 71.0
+- Sample_ID not SampleID in generated samplesheet for MiSeqs
+- Fix cBot fqdn suffix - change  from dynamic.sanger.ac.uk to internal.sanger.ac.uk
+- add tileviz link off run page
+
+release 70.4
+- cope with V2 MiSeq reagent kits in samplesheet generation
+ 
+release 70.3
+- typo fix - space between batch id and .xml extension in javascript
+
+release 70.2
+- npg tracking test server config and README removed; see the configuration in sflogin svn project
+ 
+release 70.1
+- sample consent_withdrawn method added
+- svn::executable ON property set for scripts in cgi-bin pending tracking server deployment on sfweb
+
+release 70.0
+- bait_name attribute added to st::api::lims object RT#254705
+- change pass colour to match that in SeqQC i.e. from green to blue RT#262812
+- tweak to samplesheet class so that id_run is not required if run object is provided
+
+release 69.6
+- MiSeq sample sheet generation tweak: bung PhiX in as a reference when we cannot figure one out so that the MiSeq will run
+
+release 69.5
+- time issues (implicit use of UTC time) in DBIx binding resolved, the method use explicitly local time  RT#259861
+
+release 69.4
+- heatmaps for npg-qc: tile layouts added for HiSeq and MiSeq
+- sample sheet refinements and bugfixes - remove repeated 'GenomeFolder', end lines with CRLF rather than LF, const number of commas per line
+- code for daemon or cron to generate sample sheets for pending MiSeq runs
+
+release 69.3
+- loaders can now duplicate a run. 'Run Duplicate' button appears only if this run's current status is run cancelled. RT#257773
+- minor change to MiSeq samplesheet
+- sensor test refactored
+- sensor code fails if encounts an unknown sensor - fixed #RT259833
+
+release 69.2
+- additional configuration files, scripts and instruction for stand-slone web app in a sandbox
+- tests fixed so that they run in an Ubuntu sandbox with ClearPress v422 (Jan 2012)
+- loader levels dropped
+
+release 69.1
+- parsing of unusual usernames like mark@illumina.com in sanger_sso authentication module #RT258529
+
+release 69.0
+- Added support for storing temperatures from netbotz
+- Independent implementation of Sanger LDAP access and Sanger SSO cookie decription
+- npg_common::mailer moved to npg::util::mailer to be used by npg::sensor and npg::email
+- npg_common::image package and related modules moved to npg::util::image namespace; removed Moose dependency in npg::util::image::colourmap
+
+release 68.2
+- Unused npg tracking db tables deleted: entity2reference_sequence, reference_sequence, project;
+- Unused columns deleted from the run_lane npg tracking db: auto_analyse, id_project; 
+- Run table changes: column 'is_dev' is dropped, a new column 'team' is created to associate teams with a run. Where id_dev column had 1, the 'team' column has 'RAD', otherwise the value is 'joint';
+- DBIx binding, ClearPress models, views and templates and npg::api updated accordingly
+- DBIx binding: create and search cbot runs removed
+- new run page redesigned; instrument type detection by javascript on this page improved
+- team selection drop-down list on a new page list 
+
+release 68.1
+- create run page javascript bug fix
+
+release 68.0
+- rebalanced the code in st&npg::api::base and ::util onjects; st::api::util object removed
+- depricated and unused code removed from st and npg apis, tests adjusted accordingly
+- old test data for st package removed
+- tests refactored to exclude depricated calls and make use of test useragents transparent
+- cgi script for e-mailing annotations removed
+
+release 67.1
+- Cope with tracking runs with more than 3 reads and drop support for older runfolder Netcopy_READ<digit> and only use Netcopy_Read<digit> files for run complete and mirror complete
+- Run, New Run, and Duplicate Run pages - MiSeq specific changes RT#254706
+- permissions for manual qc group to change run status and make annotation; were missing in some places
+- run-lane and instrument annotation comments fixed; were invisible
+
+release 67.0
+- st::api::lims - unused warn_fallback and fallback attributes removed, no fallbacks left when retrieving values
+                - unused library_asset_type method removed
+                - internally, _library and _request attributes removed
+- image link fix for MiSeq RT#252322
+- run priority to reflect lims' lane priorities RT#248112
+- permissions for manual qc group of users to create annotations and add lane tags
+- run, runs, instrument pages GUI de-cluttering and re-styling
+- runs page - page reload respects existing selection;
+    javascript deleted, reloads channeled through a full page reload
+- instrument page restyled, run list ffor an instrument displayed as iframe
+- ical, atom and excel feeds removed
+- rfid input box moved to under the login widget; rfid javascript moved to a stand-alone script
+
+release 66.0
+- "qc in progress" state to help avoid mulitple qc people overlapping their work
+- stop displaying batch update option to users who do not have the authorisation.
+- MiSeq - remotely check both MiSeqTemp & MiSeqAnalysis directories
+- skip cif check if no cifs seen at all in check_tiles
+- npg_tracking::Schema::Results::Run - change current_run_status to current_run_status_description so original name can return object in future
+
+release 65.1
+- cgi-bin/npg script that can work both stand-alone and on sanger intweb; needs apache conf file similar to the one in t/test_scripts
+- highlight colour made lighter to make reading easier
+- fix longstanding javascript code bug which would screw up the underlying links (apparent when right clicked) to runs of differnt statuses/ different instrument types
+
+release 65.0
+- st::api modules
+    passing around st_cache attribute is removed
+    some additional methods depricated
+- npg tracking web app:
+    npg::util - st_cache and useragent accessors removed
+    depricated module npg::graph removed 
+    own decorator object is used instead of SangerWeb; no dependency on SangerPath
+    app version number is taken from npg::view instead of npg::controller
+    /nfs/WWWdev/SHARED_docs/lib/core dependency retained in npg::view object for SSO and LDAP access, but the code runs OK if any of these modules is unaccessible 
+- documentation and files for running stand-alone apache tracking service are in t/test_server
+- dependency on SangerPath and SangerWeb removed from tests
+- npg::email tests that were sending live updates fixed
+- MiSeq - alter reporting of runfolder and add a checker (interrogate instrument) script
+
+release 64.0
+- new staging areas sf46,47,48,49 added to the disk usage view
+- json feeds removed
+- npg project model and views removed
+- foreign key constraint for the project_id column of the run_lane table dropped
+- trackign db DBIx binding regenerated
+- project_id is not rendered in XML feeds
+- npg basic&advanced search: cas project removed, test extended to include st_cache table
+- run list html page instrument selector changes: GAI removed, MiSeq added; MiSeq added to instrument db test fixtures
+- instrument utilisation loader script refactored and moved from ./scripts to ./bin
+- old unused scripts from ./scripts removed
+- icons directory added to htdocs to render icons when a stand-alone server is run
+
+release 63.4
+- npg::email and illumina qc failures script for creating RT tickets use st::api::lims now; RT#241274
+- link to SeqQC on analysis in progress RT#245662
+- depricated module st::api::run removed
+
+release 63.3
+- a date-related bug in the 10-model-run_status.t test fixed
+- add instrument <-> designation many-to-many relationship in DBIx class
+- add tag <-> run many-to-many relationship in DBIx class
+- deleted some old test data
+- deleted some old, unused scrips
+
+release 63.2
+- st::api::lims->contains_unconsented_human defined for a pool and tag 0 - looking at plexes
+
+release 63.1
+- st::api::lims - keys for insert size hash are always defined #RT241906
+- st::api::lims - default fallback value is false
+
+release-63.0
+
+- npg::api::project object removed
+- npg::api::run module:
+    ->batch accessor is depricated
+    ->lims accessor created insted
+- npg::api:run_lane module:
+    ->lims, ->is_pool, ->is_library, ->is_control methods added;
+    previously depricated ->stproject_id, ->stproject_name, ->sample, ->project methods removed;
+    ->id_project field removed;
+    ->asset, ->library, ->pool, ->control, ->entity, ->st_lane methods made depricated;
+    ->is_spiked_phix, ->asset_id, ->contains_unconsented_human, ->manual_qc methods are refactored to use npg::api:run_lane->lims method;
+- st::api::request module:
+    previously depricated ->libraries method removed
+    ->project method marked as depricated
+- st::api::sample module:
+    previously depricated ->project ->workflow_samples methods removed
+- st::api::run module marked as depricated
+- st::api::lane module  as a whole is depricated
+    previously depricated ->sample method removed
+    all methods marked as depricated
+- st::api::batch:
+    methods ->batches, ->batches_released_cluster, ->lane_count, ->lanes marked as depricated
+- st::api::asset module:
+    previously depricated methods ->workflow_sample, ->libraries, ->projects, ->project removed
+    methods ->required_fragment_size, ->studies, ->reference_sequence, ->organism, ->study, ->study_name, ->sample marked as depricated
+- st::api::tag module is depricated, all methods marked as depricated
+- refactoring of some tests to use the web cache where possible
+- update schema scripts moved to scripts/upgrade_schema directory
+- some unused scripts removed from the scripts directory: runs_for_casproject, api-demo-project, project_finder, api-demo-stproject, report_q_values_to_sequencescapeprojects
+
+- updated image thumbnail URL to work (only) for HiSeq machines
+- v prelim MiSeq samplesheet generation
+
+release-62.0
+- cache npg api run object in st api lims when id_run given
+- return spiked phix tag_index for a lane as well as a plex
+- st::api::lims - lane_id and lane_priority attributes added
+- batch xml parsing in st::api::lane tightened up, RT #238508
+
+release-61.3
+- st::api::lims - read library name from batch xml, RT#234177
+- st::api::lims - new fallback accessor; if fallback is disabled, no falling back to get study id or library name
+- set user agent in the tracking ajax reflector to a string starting with 'NPG_INTRERACTIVE' to allow Sequencescape to recognise that this is for an interactive (user waiting) xml request
+- fixed test data to reflect the fact that in the test we cannot work out the instrument (see release-61.3 notes), so the created run NHTL page should not contain data about any particular instrument
+
+release-61.2
+- to avoid use of uninitialized value message in log when checking instrument name
+- when creating a run, if we can't work out the instrument, then option Please Select: displayed
+
+release-61.1
+- run lane status now being used to record where the lane is through analysis, and to update the run status if all lanes have reached a certain applicable status (i.e. all lanes at analysis complete - run status set to analysis complete, qc review pending)
+- RT #231143: st::api::lims->required_insert_size - no fall back to old ways if insert size definition present in batch XML
+- st::api::lims->required_insert_size bug fix for pools
+
+release-61.0
+- RT #229481 extension to st::api::lims to get multiple lib., sample, and study name with an option
+  not to include spiked control
+- removal of batch model and view, as now data obtained via sequencescape ajax request directly
+- bugfix - ensure that loaders can't verify their own work
+
+release-60.5
+- display against a lane if it is from a cost code which determines if it is R&D
+  - as lanes are added, tick (prod) displayed and then as it retrieves the project
+    info by ajax changes to a cross
+
+release-60.4
+- a test for st::api::lims to ensure that all delegated methods are callable without an error
+
+release-60.3
+- bug fix: remove sac sponsor from study delegation in st::api::lims following its removal from the study object
+
+release-60.2
+- provisions for keeping specific project cost codes in the tracking db
+- improvements and additions to st::api::lims module
+- redundant and unused code deleted from st::api::study and at::api::project, their tests simplified
+
+release-60.1
+- bugfix: instruments should be ordered by name
+
+release-60.0
+- npg::api::request module instead of npg_common::request
+- npg::api::request module saves to cache if certain env variable is set
+- st and npg api use the new npg::api::request module
+- refactoring of st and npg api and st::api::base so that the request object is created in st::api::util only
+- module for single LIMS data access point, st::api::lims, and tests
+- a new line 45 test
+- staging area daemon updates DB with folder_name and folder_path_glob
+- 3 stage verify for runs (flowcell, reagents R1, reagents R2)
+- record loader of R2 reagents
+- Display verify columns on the run list pages, sortable
+- MiSeq added to instruments (image, display, database)
+- Display of instruments refactored to ensure that the instruments are
+  - displayed in required order
+  - only displayed if they are required and have current instruments
+- Annotating multiple runs has the Y/N Run OK options
+
+release-59.1
+- do not store sample object in pool description if sample_id is a bad sample id(4)
+
+release-59.0
+- button for verifying run
+- bulk run annotation entry - replaces bulk status update
+- increment priority of run, limited ability to do this to manual_qc and approvers
+- tags on run lanes now displayed on main run page, and manual_qc can add tags through this page
+- st::api::study now has methods to retrieve the Accession number, title and publishable name
+
+release-58.1
+- add method publishable_name in sample
+
+release-58.0
+- login with rfid on instruments for submitting forms
+- annotate lanes from run page, enabling multiple lanes to get same annotation, and also annotate instrument at the same time as the lane
+- enable button update of run from qc review pending to archival pending if the user is in manual qc and if all non-control lanes return back from Sequencescape as pass/fail
+
+release-57.0
+- Fairly thorough purge of st::api from Clearpress based npg::model and npg::view and templates
+- Remove table lock on run creation.
+- No longer link to MPSA from run page....
+
+release-56.1
+- failures tickets e-mails to get the study of the st lane directly
+- when parsing batch xml for st-lane, getting a study from teh request is optional to allow th ewarehouse loader to run in reasonable time
+
+release-56.0
+- A fix to instrument view to make visible the fifth digit of the batch number
+- st::api - move functionality out of batch to lane for creating the lane information, and add in obtaining the studies,
+  preferably via the request, else via the sample->study
+
+release-55.0
+- copying_problem flag set/unset at run complete status as well as run in progress
+- delay also includes any missing cycles from L1
+- stuck_runs page, visible to annotators, loaders and admin
+- alter instrument graphic to indicate no recent contact or copying_problem with current runs
+- manaipulate hyb buffer tag sequence to be of same length as pool sample tag sequences
+
+release-54.3
+- HiSeqs and GAs to go(auto) down correctly if their current status is planned maintenance
+- initial model-based code for listing potentially stuck runs
+
+release-54.2
+- following a change in live data, 45 test fixed
+- tests for phix reference that use a depricated method removed from 45 test
+- some tests that compare DateTime object to a string data fixed by stringifying the object explicitly
+- added blocking_runs method and  mapping of hiseq slots to blocking runs for the instrument model
+- possible to create a new hiseq run if there is a run-complete run in a slot 
+
+release-54.1
+- spiked tag part of batch xml parsing extended to allow for reference finder to deal with it
+- spike tags to be added to the lanes tags if the lane is a pool
+
+release-54.0
+- is_spiked_phix method added for st lane and run lane
+- fix the gantt charts that are broken
+- all events are emailed out separately from the web application
+- Sequencescape is notified of a run status change outside of the web application
+
+release-53.0
+- correct criteria for determing run/mirroring complete
+- add new staging areas to usage_list template
+- minor bugfixes and updates
+
+release-52.0
+- a new table and DBIC changes - manual_qc_status
+- st::api - add alignments_in_bam method to study
+- Colors for two hiseq slots should be different if run status different in instrument images.
+- Refactor and revamp of instrument and staging area monitoring
+- Run reports - add filtering by machine type
+
+release-51.0
+- Use additional Illumina files to test for latest_cycle, run_complete,
+  mirroring_complete. These should work for both HiSeqs and GAIIs.
+- More efficient testing for completion of file transfers in staging_area_monitor
+- Log event_notifications to disk
+- Update instrument_status where necessary when a run_status changes
+
+release-50.0
+ - Enable full functionality of monitors so that they can be moved to live.
+ - Fixed memory leak in npg::api::run
+
+release-49.0
+ - add a new checker script for HiSeqs
+ - fix and add tests for HiSeq runfolder names
+
+release-48.0
+ - preparation for extra nfs/samba storage area for hi-seqs
+ - new monitor scripts added to watch instruments (cbots, ga-iis), staging
+   areas and notification events
+ - ancestor_samples added in st api asset
+ - gantt charts fixed and display for both HK(GAIIx) and HiSeq
+ - change useragent used in npg::api and st::api so the version is marked correctly and shows its inheritance from libwww-perl
+
+release-47.0
+ - completely drop goldcrest functionality and records
+ - use DateTime inflation for DBIC
+ - a new npg::model::instrument::current_runs methos to return multiple current runs for the instrument
+ - npg::model::instrument::current_run method refactored to use npg::model::instrument::current_runs
+ - npg::model::instrument::fc_slots2current_runs method to return mapping of flowcell slots to current runs for HiSeq instruments
+ - two new tags to identify a particular flowcell slot
+ - create a new run based on given flowcell id
+ - npg::model::run::create method handles assigning flowcell slot tags
+ - template extended with fc radio buttons and current runs listing
+ - npg::view::run::create to pass the flowcell radio button selection to a model
+ - textual and graphical views of instruments updated to include HiSeq instruments
+ - hight restriction in dd sections of styled lists is removed
+
+release-46.0
+ - purge old deprecated st::api classes and methods
+ - dbix binding for the npg tracking db can read configuration files
+ - catch the retrieving batch error and return when sequencescape server down in Javascript for mod_perl
+ - reduce retrying times of sequencescape batch call in model run to avoid database connection time out when changing run status, max_retries and retry_delay to 1
+ - change dev environment to look at Sequencescape next release (psd-dev:6800)
+ - instrument utilisation ready for multiple instrument types
+ - events now have notification sent in preparation for removing Sequencescape interaction and emailing from core NPG Clearpress model
+
+release-45.1
+ - use port 6800 for Sequencescape in dev environment (their "next-release")
+
+release-45.0
+ - remove st calls when generating run and run_lane XML
+ - alter npg::api to retrieve manual_qc now not in run XML
+
+release-44.0-webcache
+ - npg and st libraries changed to use npg_common::request to make web requests
+
+release-44.0
+ - remove st calls when generating run HTML
+ - add reflector CGI to allow for AJAX calls
+ - add AJAX calls on HTML run pages to show Sequencescape info
+ - only fill current cycle number in run annotation form when run is in progress
+ - cache st batch object with information about batch_id missing or not
+ - pool_description method is added to the st lane object; returns a mapping of tag indices to tag object references and lib tube and sample ids
+
+release-43.2
+ - bug fix, cache loader_info in hash with information about full date or not
+
+release-43.1
+ - bug fix, only new run with scs2.8 having 5-digits run name
+
+release-43.0
+ - add run_folder method in npg api run
+ - don't display current_cycle as 0 when no current_cycle given for run annotation
+ - run annotation email with current_cycle and currently_run_ok included
+ - truncate event description if too long
+ - croak when trying to read a non-existing run
+ - croak in npg api when an error occurred message returned from npg
+ - add project_cost_code method in st::api::project
+ - change run name to five digits if the instrument with SCS 2.8 or above
+ - get expected tag sequence from batch for each lane
+ - add run read table
+ - added an api for cbot XML - npg::cbot::api - and added some methods to the DBIC class for feeding cbot data to database
+ - create a daemon to periodically poll all cBots for instrument status
+
+release-42.1
+ - Post Sequencescape release Wednesday, 12 May 2010 fixes.
+  + RT170288 - las reports $oAsset->projects not working
+  + assets had project_id in past but do not have study_id following release (expected in the project -> study change : go via sample)
+  + work around for SAC sponsor being in study instead of project where it will go....
+
+release-42.0
+ - add buttons for each isnturment status to annotate them
+ - cycle count and current_ok fields added to run annotation
+ - new st api study calss, the same class as old project class
+ - depricated some methods in st api project and transfer the calls to the corresponding study if the sequencescape api version newer than 0.5
+ - fix summer-time error in annotation creation time-stamps
+ - move planned maintenance instrument to down on run cancelled as well as run complete - RT167177
+ - Add latest_contact column (DATETIME type) to instrument table
+ - rename link QSea to NPG-SeqQC
+ - add many to many usergroups and make username ubique to allow use as DBIC authentication infrastructure store
+
+release-41.0
+ - interpret taxon id as an integer if it's a float with one decimal number that is 0
+ - add flowcell_id field to run model
+ - wash required after every run
+ - DBIC Schema for tracking
+ - new asset parent and child parsing
+ - add flowcell_id to run fields
+ - don't return attribute if value is null/undef
+
+release-40.0
+ - add a having_control_lane method in api run
+ - methods to get organism-related info about a sample
+ - depricated st::api::sample::reference_sequence
+ - added required_fragment_size method to an asset object
+ - add utility script to create tickets for failed lanes
+ - add email infrastructure to email run complete etc to contact found via Sequencescape
+ - stop sending error emails with no recipients
+ - separate out different instrument types on graphical list page (cBot preparation)
+
+release-39.0
+ - add backward compatibility methods to make life easier for api users followinf Sequencescape V4 release
+
+release-38.0
+ - st:api altered for Sequencescape V4
+ - instrument icons representing their status indicate paired or single reads, whether the machine is R&D
+
+release-37.0
+ - instruments' utilisation info for 90 days
+ - re-styled menu for instruments
+ - 'Instrument Formats' pag unlinked from the top level menu and linked to the Instruments menu
+ - npg::graph object made depricated
+ - npg::model::instrument_utilisation->last_30_days marked as depricated
+ - st::api::pool - cope with new Sequencescape release - Pool id in Sequencescape Pipelines refers to an item in Sequencescape Projects as of 13/08/2009
+ - minor st:api refinements
+
+release-36.0
+ - link to RTA status page (if appropriate)
+ - user list view redirects to read page if a user is logged in, else just displays a request to log in through SSO. Doesn't error any more.
+ - npg::api::run_lane has contains_unconsented_human method, which will return a boolean based on what the sequencescape project can tell about the sample
+ - links to NPG run pages and NPG QC run pages in event emails
+ - planned maintenance - mark machine as down immediately if not in a run.
+ - run tags and is_paired_read info now in run list json
+ - is_paired_read key/value now in run read json
+
+release-35.0
+ - gantt style charts now have hover over the run/down blocks, and a combined chart
+ - email the loader of a run when a status or annotation is added
+ - display a default message if a Clearpress default method used, but not supported (currently only set for batch list)
+ - hyperlink directly to NPG-QC
+ - Reveal link to click through to analysis prelim if that is available
+
+release-34.0
+ - add_tags and remove_tags function are added in npg api run
+ - give user pipeline permission to add tags
+ - gantt style graphs displayed showing
+   - timeline of up/down on instrument for last 90 days with instrument annotations marked on
+   - timeline of runs running on the instrument (run pending to run complete) fo last 90 days
+ - Goldcrest graph links removed from GUI
+ - Project page link removed from GUI
+ - Links on run page which go out to the staging area, dependent on availabilty of runfolder on staging, and availability of Illumina Analysis
+ - Instrument graphics Show Run instead of R to clarify that this is going to be a paired run
+ - Repository info moved out of Lanes table on Run view to single point on page, since all for a run go into the same directory now
+ - When annotating a run, radiobutton to annotate instrument as well with the same annotation option given
+ - Error emails now show all environment variables
+
+release-33.0
+ - alter terminology to reflect the new distinction between a paired run and a paired read run
+ - in npg api run, is_paired function will complain that it is deprecated and return the same as the new is_paired_run function
+ - A new is_paired_read function is added
+
+release-32.5
+ - search/<term>.json view
+ - npg::api::run_lane has an entity method which returns either the library or control object
+ - new script: report_q_values_to_sequencescapeprojects
+
+release-32.0
+ - bug-fixes as errors came to light
+   - LDAP - noticeably pipeline - if LDAP down, stopped moving statuses on due to email trying to be friendly and getting realname. Now, for pipeline, doesn't go to LDAP, and for other users, traps LDAP error, returning username so should continue
+   - bug fix in st::api::base when looping through the fields looking for an element, was returning if not found, instead of nexting
+   - search/<term> not available, so inserted
+   - read_attachment url not working. corrected
+ - st::api::request and post statuses back to request_id, not item_id
+ - st::api::project - fixed ref sequence bug due to change in xml
+ - code preparation for when samples <=> workflow_samples becomes available in SeqScape
+
+release-31.0
+ - error handling now has more output in email to the errors group
+ - instrument_utilisation now counts instruments as utilised if no chance they could be loaded again
+ - instrument_list_json and instrument_read_json templates (uses default ClearPress list_json and read_json methods)
+ - tidier pod
+ - fixed several bugs in web application
+ - st::api methods to do with checking project names are deprecated
+
+release-30.0
+ - improved error handling, emailing new-seq-pipe on non-authenticated errors, and how the error page looks to the user
+ - internal changes to reflect sequencescape's changes in terminology, and xml, for sample/workflow_sample/library
+ - st::api::sample re-written to model sample and NOT workflow_sample
+ - report qc_state in run_read page. Remove older qc references from other pages.
+ - report disk-space on new mirroring hosts.
+
+release-29.0
+ - Synchronise with the release of SequenceScape v3.0, make sure that correct method names are used.
+ - Remove good_bad test data, tests and templates.
+
+release-28.5
+ - patch release to tidy up some views and fix bugs
+ - old instrument_utilisation and uptime graphs removed from the instrument page
+ - usage changed to utilisation in utilisation as %age of uptime graph
+ - utilisation/uptime production accounts for hot spares in the denominator
+ - bug fix where colour for imstrument remains green if idle between R1 and R2
+ - run folder name displayed on run read for cutting and pasting purposes - coloured red if run pending
+ - repository points to first end of paired run
+ - batch to runs script
+
+release-28.0
+ - Added instrument designation labels
+ - Script to generate csv report of runs loaded per month
+ - Instrument utilisation table and loader script plus model and views
+ - switched repository reporting to fuse/runs/
+ - Internal changes, including renaming references to "sample" to "library"
+ - More multiplex pool handling, event xml emission checks
+ - analysis_report script to produce monthly stats on runs loaded within a month. Also links with npg_qc api modules for Analysis info
+ - Extended st::api support for more-correct library vs. sample distinction
+ - Removed read_associated & ical support from projects (due to removed SequenceScape functionality)
+ - Dropped analysis, analysis_lane, analysis_lane_qcal tables, supporting modules, tests & test data
+ - Removed last remnants of run_lane_status
+ - Added basic run xml service for SequenceScape run-pair queries: /run.xml?id_run=x,y,z
+ - Removed 'lane/library/individual aggregate' todo - functionality now in dfind
+
+release-27.0
+ - Remove QC input on reads from interface.
+ - Added run_status method to API to get all the run status of a run.
+ - Streamed project list_xml response & api support.
+ - Script to compare project.xml to a repository ls to see which expected projects are not in it.
+ - run->create_tags renamed to run->update_tags to be more restful.
+ - Test reworked to use t::request - much cleaner!
+ - is_good now returns either the stored value of good/bad or the value for unknown. No attempt is made to try to determine whether a lane is good or bad. Eventually, this should become deprecated.
+ - Removal of any data and methods which come from analysis_lane (or derived from using analysis_lane).
+
+release-26.1
+ - Link to NPG-QC summary on page for run
+ - Scrapped automatic QC hints
+ - Various minor bugfixes
+ - Trapped pressing return/enter in batch-entry box during run creation
+ - Streamed response for run_status_dict_read.xml
+ - Support fetching instruments for runs via API
+
+release-26.0
+ - Run reports link to IVC plots
+ - Run reports link to Error plots
+ - Default tile-layout for run-creation based on instrument-format
+ - Reworked some tests to use fixtures
+ - Basic-search now includes instrument annotations and statuses
+ - Revised instrument colour palette; added new 'request approval' colour.
+ - Run creation now identifies sequencer based on X-Sequencer HTTP request header, supported by mod_headers & mod_rewrite in the seq-farm forward proxy
+ - Run creation is now less tightly coupled to SequenceScape batch services
+
+release-25.0
+ - API updates for improved denormalised data services
+ - Instrument-type/platform attached to runs
+ - Database-connection / garbage collection problems fixed
+ - Paginated run lists for instrument- and run- views
+ - Only members of R+D group can set 'is_dev' on runs
+ - Updated GA2 images
+ - Improved service handling in st::api::base
+
+release-22.0
+ - New instrument annotations
+ - Improved, tab-based instrument view
+ - Good/bad manual QC events are now posted back to ST system
+ - Ability to automatically track tile layout (similar to automatic actual/expected cycles)
+
+release-21.0
+ - Added Cache::Memcached support for Sample Tracking services which
+   should further decouple NPG's dependency on the ST services.
+ - st::api::project can now fetch samples. $oProject->samples();
+
+release-20.0
+ - Many updates to improve code quality (perlcritic)
+ - Updates to account for (positive) changes in the ClearPress data
+   model, e.g. differences in handling NULL/undef, zero and
+   empty-string.
+ - A large amount of effort in improving the test suite
+   o More tests now run under fixtures meaning they're more reliable
+   o The test suite is more complete
+   o Errors are trapped and handled in many more places
+ - Additional handling in the API, in-particular the ability to fetch
+   all runs
+
+release-19.0
+ - NPG fully deployed under mod_perl resulting in significant speed improvements
+ - "New Run" page now includes the current instrument status
+ - All instruments individual uptime now shown on textual instruments page
+ - Additional, faster & lighter run service for use in ST
+ - Column revisions in "Sample Summary" report for Toby: SE/R1/R2 plus run pair id
+ - Smarter run-pairing now ignores cancelled & discarded runs
+
+release-18.0
+ - Support for fetch runs by sequencing-project-id: .../run?project_id=<...> (no interface yet)
+ - Fix for a memory / database-connection leak preventing mod_perl deployment
+ - New st::api::run representation of runs from Sample Tracking, containing yield & billing data
+ - Instrument uptime reports - all instrument uptime percentage per day for last month, individual instrument uptime for last 3 and 1 month
+ - Addition of auto_qc field on run lanes in JSON services, reflecting billability of a lane drawn from ST system
+ - npg::api now using mod-perl service for speed improvement
+ - test coverage 91.22% (1915 tests)
+
+release-17.0
+ - approval for instruments to go up from being fixed - new 'approvers' group and hardwiring of rules to enforce fixed order of instrument statuses
+ - when a run is in progress, but maintenance is planned for instrument, 'planned maintenance' status can be set, and instrument will move to down automatically on status change of run to run complete
+ - qc pass/fail now changed to qc complete. automatic move of run to this status when all lanes have been qc reviewed as good/bad
+ - enforcing of annotation (reminder box) for run when all lanes qc reviewed, and for a lane when it is checked bad
+ - run read now has tags, status history, annotations and goldcrest graphs on tabs at the bottom. Annotations now shows all annotations for the run, run pair, run lanes and run pair lanes
+ - tests now check JSON feeds are parseable
+ - st::api and npg::api have built in retries
+ - st::api::batch now does more lane data caching
+ - st::api::events now sends id_run and lane position back to st
+ - improved test coverage - 91.63% (1847 tests)
+
+release-16.0
+ - instrument batch mod update page - shows all current mods for each instrument and allows batch update of a mod
+ - admin page - admin options dependent on group memberships (current engineers can add new mods and new inst_statuses, admin can do much more)
+ - templates modified to not show certain functions on pages dependent on group memberships, instead of relying on return to say unauthorised
+ - added standlone server for developers/external
+ - improved test coverage - 91.26% (1567 tests)
+
+release-15.0
+ - Sticky widgets to ensure that select info doesn't get lost when changing batch on run add
+ - instrument utilisation chart by hour as well as by day
+ - batch run status change
+ - API access to ST annotations (st::api::annotation)
+ - Superior test framework including dummy data and some refactored tests
+ - Support for rolling over full repository project folders to new projects
+ - Batch update of instrument mods
+
+release-14.0
+ - Optimisation of speed in run_add loading
+ - Allow run_status updates for both ends of a pair simultaneously
+ - Cumulative quality plots for run_lanes
+ - Instrument modification tracking
+ - Create run now allows loaders to create a run
+ - Refactored some javascript out into npg.js
+ - Bug-fix : instrument utilisation broke after move to mysql5
+ - Reworked JSON basic-search responses to include JSON representations of matched entities
+ - Added sac_sponsor to run_lane_row_xml.tt2 (which feeds into project_read_xml.tt2)
+ - $oUser->is_member_of now returns true if member is admin, so admin people are automatically members of all groups
+ - Extended project_read_xml to include additional <stproject ... /> data
+ - annotators group added
+ - authorisation added as follows (admin permissions have not changed)
+   create runs - loaders
+   add tags to runs or lanes, run annotations - annotators
+   run status changes - loaders and engineers
+   change instrument status and instrument modifications - engineers
+ - Good/bad determination documented on NPD wiki
+
+release-13.0
+ - instrument-wash-required now triggered after two runs as well as one month after last wash
+ - instrument-down indicator is now much more obvious
+ - bug-fix : tags can now be removed, and refactored saving of tag frequency
+ - bug-fix : replying to annotation email has a do not write below line, which will ignore that part of the email
+   if reply by email, but doesn't delete the rest of the emails body
+ - bug-fix : cancel button on run_status and run_annotation entry forms now works (by hiding the form, so it can be
+   revealed without the need to reload the ajax request). Refactored the javascript to remove duplication
+ - searches now search tags, both basic by default, and advanced by options
+ - json and xml responses for advanced search (input cgi params in the url)
+ - json response for list_samplesummary, and refactored the xml response to use attributes rather than tags
+ - new run statuses ('run stopped early', 'qc review pending', 'qc pass', 'qc fail', 'data discarded') to synchronise with archive-by-default in sanger-pipeline v5
+
+release-12.0
+ - run_lane data included in project_read.xml REST/API interface
+ - current_run included in instrument_read.xml REST/API interface
+ - loader names and loading date info added to xml and json templates for run_list and run_read
+ - tagging of runs and run_lanes can now be done (these export for runs in the xml and json feeds)
+ - run_lanes can be checkboxed as good or bad on run page
+ - sample tracking for sample updated on change of run status now includes id_run
+ - titles of pages show run name for run read page
+
+release-11.0
+ - progress bar on instrument-state images (only for runs in progress)
+ - advanced search now can allow searching for CAS projectnames, and where CAS projectnames and/or sample names are like entered text
+ - automatic instrument-wash-required indication
+ - engineer usergroup for instrument-status-change event mails
+ - user from sample tracking for sample on run mailed when run status updated to run complete and run archived
+ - sample tracking for sample updated on change of run status
+ - advanced search now keeps selections for query, using ajax if enabled
+
+release-10.0
+ - Basic search hit highlighting
+ - Tracking of 'actual_cycle_count' per run
+ - Caching of sample tracking sample & project names for searchability
+ - JSON-format views for run_read & run_list
+ - Bugfix for event mails to external email addresses
+ - Floated hyperlink buttons for actions and run statuses, so that they don't break on whitespace
+ - Advanced search created. Creates single SQL query. Not perfect, but can retrieve various information based selected criteria. Always retrieves run id as first column, which is then hyperlink to the run page
+   only retrieves information from npglive database for now, cannot bridge to CAS or ST
+
+release-9.0
+ - Sample-Tracking Projects listed & linked at the top of individual (CAS) 'Projects' view.
+ - loader_info method added to run - fetches loader and date of loading (set to 'run pending')
+ - runs_loaded method added to user - fetches instrument, id_run and date loaded for all runs loaded by user. table display on user page
+ - script and module (with tests) to parse a piped in email from srpipe@sanger.ac.uk to create an annotation for a run
+ - goldcrest data on runs improved to - no show of PF clusters (as incorrect to final tally), graphs show all cycles so far, and are hidden on tabs
+   so loading of run page is quicker
+
+release-8.0
+ - Batch instrument_status change
+ - Graphs on run/x and instrument/ILx to show last 10 (or all if not had 10 run) cycles phasing, prephasing, Signal mean and Noise,
+   plus table of PF Cluster count. These pages auto refresh after 60 minutes to enable
+   to be left on screen next to instrument to show progress (created npg::model::goldcrest)
+ - No good/bad run indicator shown if it cannot be calculated for a lane
+ - Good/bad run indicator now also visible on run_lane_list
+ - Graphical barchart of instrument activity over last 30 days
+ - instrument utilisation all calculated within SQL query
+ - Basic text-search facility
+
+release-7.0
+ - Addition of sample data to email alerts
+ - Addition of loaders usergroup, and additional column to show level to user2usergroup table
+ - Show loaders level within user display against group loaders, within group loaders display,
+   and against user in the run display (display is a medal (or lack of one if not assigned a level
+   yet) Bronze, Silver or Gold)
+ - Ability to promote the loaders level added to user display, if requester is not public, the
+   user displayed, or they are already at Gold level
+ - Session handling to remember status-type (id_run_status_dict) choices on run lists & instrument views
+ - 'Run Summary' and 'Sample Summary' now only list runs & samples with recent 'run mirrored' statuses
+ - R&D flag on runs
+ - 'Latest Analysis' link on run view now links to the first read of paired-end analyses
+ - Updated to support streamed page responses
+ - Fetch run-lanes indirectly (as well as directly) associated with a CAS project
+ - Sample Tracking API now supports fetching batches for projects. See scripts/api-demo-stproject
+ - Instrument list now displays utilisation for last 30 days
+ - 86%+ test coverage
+
+release-6.1
+ - modified sample summary to show different data (PF and Total Mbases) and improved look with scrolly css
+ - refactored obtaining number of days parameter into selected_days method in npg::view::run
+ - Good PF cluster density reduced to >17000
+
+release-6.0
+ - new sample summary, with assessment of good/bad samples
+ - assessment of good/bad sample method in run_lane model
+ - download sample summary to excel spreadsheet
+ - improved some ability for testing html by checking expected tags in order, but is whitespace agnostic and allows for additional tags to come in, and ignores comments
+ - improved reporting of error when croaking
+ - added yearmonthday method to npg::util in order to return a string in format yyyymmdd for todays date, mainly for worksheet naming
+
+release-5.0
+ - integration with Sample Tracking web services
+
+release-4.0
+ - run ids allocated sequentially rather than with auto_increment to avoid sequence holes made by failed transactions
+ - instrument_statuses added for service messages
+ - improved run summary (reduced redundancy)
+ - iCal support for exposing run_statuses
+ - various template changes for interface improvement (incl. some javascript validation)
+
+release-3.0
+ - Atom feed for run_statuses
+ - General event handling including email subscriptions for usergroups via event_type_subscriber table
+ - Repository path added to run_lane and project lists
+ - Excel-format dumping of sample information over a date-range
+ - Library-analysis support - analysis targets & types are associated upon library creation
+ - Generation of XML sample-sheets based on the SampleSheet.xsd schema from the run folder but extended to support the new analysis types & targets
+ - Web API & example scripts
+ * Recipe.xml loading
+
+release-2.0
+ - Some schema changes to provide more systematic names (e.g. lane => run_lane).
+ - RunLog processing (scripts/process_runlog) via run_event, run_event_type and run_event_attr.
+ - Basic graphing for time-courses of run events.
+ - Project & repository handling for libraries and run_lanes
+ - auto_analyse moved from run into run_lane
+ - tags allowed in libraries
+
+release-1.0
+ - First release! Initial schema: manufacturer, instrument(format), library, sample, flowcell(format), run, lane.

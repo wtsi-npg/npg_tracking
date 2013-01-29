@@ -1,0 +1,7 @@
+[% PERL %]
+    my $comment = '[% FILTER html_line_break; acomment | html_entity; END; %]';
+    if ($comment) {
+      $comment    =~ s{(http|https|ftp|mailto)://(\S+)}{<a href="$1://$2"><img src="/icons/silk/link.png" alt="link" title="link" /></a>}smgix;
+    }
+    print $comment;      
+[% END %]

@@ -1,0 +1,79 @@
+[% group = model; IF group.run_annotations.size %]
+<table id="run_annotations" class="sortable zebra">
+  <thead><tr>
+    <th>Date</th><th>Run Annotation</th><th>Cycle</th><th>RunOK</th><th>Created by</th><th>Attachment</th>
+  </tr></thead>
+  [%- FOREACH run_annotation = group.run_annotations;
+             annotation = run_annotation.annotation -%]
+  <tr>
+    <td>[% annotation.date %]</td>
+    <td>[% PROCESS annotation_comment_as_html.tt2 acomment = annotation.comment %]</td>
+    <td>[% IF run_annotation.current_cycle.defined %][% run_annotation.current_cycle %][% END %]</td>
+    <td>[% IF run_annotation.run_current_ok == 1 %]<img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSIF run_annotation.run_current_ok == 0 %]<img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %] </td>
+    <td>[% annotation.user.username %]</td>
+    <td>[% IF annotation.attachment_name %]<a href="[% SCRIPT_NAME %]/run_annotation/attachment/[% run_annotation.id_run_annotation %]">[% annotation.attachment_name %]</a> [% END %]</td>
+  </tr>
+  [%- END -%]
+</table>
+[%- END -%]
+
+[%- IF annotation_writer -%]
+<a id="run_annotation_update_extra" href="#annotation_editor" onclick="new_form_extra('run_annotation'); return false;"><img src="/icons/silk/pencil_add.png" alt="add annotation to [% model.name %]" title="add annotation to [% model.name %]" /></a>
+<a name="annotation_editor"></a><div style="display:none;" id="new_run_annotation">[% PROCESS run_annotation_add_ajax.tt2 %]</div>
+[%- END -%]
+
+[%- IF model.run_lanes;
+      annots = [];
+      FOREACH run_lane = group.run_lanes;
+        FOREACH run_lane_annotation = run_lane.run_lane_annotations;
+          annots.push(run_lane_annotation.annotation);
+        END;
+      END;
+      IF annots.size;
+-%]
+  <table id="run_lane_annotations" class="sortable zebra">
+    <thead><tr><th>Lane</th><th>Date</th><th>Lane Annotation</th><th>Created by</th><th>Attachment</th></tr></thead>
+    [%- FOREACH run_lane = group.run_lanes;
+          FOREACH run_lane_annotation = run_lane.run_lane_annotations; annotation = run_lane_annotation.annotation; -%]
+    <tr>
+      <td>[% run_lane.position %]</td>
+      <td>[% annotation.date %]</td>
+      <td>[% PROCESS annotation_comment_as_html.tt2 acomment = annotation.comment %]</td>
+      <td>[% annotation.user.username %]</td>
+      <td>[% IF annotation.attachment_name %]<a href="[% SCRIPT_NAME %]/run_annotation/[% run_annotation.id_run_annotation %]/[% annotation.attachment_name %];read_attachment">[% annotation.attachment_name %]</a> [% END %]</td>
+    </tr>
+       [%- END -%]
+    [%- END -%]
+  </table>
+[%- END -%]
+[%- END -%]
+
+[%- IF model.run_pair; group = model.run_pair -%]
+  <table>
+    <tr><th>Date</th><th>Lane</th><th>Run [% group.id_run %] or Lane Annotation</th><th>Created by</th><th>Attachment</th></tr>
+  [%- FOREACH run_annotation = group.run_annotations;
+           annotation = run_annotation.annotation -%]
+    <tr>
+      <td>[% annotation.date %]</td>
+      <td>n/a</td>
+      <td>[% PROCESS annotation_comment_as_html.tt2 acomment = annotation.comment %]</td>
+      <td>[% annotation.user.username %]</td>
+      <td>[% IF annotation.attachment_name %]<a href="[% SCRIPT_NAME %]/run_annotation/attachment/[% run_annotation.id_run_annotation %]">[% annotation.attachment_name %]</a> [% END %]</td>
+    </tr>
+  [%- END -%]
+
+  [%- FOREACH run_lane = group.run_lanes -%]
+    [%- FOREACH run_lane_annotation = run_lane.run_lane_annotations;
+             annotation = run_lane_annotation.annotation -%]
+    <tr>
+      <td>[% annotation.date %]</td>
+      <td>[% run_lane.position %]</td>
+      <td>[% PROCESS annotation_comment_as_html.tt2 acomment = annotation.comment %]</td>
+      <td>[% annotation.user.username %]</td>
+      <td>&nbsp;</td>
+    </tr>
+    [%- END -%]
+  [%- END -%]
+  </table>
+[%- END -%]
+

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<asset api_version="0.6">
+  <id>3111688</id>
+  <type>MultiplexedLibraryTube</type>
+  <name>3C_HiC_Pool3</name>
+  <public_name></public_name>
+  <qc_state>pending</qc_state>
+  <sample study_id="429" library_id="3111679" library_name="HiC_H_ON_DCJ 3111679" sample_id="1132331" project_id="429">
+    <tag tag_id="144">
+      <index>1</index>
+      <expected_sequence>ATCACGTT</expected_sequence>
+      <tag_group_id>6</tag_group_id>
+    </tag>
+    <insert_size from="250" to="450"/>
+  </sample>
+  <sample study_id="429" library_id="3111680" library_name="HiC_H_Dd2 3111680" sample_id="1132333" project_id="429">
+    <tag tag_id="149">
+      <index>2</index>
+      <expected_sequence>CGATGTTT</expected_sequence>
+      <tag_group_id>6</tag_group_id>
+    </tag>
+    <insert_size from="250" to="450"/>
+  </sample>
+  <sample study_id="429" library_id="3111681" library_name="HiC_H_PQP1 3111681" sample_id="1132335" project_id="429">
+    <tag tag_id="153">
+      <index>3</index>
+      <expected_sequence>TTAGGCAT</expected_sequence>
+      <tag_group_id>6</tag_group_id>
+    </tag>
+    <insert_size from="250" to="450"/>
+  </sample>
+  <sample study_id="429" library_id="3111682" library_name="HiC_H_OFF_DCJ 3111682" sample_id="1132341" project_id="429">
+    <tag tag_id="158">
+      <index>4</index>
+      <expected_sequence>TGACCACT</expected_sequence>
+      <tag_group_id>6</tag_group_id>
+    </tag>
+    <insert_size from="250" to="450"/>
+  </sample>
+  <sample study_id="429" library_id="3111683" library_name="HIC_M_B15C2 3111683" sample_id="1132343" project_id="429">
+    <tag tag_id="162">
+      <index>5</index>
+      <expected_sequence>ACAGTGGT</expected_sequence>
+      <tag_group_id>6</tag_group_id>
+    </tag>
+    <insert_size from="250" to="450"/>
+  </sample>
+  <sample study_id="429" library_id="3111684" library_name="HiC_M_Rev1 3111684" sample_id="1132345" project_id="429">
+    <tag tag_id="167">
+      <index>6</index>
+      <expected_sequence>GCCAATGT</expected_sequence>
+      <tag_group_id>6</tag_group_id>
+    </tag>
+    <insert_size from="250" to="450"/>
+  </sample>
+  <sample study_id="429" library_id="3111685" library_name="HiC_M_3D7 3111685" sample_id="1132347" project_id="429">
+    <tag tag_id="173">
+      <index>7</index>
+      <expected_sequence>CAGATCTG</expected_sequence>
+      <tag_group_id>6</tag_group_id>
+    </tag>
+    <insert_size from="250" to="450"/>
+  </sample>
+  <sample study_id="429" library_id="3111686" library_name="HiC_M_ER3D7 3111686" sample_id="1132349" project_id="429">
+    <tag tag_id="179">
+      <index>8</index>
+      <expected_sequence>ACTTGATG</expected_sequence>
+      <tag_group_id>6</tag_group_id>
+    </tag>
+    <insert_size from="250" to="450"/>
+  </sample>
+  <sample study_id="429" library_id="3111687" library_name="HiC_H_LT3D7 3111687" sample_id="1132351" project_id="429">
+    <tag tag_id="188">
+      <index>9</index>
+      <expected_sequence>GATCAGCG</expected_sequence>
+      <tag_group_id>6</tag_group_id>
+    </tag>
+    <insert_size from="250" to="450"/>
+  </sample>
+  <children>
+    <id>3213734</id>
+    <id>3323727</id>
+  </children>
+  <parents>
+    <id>3111679</id>
+    <id>3111680</id>
+    <id>3111681</id>
+    <id>3111682</id>
+    <id>3111683</id>
+    <id>3111684</id>
+    <id>3111685</id>
+    <id>3111686</id>
+    <id>3111687</id>
+  </parents>
+  <requests>
+    <request>
+      <id>3259935</id>
+      <properties>
+        <property>
+          <key>fragment_size_required_from</key>
+          <name>Fragment size required (from)</name>
+          <value>400</value>
+        </property>
+        <property>
+          <key>read_length</key>
+          <name>Read length</name>
+          <value>75</value>
+        </property>
+        <property>
+          <key>fragment_size_required_to</key>
+          <name>Fragment size required (to)</name>
+          <value>600</value>
+        </property>
+      </properties>
+    </request>
+    <request>
+      <id>3456761</id>
+      <properties>
+        <property>
+          <key>fragment_size_required_from</key>
+          <name>Fragment size required (from)</name>
+          <value>400</value>
+        </property>
+        <property>
+          <key>read_length</key>
+          <name>Read length</name>
+          <value>75</value>
+        </property>
+        <property>
+          <key>fragment_size_required_to</key>
+          <name>Fragment size required (to)</name>
+          <value>600</value>
+        </property>
+      </properties>
+    </request>
+    <request>
+      <id>3456769</id>
+      <properties>
+        <property>
+          <key>fragment_size_required_from</key>
+          <name>Fragment size required (from)</name>
+          <value>400</value>
+        </property>
+        <property>
+          <key>read_length</key>
+          <name>Read length</name>
+          <value>75</value>
+        </property>
+        <property>
+          <key>fragment_size_required_to</key>
+          <name>Fragment size required (to)</name>
+          <value>600</value>
+        </property>
+      </properties>
+    </request>
+  </requests>
+</asset>

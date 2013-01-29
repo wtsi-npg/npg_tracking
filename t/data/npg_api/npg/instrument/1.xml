@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<instrument id_instrument="1" name="IL3" id_instrument_format="1" external_name="eas92" serial="" iscurrent="1">
+<runs>
+ <run id_run="50" id_flowcell="44" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="0" id_run_pair="" name="IL3_0050" id_run_status="113" date="2007-07-23 14:54:41" id_run_status_dict="4" id_user="1" description="run complete" />
+ <run id_run="55" id_flowcell="47" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="0" id_run_pair="" name="IL3_0055" id_run_status="129" date="2007-07-31 16:20:03" id_run_status_dict="4" id_user="3" description="run complete" />
+ <run id_run="58" id_flowcell="50" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="0" id_run_pair="61" name="IL3_0058" id_run_status="233" date="2007-09-03 17:06:44" id_run_status_dict="12" id_user="7" description="run archived" />
+ <run id_run="61" id_flowcell="50" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="0" id_run_pair="58" name="IL3_0061" id_run_status="146" date="2007-08-10 10:57:03" id_run_status_dict="4" id_user="3" description="run complete" />
+ <run id_run="63" id_flowcell="52" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="0" id_run_pair="" name="IL3_0063" id_run_status="231" date="2007-09-03 17:05:27" id_run_status_dict="12" id_user="7" description="run archived" />
+ <run id_run="64" id_flowcell="53" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="0" id_run_pair="68" name="IL3_0064" id_run_status="249" date="2007-09-07 13:42:55" id_run_status_dict="12" id_user="7" description="run archived" />
+ <run id_run="68" id_flowcell="53" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="36" is_paired="0" id_run_pair="64" name="IL3_0068" id_run_status="250" date="2007-09-07 13:50:32" id_run_status_dict="12" id_user="7" description="run archived" />
+ <run id_run="71" id_flowcell="58" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="1" id_run_pair="73" name="IL3_0071" id_run_status="345" date="2007-09-18 17:36:00" id_run_status_dict="12" id_user="7" description="run archived" />
+ <run id_run="73" id_flowcell="58" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="1" id_run_pair="71" name="IL3_0073" id_run_status="346" date="2007-09-18 17:36:07" id_run_status_dict="12" id_user="7" description="run archived" />
+ <run id_run="77" id_flowcell="61" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="1" id_run_pair="80" name="IL3_0077" id_run_status="335" date="2007-09-18 15:50:55" id_run_status_dict="4" id_user="7" description="run complete" />
+ <run id_run="80" id_flowcell="61" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="1" id_run_pair="77" name="IL3_0080" id_run_status="344" date="2007-09-18 17:33:26" id_run_status_dict="6" id_user="7" description="analysis pending" />
+ <run id_run="81" id_flowcell="63" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="1" id_run_pair="" name="IL3_0081" id_run_status="295" date="2007-09-18 12:28:05" id_run_status_dict="1" id_user="5" description="run pending" />
+ <run id_run="82" id_flowcell="64" id_instrument="6" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="0" id_run_pair="" name="IL3_0082" id_run_status="347" date="2007-09-19 16:58:18" id_run_status_dict="1" id_user="6" description="run pending" />
+</runs>
+
+<current_instrument_status id_instrument_status="3" id_instrument="1" date="2007-09-19 13:09:42" id_instrument_status_dict="1" id_user="1" iscurrent="1" description="up" comment="initial setup" />
+<instrument_statuses>
+ <instrument_status id_instrument_status="3" id_instrument="1" date="2007-09-19 13:09:42" id_instrument_status_dict="1" id_user="1" iscurrent="1" description="up" comment="initial setup" />
+</instrument_statuses>
+</instrument>

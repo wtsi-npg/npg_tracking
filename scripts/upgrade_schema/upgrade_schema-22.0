@@ -1,0 +1,14 @@
+CREATE TABLE `instrument_annotation` (
+  `id_instrument_annotation` bigint(20) unsigned NOT NULL auto_increment,
+  `id_instrument` bigint(20) unsigned NOT NULL default '0',
+  `id_annotation` bigint(20) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`id_instrument_annotation`),
+  KEY `ia_idinstrument` (`id_instrument`),
+  KEY `ia_ida` (`id_annotation`),
+  CONSTRAINT `ia_ida` FOREIGN KEY (`id_annotation`) REFERENCES `annotation` (`id_annotation`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `ia_idinstrument` FOREIGN KEY (`id_instrument`) REFERENCES `instrument` (`id_instrument`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+insert into event_type(description,id_entity_type) values('annotation', (select id_entity_type from entity_type where description='instrument'));
+
+insert into event_type(description,id_entity_type) values('annotation', (select id_entity_type from entity_type where description='run_lane'));

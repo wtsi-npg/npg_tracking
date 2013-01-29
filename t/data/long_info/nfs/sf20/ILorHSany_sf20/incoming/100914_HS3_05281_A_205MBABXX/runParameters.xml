@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<RunParameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Setup>
+    <ExperimentName>05281</ExperimentName>
+    <Read1>100</Read1>
+    <IndexRead>0</IndexRead>
+    <Read2>100</Read2>
+    <OutputFolder>Y:\ILorHSany_sf20\incoming</OutputFolder>
+    <PeriodicSave>Save All Thumbnails</PeriodicSave>
+    <Flowcell>HiSeq Flow Cell</Flowcell>
+    <FirstBaseConfirmation>true</FirstBaseConfirmation>
+    <ControlLane>0</ControlLane>
+    <KeepIntensityFiles>true</KeepIntensityFiles>
+    <Sbs>HiSeq Sequencing Kit (200 Cycles)</Sbs>
+    <Pe>HiSeq Paired End Cluster Generation Kit</Pe>
+    <Index />
+    <AlignToPhiX />
+    <ApplicationName>HiSeq Control Software</ApplicationName>
+    <ApplicationVersion>1.1.37</ApplicationVersion>
+    <RunID>100914_HS3_05281_A_205MBABXX</RunID>
+    <ScannerID>SN292</ScannerID>
+    <ScanNumber>78</ScanNumber>
+    <ComputerName>HS3</ComputerName>
+    <FPGAVersion>3.0.32</FPGAVersion>
+    <CPLDVersion>3.0.14</CPLDVersion>
+    <RTAVersion>1.7.45</RTAVersion>
+    <ChemistryVersion>Illumina,Bruno Fluidics Controller,0,v2.0330</ChemistryVersion>
+    <CameraModel>C10000-509</CameraModel>
+    <CameraFirmware>2.00-D09</CameraFirmware>
+    <CameraDriver>5.50.0.3135</CameraDriver>
+    <FocusCameraFirmware />
+    <Barcode>205MBABXX</Barcode>
+    <Username>SBSUser</Username>
+    <ScanVelocity>2</ScanVelocity>
+    <SelectedSections>
+      <Section Name="A_1" />
+      <Section Name="B_1" />
+      <Section Name="C_1" />
+      <Section Name="D_1" />
+      <Section Name="E_1" />
+      <Section Name="F_1" />
+      <Section Name="G_1" />
+      <Section Name="H_1" />
+    </SelectedSections>
+    <FocusMethod>DynamicITF</FocusMethod>
+    <SelectedSurface>BothLaneSurfaces</SelectedSurface>
+    <SwathScanMode>DualSwathFC</SwathScanMode>
+    <EnableLft>true</EnableLft>
+    <AutoTiltOnce>true</AutoTiltOnce>
+    <EnableAutoCenter>true</EnableAutoCenter>
+    <EnableAnalysis>true</EnableAnalysis>
+    <EnableBasecalling>true</EnableBasecalling>
+    <EnableCameraLogging>false</EnableCameraLogging>
+    <AdapterPlate>HiSeq Adapter Plate</AdapterPlate>
+    <SlideHolder>HiSeq Flow Cell Holder</SlideHolder>
+    <TemplateCycleCount>4</TemplateCycleCount>
+    <NumAnalysisThreads>8</NumAnalysisThreads>
+    <FPGADynamicFocusSettings>
+      <MaxInitialZJumpHalfUm>3</MaxInitialZJumpHalfUm>
+      <MaxSubsequentZJumpHalfUm>7</MaxSubsequentZJumpHalfUm>
+      <NumberOfInitialZJumps>1</NumberOfInitialZJumps>
+      <CVGainStart>500</CVGainStart>
+      <CVGainPosLocked>500</CVGainPosLocked>
+      <IGAIN>100</IGAIN>
+      <Offset>250</Offset>
+      <HotPixel>350</HotPixel>
+      <MotorDelayFrames>25</MotorDelayFrames>
+    </FPGADynamicFocusSettings>
+    <TileWidth>2048</TileWidth>
+    <TileHeight>20000</TileHeight>
+    <ImageWidth>2048</ImageWidth>
+    <ImageHeight>160000</ImageHeight>
+    <LaneLength>60</LaneLength>
+    <NumTilesPerSwath>8</NumTilesPerSwath>
+    <UseExistingRecipe>false</UseExistingRecipe>
+    <EnableNotifications>false</EnableNotifications>
+    <ReagentKits>
+      <Sbs>
+        <SbsReagentKit>
+          <ID>5496033</ID>
+          <IsNew>true</IsNew>
+          <NumberCyclesRemaining>209</NumberCyclesRemaining>
+          <Prime>true</Prime>
+          <PrimeRecipe>HiSeq Sequencing Kit (200 cycles)</PrimeRecipe>
+        </SbsReagentKit>
+      </Sbs>
+    </ReagentKits>
+    <Resume>false</Resume>
+    <ResumeCycle>0</ResumeCycle>
+    <SupportMultipleSurfacesInUI>true</SupportMultipleSurfacesInUI>
+    <RecipeFragmentVersion>1.0.8.0</RecipeFragmentVersion>
+    <DoNotPromptForPeReagents>false</DoNotPromptForPeReagents>
+    <FlowcellIndex>0</FlowcellIndex>
+  </Setup>
+  <Version>1</Version>
+</RunParameters>

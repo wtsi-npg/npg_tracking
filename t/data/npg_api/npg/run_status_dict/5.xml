@@ -1,0 +1,6 @@
+<run_status_dict id_run_status_dict="5" description="run cancelled">
+ <runs>
+  <run id_run="42" id_flowcell="38" id_instrument="4" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="0" id_run_pair="" name="IL2_0042" id_run_status="89" date="2007-06-21 11:21:11" id_run_status_dict="5" id_user="3" description="run cancelled"/>
+  <run id_run="65" id_flowcell="54" id_instrument="4" priority="1" actual_cycle_count="0" expected_cycle_count="37" is_paired="0" id_run_pair="" name="IL2_0065" id_run_status="178" date="2007-08-24 15:36:27" id_run_status_dict="5" id_user="7" description="run cancelled"/>
+ </runs>
+</run_status_dict>

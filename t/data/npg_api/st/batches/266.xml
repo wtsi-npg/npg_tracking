@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batch>
+  <id>266</id>
+  <status>released</status>
+  <lanes>
+    <lane position="1" priority="0" id="65329">
+      <library name="PD3169" request_id="1185" id="50381" qc_state="pending">
+        <sample library_id="50381" library_type="" study_id="20" sample_id="579" project_id="20" library_name="PD3169">
+          <insert_size from="300" to="0"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="2" priority="0" id="65330">
+      <library name="PD3169" request_id="1186" id="50381" qc_state="pending">
+        <sample library_id="50381" library_type="" study_id="20" sample_id="579" project_id="20" library_name="PD3169">
+          <insert_size from="300" to="0"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="3" priority="0" id="65331">
+      <library name="PD3169" request_id="1187" id="50381" qc_state="pending">
+        <sample library_id="50381" library_type="" study_id="20" sample_id="579" project_id="20" library_name="PD3169">
+          <insert_size from="300" to="0"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="4" priority="0" id="79795">
+      <control name="PE PhiX" request_id="41016" id="79568">
+        <sample library_id="79568" library_type="" study_id="" sample_id="9827" project_id="" library_name="PE PhiX">
+        </sample>
+      </control>
+    </lane>
+    <lane position="5" priority="0" id="65332">
+      <library name="PD3169" request_id="1188" id="50381" qc_state="pending">
+        <sample library_id="50381" library_type="" study_id="20" sample_id="579" project_id="20" library_name="PD3169">
+          <insert_size from="300" to="0"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="6" priority="0" id="65333">
+      <library name="PD3169" request_id="1189" id="50381" qc_state="pending">
+        <sample library_id="50381" library_type="" study_id="20" sample_id="579" project_id="20" library_name="PD3169">
+          <insert_size from="300" to="0"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="7" priority="0" id="65334">
+      <library name="PD3169" request_id="1190" id="50381" qc_state="pending">
+        <sample library_id="50381" library_type="" study_id="20" sample_id="579" project_id="20" library_name="PD3169">
+          <insert_size from="300" to="0"/>
+        </sample>
+      </library>
+    </lane>
+    <lane position="8" priority="0" id="65335">
+      <library name="PD3169" request_id="1191" id="50381" qc_state="pending">
+        <sample library_id="50381" library_type="" study_id="20" sample_id="579" project_id="20" library_name="PD3169">
+          <insert_size from="300" to="0"/>
+        </sample>
+      </library>
+    </lane>
+  </lanes>
+</batch>

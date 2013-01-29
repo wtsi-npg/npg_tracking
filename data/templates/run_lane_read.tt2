@@ -1,0 +1,63 @@
+[%- authorised =  requestor.is_member_of('admin') || requestor.is_member_of('manual_qc') || requestor.is_member_of('annotators') || requestor.is_member_of('engineers') || requestor.is_member_of('loaders') ? 1 : 0;
+-%]
+<h3>Run [% model.run.name %] Lane [% model.position %]</h3>
+<fieldset id="current_tags">
+  <legend>Lane Tags</legend>
+[% FOREACH tag = model.tags; tag.tag; END %]
+<br />[% IF authorised %]<a href="javascript:toggleTagForm();">Add Tags</a>[% END %]
+</fieldset>
+<div id="tagger_form" style="display:none;">
+<form id="tag_form" method="post" action="[% SCRIPT_NAME %]/run_lane/[% model.id_run_lane %];update_tags">
+[% PROCESS tag_form_ajax.tt2 %]
+</div>
+
+<table id="annotations" class="sortable zebra" style="float:left;width:500px;margin-left:50px;">
+ <thead>
+  <tr>
+   <th>Date</th>
+   <th>Lane Annotation</th>
+   <th>Created By</th>
+   <th>Attachment</th>
+  </tr>
+ </thead>
+ <tbody>
+[%- FOREACH run_lane_annotation = model.run_lane_annotations;
+     annotation = run_lane_annotation.annotation -%]
+  <tr>
+   <td>[% annotation.date %]</td>
+   <td>[% PROCESS annotation_comment_as_html.tt2 acomment = annotation.comment %]</td>
+   <td>[% annotation.user.username %]</td>
+   <td>[% IF annotation.attachment_name %]<a href="[% SCRIPT_NAME %]/run_lane_annotation/[% run_lane_annotation.id_run_lane_annotation %]/[% annotation.attachment_name %];read_attachment">[% annotation.attachment_name %]</a> [% END %]</td>
+  </tr>[% END %]
+[%- IF authorised -%]
+  <tr>
+   <td style="text-align:right;" colspan="4"><div style="display:none;" id="new_run_lane_annotation">[% PROCESS run_lane_annotation_add_ajax.tt2 %]</div></td>
+   <td id="annotation_actions">
+    <a style="display:none;" id="run_lane_annotation_cancel" href="#" onClick="cancel_form('run_lane_annotation'); return false;"><img src="/icons/silk/cancel.png" alt="cancel" title="cancel" /></a>
+    <a id="run_lane_annotation_update_extra" href="#" onClick="new_form_extra('run_lane_annotation'); return false;"><img src="/icons/silk/pencil_add.png" alt="add annotation" title="add annotation" /></a>
+   </td>
+  </tr>
+[%- END -%]
+ </tbody>
+</table>
+<div class="clearfloats"></div>
+
+<script type="text/javascript">
+document.title='[% model.run.name %] Lane [% model.position %] Details';
+
+function run_lane_form(type) {
+ var el      = "new_" + type;
+ var update  = type + "_update";
+ var cancel  = type + "_cancel";
+ Element.hide(update);
+ new Ajax.Updater(el,'[% SCRIPT_NAME %]/'+type+'/;add_ajax',
+ {method:'get',
+  parameters:{id_run_lane:[% model.id_run_lane %]},
+  onComplete:function(){
+   Element.show(el);
+   new Effect.Highlight(el);
+   Element.show(cancel);
+ }});
+}
+
+</script>

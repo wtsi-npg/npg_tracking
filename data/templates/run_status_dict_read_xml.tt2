@@ -1,0 +1,3 @@
+[% PROCESS run_status_dict_read_header_xml.tt2 %]
+[% PROCESS run_list_xml_frag.tt2 %]
+[% PROCESS run_status_dict_read_footer_xml.tt2 %]

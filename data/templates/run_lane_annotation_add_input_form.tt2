@@ -1,0 +1,10 @@
+<!--begin $Id: run_lane_annotation_add_input_form.tt2 3225 2008-10-13 14:04:58Z rmp $-->
+<div id="floating_annotate">
+  <form method="post" action="[% SCRIPT_NAME %]/run_lane_annotation/" enctype="multipart/form-data">
+  <input type="hidden" name="last_lane" value="[% model.last_lane %]" />
+  <input type="hidden" name="bad_lane" value="1" />
+  <input type="hidden" name="id_run_lane" value="[% model.id_run_lane %]" />
+  [% PROCESS annotation_input_box.tt2 %]
+  </form>
+</div>
+<!--end $Id: run_lane_annotation_add_input_form.tt2 3225 2008-10-13 14:04:58Z rmp $-->

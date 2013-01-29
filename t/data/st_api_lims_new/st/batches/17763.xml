@@ -1,0 +1,944 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batch>
+  <id>17763</id>
+  <status>released</status>
+  <lanes>
+    <lane position="1" priority="0" id="5660506">
+      <pool name="DN240694I A1:H1" request_id="4367579" id="5529226" qc_state="">
+        <sample project_id="938" consent_withdrawn="false" library_id="5553216" sample_id="861746" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="144">
+            <index>1</index>
+            <expected_sequence>ATCACGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5553204" sample_id="861758" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="149">
+            <index>2</index>
+            <expected_sequence>CGATGTTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5553192" sample_id="861770" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="153">
+            <index>3</index>
+            <expected_sequence>TTAGGCAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5553180" sample_id="861759" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="158">
+            <index>4</index>
+            <expected_sequence>TGACCACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5553168" sample_id="861736" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="162">
+            <index>5</index>
+            <expected_sequence>ACAGTGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5553156" sample_id="861725" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="167">
+            <index>6</index>
+            <expected_sequence>GCCAATGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5553144" sample_id="861761" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="173">
+            <index>7</index>
+            <expected_sequence>CAGATCTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5553132" sample_id="861739" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="179">
+            <index>8</index>
+            <expected_sequence>ACTTGATG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="5662978">
+        <sample project_id="" consent_withdrawn="false" library_id="4405872" sample_id="1255141" library_name="PhiX (10Jan12)" library_type="" study_id="198">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="2" priority="0" id="5660507">
+      <pool name="DN240716U A5:H5" request_id="4367754" id="5529242" qc_state="">
+        <sample project_id="938" consent_withdrawn="false" library_id="5583943" sample_id="351099" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="133">
+            <index>33</index>
+            <expected_sequence>TCGAAGTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5583931" sample_id="351089" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="139">
+            <index>34</index>
+            <expected_sequence>TAACGCTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5583919" sample_id="351081" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="143">
+            <index>35</index>
+            <expected_sequence>TTGGTATG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5583907" sample_id="351073" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="148">
+            <index>36</index>
+            <expected_sequence>TGAACTGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5583895" sample_id="345259" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="156">
+            <index>37</index>
+            <expected_sequence>TACTTCGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5583883" sample_id="345394" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="160">
+            <index>38</index>
+            <expected_sequence>TCTCACGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5583871" sample_id="345384" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="166">
+            <index>39</index>
+            <expected_sequence>TCAGGAGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5583859" sample_id="345353" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="171">
+            <index>40</index>
+            <expected_sequence>TAAGTTCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="5662978">
+        <sample project_id="" consent_withdrawn="false" library_id="4405872" sample_id="1255141" library_name="PhiX (10Jan12)" library_type="" study_id="198">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="3" priority="0" id="5660508">
+      <pool name="DN240727A A5:H5" request_id="4368278" id="5529298" qc_state="">
+        <sample project_id="938" consent_withdrawn="false" library_id="5547608" sample_id="963581" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="133">
+            <index>33</index>
+            <expected_sequence>TCGAAGTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5547596" sample_id="963617" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="139">
+            <index>34</index>
+            <expected_sequence>TAACGCTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5547584" sample_id="963546" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="143">
+            <index>35</index>
+            <expected_sequence>TTGGTATG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5547572" sample_id="963606" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="148">
+            <index>36</index>
+            <expected_sequence>TGAACTGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5547560" sample_id="963618" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="156">
+            <index>37</index>
+            <expected_sequence>TACTTCGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5547548" sample_id="963630" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="160">
+            <index>38</index>
+            <expected_sequence>TCTCACGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5547536" sample_id="963547" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="166">
+            <index>39</index>
+            <expected_sequence>TCAGGAGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5547524" sample_id="963559" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="171">
+            <index>40</index>
+            <expected_sequence>TAAGTTCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="5662978">
+        <sample project_id="" consent_withdrawn="false" library_id="4405872" sample_id="1255141" library_name="PhiX (10Jan12)" library_type="" study_id="198">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="4" priority="0" id="5660509">
+      <pool name="DN242096A A1:G1" request_id="4382754" id="5576670" qc_state="">
+        <sample project_id="1043" consent_withdrawn="false" library_id="5591494" sample_id="1384101" library_name="" library_type="Standard" study_id="2166">
+          <tag tag_id="144">
+            <index>1</index>
+            <expected_sequence>ATCACGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="1043" consent_withdrawn="false" library_id="5591482" sample_id="1384102" library_name="" library_type="Standard" study_id="2166">
+          <tag tag_id="149">
+            <index>2</index>
+            <expected_sequence>CGATGTTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="1043" consent_withdrawn="false" library_id="5591470" sample_id="1384103" library_name="" library_type="Standard" study_id="2166">
+          <tag tag_id="153">
+            <index>3</index>
+            <expected_sequence>TTAGGCAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="1043" consent_withdrawn="false" library_id="5591458" sample_id="1384104" library_name="" library_type="Standard" study_id="2166">
+          <tag tag_id="158">
+            <index>4</index>
+            <expected_sequence>TGACCACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="1043" consent_withdrawn="false" library_id="5591446" sample_id="1384105" library_name="" library_type="Standard" study_id="2166">
+          <tag tag_id="162">
+            <index>5</index>
+            <expected_sequence>ACAGTGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="1043" consent_withdrawn="false" library_id="5591434" sample_id="1384106" library_name="" library_type="Standard" study_id="2166">
+          <tag tag_id="167">
+            <index>6</index>
+            <expected_sequence>GCCAATGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="1043" consent_withdrawn="false" library_id="5591422" sample_id="1384107" library_name="" library_type="Standard" study_id="2166">
+          <tag tag_id="173">
+            <index>7</index>
+            <expected_sequence>CAGATCTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="5662978">
+        <sample project_id="" consent_withdrawn="false" library_id="4405872" sample_id="1255141" library_name="PhiX (10Jan12)" library_type="" study_id="198">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="5" priority="0" id="5660510">
+      <pool name="DN242096A C2:B3" request_id="4382769" id="5576672" qc_state="">
+        <sample project_id="938" consent_withdrawn="false" library_id="5591469" sample_id="1176631" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="175">
+            <index>11</index>
+            <expected_sequence>GGCTACAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591457" sample_id="1176633" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="184">
+            <index>12</index>
+            <expected_sequence>CTTGTACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591445" sample_id="1176635" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="189">
+            <index>13</index>
+            <expected_sequence>TGGTTGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591433" sample_id="1176636" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="195">
+            <index>14</index>
+            <expected_sequence>TCTCGGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591421" sample_id="1176637" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="200">
+            <index>15</index>
+            <expected_sequence>TAAGCGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591409" sample_id="1176638" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="207">
+            <index>16</index>
+            <expected_sequence>TCCGTCTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591492" sample_id="1176639" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="208">
+            <index>17</index>
+            <expected_sequence>TGTACCTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591480" sample_id="1176640" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="213">
+            <index>18</index>
+            <expected_sequence>TTCTGTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="5662978">
+        <sample project_id="" consent_withdrawn="false" library_id="4405872" sample_id="1255141" library_name="PhiX (10Jan12)" library_type="" study_id="198">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="6" priority="0" id="5660511">
+      <pool name="DN242096A C3:B4" request_id="4382780" id="5576673" qc_state="">
+        <sample project_id="938" consent_withdrawn="false" library_id="5591468" sample_id="1176641" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="218">
+            <index>19</index>
+            <expected_sequence>TCTGCTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591456" sample_id="1176642" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="223">
+            <index>20</index>
+            <expected_sequence>TTGGAGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591444" sample_id="1176644" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="237">
+            <index>21</index>
+            <expected_sequence>TCGAGCGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591432" sample_id="1176646" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="242">
+            <index>22</index>
+            <expected_sequence>TGATACGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591420" sample_id="1176648" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="250">
+            <index>23</index>
+            <expected_sequence>TGCATAGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591408" sample_id="1176649" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="256">
+            <index>24</index>
+            <expected_sequence>TTGACTCT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591491" sample_id="1176650" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="261">
+            <index>25</index>
+            <expected_sequence>TGCGATCT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="938" consent_withdrawn="false" library_id="5591479" sample_id="1176651" library_name="" library_type="Standard" study_id="1833">
+          <tag tag_id="98">
+            <index>26</index>
+            <expected_sequence>TTCCTGCT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="5662978">
+        <sample project_id="" consent_withdrawn="false" library_id="4405872" sample_id="1255141" library_name="PhiX (10Jan12)" library_type="" study_id="198">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="7" priority="0" id="5660512">
+      <pool name="DN243144S A1:F7" request_id="4397331" id="5608057" qc_state="">
+        <sample project_id="930" consent_withdrawn="false" library_id="5622774" sample_id="1446485" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="144">
+            <index>1</index>
+            <expected_sequence>ATCACGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622762" sample_id="1446486" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="149">
+            <index>2</index>
+            <expected_sequence>CGATGTTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622750" sample_id="1446487" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="153">
+            <index>3</index>
+            <expected_sequence>TTAGGCAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622738" sample_id="1446488" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="158">
+            <index>4</index>
+            <expected_sequence>TGACCACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622726" sample_id="1446489" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="162">
+            <index>5</index>
+            <expected_sequence>ACAGTGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622714" sample_id="1446493" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="167">
+            <index>6</index>
+            <expected_sequence>GCCAATGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622702" sample_id="1446494" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="173">
+            <index>7</index>
+            <expected_sequence>CAGATCTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622690" sample_id="1446495" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="179">
+            <index>8</index>
+            <expected_sequence>ACTTGATG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622773" sample_id="1446496" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="188">
+            <index>9</index>
+            <expected_sequence>GATCAGCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622761" sample_id="1446497" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="193">
+            <index>10</index>
+            <expected_sequence>TAGCTTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622749" sample_id="1446501" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="175">
+            <index>11</index>
+            <expected_sequence>GGCTACAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622737" sample_id="1446502" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="184">
+            <index>12</index>
+            <expected_sequence>CTTGTACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622725" sample_id="1446503" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="189">
+            <index>13</index>
+            <expected_sequence>TGGTTGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622713" sample_id="1446504" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="195">
+            <index>14</index>
+            <expected_sequence>TCTCGGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622701" sample_id="1446505" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="200">
+            <index>15</index>
+            <expected_sequence>TAAGCGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622689" sample_id="1446509" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="207">
+            <index>16</index>
+            <expected_sequence>TCCGTCTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622772" sample_id="1446510" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="208">
+            <index>17</index>
+            <expected_sequence>TGTACCTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622760" sample_id="1446511" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="213">
+            <index>18</index>
+            <expected_sequence>TTCTGTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622748" sample_id="1446512" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="218">
+            <index>19</index>
+            <expected_sequence>TCTGCTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622736" sample_id="1446513" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="223">
+            <index>20</index>
+            <expected_sequence>TTGGAGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622724" sample_id="1446517" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="237">
+            <index>21</index>
+            <expected_sequence>TCGAGCGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622712" sample_id="1446518" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="242">
+            <index>22</index>
+            <expected_sequence>TGATACGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622700" sample_id="1446519" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="250">
+            <index>23</index>
+            <expected_sequence>TGCATAGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622688" sample_id="1446520" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="256">
+            <index>24</index>
+            <expected_sequence>TTGACTCT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622771" sample_id="1446521" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="261">
+            <index>25</index>
+            <expected_sequence>TGCGATCT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622759" sample_id="1446525" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="98">
+            <index>26</index>
+            <expected_sequence>TTCCTGCT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622747" sample_id="1446526" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="100">
+            <index>27</index>
+            <expected_sequence>TAGTGACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622735" sample_id="1446527" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="104">
+            <index>28</index>
+            <expected_sequence>TACAGGAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622723" sample_id="1446528" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="109">
+            <index>29</index>
+            <expected_sequence>TCCTCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622711" sample_id="1446529" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="113">
+            <index>30</index>
+            <expected_sequence>TGTGGTTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622699" sample_id="1446533" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="125">
+            <index>31</index>
+            <expected_sequence>TAGTCTTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622687" sample_id="1446534" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="129">
+            <index>32</index>
+            <expected_sequence>TTCCATTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622770" sample_id="1446535" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="133">
+            <index>33</index>
+            <expected_sequence>TCGAAGTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622758" sample_id="1446536" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="139">
+            <index>34</index>
+            <expected_sequence>TAACGCTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622746" sample_id="1446541" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="143">
+            <index>35</index>
+            <expected_sequence>TTGGTATG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622734" sample_id="1446542" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="148">
+            <index>36</index>
+            <expected_sequence>TGAACTGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622722" sample_id="1446543" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="156">
+            <index>37</index>
+            <expected_sequence>TACTTCGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622710" sample_id="1446544" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="160">
+            <index>38</index>
+            <expected_sequence>TCTCACGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622698" sample_id="1446549" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="166">
+            <index>39</index>
+            <expected_sequence>TCAGGAGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622686" sample_id="1446550" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="171">
+            <index>40</index>
+            <expected_sequence>TAAGTTCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622769" sample_id="1446551" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="187">
+            <index>41</index>
+            <expected_sequence>TCCAGTCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622757" sample_id="1446552" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="192">
+            <index>42</index>
+            <expected_sequence>TGTATGCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622745" sample_id="1446557" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="199">
+            <index>43</index>
+            <expected_sequence>TCATTGAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622733" sample_id="1446558" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="204">
+            <index>44</index>
+            <expected_sequence>TGGCTCAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622721" sample_id="1446559" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="209">
+            <index>45</index>
+            <expected_sequence>TATGCCAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622709" sample_id="1446560" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="214">
+            <index>46</index>
+            <expected_sequence>TCAGATTC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622697" sample_id="1446565" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="219">
+            <index>47</index>
+            <expected_sequence>TACTAGTC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622685" sample_id="1446566" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="224">
+            <index>48</index>
+            <expected_sequence>TTCAGCTC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622768" sample_id="1446567" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="228">
+            <index>49</index>
+            <expected_sequence>TGTCTATC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622756" sample_id="1446568" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="232">
+            <index>50</index>
+            <expected_sequence>TATGTGGC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622744" sample_id="1446573" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="247">
+            <index>51</index>
+            <expected_sequence>TTACTCGC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622732" sample_id="1446574" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="252">
+            <index>52</index>
+            <expected_sequence>TCGTTAGC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622720" sample_id="1446575" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="257">
+            <index>53</index>
+            <expected_sequence>TACCGAGC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="930" consent_withdrawn="false" library_id="5622708" sample_id="1446576" library_name="" library_type="Standard" study_id="1996">
+          <tag tag_id="262">
+            <index>54</index>
+            <expected_sequence>TGTTCTCC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="5662978">
+        <sample project_id="" consent_withdrawn="false" library_id="4405872" sample_id="1255141" library_name="PhiX (10Jan12)" library_type="" study_id="198">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="8" priority="0" id="5660513">
+      <pool name="DN243144S G7:A8" request_id="4397343" id="5608058" qc_state="">
+        <sample project_id="1119" consent_withdrawn="false" library_id="5622696" sample_id="1448638" library_name="" library_type="Standard" study_id="2278">
+          <tag tag_id="97">
+            <index>55</index>
+            <expected_sequence>TTCGCACC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="1119" consent_withdrawn="false" library_id="5622684" sample_id="1448639" library_name="" library_type="Standard" study_id="2278">
+          <tag tag_id="103">
+            <index>56</index>
+            <expected_sequence>TTGCGTAC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+        <sample project_id="1119" consent_withdrawn="false" library_id="5622767" sample_id="1448640" library_name="" library_type="Standard" study_id="2278">
+          <tag tag_id="107">
+            <index>57</index>
+            <expected_sequence>TCTACGAC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="500"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="5662978">
+        <sample project_id="" consent_withdrawn="false" library_id="4405872" sample_id="1255141" library_name="PhiX (10Jan12)" library_type="" study_id="198">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+  </lanes>
+</batch>
+

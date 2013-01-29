@@ -1,0 +1,7 @@
+<!-- begin $Id$ -->
+User [% model.username %] updated ok.
+Please click <a href="[% SCRIPT_NAME %]/user/[% model.id_user %]">here</a> to continue.
+<script type="text/javascript">
+  document.location.href = "[% SCRIPT_NAME %]/user/[% model.id_user %]";
+</script>
+<!-- end $Id$ -->

@@ -1,0 +1,8 @@
+<!--begin $Id: manufacturer_add.tt2 2662 2008-08-06 12:23:37Z rmp $-->
+Add a manufacturer
+
+<form method="post" action="[% SCRIPT_NAME %]/manufacturer/;create">
+  <label for="name">Name</label> <input type="text" name="name" />
+  <input type="submit" value="Create" />
+</form>
+<!--end $Id: manufacturer_add.tt2 2662 2008-08-06 12:23:37Z rmp $-->

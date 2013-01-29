@@ -1,0 +1,47 @@
+#!/usr/local/bin/perl -wT
+#########
+# Author:        dj3
+# Maintainer:    $Author: mg8 $
+# Created:       2010-05-17
+# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
+# Id:            $Id: reflector 16549 2013-01-23 16:49:39Z mg8 $
+# Source:        $Source: /repos/cvs/webcore/SHARED_docs/cgi-bin/docrep,v $
+# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/cgi-bin/reflector $
+#
+
+use strict;
+use warnings;
+use Carp;
+use English qw(-no_match_vars);
+use HTTP::Request;
+use LWP::UserAgent;
+use CGI qw/:standard/;
+use URI;
+
+our $VERSION = do { my @r = (q$LastChangedRevision: 16549 $ =~ /\d+/smxg); sprintf '%d.'.'%03d' x $#r, @r };
+
+my $requested_url = param('url');
+my $u = URI->new($requested_url);
+eval {
+    if (!$requested_url) {
+        croak q[url parameter is missing in the request];
+    }
+    if( ! ($u->scheme eq 'http' and $u->host =~/\Apsd-[a-z]+\.internal\.sanger\.ac\.uk\z/smix)) {
+        croak qq[Cannot proxy to $requested_url];
+    }
+    1;
+} or do {
+    print header(-status => ($EVAL_ERROR=~/Cannot/smix ? 403 : 500), -type => q[text/xml]);
+    print q[<xml><error>] . $EVAL_ERROR . q[</error></xml>];
+    exit 0;
+};
+
+my $request = HTTP::Request->new( GET  => $requested_url);
+my $ua = LWP::UserAgent->new();
+$ua->agent(q[NPG_INTERACTIVE_TRACKING_REFLECTOR]);
+my $response = $ua->request($request);
+print header(-status => $response->code, -type => $response->header('Content-Type'));
+print $response->content;
+
+exit 0;
+

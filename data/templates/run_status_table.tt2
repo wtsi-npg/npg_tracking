@@ -1,0 +1,33 @@
+<table id="statuses" class="sortable zebra">
+  <thead>
+    <tr><th>Date</th><th>Description</th><th>Operator</th><th>Loader</th></tr>
+  </thead>
+  <tbody>
+   [%- FOREACH run_status = model.run_statuses -%]
+      <tr>
+        <td>[% run_status.date %]</td>
+        <td>[% run_status.description %]</td>
+        <td>[% run_status.user.username %]</td>
+        <td>[% model.loader_info.loader %]</td>
+      </tr>
+   [%- END -%]
+  </tbody>
+</table>
+
+ [% IF requestor.is_member_of('engineers') || requestor.is_member_of('loaders') || requestor.is_member_of('annotators') || requestor.is_member_of('manual_qc') %]
+<a name="run_status_form"></a>
+<div id="new_run_status" style="display:none;">
+<form method="post" action="[% SCRIPT_NAME %]/run_status/;create">
+ <div>
+ <input type="hidden" name="id_run" value="[% model.id_run %]" />
+ <select name="id_run_status_dict" id="id_run_status_dict">[% FOREACH rsd = model.run_status_dict.run_status_dicts %]
+  <option value="[% rsd.id_run_status_dict %]">[% rsd.description %]</option>[% END %]
+ </select>
+ [%- IF model.run_pair.id_run -%]<label>&nbsp;&nbsp;Update pair</label><input type="checkbox" name="update_pair" value="1"/>[% END %]
+ <input type="submit" value="save" />
+ <input type="button" name="cancel" value="cancel" onclick="cancel_form('run_status', 1); return false;" />
+ </div>
+</form>
+</div>
+<a id="run_status_update_extra" href="#run_status_form" onclick="new_form_extra('run_status'); return false;"><img src="/icons/silk/pencil_add.png" alt="add status" title="add status" /></a>
+[%- END -%]

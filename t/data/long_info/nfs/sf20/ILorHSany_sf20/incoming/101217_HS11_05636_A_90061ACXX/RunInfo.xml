@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<RunInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="2">
+  <Run Id="101217_HS11_05636_A_90061ACXX" Number="59">
+    <Flowcell>90061ACXX</Flowcell>
+    <Instrument>SN351</Instrument>
+    <Date>101217</Date>
+    <Reads>
+      <Read Index="1" NumCycles="101" IsIndexedRead="N" />
+      <Read Index="2" NumCycles="101" IsIndexedRead="N" />
+    </Reads>
+    <FlowcellLayout LaneCount="8" SurfaceCount="2" SwathCount="3" TileCount="8" />
+    <AlignToPhiX />
+  </Run>
+</RunInfo>

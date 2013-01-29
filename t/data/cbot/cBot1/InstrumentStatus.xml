@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<RunStatus xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+  <InstrumentName>cBotX</InstrumentName>
+  <InstrumentState>Running</InstrumentState>
+  <IsEnabled>true</IsEnabled>
+  <MachineName>CBOTX</MachineName>
+  <PercentComplete>97</PercentComplete>
+  <RunState>8</RunState>
+  <Type>cBot</Type>
+</RunStatus>

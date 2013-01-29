@@ -1,0 +1,1020 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batch>
+  <id>5647</id>
+  <status>released</status>
+  <lanes>
+    <lane position="1" priority="0" id="1425039">
+      <pool name="Livestock TraDIS (pig 43 to 48)" request_id="2913426" id="2336740" qc_state="pass">
+        <sample library_id="112233" library_type="Custom" study_id="451" sample_id="29600" project_id="451" library_name="PIG_IN_1 112233">
+          <tag tag_id="199">
+            <index>43</index>
+            <expected_sequence>TCATTGAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112234" library_type="Custom" study_id="451" sample_id="29601" project_id="451" library_name="PIG_IN_2 112234">
+          <tag tag_id="204">
+            <index>44</index>
+            <expected_sequence>TGGCTCAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112235" library_type="Custom" study_id="451" sample_id="29602" project_id="451" library_name="PIG_IN_3 112235">
+          <tag tag_id="209">
+            <index>45</index>
+            <expected_sequence>TATGCCAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112236" library_type="Custom" study_id="451" sample_id="29603" project_id="451" library_name="PIG_OUT_1 112236">
+          <tag tag_id="214">
+            <index>46</index>
+            <expected_sequence>TCAGATTC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112238" library_type="Custom" study_id="451" sample_id="29605" project_id="451" library_name="PIG_OUT_2 112238">
+          <tag tag_id="219">
+            <index>47</index>
+            <expected_sequence>TACTAGTC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112239" library_type="Custom" study_id="451" sample_id="29606" project_id="451" library_name="PIG_OUT_3 112239">
+          <tag tag_id="224">
+            <index>48</index>
+            <expected_sequence>TTCAGCTC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="2" priority="0" id="112574">
+      <pool name="Livestock TraDIS (chicken 1 to 15)" request_id="84226" id="2336741" qc_state="pass">
+        <sample library_id="112218" library_type="Custom" study_id="451" sample_id="29585" project_id="451" library_name="chicken_A_2 112218">
+          <tag tag_id="144">
+            <index>1</index>
+            <expected_sequence>ATCACGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112217" library_type="Custom" study_id="451" sample_id="29584" project_id="451" library_name="chicken_A_1 112217">
+          <tag tag_id="149">
+            <index>2</index>
+            <expected_sequence>CGATGTTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112219" library_type="Custom" study_id="451" sample_id="29586" project_id="451" library_name="chicken_A_3 112219">
+          <tag tag_id="153">
+            <index>3</index>
+            <expected_sequence>TTAGGCAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112225" library_type="Custom" study_id="451" sample_id="29592" project_id="451" library_name="chicken_B_4 112225">
+          <tag tag_id="158">
+            <index>4</index>
+            <expected_sequence>TGACCACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112229" library_type="Custom" study_id="451" sample_id="29596" project_id="451" library_name="chicken_IN_2 112229">
+          <tag tag_id="162">
+            <index>5</index>
+            <expected_sequence>ACAGTGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112222" library_type="Custom" study_id="451" sample_id="29589" project_id="451" library_name="chicken_B_1 112222">
+          <tag tag_id="167">
+            <index>6</index>
+            <expected_sequence>GCCAATGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112230" library_type="Custom" study_id="451" sample_id="29597" project_id="451" library_name="chicken_IN_3 112230">
+          <tag tag_id="173">
+            <index>7</index>
+            <expected_sequence>CAGATCTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112220" library_type="Custom" study_id="451" sample_id="29587" project_id="451" library_name="chicken_A_4 112220">
+          <tag tag_id="179">
+            <index>8</index>
+            <expected_sequence>ACTTGATG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112223" library_type="Custom" study_id="451" sample_id="29590" project_id="451" library_name="chicken_B_2 112223">
+          <tag tag_id="188">
+            <index>9</index>
+            <expected_sequence>GATCAGCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112228" library_type="Custom" study_id="451" sample_id="29595" project_id="451" library_name="chicken_IN_1 112228">
+          <tag tag_id="193">
+            <index>10</index>
+            <expected_sequence>TAGCTTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112224" library_type="Custom" study_id="451" sample_id="29591" project_id="451" library_name="chicken_B_3 112224">
+          <tag tag_id="175">
+            <index>11</index>
+            <expected_sequence>GGCTACAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112231" library_type="Custom" study_id="451" sample_id="29598" project_id="451" library_name="chicken_IN_4 112231">
+          <tag tag_id="184">
+            <index>12</index>
+            <expected_sequence>CTTGTACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112232" library_type="Custom" study_id="451" sample_id="29599" project_id="451" library_name="chicken_IN_5 112232">
+          <tag tag_id="189">
+            <index>13</index>
+            <expected_sequence>TGGTTGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112221" library_type="Custom" study_id="451" sample_id="29588" project_id="451" library_name="chicken_A_5 112221">
+          <tag tag_id="195">
+            <index>14</index>
+            <expected_sequence>TCTCGGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112227" library_type="Custom" study_id="451" sample_id="29594" project_id="451" library_name="chicken_B_5 112227">
+          <tag tag_id="200">
+            <index>15</index>
+            <expected_sequence>TAAGCGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="3" priority="0" id="1425040">
+      <pool name="Livestock TraDIS (calf 1 to 42)" request_id="2913427" id="2336742" qc_state="fail">
+        <sample library_id="112197" library_type="Custom" study_id="451" sample_id="29564" project_id="451" library_name="CALF6_16_20_IN 112197">
+          <tag tag_id="144">
+            <index>1</index>
+            <expected_sequence>ATCACGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112186" library_type="Custom" study_id="451" sample_id="29553" project_id="451" library_name="CALF3_6_10_IN 112186">
+          <tag tag_id="149">
+            <index>2</index>
+            <expected_sequence>CGATGTTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112226" library_type="Custom" study_id="451" sample_id="29593" project_id="451" library_name="CALF2_31_35_IN 112226">
+          <tag tag_id="153">
+            <index>3</index>
+            <expected_sequence>TTAGGCAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112187" library_type="Custom" study_id="451" sample_id="29554" project_id="451" library_name="CALF3_6_10_IW 112187">
+          <tag tag_id="158">
+            <index>4</index>
+            <expected_sequence>TGACCACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112182" library_type="Custom" study_id="451" sample_id="29549" project_id="451" library_name="CALF1_11_15_IN 112182">
+          <tag tag_id="162">
+            <index>5</index>
+            <expected_sequence>ACAGTGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112184" library_type="Custom" study_id="451" sample_id="29551" project_id="451" library_name="CALF3_51_55_IN 112184">
+          <tag tag_id="167">
+            <index>6</index>
+            <expected_sequence>GCCAATGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112188" library_type="Custom" study_id="451" sample_id="29555" project_id="451" library_name="CALF4_26_30_IN 112188">
+          <tag tag_id="173">
+            <index>7</index>
+            <expected_sequence>CAGATCTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112241" library_type="Custom" study_id="451" sample_id="29608" project_id="451" library_name="CALF3_1_5_IW 112241">
+          <tag tag_id="179">
+            <index>8</index>
+            <expected_sequence>ACTTGATG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112204" library_type="Custom" study_id="451" sample_id="29571" project_id="451" library_name="CALF1_21_25_IN 112204">
+          <tag tag_id="188">
+            <index>9</index>
+            <expected_sequence>GATCAGCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112240" library_type="Custom" study_id="451" sample_id="29607" project_id="451" library_name="CALF3_1_5_IN 112240">
+          <tag tag_id="193">
+            <index>10</index>
+            <expected_sequence>TAGCTTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112199" library_type="Custom" study_id="451" sample_id="29566" project_id="451" library_name="CALF6_36_40_IN 112199">
+          <tag tag_id="175">
+            <index>11</index>
+            <expected_sequence>GGCTACAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112201" library_type="Custom" study_id="451" sample_id="29568" project_id="451" library_name="CALF6_41_45_IN 112201">
+          <tag tag_id="184">
+            <index>12</index>
+            <expected_sequence>CTTGTACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112185" library_type="Custom" study_id="451" sample_id="29552" project_id="451" library_name="CALF3_51_55_IW 112185">
+          <tag tag_id="189">
+            <index>13</index>
+            <expected_sequence>TGGTTGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112193" library_type="Custom" study_id="451" sample_id="29560" project_id="451" library_name="CALF1_11_15_IW 112193">
+          <tag tag_id="195">
+            <index>14</index>
+            <expected_sequence>TCTCGGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112198" library_type="Custom" study_id="451" sample_id="29565" project_id="451" library_name="CALF6_16_20_IW 112198">
+          <tag tag_id="200">
+            <index>15</index>
+            <expected_sequence>TAAGCGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112215" library_type="Custom" study_id="451" sample_id="29582" project_id="451" library_name="CALF1_21_25_IW 112215">
+          <tag tag_id="207">
+            <index>16</index>
+            <expected_sequence>TCCGTCTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112189" library_type="Custom" study_id="451" sample_id="29556" project_id="451" library_name="CALF4_26_30_IW 112189">
+          <tag tag_id="208">
+            <index>17</index>
+            <expected_sequence>TGTACCTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112237" library_type="Custom" study_id="451" sample_id="29604" project_id="451" library_name="CALF2_31_35_IW 112237">
+          <tag tag_id="213">
+            <index>18</index>
+            <expected_sequence>TTCTGTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112200" library_type="Custom" study_id="451" sample_id="29567" project_id="451" library_name="CALF6_36_40_IW 112200">
+          <tag tag_id="218">
+            <index>19</index>
+            <expected_sequence>TCTGCTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112202" library_type="Custom" study_id="451" sample_id="29569" project_id="451" library_name="CALF6_41_45_IW 112202">
+          <tag tag_id="223">
+            <index>20</index>
+            <expected_sequence>TTGGAGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112242" library_type="Custom" study_id="451" sample_id="29609" project_id="451" library_name="CALF3_46_50_IN 112242">
+          <tag tag_id="237">
+            <index>21</index>
+            <expected_sequence>TCGAGCGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112190" library_type="Custom" study_id="451" sample_id="29557" project_id="451" library_name="CALF5_56_60_IN 112190">
+          <tag tag_id="242">
+            <index>22</index>
+            <expected_sequence>TGATACGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112192" library_type="Custom" study_id="451" sample_id="29559" project_id="451" library_name="CALF5_61_65_IN 112192">
+          <tag tag_id="250">
+            <index>23</index>
+            <expected_sequence>TGCATAGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112195" library_type="Custom" study_id="451" sample_id="29562" project_id="451" library_name="CALF5_66_70_IN 112195">
+          <tag tag_id="256">
+            <index>24</index>
+            <expected_sequence>TTGACTCT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112208" library_type="Custom" study_id="451" sample_id="29575" project_id="451" library_name="CALF7_71_75_IN 112208">
+          <tag tag_id="261">
+            <index>25</index>
+            <expected_sequence>TGCGATCT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112203" library_type="Custom" study_id="451" sample_id="29570" project_id="451" library_name="CALF6_76_80_IN 112203">
+          <tag tag_id="100">
+            <index>27</index>
+            <expected_sequence>TAGTGACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112206" library_type="Custom" study_id="451" sample_id="29573" project_id="451" library_name="CALF6_81_85_IN 112206">
+          <tag tag_id="104">
+            <index>28</index>
+            <expected_sequence>TACAGGAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112210" library_type="Custom" study_id="451" sample_id="29577" project_id="451" library_name="CALF7_86_90_IN 112210">
+          <tag tag_id="109">
+            <index>29</index>
+            <expected_sequence>TCCTCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112212" library_type="Custom" study_id="451" sample_id="29579" project_id="451" library_name="CALF7_71_75_IN_R 112212">
+          <tag tag_id="113">
+            <index>30</index>
+            <expected_sequence>TGTGGTTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112214" library_type="Custom" study_id="451" sample_id="29581" project_id="451" library_name="CALF7_86_90_IN_R 112214">
+          <tag tag_id="125">
+            <index>31</index>
+            <expected_sequence>TAGTCTTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112183" library_type="Custom" study_id="451" sample_id="29550" project_id="451" library_name="CALF3_46_50_IW 112183">
+          <tag tag_id="133">
+            <index>33</index>
+            <expected_sequence>TCGAAGTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112191" library_type="Custom" study_id="451" sample_id="29558" project_id="451" library_name="CALF5_56_60_IW 112191">
+          <tag tag_id="139">
+            <index>34</index>
+            <expected_sequence>TAACGCTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112194" library_type="Custom" study_id="451" sample_id="29561" project_id="451" library_name="CALF5_61_65_IW 112194">
+          <tag tag_id="143">
+            <index>35</index>
+            <expected_sequence>TTGGTATG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112196" library_type="Custom" study_id="451" sample_id="29563" project_id="451" library_name="CALF5_66_70_IW 112196">
+          <tag tag_id="148">
+            <index>36</index>
+            <expected_sequence>TGAACTGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112209" library_type="Custom" study_id="451" sample_id="29576" project_id="451" library_name="CALF7_71_75_IW 112209">
+          <tag tag_id="156">
+            <index>37</index>
+            <expected_sequence>TACTTCGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112205" library_type="Custom" study_id="451" sample_id="29572" project_id="451" library_name="CALF6_76_80_IW_ 112205">
+          <tag tag_id="160">
+            <index>38</index>
+            <expected_sequence>TCTCACGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112207" library_type="Custom" study_id="451" sample_id="29574" project_id="451" library_name="CALF6_81_85_PP 112207">
+          <tag tag_id="166">
+            <index>39</index>
+            <expected_sequence>TCAGGAGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112211" library_type="Custom" study_id="451" sample_id="29578" project_id="451" library_name="CALF7_86_90_IW 112211">
+          <tag tag_id="171">
+            <index>40</index>
+            <expected_sequence>TAAGTTCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112213" library_type="Custom" study_id="451" sample_id="29580" project_id="451" library_name="CALF7_71_75_IW_R 112213">
+          <tag tag_id="187">
+            <index>41</index>
+            <expected_sequence>TCCAGTCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112216" library_type="Custom" study_id="451" sample_id="29583" project_id="451" library_name="CALF7_86_90_IW_R 112216">
+          <tag tag_id="192">
+            <index>42</index>
+            <expected_sequence>TGTATGCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="4" priority="0" id="">
+      <control name="phiX_SI_SPRI 1" request_id="84268" id="79572">
+        <sample library_id="79572" library_type="" study_id="" sample_id="9831" project_id="" library_name="phiX_SI_SPRI 1">
+        </sample>
+      </control>
+    </lane>
+    <lane position="5" priority="0" id="1425041">
+      <pool name="Livestock TraDIS (pig 43 to 48)" request_id="2913428" id="2336740" qc_state="fail">
+        <sample library_id="112233" library_type="Custom" study_id="451" sample_id="29600" project_id="451" library_name="PIG_IN_1 112233">
+          <tag tag_id="199">
+            <index>43</index>
+            <expected_sequence>TCATTGAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112234" library_type="Custom" study_id="451" sample_id="29601" project_id="451" library_name="PIG_IN_2 112234">
+          <tag tag_id="204">
+            <index>44</index>
+            <expected_sequence>TGGCTCAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112235" library_type="Custom" study_id="451" sample_id="29602" project_id="451" library_name="PIG_IN_3 112235">
+          <tag tag_id="209">
+            <index>45</index>
+            <expected_sequence>TATGCCAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112236" library_type="Custom" study_id="451" sample_id="29603" project_id="451" library_name="PIG_OUT_1 112236">
+          <tag tag_id="214">
+            <index>46</index>
+            <expected_sequence>TCAGATTC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112238" library_type="Custom" study_id="451" sample_id="29605" project_id="451" library_name="PIG_OUT_2 112238">
+          <tag tag_id="219">
+            <index>47</index>
+            <expected_sequence>TACTAGTC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112239" library_type="Custom" study_id="451" sample_id="29606" project_id="451" library_name="PIG_OUT_3 112239">
+          <tag tag_id="224">
+            <index>48</index>
+            <expected_sequence>TTCAGCTC</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="6" priority="0" id="1425042">
+      <pool name="Livestock TraDIS (chicken 1 to 15)" request_id="2913429" id="2336741" qc_state="pass">
+        <sample library_id="112218" library_type="Custom" study_id="451" sample_id="29585" project_id="451" library_name="chicken_A_2 112218">
+          <tag tag_id="144">
+            <index>1</index>
+            <expected_sequence>ATCACGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112217" library_type="Custom" study_id="451" sample_id="29584" project_id="451" library_name="chicken_A_1 112217">
+          <tag tag_id="149">
+            <index>2</index>
+            <expected_sequence>CGATGTTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112219" library_type="Custom" study_id="451" sample_id="29586" project_id="451" library_name="chicken_A_3 112219">
+          <tag tag_id="153">
+            <index>3</index>
+            <expected_sequence>TTAGGCAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112225" library_type="Custom" study_id="451" sample_id="29592" project_id="451" library_name="chicken_B_4 112225">
+          <tag tag_id="158">
+            <index>4</index>
+            <expected_sequence>TGACCACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112229" library_type="Custom" study_id="451" sample_id="29596" project_id="451" library_name="chicken_IN_2 112229">
+          <tag tag_id="162">
+            <index>5</index>
+            <expected_sequence>ACAGTGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112222" library_type="Custom" study_id="451" sample_id="29589" project_id="451" library_name="chicken_B_1 112222">
+          <tag tag_id="167">
+            <index>6</index>
+            <expected_sequence>GCCAATGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112230" library_type="Custom" study_id="451" sample_id="29597" project_id="451" library_name="chicken_IN_3 112230">
+          <tag tag_id="173">
+            <index>7</index>
+            <expected_sequence>CAGATCTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112220" library_type="Custom" study_id="451" sample_id="29587" project_id="451" library_name="chicken_A_4 112220">
+          <tag tag_id="179">
+            <index>8</index>
+            <expected_sequence>ACTTGATG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112223" library_type="Custom" study_id="451" sample_id="29590" project_id="451" library_name="chicken_B_2 112223">
+          <tag tag_id="188">
+            <index>9</index>
+            <expected_sequence>GATCAGCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112228" library_type="Custom" study_id="451" sample_id="29595" project_id="451" library_name="chicken_IN_1 112228">
+          <tag tag_id="193">
+            <index>10</index>
+            <expected_sequence>TAGCTTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112224" library_type="Custom" study_id="451" sample_id="29591" project_id="451" library_name="chicken_B_3 112224">
+          <tag tag_id="175">
+            <index>11</index>
+            <expected_sequence>GGCTACAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112231" library_type="Custom" study_id="451" sample_id="29598" project_id="451" library_name="chicken_IN_4 112231">
+          <tag tag_id="184">
+            <index>12</index>
+            <expected_sequence>CTTGTACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112232" library_type="Custom" study_id="451" sample_id="29599" project_id="451" library_name="chicken_IN_5 112232">
+          <tag tag_id="189">
+            <index>13</index>
+            <expected_sequence>TGGTTGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112221" library_type="Custom" study_id="451" sample_id="29588" project_id="451" library_name="chicken_A_5 112221">
+          <tag tag_id="195">
+            <index>14</index>
+            <expected_sequence>TCTCGGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112227" library_type="Custom" study_id="451" sample_id="29594" project_id="451" library_name="chicken_B_5 112227">
+          <tag tag_id="200">
+            <index>15</index>
+            <expected_sequence>TAAGCGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="7" priority="0" id="1425043">
+      <pool name="Livestock TraDIS (calf 1 to 42)" request_id="2913430" id="2336742" qc_state="pass">
+        <sample library_id="112197" library_type="Custom" study_id="451" sample_id="29564" project_id="451" library_name="CALF6_16_20_IN 112197">
+          <tag tag_id="144">
+            <index>1</index>
+            <expected_sequence>ATCACGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112186" library_type="Custom" study_id="451" sample_id="29553" project_id="451" library_name="CALF3_6_10_IN 112186">
+          <tag tag_id="149">
+            <index>2</index>
+            <expected_sequence>CGATGTTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112226" library_type="Custom" study_id="451" sample_id="29593" project_id="451" library_name="CALF2_31_35_IN 112226">
+          <tag tag_id="153">
+            <index>3</index>
+            <expected_sequence>TTAGGCAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112187" library_type="Custom" study_id="451" sample_id="29554" project_id="451" library_name="CALF3_6_10_IW 112187">
+          <tag tag_id="158">
+            <index>4</index>
+            <expected_sequence>TGACCACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112182" library_type="Custom" study_id="451" sample_id="29549" project_id="451" library_name="CALF1_11_15_IN 112182">
+          <tag tag_id="162">
+            <index>5</index>
+            <expected_sequence>ACAGTGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112184" library_type="Custom" study_id="451" sample_id="29551" project_id="451" library_name="CALF3_51_55_IN 112184">
+          <tag tag_id="167">
+            <index>6</index>
+            <expected_sequence>GCCAATGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112188" library_type="Custom" study_id="451" sample_id="29555" project_id="451" library_name="CALF4_26_30_IN 112188">
+          <tag tag_id="173">
+            <index>7</index>
+            <expected_sequence>CAGATCTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112241" library_type="Custom" study_id="451" sample_id="29608" project_id="451" library_name="CALF3_1_5_IW 112241">
+          <tag tag_id="179">
+            <index>8</index>
+            <expected_sequence>ACTTGATG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112204" library_type="Custom" study_id="451" sample_id="29571" project_id="451" library_name="CALF1_21_25_IN 112204">
+          <tag tag_id="188">
+            <index>9</index>
+            <expected_sequence>GATCAGCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112240" library_type="Custom" study_id="451" sample_id="29607" project_id="451" library_name="CALF3_1_5_IN 112240">
+          <tag tag_id="193">
+            <index>10</index>
+            <expected_sequence>TAGCTTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112199" library_type="Custom" study_id="451" sample_id="29566" project_id="451" library_name="CALF6_36_40_IN 112199">
+          <tag tag_id="175">
+            <index>11</index>
+            <expected_sequence>GGCTACAG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112201" library_type="Custom" study_id="451" sample_id="29568" project_id="451" library_name="CALF6_41_45_IN 112201">
+          <tag tag_id="184">
+            <index>12</index>
+            <expected_sequence>CTTGTACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112185" library_type="Custom" study_id="451" sample_id="29552" project_id="451" library_name="CALF3_51_55_IW 112185">
+          <tag tag_id="189">
+            <index>13</index>
+            <expected_sequence>TGGTTGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112193" library_type="Custom" study_id="451" sample_id="29560" project_id="451" library_name="CALF1_11_15_IW 112193">
+          <tag tag_id="195">
+            <index>14</index>
+            <expected_sequence>TCTCGGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112198" library_type="Custom" study_id="451" sample_id="29565" project_id="451" library_name="CALF6_16_20_IW 112198">
+          <tag tag_id="200">
+            <index>15</index>
+            <expected_sequence>TAAGCGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112215" library_type="Custom" study_id="451" sample_id="29582" project_id="451" library_name="CALF1_21_25_IW 112215">
+          <tag tag_id="207">
+            <index>16</index>
+            <expected_sequence>TCCGTCTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112189" library_type="Custom" study_id="451" sample_id="29556" project_id="451" library_name="CALF4_26_30_IW 112189">
+          <tag tag_id="208">
+            <index>17</index>
+            <expected_sequence>TGTACCTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112237" library_type="Custom" study_id="451" sample_id="29604" project_id="451" library_name="CALF2_31_35_IW 112237">
+          <tag tag_id="213">
+            <index>18</index>
+            <expected_sequence>TTCTGTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112200" library_type="Custom" study_id="451" sample_id="29567" project_id="451" library_name="CALF6_36_40_IW 112200">
+          <tag tag_id="218">
+            <index>19</index>
+            <expected_sequence>TCTGCTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112202" library_type="Custom" study_id="451" sample_id="29569" project_id="451" library_name="CALF6_41_45_IW 112202">
+          <tag tag_id="223">
+            <index>20</index>
+            <expected_sequence>TTGGAGGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112242" library_type="Custom" study_id="451" sample_id="29609" project_id="451" library_name="CALF3_46_50_IN 112242">
+          <tag tag_id="237">
+            <index>21</index>
+            <expected_sequence>TCGAGCGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112190" library_type="Custom" study_id="451" sample_id="29557" project_id="451" library_name="CALF5_56_60_IN 112190">
+          <tag tag_id="242">
+            <index>22</index>
+            <expected_sequence>TGATACGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112192" library_type="Custom" study_id="451" sample_id="29559" project_id="451" library_name="CALF5_61_65_IN 112192">
+          <tag tag_id="250">
+            <index>23</index>
+            <expected_sequence>TGCATAGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112195" library_type="Custom" study_id="451" sample_id="29562" project_id="451" library_name="CALF5_66_70_IN 112195">
+          <tag tag_id="256">
+            <index>24</index>
+            <expected_sequence>TTGACTCT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112208" library_type="Custom" study_id="451" sample_id="29575" project_id="451" library_name="CALF7_71_75_IN 112208">
+          <tag tag_id="261">
+            <index>25</index>
+            <expected_sequence>TGCGATCT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112203" library_type="Custom" study_id="451" sample_id="29570" project_id="451" library_name="CALF6_76_80_IN 112203">
+          <tag tag_id="100">
+            <index>27</index>
+            <expected_sequence>TAGTGACT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112206" library_type="Custom" study_id="451" sample_id="29573" project_id="451" library_name="CALF6_81_85_IN 112206">
+          <tag tag_id="104">
+            <index>28</index>
+            <expected_sequence>TACAGGAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112210" library_type="Custom" study_id="451" sample_id="29577" project_id="451" library_name="CALF7_86_90_IN 112210">
+          <tag tag_id="109">
+            <index>29</index>
+            <expected_sequence>TCCTCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112212" library_type="Custom" study_id="451" sample_id="29579" project_id="451" library_name="CALF7_71_75_IN_R 112212">
+          <tag tag_id="113">
+            <index>30</index>
+            <expected_sequence>TGTGGTTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112214" library_type="Custom" study_id="451" sample_id="29581" project_id="451" library_name="CALF7_86_90_IN_R 112214">
+          <tag tag_id="125">
+            <index>31</index>
+            <expected_sequence>TAGTCTTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112183" library_type="Custom" study_id="451" sample_id="29550" project_id="451" library_name="CALF3_46_50_IW 112183">
+          <tag tag_id="133">
+            <index>33</index>
+            <expected_sequence>TCGAAGTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112191" library_type="Custom" study_id="451" sample_id="29558" project_id="451" library_name="CALF5_56_60_IW 112191">
+          <tag tag_id="139">
+            <index>34</index>
+            <expected_sequence>TAACGCTG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112194" library_type="Custom" study_id="451" sample_id="29561" project_id="451" library_name="CALF5_61_65_IW 112194">
+          <tag tag_id="143">
+            <index>35</index>
+            <expected_sequence>TTGGTATG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112196" library_type="Custom" study_id="451" sample_id="29563" project_id="451" library_name="CALF5_66_70_IW 112196">
+          <tag tag_id="148">
+            <index>36</index>
+            <expected_sequence>TGAACTGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112209" library_type="Custom" study_id="451" sample_id="29576" project_id="451" library_name="CALF7_71_75_IW 112209">
+          <tag tag_id="156">
+            <index>37</index>
+            <expected_sequence>TACTTCGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112205" library_type="Custom" study_id="451" sample_id="29572" project_id="451" library_name="CALF6_76_80_IW_ 112205">
+          <tag tag_id="160">
+            <index>38</index>
+            <expected_sequence>TCTCACGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112207" library_type="Custom" study_id="451" sample_id="29574" project_id="451" library_name="CALF6_81_85_PP 112207">
+          <tag tag_id="166">
+            <index>39</index>
+            <expected_sequence>TCAGGAGG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112211" library_type="Custom" study_id="451" sample_id="29578" project_id="451" library_name="CALF7_86_90_IW 112211">
+          <tag tag_id="171">
+            <index>40</index>
+            <expected_sequence>TAAGTTCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112213" library_type="Custom" study_id="451" sample_id="29580" project_id="451" library_name="CALF7_71_75_IW_R 112213">
+          <tag tag_id="187">
+            <index>41</index>
+            <expected_sequence>TCCAGTCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+        <sample library_id="112216" library_type="Custom" study_id="451" sample_id="29583" project_id="451" library_name="CALF7_86_90_IW_R 112216">
+          <tag tag_id="192">
+            <index>42</index>
+            <expected_sequence>TGTATGCG</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="300" to="350"/>
+        </sample>
+      </pool>
+    </lane>
+    <lane position="8" priority="0" id="112572">
+      <library name="Keith1 89446" request_id="47477" id="89446" qc_state="pass">
+        <sample library_id="89446" library_type="Standard" study_id="440" sample_id="11036" project_id="440" library_name="Keith1 89446">
+          <insert_size from="250" to="250"/>
+        </sample>
+      </library>
+    </lane>
+  </lanes>
+</batch>

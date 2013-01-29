@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS goldcrest_image;
+DROP TABLE IF EXISTS goldcrest;
+INSERT INTO tag VALUES (DEFAULT,'fc_slotA');
+INSERT INTO tag VALUES (DEFAULT,'fc_slotB');
+INSERT INTO instrument_mod_dict(description,revision) VALUES ('RTA','1.8.70');
+INSERT INTO instrument_mod_dict(description,revision) VALUES ('SCS','2.8.97');

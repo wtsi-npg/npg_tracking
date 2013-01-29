@@ -1,0 +1,34 @@
+X-Generated-By: ClearPress
+Content-type: text/xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="1" batch_id="939" id_instrument="3" expected_cycle_count="37" actual_cycle_count="30" priority="1" id_run_pair="0" is_paired="0" team='RAD' id_instrument_format="1" name="IL1_0001" loader="joe_admin" loading_date="2007-06-05" run_folder="070605_IL1_0001">
+ <instrument id_instrument="3" name="IL1" id_instrument_format="4" external_name="eas15" serial="" iscurrent="0" />
+ <run_lanes>
+<run_lane id_run_lane="1" id_run="1" tile_count="200" tracks="2" position="1" />
+<run_lane id_run_lane="2" id_run="1" tile_count="200" tracks="2" position="2" />
+<run_lane id_run_lane="3" id_run="1" tile_count="200" tracks="2" position="3" />
+<run_lane id_run_lane="4" id_run="1" tile_count="200" tracks="2" position="4" />
+<run_lane id_run_lane="5" id_run="1" tile_count="200" tracks="2" position="5" />
+<run_lane id_run_lane="6" id_run="1" tile_count="200" tracks="2" position="6" />
+<run_lane id_run_lane="7" id_run="1" tile_count="200" tracks="2" position="7" />
+<run_lane id_run_lane="8" id_run="1" tile_count="200" tracks="2" position="8" />
+</run_lanes>
+ <current_run_status id_run_status="6" id_run="1" date="2007-06-05 12:22:32" id_run_status_dict="9" id_user="1" username="joe_admin" iscurrent="1" description="analysis complete" />
+ <run_statuses>
+ <run_status id_run_status="6" id_run="1" date="2007-06-05 12:22:32" id_run_status_dict="9" id_user="1" username="joe_admin" iscurrent="1" description="analysis complete" />
+ <run_status id_run_status="5" id_run="1" date="2007-06-05 12:21:25" id_run_status_dict="7" id_user="1" username="joe_admin" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="4" id_run="1" date="2007-06-05 12:20:01" id_run_status_dict="6" id_user="1" username="joe_admin" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="3" id_run="1" date="2007-06-05 10:16:55" id_run_status_dict="4" id_user="1" username="joe_admin" iscurrent="0" description="run complete" />
+ <run_status id_run_status="2" id_run="1" date="2007-06-05 10:07:42" id_run_status_dict="2" id_user="1" username="joe_admin" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="1" id_run="1" date="2007-06-05 10:04:23" id_run_status_dict="1" id_user="1" username="joe_admin" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="1" id_run="1" id_annotation="1" date="2007-08-21 16:03:38" id_user="3" username="joe_loader" comment="Lack of clusters - run cancelled" attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="2" id_run="1" id_annotation="2" date="2007-08-21 17:25:32" id_user="3" username="joe_loader" comment="Solexa test flowcell - New paired end module" attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="3" id_run="1" id_annotation="3" date="2007-08-22 17:44:24" id_user="3" username="joe_loader" comment="200ms exposure test - hence 50 cycles." attachment_name="" run_current_ok="" current_cycle="" />
+ </annotations>
+ <tags>
+   <tag id_tag="1" description="2G" />
+ </tags>
+</run>

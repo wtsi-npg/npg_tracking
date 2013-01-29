@@ -1,0 +1,61 @@
+ALTER TABLE instrument_format
+    ADD COLUMN (`days_between_washes` INT UNSIGNED NULL,
+                `runs_between_washes` INT UNSIGNED NULL);
+
+UPDATE instrument_format
+    SET days_between_washes    = 30
+    WHERE id_instrument_format =  7;
+
+UPDATE instrument_format
+    SET days_between_washes    = 28,
+        runs_between_washes    =  1
+    WHERE id_instrument_format =  4;
+
+
+/*INSERT INTO instrument_designation
+    VALUES (DEFAULT, 48, 4),
+           (DEFAULT, 49, 4),
+           (DEFAULT, 50, 4),
+           (DEFAULT, 51, 4),
+           (DEFAULT, 52, 4),
+           (DEFAULT, 53, 4),
+           (DEFAULT, 54, 4),
+           (DEFAULT, 55, 4),
+           (DEFAULT, 56, 4),
+           (DEFAULT, 57, 4),
+           (DEFAULT, 58, 4),
+           (DEFAULT, 59, 4),
+           (DEFAULT, 60, 4);
+*/
+
+ALTER TABLE run
+    MODIFY COLUMN actual_cycle_count   BIGINT(20) UNSIGNED NULL,
+    MODIFY COLUMN expected_cycle_count BIGINT(20) UNSIGNED NULL;
+
+ALTER TABLE instrument
+    ADD CONSTRAINT `id_if`
+        FOREIGN KEY (`id_instrument_format`)
+        REFERENCES `instrument_format` (`id_instrument_format`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION;
+
+
+ALTER TABLE instrument
+    ADD COLUMN `percent_complete` TINYINT UNSIGNED NULL;
+
+
+ALTER TABLE `run_lane` ADD UNIQUE `uq_id_run_position`(`id_run`, `position`);
+
+CREATE TABLE  `run_read` (
+  `id_run_read` bigint(20) unsigned NOT NULL auto_increment,
+  `id_run` bigint(20) unsigned NOT NULL default '0',
+  `intervention` tinyint(1) NOT NULL default '0',
+  `order` int(10) unsigned default '0',
+  `expected_cycle_count` bigint(20) unsigned default NULL,
+  PRIMARY KEY  (`id_run_read`),
+  UNIQUE KEY `uq_id_run_order` (`id_run`,`order`),
+  KEY `fk_read_id_run` (`id_run`),
+  CONSTRAINT `fk_read_id_run` FOREIGN KEY (`id_run`) REFERENCES `run` (`id_run`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+

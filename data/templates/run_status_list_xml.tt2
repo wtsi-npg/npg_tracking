@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run_statuses>[% FOREACH run_status model.run_status %]
+<run_status id_run_status="[% run_status.id_run_status %]" id_run="[% run_status.id_run %]" date="[% run_status.date %]" id_run_status_dict="[% run_status.id_run_status_dict %]" id_user="[% run_status.id_user %]" iscurrent="[% run_status.iscurrent %]"/>
+[% END %]</run_statuses>

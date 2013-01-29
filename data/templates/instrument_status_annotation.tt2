@@ -1,0 +1,35 @@
+[%- IF requestor.is_member_of('engineers') || requestor.is_member_of('annotators') -%]
+  [%- id_status = instrument_status.id_instrument_status -%]
+  [%- status = instrument_status.instrument_status_dict.description -%]
+   <td id="instrument_status_annotation_[% id_status %]">
+      <div id="new_instrument_status_annotation_[% id_status %]"></div>
+      <a id="instrument_status_annotation_[% id_status %]_update" href="#" onClick="instrument_status_annotation_form('instrument_status_annotation', [% id_status %]); return false;">
+        <img src="/icons/silk/pencil_add.png" style="height:16px;width:16px;" alt="add instrument status annotation" title="add instrument status annotation - [% status %]" />
+      </a>
+      <img id="instrument_status_annotation_[% id_status %]_spinner" style="display:none;height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" /> 
+       <a style="display:none;" id="instrument_status_annotation_[% id_status %]_cancel" href="#" onClick="cancel_form('instrument_status_annotation_[% id_status %]'); return false;">
+        <img src="/icons/silk/cancel.png" style="height:16px;width:16px;" alt="cancel" title="cancel" />
+      </a>
+      <a style="display:none;" id="instrument_status_annotation_[% id_status %]_update_extra" href="#" onClick="new_form_extra('instrument_status_annotation_[% id_status %]'); return false;"><img src="/icons/silk/pencil_add.png" style="height:16px;width:16px;" alt="add instrument status annotation" title="add instrument status annotation - [% status %]" /></a>
+   </td>
+[%- END -%]
+
+<script type="text/javascript">
+function instrument_status_annotation_form(type, id_status) {
+ var el      = "new_" + type + "_" + id_status;
+ var spinner = type + "_" + id_status + "_spinner";
+ var update  = type + "_" + id_status + "_update";
+ var cancel  = type + "_" + id_status+ "_cancel";
+ Element.show(spinner);
+ Element.hide(update);
+ new Ajax.Updater(el,'[% SCRIPT_NAME %]/'+type+'/;add_ajax',
+ {method:'get',
+  parameters:{id_instrument_status: id_status },
+  onComplete:function(){
+   Element.show(el);
+   Element.hide(spinner);
+   Element.show(cancel);
+   new Effect.Highlight(el);
+ }});
+}
+</script>

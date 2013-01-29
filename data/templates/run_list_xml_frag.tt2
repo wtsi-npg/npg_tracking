@@ -1,0 +1,3 @@
+<runs>[% FOREACH run = model.runs %]
+[% PROCESS run_list_row_xml.tt2 %]
+[% END %]</runs>

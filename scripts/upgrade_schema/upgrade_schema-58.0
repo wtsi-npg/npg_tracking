@@ -1,0 +1,2 @@
+ALTER TABLE `user` ADD COLUMN `rfid` VARCHAR(64);
+CREATE UNIQUE INDEX rf_id on user (rfid);

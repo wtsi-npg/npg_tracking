@@ -1,0 +1,7 @@
+<!--begin $Id: run_annotation_create_multiple_run_annotations.tt2 13585 2011-07-07 13:23:08Z ajb $-->
+Annotations created.
+Please click <a href="[% SCRIPT_NAME %]/run">here</a> to continue.
+<script type="text/javascript">
+  document.location.href = '[% SCRIPT_NAME %]/run';
+</script>
+<!--end $Id: run_annotation_create_multiple_run_annotations.tt2 13585 2011-07-07 13:23:08Z ajb $-->

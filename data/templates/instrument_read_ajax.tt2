@@ -1,0 +1,35 @@
+[% model.current_instrument_status.comment | html %] ([% model.current_instrument_status.date | html %] by [% model.current_instrument_status.user.username | html %])<br />
+layout: <span class="default_tiles">[% model.instrument_format.default_tiles %]</span>/<span class="default_columns">[% model.instrument_format.default_columns %]</span>
+<input type="hidden" id="instr_model" value=[% model.instrument_format.model%] />
+
+[%- IF model.is_hiseq_instrument;
+     slots = model.fc_slots2blocking_runs;
+     slot_names = slots.keys.sort;
+     IF slots.keys.size;
+       offset = 7;
+       disabled_slots = {};
+       checked = 'checked="true"';
+       disabled = 'disabled="true"';
+       FOREACH key IN slot_names;
+         IF !slots.$key.size;
+           IF !selected_slot;
+             selected_slot = key;
+           END;
+         ELSE;
+           disabled_slots.$key = 1;
+         END; 
+       END;
+-%]
+
+  <div id="flowcell_slots">Flowcell slots
+  <div>
+  [%- space = ' '; FOREACH key IN slot_names -%]
+  <input type="radio" name="fc_slot" value="[% key %]" [% IF key == selected_slot;checked;ELSE; IF disabled_slots.$key;disabled;END; END %]/> [% key.substr(offset) %]
+  [% IF slots.$key.size %]
+  ([% count=0;FOREACH run IN slots.$key %]
+     [%- IF count;space;END;count=count+1; %]<a href="[% SCRIPT_NAME %]/run/[% run %]">[% run; %]</a>[% END %])
+    [% END %]
+  [%- END -%]
+  </div><div>
+
+[%- END;END -%]
