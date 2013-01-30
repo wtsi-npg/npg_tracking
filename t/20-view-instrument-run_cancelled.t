@@ -44,7 +44,6 @@ my $inst = npg::model::instrument->new({
 					      description => 'run cancelled',
 					     });
 
-diag 'HERE1';
   my $status_update = t::request->new({
 				       REQUEST_METHOD => 'POST',
 				       PATH_INFO      => '/run_status/',
@@ -55,14 +54,14 @@ diag 'HERE1';
 							  id_run_status_dict => $rsd->id_run_status_dict(),
 							 },
 				      });
-diag 'HERE2';
+
   my $png = t::request->new({
 			     REQUEST_METHOD => 'GET',
 			     PATH_INFO      => '/instrument/IL8.png',
 			     username       => 'public',
 			     util           => $util,
 			    });
-diag 'HERE';
+
   t::util::is_colour($png, $npg::view::instrument::COLOUR_YELLOW, 'run cancelled + unwashed = status yellow');
 }
 
