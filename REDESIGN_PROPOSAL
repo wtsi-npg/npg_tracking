@@ -173,6 +173,10 @@ TASK: model-level run status rules; some status updates only allowed before run 
   urgency: moderate,
 )
 
+REQUIREMENT
+manual qc should be possible on lanes that have no status (current status undefined)
+TASK: refactor methods used by the SeqQC server. Fix 'Error when logging manual qc action: DBIx::Class::Schema::txn_do(): Can't call method "update_run_lane_status" on an undefined value at /nfs/users/nfs_m/mg8/working/npg-catalyst-qc/trunk/npg_qc_viewer/script/../lib/npg_qc_viewer/Model/NpgDB.pm line 263'
+
 REQUIREMENT:
 compliance with dbs
 TASK: test against MySQL5.5 and PostgreSQL http://www.postgresql.org/
@@ -220,6 +224,12 @@ database access and resolving urls
 TASK: review the use of $ENV{dev}, try creating a full test case against dev or test database
 
 SUGGESTION: NPG is rather picky about kit version number as in 130115_MS5_9164_A_MS2003607-300v2 - expects capital V. Probably, have to be capitalised on saving to teh database
+
+REQUIREMENT:
+independent tracking of flowcell on HiSeq instruments
+TASK: created a suitable model and implement in DBIX
+( depends on: TASK(npg::model backend - replace Clearpress models by  DBIx models)
+)
 
 
 CATEGORY: PIPELINE INTERACTION
@@ -337,6 +347,12 @@ TASK: RT#225087: Add release flag information to NPG web pages
 
 REQUIREMENT
 RT#232284: add ability for intewdev to look at db of choice
+
+REQUIREMENT:
+independent tracking of flowcell on HiSeq instruments
+TASK: created suitable visual representation and widgets
+(depends on: TASK(created a suitable model and implement in DBIX)
+)
 
 
 CATEGORY: REPORTS
