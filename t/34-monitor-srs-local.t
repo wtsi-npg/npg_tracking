@@ -28,7 +28,8 @@ use t::dbic_util;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11585 $ =~ /(\d+)/msx; $r; };
 
-Readonly::Scalar my $MOCK_STAGING => 't/data/gaii/staging';
+Readonly::Scalar my $MOCK_STAGING  => 't/data/gaii/staging';
+Readonly::Scalar my $NOT_RUNFOLDER => "$MOCK_STAGING/Not_a_valid_instdir";
 
 
 use_ok('Monitor::SRS::Local');
@@ -41,6 +42,8 @@ lives_ok {
                                               _schema => $schema, )
          }
          'Object creation ok';
+
+mkdir $NOT_RUNFOLDER unless -d $NOT_RUNFOLDER;
 
 
 # Assume that there is appropriate testing of database look-ups for the run
@@ -84,7 +87,7 @@ isnt( $test->glob_pattern(), undef, 'Retrieve glob pattern' );
 {
     warning_like {
                     $test->
-                        is_run_completed("$MOCK_STAGING/Not_a_valid_instdir")
+                        is_run_completed($NOT_RUNFOLDER)
                  }
                  { carped => qr/^No[ ]files[ ]in/msx },
                  'Warn that no files at all have been found';
@@ -93,7 +96,7 @@ isnt( $test->glob_pattern(), undef, 'Retrieve glob pattern' );
         local $SIG{__WARN__} = sub { 1; };
 
         is(
-            $test->is_run_completed("$MOCK_STAGING/Not_a_valid_instdir"),
+            $test->is_run_completed($NOT_RUNFOLDER),
             0,
             'Default to \'not complete\' when no information is available'
         );
@@ -132,6 +135,10 @@ isnt( $test->glob_pattern(), undef, 'Retrieve glob pattern' );
         'Latest cycle derived from StatusUpdate.xml' );
 
     unlink $status_xml;
+}
+
+END {
+  rmdir $NOT_RUNFOLDER unless !-d $NOT_RUNFOLDER;
 }
 
 
