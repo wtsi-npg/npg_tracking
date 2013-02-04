@@ -2,7 +2,7 @@ CHANGES
 
 release 73.2
 - get build version from git tag or version with Keith's gitver script
-- inject module version innto npg::view when copying it to blib
+- inject module version into npg::view when copying it to blib
 
 release 73.1
 - rename NPG_REFERENCE_REPOSITORY type to NPG_TRACKING_REFERENCE_REPOSITORY
