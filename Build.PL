@@ -12,9 +12,26 @@ use strict;
 use warnings;
 use Module::Build;
 
-our $VERSION = do { my ($r) = q$Revision: 15350 $ =~ /(\d+)/mxs; $r; };
-
 my $class = Module::Build->subclass(code => <<'EOF');
+
+  sub git_tag {
+    my $version;
+    my $gitver = q[./scripts/gitver];
+    if (!-e $gitver) {
+      warn "$gitver script not found";
+      $version = q[unknown];
+    }
+    if (!-x $gitver) {
+      warn "$gitver script is not executable";
+      $version = q[unknown];
+    }
+    if (!$version) {
+      $version = `$gitver`;
+      $version =~ s/\s$//smxg;
+    }
+    return $version;
+  }
+
   sub process_data_files {
     my $self = shift;
     my $path = 'data/npg_tracking_email/templates';
@@ -22,6 +39,7 @@ my $class = Module::Build->subclass(code => <<'EOF');
     `cp $path/*.tt2 blib/$path`;
     return;
   }
+
   sub cgi_version {
     my $version;
     eval {
@@ -30,13 +48,35 @@ my $class = Module::Build->subclass(code => <<'EOF');
     };
     return $version && ($version eq '3.43') ? $version : '3.52'; 
   }
+
+  sub ACTION_code {
+    my $self = shift;
+
+    $self->SUPER::ACTION_code;
+
+    my $view = q[blib/lib/npg/view.pm];
+    my $gitver = $self->git_tag();
+    if (-e $view) {
+      warn "Changing version of npg::view to $gitver\n";
+      my $backup = '.original';
+      local $^I = $backup;
+      local @ARGV = ($view);
+      while (<>) {
+        s/(\$VERSION\s*=\s*)('?\S+'?)\s*;/${1}'$gitver';/;
+        print;
+      }
+      unlink "$view$backup";
+    } else {
+      warn "File $view not found\n";
+    }
+  }
 EOF
 
 my $builder = $class->new(
 
                 'module_name'         => 'npg-tracking',
                 'dist_author'         => q(wtsi-npg <npg@sanger.ac.uk>),
-                'dist_version_from'   => 'lib/npg/view.pm',
+                'dist_version'        => $class->git_tag(),
                 'dist_abstract'       => 'Illumina sequencing instruments tracking',
                 'license'             => 'gpl',
 
