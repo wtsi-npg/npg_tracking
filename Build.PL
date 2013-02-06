@@ -19,7 +19,7 @@ my $class = Module::Build->subclass(code => <<'EOF');
     my $gitver = q[./scripts/gitver];
     if (!-e $gitver) {
       warn "$gitver script not found";
-      $version = q[unknown];;
+      $version = q[unknown];
     }
     if (!-x $gitver) {
       warn "$gitver script is not executable";
@@ -27,7 +27,7 @@ my $class = Module::Build->subclass(code => <<'EOF');
     }
     if (!$version) {
       $version = `$gitver`;
-      $version =~ s/\s$//g;
+      $version =~ s/\s$//smxg;
     }
     return $version;
   }
