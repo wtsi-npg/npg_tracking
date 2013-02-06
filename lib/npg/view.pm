@@ -23,7 +23,7 @@ use npg::authentication::sanger_ldap qw/person_info/;
 use base qw(ClearPress::view);
 
 ##no critic(ValuesAndExpressions::RequireConstantVersion)
-our $VERSION  = do { my ($r) = q$Revision: 16477 $ =~ /(\d+)/smx; $r; };
+our $VERSION = 'unknown';
 ##use critic
 
 sub new {
@@ -166,8 +166,6 @@ __END__
 npg::view - New pipeline MVC view superclass, derived from ClearPress::View
 
 =head1 VERSION
-
-$Revision: 16477 $
 
 =head1 SYNOPSIS
 
