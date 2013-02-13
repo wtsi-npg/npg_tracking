@@ -40,7 +40,7 @@ Class for creating a MiSeq samplesheet using NPG tracking info and Sequencescape
 =cut
 
 Readonly::Scalar our $REP_ROOT => q(/nfs/sf45);
-Readonly::Scalar our $SAMPLESHEET_PATH => q(/nfs/sf45/ILorHSorMS_sf45/samplesheets/);
+Readonly::Scalar our $SAMPLESHEET_PATH => q(/nfs/sf49/ILorHSorMS_sf49/samplesheets/);
 Readonly::Scalar our $DEFAULT_FALLBACK_REFERENCE_SPECIES=> q(PhiX);
 
 with 'MooseX::Getopt';
