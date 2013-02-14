@@ -1,5 +1,8 @@
 CHANGES
 
+release 73.3
+- change MiSeq samplesheet writing location to sf49
+
 release 73.2
 - get build version from git tag or version with Keith's gitver script
 - inject module version into npg::view when copying it to blib
