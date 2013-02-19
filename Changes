@@ -4,6 +4,10 @@ release 73.4
 - build procedure for the web server
 - test that resets modification time of test files is directed away from source distribution
 - top-level .gitignore file to stop git reacting to back-up files and files generated in a normal build
+- reference finder to return no reference if the sample is not suitable for alignment RT#313168
+- calling abs_path for non-existing files breaks under ./Build test with latest CPAN modules
+    reference finder refactored to ensure that abs_path is called on existing directories
+- tests improvements
 
 release 73.3
 - change MiSeq samplesheet writing location to sf49

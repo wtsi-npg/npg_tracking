@@ -392,7 +392,7 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
     qr/Status 'some status' is nor registered in the status graph/,
     'error if current status is not recognised';
 
-  my $model = npg::model::instrument->new({
+  $model = npg::model::instrument->new({
     util => $util,
     id_instrument => 11,
   });

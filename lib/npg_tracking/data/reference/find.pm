@@ -200,6 +200,13 @@ sub _build_lims {
   return st::api::lims->new(id_run => $self->id_run, position => $self->position, tag_index => $self->tag_index);
 }
 
+sub _abs_ref_path {
+  my $path = shift;
+  (my $name) = $path =~ /\/([^\/]+)$/smx;
+  $path =~ s/$name$//smx;
+  return join(q[/], abs_path($path), $name);
+}
+
 =head2 refs
 
 A reference to a list of reference paths.
@@ -239,12 +246,12 @@ sub refs {
       }
       my $path = $self->lims2ref($lims);
       if ($path) {
-        $ref_hash->{abs_path($path)} = 1;
+        $ref_hash->{_abs_ref_path($path)} = 1;
       }
     }
     @refs = keys %{$ref_hash};
   }
-  @refs = map {abs_path($_)} @refs;
+  @refs = map {_abs_ref_path($_)} @refs;
   return \@refs;
 }
 
