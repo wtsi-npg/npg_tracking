@@ -21,9 +21,9 @@ BEGIN {
 }
 
 use strict;
-use warnings;
 use lib @npg_libs;
 use if !@npg_libs, SangerPaths => qw(core trackingnpg);
+use warnings; # loads Carp, which we want to source from our cpan build
 
 use npg::controller;
 use npg::util;

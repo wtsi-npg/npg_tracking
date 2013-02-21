@@ -200,6 +200,13 @@ sub _build_lims {
   return st::api::lims->new(id_run => $self->id_run, position => $self->position, tag_index => $self->tag_index);
 }
 
+sub _abs_ref_path {
+  my $path = shift;
+  (my $name) = $path =~ /\/([^\/]+)$/smx;
+  $path =~ s/$name$//smx;
+  return join(q[/], abs_path($path), $name);
+}
+
 =head2 refs
 
 A reference to a list of reference paths.
@@ -239,12 +246,12 @@ sub refs {
       }
       my $path = $self->lims2ref($lims);
       if ($path) {
-        $ref_hash->{abs_path($path)} = 1;
+        $ref_hash->{_abs_ref_path($path)} = 1;
       }
     }
     @refs = keys %{$ref_hash};
   }
-  @refs = map {abs_path($_)} @refs;
+  @refs = map {_abs_ref_path($_)} @refs;
   return \@refs;
 }
 
@@ -372,31 +379,36 @@ sub lims2ref {
 
   my $ref_path = q[];
   my $preset_genome = $lims->reference_genome;
-  if ($preset_genome) {
-    $ref_path = $self->_preset_ref2ref_path($preset_genome);
-  }
-
-  if (!$ref_path) {
-    my $taxon_id = $lims->organism_taxon_id;
-    if ($taxon_id) {
-      my $description = $self->taxonid2species($taxon_id);
-      if ($description->{species})  {
-        my $strain =  $description->{strain} ?  $description->{strain} : q[];
-        $ref_path = $self->_get_reference_path($description->{species}, $strain);
-      }
-      if (!$ref_path) {
-        $self->messages->push(qq[no reference for taxon id $taxon_id]);
-      }
-    } else {
-      foreach my $name (($lims->library_name, $lims->sample_name)) {
-        if ($name && $name =~ /phix/ismx ) {
-          $ref_path = $self->_get_reference_path($PHIX);
-          last;
+  my $no_alignment_option = $npg_tracking::data::reference::list::NO_ALIGNMENT_OPTION;
+  my $no_alignment = $preset_genome && ($preset_genome eq $no_alignment_option) ? 1 : 0;
+  if($no_alignment) {
+    $self->messages->push($no_alignment_option);
+  } else {
+    if ($preset_genome) {
+      $ref_path = $self->_preset_ref2ref_path($preset_genome);
+    }
+    if (!$ref_path) {
+      my $taxon_id = $lims->organism_taxon_id;
+      if ($taxon_id) {
+        my $description = $self->taxonid2species($taxon_id);
+        if ($description->{species})  {
+	  my $strain =  $description->{strain} ?  $description->{strain} : q[];
+	  $ref_path = $self->_get_reference_path($description->{species}, $strain);
+        }
+        if (!$ref_path) {
+	  $self->messages->push(qq[no reference for taxon id $taxon_id]);
+        }
+      } else {
+        foreach my $name (($lims->library_name, $lims->sample_name)) {
+	  if ($name && $name =~ /phix/ismx ) {
+	    $ref_path = $self->_get_reference_path($PHIX);
+	    last;
+	  }
         }
       }
     }
   }
-
+  
   return $ref_path;
 }
 
