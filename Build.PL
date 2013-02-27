@@ -1,13 +1,3 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Last Modified: $Date: 2012-04-02 15:17:16 +0100 (Mon, 02 Apr 2012) $ $Author: mg8 $
-# Id:            $Id: Makefile.PL 15422 2012-04-02 14:17:16Z mg8 $
-# Source:        $Source: /cvsroot/Bio-DasLite/Bio-DasLite/Makefile.PL,v $
-# Revision:      $Revision: $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/branches/prerelease-73.0/Makefile.PL $
-#
-
 use strict;
 use warnings;
 use Module::Build;
@@ -34,9 +24,22 @@ my $class = Module::Build->subclass(code => <<'EOF');
 
   sub process_data_files {
     my $self = shift;
-    my $path = 'data/npg_tracking_email/templates';
-    `mkdir -pv blib/$path`;
-    `cp $path/*.tt2 blib/$path`;
+    `find data/npg_tracking_email/templates -type f | cpio -pdv --quiet blib`;
+    if ($self->invoked_action() eq q[webinstall]) {
+      `find data/templates -type f | cpio -pdv --quiet blib`;
+      `find data/gfx -type f | cpio -pdv --quiet blib`;
+    }
+    return;
+  }
+
+  sub process_htdocs_files {
+    `find htdocs -type f | cpio -pdv --quiet blib`;
+    return;
+  }
+
+  sub process_cgi_files {
+    `find cgi-bin -type f | cpio -pdv --quiet blib`;
+    `chmod +x blib/cgi-bin/*`;
     return;
   }
 
@@ -47,6 +50,21 @@ my $class = Module::Build->subclass(code => <<'EOF');
       $version = $CGI::VERSION;
     };
     return $version && ($version eq '3.43') ? $version : '3.52'; 
+  }
+
+  sub ACTION_webinstall {
+    my $self = shift;
+    if (!$self->install_base()) {
+      warn "WARNING: '--install_base' option is not given, nothing to do for the 'webinstall' action\n\n";
+      return;
+    }
+
+    $self->install_path('htdocs' => join q{/}, $self->install_base(), 'htdocs');
+    $self->add_build_element('htdocs');
+    $self->install_path('cgi-bin' => join q{/}, $self->install_base(), 'cgi-bin');
+    $self->add_build_element('cgi');
+    $self->depends_on("install");
+    return;
   }
 
   sub ACTION_code {

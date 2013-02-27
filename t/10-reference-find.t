@@ -11,11 +11,12 @@ package reference;
 
 use strict;
 use warnings;
-use Test::More tests => 42;
+use Test::More tests => 44;
 use Test::Exception;
 use File::Spec::Functions qw(catfile);
 use Cwd qw(cwd);
 use Moose::Meta::Class;
+use Test::MockObject;
 
 my $central = catfile(cwd, q[t/data/repos]);
 my $repos = catfile(cwd, q[t/data/repos/references]);
@@ -151,11 +152,22 @@ use_ok('npg_tracking::data::reference::find');
 
 {
   require npg_tracking::data::reference::list;
+  no warnings 'once';
   my $no_align = $npg_tracking::data::reference::list::NO_ALIGNMENT_OPTION;
 
   my $ruser = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::find/])
           ->new_object({ repository => $central });
   is($ruser-> _preset_ref2ref_path($no_align), q[], 'no preset ref for no-align option');
-  is($ruser->messages->pop, 'Incorrect reference genome format Not suitable for alignment', 'correct message saved');
+  is($ruser->messages->pop, qq[Incorrect reference genome format $no_align], 'correct message saved');
+
+  $ruser = Moose::Meta::Class->create_anon_class(
+          roles => [qw/npg_tracking::data::reference::find/])
+          ->new_object({ repository => $central});
+  my $lims = Test::MockObject->new();
+  $lims->mock( 'reference_genome', sub { $no_align } );
+  is($ruser->lims2ref($lims), q[], qq[no reference returned for '$no_align' option]);
+  is($ruser->messages->pop, $no_align, 'correct message saved');
 }
+
+1;
