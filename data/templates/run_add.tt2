@@ -201,7 +201,7 @@ function fetch_batch(e){
    alert('No flowcell and batch id given');
    return;
  }
- var url = 'http://psd-production.internal.sanger.ac.uk:6600/batches/';
+ var url = lims_batches_url;
 
  if(flowcell_id){
    url = url + 'find_batch_by_barcode/' + flowcell_id + '.xml';
@@ -330,11 +330,11 @@ function _add_columns_to_table (run_lanes_table, laneDataHashByPosition) {
       var laneData = laneDataHashByPosition.get(pos); 
       if(laneData){      
         new Insertion.After(secondcell,
-          '<td>'+ _html_link('assets', laneData.get('id'), laneData.get('name')) +'</td>'+
-          '<td>'+ _html_link('requests', laneData.get('request_id'), laneData.get('type')) +'</td>'+
-          '<td>'+ _html_link('samples', laneData.get('sample_id'), laneData.get('sample_name')) +'</td>'+
-          '<td>'+ _html_link('studies', laneData.get('study_id'), laneData.get('study_name')) +'</td>'+
-          '<td>'+ _html_link('projects', laneData.get('project_id'), laneData.get('project_name')) +'</td>'
+          '<td>'+ _html_link('','assets', laneData.get('id'), laneData.get('name')) +'</td>'+
+          '<td>'+ _html_link('','requests', laneData.get('request_id'), laneData.get('type')) +'</td>'+
+          '<td>'+ _html_link('','samples', laneData.get('sample_id'), laneData.get('sample_name')) +'</td>'+
+          '<td>'+ _html_link('','studies', laneData.get('study_id'), laneData.get('study_name')) +'</td>'+
+          '<td>'+ _html_link('','projects', laneData.get('project_id'), laneData.get('project_name')) +'</td>'
         );
       } else {
         rowel.remove();
@@ -497,9 +497,9 @@ function _get_read_length_paired(laneDataHashByPosition, index_length){
 //and paired or single read
 //and set index cycle number using the given value
 function _get_read_length_paired_by_request(request_id, index_length){
-   var url = 'http://psd-production.internal.sanger.ac.uk:6600/batches';
-   url=url.replace(/batches/, '');
-   url = url+'requests/'+ request_id +'.xml';
+   var url = lims_batches_url;
+   url=url.replace(/batches\//, '');
+   url = url+'requests/'+ request_id +'.xml'
    new Ajax.Request('[% SCRIPT_NAME %]/../reflector', {
        requestHeaders: {Accept: 'application/xml, text/xml'},
 	    parameters: { url: url},
@@ -539,17 +539,6 @@ function _get_read_length_paired_by_request(request_id, index_length){
 	 return 0;
 }
 
-//create SS link based on the sercice type and id
-function _html_link (servicetype, id, text){
-  if(id != undefined){
-    if(text == undefined){
-      return '<a href="http://psd-production.internal.sanger.ac.uk:6600/batches/../'+servicetype+'/'+id+'" class="sequencescape_id">'+id+'</a>';
-    }else{
-      return '<a href="http://psd-production.internal.sanger.ac.uk:6600/batches/../'+servicetype+'/'+id+'">'+text+'</a>';
-    }
-  }
-  return (text == undefined ? id : text);
-}
 
 //show or hide read cycle input fields based on paired read and multiplex run not
 function _update_read_cycle_row(){
