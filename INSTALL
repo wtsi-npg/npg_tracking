@@ -1,16 +1,15 @@
-Installation of the code (excluding cgi scripts and data)
----------------------------------------------------------
+Deployment
+-------------------
 
-export PERL_MM_USE_DEFAULT=1 #automatic cpan modules installation
-eval $(perl -Mlocal::lib=/my/perl)
-cpan -fi Lingua::EN::Inflect #does not install without force
-                             #install only if not already available
-perl Build.PL
-./Build installdeps --cpan_client 'cpan -i'
-./Build test
-./Build install --install_base /my/perl
+  export PERL_MM_USE_DEFAULT=1 #automatic cpan modules installation
+  eval $(perl -Mlocal::lib=/my/perl)
+  perl Build.PL --install_base /my/perl
+  ./Build installdeps --cpan_client 'cpan -i'
+  ./Build test
+  ./Build install
+  ./Build webinstall #installs additional files needed for a web server
 
-A file with database credentials shoudl be found in .npg directory, which should be located in the user's home directory. If the $HOME variable in not set in the shell, the npg directory migh tbe located in teh directory wher ethe code is running. The name of the file should be npg_tracking-Schema; it should have content similar to the following:
+A file with database credentials should be in .npg directory, which should be located in the user's home directory. If the $HOME variable is not set in the shell, the npg directory migh tbe located in the directory where the code is running. The name of the file should be npg_tracking-Schema; it should have content similar to the following:
 
 dbhost=localhost
 dbport=3306
@@ -21,11 +20,9 @@ dbname=npgt
 Dev web server setup
 --------------------
 
-These instructions are valid for apache v2.2.18
+In you git checkout, before deploying the code
 
-in your svn checkout
-
-edit data/config.ini to include credentials for a dev database by eddit a section like this:
+edit data/config.ini to include credentials for a dev database by adding a section like this:
 
 [dev]
 dbhost=localhost
@@ -34,15 +31,26 @@ dbuser=root
 dbpass=
 dbname=npgt
 
-cp data/httpd.conf .
-edit httpd.conf - set correct paths, locations of libraries and the port number
+edit data/httpd.conf - set correct paths, locations of libraries and the port number
 follow the instructions in the file on commenting/uncommenting lines
 
-mkdir logs
-#softlink apache's config directory
-ln -s /path/to/apache/conf conf
+The following two files are not copied by the deployment procedure, have to be copied manually
 
-/path/to/apache/bin/apachectl -f $PWD/httpd.conf -k restart
+  cp data/config.ini /my/perl/data/config.ini
+  cp data/httpd.conf /my/perl
+
+The following apache instructions are valid for apache v2.2.18
+
+  cd /my/perl
+  mkdir logs
+  ln -s /path/to/apache/conf conf #softlink apache's config directory
+
+  cd data
+  ln -s . prodsoft
+  ln -s . npg
+  cd ..
+
+  /path/to/apache/bin/apachectl -f $PWD/httpd.conf -k restart
 
 Assuming the server is running on my_host port 9959, the site URL is http://my_host:9959/cgi-bin/npg and http://my_host:9959/perl/npg (under mod perl)
 

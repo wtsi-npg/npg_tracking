@@ -22,7 +22,7 @@ use Test::Deep;
 use IPC::System::Simple; #needed for Fatalised/autodying system()
 use autodie qw(:all);
 
-use lib q{t};
+#use lib q{t};
 use t::dbic_util;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11585 $ =~ /(\d+)/msx; $r; };
@@ -338,10 +338,12 @@ my $schema = t::dbic_util->new->test_schema();
 
 
 {
-    my $mock_path = $MOCK_STAGING . '/IL5/incoming/100621_IL5_01204';
+    my $tmpdir = tempdir( CLEANUP => 1 );
+    system('cp',  '-rp', $MOCK_STAGING . '/IL5/incoming/100621_IL5_01204', $tmpdir);
+    my $mock_path = $tmpdir . '/100621_IL5_01204';
+
     my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
                                               _schema        => $schema, );
-
 
     find( sub { utime time, time, $_ }, $mock_path );
 

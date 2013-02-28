@@ -114,19 +114,6 @@ use_ok('npg_tracking::data::reference');
 }
 
 {
-  my $no_align = $npg_tracking::data::reference::list::NO_ALIGNMENT_OPTION;
-  my $ruser = npg_tracking::data::reference->new(
-                         repository => $repos,
-                         reference_genome => $no_align,
-                         id_run => 4140,
-                         position => 4,
-                      );
-  is(scalar @{$ruser->refs}, 0, 'no reference found for no-align option');
-  is($ruser->messages->count, 1, 'one message saved');
-  is($ruser->messages->pop, $no_align, 'correct message saved');
-}
-
-{
 
   my $phix = join q[/], $repos, q[references/PhiX/default/all/bwa/phix-illumina.fa];
 
@@ -171,5 +158,20 @@ use_ok('npg_tracking::data::reference');
                       );
   is($ruser->refs->[0], $phix, 'phix ref for a lane with for_spike flag set');
 }
+
+{
+  no warnings 'once';
+  my $no_align = $npg_tracking::data::reference::list::NO_ALIGNMENT_OPTION;
+  my $ruser = npg_tracking::data::reference->new(
+                         repository => $repos,
+                         reference_genome => $no_align,
+                         id_run => 4140,
+                         position => 4,
+                      );
+  is(scalar @{$ruser->refs}, 0, 'no reference found for no-align option');
+  is($ruser->messages->count, 1, 'one message saved');
+  is($ruser->messages->pop, $no_align, 'correct message saved');
+}
+
 
 1;
