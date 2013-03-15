@@ -3,11 +3,14 @@ Illumina (Hiseq, MiSeq, GA) Sequencing Instruments Tracking
 
 lib directory:
 ---------------
- npg:: - web application
- npg_tracking:: DBIx binding to the tracking database
- st::api:: - perl binding to LIMS XML feeds
- Monitor:: - monitoring runfolders on staging servers up to the analysis pending stage
- npg_testing:: supplimentary modules for testing
+ npg::          - web application
+ npg_tracking:: - general definition
+                  access to genomic references and other reference data
+                  API for extended Illumina rundolder structure
+                  DBIx binding to the tracking database
+ st::api::      - perl binding to LIMS XML feeds
+ Monitor::      - monitoring runfolders on staging servers up to the analysis stage
+ npg_testing::  - supplimentary modules for testing
 
 bin directory:
 --------------
