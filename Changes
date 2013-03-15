@@ -1,5 +1,9 @@
 CHANGES
 
+release 73.5
+ - mysql client does not read configuration in default places to avoid reading wrong configuration
+ - use password for the root user on a local test database
+
 release 73.4
 - build procedure for the web server
 - test that resets modification time of test files is directed away from source distribution
