@@ -150,6 +150,7 @@ my $builder = $class->new(
                 'DBI'                             => '1.608',
                 'DBIx::Class'                     => '0.08119',
                 'DBIx::Class::Loader'             => 0,
+                'DBIx::Class::Schema::Loader'     => 0,
                 'Digest::MD5'                     => 0,
                 'Digest::SHA'                     => 0,
                 'English'                         => '1.02',
