@@ -8,14 +8,13 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 274;
+use Test::More tests => 276;
 use Test::Exception;
 
 use_ok('st::api::lims');
 
 my $NUM_METHODS = 46;
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
-#local $ENV{SAVE2NPG_WEBSERVICE_CACHE} = 1;
 
 my @libs_6551_1 = ('PhiX06Apr11','SS109114 2798524','SS109305 2798523','SS117077 2798526','SS117886 2798525','SS127358 2798527','SS127858 2798529','SS128220 2798530','SS128716 2798531','SS129050 2798528','SS129764 2798532','SS130327 2798533','SS131636 2798534');
 my @samples_6551_1 = qw/phiX_for_spiked_buffers SS109114 SS109305 SS117077 SS117886 SS127358 SS127858 SS128220 SS128716 SS129050 SS129764 SS130327 SS131636/;
@@ -35,6 +34,8 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is(scalar $lims->descendants, 185, '185 descendant lims');
   is(scalar $lims->children, 8, '8 child lims');
   is($lims->to_string, 'st::api::lims object for batch 12141', 'object as string');
+  is($lims->inline_index_end, 10, 'inline index end for an object instance');
+  is(st::api::lims->inline_index_end, 10, 'inline index end as a class method');
 
   throws_ok { $lims->_list_of_properties(q[id], q[bird]) } qr/Invalid object type bird in st::api::lims::_list_of_properties/, 'error with invalid entity name';
   throws_ok { $lims->_list_of_properties(q[colour], q[sample]) } qr/Invalid property colour in st::api::lims::_list_of_properties/, 'error with invalid entity name';

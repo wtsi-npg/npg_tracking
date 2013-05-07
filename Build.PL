@@ -106,6 +106,8 @@ my $builder = $class->new(
 
           'build_requires' => {
                 'ExtUtils::CBuilder'              => 0,
+                'IPC::Open2'                      => 0,
+                'Test::Compile'                   => 0,
                 'Test::Distribution'              => 0,
                 'Test::Deep'                      => '0.103',
                 'Test::Exception'                 => '0.27',

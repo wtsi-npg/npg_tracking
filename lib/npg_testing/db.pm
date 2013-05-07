@@ -18,7 +18,6 @@ use Cwd;
 use Moose::Role;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16261 $ =~ /(\d+)/mxs; $r; };
-## no critic (Documentation::RequirePodAtEnd ProhibitParensWithBuiltins)
 
 Readonly::Scalar our $FEATURE_EXTENSION => q[.yml];
 Readonly::Scalar our $TEMP_DIR => q{/tmp};
