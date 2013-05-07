@@ -59,7 +59,7 @@ while ( my $instr = $instrument_rs->next() ) {
     my $name  = $instr->name();
 
     my $log =
-        ( $ENV{dev} eq 'live' ) ? $LOG_ROOT : $ENV{HOME} . '/instr_logs/';
+        ( !$ENV{dev} || $ENV{dev} eq 'live' ) ? $LOG_ROOT : $ENV{HOME} . '/instr_logs/';
     
     ( -e $log ) || ( mkdir $log );
 
