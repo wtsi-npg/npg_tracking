@@ -15,7 +15,6 @@ use Exporter;
 use HTML::Tidy;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 8316 $ =~ /(\d+)/mxs; $r; };
-## no critic (Documentation::RequirePodAtEnd)
 
 =head1 NAME
 

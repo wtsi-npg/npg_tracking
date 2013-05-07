@@ -21,7 +21,6 @@ use File::Basename;
 use Cwd qw(abs_path);
 
 our $VERSION    = do { my ($r) = q$Revision: 16566 $ =~ /(\d+)/smx; $r; };
-## no critic (Documentation::RequirePodAtEnd ProhibitParensWithBuiltins RequireCheckingReturnValueOfEval)
 
 =head1 NAME
 
@@ -251,7 +250,7 @@ has 'repository_contents' =>  (isa           => 'HashRef',
                                lazy_build    => 1,
                                required      => 0,
                               );
-sub _build_repository_contents {##no critic (ProhibitExcessComplexity)
+sub _build_repository_contents {
     my $self = shift;
 
     ##no critic (RequireBlockGrep)

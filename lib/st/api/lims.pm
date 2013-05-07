@@ -1,10 +1,7 @@
 #########
 # Author:        Marina Gourtovaia
-# Maintainer:    $Author: mg8 $
 # Created:       20 July 2011
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: lims.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/lims.pm $
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/lims.pm, r16549
 #
 
 package st::api::lims;
@@ -14,7 +11,9 @@ use English qw(-no_match_vars);
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Aliases;
+use MooseX::ClassAttribute;
 use XML::LibXML;
+use Readonly;
 
 use npg::api::run;
 use st::api::batch;
@@ -26,15 +25,9 @@ with qw/  npg_tracking::glossary::run
           npg_tracking::glossary::tag
        /;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
-
 =head1 NAME
 
 st::api::lims
-
-=head1 VERSION
-
-$Revision: 16549 $
 
 =head1 SYNOPSIS
 
@@ -51,10 +44,11 @@ Gateway to Sequencescape LIMS.
 
 =cut
 
-Readonly::Scalar our $BAD_SAMPLE_ID    => 4;
-Readonly::Scalar our $PROC_NAME_INDEX  => 3;
-Readonly::Hash   our %QC_EVAL_MAPPING  => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
-Readonly::Array  our @LIMS_OBJECTS     => qw/sample study project/;
+Readonly::Scalar our $BAD_SAMPLE_ID     => 4;
+Readonly::Scalar our $PROC_NAME_INDEX   => 3;
+Readonly::Hash   our %QC_EVAL_MAPPING   => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
+Readonly::Array  our @LIMS_OBJECTS      => qw/sample study project/;
+Readonly::Scalar my  $INLINE_INDEX_END  => 10;
 
 Readonly::Hash our %DELEGATION      => {
     'sample'       => {
@@ -85,6 +79,12 @@ Readonly::Hash our %DELEGATION      => {
                            project_cost_code => 'project_cost_code',
     },
 };
+
+class_has 'inline_index_end' => (isa => 'Int',
+                                 is => 'ro',
+                                 required => 0,
+                                 default => $INLINE_INDEX_END,
+                                );
 
 =head2 id_run
 
@@ -1204,6 +1204,10 @@ __END__
 
 =item Moose
 
+=item MooseX::Aliases
+
+=item MooseX::ClassAttribute
+
 =item MooseX::StrictConstructor
 
 =item Carp
@@ -1212,7 +1216,7 @@ __END__
 
 =item Readonly
 
-=item  XML::LibXML
+=item XML::LibXML
 
 =item npg::api::run
 

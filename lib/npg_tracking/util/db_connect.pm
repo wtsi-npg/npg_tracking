@@ -106,7 +106,7 @@ around 'connection' => sub {
     my @info = @_;
 
     if ( _no_connection_info(@info) && !$self->storage) {
-        my $dsn = $self->_dsn();     
+        my $dsn = $self->_dsn();
         my $user = $self->_dbuser();
         my $pass = $self->_dbpass();
         my $attr = $self->_dbattr();
