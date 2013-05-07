@@ -1,6 +1,6 @@
 CHANGES
 
-release 73.6
+release 73.5
  - live environment might be set explicitly or implicitly (default) RT#325903
    for the purpose of log file location
  - st::api::lims class variable for inline index end
@@ -10,10 +10,9 @@ release 73.6
    since these are not available in git
  - extend perlcritic tests to all namespaces except Monitor and npg_tracking::Schema
  - notification of perlcritic test failute: include policy name
-
-release 73.5
  - mysql client does not read configuration in default places to avoid reading wrong configuration
  - use password for the root user on a local test database
+ - webapp: reanable a link to HTML based RTA reports for MiSeq
 
 release 73.4
 - build procedure for the web server
