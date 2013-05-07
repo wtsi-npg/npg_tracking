@@ -6,6 +6,10 @@ release 73.6
  - st::api::lims class variable for inline index end
  - deamon monitor script, daemon parent class and tracking related daemons moved to
    this project from instrument_handling
+ - disable percritic policies for having VERSION defined and having Rcs Keywords
+   since these are not available in git
+ - extend perlcritic tests to all namespaces except Monitor and npg_tracking::Schema
+ - notification of perlcritic test failute: include policy name
 
 release 73.5
  - mysql client does not read configuration in default places to avoid reading wrong configuration

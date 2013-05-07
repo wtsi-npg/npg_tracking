@@ -13,7 +13,17 @@ use Readonly;
 
 extends 'npg_tracking::daemon';
 
-## no critic (Documentation::RequirePodAtEnd)
+override '_build_hosts' => sub { return ['sf-4-1-02']; };
+##no critic (RequireInterpolationOfMetachars)
+override 'command'  => sub { return q[perl -e 'use strict; use warnings; use npg::samplesheet::auto;  use Log::Log4perl qw(:easy); BEGIN{ Log::Log4perl->easy_init({level=>$INFO,}); } npg::samplesheet::auto->new()->loop();']; };
+##use critic
+override 'daemon_name'  => sub { return 'npg_samplesheet_daemon'; };
+has '+libs' => ( default => sub {return [qw(/software/solexa/lib/perl5)];},);
+
+no Moose;
+
+1;
+__END__
 
 =head1 NAME
 
@@ -26,19 +36,6 @@ npg_tracking::daemon::samplesheet
 Class for a daemon that generates sample sheets.
 
 =head1 SUBROUTINES/METHODS
-
-=cut                  
-
-
-override '_build_hosts' => sub { return ['sf-4-1-02']; };
-override 'command'  => sub { return q[perl -e 'use strict; use warnings; use npg::samplesheet::auto;  use Log::Log4perl qw(:easy); BEGIN{ Log::Log4perl->easy_init({level=>$INFO,}); } npg::samplesheet::auto->new()->loop();']; };
-override 'daemon_name'  => sub { return 'npg_samplesheet_daemon'; };
-has '+libs' => ( default => sub {return [qw(/software/solexa/lib/perl5)];},);
-
-no Moose;
-
-1;
-__END__
 
 =head1 DIAGNOSTICS
 

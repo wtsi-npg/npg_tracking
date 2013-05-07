@@ -15,9 +15,9 @@ use POSIX qw(strftime);
 use FindBin qw($Bin);
 use Cwd qw/abs_path/;
 
-## no critic (Documentation::RequirePodAtEnd)
-
+## no critic (RequireInterpolationOfMetachars)
 Readonly::Scalar my $DEFAULT_COMMAND => q{perl -e '$|=1;while(1){print "daemon running\n";sleep5;}'};
+## use critic
 
 =head1 NAME
 
@@ -116,9 +116,11 @@ sub start {
         $action .= qq[ --env=\"PERL5LIB=$perl5lib\"];
     }
     if ($self->env_vars) {
+        ##no critic (Variables::ProhibitUnusedVariables)
         while ((my $var, my $value) = each %{$self->env_vars}) {
             $action .= qq[ --env=\"$var=$value\"];
         }
+        ##use critic
     }
 
     my $script_call = $self->command($host);

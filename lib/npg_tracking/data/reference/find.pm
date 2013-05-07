@@ -16,14 +16,15 @@ use Carp;
 use English qw(-no_match_vars);
 use File::Spec::Functions qw(catfile);
 use Cwd qw(abs_path);
+use Readonly;
+
 use npg_tracking::data::reference::info;
 use npg_tracking::util::messages;
 use st::api::lims;
 
 with qw/ npg_tracking::data::reference::list /;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
-## no critic (Documentation::RequirePodAtEnd)
+our $VERSION = do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
 
 Readonly::Scalar our $NPG_DEFAULT_ALIGNER_OPTION => q{npg_default};
 Readonly::Scalar our $MINUS_ONE                  => -1;
@@ -204,6 +205,7 @@ sub _abs_ref_path {
   my $path = shift;
   (my $name) = $path =~ /\/([^\/]+)$/smx;
   $path =~ s/$name$//smx;
+  ##no critic (CodeLayout::ProhibitParensWithBuiltins)
   return join(q[/], abs_path($path), $name);
 }
 
@@ -408,7 +410,7 @@ sub lims2ref {
       }
     }
   }
-  
+
   return $ref_path;
 }
 

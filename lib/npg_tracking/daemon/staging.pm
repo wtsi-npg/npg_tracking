@@ -13,26 +13,12 @@ use Readonly;
 
 extends 'npg_tracking::daemon';
 
-## no critic (Documentation::RequirePodAtEnd)
-
-=head1 NAME
-
-npg_tracking::daemon::staging
-
-=head1 SYNOPSIS
-
-=head1 DESCRIPTION
-
-Metadata for a daemon that starts up the analysis script.
-
-=head1 SUBROUTINES/METHODS
-
-=cut                  
-
 Readonly::Scalar our $SCRIPT_NAME => q[staging_area_monitor];
 
-override '_build_hosts' => sub { 
+override '_build_hosts' => sub {
+    ##no critic (TestingAndDebugging::ProhibitNoWarnings)
     no warnings 'once';
+    ##use critic
     require npg_tracking::illumina::run::folder::location;
     my @full_list = map { 'sf' . $_ . '-nfs' }
         @npg_tracking::illumina::run::folder::location::STAGING_AREAS_INDEXES;
@@ -54,6 +40,18 @@ no Moose;
 
 1;
 __END__
+
+=head1 NAME
+
+npg_tracking::daemon::staging
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+Metadata for a daemon that starts up the analysis script.
+
+=head1 SUBROUTINES/METHODS
 
 =head1 DIAGNOSTICS
 
