@@ -89,7 +89,6 @@ sub _build__intervals_paths {
     }
     @files = sort @files;
     my $crt = $files[0];
-    ##no critic (RegularExpressions::ProhibitEscapedMetacharacters)
     if ($crt !~ /CTR\.interval_list$/xms) {
       croak 'No CTR interval list';
     }
@@ -98,7 +97,6 @@ sub _build__intervals_paths {
     if ($ptr !~ /PTR\.interval_list$/xms) {
       croak 'No PTR interval list';
     }
-    ##use critic
   }
   return \@files;
 }

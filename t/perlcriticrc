@@ -1,4 +1,3 @@
-[-Documentation::RequirePodAtEnd]
 [NamingConventions::Capitalization]
 packages = :no_restriction
 [RegularExpressions::ProhibitComplexRegexes]
@@ -11,3 +10,5 @@ private_name_regex = ^_(?!_|build)\w+
 max_mccabe = 30
 [ValuesAndExpressions::ProhibitLongChainsOfMethodCalls]
 max_chain_length = 4
+[Documentation::RequirePodSections]
+lib_sections    = NAME | SYNOPSIS | DESCRIPTION | SUBROUTINES/METHODS | BUGS AND LIMITATIONS | DEPENDENCIES | CONFIGURATION AND ENVIRONMENT | INCOMPATIBILITIES | AUTHOR | LICENSE AND COPYRIGHT

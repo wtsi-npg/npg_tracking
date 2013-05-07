@@ -111,15 +111,21 @@ sub load_fixtures {
   if(!-e "data/schema.txt") {
     croak "Could not find data/schema.txt";
   }
-
   $self->log('Loading data/schema.txt');
-  my $cmd = sprintf q(cat data/schema.txt | mysql -u%s %s -D%s),
-                    $self->dbuser(),
-		    $self->dbpass()?"-p@{[$self->dbpass()]}":q(),
-		    $self->dbname();
+  my $cmd = q(cat data/schema.txt | mysql);
+  my $local_socket = $self->dbhost() eq 'localhost' && $ENV{'MYSQL_UNIX_PORT'} ? $ENV{'MYSQL_UNIX_PORT'} : q[];
+  if ($local_socket) {
+    $cmd .= q( --no-defaults); #do not read ~/.my.cnf
+                               #this should be the first option
+  }
 
-  if ($self->dbhost() eq 'localhost' && $ENV{'MYSQL_UNIX_PORT'}) {
-    $cmd .= ' --socket=' . $ENV{'MYSQL_UNIX_PORT'};
+  $cmd .= sprintf q( -u%s %s -D%s),
+                  $self->dbuser(),
+                  $self->dbpass()?"-p@{[$self->dbpass()]}":q(),
+                  $self->dbname();
+
+  if ($local_socket) {
+    $cmd .= qq( --socket=$local_socket);
   } else {
     $cmd .= ' -h' . $self->dbhost() . ' -P' . $self->dbport();
   }
