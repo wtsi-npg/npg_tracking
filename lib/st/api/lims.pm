@@ -14,6 +14,7 @@ use English qw(-no_match_vars);
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Aliases;
+use MooseX::ClassAttribute;
 use XML::LibXML;
 
 use npg::api::run;
@@ -51,10 +52,11 @@ Gateway to Sequencescape LIMS.
 
 =cut
 
-Readonly::Scalar our $BAD_SAMPLE_ID    => 4;
-Readonly::Scalar our $PROC_NAME_INDEX  => 3;
-Readonly::Hash   our %QC_EVAL_MAPPING  => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
-Readonly::Array  our @LIMS_OBJECTS     => qw/sample study project/;
+Readonly::Scalar our $BAD_SAMPLE_ID     => 4;
+Readonly::Scalar our $PROC_NAME_INDEX   => 3;
+Readonly::Hash   our %QC_EVAL_MAPPING   => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
+Readonly::Array  our @LIMS_OBJECTS      => qw/sample study project/;
+Readonly::Scalar my  $INLINE_INDEX_END  => 10;
 
 Readonly::Hash our %DELEGATION      => {
     'sample'       => {
@@ -85,6 +87,12 @@ Readonly::Hash our %DELEGATION      => {
                            project_cost_code => 'project_cost_code',
     },
 };
+
+class_has 'inline_index_end' => (isa => 'Int',
+                                 is => 'ro',
+                                 required => 0,
+                                 default => $INLINE_INDEX_END,
+                                );
 
 =head2 id_run
 

@@ -8,6 +8,7 @@ bin/hiseq_checker
 bin/illumina_seq_fails2rt
 bin/InstrumentPoller
 bin/miseq_checker
+bin/npg_daemon_control
 bin/staging_area_monitor
 bin/update_sensors
 bin/utilisation_loader
@@ -279,6 +280,10 @@ lib/npg/sensors.pm
 lib/npg_testing/db.pm
 lib/npg_testing/html.pm
 lib/npg_testing/intweb.pm
+lib/npg_tracking/daemon.pm
+lib/npg_tracking/daemon/jenkins.pm
+lib/npg_tracking/daemon/staging.pm
+lib/npg_tracking/daemon/samplesheet.pm
 lib/npg_tracking/data/bait/find.pm
 lib/npg_tracking/data/bait.pm
 lib/npg_tracking/data/reference/find.pm
@@ -498,6 +503,10 @@ t/14-dbic-Run.t
 t/14-dbic-Sensor.t
 t/14-dbic-Tag.t
 t/14-dbic-User.t
+t/16-npg_tracking-daemon-jenkins.t
+t/16-npg_tracking-daemon-samplesheet.t
+t/16-npg_tracking-daemon-staging.t
+t/16-npg_tracking-daemon.t
 t/20-model-run_and_instrument_status.t
 t/20-view-administration.t
 t/20-view-error.t
@@ -586,6 +595,7 @@ t/80-email-run.t
 t/80-sensor.t
 t/81-email-event.t
 t/90-reference.t
+t/200-bin-npg_daemon_control.t
 t/data/cbot/cBot1/GetRunList.xml
 t/data/cbot/cBot1/InstrumentStatus.xml
 t/data/cbot/cBot1/RunInfo/091111_OEM-0B6VO7E14KH_0001.xml
