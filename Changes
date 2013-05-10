@@ -1,5 +1,12 @@
 CHANGES
 
+release 73.6
+  - test for npg_daemon_control fixed copes with presence of daemon plugins
+     that are not defined in this package
+  - npg_testing::db module:
+      copes with old-style naming convention for yml db fixtures
+      new subroutine for running tests against existing test database
+
 release 73.5
  - live environment might be set explicitly or implicitly (default) RT#325903
    for the purpose of log file location
