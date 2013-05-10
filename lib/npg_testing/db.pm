@@ -174,6 +174,14 @@ sub create_test_db {
     return $tmpschema;
 }
 
+=head2 deploy_test_db
+
+Uses existing test database. Drops existing tables and
+creates new ones. The first argument is a DBIx Schema object
+full namespace, the second (optional) is the path to the
+directory where the fixtures are located.
+
+=cut
 sub deploy_test_db {
     my ($schema_package, $fixtures_path) = @_;
 
