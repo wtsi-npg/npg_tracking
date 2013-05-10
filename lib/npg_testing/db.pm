@@ -16,6 +16,7 @@ use File::Temp qw(tempdir);
 use File::Spec::Functions qw(catfile);
 use Cwd;
 use Moose::Role;
+use Try::Tiny;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16261 $ =~ /(\d+)/mxs; $r; };
 
@@ -117,8 +118,18 @@ sub load_fixtures {
         my $table = join q[.], @temp;
         $table =~ s/^(\d)+-//smx;
         warn "+- Loading $fx into $table\n";
+        my $rs;
+        try {
+            $rs = $schema->resultset($table);
+	} catch { #old-style names have to be mapped to DBIx classes
+            ##no critic (ProhibitParensWithBuiltins)
+	    $table = join q[], map {ucfirst $_} split(/\./smx, $table);
+            ##use critic
+            if ($table eq q[QxYield]) {$table = q[QXYield];}
+            $rs = $schema->resultset($table);
+	};
         foreach my $row (@{$yml}) {
-	    $schema->resultset($table)->create($row);
+	    $rs->create($row);
         }
     }
     return;
@@ -163,6 +174,33 @@ sub create_test_db {
     return $tmpschema;
 }
 
+sub deploy_test_db {
+    my ($schema_package, $fixtures_path) = @_;
+
+    if (!$ENV{dev} || $ENV{dev} ne 'test') {
+      ##no critic (RequireInterpolationOfMetachars)
+      croak '$ENV{dev} should be set to "test"';
+      ##use critic
+    }
+    if (!$schema_package) {
+      croak q[Schema package undefined in create_test_db];
+    }
+
+    ##no critic (ProhibitStringyEval RequireCheckingReturnValueOfEval)
+    eval "require $schema_package" or do { croak $EVAL_ERROR;} ;
+    ##use critic
+
+    my $schema = $schema_package->connect();
+    $schema->deploy({add_drop_table => 1});
+    if ($fixtures_path) {
+       load_fixtures($schema,  $fixtures_path);
+    } else {
+        carp q[Fixtures path undefined in create_test_db];
+    }
+    return $schema;
+}
+
+
 no Moose::Role;
 1;
 
@@ -193,6 +231,8 @@ __END__
 =item Cwd
 
 =item File::Spec::Functions
+
+=item Try::Tiny
 
 =back
 
