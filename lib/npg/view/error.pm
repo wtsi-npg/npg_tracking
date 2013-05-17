@@ -21,7 +21,7 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 12618 
 
 __PACKAGE__->mk_accessors('access');
 
-sub render {  ## no critic (Subroutines::ProhibitExcessComplexity)
+sub render {
   my $self   = shift;
   my $errstr = q{Error: } . ( $self->errstr() || q{-} );
   my $aspect = $self->aspect();

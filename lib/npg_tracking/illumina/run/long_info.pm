@@ -26,8 +26,6 @@ use Try::Tiny;
 requires qw{runfolder_path};
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
 
-## no critic (Documentation::RequirePodAtEnd)
-
 =head1 NAME
 
 npg_tracking::illumina::run::long_info

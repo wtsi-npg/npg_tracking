@@ -33,7 +33,7 @@ has '_latest_status' => (
 );
 
 foreach my $attr
-    qw( instrument_name machine_name type instrument_state run_state )
+    (qw( instrument_name machine_name type instrument_state run_state ))
 {
     has q{_} . $attr => (
         reader     => $attr,

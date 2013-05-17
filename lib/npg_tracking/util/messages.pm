@@ -15,7 +15,26 @@ use Moose;
 use MooseX::AttributeHelpers;
 
 our $VERSION    = do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
-## no critic (Documentation::RequirePodAtEnd RequireCheckingReturnValueOfEval)
+
+has 'mlist' => (
+      metaclass => 'Collection::Array',
+      is        => 'ro',
+      isa       => 'ArrayRef[Str]',
+      default   => sub { [] },
+      provides  => {
+          'push'     => 'push',
+          'pop'      => 'pop',
+          'count'    => 'count',
+          'empty'    => 'empty',
+          'clear'    => 'clear',
+          'elements' => 'messages',
+      },
+                 );
+no Moose;
+
+1;
+__END__
+
 =head1 NAME
 
 npg_tracking::util::messages
@@ -39,27 +58,6 @@ $Revision: 16549 $
 A message list (queue). 
 
 =head1 SUBROUTINES/METHODS
-
-=cut
-
-has 'mlist' => (
-      metaclass => 'Collection::Array',
-      is        => 'ro',
-      isa       => 'ArrayRef[Str]',
-      default   => sub { [] },
-      provides  => {
-          'push' => 'push',
-          'pop'  => 'pop',
-          'count'  => 'count',
-          'empty'  => 'empty',
-          'clear'  => 'clear',
-          'elements'    => 'messages',
-      },
-                 );
-no Moose;
-
-1;
-__END__
 
 =head1 DIAGNOSTICS
 

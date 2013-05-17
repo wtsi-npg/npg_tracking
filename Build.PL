@@ -189,6 +189,7 @@ my $builder = $class->new(
                 'Lingua::EN::Inflect'             => 0,
                 'List::MoreUtils'                 => '0.22',
                 'List::Util'                      => '1.21',
+                'Log::Log4perl'                   => 0,
                 'LWP::UserAgent'                  => '5.823',
                 'Math::Round'                     => '0.06',
                 'MIME::Base64'                    => 0,

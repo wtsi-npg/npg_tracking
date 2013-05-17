@@ -22,9 +22,7 @@ use npg::authentication::sanger_ldap qw/person_info/;
 
 use base qw(ClearPress::view);
 
-##no critic(ValuesAndExpressions::RequireConstantVersion)
 our $VERSION = '0';
-##use critic
 
 sub new {
   my ($class, @args) = @_;
