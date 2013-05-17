@@ -205,7 +205,7 @@ sub _populate_directory_paths {
   return $self->_process_path($path);
 }
 
-sub _process_path { ## no critic (Subroutines::ProhibitExcessComplexity)
+sub _process_path {
   my ($self, $path) = @_;
 
   my @path = split m{/}xms, $path;

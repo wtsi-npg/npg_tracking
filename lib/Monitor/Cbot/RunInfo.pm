@@ -41,9 +41,9 @@ has '_latest_run_info' => (
     predicate  => 'has_latest_run_info',
 );
 
-foreach my $attr qw( end_time    reagent_id protocol_name
+foreach my $attr (qw( end_time    reagent_id protocol_name
                      user_name   run_result result_message
-                     flowcell_id start_time experiment_type )
+                     flowcell_id start_time experiment_type ))
 {
     has q{_} . $attr => (
         reader     => $attr,
