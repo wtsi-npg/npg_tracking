@@ -13,22 +13,6 @@ use Readonly;
 
 extends 'npg_tracking::daemon';
 
-## no critic (Documentation::RequirePodAtEnd)
-
-=head1 NAME
-
-npg_tracking::daemon::jenkins
-
-=head1 SYNOPSIS
-
-=head1 DESCRIPTION
-
-Metadata for a daemon that starts up jenkins integration server.
-
-=head1 SUBROUTINES/METHODS
-
-=cut                  
-
 Readonly::Scalar our $PROXY_SERVER => q[wwwcache.sanger.ac.uk];
 Readonly::Scalar our $PROXY_PORT   => 3128;
 Readonly::Scalar our $COMMAND => qq[java -Xmx2g -DJENKINS_HOME=/localcache/npg_jenkins -Dhttp.proxyHost=$PROXY_SERVER -Dhttp.proxyPort=$PROXY_PORT -jar ~srpipe/jenkins.war --httpPort=9960];
@@ -47,6 +31,18 @@ no Moose;
 
 1;
 __END__
+
+=head1 NAME
+
+npg_tracking::daemon::jenkins
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+Metadata for a daemon that starts up jenkins integration server.
+
+=head1 SUBROUTINES/METHODS
 
 =head1 DIAGNOSTICS
 

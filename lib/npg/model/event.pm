@@ -65,7 +65,7 @@ sub init {
   return $self;
 }
 
-sub create { ## no critic (Subroutines::ProhibitExcessComplexity)
+sub create {
   my ($self, $arg_refs) = @_;
   my $util = $self->util();
 

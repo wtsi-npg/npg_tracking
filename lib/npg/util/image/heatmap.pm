@@ -41,7 +41,7 @@ Readonly our %TILE_LAYOUTS         => {
                                         330 => { TILES_ON_ROW => 110, ROWS_ON_LANE => 3, TILE_WIDTH => 10, MIRROR_EVENS => 1, CLUSTER_MAX => 50_000, INTENSITY_MAX =>5_000, },
                                       };
 
-sub plot_illumina_map { ## no critic  (ProhibitExcessComplexity)
+sub plot_illumina_map {
   my ($self, $arg_refs) = @_;
   my $data_array = $self->data_array();
 

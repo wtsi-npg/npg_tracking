@@ -302,7 +302,7 @@ sub instruments {
   return npg::model::instrument->new({util => $self->util()})->instruments();
 }
 
-sub _run_time_stripe_across_for_gantt { ## no critic (Subroutines::ProhibitExcessComplexity)
+sub _run_time_stripe_across_for_gantt {
   my ( $self, $instrument_model ) = @_;
   $instrument_model = $instrument_model || $self->{inst_format} || q{HK};
   my $instrument_run_times = $self->_instrument_run_times( q{}, $instrument_model);

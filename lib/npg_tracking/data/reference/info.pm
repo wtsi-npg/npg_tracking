@@ -10,7 +10,22 @@ package npg_tracking::data::reference::info;
 use Moose;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 7844 $ =~ /(\d+)/smx; $r; };
-## no critic (Documentation::RequirePodAtEnd)
+
+=head1 NAME
+
+npg_tracking::data::reference::info
+
+=head1 VERSION
+
+$Revision: 7844 $
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+A wrapper class for information about a reference
+
+=head1 SUBROUTINES/METHODS
 
 =head2 ref_path
 
@@ -49,21 +64,6 @@ no Moose;
 1;
 __END__
 
-=head1 NAME
-
-npg_tracking::data::reference::info
-
-=head1 VERSION
-
-$Revision: 7844 $
-
-=head1 SYNOPSIS
-
-=head1 DESCRIPTION
-
-A wrapper class for information about a reference
-
-=head1 SUBROUTINES/METHODS
 
 =head1 DIAGNOSTICS
 

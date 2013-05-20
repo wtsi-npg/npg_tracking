@@ -1,9 +1,15 @@
 CHANGES
 
+release 73.7
+ - propagate caller environment to scrits running under daemons
+   as a part of a move to perl 5.14.2
+ - warnings under per l5.14.2 tidied up
+ - unnecessary '##no critic' statements removed
+
 release 73.6
-  - test for npg_daemon_control fixed copes with presence of daemon plugins
+ - test for npg_daemon_control fixed copes with presence of daemon plugins
      that are not defined in this package
-  - npg_testing::db module:
+ - npg_testing::db module:
       copes with old-style naming convention for yml db fixtures
       new subroutine for running tests against existing test database
 
