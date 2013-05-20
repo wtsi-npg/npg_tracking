@@ -11,31 +11,11 @@ package npg_tracking::util::types;
 
 use Moose::Util::TypeConstraints;
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16411 $ =~ /(\d+)/mxs; $r; };
-## no critic (Documentation::RequirePodAtEnd)
 
 Readonly::Scalar our $POSITION_MIN  => 1;
 Readonly::Scalar our $POSITION_MAX  => 9;
 Readonly::Scalar our $TAG_INDEX_MIN => 0;
 Readonly::Scalar our $TAG_INDEX_MAX => 999;
-
-=head1 NAME
-
-npg_tracking::util::types
-
-=head1 VERSION
-
-$Revision: 16411 $
-
-=head1 SYNOPSIS
-
-=head1 DESCRIPTION
-
-Custom types for npg tracking application.
-
-=head1 SUBROUTINES/METHODS
-
-=cut
-
 
 subtype 'NpgTrackingReadableFile'
       => as 'Str'
@@ -73,6 +53,22 @@ no Moose::Util::TypeConstraints;
 
 1;
 __END__
+
+=head1 NAME
+
+npg_tracking::util::types
+
+=head1 VERSION
+
+$Revision: 16411 $
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+Custom types for npg tracking application.
+
+=head1 SUBROUTINES/METHODS
 
 =head1 DIAGNOSTICS
 

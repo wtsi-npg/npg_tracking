@@ -15,10 +15,14 @@ extends 'npg_tracking::daemon';
 
 override '_build_hosts' => sub { return ['sf-4-1-02']; };
 ##no critic (RequireInterpolationOfMetachars)
-override 'command'  => sub { return q[perl -e 'use strict; use warnings; use npg::samplesheet::auto;  use Log::Log4perl qw(:easy); BEGIN{ Log::Log4perl->easy_init({level=>$INFO,}); } npg::samplesheet::auto->new()->loop();']; };
+override 'command'  => sub { return $EXECUTABLE_NAME . q[ -e 'use strict; use warnings; use npg::samplesheet::auto;  use Log::Log4perl qw(:easy); BEGIN{ Log::Log4perl->easy_init({level=>$INFO,}); } npg::samplesheet::auto->new()->loop();']; };
 ##use critic
 override 'daemon_name'  => sub { return 'npg_samplesheet_daemon'; };
-has '+libs' => ( default => sub {return [qw(/software/solexa/lib/perl5)];},);
+
+if ( $ENV{PERL5LIB} ) {
+  my @p5libs = split /:/smx, $ENV{PERL5LIB};
+  has '+libs' => ( default => sub {return \@p5libs; }, );
+}
 
 no Moose;
 
