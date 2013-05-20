@@ -18,6 +18,8 @@ extends 'Monitor::SRS';
 use Carp;
 use English qw(-no_match_vars);
 use IO::All;
+use IO::All::FTP; #this package is not used explicitly
+                  #it's an ftp plugin for IO::All
 use List::Util qw(max);
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15265 $ =~ /(\d+)/smx; $r; };
