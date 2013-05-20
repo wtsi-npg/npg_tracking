@@ -1,5 +1,8 @@
 CHANGES
 
+release 73.8
+ - make dependency on IO::All::FTP explicit
+
 release 73.7
  - propagate caller environment to scrits running under daemons
    as a part of a move to perl 5.14.2
