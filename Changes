@@ -1,5 +1,17 @@
 CHANGES
 
+release 73.9
+ - cgi scripts that are linked from the main tracking web app are moved to this
+     project together with an apache configuration file for servers on sfweb nodes
+ - apache configuration file for sfweb nodes updated:
+     bed files are not visible
+     all tracking-related services sre run on port 9000, port 9080 is not used
+     the cgi-bin url component is mapped to the cgi-bin directory underb the npg
+       root /software/solexa/npg, where all npg cgi scripts are deployed to
+     npg own modules are taken from the default deployment location,
+       /software/solexa/npg/lib/perl5
+     htdocs directory is mapped to the deployed /software/solexa/npg/htdocs
+
 release 73.8
  - make dependency on IO::All::FTP explicit
 
