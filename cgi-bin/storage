@@ -1,0 +1,44 @@
+#!/usr/local/bin/perl -T
+#########
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/sflogin_web_apps/trunk/cgi-bin/storage, r15717
+#
+use strict;
+use warnings;
+use GD;
+use English qw(-no_match_vars);
+use Carp;
+
+my ($partition) = ($ENV{PATH_INFO} || q()) =~ /((sf\d+))/smx;
+
+%ENV = (
+	PATH => join q(:), qw(/bin /usr/bin /usr/local/bin)
+       );
+
+my $gd    = GD::Image->new(40,40);
+my $white = $gd->colorAllocate(255,255,255);
+my $grey  = $gd->colorAllocate(128,128,128);
+my $black = $gd->colorAllocate(0,0,0);
+my $green = $gd->colorAllocate(140,250,140);
+my $red   = $gd->colorAllocate(250,140,140);
+my $perc  = 0;
+
+open my $fh, q(-|), qq(df /nfs/$partition);
+local $RS = undef;
+my $blk   = <$fh>;
+close $fh;
+
+($perc) = $blk =~ /(\d+)%/smx;
+
+$gd->filledArc(20,20,38,38,0,360,$green);
+$gd->filledArc(20,20,38,38,0,$perc*3.6,$red);
+
+$gd->setAntiAliased($grey);
+$gd->arc(20,20,38,38,0,360,gdAntiAliased);
+
+$gd->string(gdSmallFont, 6, 6,  $partition, $black);
+$perc = $perc ? "$perc%" : '%';
+$gd->string(gdSmallFont, 18,18, "$perc", $black);
+
+
+print "Content-type: image/png\n\n" or croak $ERRNO;
+print $gd->png() or croak $ERRNO;

@@ -1,0 +1,66 @@
+#!/usr/local/bin/perl -T
+#########
+# Author:        rmp
+# Created:       2006-10-31
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/sflogin_web_apps/trunk/cgi-bin/locate_runfolder, r16013
+#
+use strict;
+use warnings;
+use English qw(-no_match_vars);
+use Carp;
+
+our $VERSION = do { my ($r) = q$LastChangedRevision: 16013 $ =~ /(\d+)/smx; $r; };
+
+main();
+0;
+
+sub main {
+  my ($pathglob,$runfolder, $suffix) = $ENV{PATH_INFO} =~ m{\A((?:/\S+?/\*)?)/([^/?]+)(.*)}smx;
+  my ($id_run);
+  my @folders;
+  if(not $runfolder=~/\A\d+\z/smx){
+    ($id_run)  = $runfolder =~ /_(\d+)/smx;
+    if ($pathglob) {
+      @folders   = sort { -M $a <=> -M $b } glob "$pathglob/$runfolder";
+    } else {
+      @folders   = sort { -M $a <=> -M $b } glob "/staging/IL*/*/$runfolder";
+    }
+  } else{
+    ($id_run)  = $runfolder;
+    @folders   = sort { -M $a <=> -M $b } glob "/staging/IL*/*/*_{,0}$id_run";
+  }
+
+  if($ENV{QUERY_STRING} =~ /redir/msx) {
+    my ($uri)     = $folders[0]=~/([\/a-z0-9_-]+)/imsx; # detaint
+
+    my $rellink = readlink "$uri/Latest_Summary";
+
+    if($uri) {
+      if($ENV{PATH_INFO} =~ /latest|summary/msx) {
+	if($rellink =~ m/GERALD/smx){
+	  $uri .= q(/) . $rellink . q(/Summary.htm);
+        }else{
+          $rellink =~ s!((?:/B(?:ustard|aseCalls)|_basecalls)[^/]*)/.*!$1!xms;
+	  $uri .= q(/) . $rellink . q(/BustardSummary.xml);
+	}
+      } elsif($ENV{PATH_INFO} =~ /ivc/msix) {
+        $rellink =~ s!((?:/B(?:ustard|aseCalls)|_basecalls)[^/]*)/.*!$1!xms;
+	$uri .= q(/) . $rellink . q(/IVC.htm);
+      } elsif($ENV{PATH_INFO} =~ /error/msix) {
+	$uri .= q(/) . $rellink . q(/Error.htm);
+      } else {
+        if(defined $rellink) { $suffix =~ s{^/Latest_Summary}{/$rellink}smx; }
+	$uri .= q(/) . $suffix;
+      }
+    }
+
+    print "Content-type: text/html\n\n",
+          qq(<html><head><meta http-equiv="refresh" content="0;url=$uri" /></head></html>\n) or croak "Error printing: $ERRNO";
+    return;
+  }
+
+  print "Content-type: text/xml\n\n",
+        qq(<run id_run="$id_run">@{[map { qq(<folder path="$_" />) } @folders]}</run>\n) or croak "Error printing: $ERRNO";
+
+  return;
+}

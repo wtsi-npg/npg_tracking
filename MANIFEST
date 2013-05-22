@@ -13,8 +13,10 @@ bin/staging_area_monitor
 bin/update_sensors
 bin/utilisation_loader
 Build.PL
+cgi-bin/locate_runfolder
 cgi-bin/npg
 cgi-bin/reflector
+cgi-bin/storage
 Changes
 data/config.ini
 data/gfx/1G_PE.png
@@ -174,6 +176,7 @@ data/templates/user_read.tt2
 data/templates/user_read_xml.tt2
 data/templates/user_update.tt2
 data/templates/warnings.tt2
+htdocs/css/dirindex.css
 htdocs/css/npg.css
 htdocs/gfx/spinner.gif
 htdocs/icons/navigation/key.gif
@@ -1530,3 +1533,4 @@ t/perlcriticrc
 t/request.pm
 t/useragent.pm
 t/util.pm
+wtsi_local/httpd.conf
