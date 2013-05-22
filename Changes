@@ -1,5 +1,8 @@
 CHANGES
 
+release 74.0
+ - removed unnecessary separate log from apache configuration file
+
 release 73.9
  - cgi scripts that are linked from the main tracking web app are moved to this
      project together with an apache configuration file for servers on sfweb nodes
