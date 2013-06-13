@@ -111,6 +111,12 @@ sub load_fixtures {
   if(!-e "data/schema.txt") {
     croak "Could not find data/schema.txt";
   }
+
+  if ($self->dbh) {
+    eval { $self->dbh->disconnect; };
+    $self->{'dbh'} = undef;
+  }
+
   $self->log('Loading data/schema.txt');
   my $cmd = q(cat data/schema.txt | mysql);
   my $local_socket = $self->dbhost() eq 'localhost' && $ENV{'MYSQL_UNIX_PORT'} ? $ENV{'MYSQL_UNIX_PORT'} : q[];

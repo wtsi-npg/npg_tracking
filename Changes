@@ -1,5 +1,9 @@
 CHANGES
 
+ - in tests, explicitly clear existing db connection before resetting the tables and loading fixtures;
+   otherwise, an very lonf wait (as set by GLOBAL wait_timeout ) occurs, see RT#336398
+   for some reason this wait only occurs on local MySQL from-binary servers v 5.5.30
+
 release 74.0
  - removed unnecessary separate log from apache configuration file
 
