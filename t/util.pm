@@ -113,8 +113,13 @@ sub load_fixtures {
   }
 
   if ($self->dbh) {
+    # This open handle causes a long wait for the next mysql client system call.
+    # There is a lock on some tables despite the fact that all queries are finished.
+    # This only started from MySQL server version 5.5.30 when the locking policy
+    # has been tightten up, see http://sql.dzone.com/articles/implications-metadata-locking.
+    # The lock might be internally set by the server and have nothing to do with us.
     eval { $self->dbh->disconnect; };
-    $self->{'dbh'} = undef;
+    $self->{'dbh'} = undef; #for good measure
   }
 
   $self->log('Loading data/schema.txt');
