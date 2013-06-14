@@ -4,6 +4,7 @@ release 74.1
  - in tests, explicitly clear existing db connection before resetting the tables and loading fixtures;
    otherwise, an very long wait (as set by GLOBAL wait_timeout ) occurs, see RT#336398
    for some reason this wait only occurs on MySQL servers v 5.5.30 and above
+ - correct skip message for a test that accesses live reference repository
 
 release 74.0
  - removed unnecessary separate log from apache configuration file
