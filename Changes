@@ -1,10 +1,75 @@
 CHANGES
 
+release 74.1
+ - improvements and patches to tests
+ - start/stop scripts and conf file for tracking apaches server on ubuntu precise vm
+ - build script extended to deploy wtsi_local folder, which has scripts and conf files
+    for deployment&running of web server
+ - in tests, explicitly clear existing db connection before resetting the tables and loading fixtures;
+   otherwise, an very long wait (as set by GLOBAL wait_timeout ) occurs, see RT#336398
+   for some reason this wait only occurs on MySQL servers v 5.5.30 and above
+ - correct skip message for a test that accesses live reference repository
+
+release 74.0
+ - removed unnecessary separate log from apache configuration file
+
+release 73.9
+ - cgi scripts that are linked from the main tracking web app are moved to this
+     project together with an apache configuration file for servers on sfweb nodes
+ - apache configuration file for sfweb nodes updated:
+     bed files are not visible
+     all tracking-related services sre run on port 9000, port 9080 is not used
+     the cgi-bin url component is mapped to the cgi-bin directory underb the npg
+       root /software/solexa/npg, where all npg cgi scripts are deployed to
+     npg own modules are taken from the default deployment location,
+       /software/solexa/npg/lib/perl5
+     htdocs directory is mapped to the deployed /software/solexa/npg/htdocs
+
+release 73.8
+ - make dependency on IO::All::FTP explicit
+
+release 73.7
+ - propagate caller environment to scrits running under daemons
+   as a part of a move to perl 5.14.2
+ - warnings under per l5.14.2 tidied up
+ - unnecessary '##no critic' statements removed
+
+release 73.6
+ - test for npg_daemon_control fixed copes with presence of daemon plugins
+     that are not defined in this package
+ - npg_testing::db module:
+      copes with old-style naming convention for yml db fixtures
+      new subroutine for running tests against existing test database
+
+release 73.5
+ - live environment might be set explicitly or implicitly (default) RT#325903
+   for the purpose of log file location
+ - st::api::lims class variable for inline index end
+ - deamon monitor script, daemon parent class and tracking related daemons moved to
+   this project from instrument_handling
+ - disable percritic policies for having VERSION defined and having Rcs Keywords
+   since these are not available in git
+ - extend perlcritic tests to all namespaces except Monitor and npg_tracking::Schema
+ - notification of perlcritic test failute: include policy name
+ - mysql client does not read configuration in default places to avoid reading wrong configuration
+ - use password for the root user on a local test database
+ - webapp: reanable a link to HTML based RTA reports for MiSeq
+
+release 73.4
+- build procedure for the web server
+- test that resets modification time of test files is directed away from source distribution
+- top-level .gitignore file to stop git reacting to back-up files and files generated in a normal build
+- reference finder to return no reference if the sample is not suitable for alignment RT#313168
+- calling abs_path for non-existing files breaks under ./Build test with latest CPAN modules
+    reference finder refactored to ensure that abs_path is called on existing directories
+- tests improvements
+
+release 73.3
+- change MiSeq samplesheet writing location to sf49
+
 release 73.2
-- improvements and patches to tests
-- start/stop scripts and conf file for tracking apaches server on ubuntu precise vm
-- build script extended to deploy wtsi_local folder, which has scripts and conf files
-  for deployment&running of web server
+- get build version from git tag or version with Keith's gitver script
+- inject module version into npg::view when copying it to blib
 
 release 73.1
 - rename NPG_REFERENCE_REPOSITORY type to NPG_TRACKING_REFERENCE_REPOSITORY

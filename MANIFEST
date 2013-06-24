@@ -1,3 +1,4 @@
+.gitignore
 bin/cbot_checker
 bin/email_project_followers_run_complete_archived
 bin/event_notifications
@@ -7,12 +8,15 @@ bin/hiseq_checker
 bin/illumina_seq_fails2rt
 bin/InstrumentPoller
 bin/miseq_checker
+bin/npg_daemon_control
 bin/staging_area_monitor
 bin/update_sensors
 bin/utilisation_loader
 Build.PL
+cgi-bin/locate_runfolder
 cgi-bin/npg
 cgi-bin/reflector
+cgi-bin/storage
 Changes
 data/config.ini
 data/gfx/1G_PE.png
@@ -172,6 +176,7 @@ data/templates/user_read.tt2
 data/templates/user_read_xml.tt2
 data/templates/user_update.tt2
 data/templates/warnings.tt2
+htdocs/css/dirindex.css
 htdocs/css/npg.css
 htdocs/gfx/spinner.gif
 htdocs/icons/navigation/key.gif
@@ -278,6 +283,10 @@ lib/npg/sensors.pm
 lib/npg_testing/db.pm
 lib/npg_testing/html.pm
 lib/npg_testing/intweb.pm
+lib/npg_tracking/daemon.pm
+lib/npg_tracking/daemon/jenkins.pm
+lib/npg_tracking/daemon/staging.pm
+lib/npg_tracking/daemon/samplesheet.pm
 lib/npg_tracking/data/bait/find.pm
 lib/npg_tracking/data/bait.pm
 lib/npg_tracking/data/reference/find.pm
@@ -385,6 +394,7 @@ Makefile.PL.WEB
 MANIFEST
 README
 REDESIGN_PROPOSAL
+scripts/gitver
 scripts/upgrade_schema/upgrade_schema-10.0
 scripts/upgrade_schema/upgrade_schema-11.0
 scripts/upgrade_schema/upgrade_schema_113_to_126
@@ -496,6 +506,10 @@ t/14-dbic-Run.t
 t/14-dbic-Sensor.t
 t/14-dbic-Tag.t
 t/14-dbic-User.t
+t/16-npg_tracking-daemon-jenkins.t
+t/16-npg_tracking-daemon-samplesheet.t
+t/16-npg_tracking-daemon-staging.t
+t/16-npg_tracking-daemon.t
 t/20-model-run_and_instrument_status.t
 t/20-view-administration.t
 t/20-view-error.t
@@ -584,6 +598,7 @@ t/80-email-run.t
 t/80-sensor.t
 t/81-email-event.t
 t/90-reference.t
+t/200-bin-npg_daemon_control.t
 t/data/cbot/cBot1/GetRunList.xml
 t/data/cbot/cBot1/InstrumentStatus.xml
 t/data/cbot/cBot1/RunInfo/091111_OEM-0B6VO7E14KH_0001.xml
@@ -1522,3 +1537,4 @@ wtsi_local/httpd.conf
 wtsi_local/httpd_vm.conf
 wtsi_local/restart
 wtsi_local/webconf
+
