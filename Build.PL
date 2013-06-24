@@ -45,8 +45,7 @@ my $class = Module::Build->subclass(code => <<'EOF');
 
   sub process_wtsilocal_files {
     `find wtsi_local -type f | cpio -pdv --quiet blib`;
-    `chmod +x blib/wtsi_local/*start`;
-    `chmod +x blib/wtsi_local/stop`;
+    `chmod +x blib/wtsi_local/restart`;
     return;
   }
 
