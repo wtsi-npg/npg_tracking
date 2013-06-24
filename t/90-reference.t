@@ -24,8 +24,11 @@ my $REP_ROOT=$npg_tracking::data::reference::list::REP_ROOT;
 {
 SKIP: {
 
-  if (!npg_is_accessible() || !-e $REP_ROOT) {
+  if (!npg_is_accessible()) {
     skip 'Internal Sanger website is not accessible', 20;
+  }
+  if (!-e $REP_ROOT) {
+    skip 'reference repository is not accessible', 20;
   }
   my $r = npg_tracking::data::reference->new(id_run => 4354,position=>1);
   is(join(q[ ], @{$r->refs}), 
