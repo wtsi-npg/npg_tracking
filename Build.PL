@@ -45,7 +45,6 @@ my $class = Module::Build->subclass(code => <<'EOF');
 
   sub process_wtsilocal_files {
     `find wtsi_local -type f | cpio -pdv --quiet blib`;
-    `chmod +x blib/wtsi_local/restart`;
     return;
   }
 
@@ -72,15 +71,6 @@ my $class = Module::Build->subclass(code => <<'EOF');
     $self->install_path('wtsi_local' => join q{/}, $self->install_base(), 'wtsi_local');
     $self->add_build_element('wtsilocal');
     $self->depends_on("install");
-
-    my $restart = join q{/}, $self->install_base(), 'wtsi_local', 'restart';
-    foreach my $name (qw/start stop/) {
-      my $link = join q{/}, $self->install_base(), 'wtsi_local', $name;
-      if (!-e $link) {
-        warn "Linking $link to $restart\n";
-        `ln -s $restart $link`
-      }
-    }
 
     return;
   }

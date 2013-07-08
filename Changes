@@ -2,9 +2,9 @@ CHANGES
 
 release 74.1
  - improvements and patches to tests
- - start/stop scripts and conf file for tracking apaches server on ubuntu precise vm
- - build script extended to deploy wtsi_local folder, which has scripts and conf files
-    for deployment&running of web server
+ - apache httpd conf file for running tracking server on centrally supported
+   ubuntu precise vm
+ - build script extended to deploy wtsi_local folder, which has apache conf files
  - in tests, explicitly clear existing db connection before resetting the tables and loading fixtures;
    otherwise, an very long wait (as set by GLOBAL wait_timeout ) occurs, see RT#336398
    for some reason this wait only occurs on MySQL servers v 5.5.30 and above
