@@ -755,26 +755,42 @@ sub _build_required_insert_size {
   return $is_hash;
 }
 
-=head2 reference_genome
+=head2 sample_reference_genome
 
 Read-only accessor, not possible to set from the constructor.
-Returns pre-set reference genome, retrieving it either from a sample,
-or, failing that, from a study.
+Returns sample reference genome
 
 =cut
-has 'reference_genome' => (isa             => 'Maybe[Str]',
+has 'sample_reference_genome' => (isa             => 'Maybe[Str]',
                            is              => 'ro',
                            init_arg        => undef,
                            lazy_build      => 1,
                           );
-sub _build_reference_genome {
+sub _build_sample_reference_genome {
   my $self = shift;
   my $rg;
   if ($self->_sample_object) {
     $rg = $self->_sample_object->reference_genome;
-    if (!$rg && $self->_study_object) {
-      $rg = $self->_study_object->reference_genome;
-    }
+  }
+  return $rg;
+}
+
+=head2 study_reference_genome
+
+Read-only accessor, not possible to set from the constructor.
+Returns study reference genome
+
+=cut
+has 'study_reference_genome' => (isa             => 'Maybe[Str]',
+                           is              => 'ro',
+                           init_arg        => undef,
+                           lazy_build      => 1,
+                          );
+sub _build_study_reference_genome {
+  my $self = shift;
+  my $rg;
+  if ($self->_study_object) {
+    $rg = $self->_study_object->reference_genome;
   }
   return $rg;
 }
