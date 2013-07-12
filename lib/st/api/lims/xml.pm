@@ -4,7 +4,7 @@
 # copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/lims.pm, r16549
 #
 
-package st::api::lims;
+package st::api::lims::xml;
 
 use Carp;
 use English qw(-no_match_vars);
@@ -27,14 +27,14 @@ with qw/  npg_tracking::glossary::run
 
 =head1 NAME
 
-st::api::lims
+st::api::lims::xml
 
 =head1 SYNOPSIS
 
- $lims = st::api::lims->new(id_run => 333) #run (batch) level object
- $lims = st::api::lims->new(batch_id => 222) # as above
- $lims = st::api::lims->new(batch_id => 222, position => 3) # lane level object
- $lims = st::api::lims->new(id_run => 333, position => 3, tag_index => 44) # plex level object
+ $lims = st::api::lims::xml->new(id_run => 333) #run (batch) level object
+ $lims = st::api::lims::xml->new(batch_id => 222) # as above
+ $lims = st::api::lims::xml->new(batch_id => 222, position => 3) # lane level object
+ $lims = st::api::lims::xml->new(id_run => 333, position => 3, tag_index => 44) # plex level object
 
 =head1 DESCRIPTION
 
@@ -167,7 +167,7 @@ sub _build__associated_lims {
                 _lane_xml_element => $lane_el,
               };
       if (defined $self->id_run) { $h->{id_run} = $self->id_run; }
-      push @{$lims}, st::api::lims->new($h);
+      push @{$lims}, st::api::lims::xml->new($h);
     }
   } else {
     if ($self->is_pool && !$self->tag_index) { #now use XPath to find tag indexes for lane...:
@@ -179,7 +179,7 @@ sub _build__associated_lims {
                   _lane_xml_element => $self->_lane_xml_element,
                 };
         if (defined $self->id_run) { $h->{id_run} = $self->id_run; }
-        push @{$lims}, st::api::lims->new($h);
+        push @{$lims}, st::api::lims::xml->new($h);
       }
     }
   }
@@ -848,7 +848,7 @@ sub _build_contains_nonconsented_xahuman {
 
 =head2 descendants
 
-Method returning a list of all st::api::lims descendants objects for this object.
+Method returning a list of all st::api::lims::xml descendants objects for this object.
 An empty list for a non-pool lane and for a plex. For a pooled lane contains plex-level
 objects. On a batch level, when the position accessor is not set, returns objects of both
 lane and, if appropriate, plex level.
@@ -878,7 +878,7 @@ The same as descendants. Retained for backward compatibility
 
 =head2 children
 
-Method returning a list of st::api::lims objects that are associated with this object
+Method returning a list of st::api::lims::xml objects that are associated with this object
 and belong to the next (one lower) level. An empty list for a non-pool lane and for a plex.
 For a pooled lane contains plex-level objects. On a batch level, when the position 
 accessor is not set, returns lane level objects.
@@ -899,7 +899,7 @@ The same as children. Retained for backward compatibility
 =head2 children_ia
 
 Method providing fast (index-based) access to child lims object.
-Returns a hash ref of st::api::lims children objects
+Returns a hash ref of st::api::lims::xml children objects
 An empty hash for a non-pool lane and for a plex.
 For a pooled lane contains plex-level objects. On a batch level, when the position 
 accessor is not set, returns lane level objects. The hash keys are lane numbers (positions)
