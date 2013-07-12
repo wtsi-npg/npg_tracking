@@ -196,14 +196,8 @@ cmp_deeply( $reports->[2],
 lives_ok { $test[0]->run() } 'Main method executes without error';
 
 my $updated_time = $test[0]->event_row->notification_sent();
-$updated_time =~s/T/ /msx;
-
-my $reported_dt = DateTime::Format::MySQL->parse_timestamp($updated_time);
-my $now_dt      = DateTime->now();
-
-my $lag = $reported_dt->subtract_datetime($now_dt)->delta_seconds();
-
-ok( abs $lag < 10, 'notification_sent field has been updated recently' );
+my $lag = DateTime->now()->subtract_datetime($updated_time)->delta_seconds();
+ok( abs($lag) < 10, 'notification_sent field has been updated recently' );
 
 {
     local $ENV{dev} = 'dev';
