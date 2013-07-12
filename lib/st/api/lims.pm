@@ -57,7 +57,7 @@ Readonly::Hash my  %METHODS      => {
                            is_control
                            is_pool
                            bait_name
-                           lims_tag_sequence
+                           default_tag_sequence
                            required_insert_size_range
                            seq_qc_state
                            children
@@ -266,7 +266,7 @@ sub _build_tags {
   my $indices  = {};
   foreach my $plex ($self->children) {
     if(my $ti = $plex->tag_index){
-      $indices->{$ti} = $plex->tag_sequence;
+      $indices->{$ti} = $plex->default_tag_sequence;
     }
   }
   if(keys %{$indices}){ return $indices;}

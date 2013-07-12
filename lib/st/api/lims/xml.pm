@@ -306,26 +306,21 @@ sub _build__subentity_xml_element {
   return $subentity;
 }
 
-=head2 tag_sequence
+=head2 default_tag_sequence
 
 Read-only string accessor, not possible to set from the constructor.
 Undefined on a lane level and for zero tag_index.
 
 =cut
-has 'tag_sequence' =>    (isa             => 'Maybe[Str]',
+has 'default_tag_sequence' =>    (isa             => 'Maybe[Str]',
                           is              => 'ro',
                           init_arg        => undef,
                           lazy_build      => 1,
                          );
-sub _build_tag_sequence {
+sub _build_default_tag_sequence {
   my $self = shift;
   my $seq;
   if ($self->tag_index) {
-    if (!$self->spiked_phix_tag_index || $self->tag_index != $self->spiked_phix_tag_index) {
-      if ($self->_sample_object) {
-        $seq = $self->_sample_object->tag_sequence_from_description();
-      }
-    }
     if (!$seq && $self->_entity_xml_element) {
       my $sel = $self->_entity_xml_element->getElementsByTagName(q[expected_sequence]);
       if ($sel) {
@@ -426,31 +421,6 @@ sub _build_bait_name {
    }
    $bait_name ||= undef;
    return $bait_name;
-}
-
-=head2 tags
-
-Read-only accessor, not possible to set from the constructor.
-For a pooled lane returns the mapping of tag indices to tag sequences,
-including spiked phix tag index if appropriate. Undefined in other cases.
-
-=cut
-has 'tags'                 =>   (isa             => 'Maybe[HashRef]',
-                                 is              => 'ro',
-                                 init_arg        => undef,
-                                 lazy_build      => 1,
-                                );
-
-sub _build_tags {
-  my $self = shift;
-  my $indices  = {};
-  foreach my $plex ($self->children) {
-    if(my$ti = $plex->tag_index){
-      $indices->{$ti} = $plex->tag_sequence;
-    }
-  }
-  if(keys %{$indices}){ return $indices;}
-  return;
 }
 
 =head2 lane_id

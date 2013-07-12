@@ -64,8 +64,8 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   my $p6 = $plexes[5];
   is ($p1->tag_index, 1, 'plex tag index');
   is ($p6->tag_index, 6, 'plex tag index');
-  is ($p1->tag_sequence, 'ATCACGTTAT', 'plex tag sequence');
-  is ($p6->tag_sequence, 'GCCAATGTAT', 'plex tag sequence');
+  is ($p1->default_tag_sequence, 'ATCACGTTAT', 'plex tag sequence');
+  is ($p6->default_tag_sequence, 'GCCAATGTAT', 'plex tag sequence');
   is($lims->to_string, 'st::api::lims object for batch 12141 position 1', 'object as string');
   is(join(q[,], $lims->library_names), join(q[,], sort @libs_6551_1), 'pool lane-level library_names list');
   is(join(q[,], $lims->sample_names), join(q[,], sort @samples_6551_1), 'pool lane-level sample_names list');
