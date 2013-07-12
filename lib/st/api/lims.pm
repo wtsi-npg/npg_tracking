@@ -126,6 +126,9 @@ sub _build__driver {
       if (defined $self->$attr) {
         $ref->{$attr} = $self->$attr;
       }
+      if ($self->has_batch_id) {
+        $ref->{'batch_id'} = $self->batch_id;
+      }
     }
   } else {
     croak 'Do not know how to instantiate driver type ' . $self->driver_type;
