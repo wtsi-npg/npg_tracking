@@ -12,7 +12,8 @@ use t::util;
 use npg::model::instrument;
 use npg::model::user;
 use npg::model::annotation;
-use Test::More tests => 22;
+use Test::More tests => 26;
+use Test::Deep;
 
 use_ok('npg::model::run_status_dict');
 
@@ -42,6 +43,46 @@ my $util = t::util->new({fixtures=>1});
   my $rsds = $rsd->run_status_dicts();
   isa_ok($rsds, 'ARRAY');
   is((scalar @{$rsds}), 24, 'all run status dicts');
+
+}
+
+{
+  my $rsd = npg::model::run_status_dict->new({
+					      util        => $util,
+					      id_run_status_dict => 22,
+					     });
+  my $rsds = $rsd->_sorted_run_status_dicts();
+  isa_ok($rsds, 'ARRAY');
+  is((scalar @{$rsds}), 21, 'all sorted run status dicts');
+
+  my $ordered = [
+           [ '100', 'run pending' ],
+           [ '120', 'run in progress' ],
+           [ '130', 'run on hold' ],
+           [ '140', 'run cancelled' ],
+           [ '150', 'run stopped early' ],
+           [ '160', 'run complete' ],
+           [ '170', 'run mirrored' ],
+           [ '200', 'analysis pending' ],
+           [ '210', 'analysis cancelled' ],
+           [ '220', 'data discarded' ],
+           [ '230', 'analysis on hold' ],
+           [ '240', 'analysis in progress' ],
+           [ '250', 'secondary analysis in progress' ],
+           [ '260', 'analysis complete' ],
+           [ '300', 'qc review pending' ],
+           [ '310', 'qc in progress' ],
+           [ '320', 'qc on hold' ],
+           [ '400', 'archival pending' ],
+           [ '410', 'archival in progress' ],
+           [ '420', 'run archived' ],
+           [ '500', 'qc complete' ]
+         ];
+
+  is(scalar @{$ordered}, 21, 'Only want current run status values');
+  
+  cmp_deeply($rsds, $ordered, 'Status list in temporal_index order');
+
 }
 
 {

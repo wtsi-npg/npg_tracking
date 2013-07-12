@@ -112,6 +112,35 @@ sub count_runs {
   return $self->{count_runs}->{ $params->{id_instrument_format} } || 0;
 }
 
+sub _sorted_run_status_dicts {
+  my ( $self ) = @_;
+  my $query =   qq{SELECT temporal_index, description 
+                  FROM run_status_dict 
+                  WHERE iscurrent = 1 
+                  ORDER BY temporal_index};
+  
+  return $self->util->dbh->selectall_arrayref( $query );
+
+}
+
+sub _statuses_from_this_status {
+  my ( $self, $id_run ) = @_;
+
+  my $query =  qq{SELECT description 
+                  FROM run_status_dict 
+                  WHERE temporal_index > (
+                    SELECT temporal_index 
+                    FROM run_status, run_status_dict 
+                    WHERE run_status.id_run_status_dict = run_status_dict.id_run_status_dict 
+                    AND id_run = $id_run
+                    AND run_status.iscurrent = 1) 
+                  AND iscurrent = 1 
+                  ORDER BY temporal_index};
+  
+  return $self->util->dbh->selectall_arrayref( $query );
+  
+}
+
 1;
 __END__
 
