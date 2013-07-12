@@ -60,7 +60,6 @@ Readonly::Hash my  %METHODS      => {
                            default_tag_sequence
                            required_insert_size_range
                            seq_qc_state
-                           children
                       /],
 
     'lane'         => [qw/ lane_id
@@ -388,6 +387,19 @@ sub _build_contains_nonconsented_xahuman {
   return $cuh;
 }
 
+=head2 children
+
+Method returning a list of st::api::lims objects that are associated with this object
+and belong to the next (one lower) level. An empty list for a non-pool lane and for a plex.
+For a pooled lane contains plex-level objects. On a batch level, when the position 
+accessor is not set, returns lane level objects.
+
+=cut
+sub children {
+  my $self = shift;
+  return $self->_driver->children;
+}
+
 =head2 descendants
 
 Method returning a list of all st::api::lims descendants objects for this object.
@@ -422,7 +434,7 @@ The same as descendants. Retained for backward compatibility
 The same as children. Retained for backward compatibility
 
 =cut
-#*associated_child_lims = \&children; #backward compat
+*associated_child_lims = \&children; #backward compat
 
 =head2 children_ia
 

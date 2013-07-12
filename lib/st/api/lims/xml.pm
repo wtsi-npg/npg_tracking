@@ -831,12 +831,6 @@ sub children {
   my $self = shift;
   return @{$self->_associated_lims};
 }
-=head2 associated_child_lims
-
-The same as children. Retained for backward compatibility
-
-=cut
-*associated_child_lims = \&children; #backward compat
 
 =head2 children_ia
 
