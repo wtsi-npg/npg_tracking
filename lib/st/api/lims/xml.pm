@@ -846,36 +846,6 @@ sub _build_contains_nonconsented_xahuman {
   return $cuh;
 }
 
-=head2 descendants
-
-Method returning a list of all st::api::lims::xml descendants objects for this object.
-An empty list for a non-pool lane and for a plex. For a pooled lane contains plex-level
-objects. On a batch level, when the position accessor is not set, returns objects of both
-lane and, if appropriate, plex level.
-
-=cut
-sub descendants {
-  my $self = shift;
-
-  my @lims;
-  if (defined $self->position) {
-    @lims =  @{$self->_associated_lims};
-  } else {
-    @lims = @{$self->_associated_lims};
-    foreach my $alims (@{$self->_associated_lims}) {
-      push @lims, $alims->associated_lims;
-    }
-  }
-  return @lims;
-}
-
-=head2 associated_lims
-
-The same as descendants. Retained for backward compatibility
-
-=cut
-*associated_lims = \&descendants; #backward compat
-
 =head2 children
 
 Method returning a list of st::api::lims::xml objects that are associated with this object
@@ -888,7 +858,6 @@ sub children {
   my $self = shift;
   return @{$self->_associated_lims};
 }
-
 =head2 associated_child_lims
 
 The same as children. Retained for backward compatibility

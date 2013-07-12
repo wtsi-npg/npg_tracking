@@ -176,7 +176,7 @@ sub BUILD {
     $meta->add_method( "$_" => sub { print "$message"; return undef; } );
   }
 
-  __PACKAGE__->meta->make_immutable;
+ # __PACKAGE__->meta->make_immutable;
   return;
 }
 
