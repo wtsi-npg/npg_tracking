@@ -790,30 +790,23 @@ contein unconcented human.
 On a batch level or if no associated study found, returns 0.
 
 =cut
-has 'contains_nonconsented_human' => (isa             => 'Bool',
+has 'study_contains_nonconsented_human' => (isa             => 'Bool',
                                       is              => 'ro',
                                       init_arg        => undef,
                                       lazy_build      => 1,
-                                      alias           => 'contains_unconsented_human',
                                      );
-sub _build_contains_nonconsented_human {
+sub _build_study_contains_nonconsented_human {
   my $self = shift;
 
   my $cuh = 0;
-  if ($self->position) {
-    my $lims =  ($self->is_pool && !$self->tag_index) ? $self->_associated_lims : [$self];
-    foreach my $l (@{$lims}) {
-      if ($l->_study_object) {
-        $cuh = $l->_study_object->contains_nonconsented_human;
-        if ($cuh) { last; }
-      }
-    }
+  if ($self->position && $self->_study_object) {
+    $cuh = $self->_study_object->contains_nonconsented_human;
   }
   if (!$cuh) { $cuh = 0; }
   return $cuh;
 }
 
-=head2 contains_nonconsented_xahuman
+=head2 study_contains_nonconsented_xahuman
 
 Read-only accessor, not possible to set from the constructor.
 For a library, control on non-zero plex returns the value of the
@@ -824,23 +817,17 @@ contain unconcented X and autosomal human.
 On a batch level or if no associated study found, returns 0.
 
 =cut
-has 'contains_nonconsented_xahuman' => (isa             => 'Bool',
+has 'study_contains_nonconsented_xahuman' => (isa             => 'Bool',
                                         is              => 'ro',
                                         init_arg        => undef,
                                         lazy_build      => 1,
                                        );
-sub _build_contains_nonconsented_xahuman {
+sub _build_study_contains_nonconsented_xahuman {
   my $self = shift;
 
   my $cuh = 0;
-  if ($self->position) {
-    my $lims =  ($self->is_pool && !$self->tag_index) ? $self->_associated_lims : [$self];
-    foreach my $l (@{$lims}) {
-      if ($l->_study_object) {
-        $cuh = $l->_study_object->contains_nonconsented_xahuman;
-        if ($cuh) { last; }
-      }
-    }
+  if ($self->position && $self->_study_object) {
+    $cuh = $self->_study_object->contains_nonconsented_xahuman;
   }
   if (!$cuh) { $cuh = 0; }
   return $cuh;
