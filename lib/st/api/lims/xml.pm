@@ -829,33 +829,6 @@ sub children {
   return @{$self->_associated_lims};
 }
 
-=head2 children_ia
-
-Method providing fast (index-based) access to child lims object.
-Returns a hash ref of st::api::lims::xml children objects
-An empty hash for a non-pool lane and for a plex.
-For a pooled lane contains plex-level objects. On a batch level, when the position 
-accessor is not set, returns lane level objects. The hash keys are lane numbers (positions)
-or tag indices. _ia stands for index access.
-
-=cut
-sub children_ia {
-  my $self = shift;
-  my $h = {};
-  foreach my $alims (@{$self->_associated_lims}) {
-    my $key = $alims->tag_index ? $alims->tag_index : $alims->position;
-    $h->{$key} = $alims;
-  }
-  return $h;
-}
-
-=head2 associated_child_lims_ia
-
-The same as children_ia. Retained for backward compatibility
-
-=cut
-*associated_child_lims_ia = \&children_ia; #backward compat
-
 =head2 method_list
 
 Method returning a sorted list of useful accessors and methods.

@@ -459,6 +459,13 @@ sub children_ia {
   return $h;
 }
 
+=head2 associated_child_lims_ia
+
+The same as children_ia. Retained for backward compatibility
+
+=cut
+*associated_child_lims_ia = \&children_ia; #backward compat
+
 sub _entity_required_insert_size {
   my ($self, $lims, $is_hash, $isize_defined) = @_;
 
