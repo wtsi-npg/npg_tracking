@@ -628,7 +628,12 @@ sub derived_library_type {
 }
 
 sub tag_sequence_from_description {
-  return undef;
+  my $desc = shift;
+  my $tag;
+  if ($desc && ($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx)){
+    ($tag) = $desc =~ /\(([ACGT]+)\)/smx;
+  }
+  return $tag;
 }
 
 =head2 library_types
