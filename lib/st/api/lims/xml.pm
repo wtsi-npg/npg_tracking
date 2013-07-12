@@ -520,17 +520,17 @@ sub _build_library_name {
   return $name;
 }
 
-=head2 library_type
+=head2 default_library_type
 
 Read-only accessor, not possible to set from the constructor.
 
 =cut
-has 'library_type' =>     (isa             => 'Maybe[Str]',
+has 'default_library_type' =>     (isa             => 'Maybe[Str]',
                            is              => 'ro',
                            init_arg        => undef,
                            lazy_build      => 1,
                           );
-sub _build_library_type {
+sub _build_default_library_type {
   my $self = shift;
 
   if(!$self->_xml_element_exists(q[entity]) || $self->is_pool) { return; }
@@ -539,9 +539,6 @@ sub _build_library_type {
   my $type;
   if ($element) {
     $type = $element->getAttribute(q[library_type]);
-    if ($self->tag_index && $self->_sample_object && $self->_sample_object->tag_sequence_from_description()) {
-        $type = '3 prime poly-A pulldown';
-    }
   }
   $type ||= undef;
   return $type;
@@ -1074,37 +1071,6 @@ sub project_ids {
   my ($self, $with_spiked_control) = @_;
   return $self->_list_of_properties(q[id], q[project], $with_spiked_control);
 }
-
-=head2 library_types
-
-A list of library types, excluding spiked phix library
-
-=cut
-sub library_types {
-  my ($self) = @_;
-  if (!defined $self->position) { my @l = (); return @l; }
-
-  my @objects = ();
-  if ($self->is_pool) {
-    foreach my $tlims ($self->associated_child_lims) {
-      if ($self->spiked_phix_tag_index && $self->spiked_phix_tag_index == $tlims->tag_index) {
-        next;
-      }
-      push @objects, $tlims;
-    }
-  } else {
-    @objects = ($self);
-  }
-  my $lt_hash = {};
-  foreach my $o (@objects) {
-    if ($o->library_type) {
-      $lt_hash->{$o->library_type} = 1;
-    }
-  }
-  my @t = sort keys %{$lt_hash};
-  return @t;
-}
-
 
 =head2 to_string
 

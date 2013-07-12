@@ -67,7 +67,7 @@ Readonly::Hash my  %METHODS      => {
                       /],
     'library'      => [qw/ library_id
                            library_name
-                           lims_library_type
+                           default_library_type
                       /],
 
     'sample'       => [qw/ sample_id
@@ -612,17 +612,24 @@ has 'library_type' =>     (isa             => 'Maybe[Str]',
                           );
 sub _build_library_type {
   my $self = shift;
-
   if($self->is_pool) { return; }
+  return derived_library_type($self);
+}
 
-  my $type = $self->lims_library_type;
-  if ($self->tag_index && $self->sample_description && $self->tag_sequence_from_description($self->sample_description)) {
+sub derived_library_type {
+  my $o = shift;
+  my $type = $o->default_library_type;
+  if ($o->tag_index && $o->sample_description &&
+      tag_sequence_from_description($o->sample_description)) {
     $type = '3 prime poly-A pulldown';
   }
   $type ||= undef;
-  return $type;
+  return $type;  
 }
 
+sub tag_sequence_from_description {
+  return undef;
+}
 
 =head2 library_types
 
@@ -646,8 +653,9 @@ sub library_types {
   }
   my $lt_hash = {};
   foreach my $o (@objects) {
-    if ($o->library_type) {
-      $lt_hash->{$o->library_type} = 1;
+    my $ltype = derived_library_type($o);
+    if ($ltype) {
+      $lt_hash->{$ltype} = 1;
     }
   }
   my @t = sort keys %{$lt_hash};
