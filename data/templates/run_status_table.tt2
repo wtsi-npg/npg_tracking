@@ -20,7 +20,7 @@
 <form method="post" action="[% SCRIPT_NAME %]/run_status/;create">
  <div>
  <input type="hidden" name="id_run" value="[% model.id_run %]" />
- <select name="id_run_status_dict" id="id_run_status_dict">[% FOREACH rsd = model.run_status_dict.run_status_dicts %]
+ <select name="id_run_status_dict" id="id_run_status_dict">[% FOREACH rsd = model.run_status_dict.run_status_dicts_sorted %]
   <option value="[% rsd.id_run_status_dict %]">[% rsd.description %]</option>[% END %]
  </select>
  [%- IF model.run_pair.id_run -%]<label>&nbsp;&nbsp;Update pair</label><input type="checkbox" name="update_pair" value="1"/>[% END %]

@@ -112,18 +112,18 @@ sub count_runs {
   return $self->{count_runs}->{ $params->{id_instrument_format} } || 0;
 }
 
-sub _sorted_run_status_dicts {
+sub run_status_dicts_sorted {
   my ( $self ) = @_;
-  my $query =   qq{SELECT temporal_index, description 
+  my $query =   q{SELECT temporal_index, description 
                   FROM run_status_dict 
                   WHERE iscurrent = 1 
                   ORDER BY temporal_index};
-  
+
   return $self->util->dbh->selectall_arrayref( $query );
 
 }
 
-sub _statuses_from_this_status {
+sub run_status_dicts_sorted_feasible {
   my ( $self, $id_run ) = @_;
 
   my $query =  qq{SELECT description 
@@ -136,9 +136,9 @@ sub _statuses_from_this_status {
                     AND run_status.iscurrent = 1) 
                   AND iscurrent = 1 
                   ORDER BY temporal_index};
-  
+
   return $self->util->dbh->selectall_arrayref( $query );
-  
+
 }
 
 1;
@@ -192,6 +192,14 @@ If this is given, the runs returned will only be for instruments of that format
 
 Takes an optional hash of params, id_instrument_format => (all,1,2,3..) (defaults to all)
 If this is given, the count of runs returned will only be for instruments of that format
+
+=head2 run_status_dicts_sorted
+
+Use instead of generated run_status_dicts to get a temporal ordered, current list
+
+=head2 run_status_dicts_sorted_feasible
+
+Use instead of generated run_status_dicst to geta  temporal ordered, curent list of statuses feasible from current status onwards
 
 =head1 DIAGNOSTICS
 

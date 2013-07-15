@@ -51,7 +51,7 @@ my $util = t::util->new({fixtures=>1});
 					      util        => $util,
 					      id_run_status_dict => 22,
 					     });
-  my $rsds = $rsd->_sorted_run_status_dicts();
+  my $rsds = $rsd->run_status_dicts_sorted();
   isa_ok($rsds, 'ARRAY');
   is((scalar @{$rsds}), 21, 'all sorted run status dicts');
 
