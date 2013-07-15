@@ -463,7 +463,7 @@ or tag indices. _ia stands for index access.
 sub children_ia {
   my $self = shift;
   my $h = {};
-  foreach my $alims (@{$self->children}) {
+  foreach my $alims ($self->children) {
     my $key = $alims->tag_index ? $alims->tag_index : $alims->position;
     $h->{$key} = $alims;
   }
