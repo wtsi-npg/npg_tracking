@@ -488,7 +488,7 @@ sub _entity_required_insert_size {
   }
 
   if (!$lims->is_control) {
-    my $is = $self->required_insert_size_range;
+    my $is = $lims->required_insert_size_range;
     if ($is && keys %{$is}) {
       ${$isize_defined} = 1;
       foreach my $key (qw/to from/) {
