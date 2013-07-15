@@ -13,6 +13,7 @@ use MooseX::StrictConstructor;
 use MooseX::Aliases;
 use MooseX::ClassAttribute;
 use Readonly;
+use Scalar::Util qw/weaken/;
 
 use npg_tracking::util::types;
 
@@ -174,7 +175,7 @@ sub BUILD {
   my $meta = $self->meta();
   $meta->add_attribute('_driver', $driver_attr_definition);
   foreach (@none) {
-    my $message =  "Warning: '$_' not inplemented for ".$self->driver_type." driver, returning undef\n";
+    my $message =  "Warning: '$_' not inplemented for ".$self->driver_type." driver, setting to return undef\n";
     $meta->add_method( "$_" => sub { print "$message"; return undef; } );
   }
 
@@ -190,7 +191,7 @@ class_has 'inline_index_end' => (isa => 'Int',
 
 =head2 id_run
 
-Run id, optional attribute. If not set, batch_id should be set.
+Run id, optional attribute.
 
 =cut
 has '+id_run'   =>        (required        => 0,);
@@ -204,7 +205,7 @@ has '+position' =>        (required        => 0,);
 
 =head2 batch_id
 
-Batch id, optional attribute. If not set, id_run should be set.
+Batch id, optional attribute.
 
 =cut
 has 'batch_id'  =>        (isa             => 'NpgTrackingPositiveInt',
@@ -240,7 +241,7 @@ sub _build_tag_sequence {
   if ($self->tag_index) {
     if (!$self->spiked_phix_tag_index || $self->tag_index != $self->spiked_phix_tag_index) {
       if ($self->sample_description) {
-        $seq = $self->tag_sequence_from_description($self->sample_description);
+        $seq = tag_sequence_from_sample_description($self->sample_description);
       }
     }
     if (!$seq) {
@@ -268,10 +269,10 @@ sub _build_tags {
   my $indices  = {};
   foreach my $plex ($self->children) {
     if(my $ti = $plex->tag_index){
-      $indices->{$ti} = $plex->default_tag_sequence;
+      $indices->{$ti} = $plex->tag_sequence;
     }
   }
-  if(keys %{$indices}){ return $indices;}
+  if(keys %{$indices}) { return $indices;}
   return;
 }
 
@@ -400,7 +401,17 @@ accessor is not set, returns lane level objects.
 =cut
 sub children {
   my $self = shift;
-  return $self->_driver->children;
+  my @children = ();
+  foreach my $c ($self->_driver->children) {
+    my $init = $c->init_attrs();
+    $init->{'driver_type'} = $self->driver_type;
+    my $weak = \$c;
+    weaken($weak);
+    $init->{'_driver'} = ${$weak};
+    my $child = st::api::lims->new($init);
+    push @children, $child;
+  }
+  return @children;
 }
 
 =head2 descendants
@@ -627,17 +638,17 @@ sub derived_library_type {
   my $o = shift;
   my $type = $o->default_library_type;
   if ($o->tag_index && $o->sample_description &&
-      tag_sequence_from_description($o->sample_description)) {
+      tag_sequence_from_sample_description($o->sample_description)) {
     $type = '3 prime poly-A pulldown';
   }
   $type ||= undef;
   return $type;  
 }
 
-sub tag_sequence_from_description {
+sub tag_sequence_from_sample_description {
   my $desc = shift;
   my $tag;
-  if ($desc && ($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx)){
+  if ($desc && (($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx))){
     ($tag) = $desc =~ /\(([ACGT]+)\)/smx;
   }
   return $tag;
@@ -734,18 +745,6 @@ __END__
 =item English
 
 =item Readonly
-
-=item XML::LibXML
-
-=item npg::api::run
-
-=item st::api::batch
-
-=item st::api::sample
-
-=item st::api::study
-
-=item st::api::project
 
 =item npg_tracking::util::types
 

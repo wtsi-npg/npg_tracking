@@ -694,30 +694,34 @@ foreach my $object_type ( @LIMS_OBJECTS ) {
   }
 }
 
-=head2 required_insert_size
+=head2 required_insert_size_range
 
 Read-only accessor, not possible to set from the constructor.
 Returns a has reference of expected insert sizes.
 
 =cut
-has 'required_insert_size'  => (isa             => 'HashRef',
+has 'required_insert_size_range'  => (isa             => 'HashRef',
                                 is              => 'ro',
                                 init_arg        => undef,
                                 lazy_build      => 1,
                                );
-sub _build_required_insert_size {
+sub _build_required_insert_size_range {
   my $self = shift;
 
   my $is_hash = {};
-  my $size_element_defined = 0;
-  if (defined $self->position && !$self->is_control) {
-    my @alims = $self->associated_lims;
-    if (!@alims) {
-      @alims = ($self);
-    }
-    foreach my $lims (@alims) {
-      $self->_entity_required_insert_size($lims, $is_hash, \$size_element_defined);
-    }
+  if (!$self->is_control) {
+   my $is_element = $self->_entity_xml_element->getElementsByTagName(q[insert_size]);
+   if ($is_element) {
+      $is_element = $is_element->[0];
+   }
+   if ($is_element) {
+      foreach my $key (qw/to from/) {
+        my $value = $is_element->getAttribute($key);
+        if ($value) {
+	  $is_hash->{$key} = $value;
+        }
+      }
+    } 
   }
   return $is_hash;
 }
@@ -902,35 +906,16 @@ sub _xml_element_exists {
   return 1;
 }
 
-sub _entity_required_insert_size {
-  my ($self, $lims, $is_hash, $isize_defined) = @_;
-
-  if (!$is_hash) {
-    croak q[Isize hash ref should be supplied];
-  }
-  if (!$lims) {
-    croak q[Lims object should be supplied];
-  }
-
-  if (!$lims->is_control) {
-    my $is_element = $lims->_entity_xml_element->getElementsByTagName(q[insert_size]);
-    if ($is_element) {
-      $is_element = $is_element->[0];
-    }
-    if ($is_element) {
-      ${$isize_defined} = 1;
-      foreach my $key (qw/to from/) {
-        my $value = $is_element->getAttribute($key);
-        if ($value) {
-	  my $lib_key = $lims->library_id || $lims->tag_index || $lims->sample_id;
-	  $is_hash->{$lib_key}->{$key} = $value;
-        }
-      }
+sub init_attrs {
+  my $self = shift;
+  my $h = {};
+  foreach my $attr (qw/id_run batch_id position tag_index/) {
+    if (defined $self->$attr) {
+      $h->{$attr} = $self->$attr;
     }
   }
-  return;
+  return $h;
 }
-
 
 =head2 to_string
 

@@ -8,12 +8,12 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 276;
+use Test::More tests => 283;
 use Test::Exception;
 
 use_ok('st::api::lims');
 
-my $NUM_METHODS = 46;
+my $NUM_METHODS = 53;
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 
 my @libs_6551_1 = ('PhiX06Apr11','SS109114 2798524','SS109305 2798523','SS117077 2798526','SS117886 2798525','SS127358 2798527','SS127858 2798529','SS128220 2798530','SS128716 2798531','SS129050 2798528','SS129764 2798532','SS130327 2798533','SS131636 2798534');
@@ -382,15 +382,12 @@ TODO: {
 
 {
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/tag_from_sample_description';
-  diag q[Tests for deducing tags from batch 19158 (associated with run 3905 by hand)]; 
+  #diag q[Tests for deducing tags from batch 19158 (associated with run 3905 by hand)]; 
   my $lims8 = st::api::lims->new(batch_id => 19158, position => 8);
   my @alims8 = $lims8->associated_lims;
   is(scalar @alims8, 7, 'Found 7 plexes in position 8');
 
-  # TODO check _build_tag_sequence 
-
-  # check _build_tags
-  diag q[Checking tag created by _build_tag is equal to the description value, not the tag value in expected_sequence, if a tag is available in the description];
+  #diag q[Checking tag created by _build_tag is equal to the description value, not the tag value in expected_sequence, if a tag is available in the description];
 
   my @tags = $lims8->tags();
   is(scalar @tags, 1, 'Found 1 tags array');
@@ -398,7 +395,7 @@ TODO: {
   cmp_ok($tags[0]->{5}, q(ne), q(ACAGTGGT), 'Do not use expected_sequence sequence for tag');
   cmp_ok($tags[0]->{5}, q(eq), q(GTAGAC), 'Use sample_description sequence for tag');
 
-  diag q[Checking tag created by _build_tag is equal to the expected_sequence where no sample description is available];
+  #diag q[Checking tag created by _build_tag is equal to the expected_sequence where no sample description is available];
 
   my $lims1 = st::api::lims->new(batch_id => 19158, position => 1);
   my @alims1 = $lims1->associated_lims;
@@ -409,14 +406,14 @@ TODO: {
 
   cmp_ok($tags1[0]->{144}, q(eq), q(CCTGAGCA), 'Use expected_sequence sequence for tag');
 
-  diag q[Checking library_type is changed to 3 prime poly-A pulldown where tag is taken from sample description];
+  #diag q[Checking library_type is changed to 3 prime poly-A pulldown where tag is taken from sample description];
 
   my $lims85 = st::api::lims->new(batch_id => 19158, position => 8, tag_index => 5);
   is($lims85->library_type, '3 prime poly-A pulldown', 'library type');
   is($lims85->tag_sequence, 'GTAGAC', 'plex tag sequence from sample description');
   ok($lims85->sample_description =~ /end enriched mRNA/sm, 'sample description available');
 
-  diag q[Checking library_type is not changed to 3 prime poly-A pulldown where no sample description is available];
+  #diag q[Checking library_type is not changed to 3 prime poly-A pulldown where no sample description is available];
 
   my $lims1144 = st::api::lims->new(batch_id => 19158, position => 1, tag_index => 144);
   isnt($lims1144->library_type, '3 prime poly-A pulldown', 'library type');
