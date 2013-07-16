@@ -299,6 +299,7 @@ lib/npg_tracking/glossary/tag.pm
 lib/npg_tracking/illumina/run/folder/location.pm
 lib/npg_tracking/illumina/run/folder.pm
 lib/npg_tracking/illumina/run/folder/validation.pm
+lib/npg_tracking/illumina/run/lims/samplesheet.pm
 lib/npg_tracking/illumina/run/long_info.pm
 lib/npg_tracking/illumina/run.pm
 lib/npg_tracking/illumina/run/short_info.pm
@@ -387,6 +388,7 @@ lib/st/api/base.pm
 lib/st/api/batch.pm
 lib/st/api/event.pm
 lib/st/api/lims.pm
+lib/st/api/lims/xml.pm
 lib/st/api/project.pm
 lib/st/api/sample.pm
 lib/st/api/study.pm
@@ -578,6 +580,7 @@ t/60-illumina-run-folder-validation.t
 t/60-illumina-run-long_info.t
 t/60-illumina-run-short_info.t
 t/60-illumina-run.t
+t/60-illumina-run-lims-samplesheet.t
 t/60-util-image_graph.t
 t/60-util-image_heatmap.t
 t/60-util-image_map.t
@@ -1242,6 +1245,7 @@ t/data/samplesheet/st/samples/1392238.xml
 t/data/samplesheet/st/studies/1980.xml
 t/data/samplesheet/st/studies/521.xml
 t/data/samplesheet/st/studies/700.xml
+t/data/samplesheet/MS2026264-300V2.csv
 t/data/st_api_lims_new/npg/designation/3.xml
 t/data/st_api_lims_new/npg/run/6551.xml
 t/data/st_api_lims_new/npg/run/6607.xml

@@ -1,6 +1,6 @@
 #########
 # Author:        Marina Gourtovaia
-# Created:       20 July 2011
+# Created:       July 2013
 # copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/lims.pm, r16549
 #
 
@@ -14,6 +14,7 @@ use MooseX::Aliases;
 use MooseX::ClassAttribute;
 use Readonly;
 use Scalar::Util qw/weaken/;
+use List::MoreUtils qw/none/;
 
 use npg_tracking::util::types;
 
@@ -35,26 +36,20 @@ st::api::lims
 
 =head1 DESCRIPTION
 
-Gateway to Sequencescape LIMS.
+Generic NPG pipeline oriented LIMS wrapper capabale of retrieving data from multiple sources
+(drivers).
 
 =head1 SUBROUTINES/METHODS
 
 =cut
 
-Readonly::Scalar our $PROC_NAME_INDEX => 3;
-Readonly::Hash   our %QC_EVAL_MAPPING   => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
+Readonly::Scalar my  $PROC_NAME_INDEX   => 3;
+Readonly::Hash   my  %QC_EVAL_MAPPING   => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
 Readonly::Scalar my  $INLINE_INDEX_END  => 10;
 
-Readonly::Hash my  %METHODS      => {
+Readonly::Hash   my  %METHODS           => {
 
-#id_run
-                           #batch_id
-                           #position
-                           #tag_index
-
-    'general'    =>   [qw/ 
-                           
-                           spiked_phix_tag_index
+    'general'    =>   [qw/ spiked_phix_tag_index
                            is_control
                            is_pool
                            bait_name
@@ -66,6 +61,7 @@ Readonly::Hash my  %METHODS      => {
     'lane'         => [qw/ lane_id
                            lane_priority
                       /],
+
     'library'      => [qw/ library_id
                            library_name
                            default_library_type
@@ -111,16 +107,24 @@ Readonly::Hash my  %METHODS      => {
 
 Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml/;
 
+
+=head2 driver_type
+
+Driver type (xml, etc), currently defaults to xml
+
+=cut
 has 'driver_type' => (
-                        isa => 'Str',
-                        is  => 'ro',
+                        isa     => 'Str',
+                        is      => 'ro',
                         default => $IMPLEMENTED_DRIVERS[0],
                      );
 
 sub _build__driver {
   my $self = shift;
   my $d_package = $self->_driver_package_name;
+  ##no critic (ProhibitStringyEval RequireCheckingReturnValueOfEval)
   eval "require $d_package";
+  ##use critic
   my $ref = {};
   if ($self->driver_type eq 'xml') {
     foreach my $attr (qw/tag_index position id_run/) {
@@ -140,26 +144,40 @@ sub _build__driver {
 sub _driver_package_name {
   my $self = shift;
   my $type = $self->driver_type;
-  if (!grep {$type} @IMPLEMENTED_DRIVERS) {
-    croak qq[Driver type '$type' not implemented.\n Implemented drivers: ] . 
+  if (none {$type} @IMPLEMENTED_DRIVERS) {
+    croak qq[Driver type '$type' not implemented.\n Implemented drivers: ] .
              join q[,], @IMPLEMENTED_DRIVERS;
   }
   return join q[::], __PACKAGE__ , $type;
 }
 
+=head2 delegated_methods
+
+A sorted list of methods execution of which is delegated to drivers
+
+=cut
 sub delegated_methods {
   my @methods = ();
   foreach my $key (keys %METHODS) {
     push @methods, @{$METHODS{$key}};
   }
-  return sort @methods;
+  @methods = sort @methods;
+  return @methods;
 }
 
+=head2 BUILD
+
+The last method called by the constructor before returning object to the caller.
+Instantiates a driver and sets up delegation. 
+
+=cut
 sub BUILD {
   my $self = shift;
 
   my $d_package = $self->_driver_package_name;
+  ##no critic (ProhibitStringyEval RequireCheckingReturnValueOfEval)
   eval "require $d_package";
+  ##use critic
   my @delegated = delegated_methods();
   my @del = grep { $d_package->can($_) } @delegated;
   my @none = grep { !$d_package->can($_) } @delegated;
@@ -171,18 +189,23 @@ sub BUILD {
                           'builder' => '_build__driver',
                           'handles' => \@del,
   };
-  
+
   my $meta = $self->meta();
   $meta->add_attribute('_driver', $driver_attr_definition);
   foreach (@none) {
     my $message =  "Warning: '$_' not inplemented for ".$self->driver_type." driver, setting to return undef\n";
-    $meta->add_method( "$_" => sub { print "$message"; return undef; } );
+    $meta->add_method( "$_" => sub { warn "$message\n"; return; } );
   }
 
  # __PACKAGE__->meta->make_immutable;
   return;
 }
 
+=head2 inline_index_end
+
+inlined index end, class method 
+
+=cut
 class_has 'inline_index_end' => (isa => 'Int',
                                  is => 'ro',
                                  required => 0,
@@ -202,6 +225,12 @@ Position, optional attribute.
 
 =cut
 has '+position' =>        (required        => 0,);
+
+=head2 tag_index
+
+Tag index, optional attribute.
+
+=cut
 
 =head2 batch_id
 
@@ -304,6 +333,31 @@ sub _build_required_insert_size {
   }
   return $is_hash;
 }
+sub _entity_required_insert_size {
+  my ($self, $lims, $is_hash, $isize_defined) = @_;
+
+  if (!$is_hash) {
+    croak q[Isize hash ref should be supplied];
+  }
+  if (!$lims) {
+    croak q[Lims object should be supplied];
+  }
+
+  if (!$lims->is_control) {
+    my $is = $lims->required_insert_size_range;
+    if ($is && keys %{$is}) {
+      ${$isize_defined} = 1;
+      foreach my $key (qw/to from/) {
+        my $value = $is->{$key};
+        if ($value) {
+	  my $lib_key = $lims->library_id || $lims->tag_index || $lims->sample_id;
+	  $is_hash->{$lib_key}->{$key} = $value;
+        }
+      }
+    }
+  }
+  return;
+}
 
 =head2 reference_genome
 
@@ -395,7 +449,7 @@ sub _build_contains_nonconsented_xahuman {
 
 Method returning a list of st::api::lims objects that are associated with this object
 and belong to the next (one lower) level. An empty list for a non-pool lane and for a plex.
-For a pooled lane contains plex-level objects. On a batch level, when the position 
+For a pooled lane contains plex-level objects. On a run level, when the position 
 accessor is not set, returns lane level objects.
 
 =cut
@@ -418,7 +472,7 @@ sub children {
 
 Method returning a list of all st::api::lims descendants objects for this object.
 An empty list for a non-pool lane and for a plex. For a pooled lane contains plex-level
-objects. On a batch level, when the position accessor is not set, returns objects of both
+objects. On a run level, when the position accessor is not set, returns objects of both
 lane and, if appropriate, plex level.
 
 =cut
@@ -455,7 +509,7 @@ The same as children. Retained for backward compatibility
 Method providing fast (index-based) access to child lims object.
 Returns a hash ref of st::api::lims children objects
 An empty hash for a non-pool lane and for a plex.
-For a pooled lane contains plex-level objects. On a batch level, when the position 
+For a pooled lane contains plex-level objects. On a run level, when the position 
 accessor is not set, returns lane level objects. The hash keys are lane numbers (positions)
 or tag indices. _ia stands for index access.
 
@@ -476,32 +530,6 @@ The same as children_ia. Retained for backward compatibility
 
 =cut
 *associated_child_lims_ia = \&children_ia; #backward compat
-
-sub _entity_required_insert_size {
-  my ($self, $lims, $is_hash, $isize_defined) = @_;
-
-  if (!$is_hash) {
-    croak q[Isize hash ref should be supplied];
-  }
-  if (!$lims) {
-    croak q[Lims object should be supplied];
-  }
-
-  if (!$lims->is_control) {
-    my $is = $lims->required_insert_size_range;
-    if ($is && keys %{$is}) {
-      ${$isize_defined} = 1;
-      foreach my $key (qw/to from/) {
-        my $value = $is->{$key};
-        if ($value) {
-	  my $lib_key = $lims->library_id || $lims->tag_index || $lims->sample_id;
-	  $is_hash->{$lib_key}->{$key} = $value;
-        }
-      }
-    }
-  }
-  return;
-}
 
 sub _list_of_properties {
   my ($self, $prop, $object_type, $with_spiked_control) = @_;
@@ -631,21 +659,21 @@ has 'library_type' =>     (isa             => 'Maybe[Str]',
 sub _build_library_type {
   my $self = shift;
   if($self->is_pool) { return; }
-  return derived_library_type($self);
+  return _derived_library_type($self);
 }
 
-sub derived_library_type {
+sub _derived_library_type {
   my $o = shift;
   my $type = $o->default_library_type;
   if ($o->tag_index && $o->sample_description &&
-      tag_sequence_from_sample_description($o->sample_description)) {
+      _tag_sequence_from_sample_description($o->sample_description)) {
     $type = '3 prime poly-A pulldown';
   }
   $type ||= undef;
-  return $type;  
+  return $type;
 }
 
-sub tag_sequence_from_sample_description {
+sub _tag_sequence_from_sample_description {
   my $desc = shift;
   my $tag;
   if ($desc && (($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx))){
@@ -685,7 +713,11 @@ sub library_types {
   return @t;
 }
 
+=head2 method_list
 
+A sorted list of public accessors (methods and attributes)
+
+=cut
 sub method_list {
   my $self = shift;
   my @attrs = ();
@@ -696,10 +728,9 @@ sub method_list {
     push @attrs, $name;
   }
   push @attrs, delegated_methods();
-  return sort @attrs;
+  @attrs = sort @attrs;
+  return @attrs;
 }
-
-
 
 =head2 to_string
 
@@ -709,12 +740,10 @@ Human friendly description of the object
 sub to_string {
   my $self = shift;
 
-  my $s = __PACKAGE__ . q[ object for batch ] . $self->batch_id;
-  if (defined $self->position) {
-    $s .= q[ position ] . $self->position;
-  }
-  if (defined $self->tag_index) {
-    $s .= q[ tag_index ] . $self->tag_index;
+  my $s = __PACKAGE__ . q[ object, driver type ] . $self->driver_type;
+  my %attrs = %{$self->_driver->init_attrs()};
+  foreach my $attr (sort keys %attrs) {
+    $s .= q[, ] . join q[ ], $attr, $attrs{$attr};
   }
   return $s;
 }
@@ -739,6 +768,10 @@ __END__
 =item MooseX::ClassAttribute
 
 =item MooseX::StrictConstructor
+
+=item Scalar::Util
+
+=item List::MoreUtils
 
 =item Carp
 
@@ -766,7 +799,7 @@ Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2011 GRL, by Marina Gourtovaia
+Copyright (C) 2013 GRL, by Marina Gourtovaia
 
 This file is part of NPG.
 

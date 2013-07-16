@@ -721,7 +721,7 @@ sub _build_required_insert_size_range {
 	  $is_hash->{$key} = $value;
         }
       }
-    } 
+    }
   }
   return $is_hash;
 }
@@ -766,7 +766,7 @@ sub _build_study_reference_genome {
   return $rg;
 }
 
-=head2 contains_nonconsented_human
+=head2 study_contains_nonconsented_human
 
 Read-only accessor, not possible to set from the constructor.
 For a library, control on non-zero plex returns the value of the
@@ -906,6 +906,11 @@ sub _xml_element_exists {
   return 1;
 }
 
+=head2 init_attrs
+
+A set of attributes sufficient to instantiate an object like this one
+
+=cut
 sub init_attrs {
   my $self = shift;
   my $h = {};

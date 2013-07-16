@@ -1,5 +1,10 @@
 CHANGES
 
+ - xml specific lims module, st::api::lims, is split into a generic lims wrapper,
+   st::api::lims, and xml parser, st::api::lims::xml
+ - a new parser/generator for Illumina-style samplesheets,
+   npg_tracking::illumina::run::lims::samplesheet 
+
 release 74.1
  - improvements and patches to tests
  - apache httpd conf file for running tracking server on centrally supported

@@ -13,6 +13,7 @@ use MooseX::StrictConstructor;
 use Template;
 use DateTime;
 use Readonly;
+use List::MoreUtils qw/any/;
 
 use npg_tracking::util::types;
 
@@ -37,7 +38,13 @@ Readonly::Scalar  my  $SAMPLESHEET_RECORD_SEPARATOR => q[,];
 Readonly::Scalar  my  $NOT_INDEXED_FLAG             => q[NO_INDEX];
 Readonly::Scalar  our $DEFAULT_WORKFLOW             => q[LibraryQC];
 Readonly::Scalar  our $DEFAULT_CHEMISTRY            => q[Default];
+Readonly::Scalar  our $RECORD_SPLIT_LIMIT           => -1;
 
+=head2 data
+
+Hash representation of LIMS data
+
+=cut
 has 'data' => (
                   isa => 'HashRef',
                   is  => 'ro',
@@ -58,8 +65,8 @@ sub _build_data {
     if (!$line) {
       next;
     }
-    my @columns = split $SAMPLESHEET_RECORD_SEPARATOR, $line, -1;
-    my @empty = grep {(!defined $_ || $_ eq '' || $_ =~ /^\s+$/)} @columns;
+    my @columns = split $SAMPLESHEET_RECORD_SEPARATOR, $line, $RECORD_SPLIT_LIMIT;
+    my @empty = grep {(!defined $_ || $_ eq q[] || $_ =~ /^\s+$/smx)} @columns;
     if (scalar @empty == scalar @columns) {
       next;
     }
@@ -70,7 +77,7 @@ sub _build_data {
       $d->{$current_section} = undef;
       next;
     }
-   
+
     if ($current_section eq 'Data') {
       if (!@data_columns) {
         @data_columns = @columns;
@@ -78,7 +85,7 @@ sub _build_data {
       }
       my $row = {'Lane' => 1,};
       foreach my $i (0 .. $#columns) {
-        $row->{$data_columns[$i]} = $columns[$i];  
+        $row->{$data_columns[$i]} = $columns[$i];
       }
       my @lanes = split /\+/smx, $row->{'Lane'};
       my $index = $row->{'Index'} || $NOT_INDEXED_FLAG;
@@ -87,12 +94,12 @@ sub _build_data {
       # There might be no index column header or the value might be undefined
       foreach my $lane (@lanes) { #give all lanes explicitly
         if (exists $d->{$current_section}->{$lane}->{$index}) {
-          croak 'Multiple $current_section section definitions for lane $lane index $index';
+          croak "Multiple $current_section section definitions for lane $lane index $index";
         }
         $d->{$current_section}->{$lane}->{$index} = $row;
       }
    } elsif ($current_section eq 'Reads') {
-     my @reads = grep { $_ =~/\d+/} @columns;
+     my @reads = grep { $_ =~/\d+/smx} @columns;
      if (!@reads) {
        next;
      }
@@ -116,11 +123,21 @@ sub _build_data {
   return $d;
 }
 
+=head2 chip_id
+
+Illumina chip id
+
+=cut
 has 'chip_id' => (
                   isa => 'Maybe[Str]',
                   is  => 'ro',
 );
 
+=head2 filename
+
+Samplesheet file name
+
+=cut
 has 'filename' => (
                   isa => 'Maybe[Str]',
                   is  => 'ro',
@@ -132,14 +149,24 @@ sub _build_filename {
   if ($self->chip_id) {
     return $self->chip_id . $SAMPLESHEET_FILE_EXTENSION;
   }
-  return undef;
+  return;
 }
 
+=head2 dir
+
+Directory with/for the samplesheet
+
+=cut
 has 'dir' => (
                   isa => 'Maybe[NpgTrackingDirectory]',
                   is  => 'ro',
 );
 
+=head2 path
+
+Samplesheet path
+
+=cut
 has 'path' => (
                   #isa => 'NpgTrackingReadableFile',
                   isa => 'Str',
@@ -159,14 +186,14 @@ sub _build_path {
   croak 'Samplesheet file name not known';
 }
 
-has template_text => (
+has '_template_text' => (
   'isa'       => 'Str',
   'is'        => 'ro',
   #'metaclass' => 'NoGetopt',
   'lazy'      =>1,
   'builder'   => '_build_template_text',
 );
-sub _build_template_text {
+sub _build__template_text {
   my $tt = <<'END_OF_TEMPLATE';
 [% 
    num_fields = additional_data_fields.size + 3;
@@ -216,7 +243,6 @@ END_OF_TEMPLATE
   return $tt;
 }
 
-
 sub _validate_data { # this is a callback for Moose trigger
                      # $old_data might not be set
   my ( $self, $data, $old_data ) = @_;
@@ -232,6 +258,7 @@ sub _validate_data { # this is a callback for Moose trigger
   #Do we have a mixture of indices and non-indexed in one lane?
   #Are all indices numbers?
   $self->_assign_defaults($data);
+  return;
 }
 
 sub _assign_defaults {
@@ -256,13 +283,14 @@ sub _assign_defaults {
   if (!$d->{'Header'}->{'Chemistry'}) {
     $d->{'Header'}->{'Chemistry'} = $DEFAULT_CHEMISTRY;
   }
+  return;
 }
 
 sub _has_index {
   my $self = shift;
   foreach my $lane_num (keys %{$self->{'Data'}}) {
     my @indices = keys %{$self->{'Data'}->{$lane_num}};
-    if (grep {/^[ATCG]+$/smxi} @indices) {
+    if (any {/^[ATCG]+$/smxi} @indices) {
       return 1;
     }
   }
@@ -277,13 +305,18 @@ sub _data_fields {
       $fields->{$field} = 1;
     }
   }
-  return keys %{$fields};  
+  return keys %{$fields};
 }
 
+=head2 generate
+
+Generates a samplesheet
+
+=cut
 sub generate {
   my ($self, @processargs) = @_;
   my $tt=Template->new();
-  my $template = $self->template_text;
+  my $template = $self->_template_text;
   my @data_fields = $self->_data_fields();
   my @non_default_data_fields =
     grep {$_ !~ /Lane|Index|Sample_ID|Sample_Name|GenomeFolder/smx } @data_fields;
@@ -294,7 +327,7 @@ sub generate {
     additional_data_fields => \@non_default_data_fields,
     separator              => $SAMPLESHEET_RECORD_SEPARATOR,
     multiple_lanes         => $multiple_lanes,
-    not_indexed_flag       => $NOT_INDEXED_FLAG, 
+    not_indexed_flag       => $NOT_INDEXED_FLAG,
   }, $self->path,@processargs)||croak $tt->error();
   return;
 }
