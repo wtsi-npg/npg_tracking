@@ -114,27 +114,26 @@ sub count_runs {
 
 sub run_status_dicts_sorted {
   my ( $self ) = @_;
-  my $query =   q{SELECT id_run_status_dict, description 
-                  FROM run_status_dict 
+  my $params ||= {};
+
+  my $pkg = __PACKAGE__;
+  my $query =   qq(SELECT id_run_status_dict, description 
+                  FROM  @{[$pkg->table()]}
                   WHERE iscurrent = 1 
-                  ORDER BY temporal_index};
+                  ORDER BY temporal_index);
 
-  my @numbered_list = ();
+  $query    = $self->util->driver->bounded_select($query,
+						  $params->{len},
+						  $params->{start});
 
-  my $statuses =  $self->util->dbh->selectall_arrayref( $query );
-
-  foreach my $status (@{$statuses}) {
-    my $id_status_hash = {};
-    $id_status_hash->{'id_run_status_dict'} = $status->[0];
-    $id_status_hash->{'description'} = $status->[1];
-    push @numbered_list, $id_status_hash;
-  }
-
-  return \@numbered_list;
+  return $self->gen_getarray($pkg, $query);
 }
 
 sub run_status_dicts_sorted_feasible {
   my ( $self, $id_run ) = @_;
+
+  my $params ||= {};
+  my $pkg = __PACKAGE__;
 
   my $query =  qq{SELECT id_run_status_dict, description 
                   FROM run_status_dict 
@@ -142,22 +141,16 @@ sub run_status_dicts_sorted_feasible {
                     SELECT temporal_index 
                     FROM run_status, run_status_dict 
                     WHERE run_status.id_run_status_dict = run_status_dict.id_run_status_dict 
-                    AND id_run = $id_run
+                    AND id_run = ? 
                     AND run_status.iscurrent = 1) 
                   AND iscurrent = 1 
                   ORDER BY temporal_index};
-  my @numbered_list = ();
 
-  my $statuses =  $self->util->dbh->selectall_arrayref( $query );
+  $query    = $self->util->driver->bounded_select($query,
+						  $params->{len},
+						  $params->{start});
 
-  foreach my $status (@{$statuses}) {
-    my $id_status_hash = {};
-    $id_status_hash->{'id_run_status_dict'} = $status->[0];
-    $id_status_hash->{'description'} = $status->[1];
-    push @numbered_list, $id_status_hash;
-  }
-
-  return \@numbered_list;
+  return $self->gen_getarray($pkg , $query, $id_run);
 
 }
 
