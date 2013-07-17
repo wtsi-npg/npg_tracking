@@ -31,13 +31,11 @@ has 'bait_path'     => ( isa => q{Maybe[Str]}, is => q{ro}, lazy_build => 1,
                                  documentation => 'Path to the bait folder',);
 sub _build_bait_path {
   my ( $self ) = @_;
-  use Test::More;
   my $bait_name = $self->bait_name;
   if ($bait_name) {
-    ##no critic (RegularExpressions::RequireExtendedFormatting RegularExpressions::RequireLineBoundaryMatching)
-    $bait_name =~ s/^(\s)+//s;
-    $bait_name =~ s/(\s)+$//s;
-    ##use critic
+    # trim all white space around the name
+    $bait_name =~ s/\A(\s)+//smx;
+    $bait_name =~ s/(\s)+\z//smx;
   }
   if (!$bait_name) {
     $self->messages->push('Bait name not available.');
