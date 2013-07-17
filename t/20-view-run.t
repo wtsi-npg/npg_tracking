@@ -8,7 +8,7 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 73;
+use Test::More tests => 74;
 use Test::Exception;
 use t::util;
 use t::request;
@@ -211,6 +211,19 @@ my $util = t::util->new({fixtures  => 1,});
 					       },
 			    });
   ok($util->test_rendered($str, 't/data/rendered/run_add_pair_ajax.html'), 'add_pair_ajax');
+}
+
+{
+  my $str = t::request->new({
+			     PATH_INFO      => '/run/1234#run_status_form',
+			     REQUEST_METHOD => 'GET',
+			     username       => 'joe_loader',
+			     util           => $util,
+			     cgi_params     => {
+						batch_id => 42,
+					       },
+			    });
+  ok($util->test_rendered($str, 't/data/rendered/run_status/t_run_status_list_sorted.html'), 'run status list is sorted and filtered');
 }
 
 {
