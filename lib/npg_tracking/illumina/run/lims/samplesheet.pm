@@ -191,7 +191,7 @@ has '_template_text' => (
   'is'        => 'ro',
   #'metaclass' => 'NoGetopt',
   'lazy'      =>1,
-  'builder'   => '_build_template_text',
+  'builder'   => '_build__template_text',
 );
 sub _build__template_text {
   my $tt = <<'END_OF_TEMPLATE';

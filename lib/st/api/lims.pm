@@ -270,7 +270,7 @@ sub _build_tag_sequence {
   if ($self->tag_index) {
     if (!$self->spiked_phix_tag_index || $self->tag_index != $self->spiked_phix_tag_index) {
       if ($self->sample_description) {
-        $seq = tag_sequence_from_sample_description($self->sample_description);
+        $seq = _tag_sequence_from_sample_description($self->sample_description);
       }
     }
     if (!$seq) {
@@ -704,7 +704,7 @@ sub library_types {
   }
   my $lt_hash = {};
   foreach my $o (@objects) {
-    my $ltype = derived_library_type($o);
+    my $ltype = _derived_library_type($o);
     if ($ltype) {
       $lt_hash->{$ltype} = 1;
     }
@@ -740,7 +740,7 @@ Human friendly description of the object
 sub to_string {
   my $self = shift;
 
-  my $s = __PACKAGE__ . q[ object, driver type ] . $self->driver_type;
+  my $s = __PACKAGE__ . q[ object, driver - ] . $self->driver_type;
   my %attrs = %{$self->_driver->init_attrs()};
   foreach my $attr (sort keys %attrs) {
     $s .= q[, ] . join q[ ], $attr, $attrs{$attr};

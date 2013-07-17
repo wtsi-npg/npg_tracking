@@ -33,7 +33,7 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is($lims->spiked_phix_tag_index, undef, 'spiked phix tag index undefined');
   is(scalar $lims->descendants, 185, '185 descendant lims');
   is(scalar $lims->children, 8, '8 child lims');
-  is($lims->to_string, 'st::api::lims object for batch 12141', 'object as string');
+  is($lims->to_string, 'st::api::lims object, driver - xml, batch_id 12141, id_run 6551', 'object as string');
   is($lims->inline_index_end, 10, 'inline index end for an object instance');
   is(st::api::lims->inline_index_end, 10, 'inline index end as a class method');
 
@@ -66,7 +66,7 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is ($p6->tag_index, 6, 'plex tag index');
   is ($p1->default_tag_sequence, 'ATCACGTTAT', 'plex tag sequence');
   is ($p6->default_tag_sequence, 'GCCAATGTAT', 'plex tag sequence');
-  is($lims->to_string, 'st::api::lims object for batch 12141 position 1', 'object as string');
+  is($lims->to_string, 'st::api::lims object, driver - xml, batch_id 12141, id_run 6551, position 1', 'object as string');
   is(join(q[,], $lims->library_names), join(q[,], sort @libs_6551_1), 'pool lane-level library_names list');
   is(join(q[,], $lims->sample_names), join(q[,], sort @samples_6551_1), 'pool lane-level sample_names list');
   is(join(q[,], $lims->study_names), join(q[,], sort @studies_6551_1), 'pool lane-level study_names list');
@@ -115,7 +115,7 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is($lims->spiked_phix_tag_index, 168, 'spiked phix tag index');
   is(scalar $lims->descendants, 13, '13 descendant lims');
   is(scalar $lims->children, 13, '13 child lims');
-  is($lims->to_string, 'st::api::lims object for batch 12141 position 1 tag_index 0', 'object as string');
+  is($lims->to_string, 'st::api::lims object, driver - xml, batch_id 12141, id_run 6551, position 1, tag_index 0', 'object as string');
   is(join(q[,], $lims->library_names), join(q[,], sort @libs_6551_1), 'tag 0 library_names list');
   is(join(q[,], $lims->sample_names), join(q[,], sort @samples_6551_1), 'tag 0 sample_names list');
   is(join(q[,], $lims->study_names), join(q[,], sort @studies_6551_1), 'tag 0 study_names list');
@@ -259,7 +259,7 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is_deeply($lims->tags, $expected_tags, 'tags mapping');
   is($lims->spiked_phix_tag_index, undef, 'spiked phix tag index undefined');
   is($lims->tag_sequence, undef, 'tag_sequence undefined');
-  is($lims->to_string, 'st::api::lims object for batch 12378 position 5', 'object as string');
+  is($lims->to_string, 'st::api::lims object, driver - xml, batch_id 12378, id_run 6607, position 5', 'object as string');
 
   my $libs = 'HIC_M_B15C2 3111683,HiC_H_Dd2 3111680,HiC_H_LT3D7 3111687,HiC_H_OFF_DCJ 3111682,HiC_H_ON_DCJ 3111679,HiC_H_PQP1 3111681,HiC_M_3D7 3111685,HiC_M_ER3D7 3111686,HiC_M_Rev1 3111684';
   my $samples = 'HIC_M_B15C2,HiC_H_Dd2,HiC_H_LT3D7,HiC_H_OFF_DCJ,HiC_H_ON_DCJ,HiC_H_PQP1,HiC_M_3D7,HiC_M_ER3D7,HiC_M_Rev1';
