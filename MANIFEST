@@ -1150,6 +1150,7 @@ t/data/repos1/references/taxon_ids/.gitignore
 t/data/repos1/st/batches/16442.xml
 t/data/repos1/st/batches/16467.xml
 t/data/repos1/st/samples/1327533.xml
+t/data/repos1/st/samples/1327535.xml
 t/data/repos1/st/studies/2072.xml
 t/data/repos2/references2/Homo_sapiens/NCBI36/.gitignore
 t/data/repos2/references2/NPD_Chimera/010302/.gitignore

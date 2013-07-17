@@ -23,7 +23,7 @@
             <tag_group_id>3</tag_group_id>
           </tag>
           <bait id="1">
-            <name>Human all exon 50MB</name>
+            <name> Human all exon 50MB  </name>
           </bait>
           <insert_size from="100" to="400"/>
         </sample>
@@ -34,7 +34,8 @@
             <tag_group_id>3</tag_group_id>
           </tag>
           <bait id="1">
-            <name>Human all exon 50MB</name>
+            <name>  
+            </name>
           </bait>
           <insert_size from="100" to="400"/>
         </sample>
