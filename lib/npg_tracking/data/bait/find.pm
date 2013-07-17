@@ -34,8 +34,10 @@ sub _build_bait_path {
   use Test::More;
   my $bait_name = $self->bait_name;
   if ($bait_name) {
+    ##no critic (RegularExpressions::RequireExtendedFormatting RegularExpressions::RequireLineBoundaryMatching)
     $bait_name =~ s/^(\s)+//s;
     $bait_name =~ s/(\s)+$//s;
+    ##use critic
   }
   if (!$bait_name) {
     $self->messages->push('Bait name not available.');
