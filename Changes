@@ -6,6 +6,9 @@ release 74.2
  - a new parser/generator for Illumina-style samplesheets,
    npg_tracking::illumina::run::lims::samplesheet
  - bait finder update to cope with white space around bait name RT#334881
+ - fixed test failures for Monitor::RunFolder::Staging by making the timeout
+   the object is using variable and setting it to a small value in the test;
+   this allows for testing a fresh clone
 
 release 74.1
  - improvements and patches to tests

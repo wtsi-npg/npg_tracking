@@ -26,6 +26,11 @@ Readonly::Scalar my $MTIME_INDEX        =>  9;
 Readonly::Scalar my $SECONDS_PER_MINUTE => 60;
 Readonly::Scalar my $NETCOPY_COMPLETE   => 10 * $SECONDS_PER_MINUTE;
 
+has 'netcopy_complete_wait' => (isa          => 'Int',
+                                is           => 'ro',
+                                default      => $NETCOPY_COMPLETE,
+                               );
+
 
 sub cycle_lag {
     my ($self) = @_;
@@ -87,7 +92,7 @@ sub mirroring_complete {
         qr{Copying[ ]logs[ ]to[ ]network[ ]run[ ]folder\s* \Z }msx;
 
 
-    return ( $last_modified > $NETCOPY_COMPLETE ) ? 1
+    return ( $last_modified > $self->netcopy_complete_wait ) ? 1
          : ( $events_log =~ $events_regex )       ? 1
          :                                          0;
 }
