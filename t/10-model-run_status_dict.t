@@ -41,6 +41,7 @@ my $util = t::util->new({fixtures=>1});
 					      id_run_status_dict => 22,
 					     });
   my $rsds = $rsd->run_status_dicts();
+
   isa_ok($rsds, 'ARRAY');
   is((scalar @{$rsds}), 24, 'all run status dicts');
 
@@ -52,31 +53,95 @@ my $util = t::util->new({fixtures=>1});
 					      id_run_status_dict => 22,
 					     });
   my $rsds = $rsd->run_status_dicts_sorted();
+
   isa_ok($rsds, 'ARRAY');
   is((scalar @{$rsds}), 21, 'all sorted run status dicts');
 
   my $ordered = [
-           [ '100', 'run pending' ],
-           [ '120', 'run in progress' ],
-           [ '130', 'run on hold' ],
-           [ '140', 'run cancelled' ],
-           [ '150', 'run stopped early' ],
-           [ '160', 'run complete' ],
-           [ '170', 'run mirrored' ],
-           [ '200', 'analysis pending' ],
-           [ '210', 'analysis cancelled' ],
-           [ '220', 'data discarded' ],
-           [ '230', 'analysis on hold' ],
-           [ '240', 'analysis in progress' ],
-           [ '250', 'secondary analysis in progress' ],
-           [ '260', 'analysis complete' ],
-           [ '300', 'qc review pending' ],
-           [ '310', 'qc in progress' ],
-           [ '320', 'qc on hold' ],
-           [ '400', 'archival pending' ],
-           [ '410', 'archival in progress' ],
-           [ '420', 'run archived' ],
-           [ '500', 'qc complete' ]
+           {
+             'id_run_status_dict' => '1',
+             'description' => 'run pending'
+           },
+           {
+             'id_run_status_dict' => '2',
+             'description' => 'run in progress'
+           },
+           {
+             'id_run_status_dict' => '3',
+             'description' => 'run on hold'
+           },
+           {
+             'id_run_status_dict' => '5',
+             'description' => 'run cancelled'
+           },
+           {
+             'id_run_status_dict' => '22',
+             'description' => 'run stopped early'
+           },
+           {
+             'id_run_status_dict' => '4',
+             'description' => 'run complete'
+           },
+           {
+             'id_run_status_dict' => '11',
+             'description' => 'run mirrored'
+           },
+           {
+             'id_run_status_dict' => '6',
+             'description' => 'analysis pending'
+           },
+           {
+             'id_run_status_dict' => '10',
+             'description' => 'analysis cancelled'
+           },
+           {
+             'id_run_status_dict' => '21',
+             'description' => 'data discarded'
+           },
+           {
+             'id_run_status_dict' => '8',
+             'description' => 'analysis on hold'
+           },
+           {
+             'id_run_status_dict' => '7',
+             'description' => 'analysis in progress'
+           },
+           {
+             'id_run_status_dict' => '24',
+             'description' => 'secondary analysis in progress'
+           },
+           {
+             'id_run_status_dict' => '9',
+             'description' => 'analysis complete'
+           },
+           {
+             'id_run_status_dict' => '19',
+             'description' => 'qc review pending'
+           },
+           {
+             'id_run_status_dict' => '26',
+             'description' => 'qc in progress'
+           },
+           {
+             'id_run_status_dict' => '25',
+             'description' => 'qc on hold'
+           },
+           {
+             'id_run_status_dict' => '17',
+             'description' => 'archival pending'
+           },
+           {
+             'id_run_status_dict' => '18',
+             'description' => 'archival in progress'
+           },
+           {
+             'id_run_status_dict' => '12',
+             'description' => 'run archived'
+           },
+           {
+             'id_run_status_dict' => '20',
+             'description' => 'qc complete'
+           }
          ];
 
   is(scalar @{$ordered}, 21, 'Only want current run status values');

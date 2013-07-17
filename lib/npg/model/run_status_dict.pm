@@ -114,19 +114,29 @@ sub count_runs {
 
 sub run_status_dicts_sorted {
   my ( $self ) = @_;
-  my $query =   q{SELECT temporal_index, description 
+  my $query =   q{SELECT id_run_status_dict, description 
                   FROM run_status_dict 
                   WHERE iscurrent = 1 
                   ORDER BY temporal_index};
 
-  return $self->util->dbh->selectall_arrayref( $query );
+  my @numbered_list = ();
 
+  my $statuses =  $self->util->dbh->selectall_arrayref( $query );
+
+  foreach my $status (@{$statuses}) {
+    my $id_status_hash = {};
+    $id_status_hash->{'id_run_status_dict'} = $status->[0];
+    $id_status_hash->{'description'} = $status->[1];
+    push @numbered_list, $id_status_hash;
+  }
+
+  return \@numbered_list;
 }
 
 sub run_status_dicts_sorted_feasible {
   my ( $self, $id_run ) = @_;
 
-  my $query =  qq{SELECT description 
+  my $query =  qq{SELECT id_run_status_dict, description 
                   FROM run_status_dict 
                   WHERE temporal_index > (
                     SELECT temporal_index 
@@ -136,8 +146,18 @@ sub run_status_dicts_sorted_feasible {
                     AND run_status.iscurrent = 1) 
                   AND iscurrent = 1 
                   ORDER BY temporal_index};
+  my @numbered_list = ();
 
-  return $self->util->dbh->selectall_arrayref( $query );
+  my $statuses =  $self->util->dbh->selectall_arrayref( $query );
+
+  foreach my $status (@{$statuses}) {
+    my $id_status_hash = {};
+    $id_status_hash->{'id_run_status_dict'} = $status->[0];
+    $id_status_hash->{'description'} = $status->[1];
+    push @numbered_list, $id_status_hash;
+  }
+
+  return \@numbered_list;
 
 }
 
