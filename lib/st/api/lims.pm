@@ -36,7 +36,7 @@ st::api::lims
 
 =head1 DESCRIPTION
 
-Generic NPG pipeline oriented LIMS wrapper capabale of retrieving data from multiple sources
+Generic NPG pipeline oriented LIMS wrapper capable of retrieving data from multiple sources
 (drivers).
 
 =head1 SUBROUTINES/METHODS
