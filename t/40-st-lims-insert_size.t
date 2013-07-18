@@ -49,7 +49,7 @@ use_ok('st::api::lims');
   $is_available = 0;
   $lims->_entity_required_insert_size($lims, $is, \$is_available);
   is (keys %{$is}, 0, 'the insert size hash is empty');
-  is ($is_available, 1, 'is reported as available');
+  is ($is_available, 0, 'is reported as not available');
 }
 
 {
