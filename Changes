@@ -1,5 +1,7 @@
 CHANGES
 
+- reorder run_status_dict by temporal_index
+
 release 74.1
  - improvements and patches to tests
  - apache httpd conf file for running tracking server on centrally supported
