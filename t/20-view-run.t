@@ -10,6 +10,7 @@ use strict;
 use warnings;
 use Test::More tests => 74;
 use Test::Exception;
+use Test::Deep;
 use t::util;
 use t::request;
 
