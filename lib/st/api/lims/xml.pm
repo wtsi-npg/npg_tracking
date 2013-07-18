@@ -45,7 +45,6 @@ Readonly::Scalar our $BAD_SAMPLE_ID     => 4;
 Readonly::Scalar our $PROC_NAME_INDEX   => 3;
 Readonly::Hash   our %QC_EVAL_MAPPING   => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
 Readonly::Array  our @LIMS_OBJECTS      => qw/sample study project/;
-Readonly::Scalar my  $INLINE_INDEX_END  => 10;
 
 Readonly::Hash our %DELEGATION      => {
     'sample'       => {
