@@ -31,8 +31,12 @@ has 'bait_path'     => ( isa => q{Maybe[Str]}, is => q{ro}, lazy_build => 1,
                                  documentation => 'Path to the bait folder',);
 sub _build_bait_path {
   my ( $self ) = @_;
-
   my $bait_name = $self->bait_name;
+  if ($bait_name) {
+    # trim all white space around the name
+    $bait_name =~ s/\A(\s)+//smx;
+    $bait_name =~ s/(\s)+\z//smx;
+  }
   if (!$bait_name) {
     $self->messages->push('Bait name not available.');
     return;
