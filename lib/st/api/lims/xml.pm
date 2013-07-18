@@ -10,14 +10,11 @@ use Carp;
 use English qw(-no_match_vars);
 use Moose;
 use MooseX::StrictConstructor;
-use MooseX::Aliases;
-use MooseX::ClassAttribute;
 use XML::LibXML;
 use Readonly;
 
 use npg::api::run;
 use st::api::batch;
-use st::api::sample;
 use npg_tracking::util::types;
 
 with qw/  npg_tracking::glossary::run
@@ -79,12 +76,6 @@ Readonly::Hash our %DELEGATION      => {
                            project_cost_code => 'project_cost_code',
     },
 };
-
-class_has 'inline_index_end' => (isa => 'Int',
-                                 is => 'ro',
-                                 required => 0,
-                                 default => $INLINE_INDEX_END,
-                                );
 
 =head2 id_run
 
@@ -956,10 +947,6 @@ __END__
 
 =item Moose
 
-=item MooseX::Aliases
-
-=item MooseX::ClassAttribute
-
 =item MooseX::StrictConstructor
 
 =item Carp
@@ -973,12 +960,6 @@ __END__
 =item npg::api::run
 
 =item st::api::batch
-
-=item st::api::sample
-
-=item st::api::study
-
-=item st::api::project
 
 =item npg_tracking::util::types
 
