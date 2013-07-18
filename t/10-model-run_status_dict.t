@@ -12,7 +12,7 @@ use t::util;
 use npg::model::instrument;
 use npg::model::user;
 use npg::model::annotation;
-use Test::More tests => 46;
+use Test::More tests => 25;
 use Test::Deep;
 
 use_ok('npg::model::run_status_dict');
@@ -58,101 +58,12 @@ my $util = t::util->new({fixtures=>1});
   isa_ok($rsds, 'ARRAY');
   is(($rsds_length), 21, 'all sorted run status dicts');
 
-  my $ordered = [
-           {
-             'id_run_status_dict' => '1',
-             'description' => 'run pending'
-           },
-           {
-             'id_run_status_dict' => '2',
-             'description' => 'run in progress'
-           },
-           {
-             'id_run_status_dict' => '3',
-             'description' => 'run on hold'
-           },
-           {
-             'id_run_status_dict' => '5',
-             'description' => 'run cancelled'
-           },
-           {
-             'id_run_status_dict' => '22',
-             'description' => 'run stopped early'
-           },
-           {
-             'id_run_status_dict' => '4',
-             'description' => 'run complete'
-           },
-           {
-             'id_run_status_dict' => '11',
-             'description' => 'run mirrored'
-           },
-           {
-             'id_run_status_dict' => '6',
-             'description' => 'analysis pending'
-           },
-           {
-             'id_run_status_dict' => '10',
-             'description' => 'analysis cancelled'
-           },
-           {
-             'id_run_status_dict' => '21',
-             'description' => 'data discarded'
-           },
-           {
-             'id_run_status_dict' => '8',
-             'description' => 'analysis on hold'
-           },
-           {
-             'id_run_status_dict' => '7',
-             'description' => 'analysis in progress'
-           },
-           {
-             'id_run_status_dict' => '24',
-             'description' => 'secondary analysis in progress'
-           },
-           {
-             'id_run_status_dict' => '9',
-             'description' => 'analysis complete'
-           },
-           {
-             'id_run_status_dict' => '19',
-             'description' => 'qc review pending'
-           },
-           {
-             'id_run_status_dict' => '26',
-             'description' => 'qc in progress'
-           },
-           {
-             'id_run_status_dict' => '25',
-             'description' => 'qc on hold'
-           },
-           {
-             'id_run_status_dict' => '17',
-             'description' => 'archival pending'
-           },
-           {
-             'id_run_status_dict' => '18',
-             'description' => 'archival in progress'
-           },
-           {
-             'id_run_status_dict' => '12',
-             'description' => 'run archived'
-           },
-           {
-             'id_run_status_dict' => '20',
-             'description' => 'qc complete'
-           }
-         ];
-
-  is(scalar @{$ordered}, 21, 'Only want current run status values');
-  
-  for (my $index = 0; $index < $rsds_length; $index++){
-    my $status = @{$rsds}[$index]->{description};
-    my $expected_status = @{$ordered}[$index]->{description};
-    is($status, $expected_status, "Status $status is in correct order");
+  my @sorted_run_status_dicts = sort {
+    $a->{temporal_index} <=> $b->{temporal_index}
   }
+  @{$rsds};
 
+  cmp_deeply($rsds, \@sorted_run_status_dicts, 'Status list is in temporal index order');
 }
 
 {

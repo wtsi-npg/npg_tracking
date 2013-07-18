@@ -20,8 +20,7 @@ __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_all();
 
 sub fields {
-  return qw(id_run_status_dict
-            description);
+  return qw(id_run_status_dict description temporal_index);
 }
 
 sub init {
@@ -114,44 +113,14 @@ sub count_runs {
 
 sub run_status_dicts_sorted {
   my ( $self ) = @_;
-  my $params ||= {};
 
   my $pkg = __PACKAGE__;
-  my $query =   qq(SELECT id_run_status_dict, description 
+  my $query =   qq(SELECT id_run_status_dict, description, temporal_index
                   FROM  @{[$pkg->table()]}
                   WHERE iscurrent = 1 
                   ORDER BY temporal_index);
 
-  $query    = $self->util->driver->bounded_select($query,
-						  $params->{len},
-						  $params->{start});
-
   return $self->gen_getarray($pkg, $query);
-}
-
-sub run_status_dicts_sorted_feasible {
-  my ( $self, $id_run ) = @_;
-
-  my $params ||= {};
-  my $pkg = __PACKAGE__;
-
-  my $query =  qq{SELECT id_run_status_dict, description 
-                  FROM run_status_dict 
-                  WHERE temporal_index > (
-                    SELECT temporal_index 
-                    FROM run_status, run_status_dict 
-                    WHERE run_status.id_run_status_dict = run_status_dict.id_run_status_dict 
-                    AND id_run = ? 
-                    AND run_status.iscurrent = 1) 
-                  AND iscurrent = 1 
-                  ORDER BY temporal_index};
-
-  $query    = $self->util->driver->bounded_select($query,
-						  $params->{len},
-						  $params->{start});
-
-  return $self->gen_getarray($pkg , $query, $id_run);
-
 }
 
 1;
