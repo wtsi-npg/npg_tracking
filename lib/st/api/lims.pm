@@ -105,7 +105,7 @@ Readonly::Hash   my  %METHODS           => {
                       /],
 };
 
-Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml/;
+Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml samplesheet/;
 
 
 =head2 driver_type
@@ -135,6 +135,12 @@ sub _build__driver {
         $ref->{'batch_id'} = $self->batch_id;
       }
     }
+  } elsif ($self->driver_type eq 'samplesheet') {
+    foreach my $attr (qw/tag_index position id_run path/) {
+      if (defined $self->$attr) {
+        $ref->{$attr} = $self->$attr;
+      }
+    }
   } else {
     croak 'Do not know how to instantiate driver type ' . $self->driver_type;
   }
@@ -148,7 +154,12 @@ sub _driver_package_name {
     croak qq[Driver type '$type' not implemented.\n Implemented drivers: ] .
              join q[,], @IMPLEMENTED_DRIVERS;
   }
-  return join q[::], __PACKAGE__ , $type;
+  if ($type eq 'xml') {
+    return join q[::], __PACKAGE__ , $type;
+  } elsif ($type eq 'samplesheet') {
+    return 'npg_tracking::illumina::run::lims::samplesheet';
+  }
+  return;
 }
 
 =head2 delegated_methods
@@ -211,6 +222,17 @@ class_has 'inline_index_end' => (isa => 'Int',
                                  required => 0,
                                  default => $INLINE_INDEX_END,
                                 );
+
+=head2 path
+
+Samplesheet path
+
+=cut
+has 'path' => (
+                  isa      => 'Str',
+                  is       => 'ro',
+                  required => 0,
+              );
 
 =head2 id_run
 

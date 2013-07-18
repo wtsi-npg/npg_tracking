@@ -8,7 +8,7 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 283;
+use Test::More tests => 288;
 use Test::Exception;
 
 use_ok('st::api::lims');
@@ -418,6 +418,15 @@ TODO: {
   my $lims1144 = st::api::lims->new(batch_id => 19158, position => 1, tag_index => 144);
   isnt($lims1144->library_type, '3 prime poly-A pulldown', 'library type');
   is($lims1144->tag_sequence, 'CCTGAGCA', 'plex tag sequence directly from batch xml');
+}
+
+{
+  my $path = 't/data/samplesheet/MS2026264-300V2.csv';
+  my $ss = st::api::lims->new(id_run => 10262,  path => $path, driver_type => 'samplesheet');
+  is ($ss->is_pool, 0, 'is_pool false on run level');
+  is ($ss->is_control, 0, 'is_control false on run level');
+  is ($ss->library_id, undef, 'library_id undef on run level');
+  is ($ss->library_name, undef, 'library_name undef on run level');
 }
 
 1;
