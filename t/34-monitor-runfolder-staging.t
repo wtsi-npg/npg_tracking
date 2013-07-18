@@ -15,7 +15,7 @@ use File::Copy;
 use File::Find;
 use File::Temp qw(tempdir);
 
-use Test::More tests => 52;
+use Test::More tests => 53;
 use Test::Exception::LessClever;
 use Test::Warn;
 use Test::Deep;
@@ -44,6 +44,7 @@ my $schema = t::dbic_util->new->test_schema();
                     _schema        => $schema, )
          }
          'Object creation ok';
+    is($test->netcopy_complete_wait, 600, 'default netcopy complete wait time');
 }
 
 {
@@ -111,6 +112,7 @@ my $schema = t::dbic_util->new->test_schema();
     my $tmpdir = tempdir( CLEANUP => 1 );
  
     system('cp',  '-rp', $MOCK_STAGING . '/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX', $tmpdir);
+    sleep 15;
  
     my $mock_path = $tmpdir . '/100914_HS3_05281_A_205MBABXX';
 
@@ -118,7 +120,8 @@ my $schema = t::dbic_util->new->test_schema();
     rename "$mock_path/R_mx_unInfo.xml", "$mock_path/RunInfo.xml";
 
     my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+                                              _schema        => $schema,
+                                              netcopy_complete_wait => 15);
 
     rename "$mock_path/Basecalling_Netcopy_complete_READ2.txt", 
            "$mock_path/Basecalling_Netcopy_complete_Read3.txt";
@@ -138,7 +141,8 @@ my $schema = t::dbic_util->new->test_schema();
     rename "$mock_path/RunInfo.xml", "$mock_path/R_mx_unInfo.xml";
     rename "$mock_path/R_o_unInfo.xml", "$mock_path/RunInfo.xml";
     $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+                                              _schema        => $schema,
+                                              netcopy_complete_wait => 15);
 
 
     ok( $test->mirroring_complete(),
@@ -155,7 +159,8 @@ my $schema = t::dbic_util->new->test_schema();
     rename "$mock_path/RunInfo.xml", "$mock_path/R_o_unInfo.xml";
     rename "$mock_path/R_s_unInfo.xml", "$mock_path/RunInfo.xml";
     $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+                                              _schema        => $schema,
+                                              netcopy_complete_wait => 15);
 
     rename "$mock_path/Basecalling_Netcopy_complete_Read1.txt",
            "$mock_path/Basecalling_Netcopy_complete_Read1.txt";
@@ -173,7 +178,8 @@ my $schema = t::dbic_util->new->test_schema();
     rename "$mock_path/RunInfo.xml", "$mock_path/R_s_unInfo.xml";
     rename "$mock_path/R_smx_unInfo.xml", "$mock_path/RunInfo.xml";
     $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+                                              _schema        => $schema,
+                                              netcopy_complete_wait => 15);
 
 
     rename "$mock_path/Basecalling_Netcopy_complete_temp.txt", 
