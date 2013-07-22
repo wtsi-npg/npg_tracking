@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::CostCode;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::CostCode
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::CostCode
+=head1 TABLE: C<cost_code>
 
 =cut
 
@@ -60,7 +75,31 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_cost_code>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_cost_code");
+
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<cost_code_UNIQUE>
+
+=over 4
+
+=item * L</cost_code>
+
+=back
+
+=cut
+
 __PACKAGE__->add_unique_constraint("cost_code_UNIQUE", ["cost_code"]);
 
 =head1 RELATIONS
@@ -77,12 +116,12 @@ __PACKAGE__->belongs_to(
   "cost_group",
   "npg_tracking::Schema::Result::CostGroup",
   { id_cost_group => "id_cost_group" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2011-08-16 10:39:06
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:+iHuUYIksBXKoTFdE5+I3w
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:13:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Xk3FjKD78miM3xmKoM+UeA
 
 
 # You can replace this text with custom content, and it will be preserved on regeneration

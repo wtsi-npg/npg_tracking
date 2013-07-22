@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::InstrumentModDict;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::InstrumentModDict
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::InstrumentModDict
+=head1 TABLE: C<instrument_mod_dict>
 
 =cut
 
@@ -55,6 +70,17 @@ __PACKAGE__->add_columns(
   "revision",
   { data_type => "char", is_nullable => 1, size => 64 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_instrument_mod_dict>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_instrument_mod_dict");
 
 =head1 RELATIONS
@@ -77,8 +103,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-09-07 09:30:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:q5EVl+wBUpIeTovpvrQS6A
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:10:00
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:f2VcjgYd/WiK2iwPDwnWxg
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: jo3 $
 # Created:       2010-04-08

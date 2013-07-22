@@ -1,3 +1,4 @@
+use utf8;
 package npg_tracking::Schema;
 
 # Created by DBIx::Class::Schema::Loader
@@ -11,8 +12,8 @@ use base 'DBIx::Class::Schema';
 __PACKAGE__->load_namespaces;
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-05-13 15:58:26
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:MAz9khLxunElph1Ghec03g
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:10:00
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:WLK9VaxlVY0bBDwqBaG9kA
 
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: mg8 $
@@ -55,6 +56,10 @@ for the npg tracking database.
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
+
+Update with:
+
+  (export PATH=/software/perl-5.14.2/bin/:$PATH; export PERL5LIB=/software/solexa/npg_cpan/lib/perl5/; /software/solexa/npg_cpan/bin/dbicdump  -o naming=current  -o rel_name_map='sub {my%h=%{shift@_};my$name=$h{name}; $name=~s/^id_//; return $name; }' -o debug=0 -o dump_directory=./lib -o skip_load_external=1  -o components='[qw(InflateColumn::DateTime)]' npg_tracking::Schema "dbi:mysql:host=XXXXX;port=XXXX;dbname=npgt" "npgro" "" )
 
 =head1 DEPENDENCIES
 

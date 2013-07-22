@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::Designation;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::Designation
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::Designation
+=head1 TABLE: C<designation>
 
 =cut
 
@@ -46,6 +61,17 @@ __PACKAGE__->add_columns(
   "description",
   { data_type => "varchar", is_nullable => 0, size => 64 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_designation>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_designation");
 
 =head1 RELATIONS
@@ -66,8 +92,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-10-27 15:57:30
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:oKkQzexHxHwA20vCuvleqA
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:10:00
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:8aIqq7Z6D4THjnTl/KzQRw
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: gq1 $
 # Created:       2010-04-08

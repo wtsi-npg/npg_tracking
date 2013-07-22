@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::Usergroup;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::Usergroup
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::Usergroup
+=head1 TABLE: C<usergroup>
 
 =cut
 
@@ -64,6 +79,17 @@ __PACKAGE__->add_columns(
   "description",
   { data_type => "varchar", default_value => "", is_nullable => 1, size => 128 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_usergroup>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_usergroup");
 
 =head1 RELATIONS
@@ -99,8 +125,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-09-07 09:30:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ybh9DfEdGZU7VjklpWCkmg
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:10:00
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:GKRfbUnrAE5keCtTtBy7xg
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: mg8 $
 # Created:       2010-04-08

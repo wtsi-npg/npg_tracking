@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::Manufacturer;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::Manufacturer
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::Manufacturer
+=head1 TABLE: C<manufacturer>
 
 =cut
 
@@ -46,7 +61,31 @@ __PACKAGE__->add_columns(
   "name",
   { data_type => "char", is_nullable => 1, size => 128 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_manufacturer>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_manufacturer");
+
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<name>
+
+=over 4
+
+=item * L</name>
+
+=back
+
+=cut
+
 __PACKAGE__->add_unique_constraint("name", ["name"]);
 
 =head1 RELATIONS
@@ -67,8 +106,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-09-07 09:30:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:x5AFoZr8KdW32LUvSGnt7Q
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:10:00
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fdrsKHA9Gtn0apyrzt6TfQ
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: jo3 $
 # Created:       2010-04-08

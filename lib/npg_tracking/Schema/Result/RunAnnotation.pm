@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::RunAnnotation;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::RunAnnotation
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::RunAnnotation
+=head1 TABLE: C<run_annotation>
 
 =cut
 
@@ -86,6 +101,17 @@ __PACKAGE__->add_columns(
   "current_cycle",
   { data_type => "bigint", extra => { unsigned => 1 }, is_nullable => 1 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_run_annotation>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_run_annotation");
 
 =head1 RELATIONS
@@ -102,7 +128,7 @@ __PACKAGE__->belongs_to(
   "annotation",
   "npg_tracking::Schema::Result::Annotation",
   { id_annotation => "id_annotation" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 run
@@ -117,12 +143,12 @@ __PACKAGE__->belongs_to(
   "run",
   "npg_tracking::Schema::Result::Run",
   { id_run => "id_run" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-09-07 09:30:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:sROGJQ8/Fj+mXlDkb8As8w
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:13:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TW8BiV61WLNY7WVC7XsNFg
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: jo3 $
 # Created:       2010-04-08

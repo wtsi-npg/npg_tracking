@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::User;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::User
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::User
+=head1 TABLE: C<user>
 
 =cut
 
@@ -54,9 +69,44 @@ __PACKAGE__->add_columns(
   "rfid",
   { data_type => "varchar", is_nullable => 1, size => 64 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_user>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_user");
-__PACKAGE__->add_unique_constraint("uidx_username", ["username"]);
+
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<rf_id>
+
+=over 4
+
+=item * L</rfid>
+
+=back
+
+=cut
+
 __PACKAGE__->add_unique_constraint("rf_id", ["rfid"]);
+
+=head2 C<uidx_username>
+
+=over 4
+
+=item * L</username>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint("uidx_username", ["username"]);
 
 =head1 RELATIONS
 
@@ -165,21 +215,6 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 tag_runs
-
-Type: has_many
-
-Related object: L<npg_tracking::Schema::Result::TagRun>
-
-=cut
-
-__PACKAGE__->has_many(
-  "tag_runs",
-  "npg_tracking::Schema::Result::TagRun",
-  { "foreign.id_user" => "self.id_user" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
 =head2 tag_run_lanes
 
 Type: has_many
@@ -191,6 +226,21 @@ Related object: L<npg_tracking::Schema::Result::TagRunLane>
 __PACKAGE__->has_many(
   "tag_run_lanes",
   "npg_tracking::Schema::Result::TagRunLane",
+  { "foreign.id_user" => "self.id_user" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 tag_runs
+
+Type: has_many
+
+Related object: L<npg_tracking::Schema::Result::TagRun>
+
+=cut
+
+__PACKAGE__->has_many(
+  "tag_runs",
+  "npg_tracking::Schema::Result::TagRun",
   { "foreign.id_user" => "self.id_user" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
@@ -211,8 +261,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2011-06-07 13:41:21
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:951rQfqlDI9tPIcLKnDLlA
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:10:00
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:G08Lb1ipANWpP3Cn6QgaNA
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: mg8 $
 # Created:       2010-04-08

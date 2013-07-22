@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::Event;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::Event
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::Event
+=head1 TABLE: C<event>
 
 =cut
 
@@ -38,6 +53,7 @@ __PACKAGE__->table("event");
 =head2 date
 
   data_type: 'datetime'
+  datetime_undef_if_invalid: 1
   default_value: '0000-00-00 00:00:00'
   is_nullable: 0
 
@@ -53,6 +69,8 @@ __PACKAGE__->table("event");
   default_value: 0
   extra: {unsigned => 1}
   is_nullable: 0
+
+the id of the entity having id_event_type.id_entity_type
 
 =head2 id_user
 
@@ -89,9 +107,10 @@ __PACKAGE__->add_columns(
   },
   "date",
   {
-    data_type     => "datetime",
+    data_type => "datetime",
+    datetime_undef_if_invalid => 1,
     default_value => "0000-00-00 00:00:00",
-    is_nullable   => 0,
+    is_nullable => 0,
   },
   "description",
   { data_type => "varchar", is_nullable => 1, size => 255 },
@@ -113,11 +132,22 @@ __PACKAGE__->add_columns(
   "notification_sent",
   {
     data_type => "timestamp",
-    "datetime_undef_if_invalid" => 1,
+    datetime_undef_if_invalid => 1,
     default_value => "0000-00-00 00:00:00",
     is_nullable => 0,
   },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_event>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_event");
 
 =head1 RELATIONS
@@ -134,7 +164,7 @@ __PACKAGE__->belongs_to(
   "event_type",
   "npg_tracking::Schema::Result::EventType",
   { id_event_type => "id_event_type" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 user
@@ -149,12 +179,12 @@ __PACKAGE__->belongs_to(
   "user",
   "npg_tracking::Schema::Result::User",
   { id_user => "id_user" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2011-01-18 15:06:06
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:yFCbgjCIvZFdyrim2ixx0Q
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:13:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:P/R3ZaOAdwjtjb6f546QVg
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: ajb $
 # Created:       2010-04-08

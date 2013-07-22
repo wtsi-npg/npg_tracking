@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::User2usergroup;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::User2usergroup
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::User2usergroup
+=head1 TABLE: C<user2usergroup>
 
 =cut
 
@@ -78,6 +93,17 @@ __PACKAGE__->add_columns(
   "level",
   { data_type => "tinyint", extra => { unsigned => 1 }, is_nullable => 1 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_user_usergroup>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_user_usergroup");
 
 =head1 RELATIONS
@@ -94,7 +120,7 @@ __PACKAGE__->belongs_to(
   "user",
   "npg_tracking::Schema::Result::User",
   { id_user => "id_user" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 usergroup
@@ -109,12 +135,12 @@ __PACKAGE__->belongs_to(
   "usergroup",
   "npg_tracking::Schema::Result::Usergroup",
   { id_usergroup => "id_usergroup" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-09-07 09:30:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rBRnUKXrNZuW1U5TjF8cmw
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:13:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Vv7vh57hYbzVMvIMKPoLSA
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: jo3 $
 # Created:       2010-04-08

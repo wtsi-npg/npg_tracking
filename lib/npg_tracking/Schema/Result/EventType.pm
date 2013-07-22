@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::EventType;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::EventType
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::EventType
+=head1 TABLE: C<event_type>
 
 =cut
 
@@ -63,24 +78,20 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
 );
-__PACKAGE__->set_primary_key("id_event_type");
 
-=head1 RELATIONS
+=head1 PRIMARY KEY
 
-=head2 events
+=over 4
 
-Type: has_many
+=item * L</id_event_type>
 
-Related object: L<npg_tracking::Schema::Result::Event>
+=back
 
 =cut
 
-__PACKAGE__->has_many(
-  "events",
-  "npg_tracking::Schema::Result::Event",
-  { "foreign.id_event_type" => "self.id_event_type" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
+__PACKAGE__->set_primary_key("id_event_type");
+
+=head1 RELATIONS
 
 =head2 entity_type
 
@@ -94,7 +105,7 @@ __PACKAGE__->belongs_to(
   "entity_type",
   "npg_tracking::Schema::Result::EntityType",
   { id_entity_type => "id_entity_type" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 event_type_services
@@ -127,9 +138,24 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 events
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-09-07 09:30:15
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:aFr2heJwtxrsJE2jLfSlpQ
+Type: has_many
+
+Related object: L<npg_tracking::Schema::Result::Event>
+
+=cut
+
+__PACKAGE__->has_many(
+  "events",
+  "npg_tracking::Schema::Result::Event",
+  { "foreign.id_event_type" => "self.id_event_type" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:13:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:eqEQ3cHBkrrvQN1L3zgeRg
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: dj3 $
 # Created:       2010-04-08

@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::EntityType;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::EntityType
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::EntityType
+=head1 TABLE: C<entity_type>
 
 =cut
 
@@ -61,6 +76,17 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_entity_type>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_entity_type");
 
 =head1 RELATIONS
@@ -96,8 +122,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-09-07 09:30:15
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:SwxKgPtsZXOLZjLQzFyJZQ
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:10:00
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:y0vMD2nm+TKLqdT3mw5thA
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: jo3 $
 # Created:       2010-04-08

@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::RunLaneStatus;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::RunLaneStatus
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::RunLaneStatus
+=head1 TABLE: C<run_lane_status>
 
 =cut
 
@@ -38,6 +53,7 @@ __PACKAGE__->table("run_lane_status");
 =head2 date
 
   data_type: 'datetime'
+  datetime_undef_if_invalid: 1
   default_value: '0000-00-00 00:00:00'
   is_nullable: 0
 
@@ -82,9 +98,10 @@ __PACKAGE__->add_columns(
   },
   "date",
   {
-    data_type     => "datetime",
+    data_type => "datetime",
+    datetime_undef_if_invalid => 1,
     default_value => "0000-00-00 00:00:00",
-    is_nullable   => 0,
+    is_nullable => 0,
   },
   "id_user",
   {
@@ -104,6 +121,17 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_run_lane_status>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_run_lane_status");
 
 =head1 RELATIONS
@@ -120,7 +148,7 @@ __PACKAGE__->belongs_to(
   "run_lane",
   "npg_tracking::Schema::Result::RunLane",
   { id_run_lane => "id_run_lane" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 run_lane_status_dict
@@ -134,8 +162,8 @@ Related object: L<npg_tracking::Schema::Result::RunLaneStatusDict>
 __PACKAGE__->belongs_to(
   "run_lane_status_dict",
   "npg_tracking::Schema::Result::RunLaneStatusDict",
-  { "id_run_lane_status_dict" => "id_run_lane_status_dict" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { id_run_lane_status_dict => "id_run_lane_status_dict" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 user
@@ -153,14 +181,14 @@ __PACKAGE__->belongs_to(
   {
     is_deferrable => 1,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-09-07 09:30:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:5ZabifPk/RqEHQiJ8jWJYQ
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:13:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:K47HhuWKFLowagjWw09+EQ
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: mg8 $
 # Created:       2010-04-08

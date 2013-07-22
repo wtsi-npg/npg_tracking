@@ -1,18 +1,33 @@
+use utf8;
 package npg_tracking::Schema::Result::RunLane;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
+
+=head1 NAME
+
+npg_tracking::Schema::Result::RunLane
+
+=cut
 
 use strict;
 use warnings;
 
 use base 'DBIx::Class::Core';
 
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
 __PACKAGE__->load_components("InflateColumn::DateTime");
 
-=head1 NAME
-
-npg_tracking::Schema::Result::RunLane
+=head1 TABLE: C<run_lane>
 
 =cut
 
@@ -48,6 +63,8 @@ __PACKAGE__->table("run_lane");
   default_value: 0
   extra: {unsigned => 1}
   is_nullable: 0
+
+Double=2
 
 =head2 position
 
@@ -103,7 +120,33 @@ __PACKAGE__->add_columns(
   "good_bad",
   { data_type => "tinyint", is_nullable => 1 },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_run_lane>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_run_lane");
+
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<uq_id_run_position>
+
+=over 4
+
+=item * L</id_run>
+
+=item * L</position>
+
+=back
+
+=cut
+
 __PACKAGE__->add_unique_constraint("uq_id_run_position", ["id_run", "position"]);
 
 =head1 RELATIONS
@@ -120,7 +163,7 @@ __PACKAGE__->belongs_to(
   "run",
   "npg_tracking::Schema::Result::Run",
   { id_run => "id_run" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 run_lane_annotations
@@ -169,8 +212,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2012-03-06 12:27:57
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BswJ7kdOGO8FqRfZOXGuZg
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:13:29
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TCo3LAIAMMSb9yek5yUmsA
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: js10 $
 # Created:       2010-04-08
