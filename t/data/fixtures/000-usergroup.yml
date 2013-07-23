@@ -39,3 +39,7 @@
   groupname: errors
   id_usergroup: 10
   is_public: 0
+- description: analyst
+  groupname: amend run status
+  id_usergroup: 11
+  is_public: 0
