@@ -13,7 +13,10 @@ npg_tracking::Schema::Result::ManualQcStatus
 use strict;
 use warnings;
 
-use base 'DBIx::Class::Core';
+use Moose;
+use MooseX::NonMoose;
+use MooseX::MarkAsMethods autoclean => 1;
+extends 'DBIx::Class::Core';
 
 =head1 COMPONENTS LOADED
 
@@ -166,8 +169,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:13:29
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:PS5vho5lNCrwOTu+qzhBkQ
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Gq4d3X/lqF6rgR5xVNtOUQ
 # Author:        marina.gourtovaia@sanger.ac.uk
 # Maintainer:    $Author: jo3 $
 # Created:       2010-10-27
@@ -175,4 +178,9 @@ __PACKAGE__->belongs_to(
 # Id:            $Id: Run.pm 11485 2010-10-26 14:10:45Z jo3 $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/branches/prerelease-52.0/lib/npg_tracking/Schema/Result/Run.pm $
 
+1;
+
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->meta->make_immutable;
 1;

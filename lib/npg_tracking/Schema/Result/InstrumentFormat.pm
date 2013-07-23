@@ -13,7 +13,10 @@ npg_tracking::Schema::Result::InstrumentFormat
 use strict;
 use warnings;
 
-use base 'DBIx::Class::Core';
+use Moose;
+use MooseX::NonMoose;
+use MooseX::MarkAsMethods autoclean => 1;
+extends 'DBIx::Class::Core';
 
 =head1 COMPONENTS LOADED
 
@@ -205,8 +208,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:13:29
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:M50Ej4gLuQNBfSq2Cr9QIg
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:65VhDik9vcGwGAJCX00ATg
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: jo3 $
 # Created:       2010-04-08
@@ -218,3 +221,8 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevis
 
 1;
 
+
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->meta->make_immutable;
+1;

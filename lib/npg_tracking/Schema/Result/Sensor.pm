@@ -13,7 +13,10 @@ npg_tracking::Schema::Result::Sensor
 use strict;
 use warnings;
 
-use base 'DBIx::Class::Core';
+use Moose;
+use MooseX::NonMoose;
+use MooseX::MarkAsMethods autoclean => 1;
+extends 'DBIx::Class::Core';
 
 =head1 COMPONENTS LOADED
 
@@ -156,8 +159,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:10:00
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Jd8GzeMj+1p2Mp/ft2tuzw
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:hZh6YatT+bkL7jTj6I2qZQ
 
 
 =head2 instruments
@@ -171,4 +174,9 @@ Related object: L<npg_tracking::Schema::Result::Instrument>
 __PACKAGE__->many_to_many('instruments' => 'sensor_instruments', 'instrument');
 
 
+1;
+
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->meta->make_immutable;
 1;

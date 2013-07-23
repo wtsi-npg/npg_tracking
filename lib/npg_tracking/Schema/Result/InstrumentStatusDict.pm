@@ -13,7 +13,10 @@ npg_tracking::Schema::Result::InstrumentStatusDict
 use strict;
 use warnings;
 
-use base 'DBIx::Class::Core';
+use Moose;
+use MooseX::NonMoose;
+use MooseX::MarkAsMethods autoclean => 1;
+extends 'DBIx::Class::Core';
 
 =head1 COMPONENTS LOADED
 
@@ -109,8 +112,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:10:00
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:wjQlda3vngTt0epjwFDkwA
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:42
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:vyAXEjHM3Xkm+oWb97VeSw
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: mg8 $
 # Created:       2010-04-08
@@ -193,3 +196,8 @@ sub _insist_on_valid_row {
 
 1;
 
+
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->meta->make_immutable;
+1;

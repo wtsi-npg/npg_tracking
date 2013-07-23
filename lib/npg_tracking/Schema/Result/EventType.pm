@@ -13,7 +13,10 @@ npg_tracking::Schema::Result::EventType
 use strict;
 use warnings;
 
-use base 'DBIx::Class::Core';
+use Moose;
+use MooseX::NonMoose;
+use MooseX::MarkAsMethods autoclean => 1;
+extends 'DBIx::Class::Core';
 
 =head1 COMPONENTS LOADED
 
@@ -154,8 +157,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:13:29
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:eqEQ3cHBkrrvQN1L3zgeRg
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:41
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BkRdBsUGse4wgTcpRHsS3A
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: dj3 $
 # Created:       2010-04-08
@@ -230,3 +233,8 @@ sub _count {
 1;
 
 
+
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->meta->make_immutable;
+1;

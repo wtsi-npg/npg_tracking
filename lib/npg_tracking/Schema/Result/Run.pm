@@ -13,7 +13,10 @@ npg_tracking::Schema::Result::Run
 use strict;
 use warnings;
 
-use base 'DBIx::Class::Core';
+use Moose;
+use MooseX::NonMoose;
+use MooseX::MarkAsMethods autoclean => 1;
+extends 'DBIx::Class::Core';
 
 =head1 COMPONENTS LOADED
 
@@ -332,8 +335,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:13:29
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:iW3Xa1LMApqRu4VhvD1UuQ
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:43
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:FQWELc6PD0wBxA4jlGNcXw
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: mg8 $
 # Created:       2010-04-08
@@ -780,4 +783,9 @@ Related object: L<npg_tracking::Schema::Result::Tag>
 __PACKAGE__->many_to_many('tags' => 'tag_runs', 'tag');
 
 
+1;
+
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->meta->make_immutable;
 1;

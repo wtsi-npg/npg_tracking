@@ -4,16 +4,15 @@ package npg_tracking::Schema;
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
 
-use strict;
-use warnings;
-
-use base 'DBIx::Class::Schema';
+use Moose;
+use MooseX::MarkAsMethods autoclean => 1;
+extends 'DBIx::Class::Schema';
 
 __PACKAGE__->load_namespaces;
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-22 17:10:00
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:WLK9VaxlVY0bBDwqBaG9kA
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:41
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Q1r19LhirPv0eU8pL62qKQ
 
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: mg8 $
@@ -23,10 +22,7 @@ __PACKAGE__->load_namespaces;
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema.pm $
 
 BEGIN {
-  use Moose;
-  use MooseX::NonMoose;
   use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16389 $ =~ /(\d+)/mxs; $r; };
-  extends 'DBIx::Class::Schema';
 }
 
 with qw/npg_tracking::util::db_connect/;
@@ -59,7 +55,7 @@ for the npg tracking database.
 
 Update with:
 
-  (export PATH=/software/perl-5.14.2/bin/:$PATH; export PERL5LIB=/software/solexa/npg_cpan/lib/perl5/; /software/solexa/npg_cpan/bin/dbicdump  -o naming=current  -o rel_name_map='sub {my%h=%{shift@_};my$name=$h{name}; $name=~s/^id_//; return $name; }' -o debug=0 -o dump_directory=./lib -o skip_load_external=1  -o components='[qw(InflateColumn::DateTime)]' npg_tracking::Schema "dbi:mysql:host=XXXXX;port=XXXX;dbname=npgt" "npgro" "" )
+  (export PATH=/software/perl-5.14.2/bin/:$PATH; export PERL5LIB=/software/solexa/npg_cpan/lib/perl5/; /software/solexa/npg_cpan/bin/dbicdump  -o naming=current  -o rel_name_map='sub {my%h=%{shift@_};my$name=$h{name}; $name=~s/^id_//; return $name; }' -o debug=0 -o dump_directory=./lib -o skip_load_external=1 -o use_moose=1 -o components='[qw(InflateColumn::DateTime)]' npg_tracking::Schema "dbi:mysql:host=XXXXX;port=XXXX;dbname=npgt" "npgro" "" )
 
 =head1 DEPENDENCIES
 
@@ -108,3 +104,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
+1;
