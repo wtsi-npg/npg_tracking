@@ -268,7 +268,7 @@ sub _event_update {
 
   my $run_name = $self->run->instrument->name() . q{_} . $self->id_run();
 
-  my $description = $self->description() . q{ for run } . $run_name . qq{\nhttp://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/$run_name\nStatus History:\n};
+  my $description = $self->description() . q{ for run } . $run_name . qq{\nhttp://npg.sanger.ac.uk/perl/npg/run/$run_name\nStatus History:\n};
   foreach my $rs ( reverse $self->run->run_statuses() ) {
     $description .= q{ [} . $rs->date->ymd() . q{ } . $rs->date->hms() . q{] } . $rs->description() . qq{\n};
   }
