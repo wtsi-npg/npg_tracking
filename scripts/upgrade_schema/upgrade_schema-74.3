@@ -1,0 +1,6 @@
+insert into usergroup(groupname, is_public, description) values ("analyst", 0, "Update run status");
+update run_status_dict set temporal_index = 110 where temporal_index = 130 and description = "run on hold";
+update run_status_dict set temporal_index = 130 where temporal_index = 150 and description = "run stopped early";
+update run_status_dict set temporal_index = 260 where temporal_index = 230 and description = "analysis on hold";
+update run_status_dict set temporal_index = 270 where temporal_index = 210 and description = "analysis cancelled";
+update run_status_dict set temporal_index = 280 where temporal_index = 260 and description = "analysis complete";
