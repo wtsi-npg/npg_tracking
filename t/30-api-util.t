@@ -33,19 +33,19 @@ use_ok('npg::api::util');
 
 {
    my $util = npg::api::util->new();
-   is ($util->base_uri(), 'http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg' , 'live url if the dev env variable not set');
+   is ($util->base_uri(), 'http://npg.sanger.ac.uk/perl/npg' , 'live url if the dev env variable not set');
 }
 
 {
    local $ENV{dev} = q[dev];
    my $util = npg::api::util->new();
-   is ($util->base_uri(), 'http://intwebdev.sanger.ac.uk/perl/prodsoft/npg/npg' , 'dev url if the dev env variable is set to dev');
+   is ($util->base_uri(), 'http://npg.dev.sanger.ac.uk/perl/npg' , 'dev url if the dev env variable is set to dev');
 }
 
 {
    local $ENV{dev} = q[test];
    my $util = npg::api::util->new();
-   is ($util->base_uri(), 'http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg' , 'live url if the dev env. variable is set to test');
+   is ($util->base_uri(), 'http://npg.sanger.ac.uk/perl/npg' , 'live url if the dev env. variable is set to test');
 }
 
 {

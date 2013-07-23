@@ -38,7 +38,7 @@ $ann3->attachment(IO::Scalar->new(\$data));
 is($ann3->attachment(), $data);
 
 {
-  my $uri = 'http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/annotation/1;read_attachment';
+  my $uri = 'http://npg.sanger.ac.uk/perl/npg/annotation/1;read_attachment';
   my $ua   = t::useragent->new({'is_success' => 1, 'mock' => {$uri => $data,},});
   my $util = npg::api::util->new({'useragent' => $ua});
 
@@ -53,7 +53,7 @@ is($ann3->attachment(), $data);
 
 {
   my $mock = {
-	      'http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/annotation/1;read_attachment' => $data,
+	      'http://npg.sanger.ac.uk/perl/npg/annotation/1;read_attachment' => $data,
 	     };
   my $ua   = t::useragent->new({'is_success' => 1, 'mock' => $mock});
   my $util = npg::api::util->new({'useragent' => $ua});
