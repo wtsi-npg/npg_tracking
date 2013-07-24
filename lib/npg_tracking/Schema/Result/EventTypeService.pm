@@ -1,18 +1,36 @@
+use utf8;
 package npg_tracking::Schema::Result::EventTypeService;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
 
-use strict;
-use warnings;
-
-use base 'DBIx::Class::Core';
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 NAME
 
 npg_tracking::Schema::Result::EventTypeService
+
+=cut
+
+use strict;
+use warnings;
+
+use Moose;
+use MooseX::NonMoose;
+use MooseX::MarkAsMethods autoclean => 1;
+extends 'DBIx::Class::Core';
+
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
+__PACKAGE__->load_components("InflateColumn::DateTime");
+
+=head1 TABLE: C<event_type_service>
 
 =cut
 
@@ -70,6 +88,17 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_event_type_service>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_event_type_service");
 
 =head1 RELATIONS
@@ -86,7 +115,7 @@ __PACKAGE__->belongs_to(
   "event_type",
   "npg_tracking::Schema::Result::EventType",
   { id_event_type => "id_event_type" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 ext_service
@@ -101,12 +130,12 @@ __PACKAGE__->belongs_to(
   "ext_service",
   "npg_tracking::Schema::Result::ExtService",
   { id_ext_service => "id_ext_service" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-09-07 09:30:15
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:A4yn5XE0Z5jK0opqN6Trxg
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:41
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:AOHX8PUsq/JuQrhqKDtsqA
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: jo3 $
 # Created:       2010-04-08
@@ -118,3 +147,8 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevis
 
 1;
 
+
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->meta->make_immutable;
+1;

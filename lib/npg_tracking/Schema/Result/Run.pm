@@ -1,18 +1,36 @@
+use utf8;
 package npg_tracking::Schema::Result::Run;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
 
-use strict;
-use warnings;
-
-use base 'DBIx::Class::Core';
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 NAME
 
 npg_tracking::Schema::Result::Run
+
+=cut
+
+use strict;
+use warnings;
+
+use Moose;
+use MooseX::NonMoose;
+use MooseX::MarkAsMethods autoclean => 1;
+extends 'DBIx::Class::Core';
+
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
+__PACKAGE__->load_components("InflateColumn::DateTime");
+
+=head1 TABLE: C<run>
 
 =cut
 
@@ -166,24 +184,20 @@ __PACKAGE__->add_columns(
   "team",
   { data_type => "char", is_nullable => 0, size => 10 },
 );
-__PACKAGE__->set_primary_key("id_run");
 
-=head1 RELATIONS
+=head1 PRIMARY KEY
 
-=head2 mail_run_project_follower
+=over 4
 
-Type: might_have
+=item * L</id_run>
 
-Related object: L<npg_tracking::Schema::Result::MailRunProjectFollower>
+=back
 
 =cut
 
-__PACKAGE__->might_have(
-  "mail_run_project_follower",
-  "npg_tracking::Schema::Result::MailRunProjectFollower",
-  { "foreign.id_run" => "self.id_run" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
+__PACKAGE__->set_primary_key("id_run");
+
+=head1 RELATIONS
 
 =head2 instrument
 
@@ -197,7 +211,7 @@ __PACKAGE__->belongs_to(
   "instrument",
   "npg_tracking::Schema::Result::Instrument",
   { id_instrument => "id_instrument" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 instrument_format
@@ -212,7 +226,22 @@ __PACKAGE__->belongs_to(
   "instrument_format",
   "npg_tracking::Schema::Result::InstrumentFormat",
   { id_instrument_format => "id_instrument_format" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+);
+
+=head2 mail_run_project_follower
+
+Type: might_have
+
+Related object: L<npg_tracking::Schema::Result::MailRunProjectFollower>
+
+=cut
+
+__PACKAGE__->might_have(
+  "mail_run_project_follower",
+  "npg_tracking::Schema::Result::MailRunProjectFollower",
+  { "foreign.id_run" => "self.id_run" },
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
 =head2 run_annotations
@@ -245,21 +274,6 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 runs_read
-
-Type: has_many
-
-Related object: L<npg_tracking::Schema::Result::RunRead>
-
-=cut
-
-__PACKAGE__->has_many(
-  "runs_read",
-  "npg_tracking::Schema::Result::RunRead",
-  { "foreign.id_run" => "self.id_run" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
 =head2 run_statuses
 
 Type: has_many
@@ -271,6 +285,21 @@ Related object: L<npg_tracking::Schema::Result::RunStatus>
 __PACKAGE__->has_many(
   "run_statuses",
   "npg_tracking::Schema::Result::RunStatus",
+  { "foreign.id_run" => "self.id_run" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+=head2 runs_read
+
+Type: has_many
+
+Related object: L<npg_tracking::Schema::Result::RunRead>
+
+=cut
+
+__PACKAGE__->has_many(
+  "runs_read",
+  "npg_tracking::Schema::Result::RunRead",
   { "foreign.id_run" => "self.id_run" },
   { cascade_copy => 0, cascade_delete => 0 },
 );
@@ -306,8 +335,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2012-03-06 12:27:57
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:vuIDQp0PtwDiL1tnDARtLQ
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:43
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:FQWELc6PD0wBxA4jlGNcXw
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: mg8 $
 # Created:       2010-04-08
@@ -320,19 +349,17 @@ use Carp;
 use DateTime;
 use DateTime::TimeZone;
 
-=head2 new
+=head2 BUILD
 
-Custom constructor: try to ensure instrument format is set for run.
+Post-constructor: try to ensure instrument format is set for run.
 
 =cut
 
-sub new {
-    my $class = shift;
-    my $self = $class->next::method(@_);
+sub BUILD {
+    my $self = shift;
     if ($self->id_instrument and not $self->id_instrument_format){
       $self->id_instrument_format($self->instrument->id_instrument_format);
     }
-    return $self;
 }
 
 =head2 _event_type_rs
@@ -754,4 +781,9 @@ Related object: L<npg_tracking::Schema::Result::Tag>
 __PACKAGE__->many_to_many('tags' => 'tag_runs', 'tag');
 
 
+1;
+
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->meta->make_immutable;
 1;

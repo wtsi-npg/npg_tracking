@@ -1,18 +1,36 @@
+use utf8;
 package npg_tracking::Schema::Result::RunStatus;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
 
-use strict;
-use warnings;
-
-use base 'DBIx::Class::Core';
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 NAME
 
 npg_tracking::Schema::Result::RunStatus
+
+=cut
+
+use strict;
+use warnings;
+
+use Moose;
+use MooseX::NonMoose;
+use MooseX::MarkAsMethods autoclean => 1;
+extends 'DBIx::Class::Core';
+
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
+__PACKAGE__->load_components("InflateColumn::DateTime");
+
+=head1 TABLE: C<run_status>
 
 =cut
 
@@ -37,6 +55,7 @@ __PACKAGE__->table("run_status");
 =head2 date
 
   data_type: 'datetime'
+  datetime_undef_if_invalid: 1
   default_value: '0000-00-00 00:00:00'
   is_nullable: 0
 
@@ -53,6 +72,8 @@ __PACKAGE__->table("run_status");
   extra: {unsigned => 1}
   is_foreign_key: 1
   is_nullable: 1
+
+operator
 
 =head2 iscurrent
 
@@ -75,9 +96,10 @@ __PACKAGE__->add_columns(
   },
   "date",
   {
-    data_type     => "datetime",
+    data_type => "datetime",
+    datetime_undef_if_invalid => 1,
     default_value => "0000-00-00 00:00:00",
-    is_nullable   => 0,
+    is_nullable => 0,
   },
   "id_run_status_dict",
   {
@@ -96,24 +118,20 @@ __PACKAGE__->add_columns(
   "iscurrent",
   { data_type => "tinyint", default_value => 0, is_nullable => 0 },
 );
-__PACKAGE__->set_primary_key("id_run_status");
 
-=head1 RELATIONS
+=head1 PRIMARY KEY
 
-=head2 run_status_dict
+=over 4
 
-Type: belongs_to
+=item * L</id_run_status>
 
-Related object: L<npg_tracking::Schema::Result::RunStatusDict>
+=back
 
 =cut
 
-__PACKAGE__->belongs_to(
-  "run_status_dict",
-  "npg_tracking::Schema::Result::RunStatusDict",
-  { id_run_status_dict => "id_run_status_dict" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
-);
+__PACKAGE__->set_primary_key("id_run_status");
+
+=head1 RELATIONS
 
 =head2 run
 
@@ -127,7 +145,22 @@ __PACKAGE__->belongs_to(
   "run",
   "npg_tracking::Schema::Result::Run",
   { id_run => "id_run" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+);
+
+=head2 run_status_dict
+
+Type: belongs_to
+
+Related object: L<npg_tracking::Schema::Result::RunStatusDict>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "run_status_dict",
+  "npg_tracking::Schema::Result::RunStatusDict",
+  { id_run_status_dict => "id_run_status_dict" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 user
@@ -145,14 +178,14 @@ __PACKAGE__->belongs_to(
   {
     is_deferrable => 1,
     join_type     => "LEFT",
-    on_delete     => "CASCADE",
-    on_update     => "CASCADE",
+    on_delete     => "NO ACTION",
+    on_update     => "NO ACTION",
   },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-09-07 09:30:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:GRbB3tiroa99mmOM2SspEg
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:K4FbsHr+zvJa6Gsb2KMpfg
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: mg8 $
 # Created:       2010-04-08
@@ -286,3 +319,8 @@ sub _event_update {
 
 1;
 
+
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->meta->make_immutable;
+1;
