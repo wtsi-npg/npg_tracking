@@ -266,7 +266,7 @@ sub _build__entity {
                     $self->tag_index, $self->to_string;
 	}
         return $self->data->{$DATA_SECTON}->{$self->position}->{$self->tag_index};
-      } 
+      }
     } else {
       return $self->data->{$DATA_SECTON}->{$self->position}->{$NOT_INDEXED_FLAG};
     }
@@ -454,7 +454,7 @@ sub _validate_data { # this is a callback for Moose trigger
     croak sprintf 'Supplied id_run %i does not match "Experiment Name" %s',
                   $self->id_run, $id_run;
   }
-  
+
   #What are compulsory Data section? - check for them
   #Do we have at least one lane? - should be numbers as well
   #Do we have a mixture of indices and non-indexed in one lane?
