@@ -64,7 +64,7 @@ my $TEST_CACHE = q[t/data/npg_api];
   local $ENV{$VAR_NAME} = q[t];
   my $r = npg::api::request->new();
 
-  is( $r->_create_path(q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/1234.xml}), 
+  is( $r->_create_path(q{http://npg.sanger.ac.uk/perl/npg/run/1234.xml}), 
                        q{t/npg/run/1234.xml}, q{npg path generated ok} );
   is( $r->_create_path(q{http://psd-production.internal.sanger.ac.uk:6600/batches/6935.xml}), 
                        q{t/st/batches/6935.xml}, q{st path created ok});
@@ -142,10 +142,10 @@ my $TEST_CACHE = q[t/data/npg_api];
   $mockUA->set_always('agent', q[npg::api::request]);
   $mockUA->set_always('env_proxy', q[]);
   my $returned;
-  lives_ok {$returned = npg::api::request->new()->make(q[http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/4913], q[POST])} 'post request lives';
+  lives_ok {$returned = npg::api::request->new()->make(q[http://npg.sanger.ac.uk/perl/npg/run/4913], q[POST])} 'post request lives';
   is ($returned, $content, 'correct response returned');
 
   local $ENV{$VAR_NAME} = q[t];
-  throws_ok {npg::api::request->new()->make(q[http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/4913], q[POST])}  qr/POST requests cannot use cache:/, 'post request croaks if cache is set';
+  throws_ok {npg::api::request->new()->make(q[http://npg.sanger.ac.uk/perl/npg/run/4913], q[POST])}  qr/POST requests cannot use cache:/, 'post request croaks if cache is set';
 }
 

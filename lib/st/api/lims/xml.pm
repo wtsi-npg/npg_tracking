@@ -148,6 +148,7 @@ has '_associated_lims'  => (isa             => 'Maybe[ArrayRef]',
                             is              => 'ro',
                             init_arg        => undef,
                             lazy_build      => 1,
+                            clearer         => 'free_children',
                            );
 sub _build__associated_lims {
   my $self = shift;
@@ -832,6 +833,7 @@ sub children {
   my $self = shift;
   return @{$self->_associated_lims};
 }
+
 
 =head2 method_list
 

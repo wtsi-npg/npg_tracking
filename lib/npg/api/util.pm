@@ -18,8 +18,8 @@ use npg::api::request;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/smx; $r; };
 
-Readonly::Scalar our $LIVE_BASE_URI => 'http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg';
-Readonly::Scalar our $DEV_BASE_URI  => 'http://intwebdev.sanger.ac.uk/perl/prodsoft/npg/npg';
+Readonly::Scalar our $LIVE_BASE_URI => 'http://npg.sanger.ac.uk/perl/npg';
+Readonly::Scalar our $DEV_BASE_URI  => 'http://npg.dev.sanger.ac.uk/perl/npg';
 
 Readonly::Scalar our $MAX_RETRIES      => 3;
 Readonly::Scalar our $RETRY_DELAY      => 5;
@@ -138,7 +138,7 @@ May take optional base_uri, useragent and parser attributes, see respective meth
 
   my $oUtil = npg::api::util->new();
   my $oUtil = npg::api::util->new({
-    'base_uri'  => 'http://intwebdev.sanger.ac.uk/perl/prodsoft/npg/npg',
+    'base_uri'  => 'http://npg.sanger.ac.uk/perl/npg',
     'useragent' => LWP::UserAgent->new(),
     'parser'    => XML::LibXML->new();
   });

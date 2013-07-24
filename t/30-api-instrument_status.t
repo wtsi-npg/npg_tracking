@@ -26,7 +26,7 @@ use_ok('npg::api::instrument_status');
   my $ua   = t::useragent->new({
 				is_success => 1,
 				mock => {
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
 			    },
 			  });
 
