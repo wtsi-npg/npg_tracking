@@ -349,19 +349,17 @@ use Carp;
 use DateTime;
 use DateTime::TimeZone;
 
-=head2 new
+=head2 BUILD
 
-Custom constructor: try to ensure instrument format is set for run.
+Post-constructor: try to ensure instrument format is set for run.
 
 =cut
 
-sub new {
-    my $class = shift;
-    my $self = $class->next::method(@_);
+sub BUILD {
+    my $self = shift;
     if ($self->id_instrument and not $self->id_instrument_format){
       $self->id_instrument_format($self->instrument->id_instrument_format);
     }
-    return $self;
 }
 
 =head2 _event_type_rs
