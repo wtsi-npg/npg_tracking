@@ -115,7 +115,7 @@ my $sub = sub { return $hash_projects_followers; };
   $email1_body   .= qq{Lane - 3 : Library - 1k\n\n};
   $email1_body   .= qq{You will be notified when this run reaches run archived.\n\n};
   $email1_body   .= qq{In the mean time, you can check the status of the run through NPG:\n\n};
-  $email1_body   .= qq{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/};
+  $email1_body   .= qq{http://npg.sanger.ac.uk/perl/npg/run/};
 
   my $email_hash = $util->parse_email($util->{emails}->[0]);
   like($email_hash->{subject}, qr{Run[ ]\d+[ ]-[ ]run[ ]complete[ ]-[ ]human}, q{email1 subject correct});
@@ -131,7 +131,7 @@ my $sub = sub { return $hash_projects_followers; };
   $email2_body   .= qq{Lane - 6 : Library - Billed\n\n};
   $email2_body   .= qq{You will be notified when this run reaches run archived.\n\n};
   $email2_body   .= qq{In the mean time, you can check the status of the run through NPG:\n\n};
-  $email2_body   .= qq{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/};
+  $email2_body   .= qq{http://npg.sanger.ac.uk/perl/npg/run/};
   is($email_hash->{to}, q{platypus@sanger.ac.uk}. qq{\n}, q{email2 to correct});
   like($email_hash->{annotation}, qr{$email2_body}, q{email2 body correct});
 }
