@@ -128,6 +128,25 @@ sub _build_npg_api_run {
    return $run_obj;
 }
 
+has '_lane_elements' =>   (isa             => 'ArrayRef',
+                           is              => 'ro',
+                           init_arg        => undef,
+                           lazy_build      => 1,
+                          );
+sub _build__lane_elements {
+  my $self = shift;
+  my $doc = st::api::batch->new({id => $self->batch_id,})->read();
+  if(!$doc) {
+    croak q[Failed to load XML for batch] . $self->batch_id;
+  }
+  my $lanes = $doc->getElementsByTagName(q[lanes])->[0];
+  if (!$lanes) {
+    croak q[Lanes element is not defined in batch ] . $self->batch_id;
+  }
+  my @nodes = $lanes->getElementsByTagName(q[lane]);
+  return \@nodes;
+}
+
 =head2 _associated_lims
 
 Private accessor, not possible to set from the constructor.
@@ -145,7 +164,7 @@ sub _build__associated_lims {
   my $lims = [];
 
   if (!defined $self->position) {
-    foreach my $lane_el ($self->_lane_elements) {
+    foreach my $lane_el (@{$self->_lane_elements}) {
       my $position = $lane_el->getAttribute(q[position]);
       if (!$position) {
         croak q[Position is not defined for one of the lanes in batch ] . $self->batch_id;
@@ -191,7 +210,7 @@ sub _build__lane_xml_element {
 
   if (!defined $self->position) { return; }
 
-  foreach my $lane_el ($self->_lane_elements) {
+  foreach my $lane_el (@{$self->_lane_elements}) {
     if($self->position == $lane_el->getAttribute(q[position])) {
       return $lane_el;
     }
@@ -863,20 +882,6 @@ sub _lims_object {
     return $class->new({id => $id,});
   }
   return;
-}
-
-sub _lane_elements {
-  my $self = shift;
-  my $doc = st::api::batch->new({id => $self->batch_id,})->read();
-  if(!$doc) {
-    croak q[Failed to load XML for batch] . $self->batch_id;
-  }
-  my $lanes = $doc->getElementsByTagName(q[lanes])->[0];
-  if (!$lanes) {
-    croak q[Lanes element is not defined in batch ] . $self->batch_id;
-  }
-  my @nodes = $lanes->getElementsByTagName(q[lane]);
-  return @nodes;
 }
 
 sub _xml_element_exists {
