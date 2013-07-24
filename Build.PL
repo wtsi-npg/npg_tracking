@@ -215,6 +215,7 @@ my $builder = $class->new(
                 'MooseX::Getopt'                  => '0.39',
                 'MooseX::Log::Log4perl'           => 0,
                 'MooseX::StrictConstructor'       => '0.08',
+                'MooseX::MarkAsMethods'           => '0.13',
                 'MooseX::NonMoose'                => '0',
                 'namespace::autoclean'            => '0.09',
                 'Net::LDAP'                       => 0,

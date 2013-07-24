@@ -141,7 +141,7 @@ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[];
 {
   my $ua   = t::useragent->new({
     is_success => 1,
-    mock => { q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml} },
+    mock => { q{http://npg.sanger.ac.uk/perl/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml} },
 			       });
   my $run  = npg::api::run->new({
 				 util   => npg::api::util->new({useragent => $ua,}),
@@ -162,8 +162,8 @@ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[];
   my $ua   = t::useragent->new({
     is_success => 1,
     mock => {
-    q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/2888;update_tags} => q{Run 2888 tagged},
-    q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/2888} => q{t/data/npg_api/npg/run/2888.xml},
+    q{http://npg.sanger.ac.uk/perl/npg/run/2888;update_tags} => q{Run 2888 tagged},
+    q{http://npg.sanger.ac.uk/perl/npg/run/2888} => q{t/data/npg_api/npg/run/2888.xml},
             },
 			      });
   my $run  = npg::api::run->new({
@@ -177,8 +177,8 @@ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[];
   my $ua   = t::useragent->new({
     is_success => 1,
     mock => { 
-    q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/2888;update_tags} => q{Run 2888 tagged},
-    q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/2888} => q{t/data/npg_api/npg/run/2888.xml}, 
+    q{http://npg.sanger.ac.uk/perl/npg/run/2888;update_tags} => q{Run 2888 tagged},
+    q{http://npg.sanger.ac.uk/perl/npg/run/2888} => q{t/data/npg_api/npg/run/2888.xml}, 
             },
 			      });
   my $run  = npg::api::run->new({

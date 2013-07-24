@@ -13,7 +13,6 @@ use MooseX::StrictConstructor;
 use MooseX::Aliases;
 use MooseX::ClassAttribute;
 use Readonly;
-use Scalar::Util qw/weaken/;
 use List::MoreUtils qw/none/;
 
 use npg_tracking::util::types;
@@ -467,6 +466,24 @@ sub _build_contains_nonconsented_xahuman {
   return $cuh;
 }
 
+has '_cached_children'              => (isa             => 'ArrayRef',
+                                        is              => 'ro',
+                                        init_arg        => undef,
+                                        lazy_build      => 1,
+                                       );
+sub _build__cached_children {
+  my $self = shift;
+  my @children = ();
+  foreach my $c ($self->_driver->children) {
+    my $init = $c->init_attrs();
+    $init->{'driver_type'} = $self->driver_type;
+    $init->{'_driver'} = $c;
+    push @children, st::api::lims->new($init);
+  }
+  $self->_driver->free_children;
+  return \@children;
+}
+
 =head2 children
 
 Method returning a list of st::api::lims objects that are associated with this object
@@ -477,17 +494,7 @@ accessor is not set, returns lane level objects.
 =cut
 sub children {
   my $self = shift;
-  my @children = ();
-  foreach my $c ($self->_driver->children) {
-    my $init = $c->init_attrs();
-    $init->{'driver_type'} = $self->driver_type;
-    my $weak = \$c;
-    weaken($weak);
-    $init->{'_driver'} = ${$weak};
-    my $child = st::api::lims->new($init);
-    push @children, $child;
-  }
-  return @children;
+  return @{$self->_cached_children};
 }
 
 =head2 descendants
