@@ -13,7 +13,6 @@ use Test::Exception;
 use Test::Deep;
 use t::util;
 use t::request;
-use Data::Dumper;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15395 $ =~ /(\d+)/mx; $r; };
 
@@ -239,7 +238,6 @@ my $util = t::util->new({fixtures  => 1,});
 					       },
 			    });
   ok($util->test_rendered($str, 't/data/rendered/run_status/t_run_status_list_sorted_from_analysis_complete.html'), 'run status list shows following statuses for non-analyst user for run at status analysis_complete');
-  diag(Dumper($str));
 }
 
 {
