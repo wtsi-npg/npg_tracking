@@ -14,15 +14,23 @@
   </tbody>
 </table>
 
- [% IF requestor.is_member_of('engineers') || requestor.is_member_of('loaders') || requestor.is_member_of('annotators') || requestor.is_member_of('manual_qc') %]
+ [% IF requestor.is_member_of('engineers') || requestor.is_member_of('loaders') || requestor.is_member_of('annotators') || requestor.is_member_of('manual_qc') || requestor.is_member_of('analyst')%]
 <a name="run_status_form"></a>
 <div id="new_run_status" style="display:none;">
 <form method="post" action="[% SCRIPT_NAME %]/run_status/;create">
  <div>
  <input type="hidden" name="id_run" value="[% model.id_run %]" />
- <select name="id_run_status_dict" id="id_run_status_dict">[% FOREACH rsd = model.run_status_dict.run_status_dicts_sorted_feasible(model.id_run) %]
-  <option value="[% rsd.id_run_status_dict %]">[% rsd.description %]</option>[% END %]
- </select>
+  <select name="id_run_status_dict" id="id_run_status_dict">
+  [% IF requestor.is_member_of('analyst')%]
+    [% FOREACH rsd = model.run_status_dict.run_status_dicts_sorted() %]
+      <option value="[% rsd.id_run_status_dict %]">[% rsd.description %]</option>
+    [% END %]
+  [% ELSE %]
+    [% FOREACH rsd = model.run_status_dict.run_status_dicts_sorted_feasible(model.id_run) %]
+      <option value="[% rsd.id_run_status_dict %]">[% rsd.description %]</option>
+    [% END %]
+  [% END %]
+  </select>
  [%- IF model.run_pair.id_run -%]<label>&nbsp;&nbsp;Update pair</label><input type="checkbox" name="update_pair" value="1"/>[% END %]
  <input type="submit" value="save" />
  <input type="button" name="cancel" value="cancel" onclick="cancel_form('run_status', 1); return false;" />

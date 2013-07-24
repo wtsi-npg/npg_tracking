@@ -8,11 +8,12 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 74;
+use Test::More tests => 76;
 use Test::Exception;
 use Test::Deep;
 use t::util;
 use t::request;
+use Data::Dumper;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15395 $ =~ /(\d+)/mx; $r; };
 
@@ -224,7 +225,34 @@ my $util = t::util->new({fixtures  => 1,});
 						batch_id => 42,
 					       },
 			    });
-  ok($util->test_rendered($str, 't/data/rendered/run_status/t_run_status_list_sorted.html'), 'run status list is sorted and filtered');
+  ok($util->test_rendered($str, 't/data/rendered/run_status/t_run_status_list_sorted_from_qc_complete.html'), 'run status list is empty for non-analyst user for run at status qc_complete');
+}
+
+{
+  my $str = t::request->new({
+			     PATH_INFO      => '/run/1#run_status_form',
+			     REQUEST_METHOD => 'GET',
+			     username       => 'joe_loader',
+			     util           => $util,
+			     cgi_params     => {
+						batch_id => 42,
+					       },
+			    });
+  ok($util->test_rendered($str, 't/data/rendered/run_status/t_run_status_list_sorted_from_analysis_complete.html'), 'run status list shows following statuses for non-analyst user for run at status analysis_complete');
+  diag(Dumper($str));
+}
+
+{
+  my $str = t::request->new({
+			     PATH_INFO      => '/run/2#run_status_form',
+			     REQUEST_METHOD => 'GET',
+			     username       => 'joe_analyst',
+			     util           => $util,
+			     cgi_params     => {
+						batch_id => 42,
+					       },
+			    });
+  ok($util->test_rendered($str, 't/data/rendered/run_status/t_run_status_list_sorted.html'), 'run status list is sorted and filtered but displayed in full for analyst user');
 }
 
 {
