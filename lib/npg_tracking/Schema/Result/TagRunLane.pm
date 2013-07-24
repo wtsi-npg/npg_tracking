@@ -1,18 +1,36 @@
+use utf8;
 package npg_tracking::Schema::Result::TagRunLane;
 
 # Created by DBIx::Class::Schema::Loader
 # DO NOT MODIFY THE FIRST PART OF THIS FILE
 
-use strict;
-use warnings;
-
-use base 'DBIx::Class::Core';
-
-__PACKAGE__->load_components("InflateColumn::DateTime");
-
 =head1 NAME
 
 npg_tracking::Schema::Result::TagRunLane
+
+=cut
+
+use strict;
+use warnings;
+
+use Moose;
+use MooseX::NonMoose;
+use MooseX::MarkAsMethods autoclean => 1;
+extends 'DBIx::Class::Core';
+
+=head1 COMPONENTS LOADED
+
+=over 4
+
+=item * L<DBIx::Class::InflateColumn::DateTime>
+
+=back
+
+=cut
+
+__PACKAGE__->load_components("InflateColumn::DateTime");
+
+=head1 TABLE: C<tag_run_lane>
 
 =cut
 
@@ -54,6 +72,7 @@ __PACKAGE__->table("tag_run_lane");
 =head2 date
 
   data_type: 'date'
+  datetime_undef_if_invalid: 1
   default_value: '0000-00-00'
   is_nullable: 0
 
@@ -92,8 +111,24 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
   "date",
-  { data_type => "date", default_value => "0000-00-00", is_nullable => 0 },
+  {
+    data_type => "date",
+    datetime_undef_if_invalid => 1,
+    default_value => "0000-00-00",
+    is_nullable => 0,
+  },
 );
+
+=head1 PRIMARY KEY
+
+=over 4
+
+=item * L</id_tag_run_lane>
+
+=back
+
+=cut
+
 __PACKAGE__->set_primary_key("id_tag_run_lane");
 
 =head1 RELATIONS
@@ -110,7 +145,7 @@ __PACKAGE__->belongs_to(
   "run_lane",
   "npg_tracking::Schema::Result::RunLane",
   { id_run_lane => "id_run_lane" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 tag
@@ -125,7 +160,7 @@ __PACKAGE__->belongs_to(
   "tag",
   "npg_tracking::Schema::Result::Tag",
   { id_tag => "id_tag" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 =head2 user
@@ -140,12 +175,12 @@ __PACKAGE__->belongs_to(
   "user",
   "npg_tracking::Schema::Result::User",
   { id_user => "id_user" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.06001 @ 2010-09-07 09:30:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rPasA0XoHrzSUX3biCyTuw
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:JgLHlqhwfZFpMAI4IC9KxA
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: jo3 $
 # Created:       2010-04-08
@@ -157,3 +192,8 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevis
 
 1;
 
+
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->meta->make_immutable;
+1;
