@@ -30,7 +30,7 @@ foreach my $pa (['test', 'using mocked data'],
     local $ENV{dev}=$pa->[0];
 
     if ($pa->[0] eq q[dev]) {
-        $do_test = npg_is_accessible(q[http://intwebdev.sanger.ac.uk/perl/prodsoft/npg/npg]);
+        $do_test = npg_is_accessible(q[http://npg.dev.sanger.ac.uk/perl/npg]);
     } elsif ($pa->[0] eq q[live]) {
         $do_test = npg_is_accessible();
     }
