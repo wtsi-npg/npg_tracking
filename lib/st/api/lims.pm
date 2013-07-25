@@ -104,6 +104,8 @@ Readonly::Hash   my  %METHODS           => {
                       /],
 };
 
+Readonly::Array my @DELEGATED_METHODS => sort map { @{$_} } values %METHODS;
+
 Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml/;
 
 
@@ -155,21 +157,7 @@ sub _driver_package_name {
   return join q[::], __PACKAGE__ , $type;
 }
 
-=head2 delegated_methods
-
-A sorted list of methods execution of which is delegated to drivers
-
-=cut
-sub delegated_methods {
-  my @methods = ();
-  foreach my $key (keys %METHODS) {
-    push @methods, @{$METHODS{$key}};
-  }
-  @methods = sort @methods;
-  return @methods;
-}
-
-for my$m (delegated_methods()){
+for my$m ( @DELEGATED_METHODS ){
   __PACKAGE__->meta->add_method( $m, sub {my$d=shift->_driver; if( $d->can($m) ){ return $d->$m(@_) } return; });
 }
 
@@ -707,7 +695,7 @@ sub method_list {
     }
     push @attrs, $name;
   }
-  push @attrs, delegated_methods();
+  push @attrs, @DELEGATED_METHODS;
   @attrs = sort @attrs;
   return @attrs;
 }
