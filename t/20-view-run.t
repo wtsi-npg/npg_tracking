@@ -8,7 +8,7 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 76;
+use Test::More tests => 77;
 use Test::Exception;
 use Test::Deep;
 use t::util;
@@ -216,7 +216,7 @@ my $util = t::util->new({fixtures  => 1,});
 
 {
   my $str = t::request->new({
-			     PATH_INFO      => '/run/1234#run_status_form',
+			     PATH_INFO      => '/run/1234',
 			     REQUEST_METHOD => 'GET',
 			     username       => 'joe_loader',
 			     util           => $util,
@@ -224,7 +224,9 @@ my $util = t::util->new({fixtures  => 1,});
 						batch_id => 42,
 					       },
 			    });
-  ok($util->test_rendered($str, 't/data/rendered/run_status/t_run_status_list_sorted_from_qc_complete.html'), 'run status list is empty for non-analyst user for run at status qc_complete');
+  unlike  ($str, qr/id_run_status_dict/, 'run status list is empty for non-analyst user for run at status qc_complete');
+  unlike  ($str, qr/add_status/, 'yellow edit pencil is not visible for non-analyst user for run at status qc_complete');
+
 }
 
 {

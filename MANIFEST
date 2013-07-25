@@ -1139,7 +1139,6 @@ t/data/rendered/run_status_dict.xml
 t/data/rendered/run_status/t_request_create.xml
 t/data/rendered/run_status/t_run_status_list_sorted_from_analysis_complete.html
 t/data/rendered/run_status/t_run_status_list_sorted_from_data_discarded.html
-t/data/rendered/run_status/t_run_status_list_sorted_from_qc_complete.html
 t/data/rendered/run_status/t_run_status_list_sorted.html
 t/data/rendered/search.html
 t/data/rendered/user/1000.html
