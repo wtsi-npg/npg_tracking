@@ -118,6 +118,11 @@ has 'driver_type' => (
                         default => $IMPLEMENTED_DRIVERS[0],
                      );
 
+has '_driver' => (
+                          'is'      => 'ro',
+                          'lazy'    => 1,
+                          'builder' => '_build__driver',
+);
 sub _build__driver {
   my $self = shift;
   my $d_package = $self->_driver_package_name;
@@ -164,40 +169,8 @@ sub delegated_methods {
   return @methods;
 }
 
-=head2 BUILD
-
-The last method called by the constructor before returning object to the caller.
-Instantiates a driver and sets up delegation. 
-
-=cut
-sub BUILD {
-  my $self = shift;
-
-  my $d_package = $self->_driver_package_name;
-  ##no critic (ProhibitStringyEval RequireCheckingReturnValueOfEval)
-  eval "require $d_package";
-  ##use critic
-  my @delegated = delegated_methods();
-  my @del = grep { $d_package->can($_) } @delegated;
-  my @none = grep { !$d_package->can($_) } @delegated;
-
-  my $driver_attr_definition = {
-                          'isa'     => $d_package,
-                          'is'      => 'ro',
-                          'lazy'    => 1,
-                          'builder' => '_build__driver',
-                          'handles' => \@del,
-  };
-
-  my $meta = $self->meta();
-  $meta->add_attribute('_driver', $driver_attr_definition);
-  foreach (@none) {
-    my $message =  "Warning: '$_' not inplemented for ".$self->driver_type." driver, setting to return undef\n";
-    $meta->add_method( "$_" => sub { warn "$message\n"; return; } );
-  }
-
- # __PACKAGE__->meta->make_immutable;
-  return;
+for my$m (delegated_methods()){
+  __PACKAGE__->meta->add_method( $m, sub {my$d=shift->_driver; if( $d->can($m) ){ return $d->$m(@_) } return; });
 }
 
 =head2 inline_index_end
