@@ -49,16 +49,16 @@ use_ok('npg::api::instrument_utilisation');
   my $ua   = t::useragent->new({
 				is_success => 1,
 				mock => {
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
-                                   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/1} => q{t/data/npg_api/npg/run/1.xml},
-           q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/6} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="6" is_paired="" id_run_pair=""></run>},
-           q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/7} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="7" is_paired="" id_run_pair=""></run>},
-           q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/9} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="9" is_paired="1" id_run_pair="10"></run>},
-           q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/13} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="9" is_paired="0" id_run_pair=""></run>},
-           q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/18} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="18" is_paired="0" id_run_pair=""></run>},
+				   q{http://npg.sanger.ac.uk/perl/npg/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
+                                   q{http://npg.sanger.ac.uk/perl/npg/run/1} => q{t/data/npg_api/npg/run/1.xml},
+           q{http://npg.sanger.ac.uk/perl/npg/run/6} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="6" is_paired="" id_run_pair=""></run>},
+           q{http://npg.sanger.ac.uk/perl/npg/run/7} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="7" is_paired="" id_run_pair=""></run>},
+           q{http://npg.sanger.ac.uk/perl/npg/run/9} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="9" is_paired="1" id_run_pair="10"></run>},
+           q{http://npg.sanger.ac.uk/perl/npg/run/13} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="9" is_paired="0" id_run_pair=""></run>},
+           q{http://npg.sanger.ac.uk/perl/npg/run/18} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="18" is_paired="0" id_run_pair=""></run>},
 			    },
 			  });
   my $util = npg::api::util->new({
@@ -137,10 +137,10 @@ use_ok('npg::api::instrument_utilisation');
   my $ua   = t::useragent->new({
 				is_success => 1,
 				mock => {
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
 			    },
 			  });
   my $util = npg::api::util->new({
@@ -338,11 +338,11 @@ use_ok('npg::api::instrument_utilisation');
   my $ua   = t::useragent->new({
 				is_success => 1,
 				mock => {
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instrument_status/up/down.xml} => q{t/data/npg_api/npg/instrument_status/list_up_down_xml.xml},
-           q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instrument_utilisation.xml} => q{t/data/npg_api/npg/instrument_utilisation/20090202.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/instrument_status/up/down.xml} => q{t/data/npg_api/npg/instrument_status/list_up_down_xml.xml},
+           q{http://npg.sanger.ac.uk/perl/npg/instrument_utilisation.xml} => q{t/data/npg_api/npg/instrument_utilisation/20090202.xml},
 			    },
 			  });
   my $util = npg::api::util->new({
@@ -395,10 +395,10 @@ use_ok('npg::api::instrument_utilisation');
   my $ua   = t::useragent->new({
 				is_success => 1,
 				mock => {
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
-				   q{http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
+				   q{http://npg.sanger.ac.uk/perl/npg/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
 			    },
 			  });
   my $util = npg::api::util->new({
