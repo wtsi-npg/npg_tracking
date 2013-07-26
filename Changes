@@ -1,10 +1,14 @@
 CHANGES
 
-release 74.3
+release 74.4
+ - memory leak fix in st::api::lims constructor - move metaprogramming out of the BUILD method
 
+release 74.3
  - children method of the st::api::lims backed up by a lazy-built attribute;
    once children objects are created, their driver peers are cleared
  - new npg url is propagated through the package
+ - use updated DBIx::Class::Schema::Loader
+ - don't define new constructor now DBIC is Moosified: use BUILD
 
 release 74.2
  - xml specific lims module, st::api::lims, is split into a generic lims wrapper,
