@@ -3,7 +3,13 @@
     <tr><th>Date</th><th>Description</th><th>Operator</th><th>Loader</th></tr>
   </thead>
   <tbody>
+   [%- current_temporal_index = 0; -%]
+   [%- temp_temporal_index  = 0; -%]
    [%- FOREACH run_status = model.run_statuses -%]
+    [%- temp_temporal_index = run_status.run_status_dict.temporal_index; -%]
+    [%- IF temp_temporal_index > current_temporal_index -%]
+      [%- current_temporal_index = temp_temporal_index; -%]
+   [%- END -%]
       <tr>
         <td>[% run_status.date %]</td>
         <td>[% run_status.description %]</td>
@@ -14,14 +20,19 @@
   </tbody>
 </table>
 
-[% IF requestor.is_member_of('engineers') || requestor.is_member_of('loaders') || requestor.is_member_of('annotators') || requestor.is_member_of('manual_qc') || requestor.is_member_of('analyst')%]
-  [% IF requestor.is_member_of('analyst')%]
-    [% rsd_list = model.run_status_dict.run_status_dicts_sorted() %]
-  [% ELSE %]
-    [% rsd_list = model.run_status_dict.run_status_dicts_sorted_feasible(model.id_run) %]
-  [% END %]
+[%- IF requestor.is_member_of('engineers') || requestor.is_member_of('loaders') || requestor.is_member_of('annotators') || requestor.is_member_of('manual_qc') || requestor.is_member_of('analyst') -%]
+  [%- rsd_list = model.run_status_dict.run_status_dicts_sorted() -%]
+  [%- new_rsd_list = [ ]; -%]
+    [%- IF !(requestor.is_member_of('analyst')) -%]
+      [%- FOREACH rsd = rsd_list - %]
+        [%- IF rsd.temporal_index > current_temporal_index -%]
+          [%- new_rsd_list.push(rsd); -%]
+        [%- END -%]
+      [%- END -%]
+      [%- rsd_list = new_rsd_list; -%]
+    [%- END -%]
 
-  [% IF rsd_list.size > 0 %]
+  [%- IF rsd_list.size > 0 -%]
   <a name="run_status_form"></a>
   <div id="new_run_status" style="display:none;">
   <form method="post" action="[% SCRIPT_NAME %]/run_status/;create">
@@ -41,5 +52,5 @@
     </form>
   </div>
 <a id="run_status_update_extra" href="#run_status_form" onclick="new_form_extra('run_status'); return false;"><img src="/icons/silk/pencil_add.png" alt="add status" title="add status" /></a>
-  [% END %]
+  [%- END -%]
 [%- END -%]

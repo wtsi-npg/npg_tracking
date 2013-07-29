@@ -181,7 +181,8 @@ my $util = t::util->new({'mock'=>$mock});
   is($rs->authorised(), 1, 'pipeline authorised for create_xml');
 
   my $render;
-  eval { $render = $rs->render(); };
+  eval { $render = $rs->render(); 
+diag($render)};
   ok($util->test_rendered($render, 
                           't/data/rendered/run_status/create_xml.xml'),
      q{returned xml is correct}

@@ -214,15 +214,12 @@ my $util = t::util->new({fixtures  => 1,});
   ok($util->test_rendered($str, 't/data/rendered/run_add_pair_ajax.html'), 'add_pair_ajax');
 }
 
-{
+{  
   my $str = t::request->new({
 			     PATH_INFO      => '/run/1234',
 			     REQUEST_METHOD => 'GET',
 			     username       => 'joe_loader',
 			     util           => $util,
-			     cgi_params     => {
-						batch_id => 42,
-					       },
 			    });
   unlike  ($str, qr/id_run_status_dict/, 'run status list is empty for non-analyst user for run at status qc_complete');
   unlike  ($str, qr/add_status/, 'yellow edit pencil is not visible for non-analyst user for run at status qc_complete');

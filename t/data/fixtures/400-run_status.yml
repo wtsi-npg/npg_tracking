@@ -179,3 +179,9 @@
   id_run_status_dict: 4
   id_user: 1
   iscurrent: 1
+- date: 2010-01-01 10:10:34
+  id_run: 1234
+  id_run_status: 31
+  id_run_status_dict: 20 
+  id_user: 3
+  iscurrent: 1
