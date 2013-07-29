@@ -1,19 +1,15 @@
 #########
 # Author:        Marina Gourtovaia
-# Maintainer:    $Author: mg8 $
 # Created:       July 2011
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: 40-st-lims.t 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/40-st-lims.t $
-#
+# copied from svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/40-st-lims.t, r16549
+
 use strict;
 use warnings;
-use Test::More tests => 284;
+use Test::More tests => 298;
 use Test::Exception;
 
 use_ok('st::api::lims');
 
-my $NUM_METHODS = 54;
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 
 my @libs_6551_1 = ('PhiX06Apr11','SS109114 2798524','SS109305 2798523','SS117077 2798526','SS117886 2798525','SS127358 2798527','SS127858 2798529','SS128220 2798530','SS128716 2798531','SS129050 2798528','SS129764 2798532','SS130327 2798533','SS131636 2798534');
@@ -210,7 +206,6 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
 
   my @methods;
   lives_ok {@methods = $lims->method_list} 'list of attributes generated';
-  is (scalar @methods, $NUM_METHODS, 'number of methods');
   foreach my $method (@methods) {
     lives_ok {$lims->$method} qq[invoking method or attribute $method does not throw an error];
   }
@@ -418,6 +413,40 @@ TODO: {
   my $lims1144 = st::api::lims->new(batch_id => 19158, position => 1, tag_index => 144);
   isnt($lims1144->library_type, '3 prime poly-A pulldown', 'library type');
   is($lims1144->tag_sequence, 'CCTGAGCA', 'plex tag sequence directly from batch xml');
+}
+
+{
+  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
+  my $lims = st::api::lims->new(batch_id=>17763, position=>1,tag_index=>1);
+  is( $lims->study_title(), 'hifi test', q{study title} );
+  is( $lims->study_name(), 'Kapa HiFi test', 'study name');
+  is( $lims->study_accession_number(), undef, q{no study accession obtained} );
+  is( $lims->study_publishable_name(), q{hifi test}, q{study title returned as publishable name} );
+
+  $lims = st::api::lims->new(batch_id=>17763, position=>1,tag_index=>2);
+  ok(! $lims->alignments_in_bam, 'no alignments in BAM when false in corresponding XML in study');
+  is( $lims->study_title(), 'Genetic variation in Kuusamo', q{study title obtained} );
+  is( $lims->study_accession_number(), 'EGAS00001000020', q{study accession obtained} );
+  is( $lims->study_publishable_name(), 'EGAS00001000020', q{accession returned as study publishable name} );
+  is( $lims->sample_publishable_name(), q{ERS003242}, q{sample publishable name returns accession} );
+}
+
+{
+  my $sample_description =  'AB GO (grandmother) of the MGH meiotic cross. The same DNA was split into three aliquots (of which this';
+  is(st::api::lims::_tag_sequence_from_sample_description($sample_description), undef, q{tag undefined for a description containing characters in round brackets} );
+  $sample_description = "3' end enriched mRNA from morphologically abnormal embryos from dag1 knockout incross 3. A 6 base indexing sequence (GTAGAC) is bases 5 to 10 of read 1 followed by polyT.  More information describing the mutant phenotype can be found at the Wellcome Trust Sanger Institute Zebrafish Mutation Project website http://www.sanger.ac.uk/cgi-bin/Projects/D_rerio/zmp/search.pl?q=zmp_phD";
+  is(st::api::lims::_tag_sequence_from_sample_description($sample_description), q{GTAGAC}, q{correct tag from a complex description} );
+  $sample_description = "^M";
+  is(st::api::lims::_tag_sequence_from_sample_description($sample_description), undef, q{tag undefined for a description with carriage return} );
+}
+
+{
+  my $path = 't/data/samplesheet/MS2026264-300V2.csv';
+  my $ss = st::api::lims->new(id_run => 10262,  path => $path, driver_type => 'samplesheet');
+  is ($ss->is_pool, 0, 'is_pool false on run level');
+  is ($ss->is_control, 0, 'is_control false on run level');
+  is ($ss->library_id, undef, 'library_id undef on run level');
+  is ($ss->library_name, undef, 'library_name undef on run level');
 }
 
 1;

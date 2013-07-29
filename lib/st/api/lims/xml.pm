@@ -10,14 +10,11 @@ use Carp;
 use English qw(-no_match_vars);
 use Moose;
 use MooseX::StrictConstructor;
-use MooseX::Aliases;
-use MooseX::ClassAttribute;
 use XML::LibXML;
 use Readonly;
 
 use npg::api::run;
 use st::api::batch;
-use st::api::sample;
 use npg_tracking::util::types;
 
 with qw/  npg_tracking::glossary::run
@@ -48,7 +45,6 @@ Readonly::Scalar our $BAD_SAMPLE_ID     => 4;
 Readonly::Scalar our $PROC_NAME_INDEX   => 3;
 Readonly::Hash   our %QC_EVAL_MAPPING   => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
 Readonly::Array  our @LIMS_OBJECTS      => qw/sample study project/;
-Readonly::Scalar my  $INLINE_INDEX_END  => 10;
 
 Readonly::Hash our %DELEGATION      => {
     'sample'       => {
@@ -57,7 +53,6 @@ Readonly::Hash our %DELEGATION      => {
                            organism                 => 'organism',
                            sample_common_name       => 'common_name',
                            sample_public_name       => 'public_name',
-                           sample_publishable_name  => 'publishable_name',
                            sample_accession_number  => 'accession_number',
                            sample_consent_withdrawn => 'consent_withdrawn',
                            sample_description       => 'description',
@@ -71,7 +66,6 @@ Readonly::Hash our %DELEGATION      => {
                            alignments_in_bam            => 'alignments_in_bam',
                            study_accession_number       => 'accession_number',
                            study_title                  => 'title',
-                           study_publishable_name       => 'publishable_name',
                            study_description            => 'description',
     },
     'project'      => {
@@ -79,12 +73,6 @@ Readonly::Hash our %DELEGATION      => {
                            project_cost_code => 'project_cost_code',
     },
 };
-
-class_has 'inline_index_end' => (isa => 'Int',
-                                 is => 'ro',
-                                 required => 0,
-                                 default => $INLINE_INDEX_END,
-                                );
 
 =head2 id_run
 
@@ -138,6 +126,25 @@ sub _build_npg_api_run {
    return $run_obj;
 }
 
+has '_lane_elements' =>   (isa             => 'ArrayRef',
+                           is              => 'ro',
+                           init_arg        => undef,
+                           lazy_build      => 1,
+                          );
+sub _build__lane_elements {
+  my $self = shift;
+  my $doc = st::api::batch->new({id => $self->batch_id,})->read();
+  if(!$doc) {
+    croak q[Failed to load XML for batch] . $self->batch_id;
+  }
+  my $lanes = $doc->getElementsByTagName(q[lanes])->[0];
+  if (!$lanes) {
+    croak q[Lanes element is not defined in batch ] . $self->batch_id;
+  }
+  my @nodes = $lanes->getElementsByTagName(q[lane]);
+  return \@nodes;
+}
+
 =head2 _associated_lims
 
 Private accessor, not possible to set from the constructor.
@@ -156,7 +163,7 @@ sub _build__associated_lims {
   my $lims = [];
 
   if (!defined $self->position) {
-    foreach my $lane_el ($self->_lane_elements) {
+    foreach my $lane_el (@{$self->_lane_elements}) {
       my $position = $lane_el->getAttribute(q[position]);
       if (!$position) {
         croak q[Position is not defined for one of the lanes in batch ] . $self->batch_id;
@@ -202,7 +209,7 @@ sub _build__lane_xml_element {
 
   if (!defined $self->position) { return; }
 
-  foreach my $lane_el ($self->_lane_elements) {
+  foreach my $lane_el (@{$self->_lane_elements}) {
     if($self->position == $lane_el->getAttribute(q[position])) {
       return $lane_el;
     }
@@ -877,20 +884,6 @@ sub _lims_object {
   return;
 }
 
-sub _lane_elements {
-  my $self = shift;
-  my $doc = st::api::batch->new({id => $self->batch_id,})->read();
-  if(!$doc) {
-    croak q[Failed to load XML for batch] . $self->batch_id;
-  }
-  my $lanes = $doc->getElementsByTagName(q[lanes])->[0];
-  if (!$lanes) {
-    croak q[Lanes element is not defined in batch ] . $self->batch_id;
-  }
-  my @nodes = $lanes->getElementsByTagName(q[lane]);
-  return @nodes;
-}
-
 sub _xml_element_exists {
   my ($self, $el_type) = @_;
 
@@ -942,10 +935,6 @@ __END__
 
 =item Moose
 
-=item MooseX::Aliases
-
-=item MooseX::ClassAttribute
-
 =item MooseX::StrictConstructor
 
 =item Carp
@@ -959,12 +948,6 @@ __END__
 =item npg::api::run
 
 =item st::api::batch
-
-=item st::api::sample
-
-=item st::api::study
-
-=item st::api::project
 
 =item npg_tracking::util::types
 

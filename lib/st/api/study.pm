@@ -1,11 +1,8 @@
 #########
 # Author:        gq1
-# Maintainer:    $Author: gq1 $
 # Created:       2010-04-29
-# Last Modified: $Date: 2010-03-08 12:17:17 +0000 (Mon, 08 Mar 2010) $
-# Id:            $Id: project.pm 8603 2010-03-08 12:17:17Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/branches/prerelease-42.0/lib/st/api/project.pm $
-#
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/branches/prerelease-42.0/lib/st/api/project.pm, r8603
+
 package st::api::study;
 
 use base qw(st::api::base);
@@ -124,12 +121,6 @@ sub title {
   return $title->[0];
 }
 
-sub publishable_name {
-  my ( $self )  = @_;
-
-  return $self->accession_number() || $self->title() || $self->name();
-}
-
 sub description {
   my ( $self )  = @_;
   my $e = $self->get(q{Study description});
@@ -215,12 +206,6 @@ returns the accession number from sequencescape for this study
 returns the title for the study
 
   my $sTitle = $oStudy->title();
-
-=head2 publishable_name
-
-returns the publishable name of the study, which will be either (in order of preference) accession_number, title, name
-
-  my $sPublishableName = $oStudy->publishable_name();
 
 =head2 description
 

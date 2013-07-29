@@ -72,7 +72,6 @@ Readonly::Hash   my  %METHODS           => {
                            organism
                            sample_common_name
                            sample_public_name
-                           sample_publishable_name
                            sample_accession_number
                            sample_consent_withdrawn
                            sample_description
@@ -88,7 +87,6 @@ Readonly::Hash   my  %METHODS           => {
                            alignments_in_bam
                            study_accession_number
                            study_title
-                           study_publishable_name
                            study_description
                            study_reference_genome
                            study_contains_nonconsented_xahuman
@@ -104,10 +102,8 @@ Readonly::Hash   my  %METHODS           => {
                       /],
 };
 
+Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml samplesheet/;
 Readonly::Array my @DELEGATED_METHODS => sort map { @{$_} } values %METHODS;
-
-Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml/;
-
 
 =head2 driver_type
 
@@ -146,6 +142,12 @@ sub _build_driver {
         $ref->{'batch_id'} = $self->batch_id;
       }
     }
+  } elsif ($self->driver_type eq 'samplesheet') {
+    foreach my $attr (qw/tag_index position id_run path/) {
+      if (defined $self->$attr) {
+        $ref->{$attr} = $self->$attr;
+      }
+    }
   } else {
     croak 'Do not know how to instantiate driver type ' . $self->driver_type;
   }
@@ -159,7 +161,12 @@ sub _driver_package_name {
     croak qq[Driver type '$type' not implemented.\n Implemented drivers: ] .
              join q[,], @IMPLEMENTED_DRIVERS;
   }
-  return join q[::], __PACKAGE__ , $type;
+  if ($type eq 'xml') {
+    return join q[::], __PACKAGE__ , $type;
+  } elsif ($type eq 'samplesheet') {
+    return 'npg_tracking::illumina::run::lims::samplesheet';
+  }
+  return;
 }
 
 for my$m ( @DELEGATED_METHODS ){
@@ -176,6 +183,17 @@ class_has 'inline_index_end' => (isa => 'Int',
                                  required => 0,
                                  default => $INLINE_INDEX_END,
                                 );
+
+=head2 path
+
+Samplesheet path
+
+=cut
+has 'path' => (
+                  isa      => 'Str',
+                  is       => 'ro',
+                  required => 0,
+              );
 
 =head2 id_run
 
@@ -502,6 +520,26 @@ sub children_ia {
   return $h;
 }
 
+=head2 study_publishable_name
+
+Study publishable name
+
+=cut
+sub study_publishable_name {
+  my $self = shift;
+  return $self->study_accession_number() || $self->study_title() || $self->study_name();
+}
+
+=head2 sample_publishable_name
+
+Sample publishable name
+
+=cut
+sub sample_publishable_name {
+  my $self = shift;
+  return $self->sample_accession_number() || $self->sample_public_name() || $self->sample_name();
+}
+
 =head2 associated_child_lims_ia
 
 The same as children_ia. Retained for backward compatibility
@@ -730,6 +768,7 @@ sub to_string {
   return $s;
 }
 
+__PACKAGE__->meta->make_immutable;
 no Moose;
 
 1;
