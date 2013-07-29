@@ -413,13 +413,18 @@ has '_cached_children'              => (isa             => 'ArrayRef',
 sub _build__cached_children {
   my $self = shift;
   my @children = ();
-  foreach my $c ($self->_driver->children) {
-    my $init = $c->init_attrs();
-    $init->{'driver_type'} = $self->driver_type;
-    $init->{'_driver'} = $c;
-    push @children, st::api::lims->new($init);
+  if($self->_driver->can('children')) {
+    foreach my $c ($self->_driver->children) {
+      my $init = {};
+      if(my $id_run=$self->id_run) { $init->{id_run}=$id_run; }
+      if(my $position=$self->position||($c->can(q(position))?$c->position:undef)) { $init->{position}=$position; }
+      if(my $tag_index=$self->tag_index||($c->can(q(tag_index))?$c->tag_index:undef)) { $init->{tag_index}=$tag_index; }
+      $init->{'driver_type'} = $self->driver_type;
+      $init->{'_driver'} = $c;
+      push @children, st::api::lims->new($init);
+    }
+    $self->_driver->free_children;
   }
-  $self->_driver->free_children;
   return \@children;
 }
 
