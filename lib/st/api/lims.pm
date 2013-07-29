@@ -120,12 +120,17 @@ has 'driver_type' => (
                         default => $IMPLEMENTED_DRIVERS[0],
                      );
 
-has '_driver' => (
+=head2 driver
+
+Driver object (xml, warehouse, samplesheet)
+
+=cut
+has 'driver' => (
                           'is'      => 'ro',
                           'lazy'    => 1,
-                          'builder' => '_build__driver',
+                          'builder' => '_build_driver',
 );
-sub _build__driver {
+sub _build_driver {
   my $self = shift;
   my $d_package = $self->_driver_package_name;
   ##no critic (ProhibitStringyEval RequireCheckingReturnValueOfEval)
@@ -158,7 +163,7 @@ sub _driver_package_name {
 }
 
 for my$m ( @DELEGATED_METHODS ){
-  __PACKAGE__->meta->add_method( $m, sub {my$d=shift->_driver; if( $d->can($m) ){ return $d->$m(@_) } return; });
+  __PACKAGE__->meta->add_method( $m, sub {my$d=shift->driver; if( $d->can($m) ){ return $d->$m(@_) } return; });
 }
 
 =head2 inline_index_end
@@ -206,7 +211,7 @@ sub _build_batch_id {
 
   if ($self->id_run) {
     if ($self->driver_type eq 'xml') {
-      return $self->_driver->batch_id;
+      return $self->driver->batch_id;
     }
     croak q[Cannot build batch_id from id_run for driver type ] . $self->driver_type;
   }
@@ -413,17 +418,17 @@ has '_cached_children'              => (isa             => 'ArrayRef',
 sub _build__cached_children {
   my $self = shift;
   my @children = ();
-  if($self->_driver->can('children')) {
-    foreach my $c ($self->_driver->children) {
+  if($self->driver->can('children')) {
+    foreach my $c ($self->driver->children) {
       my $init = {};
       if(my $id_run=$self->id_run) { $init->{id_run}=$id_run; }
       if(my $position=$self->position||($c->can(q(position))?$c->position:undef)) { $init->{position}=$position; }
       if(my $tag_index=$self->tag_index||($c->can(q(tag_index))?$c->tag_index:undef)) { $init->{tag_index}=$tag_index; }
       $init->{'driver_type'} = $self->driver_type;
-      $init->{'_driver'} = $c;
+      $init->{'driver'} = $c;
       push @children, st::api::lims->new($init);
     }
-    $self->_driver->free_children;
+    $self->driver->free_children;
   }
   return \@children;
 }
@@ -713,7 +718,7 @@ Human friendly description of the object
 sub to_string {
   my $self = shift;
 
-  my $d = ref $self->_driver;
+  my $d = ref $self->driver;
   ($d)= $d=~/::(\w+?)\z/smx;
   my $s = __PACKAGE__ . q[ object, driver - ] . $d;
   foreach my $attr (sort qw(id_run batch_id position tag_index)) {

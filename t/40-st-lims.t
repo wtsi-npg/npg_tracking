@@ -8,12 +8,12 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 283;
+use Test::More tests => 284;
 use Test::Exception;
 
 use_ok('st::api::lims');
 
-my $NUM_METHODS = 53;
+my $NUM_METHODS = 54;
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 
 my @libs_6551_1 = ('PhiX06Apr11','SS109114 2798524','SS109305 2798523','SS117077 2798526','SS117886 2798525','SS127358 2798527','SS127858 2798529','SS128220 2798530','SS128716 2798531','SS129050 2798528','SS129764 2798532','SS130327 2798533','SS131636 2798534');
