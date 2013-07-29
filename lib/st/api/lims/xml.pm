@@ -42,8 +42,6 @@ Gateway to Sequencescape LIMS.
 =cut
 
 Readonly::Scalar our $BAD_SAMPLE_ID     => 4;
-Readonly::Scalar our $PROC_NAME_INDEX   => 3;
-Readonly::Hash   our %QC_EVAL_MAPPING   => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
 Readonly::Array  our @LIMS_OBJECTS      => qw/sample study project/;
 
 Readonly::Hash our %DELEGATION      => {
@@ -640,27 +638,20 @@ sub _build_request_id {
   return $request_id;
 }
 
-=head2 seq_qc_state
+=head2 qc_state
 
 Read-only accessor, not possible to set from the constructor.
-Returned 1 for passes, 0 for failed, indef if the value is not set.
 
 =cut
-has 'seq_qc_state' =>     (isa             => 'Maybe[Bool]',
+has 'qc_state' =>         (isa             => 'Maybe[Str]',
                            is              => 'ro',
                            init_arg        => undef,
                            lazy_build      => 1,
                           );
-sub _build_seq_qc_state {
+sub _build_qc_state {
   my $self = shift;
-
-  if(!$self->_xml_element_exists(q[entity])) { return; }
-  my $mqc = $self->_entity_xml_element->getAttribute(q[qc_state]);
-  if ($mqc) {
-    if (!exists  $QC_EVAL_MAPPING{$mqc}) {
-      croak qq[Unexpected value '$mqc' for seq qc state in ] . $self->to_string;
-    }
-    return $QC_EVAL_MAPPING{$mqc};
+  if ($self->_xml_element_exists(q[entity])) {
+    return $self->_entity_xml_element->getAttribute(q[qc_state]);
   }
   return;
 }

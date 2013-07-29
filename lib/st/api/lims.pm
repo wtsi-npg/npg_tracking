@@ -1,4 +1,4 @@
-#########
+#######
 # Author:        Marina Gourtovaia
 # Created:       July 2013
 # copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/lims.pm, r16549
@@ -54,7 +54,7 @@ Readonly::Hash   my  %METHODS           => {
                            bait_name
                            default_tag_sequence
                            required_insert_size_range
-                           seq_qc_state
+                           qc_state
                       /],
 
     'lane'         => [qw/ lane_id
@@ -342,6 +342,26 @@ sub _entity_required_insert_size {
   return;
 }
 
+=head2 seq_qc_state
+
+ 1 for passes, 0 for failed, undef if the value is not set
+
+=cut
+sub  seq_qc_state {
+  my $self = shift;
+  my $state = $self->driver->qc_state;
+  if (!defined $state || $state eq '1' || $state eq '0') {
+    return $state;
+  }
+  if ($state eq q[]) {
+    return undef;
+  }
+  if (!exists  $QC_EVAL_MAPPING{$state}) {
+    croak qq[Unexpected value '$state' for seq qc state in ] . $self->to_string;
+  }
+  return $QC_EVAL_MAPPING{$state};
+}
+
 =head2 reference_genome
 
 Read-only accessor, not possible to set from the constructor.
@@ -446,7 +466,9 @@ sub _build__cached_children {
       $init->{'driver'} = $c;
       push @children, st::api::lims->new($init);
     }
-    $self->driver->free_children;
+    if($self->driver->can('free_children')) { 
+      $self->driver->free_children;
+    }
   }
   return \@children;
 }
@@ -474,14 +496,11 @@ lane and, if appropriate, plex level.
 =cut
 sub descendants {
   my $self = shift;
-
   my @lims = $self->children;
   if (!defined $self->position) {
-    my @all_lims = ();
     foreach my $alims (@lims) {
-      push @all_lims, $alims->children;
+      push @lims, $alims->children;
     }
-    push @lims, @all_lims;
   }
   return @lims;
 }
@@ -789,8 +808,6 @@ __END__
 =item MooseX::ClassAttribute
 
 =item MooseX::StrictConstructor
-
-=item Scalar::Util
 
 =item List::MoreUtils
 
