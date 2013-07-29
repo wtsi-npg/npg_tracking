@@ -713,10 +713,14 @@ Human friendly description of the object
 sub to_string {
   my $self = shift;
 
-  my $s = __PACKAGE__ . q[ object, driver - ] . $self->driver_type;
-  my %attrs = %{$self->_driver->init_attrs()};
-  foreach my $attr (sort keys %attrs) {
-    $s .= q[, ] . join q[ ], $attr, $attrs{$attr};
+  my $d = ref $self->_driver;
+  ($d)= $d=~/::(\w+?)\z/smx;
+  my $s = __PACKAGE__ . q[ object, driver - ] . $d;
+  foreach my $attr (sort qw(id_run batch_id position tag_index)) {
+    my $value=$self->$attr;
+    if (defined $value){
+      $s .= q[, ] . join q[ ], $attr, $value;
+    }
   }
   return $s;
 }
