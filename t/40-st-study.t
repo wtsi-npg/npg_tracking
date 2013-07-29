@@ -8,7 +8,7 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 26;
+use Test::More tests => 24;
 use Test::Exception;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 8603 $ =~ /(\d+)/mx; $r; };
@@ -56,12 +56,10 @@ use_ok('st::api::study');
   is( $study->title(), 'hifi test', q{title} );
   is( $study->name(), 'Kapa HiFi test', 'study name');
   is( $study->accession_number(), undef, q{no accession obtained} );
-  is( $study->publishable_name(), q{hifi test}, q{title returned as publishable name} );
   $study = st::api::study->new({id => 701,});
   ok(! $study->alignments_in_bam, 'no alignments in BAM when false in corresponding XML in study');
   is( $study->title(), 'Genetic variation in Kuusamo', q{title obtained} );
   is( $study->accession_number(), 'EGAS00001000020', q{accession obtained} );
-  is( $study->publishable_name(), 'EGAS00001000020', q{accession returned as publishable name} );
 }
 
 1;

@@ -53,7 +53,6 @@ Readonly::Hash our %DELEGATION      => {
                            organism                 => 'organism',
                            sample_common_name       => 'common_name',
                            sample_public_name       => 'public_name',
-                           sample_publishable_name  => 'publishable_name',
                            sample_accession_number  => 'accession_number',
                            sample_consent_withdrawn => 'consent_withdrawn',
                            sample_description       => 'description',
@@ -67,7 +66,6 @@ Readonly::Hash our %DELEGATION      => {
                            alignments_in_bam            => 'alignments_in_bam',
                            study_accession_number       => 'accession_number',
                            study_title                  => 'title',
-                           study_publishable_name       => 'publishable_name',
                            study_description            => 'description',
     },
     'project'      => {

@@ -72,7 +72,6 @@ Readonly::Hash   my  %METHODS           => {
                            organism
                            sample_common_name
                            sample_public_name
-                           sample_publishable_name
                            sample_accession_number
                            sample_consent_withdrawn
                            sample_description
@@ -88,7 +87,6 @@ Readonly::Hash   my  %METHODS           => {
                            alignments_in_bam
                            study_accession_number
                            study_title
-                           study_publishable_name
                            study_description
                            study_reference_genome
                            study_contains_nonconsented_xahuman
@@ -510,6 +508,26 @@ sub children_ia {
     $h->{$key} = $alims;
   }
   return $h;
+}
+
+=head2 study_publishable_name
+
+Study publishable name
+
+=cut
+sub study_publishable_name {
+  my $self = shift;
+  return $self->study_accession_number() || $self->study_title() || $self->study_name();
+}
+
+=head2 sample_publishable_name
+
+Sample publishable name
+
+=cut
+sub sample_publishable_name {
+  my $self = shift;
+  return $self->sample_accession_number() || $self->sample_public_name() || $self->sample_name();
 }
 
 =head2 associated_child_lims_ia

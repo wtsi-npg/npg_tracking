@@ -2,6 +2,7 @@ CHANGES
 
  - samplesheet driver for lims object
  - general tidy-up of the xml lims driver
+ - logic for sample/study_publishable_name methods moved tost::api::lims wrapper
 
 release 74.4
  - memory leak fix in st::api::lims constructor - move metaprogramming out of the BUILD method
