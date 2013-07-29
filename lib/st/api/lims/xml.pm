@@ -901,22 +901,6 @@ sub _xml_element_exists {
   return 1;
 }
 
-=head2 init_attrs
-
-A set of attributes sufficient to instantiate an object like this one
-
-=cut
-sub init_attrs {
-  my $self = shift;
-  my $h = {};
-  foreach my $attr (qw/id_run batch_id position tag_index/) {
-    if (defined $self->$attr) {
-      $h->{$attr} = $self->$attr;
-    }
-  }
-  return $h;
-}
-
 =head2 to_string
 
 Human friendly description of the object

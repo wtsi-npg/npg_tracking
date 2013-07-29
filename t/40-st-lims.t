@@ -5,7 +5,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 297;
+use Test::More tests => 298;
 use Test::Exception;
 
 use_ok('st::api::lims');

@@ -210,22 +210,6 @@ Position, optional attribute.
 has '+position' =>        (required        => 0,);
 
 
-=head2 init_attrs
-
-A set of attributes sufficient to instantiate an object like this one
-
-=cut
-sub init_attrs {
-  my $self = shift;
-  my $h = {};
-  foreach my $attr (qw/id_run position tag_index path/) {
-    if (defined $self->$attr) {
-      $h->{$attr} = $self->$attr;
-    }
-  }
-  return $h;
-}
-
 =head2 is_pool
 
 Read-only boolean accessor, not possible to set from the constructor.
