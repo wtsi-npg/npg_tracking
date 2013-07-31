@@ -97,7 +97,7 @@ sub email_addresses_of_owners {
 sub reference_genome {
     my $self = shift;
     $self->parse();
-    return $self->{q[Reference genome]}->[0] || $self->{q[Reference Genome]}->[0];
+    return $self->get(q[Reference Genome])->[0];
 }
 
 sub alignments_in_bam {
