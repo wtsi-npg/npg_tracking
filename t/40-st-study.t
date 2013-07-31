@@ -8,7 +8,7 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 24;
+use Test::More tests => 26;
 use Test::Exception;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 8603 $ =~ /(\d+)/mx; $r; };
@@ -60,6 +60,12 @@ use_ok('st::api::study');
   ok(! $study->alignments_in_bam, 'no alignments in BAM when false in corresponding XML in study');
   is( $study->title(), 'Genetic variation in Kuusamo', q{title obtained} );
   is( $study->accession_number(), 'EGAS00001000020', q{accession obtained} );
+  ok(! $study->separate_y_chromosome_data, 'separate_y_chromosome_data false for study');
+}
+
+{
+  my $study = st::api::study->new({id => 2693});
+  ok($study->separate_y_chromosome_data, 'separate_y_chromosome_data true for study');
 }
 
 1;
