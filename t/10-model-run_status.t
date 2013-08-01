@@ -84,7 +84,7 @@ my $util = t::util->new({
 					util => $util,
 				       });
   isa_ok($rs->current_run_statuses(), 'ARRAY');
-  is((scalar @{$rs->current_run_statuses()}), 13, 'current run_statuses');
+  is((scalar @{$rs->current_run_statuses()}), 14, 'current run_statuses');
   isa_ok($rs->current_run_statuses->[0], 'npg::model::run_status', 'first current run status isa_ok');
 }
 
