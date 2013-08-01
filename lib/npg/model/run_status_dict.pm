@@ -115,9 +115,9 @@ sub run_status_dicts_sorted {
   my ( $self ) = @_;
 
   my $pkg = __PACKAGE__;
-  my $query =   qq(SELECT id_run_status_dict, description, temporal_index FROM ) . 
+  my $query = q(SELECT id_run_status_dict, description, temporal_index FROM ) .
                   $pkg->table().
-                  qq( WHERE iscurrent = 1 
+                  q( WHERE iscurrent = 1
                   ORDER BY temporal_index);
 
   return $self->gen_getarray($pkg, $query);

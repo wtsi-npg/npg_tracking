@@ -96,7 +96,7 @@ sub usergroups {
 
 sub is_member_of {
   my ($self, $groupname) = @_;
-  if(scalar grep { $_->groupname() eq $groupname || 
+  if(scalar grep { $_->groupname() eq $groupname ||
     (($groupname ne 'analyst') && ($_->groupname() eq 'admin' ))}
      @{$self->usergroups()}) {
     return 1;
