@@ -103,7 +103,7 @@ Readonly::Hash   my  %METHODS           => {
 };
 
 Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml samplesheet/;
-Readonly::Array my @DELEGATED_METHODS => sort map { @{$_} } values %METHODS;
+Readonly::Array our @DELEGATED_METHODS => sort map { @{$_} } values %METHODS;
 
 =head2 driver_type
 
