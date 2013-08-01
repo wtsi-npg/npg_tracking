@@ -208,7 +208,7 @@ sub _create_path {
   my ( $self, $url ) = @_;
 
   my ($stpath)  = $url =~ m{\Ahttps?://psd\-[^/]+(.*?)\z}xms; # sequencescape path
-  my ($npgpath) = $url =~ m{\Ahttps?://intweb.*npg[^/]*?(.*?)\z}xms; # npg path
+  my ($npgpath) = $url =~ m{\Ahttps?://npg(?:\.dev)?\.sanger\.ac\.uk\/perl\/npg\/(.*?)\z}xms; # npg path
   my ($extpath) = $url =~ m{\Ahttps?://.*?/(.*?)\z}xms; # other source path
 
   my $path = $stpath || $npgpath || $extpath;
@@ -340,7 +340,7 @@ sub _write2cache {
             croak qq[$dir should be a directory];
 	}
     } else {
-        File::Path::make_path($dir);  #intweb fix
+        File::Path::make_path($dir);
     }
 
     open my $fh, q[>], $path or croak qq[Error when opening $path for writing: $ERRNO];

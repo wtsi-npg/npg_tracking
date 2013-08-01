@@ -37,7 +37,7 @@ A collection of functions to test the availability of internal Sanger sites
 
 Readonly::Scalar our $LWP_TIMEOUT       => 60;
 Readonly::Scalar our $MAX_NUM_ATTEMPTS  => 2;
-Readonly::Scalar our $NPG_HOME     => q[http://intweb.sanger.ac.uk/perl/prodsoft/npg/npg];
+Readonly::Scalar our $NPG_HOME     => q[http://npg.sanger.ac.uk/perl/npg];
 
 ## no critic (ProhibitExplicitISA)
 our @ISA       = qw(Exporter);

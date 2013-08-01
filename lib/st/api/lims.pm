@@ -13,7 +13,6 @@ use MooseX::StrictConstructor;
 use MooseX::Aliases;
 use MooseX::ClassAttribute;
 use Readonly;
-use Scalar::Util qw/weaken/;
 use List::MoreUtils qw/none/;
 
 use npg_tracking::util::types;
@@ -105,6 +104,8 @@ Readonly::Hash   my  %METHODS           => {
                       /],
 };
 
+Readonly::Array my @DELEGATED_METHODS => sort map { @{$_} } values %METHODS;
+
 Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml/;
 
 
@@ -119,6 +120,11 @@ has 'driver_type' => (
                         default => $IMPLEMENTED_DRIVERS[0],
                      );
 
+has '_driver' => (
+                          'is'      => 'ro',
+                          'lazy'    => 1,
+                          'builder' => '_build__driver',
+);
 sub _build__driver {
   my $self = shift;
   my $d_package = $self->_driver_package_name;
@@ -151,54 +157,8 @@ sub _driver_package_name {
   return join q[::], __PACKAGE__ , $type;
 }
 
-=head2 delegated_methods
-
-A sorted list of methods execution of which is delegated to drivers
-
-=cut
-sub delegated_methods {
-  my @methods = ();
-  foreach my $key (keys %METHODS) {
-    push @methods, @{$METHODS{$key}};
-  }
-  @methods = sort @methods;
-  return @methods;
-}
-
-=head2 BUILD
-
-The last method called by the constructor before returning object to the caller.
-Instantiates a driver and sets up delegation. 
-
-=cut
-sub BUILD {
-  my $self = shift;
-
-  my $d_package = $self->_driver_package_name;
-  ##no critic (ProhibitStringyEval RequireCheckingReturnValueOfEval)
-  eval "require $d_package";
-  ##use critic
-  my @delegated = delegated_methods();
-  my @del = grep { $d_package->can($_) } @delegated;
-  my @none = grep { !$d_package->can($_) } @delegated;
-
-  my $driver_attr_definition = {
-                          'isa'     => $d_package,
-                          'is'      => 'ro',
-                          'lazy'    => 1,
-                          'builder' => '_build__driver',
-                          'handles' => \@del,
-  };
-
-  my $meta = $self->meta();
-  $meta->add_attribute('_driver', $driver_attr_definition);
-  foreach (@none) {
-    my $message =  "Warning: '$_' not inplemented for ".$self->driver_type." driver, setting to return undef\n";
-    $meta->add_method( "$_" => sub { warn "$message\n"; return; } );
-  }
-
- # __PACKAGE__->meta->make_immutable;
-  return;
+for my$m ( @DELEGATED_METHODS ){
+  __PACKAGE__->meta->add_method( $m, sub {my$d=shift->_driver; if( $d->can($m) ){ return $d->$m(@_) } return; });
 }
 
 =head2 inline_index_end
@@ -445,6 +405,24 @@ sub _build_contains_nonconsented_xahuman {
   return $cuh;
 }
 
+has '_cached_children'              => (isa             => 'ArrayRef',
+                                        is              => 'ro',
+                                        init_arg        => undef,
+                                        lazy_build      => 1,
+                                       );
+sub _build__cached_children {
+  my $self = shift;
+  my @children = ();
+  foreach my $c ($self->_driver->children) {
+    my $init = $c->init_attrs();
+    $init->{'driver_type'} = $self->driver_type;
+    $init->{'_driver'} = $c;
+    push @children, st::api::lims->new($init);
+  }
+  $self->_driver->free_children;
+  return \@children;
+}
+
 =head2 children
 
 Method returning a list of st::api::lims objects that are associated with this object
@@ -455,17 +433,7 @@ accessor is not set, returns lane level objects.
 =cut
 sub children {
   my $self = shift;
-  my @children = ();
-  foreach my $c ($self->_driver->children) {
-    my $init = $c->init_attrs();
-    $init->{'driver_type'} = $self->driver_type;
-    my $weak = \$c;
-    weaken($weak);
-    $init->{'_driver'} = ${$weak};
-    my $child = st::api::lims->new($init);
-    push @children, $child;
-  }
-  return @children;
+  return @{$self->_cached_children};
 }
 
 =head2 descendants
@@ -727,7 +695,7 @@ sub method_list {
     }
     push @attrs, $name;
   }
-  push @attrs, delegated_methods();
+  push @attrs, @DELEGATED_METHODS;
   @attrs = sort @attrs;
   return @attrs;
 }
