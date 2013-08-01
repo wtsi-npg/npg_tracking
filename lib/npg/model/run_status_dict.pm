@@ -123,26 +123,6 @@ sub run_status_dicts_sorted {
   return $self->gen_getarray($pkg, $query);
 }
 
-sub run_status_dicts_sorted_feasible {
-  my ( $self, $id_run ) = @_;
-
-  my $pkg = __PACKAGE__;
-
-  my $query =   qq(SELECT id_run_status_dict, description, temporal_index FROM ) . 
-                  $pkg->table().
-                  qq( WHERE temporal_index > (
-                    SELECT temporal_index 
-                    FROM run_status, run_status_dict 
-                    WHERE run_status.id_run_status_dict = run_status_dict.id_run_status_dict 
-                    AND id_run = ? 
-                    AND run_status.iscurrent = 1) 
-                  AND iscurrent = 1 
-                  ORDER BY temporal_index);
-
-  return $self->gen_getarray($pkg , $query, $id_run);
-
-}
-
 1;
 __END__
 
@@ -198,10 +178,6 @@ If this is given, the count of runs returned will only be for instruments of tha
 =head2 run_status_dicts_sorted
 
 Use instead of generated run_status_dicts to get a temporal ordered, current list
-
-=head2 run_status_dicts_sorted_feasible
-
-Use instead of generated run_status_dicst to geta  temporal ordered, curent list of statuses feasible from current status onwards
 
 =head1 DIAGNOSTICS
 

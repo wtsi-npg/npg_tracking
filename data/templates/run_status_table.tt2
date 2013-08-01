@@ -3,14 +3,8 @@
     <tr><th>Date</th><th>Description</th><th>Operator</th><th>Loader</th></tr>
   </thead>
   <tbody>
-   [%- current_temporal_index = 0; -%]
-   [%- temp_temporal_index  = 0; -%]
    [%- FOREACH run_status = model.run_statuses -%]
-    [%- temp_temporal_index = run_status.run_status_dict.temporal_index; -%]
-    [%- IF temp_temporal_index > current_temporal_index -%]
-      [%- current_temporal_index = temp_temporal_index; -%]
-   [%- END -%]
-      <tr>
+     <tr>
         <td>[% run_status.date %]</td>
         <td>[% run_status.description %]</td>
         <td>[% run_status.user.username %]</td>
@@ -23,6 +17,7 @@
 [%- IF requestor.is_member_of('engineers') || requestor.is_member_of('loaders') || requestor.is_member_of('annotators') || requestor.is_member_of('manual_qc') || requestor.is_member_of('analyst') -%]
   [%- rsd_list = model.run_status_dict.run_status_dicts_sorted() -%]
   [%- new_rsd_list = [ ]; -%]
+  [%- current_temporal_index = model.current_run_status.run_status_dict.temporal_index; -%]
     [%- IF !(requestor.is_member_of('analyst')) -%]
       [%- FOREACH rsd = rsd_list - %]
         [%- IF rsd.temporal_index > current_temporal_index -%]
