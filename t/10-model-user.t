@@ -9,7 +9,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 21;
+use Test::More tests => 20;
 use English qw(-no_match_vars);
 use Test::Exception;
 use Digest::SHA qw(sha256_hex);
@@ -48,7 +48,6 @@ my $util  = t::util->new({fixtures => 1});
 				    });
   is($model->id_user(), 12, 'user by username');
   is($model->is_member_of('admin'), undef, 'analyst user is not member of admin');
-  is($model->is_member_of('analyst'), 1, 'admin user is_member_of analyst');
   is($model->is_member_of('analyst'), 1, 'analyst user is_member_of analyst');
 }
 
