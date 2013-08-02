@@ -10,7 +10,7 @@
 - description: run on hold
   id_run_status_dict: 3
   iscurrent: 1
-  temporal_index: 130
+  temporal_index: 110
 - description: run complete
   id_run_status_dict: 4
   iscurrent: 1
@@ -30,15 +30,15 @@
 - description: analysis on hold
   id_run_status_dict: 8
   iscurrent: 1
-  temporal_index: 230
+  temporal_index: 260
 - description: analysis complete
   id_run_status_dict: 9
   iscurrent: 1
-  temporal_index: 260
+  temporal_index: 280
 - description: analysis cancelled
   id_run_status_dict: 10
   iscurrent: 1
-  temporal_index: 210
+  temporal_index: 270
 - description: run mirrored
   id_run_status_dict: 11
   iscurrent: 1
@@ -82,7 +82,7 @@
 - description: run stopped early
   id_run_status_dict: 22
   iscurrent: 1
-  temporal_index: 150
+  temporal_index: 130
 - description: secondary analysis in progress
   id_run_status_dict: 24
   iscurrent: 1

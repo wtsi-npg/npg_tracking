@@ -9,7 +9,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 17;
+use Test::More tests => 20;
 use English qw(-no_match_vars);
 use Test::Exception;
 use Digest::SHA qw(sha256_hex);
@@ -43,12 +43,23 @@ my $util  = t::util->new({fixtures => 1});
 
 {
   my $model = npg::model::user->new({
+				     util     => $util,
+				     username => 'joe_analyst',
+				    });
+  is($model->id_user(), 12, 'user by username');
+  is($model->is_member_of('admin'), undef, 'analyst user is not member of admin');
+  is($model->is_member_of('analyst'), 1, 'analyst user is_member_of analyst');
+}
+
+{
+  my $model = npg::model::user->new({
       util     => $util,
       id_user  => 1,
   });
   is( $model->username(), q{joe_admin}, q{user by id} );
   is( $model->rfid(), q{a07c54b988516a16f305aa7d483bb2cf5a496f167ea13548cf2222c5125499e6}, q{correct sha string returned by rfid} );
 }
+
 {
   my $model = npg::model::user->new({
       util  => $util,

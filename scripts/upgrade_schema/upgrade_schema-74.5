@@ -1,0 +1,8 @@
+insert into usergroup(groupname, is_public, description) values ("analyst", 0, "npg analyst");
+insert into user2usergroup(id_user, id_usergroup) select user.id_user, 12 from user2usergroup, user where user.id_user = user2usergroup.id_user and user.username in ('mg8', 'kl2', 'js10', 'srl', 'dj3', 'kt6
+') and user2usergroup.id_usergroup = 1;
+update run_status_dict set temporal_index = 110 where temporal_index = 130 and description = "run on hold";
+update run_status_dict set temporal_index = 130 where temporal_index = 150 and description = "run stopped early";
+update run_status_dict set temporal_index = 260 where temporal_index = 230 and description = "analysis on hold";
+update run_status_dict set temporal_index = 270 where temporal_index = 210 and description = "analysis cancelled";
+update run_status_dict set temporal_index = 280 where temporal_index = 260 and description = "analysis complete";
