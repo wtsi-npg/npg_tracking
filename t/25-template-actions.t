@@ -8,7 +8,7 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 14;
 use Template;
 
 BEGIN { $ENV{'DOCUMENT_ROOT'} = './htdocs'; }
@@ -134,6 +134,18 @@ my $util = t::util->new({fixtures=>1});
 	     }, \$got);
   ok($util->test_rendered($got, 't/data/rendered/actions_admin.html'), 'actions_admin render ok');
 }
+
+{
+  my $got    = q();
+  $util->requestor('joe_analyst');
+  $tt->process('actions.tt2',
+	     {
+	      'requestor'   => $util->requestor(),
+	      'SCRIPT_NAME' => '/cgi-perl/npg',
+	     }, \$got);
+  ok($util->test_rendered($got, 't/data/rendered/actions_analyst.html'), 'actions_analyst render ok');
+}
+
 {
   my $got    = q();
   $util->requestor('joe_annotator');

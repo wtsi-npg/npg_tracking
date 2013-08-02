@@ -20,8 +20,7 @@ __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_all();
 
 sub fields {
-  return qw(id_run_status_dict
-            description);
+  return qw(id_run_status_dict description temporal_index);
 }
 
 sub init {
@@ -112,6 +111,18 @@ sub count_runs {
   return $self->{count_runs}->{ $params->{id_instrument_format} } || 0;
 }
 
+sub run_status_dicts_sorted {
+  my ( $self ) = @_;
+
+  my $pkg = __PACKAGE__;
+  my $query = q(SELECT id_run_status_dict, description, temporal_index FROM ) .
+                  $pkg->table().
+                  q( WHERE iscurrent = 1
+                  ORDER BY temporal_index);
+
+  return $self->gen_getarray($pkg, $query);
+}
+
 1;
 __END__
 
@@ -163,6 +174,10 @@ If this is given, the runs returned will only be for instruments of that format
 
 Takes an optional hash of params, id_instrument_format => (all,1,2,3..) (defaults to all)
 If this is given, the count of runs returned will only be for instruments of that format
+
+=head2 run_status_dicts_sorted
+
+Use instead of generated run_status_dicts to get a temporal ordered, current list
 
 =head1 DIAGNOSTICS
 
