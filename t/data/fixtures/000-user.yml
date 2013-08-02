@@ -29,3 +29,5 @@
    rfid: d67ee62209ee5e0d5d421e0cf5bd479c83329c4fae89f9a51fc3ca6ee9e61174
  - id_user: 11
    username: rt_error
+ - id_user: 12
+   username: joe_analyst
