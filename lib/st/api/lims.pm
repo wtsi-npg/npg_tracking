@@ -91,6 +91,7 @@ Readonly::Hash   my  %METHODS           => {
                            study_reference_genome
                            study_contains_nonconsented_xahuman
                            study_contains_nonconsented_human
+                           study_requires_separate_y_chromosome_data
                       /],
 
     'project'      => [qw/ project_id
@@ -125,6 +126,9 @@ has 'driver' => (
                           'is'      => 'ro',
                           'lazy'    => 1,
                           'builder' => '_build_driver',
+                          'handles' => {
+                            'separate_y_chromosone_data' => 'study_requires_separate_y_chromosone_data'
+                          },
 );
 sub _build_driver {
   my $self = shift;
