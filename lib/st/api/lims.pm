@@ -358,7 +358,7 @@ sub  seq_qc_state {
     return $state;
   }
   if ($state eq q[]) {
-    return undef;
+    return;
   }
   if (!exists  $QC_EVAL_MAPPING{$state}) {
     croak qq[Unexpected value '$state' for seq qc state in ] . $self->to_string;
@@ -470,7 +470,7 @@ sub _build__cached_children {
       $init->{'driver'} = $c;
       push @children, st::api::lims->new($init);
     }
-    if($self->driver->can('free_children')) { 
+    if($self->driver->can('free_children')) {
       $self->driver->free_children;
     }
   }

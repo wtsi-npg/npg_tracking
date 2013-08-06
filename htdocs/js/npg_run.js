@@ -6,7 +6,9 @@ function things_to_do_on_load(id_run, batch_id, rAndDCodes) {
    s.src=SCRIPT_NAME + '/run/'+p[i]+'/' + id_run + '.png';
   }
 
-  new Ajax.Request(SCRIPT_NAME + '/../reflector', {
+  var lims_str = '' + batch_id;
+  if(batch_id && ! (lims_str.match(/^\d{13}$/))) {
+   new Ajax.Request(SCRIPT_NAME + '/../reflector', {
     requestHeaders: {Accept: 'application/xml, text/xml'},
     parameters: { url: 'http://psd-production.internal.sanger.ac.uk:6600/batches/' + batch_id + '.xml' },
     onSuccess: function(transport){
@@ -65,7 +67,8 @@ function things_to_do_on_load(id_run, batch_id, rAndDCodes) {
     },
     onCreate: function(){ $('ss_ajax_status').update('<img style="height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />Getting Sequencescape batch data...') },
     onFailure: function(){ _ss_ajax_warning('Something went wrong getting batch data from Sequencescape....') } 
-  });
+   });
+  }
 
   beginrefresh();
 }

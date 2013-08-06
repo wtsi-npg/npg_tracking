@@ -1,5 +1,7 @@
 CHANGES
 
+ - Deal with EAN13 barcode - put in batch_id field for now and allow creation of 
+   samplesheet using warehouse lims driver
  - separate_y_chromosone_data available in lims
  - samplesheet driver for lims object
  - general tidy-up of the xml lims driver
