@@ -1,10 +1,7 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-12-17 14:00:36 +0000 (Mon, 17 Dec 2012) $
-# Id:            $Id: util.pm 16335 2012-12-17 14:00:36Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util.pm $
+# copied from : svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util.pm r16335
 #
 package npg::util;
 use strict;
@@ -14,7 +11,8 @@ use base qw(ClearPress::util Exporter);
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16335 $ =~ /(\d+)/smx; $r; };
 
-Readonly::Scalar my $MAIL_DOMAIN => q(sanger.ac.uk);
+Readonly::Scalar my $MAIL_DOMAIN       => q(sanger.ac.uk);
+Readonly::Scalar my $DEFAULT_DATA_PATH => q(data);
 
 ##no critic (RegularExpressions::RequireDotMatchAnything RegularExpressions::RequireExtendedFormatting RegularExpressions::RequireLineBoundaryMatching RegularExpressions::ProhibitUnusualDelimiters ValuesAndExpressions::ProhibitMagicNumbers BuiltinFunctions::ProhibitLvalueSubstr ValuesAndExpressions::ProhibitEmptyQuotes ControlStructures::ProhibitPostfixControls ValuesAndExpressions::ProhibitNoisyQuotes)
 
@@ -49,47 +47,16 @@ sub cleanup {
 
 sub data_path {
   my $self = shift;
-  return $self->data_root() . '/prodsoft/npg';
+  my $root = $DEFAULT_DATA_PATH;
+  if ($ENV{'NPG_DATA_ROOT'}) {
+    ($root) = $ENV{'NPG_DATA_ROOT'} =~ m|([a-z0-9/\._\-]+)|i; 
+  }
+  return $root;
 }
 
 sub decription_key {
   my $self = shift;
   return $self->config->val($self->dbsection(), 'decription_key');
-}
-
-########################
-# Methods below are borrowed from SangerWeb.pm
-# 
-sub data_root {
-  my ($self, $devlive) = @_;
-  my $str              = $self->_server_root() . '/data/';
-  return $self->_devlive($str, $devlive);
-}
-
-sub _document_root {
-  my ($self, $devlive) = @_;
-  my ($root)           = $ENV{'DOCUMENT_ROOT'} =~ m|([a-z0-9/\._\-]+)|i;
-  return $self->_devlive($root, $devlive);
-}
-
-sub _server_root {
-  my ($self, $devlive) = @_;
-  my $root             = $self->_document_root();
-  substr($root, -1, 1) = '' if(substr($root, -1, 1) eq '/'); # strip trailing slash
-  $root                =~ s|^(.*)/[^/]+|$1|; # strip trailing directory (usually htdocs)
-  return $self->_devlive($root, $devlive);
-}
-
-sub _devlive {
-  my ($self, $str, $devlive) = @_;
-  $devlive ||= '';
-
-  if($devlive eq 'live') {
-    $str =~ s!/WWW(dev|test|live)?/!/WWWlive/!smg;
-  } elsif($devlive eq 'dev') {
-    $str =~ s!/WWW(dev|test|live)?/!/WWWdev/!smg;
-  }
-  return $str;
 }
 
 1;
@@ -151,8 +118,6 @@ $Revision: 16335 $
 =head2 yearmonthday - method for getting a string in the format yyyymmdd
 
   my $yearmonthday = $oUtil->yearmonthday();
-
-=head2 data_root
 
 =head2 cleanup - post-request cleanup (database disconnection)
 

@@ -97,32 +97,31 @@ sub location_is_instrument {
   });
   my $id_instrument;
 
-  # Access from the sequencers is via a proxy which sets X-F-F request header
-  my $xff = $ENV{HTTP_X_SEQUENCER} || q[];
-  my $possible_ips = [split /\s+/smx, $xff];
-  for my $ip ( @{ $possible_ips } ) {
-    my $selected_instrument = $instrument->instrument_by_ipaddr($ip);
-    if($selected_instrument) {
-      $id_instrument = $selected_instrument->id_instrument();
-      last;
-    }
+  my @possible_ips = ();
+  my $x_forward =  $ENV{HTTP_X_FORWARDED_FOR} || q[];
+  if ($x_forward) {
+    push @possible_ips, (split /,\s/smx, $x_forward);
   }
 
-  if( !$id_instrument ) {
-
-    my $x_forward =  $ENV{HTTP_X_FORWARDED_FOR} || q[];
-    my @possible_ips = split /,\s/smx, $x_forward;
-
-    my $x_sequencer = $ENV{HTTP_X_SEQUENCER} || q[];
+  my $x_sequencer = $ENV{HTTP_X_SEQUENCER};
+  if ($x_sequencer) {
     push @possible_ips, split /\s+/smx, $x_sequencer;
+  }
 
-    my $remote_addr = $ENV{REMOTE_ADDR};
-    if ( $remote_addr ) {
-      push @possible_ips, $remote_addr;
+  my $remote_addr = $ENV{REMOTE_ADDR};
+  if ( $remote_addr ) {
+    push @possible_ips, $remote_addr;
+  }
+
+  for my $ip ( @possible_ips ) {
+    if ($ip =~ /[^\d\.]/smx) { # the ip address should contain dots and digits only
+                               # HTTP_X_FORWARDED_FOR list contains something else
+                               # that later causes warnings
+      next;
     }
-
-    for my $ip ( @possible_ips ) {
-      my $selected_instrument = $instrument->instrument_by_instrument_comp ( $self->_comp_name_by_host( $ip ) );
+    my $cname = _comp_name_by_host( $ip );
+    if ($cname) {
+      my $selected_instrument = $instrument->instrument_by_instrument_comp ( $cname );
       if ( $selected_instrument ) {
         $id_instrument = $selected_instrument->id_instrument();
         last;
@@ -130,27 +129,21 @@ sub location_is_instrument {
     }
   }
 
-  $self->{location_is_instrument} = $id_instrument;
+  $self->{'location_is_instrument'} = $id_instrument;
 
   return $id_instrument;
 }
 
 sub _comp_name_by_host {
-  my ( $self, $ip ) = @_;
-  my $data_store = $self->{_comp_name_by_host} || {};
-
-  if ( $data_store->{$ip} ) {
-    return $data_store->{$ip};
-  }
+  my ( $ip ) = @_;
   ##no critic(RequireCheckingReturnValueOfEval)
   my $comp_name;
   eval {
     my $hostname = gethostbyaddr inet_aton($ip), AF_INET;
     if ($hostname) {
-      ( $comp_name ) = $hostname =~ /^(\w+)/mxs;
-      $data_store->{$ip} = $comp_name;
+      ( $comp_name ) = $hostname =~ /^((?:\w|-)+)/mxs;
     }
-  }; # if this fails, it does not matter
+  };
   return $comp_name;
 }
 
