@@ -91,7 +91,7 @@ Readonly::Hash   my  %METHODS           => {
                            study_reference_genome
                            study_contains_nonconsented_xahuman
                            study_contains_nonconsented_human
-                           study_requires_separate_y_chromosome_data
+                           separate_y_chromosome_data
                       /],
 
     'project'      => [qw/ project_id
