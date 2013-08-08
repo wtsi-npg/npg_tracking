@@ -4,21 +4,16 @@
 # copied from : svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util.pm r16335
 #
 package npg::util;
+
 use strict;
 use warnings;
-use Carp;
 use base qw(ClearPress::util Exporter);
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16335 $ =~ /(\d+)/smx; $r; };
 
 Readonly::Scalar my $MAIL_DOMAIN       => q(sanger.ac.uk);
 Readonly::Scalar my $DEFAULT_DATA_PATH => q(data);
-
-##no critic (RegularExpressions::RequireDotMatchAnything RegularExpressions::RequireExtendedFormatting RegularExpressions::RequireLineBoundaryMatching RegularExpressions::ProhibitUnusualDelimiters ValuesAndExpressions::ProhibitMagicNumbers BuiltinFunctions::ProhibitLvalueSubstr ValuesAndExpressions::ProhibitEmptyQuotes ControlStructures::ProhibitPostfixControls ValuesAndExpressions::ProhibitNoisyQuotes)
-
-sub mail_domain {
-  return $MAIL_DOMAIN;
-}
+Readonly::Scalar my $UNIX_YEAR_DELTA   => 1900;
 
 sub dbname { my $self = shift; return $self->config->val($self->dbsection(), 'dbname') || q(npg); }
 sub dbhost { my $self = shift; return $self->config->val($self->dbsection(), 'dbhost') || q(localhost); }
@@ -27,10 +22,7 @@ sub dbuser { my $self = shift; return $self->config->val($self->dbsection(), 'db
 sub dbpass { my $self = shift; return $self->config->val($self->dbsection(), 'dbpass') || q(); }
 
 sub yearmonthday {
-  my $self = shift;
   my ($t1, $t2, $t3, $day, $month, $year) = localtime;
-  Readonly::Scalar my $UNIX_YEAR_DELTA => 1900;
-
   $year += $UNIX_YEAR_DELTA;
   $month++;
   $month = sprintf '%02d', $month;
@@ -46,17 +38,24 @@ sub cleanup {
 }
 
 sub data_path {
-  my $self = shift;
   my $root = $DEFAULT_DATA_PATH;
   if ($ENV{'NPG_DATA_ROOT'}) {
-    ($root) = $ENV{'NPG_DATA_ROOT'} =~ m|([a-z0-9/\._\-]+)|i; 
+    ($root) = $ENV{'NPG_DATA_ROOT'} =~ m{([a-z0-9/\._\-]+)}ixms;
   }
   return $root;
+}
+
+sub dbsection {
+  return $ENV{'dev'} ? $ENV{'dev'} : 'live';
 }
 
 sub decription_key {
   my $self = shift;
   return $self->config->val($self->dbsection(), 'decription_key');
+}
+
+sub mail_domain {
+  return $MAIL_DOMAIN;
 }
 
 1;
@@ -85,7 +84,7 @@ $Revision: 16335 $
 
   my $sPath - $oUtil->data_path();
 
-=head2 dbsection - 'dev' or 'live' based on environment
+=head2 dbsection - 'dev' or 'live' or 'test' based on environment
 
   my $sEnv = $oUtil->dbsection();
 
@@ -111,10 +110,6 @@ $Revision: 16335 $
 
 =head2 decription_key - returns configuration's decription key
 
-=head2 dbh - A database handle for the supported database
-
-  my $oDbh = $oUtil->dbh();
-
 =head2 yearmonthday - method for getting a string in the format yyyymmdd
 
   my $yearmonthday = $oUtil->yearmonthday();
@@ -134,8 +129,6 @@ $Revision: 16335 $
 =item strict
 
 =item warnings
-
-=item Carp
 
 =item base
 
@@ -157,7 +150,7 @@ Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2013 GRL, by Roger Pettett
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
