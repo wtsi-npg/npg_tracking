@@ -1,7 +1,9 @@
 CHANGES
 
- - samplesheet driver for lims object
- - general tidy-up of the xml lims driver
+release 74.5
+- order run_status_dict by temporal_index to display in Runs horizontal panel.  
+- restrict statuses in menu for status editing to the statuses after the current status for all users
+  other than those in the new analyst group, who can see all statuses.
 
 release 74.4
  - memory leak fix in st::api::lims constructor - move metaprogramming out of the BUILD method

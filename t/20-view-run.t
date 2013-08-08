@@ -8,8 +8,9 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 73;
+use Test::More tests => 77;
 use Test::Exception;
+use Test::Deep;
 use t::util;
 use t::request;
 
@@ -211,6 +212,44 @@ my $util = t::util->new({fixtures  => 1,});
 					       },
 			    });
   ok($util->test_rendered($str, 't/data/rendered/run_add_pair_ajax.html'), 'add_pair_ajax');
+}
+
+{  
+  my $str = t::request->new({
+			     PATH_INFO      => '/run/1234',
+			     REQUEST_METHOD => 'GET',
+			     username       => 'joe_loader',
+			     util           => $util,
+			    });
+  unlike  ($str, qr/id_run_status_dict/, 'run status list is empty for non-analyst user for run at status qc_complete');
+  unlike  ($str, qr/add_status/, 'yellow edit pencil is not visible for non-analyst user for run at status qc_complete');
+
+}
+
+{
+  my $str = t::request->new({
+			     PATH_INFO      => '/run/1#run_status_form',
+			     REQUEST_METHOD => 'GET',
+			     username       => 'joe_loader',
+			     util           => $util,
+			     cgi_params     => {
+						batch_id => 42,
+					       },
+			    });
+  ok($util->test_rendered($str, 't/data/rendered/run_status/t_run_status_list_sorted_from_analysis_complete.html'), 'run status list shows following statuses for non-analyst user for run at status analysis_complete');
+}
+
+{
+  my $str = t::request->new({
+			     PATH_INFO      => '/run/2#run_status_form',
+			     REQUEST_METHOD => 'GET',
+			     username       => 'joe_analyst',
+			     util           => $util,
+			     cgi_params     => {
+						batch_id => 42,
+					       },
+			    });
+  ok($util->test_rendered($str, 't/data/rendered/run_status/t_run_status_list_sorted.html'), 'run status list is sorted and filtered but displayed in full for analyst user');
 }
 
 {
