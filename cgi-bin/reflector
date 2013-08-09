@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl -w
+#!/usr/local/bin/perl -wT
 #########
 # Author:        dj3
 # Created:       2010-05-17

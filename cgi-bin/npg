@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl
+#!/usr/local/bin/perl -T
 #########
 # Author:        rmp
 # Created:       2007-03-28
