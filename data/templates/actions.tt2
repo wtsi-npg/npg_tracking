@@ -9,6 +9,7 @@
     id = key ? model.$key : 0;
     run_read = (entity == 'run' && view.method_name == 'read' && id && id > 0) ? 1 : 0;
     rfid = (model.location_is_instrument && requestor.username == 'public') ? 1 : 0;
+    lims_batches_url = view.is_prod ? 'http://psd-production.internal.sanger.ac.uk:6600/batches/' : 'http://psd-dev.internal.sanger.ac.uk:6800/batches/';
  -%]
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
@@ -21,7 +22,7 @@
   <script type="text/javascript" src="/prodsoft/npg/js/wtsi/prototype-1.6.0.3.js" ></script>
   <script type="text/javascript" src="/prodsoft/npg/js/scriptaculous/scriptaculous.js" ></script>
   <script type="text/javascript" src="/prodsoft/npg/js/wtsi/sorttable.js" ></script>
-  <script type="text/javascript">var lims_batches_url='[% view.lims_batches_url %]'</script>
+  <script type="text/javascript">var lims_batches_url='[% lims_batches_url %]'</script>
   <script type="text/javascript" src="/prodsoft/npg/js/npg.js" ></script>
   [% IF run_read %] <script type="text/javascript" src="/prodsoft/npg/js/npg_run.js" ></script>[% END %]
   [% IF rfid %] <script type="text/javascript" src="/prodsoft/npg/js/npg_rfid.js" ></script>[% END %]

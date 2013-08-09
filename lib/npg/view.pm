@@ -156,13 +156,6 @@ sub is_prod {
   return $db eq q[live] ? 1 : 0;
 }
 
-sub lims_batches_url {
-  my $self = shift;
-  return $self->is_prod
-    ? 'http://psd-production.internal.sanger.ac.uk:6600/batches/'
-    : 'http://psd-dev.internal.sanger.ac.uk:6800/batches/';
-}
-
 1;
 
 
