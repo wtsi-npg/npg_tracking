@@ -8,24 +8,16 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 10;
 use Sys::Hostname;
 use Socket;
 use t::util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my @r = (q$LastChangedRevision: 14928 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
-
 my $util = t::util->new({ fixtures => 1 });
+use_ok('npg::model');
 {
-  use_ok('npg::model');
-
-  my $derived = t::derived->new();
-  is($derived->uid(), '20071016T134300Z0', 'first uid from zdate is ok');
-  is($derived->uid(), '20071016T134300Z1', 'second uid from zdate is ok');
-
   my $model = npg::model->new({util => $util});
   is($model->model_type(), 'model', 'entity type returns last part of reference to object');
-  like($model->dbh_datetime(), qr/\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}/, 'date returned from database');
 }
 
 {
@@ -54,15 +46,6 @@ my $util = t::util->new({ fixtures => 1 });
   $ENV{HTTP_X_FORWARDED_FOR} = q{127.0.0.2, 444::666};
   $ENV{REMOTE_ADDR} = qq{$addr};
   is( $model->location_is_instrument(), 3, q{instrument found from REMOTE_ADDR} );
-}
-
-package t::derived;
-use strict;
-use warnings;
-use base qw(npg::model);
-
-sub zdate {
-  return '2007-10-16T13:43:00Z';
 }
 
 1;

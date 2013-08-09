@@ -5,7 +5,7 @@
 <div>
 <span class="page_title">Runs</span>
  &middot;&middot;<a [%target %]href="[% SCRIPT_NAME %]/run/?id_run_status_dict=all&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[%id_instrument %]"  [% IF !model.id_run_status_dict || model.id_run_status_dict == 'all' %]class="runs_active_selection"[% END %]>all</a>&middot;&middot;
- [% FOREACH rsd = model.current_run_status.run_status_dict.run_status_dicts -%]
+ [% FOREACH rsd = model.current_run_status.run_status_dict.run_status_dicts_sorted -%]
 &middot;&middot;<a [%target %]href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% rsd.id_run_status_dict %]&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[% id_instrument %]"><span class="npg_nbsp [% IF rsd.id_run_status_dict == model.id_run_status_dict %]runs_active_selection[% END %]">[% rsd.description %]</span></a>&middot;&middot;
  [% END -%]
 </div>

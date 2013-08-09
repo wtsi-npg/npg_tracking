@@ -39,3 +39,7 @@
   groupname: errors
   id_usergroup: 10
   is_public: 0
+- description: npg analyst
+  groupname: analyst
+  id_usergroup: 11
+  is_public: 0
