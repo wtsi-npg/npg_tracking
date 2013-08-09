@@ -11,6 +11,7 @@ package npg::samplesheet;
 use Moose;
 use Template;
 use Carp;
+use English qw(-no_match_vars);
 
 use npg_tracking::Schema;
 use st::api::lims;
@@ -58,6 +59,19 @@ sub _build_id_run {
   croak 'id_run or a run is required';
 }
 
+has 'samplesheet_path' => (
+  'isa' => 'Str',
+  'is' => 'ro',
+  'lazy_build' => 1,
+);
+sub _build_samplesheet_path {
+  if($ENV{dev} and not $ENV{dev}=~/live/smix){
+    my ($suffix) = $ENV{dev}=~/(\w+)/smix;
+    return $SAMPLESHEET_PATH . $suffix . q(/);
+  }
+  return $SAMPLESHEET_PATH;
+}
+
 has 'repository' => ( 'isa' => 'Str', 'is' => 'ro', default => $REP_ROOT );
 
 has 'npg_tracking_schema' => (
@@ -86,7 +100,17 @@ has lims => (
   'lazy_build' => 1,
   'metaclass' => 'NoGetopt',
 );
-sub _build_lims { my $self=shift; return st::api::lims->new( batch_id=> $self->run->batch_id, position=>1, ); };
+sub _build_lims {
+  my $self=shift;
+  my $id = $self->run->batch_id;
+  if ($id=~/\A\d{13}\z/smx) {
+    ##no critic (ProhibitStringyEval)
+    eval 'require st::api::lims::warehouse' or do { croak $EVAL_ERROR;} ;
+    ##use critic
+    return st::api::lims->new( position=>1, driver => st::api::lims::warehouse->new( position=>1, tube_ean13_barcode=>$id) );
+  }
+  return st::api::lims->new( batch_id=> $id, position=>1, );
+};
 
 has output => (
   'is'  => 'ro',
@@ -97,7 +121,7 @@ sub _build_output {
   my ($self) = @_;
   my $reagent_kit = $self->run->flowcell_id();
   $reagent_kit =~ s/(?<!\d)0*(\d+)-0*(\d+)(V\d+)?\s*\z/sprintf(q(%07d-%d%s),$1,$2,uc($3||''))/esmxg; #MiSeq looks for samplesheet name without padded zeroes in the reagent kit suffix....
-  return $SAMPLESHEET_PATH . $reagent_kit . q(.csv);
+  return $self->samplesheet_path . $reagent_kit . q(.csv);
 }
 
 has fallback_reference => (
