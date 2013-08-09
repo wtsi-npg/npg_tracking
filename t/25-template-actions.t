@@ -11,8 +11,6 @@ use warnings;
 use Test::More tests => 14;
 use Template;
 
-BEGIN { $ENV{'DOCUMENT_ROOT'} = './htdocs'; }
-
 use npg::model::user;
 use npg::model::usergroup;
 use npg::model::user2usergroup;

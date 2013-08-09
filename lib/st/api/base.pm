@@ -63,6 +63,7 @@ sub util {
 sub get {
   my ($self, $field) = @_;
 
+  $field = lc $field;
   if($self->{$field}) {
     return $self->{$field};
   }
@@ -121,6 +122,7 @@ sub _init_from_xml_node {
         };
       };
       my $name   = $namec?$namec->getData():undef;
+      $name = lc $name;
       my $valuec = $desc->getElementsByTagName('value')->[0]->getFirstChild();
       my $value  = $valuec?$valuec->getData():undef;
       if (defined $value) {

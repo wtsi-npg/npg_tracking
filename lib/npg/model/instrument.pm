@@ -108,11 +108,6 @@ sub init {
   return 1;
 }
 
-sub instrument_by_ipaddr {
-  my ($self, $ipaddr) = @_;
-  return (grep {$_->ipaddr() && $_->ipaddr() eq $ipaddr } @{$self->instruments()})[0];
-}
-
 sub instrument_by_instrument_comp {
   my ($self, $instrument_comp) = @_;
 

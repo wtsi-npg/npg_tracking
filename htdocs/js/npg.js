@@ -4,6 +4,19 @@
 // $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/htdocs/js/npg.js $
 // $LastChangedRevision: 15220 $
 
+function _html_link (pos, servicetype, id, text){
+  if(id != undefined){
+    var url = lims_batches_url + '../' + servicetype + '/' +id;
+    var position = pos ? 'position="'+pos+'"': '';
+    if(text == undefined){
+      return '<a href="'+url+'" class="sequencescape_id" '+position + '>'+id+'</a>';
+    }else{
+      return '<a href="'+url+'">'+text +'</a>';
+    }
+  }
+  return (text == undefined ? id : text);
+}	
+
 /* toggle all checkboxes in list (requires all to have same classname in style id_entity_checkbox and then call with entity as variable */
 
 function toggleEntities(entity){var ac=$A(document.getElementsByClassName('id_' + entity + '_checkbox'));for(var i=0;i<ac.length;i++){ac[i].checked=!ac[i].checked;}}
