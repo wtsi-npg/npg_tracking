@@ -7,6 +7,8 @@ CHANGES
  - general tidy-up of the xml lims driver
  - logic for sample/study_publishable_name methods moved tost::api::lims wrapper
  - reduce spurious warnings from Clearpress related code and simplify
+ - JS and CSS internal to server (browser https security no longer breaks JS)
+ - Links to Sequencescape dev or production as appropriate
 
 release 74.5
 - order run_status_dict by temporal_index to display in Runs horizontal panel.  
