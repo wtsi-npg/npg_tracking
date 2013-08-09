@@ -1,4 +1,5 @@
 <!--begin $Id: run_list_summary.tt2 13095 2011-05-04 13:28:38Z dj3 $-->
+[% PROCESS urls.tt2 -%]
 <h2>Run Summary</h2>
 <form method="get" action="[% SCRIPT_NAME %]/run;list_summary">
  Select from last <input name="days" type="text" size="4" value="[% model.days %]" /> days.

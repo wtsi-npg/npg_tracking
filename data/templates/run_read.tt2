@@ -15,6 +15,7 @@
     is_miseq_instrument = model.instrument.is_miseq_instrument
     flabel = is_miseq_instrument ? 'Reagent kit id' : 'Flowcell id';
  -%]
+[% PROCESS urls.tt2 -%]
 <div>
 <div class="lfloat roundborder">
 <div class="page_title"[% IF model.current_run_status.description == 'run pending'; st = ' style="color: #FF0000"'; st; END; %]>[% model.run_folder %]</div>

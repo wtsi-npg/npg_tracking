@@ -1,5 +1,6 @@
 [% id_instrument = model.id_instrument ? model.id_instrument : '';
    target = (model.id_instrument && view.no_main_menu) ? 'target="runs_on_instrument" ' : '';
+   PROCESS urls.tt2;
 %]
 <div class="roundborder">
 <div>
