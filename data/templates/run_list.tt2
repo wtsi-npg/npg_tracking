@@ -61,7 +61,7 @@
  [% IF loader %]<th><input type="checkbox" class="id_run_checkbox" name="run_ids" value="[% run.id_run %]" /></th>[% END %]
  <td><span style="display:none">[% USE String(run.id_run); String.format('%04d') %]</span><a href="[% SCRIPT_NAME %]/run/[% run.id_run %]">[% run.name %]</a></td>
  <td><a href="[% SCRIPT_NAME %]/instrument/[% run.id_instrument %]">[% run.instrument.name %]</a>[% IF run.hiseq_slot %]  Slot [% run.hiseq_slot %][% END %]</td>
- <td><a href="http://psd-production.internal.sanger.ac.uk:6600/batches/[% run.batch_id %]">[% run.batch_id %]</a></td>
+ <td><a href="[% lims_batches_url _ run.batch_id %]">[% run.batch_id %]</a></td>
  <td>[% IF run.verified.flowcell %]<span style="display:none">1</span><img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<span style="display:none">0</span><img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
  <td>[% IF run.verified.reagent1 %]<span style="display:none">1</span><img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<span style="display:none">0</span><img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
  <td>[% IF run.verified.reagent2 %]<span style="display:none">1</span><img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<span style="display:none">0</span><img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>

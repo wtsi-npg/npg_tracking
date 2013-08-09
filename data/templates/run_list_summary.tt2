@@ -25,7 +25,7 @@
  <td>[% run.current_run_status.run_status_dict.description %]</td>
  <td>[% run.current_run_status.date %]</td>
  <td>[% run.loader_info.loader %]</td>
- <td><a href="http://psd-production.internal.sanger.ac.uk:6600/batches/[% run.batch_id %]">[% run.batch_id %]</a></td>
+ <td><a href="[% lims_batches_url _ run.batch_id %]">[% run.batch_id %]</a></td>
  <td>
 [% IF run.run_pair.id_run && run.run_pair.id_run > 0 %]
  <a href="[% SCRIPT_NAME %]/run/[% run.run_pair.id_run %]">[% run.run_pair.name %]</a>

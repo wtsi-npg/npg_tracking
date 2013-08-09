@@ -1,4 +1,5 @@
 function things_to_do_on_load(id_run, batch_id, rAndDCodes) {
+
   var p=['prephasing','phasing','signal_mean','noise'];
   for (var i=0;i<p.length;i++){
    var s=$(p[i]+'_graph');
@@ -8,7 +9,7 @@ function things_to_do_on_load(id_run, batch_id, rAndDCodes) {
 
   new Ajax.Request(SCRIPT_NAME + '/../reflector', {
     requestHeaders: {Accept: 'application/xml, text/xml'},
-    parameters: { url: 'http://psd-production.internal.sanger.ac.uk:6600/batches/' + batch_id + '.xml' },
+    parameters: { url: lims_batches_url + batch_id + '.xml' },
     onSuccess: function(transport){
       var response = transport.responseXML;
       if(!response){
@@ -99,17 +100,6 @@ function _add_columns_to_table (run_lanes_table, laneDataHashByPosition) {
         $('ss_ajax_status').update("done insert td");
     }
   });
-}
-
-function _html_link (pos, servicetype, id, text){
-  if(id != undefined){
-    if(text == undefined){
-      return '<a href="http://psd-production.internal.sanger.ac.uk:6600/batches/../'+servicetype+'/'+id+'" class="sequencescape_id" position="'+pos+'">'+id+'</a>';
-    }else{
-      return '<a href="http://psd-production.internal.sanger.ac.uk:6600/batches/../'+servicetype+'/'+id+'">'+text +'</a>';
-    }
-  }
-  return (text == undefined ? id : text);
 }
 
 function _ss_ajax_warning(comment){

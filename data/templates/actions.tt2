@@ -9,18 +9,20 @@
     id = key ? model.$key : 0;
     run_read = (entity == 'run' && view.method_name == 'read' && id && id > 0) ? 1 : 0;
     rfid = (model.location_is_instrument && requestor.username == 'public') ? 1 : 0;
+    lims_batches_url = view.is_prod ? 'http://psd-production.internal.sanger.ac.uk:6600/batches/' : 'http://psd-dev.internal.sanger.ac.uk:6800/batches/';
  -%]
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <title>[% npg_title %]</title>
   <script type="text/javascript">function addEvent(e,t,fn,c){if(e.addEventListener){e.addEventListener(t,fn,c);return true;}else if(e.attachEvent){var r=e.attachEvent("on"+t,fn);return r;}} var SCRIPT_NAME="[% SCRIPT_NAME  %]";</script>
-  <link rel="icon" type="image/png" href="http://www.sanger.ac.uk/i/sanger-ico.png" />
-  <link rel="stylesheet" type="text/css" href="http://www.sanger.ac.uk/css/wtsi.css?2007" />
+  <link rel="icon" type="image/png" href="/prodsoft/npg/icons/sanger-ico.png" />
+  <link rel="stylesheet" type="text/css" href="/prodsoft/npg/css/wtsi.css" />
   <link rel="stylesheet" type="text/css" href="/prodsoft/npg/css/npg.css" />
-  <script type="text/javascript" src="http://js.sanger.ac.uk/zebra.js" ></script>
-  <script type="text/javascript" src="http://js.sanger.ac.uk/prototype-1.6.0.3.js" ></script>
-  <script type="text/javascript" src="http://js.sanger.ac.uk/scriptaculous/scriptaculous.js" ></script>
-  <script type="text/javascript" src="http://js.sanger.ac.uk/sorttable.js" ></script>
+  <script type="text/javascript" src="/prodsoft/npg/js/wtsi/zebra.js" ></script>
+  <script type="text/javascript" src="/prodsoft/npg/js/wtsi/prototype-1.6.0.3.js" ></script>
+  <script type="text/javascript" src="/prodsoft/npg/js/scriptaculous/scriptaculous.js" ></script>
+  <script type="text/javascript" src="/prodsoft/npg/js/wtsi/sorttable.js" ></script>
+  <script type="text/javascript">var lims_batches_url='[% lims_batches_url %]'</script>
   <script type="text/javascript" src="/prodsoft/npg/js/npg.js" ></script>
   [% IF run_read %] <script type="text/javascript" src="/prodsoft/npg/js/npg_run.js" ></script>[% END %]
   [% IF rfid %] <script type="text/javascript" src="/prodsoft/npg/js/npg_rfid.js" ></script>[% END %]
@@ -30,7 +32,7 @@
 <body><div id="main" class="expanded" >
 [% IF !view.no_main_menu %]
 <div id="banner">
-  <div class="lfloat"><img src="http://www.sanger.ac.uk/i/sanger-logo.png" alt="WTSI logo" /></div>
+  <div class="lfloat"><img src="/prodsoft/npg/icons/sanger-logo.png" alt="WTSI logo" /></div>
   <div class="rfloat">
     <div class="npg_title [% dev ? 'dev_highlight' : '' %]">[% npg_title %]</div>
     <div><a href="[% address %]"><img src="/prodsoft/npg/icons/navigation/[% image %].gif" alt="[% image == 'logout' ? 'Logout' : 'Login';  %] button" /></a>

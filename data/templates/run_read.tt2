@@ -29,7 +29,7 @@
  <tr><th>Single run</th><td>one runfolder, [% IF model.is_paired_read == 1 %]paired read[% ELSIF model.is_paired_read == 0 %]single read [% ELSE %]data not available about single or paired read[% END %]</td></tr>
   [%- END -%]
 [%- END -%]
-  <tr><th>Batch id</th><td>[% IF batch_id %]<a href="http://psd-production.internal.sanger.ac.uk:6600/batches/[% batch_id %]">[% batch_id %]</a>[% ELSE %]unknown[% END %]</td></tr>
+  <tr><th>Batch id</th><td>[% IF batch_id %]<a href="[% lims_batches_url _ batch_id %]">[% batch_id %]</a>[% ELSE %]unknown[% END %]</td></tr>
 [% IF model.flowcell_id %]<tr><th>[% flabel %]</th><td>[% model.flowcell_id %]</td></tr>[% END -%]
 
   <tr><th>Priority</th><td>
