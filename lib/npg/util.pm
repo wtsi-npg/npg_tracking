@@ -1,26 +1,19 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-12-17 14:00:36 +0000 (Mon, 17 Dec 2012) $
-# Id:            $Id: util.pm 16335 2012-12-17 14:00:36Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util.pm $
+# copied from : svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util.pm r16335
 #
 package npg::util;
+
 use strict;
 use warnings;
-use Carp;
 use base qw(ClearPress::util Exporter);
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16335 $ =~ /(\d+)/smx; $r; };
 
-Readonly::Scalar my $MAIL_DOMAIN => q(sanger.ac.uk);
-
-##no critic (RegularExpressions::RequireDotMatchAnything RegularExpressions::RequireExtendedFormatting RegularExpressions::RequireLineBoundaryMatching RegularExpressions::ProhibitUnusualDelimiters ValuesAndExpressions::ProhibitMagicNumbers BuiltinFunctions::ProhibitLvalueSubstr ValuesAndExpressions::ProhibitEmptyQuotes ControlStructures::ProhibitPostfixControls ValuesAndExpressions::ProhibitNoisyQuotes)
-
-sub mail_domain {
-  return $MAIL_DOMAIN;
-}
+Readonly::Scalar my $MAIL_DOMAIN       => q(sanger.ac.uk);
+Readonly::Scalar my $DEFAULT_DATA_PATH => q(data);
+Readonly::Scalar my $UNIX_YEAR_DELTA   => 1900;
 
 sub dbname { my $self = shift; return $self->config->val($self->dbsection(), 'dbname') || q(npg); }
 sub dbhost { my $self = shift; return $self->config->val($self->dbsection(), 'dbhost') || q(localhost); }
@@ -29,10 +22,7 @@ sub dbuser { my $self = shift; return $self->config->val($self->dbsection(), 'db
 sub dbpass { my $self = shift; return $self->config->val($self->dbsection(), 'dbpass') || q(); }
 
 sub yearmonthday {
-  my $self = shift;
   my ($t1, $t2, $t3, $day, $month, $year) = localtime;
-  Readonly::Scalar my $UNIX_YEAR_DELTA => 1900;
-
   $year += $UNIX_YEAR_DELTA;
   $month++;
   $month = sprintf '%02d', $month;
@@ -48,8 +38,15 @@ sub cleanup {
 }
 
 sub data_path {
-  my $self = shift;
-  return $self->data_root() . '/prodsoft/npg';
+  my $root = $DEFAULT_DATA_PATH;
+  if ($ENV{'NPG_DATA_ROOT'}) {
+    ($root) = $ENV{'NPG_DATA_ROOT'} =~ m{([a-z0-9/\._\-]+)}ixms;
+  }
+  return $root;
+}
+
+sub dbsection {
+  return $ENV{'dev'} ? $ENV{'dev'} : 'live';
 }
 
 sub decription_key {
@@ -57,39 +54,8 @@ sub decription_key {
   return $self->config->val($self->dbsection(), 'decription_key');
 }
 
-########################
-# Methods below are borrowed from SangerWeb.pm
-# 
-sub data_root {
-  my ($self, $devlive) = @_;
-  my $str              = $self->_server_root() . '/data/';
-  return $self->_devlive($str, $devlive);
-}
-
-sub _document_root {
-  my ($self, $devlive) = @_;
-  my ($root)           = $ENV{'DOCUMENT_ROOT'} =~ m|([a-z0-9/\._\-]+)|i;
-  return $self->_devlive($root, $devlive);
-}
-
-sub _server_root {
-  my ($self, $devlive) = @_;
-  my $root             = $self->_document_root();
-  substr($root, -1, 1) = '' if(substr($root, -1, 1) eq '/'); # strip trailing slash
-  $root                =~ s|^(.*)/[^/]+|$1|; # strip trailing directory (usually htdocs)
-  return $self->_devlive($root, $devlive);
-}
-
-sub _devlive {
-  my ($self, $str, $devlive) = @_;
-  $devlive ||= '';
-
-  if($devlive eq 'live') {
-    $str =~ s!/WWW(dev|test|live)?/!/WWWlive/!smg;
-  } elsif($devlive eq 'dev') {
-    $str =~ s!/WWW(dev|test|live)?/!/WWWdev/!smg;
-  }
-  return $str;
+sub mail_domain {
+  return $MAIL_DOMAIN;
 }
 
 1;
@@ -118,7 +84,7 @@ $Revision: 16335 $
 
   my $sPath - $oUtil->data_path();
 
-=head2 dbsection - 'dev' or 'live' based on environment
+=head2 dbsection - 'dev' or 'live' or 'test' based on environment
 
   my $sEnv = $oUtil->dbsection();
 
@@ -144,15 +110,9 @@ $Revision: 16335 $
 
 =head2 decription_key - returns configuration's decription key
 
-=head2 dbh - A database handle for the supported database
-
-  my $oDbh = $oUtil->dbh();
-
 =head2 yearmonthday - method for getting a string in the format yyyymmdd
 
   my $yearmonthday = $oUtil->yearmonthday();
-
-=head2 data_root
 
 =head2 cleanup - post-request cleanup (database disconnection)
 
@@ -169,8 +129,6 @@ $Revision: 16335 $
 =item strict
 
 =item warnings
-
-=item Carp
 
 =item base
 
@@ -192,7 +150,7 @@ Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2013 GRL, by Roger Pettett
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

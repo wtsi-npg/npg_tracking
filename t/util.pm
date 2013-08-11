@@ -29,7 +29,6 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16335 
 Readonly::Scalar our $DEFAULT_FIXTURES_PATH => q[t/data/fixtures];
 
 $ENV{HTTP_HOST}     = 'test.npg.com';
-$ENV{DOCUMENT_ROOT} = './htdocs';
 $ENV{SCRIPT_NAME}   = '/cgi-bin/npg';
 $ENV{dev}           = 'test';
 

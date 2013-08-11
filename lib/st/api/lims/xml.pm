@@ -65,6 +65,7 @@ Readonly::Hash our %DELEGATION      => {
                            study_accession_number       => 'accession_number',
                            study_title                  => 'title',
                            study_description            => 'description',
+                           separate_y_chromosome_data   => 'separate_y_chromosome_data',
     },
     'project'      => {
                            project_name      => 'name',

@@ -51,31 +51,32 @@ sub consent_withdrawn {
 sub description {
     my $self = shift;
     $self->parse();
-    return $self->{q[Sample Description]}->[0];
+    return $self->get(q[Sample Description])->[0];
 }
 
 sub organism {
     my $self = shift;
     $self->parse();
-    return $self->get(q(organism))||$self->{Organism}->[0];
+    my $result = $self->get(q(organism));
+    return ref $result ? $result->[0] : $result
 }
 
 sub taxon_id {
     my $self = shift;
     $self->parse();
-    return $self->_parse_taxon_id($self->{q[TAXON ID]}->[0] || $self->{q[Taxon ID]}->[0]);
+    return $self->_parse_taxon_id($self->get(q[TAXON ID])->[0]);
 }
 
 sub common_name {
     my $self = shift;
     $self->parse();
-    return $self->{q[Common Name]}->[0];
+    return $self->get(q[Common Name])->[0];
 }
 
 sub public_name {
     my $self = shift;
     $self->parse();
-    return $self->{q[Public Name]}->[0];
+    return $self->get(q[Public Name])->[0];
 }
 
 sub accession_number {
@@ -87,13 +88,13 @@ sub accession_number {
 sub strain {
     my $self = shift;
     $self->parse();
-    return $self->{q[Strain]}->[0];
+    return $self->get(q[Strain])->[0];
 }
 
 sub reference_genome {
     my $self = shift;
     $self->parse();
-    return $self->{q[Sample reference genome]}->[0] || $self->{q[Reference Genome]}->[0];
+    return ($self->get(q[Sample reference genome])||[])->[0] || $self->get(q[Reference Genome])->[0];
 }
 
 sub contains_nonconsented_human {

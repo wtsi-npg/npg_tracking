@@ -19,8 +19,8 @@
   </td>
  </tr>
  <tr id="batch">
-   <th>Batch id</th>
-   <td><input type="text" name="batch_id" id="batch_id" value="" size="9"/></td>
+   <th><span id="label4batch_id">Batch id</span></th>
+   <td><input type="text" name="batch_id" id="batch_id" value="" size="13"/></td>
  </tr>
  <tr id="paired_read_selecter">
    <th>Paired read?</th>
@@ -105,7 +105,7 @@
 </div>
 <div class="clearfloats"></div>
 
-<div id="ss_ajax_status""></div>
+<div id="ss_ajax_status"></div>
 <div id="ss_ajax_warning" style="display:none;background:#faa;width:600px;padding:5px;"></div>
 <div id="lane_definition">
 <table id="run_lanes">

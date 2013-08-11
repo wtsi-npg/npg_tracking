@@ -113,10 +113,7 @@ foreach my $pa (['test', 'using mocked data', q[t/data/test45]],
     is($lims7->bait_name, undef, 'bait name undefined for spiked phix plex');
     
     my $lims8 = st::api::lims->new(batch_id =>15728, position=>2, tag_index=>3);    
-    TODO: {
-        local $TODO = 'expect sample 1299723 consent withdrawn';
-        ok( $lims8->sample_consent_withdrawn(), 'sample 1299723 consent withdrawn' );
-    }
+    ok( $lims8->sample_consent_withdrawn(), 'sample 1299723 consent withdrawn' );
     
    }
 

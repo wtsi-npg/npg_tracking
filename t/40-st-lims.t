@@ -5,7 +5,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 298;
+use Test::More tests => 301;
 use Test::Exception;
 
 use_ok('st::api::lims');
@@ -429,6 +429,7 @@ TODO: {
   is( $lims->study_accession_number(), 'EGAS00001000020', q{study accession obtained} );
   is( $lims->study_publishable_name(), 'EGAS00001000020', q{accession returned as study publishable name} );
   is( $lims->sample_publishable_name(), q{ERS003242}, q{sample publishable name returns accession} );
+  ok(! $lims->separate_y_chromosome_data, 'do not separate y chromosome data');
 }
 
 {
@@ -449,4 +450,9 @@ TODO: {
   is ($ss->library_name, undef, 'library_name undef on run level');
 }
 
+{
+  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
+  my $lims = st::api::lims->new(batch_id => 22061, position =>1, tag_index=>66);
+  ok($lims->separate_y_chromosome_data, 'separate y chromosome data');
+}
 1;

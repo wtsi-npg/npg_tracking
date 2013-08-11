@@ -91,6 +91,7 @@ Readonly::Hash   my  %METHODS           => {
                            study_reference_genome
                            study_contains_nonconsented_xahuman
                            study_contains_nonconsented_human
+                           separate_y_chromosome_data
                       /],
 
     'project'      => [qw/ project_id
@@ -103,7 +104,7 @@ Readonly::Hash   my  %METHODS           => {
 };
 
 Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml samplesheet/;
-Readonly::Array my @DELEGATED_METHODS => sort map { @{$_} } values %METHODS;
+Readonly::Array our @DELEGATED_METHODS => sort map { @{$_} } values %METHODS;
 
 =head2 driver_type
 
@@ -125,6 +126,9 @@ has 'driver' => (
                           'is'      => 'ro',
                           'lazy'    => 1,
                           'builder' => '_build_driver',
+                          'handles' => {
+                            'separate_y_chromosone_data' => 'study_requires_separate_y_chromosone_data'
+                          },
 );
 sub _build_driver {
   my $self = shift;
@@ -354,7 +358,7 @@ sub  seq_qc_state {
     return $state;
   }
   if ($state eq q[]) {
-    return undef;
+    return;
   }
   if (!exists  $QC_EVAL_MAPPING{$state}) {
     croak qq[Unexpected value '$state' for seq qc state in ] . $self->to_string;
@@ -466,7 +470,7 @@ sub _build__cached_children {
       $init->{'driver'} = $c;
       push @children, st::api::lims->new($init);
     }
-    if($self->driver->can('free_children')) { 
+    if($self->driver->can('free_children')) {
       $self->driver->free_children;
     }
   }

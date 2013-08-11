@@ -1,8 +1,19 @@
 CHANGES
 
+ - Deal with EAN13 barcode - put in batch_id field for now and allow creation of 
+   samplesheet using warehouse lims driver
+ - separate_y_chromosone_data available in lims
  - samplesheet driver for lims object
  - general tidy-up of the xml lims driver
  - logic for sample/study_publishable_name methods moved tost::api::lims wrapper
+ - reduce spurious warnings from Clearpress related code and simplify
+ - JS and CSS internal to server (browser https security no longer breaks JS)
+ - Links to Sequencescape dev or production as appropriate
+
+release 74.5
+- order run_status_dict by temporal_index to display in Runs horizontal panel.  
+- restrict statuses in menu for status editing to the statuses after the current status for all users
+  other than those in the new analyst group, who can see all statuses.
 
 release 74.4
  - memory leak fix in st::api::lims constructor - move metaprogramming out of the BUILD method
