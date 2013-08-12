@@ -5,7 +5,7 @@
   <lanes>
     <lane position="1" priority="0" id="5660506">
       <pool name="DN240694I A1:H1" request_id="4367579" id="5529226" qc_state="">
-        <sample project_id="938" consent_withdrawn="false" library_id="5553216" sample_id="861746" library_name="" library_type="Standard" study_id="1833">
+        <sample project_id="938" consent_withdrawn="false" library_id="5553216" sample_id="861746" library_name="" library_type="Standard" study_id="700">
           <tag tag_id="144">
             <index>1</index>
             <expected_sequence>ATCACGTT</expected_sequence>
@@ -13,7 +13,7 @@
           </tag>
           <insert_size from="300" to="500"/>
         </sample>
-        <sample project_id="938" consent_withdrawn="false" library_id="5553204" sample_id="861758" library_name="" library_type="Standard" study_id="1833">
+        <sample project_id="938" consent_withdrawn="false" library_id="5553204" sample_id="11036" library_name="" library_type="Standard" study_id="701">
           <tag tag_id="149">
             <index>2</index>
             <expected_sequence>CGATGTTT</expected_sequence>

@@ -9,7 +9,7 @@
 use strict;
 use warnings;
 use t::util;
-use Test::More tests => 123;
+use Test::More tests => 121;
 use Test::Deep;
 use Test::Exception;
 
@@ -112,10 +112,6 @@ my $util = t::util->new({ fixtures => 1 });
   my $instruments = $model->instruments();
   isa_ok($instruments, 'ARRAY', '$model->instruments()');
   isa_ok($instruments->[0], 'npg::model::instrument', '$model->instruments()->[0]');
-
-  my $instrument_by_ipaddr = $model->instrument_by_ipaddr('192.168.255.4');
-  isa_ok($instrument_by_ipaddr, 'npg::model::instrument', q{$model->instrument_by_ipaddr('192.168.255.4')});
-  is($instrument_by_ipaddr->id_instrument(), 4, q{$model->instrument_by_ipaddr('192.168.255.4') returns correct instrument});
 
   my $current_instruments = $model->current_instruments();
   isa_ok($current_instruments, 'ARRAY', '$model->current_instruments()');

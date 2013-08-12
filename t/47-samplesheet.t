@@ -73,14 +73,14 @@ $expected_result_7007 =~ s/\n/\r\n/smg;
 {
   my $ss;
   lives_ok { $ss = npg::samplesheet->new(npg_tracking_schema=>$schema, id_run=>7007); } 'sample sheet object - no output provided';
-  cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/MS0001309-300.csv', 'default output location (with zeroes trimmed appropriately)');
+  cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/MS0001309-300.csv', 'default output location (with zeroes trimmed appropriately)');
 }
 {
   my $ss;
   lives_ok { $ss = npg::samplesheet->new(npg_tracking_schema=>$schema, id_run=>7007); } 'sample sheet object - no output provided';
   my $orig_flowcell_id = $ss->run->flowcell_id;
   $ss->run->flowcell_id(q(MS2000132-500V2));
-  cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/MS2000132-500V2.csv', 'default output location copes with V2 MiSeq cartirdges/reagent kits');
+  cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/MS2000132-500V2.csv', 'default output location copes with V2 MiSeq cartirdges/reagent kits');
   $ss->run->flowcell_id($orig_flowcell_id);
 }
 {
@@ -126,7 +126,7 @@ RESULT_6946
 {
   my $ss;
   lives_ok { $ss = npg::samplesheet->new(npg_tracking_schema=>$schema, id_run=>6946); } 'sample sheet object - no output provided';
-  cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/000000000-A0616.csv', 'default output location')
+  cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/000000000-A0616.csv', 'default output location')
 }
 {
   my $ss;
