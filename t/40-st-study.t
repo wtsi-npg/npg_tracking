@@ -56,12 +56,16 @@ use_ok('st::api::study');
   is( $study->title(), 'hifi test', q{title} );
   is( $study->name(), 'Kapa HiFi test', 'study name');
   is( $study->accession_number(), undef, q{no accession obtained} );
-  is( $study->publishable_name(), q{hifi test}, q{title returned as publishable name} );
   $study = st::api::study->new({id => 701,});
   ok(! $study->alignments_in_bam, 'no alignments in BAM when false in corresponding XML in study');
   is( $study->title(), 'Genetic variation in Kuusamo', q{title obtained} );
   is( $study->accession_number(), 'EGAS00001000020', q{accession obtained} );
-  is( $study->publishable_name(), 'EGAS00001000020', q{accession returned as publishable name} );
+  ok(! $study->separate_y_chromosome_data, 'separate_y_chromosome_data false for study');
+}
+
+{
+  my $study = st::api::study->new({id => 2693});
+  ok($study->separate_y_chromosome_data, 'separate_y_chromosome_data true for study');
 }
 
 1;

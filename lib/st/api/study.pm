@@ -1,11 +1,8 @@
 #########
 # Author:        gq1
-# Maintainer:    $Author: gq1 $
 # Created:       2010-04-29
-# Last Modified: $Date: 2010-03-08 12:17:17 +0000 (Mon, 08 Mar 2010) $
-# Id:            $Id: project.pm 8603 2010-03-08 12:17:17Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/branches/prerelease-42.0/lib/st/api/project.pm $
-#
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/branches/prerelease-42.0/lib/st/api/project.pm, r8603
+
 package st::api::study;
 
 use base qw(st::api::base);
@@ -29,6 +26,13 @@ sub dev {
 }
 
 sub fields { return qw( id name ); }
+
+sub separate_y_chromosome_data {
+  my $self = shift;
+  my $result = $self->get('Does this study require Y chromosome data to be separated from X and autosomal data before archival?') || [];
+  $result = $result->[0] || q[];
+  return $result=~/yes|true|1/smix;
+}
 
 sub contains_nonconsented_xahuman {
   my $self = shift;
@@ -100,7 +104,7 @@ sub email_addresses_of_owners {
 sub reference_genome {
     my $self = shift;
     $self->parse();
-    return $self->{q[Reference genome]}->[0] || $self->{q[Reference Genome]}->[0];
+    return $self->get(q[Reference Genome])->[0];
 }
 
 sub alignments_in_bam {
@@ -122,12 +126,6 @@ sub title {
   my ( $self ) = @_;
   my $title = $self->get('Title') || [];
   return $title->[0];
-}
-
-sub publishable_name {
-  my ( $self )  = @_;
-
-  return $self->accession_number() || $self->title() || $self->name();
 }
 
 sub description {
@@ -172,11 +170,15 @@ $Revision: 8603 $
 
   my $sLiveURL = $oStudy->live();
 
-=head2 contains_nonconsented_human - Does the project has associated samples in which there is human DNA which has not been consented for release.
+=head2 separate_y_chromosome_data - Does the study have associated samples in which there is Y human DNA data is not been consented for public release.
+
+  my $split_y = $oStudy->separate_y_chromosome_data();
+
+=head2 contains_nonconsented_human - Does the study have associated samples in which there is human DNA which has not been consented for release.
 
   my $do_not_release = $oStudy->contains_nonconsented_human();
 
-=head2 contains_unconsented_human - (Backward compat) Does the project has associated samples in which there is human DNA which has not been consented for release.
+=head2 contains_unconsented_human - (Backward compat) Does the study have associated samples in which there is human DNA which has not been consented for release.
 
 =head2 contains_nonconsented_xahuman - as contains_nonconsented_human, but specifically for the X chromosome and autosome parts
 
@@ -215,12 +217,6 @@ returns the accession number from sequencescape for this study
 returns the title for the study
 
   my $sTitle = $oStudy->title();
-
-=head2 publishable_name
-
-returns the publishable name of the study, which will be either (in order of preference) accession_number, title, name
-
-  my $sPublishableName = $oStudy->publishable_name();
 
 =head2 description
 

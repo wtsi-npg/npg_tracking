@@ -1,12 +1,8 @@
-#!/usr/local/bin/perl -wT
+#!/usr/local/bin/perl -T
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: npg 16549 2013-01-23 16:49:39Z mg8 $
-# Source:        $Source: /repos/cvs/webcore/SHARED_docs/cgi-bin/docrep,v $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/cgi-bin/npg $
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/cgi-bin/npg, r16549
 
 my @npg_libs;
 BEGIN {
@@ -22,7 +18,6 @@ BEGIN {
 
 use strict;
 use lib @npg_libs;
-use if !@npg_libs, SangerPaths => qw(core trackingnpg);
 use warnings; # loads Carp, which we want to source from our cpan build
 
 use npg::controller;
