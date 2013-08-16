@@ -1,6 +1,12 @@
 CHANGES
 
- - Deal with EAN13 barcode - put in batch_id field for now and allow creation of 
+release 47.8
+ - rationale for using taint mode added to the apache conf file
+ - remove unused, mispelt and misleading code from st::api::lims
+ - switch to scratch110 for references while scratch109 is down
+
+release 74.7
+ - deal with EAN13 barcode - put in batch_id field for now and allow creation of 
    samplesheet using warehouse lims driver
  - separate_y_chromosone_data available in lims
  - samplesheet driver for lims object
@@ -8,7 +14,10 @@ CHANGES
  - logic for sample/study_publishable_name methods moved tost::api::lims wrapper
  - reduce spurious warnings from Clearpress related code and simplify
  - JS and CSS internal to server (browser https security no longer breaks JS)
- - Links to Sequencescape dev or production as appropriate
+ - links to Sequencescape dev or production as appropriate
+
+release 74.6
+ - add new staging area (51)
 
 release 74.5
 - order run_status_dict by temporal_index to display in Runs horizontal panel.  

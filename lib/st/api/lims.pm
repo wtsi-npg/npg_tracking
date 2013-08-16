@@ -126,9 +126,6 @@ has 'driver' => (
                           'is'      => 'ro',
                           'lazy'    => 1,
                           'builder' => '_build_driver',
-                          'handles' => {
-                            'separate_y_chromosone_data' => 'study_requires_separate_y_chromosone_data'
-                          },
 );
 sub _build_driver {
   my $self = shift;
