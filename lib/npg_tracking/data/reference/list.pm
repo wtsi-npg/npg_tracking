@@ -47,7 +47,7 @@ Interface (Moose role) for retrieving a information about a reference repository
 
 =cut
 
-Readonly::Scalar our $REP_ROOT         => q[/lustre/scratch109/srpipe/];
+Readonly::Scalar our $REP_ROOT         => q[/lustre/scratch110/srpipe/];
 Readonly::Scalar our $REFERENCES_DIR   => q[references];
 Readonly::Scalar our $ADAPTERS_DIR     => q[adapters];
 Readonly::Scalar our $GENOTYPES_DIR    => q[genotypes];
