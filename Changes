@@ -1,5 +1,8 @@
 CHANGES
 
+release 47.9
+ - update links to NPG QC web pages
+
 release 47.8
  - rationale for using taint mode added to the apache conf file
  - remove unused, mispelt and misleading code from st::api::lims

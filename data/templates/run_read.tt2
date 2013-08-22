@@ -117,7 +117,7 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 [%- IF !is_miseq_instrument && batch_id %]
   <li><a class="npg_menu" href="http://psd-production.internal.sanger.ac.uk:6900/batches/search?id=[% batch_id %]">SybrGreen Images</a></li>
 [% END -%]
- <li><a class="npg_menu" href="http://intweb.sanger.ac.uk/cgi-bin/prodsoft/npg_qc/npg_qc/summary/[% earliest_id %]">NPG QC</a></li>
+ <li><a class="npg_menu" href="[% SCRIPT_NAME _ '_qc/summary/' _ earliest_id %]">NPG QC</a></li>
 [%- IF model.has_analysis_in_progress %]
  <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:1959/checks/runs/[% earliest_id %]">NPG SeqQC</a></li>
 [% END -%]
