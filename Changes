@@ -1,6 +1,7 @@
 CHANGES
 
 release 47.9
+ - Remove TT interpolation to create Perl code (hack prone and caused some pages to fall over)
  - update links to NPG QC web pages
 
 release 47.8
