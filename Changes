@@ -1,6 +1,10 @@
 CHANGES
 
-release 47.8
+release 74.9
+ - Remove TT interpolation to create Perl code (hack prone and caused some pages to fall over)
+ - update links to NPG QC web pages
+
+release 74.8
  - rationale for using taint mode added to the apache conf file
  - remove unused, mispelt and misleading code from st::api::lims
  - switch to scratch110 for references while scratch109 is down
