@@ -26,9 +26,9 @@ use t::useragent;
 my $ua = t::useragent->new({
                          is_success => 1,
                          mock       => {
-   q{http://psd-production.internal.sanger.ac.uk:6600/batches/1027}  => q{t/data/npg_api/st/batches/1027.xml},
-   q{http://psd-production.internal.sanger.ac.uk:6600/batches/1826}  => q{t/data/npg_api/st/batches/1826.xml},
-   q{http://psd-production.internal.sanger.ac.uk:6600/samples/10014} => q{t/data/npg_api/st/samples/10014.xml},
+   q{http://psd-support.internal.sanger.ac.uk:6600/batches/1027}  => q{t/data/npg_api/st/batches/1027.xml},
+   q{http://psd-support.internal.sanger.ac.uk:6600/batches/1826}  => q{t/data/npg_api/st/batches/1826.xml},
+   q{http://psd-support.internal.sanger.ac.uk:6600/samples/10014} => q{t/data/npg_api/st/samples/10014.xml},
                                        },   
                           });
 
@@ -66,7 +66,7 @@ my $TEST_CACHE = q[t/data/npg_api];
 
   is( $r->_create_path(q{http://npg.sanger.ac.uk/perl/npg/run/1234.xml}), 
                        q{t/npg/run/1234.xml}, q{npg path generated ok} );
-  is( $r->_create_path(q{http://psd-production.internal.sanger.ac.uk:6600/batches/6935.xml}), 
+  is( $r->_create_path(q{http://psd-support.internal.sanger.ac.uk:6600/batches/6935.xml}), 
                        q{t/st/batches/6935.xml}, q{st path created ok});
   is( $r->_create_path(q{http://http://news.bbc.co.uk/sport1/hi/football/world_cup_2010/matches/match_01}), 
      q{t/ext/news.bbc.co.uk/sport1/hi/football/world_cup_2010/matches/match_01}, q{external path generated ok} );

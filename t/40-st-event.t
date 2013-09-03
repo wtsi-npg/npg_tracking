@@ -24,7 +24,7 @@ use_ok('st::api::event');
 			      is_success => 1,
 			     });
   my $mock = {
-	      q(http://psd-production.internal.sanger.ac.uk:6600/events)  => $ua,
+	      q(http://psd-support.internal.sanger.ac.uk:6600/events)  => $ua,
 	     };
   $ua->{mock} = $mock;
   my $ev = st::api::event->new({
@@ -34,10 +34,10 @@ use_ok('st::api::event');
 
   isa_ok($ev, 'st::api::event');
   is($ev->entity_name(), 'event', 'entity_name returns event');
-  is($ev->live(), 'http://psd-production.internal.sanger.ac.uk:6600/events',
-    'live returns http://psd-production.internal.sanger.ac.uk:6600/events');
+  is($ev->live(), 'http://psd-support.internal.sanger.ac.uk:6600/events',
+    'live url returned');
   is($ev->dev(), 'http://psd-dev.internal.sanger.ac.uk:6800/events',
-    'dev returns http://psd-dev.internal.sanger.ac.uk:6800/events');
+    'dev url returned');
   is($ev->fields(), 'key', 'last of fields is key');
 
   my $XML = q[<?xml version='1.0'?><event><message>Run 10 : %s</message><eventful_id>11</eventful_id><eventful_type>Item</eventful_type><family>%s</family><identifier>10</identifier><key>%s</key><location>4</location></event>];
