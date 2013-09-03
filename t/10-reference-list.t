@@ -38,6 +38,7 @@ SKIP: {
   is ($live_lister->ref_repository, join(q[/], $REP_ROOT . q[references]), 'live reference repository location');
   is ($live_lister->adapter_repository, join(q[/], $REP_ROOT .q[adapters]), 'live adapter repository location');
   is ($live_lister->genotypes_repository, join(q[/], $REP_ROOT . q[genotypes]), 'live genotypes repository location');
+  is ($live_lister->tag_sets_repository, join(q[/], $REP_ROOT .q[tag_sets]), 'live tag sets repository location');
 };
 
 {
