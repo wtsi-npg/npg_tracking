@@ -17,7 +17,7 @@ use npg::api::util;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/smx; $r; };
 
-sub live_url { return q{http://psd-production.internal.sanger.ac.uk:6600}; }
+sub live_url { return q{http://psd-support.internal.sanger.ac.uk:6600}; }
 
 sub dev_url  { return q{http://psd-dev.internal.sanger.ac.uk:6800}; }
 
