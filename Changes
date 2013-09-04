@@ -1,5 +1,9 @@
 CHANGES
 
+release 74.10
+ - update live URL for getting/posting lims data as requested in RT#336085
+ - code to find data repository directory for tag set files
+
 release 74.9
  - Remove TT interpolation to create Perl code (hack prone and caused some pages to fall over)
  - update links to NPG QC web pages
