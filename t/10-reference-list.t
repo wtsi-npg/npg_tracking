@@ -31,7 +31,7 @@ use npg_tracking::data::reference::list;
 my $REP_ROOT=$npg_tracking::data::reference::list::REP_ROOT;
 
 SKIP: {
-  skip 'No live reference repository', 3 unless -e $REP_ROOT;
+  skip 'No live reference repository', 4 unless -e $REP_ROOT;
     
   my $live_lister =  Moose::Meta::Class->create_anon_class(
          roles => [qw/npg_tracking::data::reference::list/])->new_object();
