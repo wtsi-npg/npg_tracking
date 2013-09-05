@@ -146,6 +146,7 @@ my $builder = $class->new(
                 'ClearPress::util'                => '300',
                 'ClearPress::view'                => '300',
                 'ClearPress::view::error'         => '279',
+                'Clone'                           => 0,
                 'Config::Auto'                    => 0,
                 'Crypt::CBC'                      => 0,
                 'Cwd'                             => 0,
