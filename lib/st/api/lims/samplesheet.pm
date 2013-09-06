@@ -286,12 +286,13 @@ sub _build__sschildren {
       $init->{'position'} = $self->position;
     }
 
-    foreach my $attr_value (sort keys %{$h}) {   
+    foreach my $attr_value (sort {$a <=> $b} keys %{$h}) {   
       $init->{$child_attr_name} = $attr_value;
       $init->{'data'}           = clone($self->data);
       push @children, __PACKAGE__->new($init);      
     }
   }
+
   return \@children;
 }
 
