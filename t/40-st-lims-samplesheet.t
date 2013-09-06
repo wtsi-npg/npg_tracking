@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 39;
+use Test::More tests => 60;
 use Test::Exception;
 use Test::Warn;
 
@@ -59,6 +59,45 @@ use_ok('st::api::lims::samplesheet');
   is ($plexes[95]->default_tag_sequence, 'GTCTTGGC', 'tag sequence of the last plex');
   is ($plexes[95]->library_id, 7583506, 'library_id of the last plex');
   is ($plexes[95]->sample_name, 'LIA_96', 'sample_name of the last plex');
+}
+
+{
+  my $path = 't/data/samplesheet/MS2026264-300V2.csv'; #default MiSeq samplesheet
+  throws_ok {st::api::lims::samplesheet->new(id_run => 10262, position =>2, path => $path)}
+    qr/Position 2 not defined in t\/data\/samplesheet\/MS2026264-300V2\.csv/,
+    'error instantiating an object for a non-existing lane';
+ 
+  my $ss;
+  lives_ok {$ss=st::api::lims::samplesheet->new(id_run => 10262, position =>1, path => $path)}
+    'no error instantiating an object for an existing lane';
+  is ($ss->position, 1, 'correct position');
+  is ($ss->is_pool, 1, 'lane is a pool');
+  is ($ss->library_id, undef, 'pool lane library_id undefined');
+  is (scalar $ss->children, 96, '96 plexes returned');
+
+  throws_ok {st::api::lims::samplesheet->new(id_run => 10262, position =>2, tag_index => 3, path => $path)}
+    qr/Position 2 not defined in t\/data\/samplesheet\/MS2026264-300V2\.csv/,
+    'error instantiating an object for a non-existing lane';
+  throws_ok {st::api::lims::samplesheet->new(id_run => 10262, position =>1, tag_index => 303, path => $path)}
+    qr/Tag index 303 not defined in t\/data\/samplesheet\/MS2026264-300V2\.csv/,
+    'error instantiating an object for a non-existing tag index';
+
+  lives_ok {$ss=st::api::lims::samplesheet->new(id_run => 10262, position =>1, tag_index => 3, path => $path)}
+    'no error instantiation an object for an existing lane and plex';
+  is ($ss->position, 1, 'correct position');
+  is ($ss->tag_index, 3, 'correct tag_index');
+  is ($ss->is_pool, 0, 'plex is not a pool');
+  is ($ss->default_tag_sequence, 'TTAGGCAT', 'correct default tag sequence');
+  is ($ss->library_id, 7583413, 'library id is correct');
+  is ($ss->sample_name, 'LIA_3', 'sample name is correct');
+  is (scalar $ss->children, 0, 'zero children returned');
+
+  lives_ok {$ss=st::api::lims::samplesheet->new(id_run => 10262, position =>1, tag_index => 0, path => $path)}
+    'no error instantiating an object for an existing lane and tag index 0';
+  is (scalar $ss->children, 96, '96 children returned for tag zero');
+  is ($ss->is_pool, 1, 'tag zero is a pool');
+  is ($ss->library_id, undef, 'tag_zero library_id undefined');
+  is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
 }
 
 1;

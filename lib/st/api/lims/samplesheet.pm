@@ -41,6 +41,43 @@ Readonly::Scalar  my  $RECORD_SPLIT_LIMIT           => -1;
 Readonly::Scalar  my  $DATA_SECTON                  => q[Data];
 Readonly::Scalar  my  $HEADER_SECTION               => q[Header];
 
+=head2 path #or input as a filehandle?
+
+Samplesheet path
+
+=cut
+has 'path' => (
+                  isa => 'NpgTrackingReadableFile',
+                  is  => 'ro',
+                  required => 1,
+);
+
+=head2 id_run
+
+Run id, optional attribute.
+
+=cut
+has '+id_run'   =>        (required        => 0, writer => '_set_id_run',);
+
+=head2 position
+
+Position, optional attribute.
+
+=cut
+has '+position' =>        (required        => 0,);
+
+
+sub BUILD {
+  my $self = shift;
+  if ($self->position && !exists $self->data->{$DATA_SECTON}->{$self->position}) {
+    croak sprintf 'Position %s not defined in %s', $self->position, $self->path;
+  }
+  if ($self->tag_index && !exists $self->data->{$DATA_SECTON}->{$self->position}->{$self->tag_index}) {
+    croak sprintf 'Tag index %s not defined in %s', $self->tag_index, $self->path;
+  }
+  return;
+}
+
 =head2 data
 
 Hash representation of LIMS data
@@ -168,32 +205,6 @@ sub _validate_data { # this is a callback for Moose trigger
   #Are all indices numbers?
   return;
 }
-
-=head2 path #or input as a filehandle
-
-Samplesheet path
-
-=cut
-has 'path' => (
-                  isa => 'NpgTrackingReadableFile',
-                  is  => 'ro',
-                  required => 1,
-);
-
-=head2 id_run
-
-Run id, optional attribute.
-
-=cut
-has '+id_run'   =>        (required        => 0, writer => '_set_id_run',);
-
-=head2 position
-
-Position, optional attribute.
-
-=cut
-has '+position' =>        (required        => 0,);
-
 
 =head2 is_pool
 

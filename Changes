@@ -1,5 +1,8 @@
 CHANGES
 
+release 74.11
+ - samplesheet lims driver moved to st::api::lims namespace, contains parser only
+
 release 74.10
  - update live URL for getting/posting lims data as requested in RT#336085
  - code to find data repository directory for tag set files
