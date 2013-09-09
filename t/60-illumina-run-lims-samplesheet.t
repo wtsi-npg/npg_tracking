@@ -8,7 +8,7 @@ BEGIN {
   use_ok( q{npg_tracking::illumina::run::lims::samplesheet} );
 }
 my $module = q{npg_tracking::illumina::run::lims::samplesheet};
-my $path = 't/data/samplesheet/MS2026264-300V2.csv';
+my $path = 't/data/samplesheet/miseq_default.csv';
 
 my $tdir = tempdir( CLEANUP => 1 );
 

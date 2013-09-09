@@ -444,7 +444,7 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
 }
 
 {
-  my $path = 't/data/samplesheet/MS2026264-300V2.csv'; #default MiSeq samplesheet
+  my $path = 't/data/samplesheet/miseq_default.csv';
 
   my $ss = st::api::lims->new(id_run => 10262,  path => $path, driver_type => 'samplesheet');
   isa_ok ($ss->driver, 'st::api::lims::samplesheet', 'samplesheet driver object instantiated');  
@@ -497,7 +497,7 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
 }
 
 {
-  my $path = 't/data/samplesheet/MS2026264-300V2.csv'; #default MiSeq samplesheet
+  my $path = 't/data/samplesheet/miseq_default.csv';
   lives_ok {st::api::lims->new(id_run => 10262, position =>2, path => $path, driver_type => 'samplesheet')}
     'no error instantiation an object for a non-existing lane';
   throws_ok {st::api::lims->new(id_run => 10262, position =>2, path => $path, driver_type => 'samplesheet')->library_id}

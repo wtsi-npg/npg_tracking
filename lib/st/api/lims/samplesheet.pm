@@ -67,6 +67,11 @@ Position, optional attribute.
 has '+position' =>        (required        => 0,);
 
 
+=head2 BUILD
+
+Validates attributes given to teh constructor against data
+
+=cut
 sub BUILD {
   my $self = shift;
   if ($self->position && !exists $self->data->{$DATA_SECTON}->{$self->position}) {
@@ -286,10 +291,10 @@ sub _build__sschildren {
       $init->{'position'} = $self->position;
     }
 
-    foreach my $attr_value (sort {$a <=> $b} keys %{$h}) {   
+    foreach my $attr_value (sort {$a <=> $b} keys %{$h}) {
       $init->{$child_attr_name} = $attr_value;
       $init->{'data'}           = clone($self->data);
-      push @children, __PACKAGE__->new($init);      
+      push @children, __PACKAGE__->new($init);
     }
   }
 
@@ -323,7 +328,7 @@ for my $m (grep { my $delegated = $_; none {$_ eq $delegated} @attrs } @st::api:
           }
           $value =  $self->_data_row->{$column_name} || undef;
 	}
-        return $value; 
+        return $value;
   });
 }
 

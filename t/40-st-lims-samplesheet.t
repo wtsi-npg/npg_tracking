@@ -8,7 +8,7 @@ use Test::Deep;
 use_ok('st::api::lims::samplesheet');
 
 {
-  my $path = 't/data/samplesheet/MS2026264-300V2.csv';
+  my $path = 't/data/samplesheet/miseq_default.csv';
 
   my $ss = st::api::lims::samplesheet->new(id_run => 10262, path => $path);
   isa_ok ($ss, 'st::api::lims::samplesheet');
@@ -63,9 +63,9 @@ use_ok('st::api::lims::samplesheet');
 }
 
 {
-  my $path = 't/data/samplesheet/MS2026264-300V2.csv'; #default MiSeq samplesheet
+  my $path = 't/data/samplesheet/miseq_default.csv';
   throws_ok {st::api::lims::samplesheet->new(id_run => 10262, position =>2, path => $path)}
-    qr/Position 2 not defined in t\/data\/samplesheet\/MS2026264-300V2\.csv/,
+    qr/Position 2 not defined in t\/data\/samplesheet\/miseq_default\.csv/,
     'error instantiating an object for a non-existing lane';
  
   my $ss;
@@ -77,10 +77,10 @@ use_ok('st::api::lims::samplesheet');
   is (scalar $ss->children, 96, '96 plexes returned');
 
   throws_ok {st::api::lims::samplesheet->new(id_run => 10262, position =>2, tag_index => 3, path => $path)}
-    qr/Position 2 not defined in t\/data\/samplesheet\/MS2026264-300V2\.csv/,
+    qr/Position 2 not defined in t\/data\/samplesheet\/miseq_default\.csv/,
     'error instantiating an object for a non-existing lane';
   throws_ok {st::api::lims::samplesheet->new(id_run => 10262, position =>1, tag_index => 303, path => $path)}
-    qr/Tag index 303 not defined in t\/data\/samplesheet\/MS2026264-300V2\.csv/,
+    qr/Tag index 303 not defined in t\/data\/samplesheet\/miseq_default\.csv/,
     'error instantiating an object for a non-existing tag index';
 
   lives_ok {$ss=st::api::lims::samplesheet->new(id_run => 10262, position =>1, tag_index => 3, path => $path)}
@@ -102,7 +102,7 @@ use_ok('st::api::lims::samplesheet');
 }
 
 {
-  my $path = 't/data/samplesheet/MS2026264-300V2_extended.csv'; #extended MiSeq samplesheet
+  my $path = 't/data/samplesheet/miseq_extended.csv';
   my $ss;
   lives_ok {$ss=st::api::lims::samplesheet->new(id_run => 10262, position =>1, path => $path)}
     'no error instantiating an object for an existing lane';

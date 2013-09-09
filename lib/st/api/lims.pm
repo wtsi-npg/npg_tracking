@@ -140,7 +140,7 @@ sub _build_driver {
     }
     if ($self->has_batch_id) {
       $ref->{'batch_id'} = $self->batch_id;
-    }  
+    }
   }
   return $d_package->new($ref);
 }

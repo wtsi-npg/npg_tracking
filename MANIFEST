@@ -1265,7 +1265,9 @@ t/data/samplesheet/st/samples/1392238.xml
 t/data/samplesheet/st/studies/1980.xml
 t/data/samplesheet/st/studies/521.xml
 t/data/samplesheet/st/studies/700.xml
-t/data/samplesheet/MS2026264-300V2.csv
+t/data/samplesheet/miseq_default.csv
+t/data/samplesheet/miseq_extended.csv
+t/data/samplesheet/multilane.csv
 t/data/st_api_lims_new/npg/designation/3.xml
 t/data/st_api_lims_new/npg/run/6551.xml
 t/data/st_api_lims_new/npg/run/6607.xml
