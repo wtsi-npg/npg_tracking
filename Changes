@@ -491,7 +491,7 @@ release-57.0
 
 release-56.1
 - failures tickets e-mails to get the study of the st lane directly
-- when parsing batch xml for st-lane, getting a study from teh request is optional to allow th ewarehouse loader to run in reasonable time
+- when parsing batch xml for st-lane, getting a study from the request is optional to allow the warehouse loader to run in reasonable time
 
 release-56.0
 - A fix to instrument view to make visible the fifth digit of the batch number
