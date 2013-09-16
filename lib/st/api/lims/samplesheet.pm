@@ -38,7 +38,7 @@ LIMs parser for the Illumina-style extended samplesheet
 Readonly::Scalar  my  $SAMPLESHEET_RECORD_SEPARATOR => q[,];
 Readonly::Scalar  my  $NOT_INDEXED_FLAG             => q[NO_INDEX];
 Readonly::Scalar  my  $RECORD_SPLIT_LIMIT           => -1;
-Readonly::Scalar  my  $DATA_SECTON                  => q[Data];
+Readonly::Scalar  my  $DATA_SECTION                  => q[Data];
 Readonly::Scalar  my  $HEADER_SECTION               => q[Header];
 
 =head2 path #or input as a filehandle?
@@ -69,15 +69,15 @@ has '+position' =>        (required        => 0,);
 
 =head2 BUILD
 
-Validates attributes given to teh constructor against data
+Validates attributes given to the constructor against data
 
 =cut
 sub BUILD {
   my $self = shift;
-  if ($self->position && !exists $self->data->{$DATA_SECTON}->{$self->position}) {
+  if ($self->position && !exists $self->data->{$DATA_SECTION}->{$self->position}) {
     croak sprintf 'Position %s not defined in %s', $self->position, $self->path;
   }
-  if ($self->tag_index && !exists $self->data->{$DATA_SECTON}->{$self->position}->{$self->tag_index}) {
+  if ($self->tag_index && !exists $self->data->{$DATA_SECTION}->{$self->position}->{$self->tag_index}) {
     croak sprintf 'Tag index %s not defined in %s', $self->tag_index, $self->path;
   }
   return;
@@ -192,7 +192,7 @@ sub _validate_data { # this is a callback for Moose trigger
   }
   #Are read lengths numbers?
 
-  foreach my $section (($DATA_SECTON, $HEADER_SECTION)) {
+  foreach my $section (($DATA_SECTION, $HEADER_SECTION)) {
     if (!exists $data->{$section}) {
       croak "$section section is missing";
     }
@@ -225,7 +225,7 @@ has 'is_pool' =>          (isa             => 'Bool',
 sub _build_is_pool {
   my $self = shift;
   if ( $self->position && !$self->tag_index && #lane level or tag zero
-      (!exists $self->data->{$DATA_SECTON}->{$self->position}->{$NOT_INDEXED_FLAG}) ) {
+      (!exists $self->data->{$DATA_SECTION}->{$self->position}->{$NOT_INDEXED_FLAG}) ) {
     return 1;
   }
   return 0;
@@ -241,15 +241,15 @@ sub _build__data_row {
 
   if ($self->position) {
     if ($self->tag_index) {
-      if (!exists $self->data->{$DATA_SECTON}->{$self->position}->{$self->tag_index}) {
+      if (!exists $self->data->{$DATA_SECTION}->{$self->position}->{$self->tag_index}) {
         croak sprintf 'Tag index %s not defined for %s',
                     $self->tag_index, $self->to_string;
       }
-      return $self->data->{$DATA_SECTON}->{$self->position}->{$self->tag_index};
+      return $self->data->{$DATA_SECTION}->{$self->position}->{$self->tag_index};
     }
     if (!defined $self->tag_index &&
-           exists $self->data->{$DATA_SECTON}->{$self->position}->{$NOT_INDEXED_FLAG}) {
-      return $self->data->{$DATA_SECTON}->{$self->position}->{$NOT_INDEXED_FLAG};
+           exists $self->data->{$DATA_SECTION}->{$self->position}->{$NOT_INDEXED_FLAG}) {
+      return $self->data->{$DATA_SECTION}->{$self->position}->{$NOT_INDEXED_FLAG};
     }
   }
 
@@ -278,8 +278,8 @@ sub _build__sschildren {
   if ($child_attr_name) {
 
     my $h = $child_attr_name eq 'position' ?
-               $self->data->{$DATA_SECTON} :
-               $self->data->{$DATA_SECTON}->{$self->position};
+               $self->data->{$DATA_SECTION} :
+               $self->data->{$DATA_SECTION}->{$self->position};
 
     my $init = {};
     foreach my $init_attr (qw/id_run path/) {
