@@ -70,7 +70,7 @@ if (defined $request && $request) {
     my $cmd = $runner->$action($host);
     my $human_readable_cmd = $cmd;
     $cmd =~ s/'/'"'"'/smxg;
-    $cmd = qq[ssh -x $host '$cmd &' 2>&1];
+    $cmd = qq[ssh -x $host 'bash -l -c \"$cmd\" ' 2>&1];
     print "$host " or carp $OS_ERROR;
     if (!$opts->{'dry-run'}) {
       open my $fh, q(-|), $cmd or croak $OS_ERROR;
