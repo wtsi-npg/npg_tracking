@@ -43,7 +43,7 @@ Readonly::Scalar  my  $NOT_INDEXED_FLAG             => q[NO_INDEX];
 Readonly::Scalar  my  $DEFAULT_WORKFLOW             => q[LibraryQC];
 Readonly::Scalar  my  $DEFAULT_CHEMISTRY            => q[Default];
 Readonly::Scalar  my  $RECORD_SPLIT_LIMIT           => -1;
-Readonly::Scalar  my  $DATA_SECTON                  => q[Data];
+Readonly::Scalar  my  $DATA_SECTION                  => q[Data];
 Readonly::Scalar  my  $HEADER_SECTION               => q[Header];
 Readonly::Scalar  my  $IS_CONTROL_COLUMN            => q[WTSI_IsControl];
 Readonly::Scalar  my  $LIB_ID_COLUMN                => q[Sample_ID];
@@ -224,7 +224,7 @@ has 'is_pool' =>          (isa             => 'Bool',
 sub _build_is_pool {
   my $self = shift;
   if ($self->position) {
-    if (!exists $self->data->{$DATA_SECTON}->{$self->position}->{$NOT_INDEXED_FLAG}) {
+    if (!exists $self->data->{$DATA_SECTION}->{$self->position}->{$NOT_INDEXED_FLAG}) {
       return 1;
     }
   }
@@ -239,20 +239,20 @@ has '_entity' =>          (isa             => 'Maybe[HashRef]',
 sub _build__entity {
   my $self = shift;
   if ($self->position) {
-    if (!exists $self->data->{$DATA_SECTON}->{$self->position}) {
+    if (!exists $self->data->{$DATA_SECTION}->{$self->position}) {
       croak sprintf 'Position %s not defined for %s',
                     $self->position, $self->to_string;
     }
     if ($self->is_pool) {
       if (defined $self->tag_index) {
-        if (!exists $self->data->{$DATA_SECTON}->{$self->position}->{$self->tag_index}) {
+        if (!exists $self->data->{$DATA_SECTION}->{$self->position}->{$self->tag_index}) {
            croak sprintf 'Tag index %s not defined for %s',
                     $self->tag_index, $self->to_string;
 	}
-        return $self->data->{$DATA_SECTON}->{$self->position}->{$self->tag_index};
+        return $self->data->{$DATA_SECTION}->{$self->position}->{$self->tag_index};
       }
     } else {
-      return $self->data->{$DATA_SECTON}->{$self->position}->{$NOT_INDEXED_FLAG};
+      return $self->data->{$DATA_SECTION}->{$self->position}->{$NOT_INDEXED_FLAG};
     }
   }
   return;
@@ -287,7 +287,7 @@ sub _build__sschildren {
   my @children = ();
   if (defined $self->position) {
     if ($self->is_pool && !$self->tag_index) {
-      foreach my $tag_index (sort keys %{$self->data->{$DATA_SECTON}->{$self->position}}) {
+      foreach my $tag_index (sort keys %{$self->data->{$DATA_SECTION}->{$self->position}}) {
         my $init = $self->init_args();
         $init->{'tag_index'} = $tag_index;
         #$init->{'data'}     = $self->data;
@@ -295,7 +295,7 @@ sub _build__sschildren {
       }
     }
   } else {
-    foreach my $position (sort keys %{$self->data->{$DATA_SECTON}}) {
+    foreach my $position (sort keys %{$self->data->{$DATA_SECTION}}) {
       my $init = $self->init_args();
       $init->{'position'} = $position;
       #$init->{'data'}     = $self->data;
@@ -427,7 +427,7 @@ sub _validate_data { # this is a callback for Moose trigger
   }
   #Are read lengths numbers?
 
-  foreach my $section (($DATA_SECTON, $HEADER_SECTION)) {
+  foreach my $section (($DATA_SECTION, $HEADER_SECTION)) {
     if (!exists $data->{$section}) {
       croak "$section section is missing";
     }

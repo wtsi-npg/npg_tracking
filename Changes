@@ -1,5 +1,8 @@
 CHANGES
 
+release 74.11
+ - samplesheet lims driver moved to st::api::lims namespace, contains parser only
+
 release 74.10
  - update live URL for getting/posting lims data as requested in RT#336085
  - code to find data repository directory for tag set files
@@ -488,7 +491,7 @@ release-57.0
 
 release-56.1
 - failures tickets e-mails to get the study of the st lane directly
-- when parsing batch xml for st-lane, getting a study from teh request is optional to allow th ewarehouse loader to run in reasonable time
+- when parsing batch xml for st-lane, getting a study from the request is optional to allow the warehouse loader to run in reasonable time
 
 release-56.0
 - A fix to instrument view to make visible the fifth digit of the batch number
