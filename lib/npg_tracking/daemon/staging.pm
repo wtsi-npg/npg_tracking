@@ -35,14 +35,9 @@ override 'command'      => sub { my ($self, $host) = @_;
                                  if (!$sfarea) {
                                    croak qq{Host name $host does not follow expected pattern sfXX-nfs};
 				 }
-                                 return join q[ ], $EXECUTABLE_NAME, $script, q{/export/sf} . $sfarea;
+                                 return join q[ ], $script, q{/export/sf} . $sfarea;
                                };
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };
-
-if ( $ENV{PERL5LIB} ) {
-  my @p5libs = split /:/smx, $ENV{PERL5LIB};
-  has '+libs' => ( default => sub {return \@p5libs; }, );
-}
 
 no Moose;
 
