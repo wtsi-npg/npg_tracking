@@ -134,23 +134,13 @@ sub _build_driver {
   eval "require $d_package";
   ##use critic
   my $ref = {};
-  if ($self->driver_type eq 'xml') {
-    foreach my $attr (qw/tag_index position id_run/) {
-      if (defined $self->$attr) {
-        $ref->{$attr} = $self->$attr;
-      }
-      if ($self->has_batch_id) {
-        $ref->{'batch_id'} = $self->batch_id;
-      }
+  foreach my $attr (qw/tag_index position id_run path/) {
+    if (defined $self->$attr) {
+      $ref->{$attr} = $self->$attr;
     }
-  } elsif ($self->driver_type eq 'samplesheet') {
-    foreach my $attr (qw/tag_index position id_run path/) {
-      if (defined $self->$attr) {
-        $ref->{$attr} = $self->$attr;
-      }
+    if ($self->has_batch_id) {
+      $ref->{'batch_id'} = $self->batch_id;
     }
-  } else {
-    croak 'Do not know how to instantiate driver type ' . $self->driver_type;
   }
   return $d_package->new($ref);
 }
@@ -162,16 +152,11 @@ sub _driver_package_name {
     croak qq[Driver type '$type' not implemented.\n Implemented drivers: ] .
              join q[,], @IMPLEMENTED_DRIVERS;
   }
-  if ($type eq 'xml') {
-    return join q[::], __PACKAGE__ , $type;
-  } elsif ($type eq 'samplesheet') {
-    return 'npg_tracking::illumina::run::lims::samplesheet';
-  }
-  return;
+  return join q[::], __PACKAGE__ , $type;
 }
 
 for my$m ( @DELEGATED_METHODS ){
-  __PACKAGE__->meta->add_method( $m, sub {my$d=shift->driver; if( $d->can($m) ){ return $d->$m(@_) } return; });
+  __PACKAGE__->meta->add_method($m, sub{my$d=shift->driver; if( $d->can($m) ){ return $d->$m(@_) } return; });
 }
 
 =head2 inline_index_end
@@ -459,12 +444,12 @@ sub _build__cached_children {
   my @children = ();
   if($self->driver->can('children')) {
     foreach my $c ($self->driver->children) {
-      my $init = {};
-      if(my $id_run=$self->id_run) { $init->{id_run}=$id_run; }
-      if(my $position=$self->position||($c->can(q(position))?$c->position:undef)) { $init->{position}=$position; }
-      if(my $tag_index=$self->tag_index||($c->can(q(tag_index))?$c->tag_index:undef)) { $init->{tag_index}=$tag_index; }
-      $init->{'driver_type'} = $self->driver_type;
-      $init->{'driver'} = $c;
+      my $init = {'driver_type' => $self->driver_type, 'driver' => $c};
+      foreach my $attr (qw/id_run position tag_index/) {
+        if(my $attr_value=$self->$attr || ($c->can($attr) ? $c->$attr : undef)) {
+          $init->{$attr}=$attr_value;
+        }
+      }
       push @children, st::api::lims->new($init);
     }
     if($self->driver->can('free_children')) {
