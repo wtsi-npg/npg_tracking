@@ -5,8 +5,10 @@
 
 use strict;
 use warnings;
-use Test::More tests => 301;
+use Test::More tests => 357;
 use Test::Exception;
+use Test::Warn;
+use File::Temp qw/ tempdir /;
 
 use_ok('st::api::lims');
 
@@ -359,12 +361,10 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
 }
 
 {
-  my $lims;
-TODO: {
-  local $TODO = 'should nonconsented propagate up to run/batch (as plex dooes to lane) with "or"s?';
-  $lims = st::api::lims->new(id_run => 8260);
-  is($lims->contains_nonconsented_xahuman, 1, 'run does contain nonconsented X and autosomal human');
-}
+  my $lims = st::api::lims->new(id_run => 8260);
+  is($lims->contains_nonconsented_xahuman, 0,
+    'run does contain nonconsented X and autosomal human does not propagate to run level');
+
   $lims = st::api::lims->new(id_run => 8260, position => 2);
   is($lims->contains_nonconsented_xahuman, 0, 'lane 2 does not contain nonconsented X and autosomal human');
   $lims = st::api::lims->new(id_run => 8260, position => 8);
@@ -402,14 +402,12 @@ TODO: {
   cmp_ok($tags1[0]->{144}, q(eq), q(CCTGAGCA), 'Use expected_sequence sequence for tag');
 
   #diag q[Checking library_type is changed to 3 prime poly-A pulldown where tag is taken from sample description];
-
   my $lims85 = st::api::lims->new(batch_id => 19158, position => 8, tag_index => 5);
   is($lims85->library_type, '3 prime poly-A pulldown', 'library type');
   is($lims85->tag_sequence, 'GTAGAC', 'plex tag sequence from sample description');
   ok($lims85->sample_description =~ /end enriched mRNA/sm, 'sample description available');
 
   #diag q[Checking library_type is not changed to 3 prime poly-A pulldown where no sample description is available];
-
   my $lims1144 = st::api::lims->new(batch_id => 19158, position => 1, tag_index => 144);
   isnt($lims1144->library_type, '3 prime poly-A pulldown', 'library type');
   is($lims1144->tag_sequence, 'CCTGAGCA', 'plex tag sequence directly from batch xml');
@@ -417,6 +415,7 @@ TODO: {
 
 {
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
+
   my $lims = st::api::lims->new(batch_id=>17763, position=>1,tag_index=>1);
   is( $lims->study_title(), 'hifi test', q{study title} );
   is( $lims->study_name(), 'Kapa HiFi test', 'study name');
@@ -430,6 +429,9 @@ TODO: {
   is( $lims->study_publishable_name(), 'EGAS00001000020', q{accession returned as study publishable name} );
   is( $lims->sample_publishable_name(), q{ERS003242}, q{sample publishable name returns accession} );
   ok(! $lims->separate_y_chromosome_data, 'do not separate y chromosome data');
+
+  $lims = st::api::lims->new(batch_id => 22061, position =>1, tag_index=>66);
+  ok($lims->separate_y_chromosome_data, 'separate y chromosome data');
 }
 
 {
@@ -442,17 +444,100 @@ TODO: {
 }
 
 {
-  my $path = 't/data/samplesheet/MS2026264-300V2.csv';
+  my $path = 't/data/samplesheet/miseq_default.csv';
+
   my $ss = st::api::lims->new(id_run => 10262,  path => $path, driver_type => 'samplesheet');
+  isa_ok ($ss->driver, 'st::api::lims::samplesheet', 'samplesheet driver object instantiated');  
+  my @lanes;
+  lives_ok {@lanes = $ss->children}  'can get lane-level objects';
+  is ($lanes[0]->id_run, 10262, 'lane id_run as set');
+
+  $ss = st::api::lims->new(id_run => 10000,  path => $path, driver_type => 'samplesheet');
+  is ($ss->id_run, 10000, 'id_run as set');
+  warning_is {@lanes = $ss->children} 
+    q[Supplied id_run 10000 does not match Experiment Name, 10262],
+    'can get lane-level objects, get warned about id_run mismatch';
+  is ($lanes[0]->id_run, 10000, 'lane id_run as set, differs from Experiment Name');
+
+  $ss = st::api::lims->new(path => $path, driver_type => 'samplesheet');
   is ($ss->is_pool, 0, 'is_pool false on run level');
-  is ($ss->is_control, 0, 'is_control false on run level');
+  is ($ss->is_control, undef, 'is_control undef on run level');
   is ($ss->library_id, undef, 'library_id undef on run level');
   is ($ss->library_name, undef, 'library_name undef on run level');
+  is ($ss->id_run, undef, 'id_run undefined');
+  warning_is {@lanes = $ss->children}
+    q[id_run is set to Experiment Name, 10262],
+    'can get lane-level objects, get warning about setting id_run from Experiment Name';
+  is (scalar @lanes, 1, 'one lane returned');
+  my $lane = $lanes[0];
+  is ($lane->position, 1, 'position is 1');
+  is ($lane->id_run, 10262, 'lane id_run set correctly from Experiment Name');
+  is ($lane->is_pool, 1, 'is_pool true on lane level');
+  is ($lane->is_control, undef, 'not a control lane');
+  is ($lane->library_id, undef, 'library_id indefined for a pool');
+  my @plexes;
+  lives_ok {@plexes = $lane->children}  'can get plex-level objects';
+  is (scalar @plexes, 96, '96 plexes returned');
+  is ($plexes[0]->position, 1, 'position of the first plex is 1');
+  is ($plexes[0]->tag_index, 1, 'tag_index of the first plex is 1');
+  is ($plexes[0]->id_run, 10262, 'id_run of the first plexe set correctly from Experiment Name');
+  is ($plexes[0]->library_id, 7583411, 'library_id of the first plex');
+  is ($plexes[0]->sample_name, 'LIA_1', 'sample_name of the first plex');
+  is ($plexes[0]->sample_id, undef, 'sample_id of the first plex in undefined');
+  is ($plexes[0]->is_pool, 0, 'is_pool false on plex level');
+  is ($plexes[0]->is_control, undef, 'is_control false on for a plex');
+  is ($plexes[0]->default_tag_sequence, 'ATCACGTT', 'default tag sequence of the first plex');
+  is ($plexes[0]->tag_sequence, 'ATCACGTT', 'tag sequence of the first plex');
+  is ($plexes[95]->position, 1, 'position of the last plex is 1');
+  is ($plexes[95]->tag_index, 96, 'tag_index of the last plex is 96');
+  is ($plexes[95]->id_run, 10262, 'id_run of the last plex set correctly from Experiment Name');
+  is ($plexes[95]->tag_sequence, 'GTCTTGGC', 'tag sequence of the last plex');
+  is ($plexes[95]->library_id, 7583506, 'library_id of the last plex');
+  is ($plexes[95]->sample_name, 'LIA_96', 'sample_name of the last plex');
 }
 
 {
-  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
-  my $lims = st::api::lims->new(batch_id => 22061, position =>1, tag_index=>66);
-  ok($lims->separate_y_chromosome_data, 'separate y chromosome data');
+  my $path = 't/data/samplesheet/miseq_default.csv';
+  lives_ok {st::api::lims->new(id_run => 10262, position =>2, path => $path, driver_type => 'samplesheet')}
+    'no error instantiation an object for a non-existing lane';
+  throws_ok {st::api::lims->new(id_run => 10262, position =>2, path => $path, driver_type => 'samplesheet')->library_id}
+    qr/Position 2 not defined in/, 'error invoking a driver method on an object for a non-existing lane';
+
+  lives_ok {st::api::lims->new(id_run => 10262, position =>2, driver_type => 'samplesheet')}
+    'no error instantiation an object without path';
+  throws_ok {st::api::lims->new(id_run => 10262, position =>2, driver_type => 'samplesheet')->library_id}
+    qr/Attribute \(path\) is required/, 'error invoking a driver method on an object with path undefined';
+  my $nopath = join q[/], tempdir( CLEANUP => 1 ), 'xxx';
+  throws_ok {st::api::lims->new(id_run => 10262, path => $nopath, position =>2, driver_type => 'samplesheet')->library_id}
+    qr/Validation failed for 'NpgTrackingReadableFile'/, 'error invoking a driver method on an object with non-existing path';
+ 
+  my $ss=st::api::lims->new(id_run => 10262, position =>1, path => $path, driver_type => 'samplesheet');
+  is ($ss->position, 1, 'correct position');
+  is ($ss->is_pool, 1, 'lane is a pool');
+  is ($ss->library_id, undef, 'pool lane library_id undefined');
+  is (scalar $ss->children, 96, '96 plexes returned');
+
+  lives_ok {st::api::lims->new(id_run => 10262, position =>1, tag_index=>999,path => $path, driver_type => 'samplesheet')}
+    'no error instantiation an object for a non-existing tag_index';
+  throws_ok {st::api::lims->new(id_run => 10262, position =>1, tag_index => 999, path => $path, driver_type => 'samplesheet')->children}
+    qr/Tag index 999 not defined in/, 'error invoking a driver method on an object for a non-existing tag_index';
+
+  $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 3, path => $path, driver_type => 'samplesheet');
+  is ($ss->position, 1, 'correct position');
+  is ($ss->tag_index, 3, 'correct tag_index');
+  is ($ss->is_pool, 0, 'plex is not a pool');
+  is ($ss->default_tag_sequence, 'TTAGGCAT', 'correct default tag sequence');
+  is ($ss->tag_sequence, $ss->default_tag_sequence, 'tag sequence is the same as default tag sequence');
+  is ($ss->library_id, 7583413, 'library id is correct');
+  is ($ss->sample_name, 'LIA_3', 'sample name is correct');
+  is (scalar $ss->children, 0, 'zero children returned');
+
+  $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 0, path => $path, driver_type => 'samplesheet');
+  is (scalar $ss->children, 96, '96 children returned for tag zero');
+  is ($ss->is_pool, 1, 'tag zero is a pool');
+  is ($ss->library_id, undef, 'tag_zero library_id undefined');
+  is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
+  is ($ss->tag_sequence, undef, 'tag sequence undefined');
 }
+
 1;
