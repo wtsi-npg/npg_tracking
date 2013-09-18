@@ -17,7 +17,7 @@ use_ok('npg_tracking::daemon::staging');
 
 {
     my $log_dir = join q[/],getcwd(), 'logs';
-    my $script = join q[/], getcwd(), 't', 'staging_area_monitor';
+    my $script = 'staging_area_monitor';
     my $r = npg_tracking::daemon::staging->new(timestamp => '2013', hosts => ['sf2-nfs', 'sf3-nfs']);
     throws_ok {$r->command} qr/Need host name/, 'error generating staging area path';
     throws_ok {$r->command('somesf3_nfs')}
