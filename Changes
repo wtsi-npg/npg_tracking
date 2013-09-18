@@ -2,6 +2,10 @@ CHANGES
 
 release 74.11
  - samplesheet lims driver moved to st::api::lims namespace, contains parser only
+ - daemon utility: execute daemons in a bash login shell in order to pick up
+   target host environment; remove setting PERL5LIB and perl version
+   from definitions of daemons for samplesheet and staging
+ - removed Makefile.PL for web deployment - this functionality is now in Build.PL
 
 release 74.10
  - update live URL for getting/posting lims data as requested in RT#336085

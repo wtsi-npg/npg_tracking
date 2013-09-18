@@ -406,7 +406,6 @@ lib/st/api/lims/xml.pm
 lib/st/api/project.pm
 lib/st/api/sample.pm
 lib/st/api/study.pm
-Makefile.PL.WEB
 MANIFEST
 README
 REDESIGN_PROPOSAL
