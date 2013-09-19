@@ -1,5 +1,9 @@
 CHANGES
 
+release 74.13
+ - data_access_group method to lims (study) to determine data access control requirements
+ - add new staging area (50)
+
 release 74.12
  - to ensure host-specific path is used when calling a script, use bare script name in staging
    daemon definition
