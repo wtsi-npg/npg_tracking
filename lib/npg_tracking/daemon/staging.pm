@@ -9,14 +9,11 @@ package npg_tracking::daemon::staging;
 use Moose;
 use Carp;
 use English qw(-no_match_vars);
-use FindBin qw($Bin);
 use Readonly;
 
 extends 'npg_tracking::daemon';
 
 Readonly::Scalar our $SCRIPT_NAME => q[staging_area_monitor];
-
-my $script = join q[/], $Bin, $SCRIPT_NAME;
 
 override '_build_hosts' => sub {
     ##no critic (TestingAndDebugging::ProhibitNoWarnings)
@@ -35,7 +32,7 @@ override 'command'      => sub { my ($self, $host) = @_;
                                  if (!$sfarea) {
                                    croak qq{Host name $host does not follow expected pattern sfXX-nfs};
 				 }
-                                 return join q[ ], $script, q{/export/sf} . $sfarea;
+                                 return join q[ ], $SCRIPT_NAME, q{/export/sf} . $sfarea;
                                };
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };
 
