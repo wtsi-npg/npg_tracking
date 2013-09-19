@@ -1,0 +1,5 @@
+[%- lims_batches_url = 'http://psd-support.internal.sanger.ac.uk:6600/batches/';
+    IF view.util.dbsection == 'dev';
+      lims_batches_url =  'http://psd-dev.internal.sanger.ac.uk:6800/batches/';
+    END;
+-%]

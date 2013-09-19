@@ -1,11 +1,7 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2013-01-15 10:27:57 +0000 (Tue, 15 Jan 2013) $
-# Id:            $Id: sample.pm 16477 2013-01-15 10:27:57Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/sample.pm $
-#
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/sample.pm, r 16477
 
 package st::api::sample;
 
@@ -55,36 +51,32 @@ sub consent_withdrawn {
 sub description {
     my $self = shift;
     $self->parse();
-    return $self->{q[Sample Description]}->[0];
+    return $self->get(q[Sample Description])->[0];
 }
 
 sub organism {
     my $self = shift;
     $self->parse();
-    return $self->get(q(organism))||$self->{Organism}->[0];
+    my $result = $self->get(q(organism));
+    return ref $result ? $result->[0] : $result
 }
 
 sub taxon_id {
     my $self = shift;
     $self->parse();
-    return $self->_parse_taxon_id($self->{q[TAXON ID]}->[0] || $self->{q[Taxon ID]}->[0]);
+    return $self->_parse_taxon_id($self->get(q[TAXON ID])->[0]);
 }
 
 sub common_name {
     my $self = shift;
     $self->parse();
-    return $self->{q[Common Name]}->[0];
+    return $self->get(q[Common Name])->[0];
 }
 
 sub public_name {
     my $self = shift;
     $self->parse();
-    return $self->{q[Public Name]}->[0];
-}
-
-sub publishable_name {
-    my $self = shift;
-    return $self->accession_number() || $self->public_name() || $self->name();
+    return $self->get(q[Public Name])->[0];
 }
 
 sub accession_number {
@@ -96,13 +88,13 @@ sub accession_number {
 sub strain {
     my $self = shift;
     $self->parse();
-    return $self->{q[Strain]}->[0];
+    return $self->get(q[Strain])->[0];
 }
 
 sub reference_genome {
     my $self = shift;
     $self->parse();
-    return $self->{q[Sample reference genome]}->[0] || $self->{q[Reference Genome]}->[0];
+    return ($self->get(q[Sample reference genome])||[])->[0] || $self->get(q[Reference Genome])->[0];
 }
 
 sub contains_nonconsented_human {
@@ -110,19 +102,6 @@ sub contains_nonconsented_human {
     return $self->study()->contains_nonconsented_human();
 }
 *contains_unconsented_human = \&contains_nonconsented_human; #Backward compat
-
-sub tag_sequence_from_description {
-    my ($self, $desc) = @_;
-    $desc ||= $self->description();
-    my $tag;
-    if ($desc) {
-        if (($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx)){
-  	    ($tag) = $desc =~ /\(([ACGT]+)\)/smx;
-        }
-    }
-
-    return $tag;
-}
 
 1;
 __END__
@@ -171,12 +150,6 @@ $Revision: 16477 $
 =head2 public_name - returns public_name property
 
     my $public_name = $oSample->public_name();
-    
-=head2 publishable_name
-
-returns accession_number, then falls to public_name, and falls back to name
-
-    my $public_name = $oSample->publishable_name();
 
 =head2 accession_number
 
@@ -223,8 +196,6 @@ returns the accession_number should it have been provided
 =head2 consent_withdrawn - boolean value indicating whether consent has been withdrawn for a sample containing human DNA
 
 =head2 description - sample description
-
-=head2 tag_sequence_from_description - description might contain a tag sequence; if so, it is returned, otherwise undef returned
 
 =head1 DIAGNOSTICS
 

@@ -1,12 +1,8 @@
 #!/usr/local/bin/perl -wT
 #########
 # Author:        dj3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-05-17
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: reflector 16549 2013-01-23 16:49:39Z mg8 $
-# Source:        $Source: /repos/cvs/webcore/SHARED_docs/cgi-bin/docrep,v $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/cgi-bin/reflector $
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/cgi-bin/reflector, r16549
 #
 
 use strict;

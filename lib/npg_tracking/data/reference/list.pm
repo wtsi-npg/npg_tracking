@@ -47,11 +47,12 @@ Interface (Moose role) for retrieving a information about a reference repository
 
 =cut
 
-Readonly::Scalar our $REP_ROOT         => q[/lustre/scratch109/srpipe/];
+Readonly::Scalar our $REP_ROOT         => q[/lustre/scratch110/srpipe/];
 Readonly::Scalar our $REFERENCES_DIR   => q[references];
 Readonly::Scalar our $ADAPTERS_DIR     => q[adapters];
 Readonly::Scalar our $GENOTYPES_DIR    => q[genotypes];
 Readonly::Scalar our $BAITS_DIR        => q[baits];
+Readonly::Scalar our $TAG_SETS_DIR     => q[tag_sets];
 Readonly::Scalar our $TAXON_IDS_DIR    => q[taxon_ids];
 Readonly::Scalar our $BIN_DIR          => q[bin];
 Readonly::Scalar our $ORG_NAME_DELIM   => q[_];
@@ -118,6 +119,19 @@ has 'bait_repository' => (isa       => 'NPG_TRACKING_REFERENCE_REPOSITORY',
 sub _build_bait_repository {
     my $self = shift;
     return catdir($self->repository, $BAITS_DIR);
+}
+
+=head2 tag_sets_repository
+
+=cut
+has 'tag_sets_repository' => (isa       => 'NPG_TRACKING_REFERENCE_REPOSITORY',
+                          is        => 'ro',
+                          required  => 0,
+                          lazy_build   => 1,
+			 );
+sub _build_tag_sets_repository {
+    my $self = shift;
+    return catdir($self->repository, $TAG_SETS_DIR);
 }
 
 =head2 adapter_repository

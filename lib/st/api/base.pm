@@ -17,7 +17,7 @@ use npg::api::util;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/smx; $r; };
 
-sub live_url { return q{http://psd-production.internal.sanger.ac.uk:6600}; }
+sub live_url { return q{http://psd-support.internal.sanger.ac.uk:6600}; }
 
 sub dev_url  { return q{http://psd-dev.internal.sanger.ac.uk:6800}; }
 
@@ -63,6 +63,7 @@ sub util {
 sub get {
   my ($self, $field) = @_;
 
+  $field = lc $field;
   if($self->{$field}) {
     return $self->{$field};
   }
@@ -121,6 +122,7 @@ sub _init_from_xml_node {
         };
       };
       my $name   = $namec?$namec->getData():undef;
+      $name = lc $name;
       my $valuec = $desc->getElementsByTagName('value')->[0]->getFirstChild();
       my $value  = $valuec?$valuec->getData():undef;
       if (defined $value) {

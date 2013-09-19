@@ -16,6 +16,10 @@ use Readonly;
 use List::MoreUtils qw/any/;
 
 use npg_tracking::util::types;
+with qw/  npg_tracking::glossary::run
+          npg_tracking::glossary::lane
+          npg_tracking::glossary::tag
+       /;
 
 =head1 NAME
 
@@ -36,9 +40,14 @@ and downstream analysis.
 Readonly::Scalar  my  $SAMPLESHEET_FILE_EXTENSION   => q[.csv];
 Readonly::Scalar  my  $SAMPLESHEET_RECORD_SEPARATOR => q[,];
 Readonly::Scalar  my  $NOT_INDEXED_FLAG             => q[NO_INDEX];
-Readonly::Scalar  our $DEFAULT_WORKFLOW             => q[LibraryQC];
-Readonly::Scalar  our $DEFAULT_CHEMISTRY            => q[Default];
-Readonly::Scalar  our $RECORD_SPLIT_LIMIT           => -1;
+Readonly::Scalar  my  $DEFAULT_WORKFLOW             => q[LibraryQC];
+Readonly::Scalar  my  $DEFAULT_CHEMISTRY            => q[Default];
+Readonly::Scalar  my  $RECORD_SPLIT_LIMIT           => -1;
+Readonly::Scalar  my  $DATA_SECTION                  => q[Data];
+Readonly::Scalar  my  $HEADER_SECTION               => q[Header];
+Readonly::Scalar  my  $IS_CONTROL_COLUMN            => q[WTSI_IsControl];
+Readonly::Scalar  my  $LIB_ID_COLUMN                => q[Sample_ID];
+Readonly::Scalar  my  $LIB_NAME_COLUMN              => q[Sample_Name];
 
 =head2 data
 
@@ -186,6 +195,169 @@ sub _build_path {
   croak 'Samplesheet file name not known';
 }
 
+=head2 id_run
+
+Run id, optional attribute. If not set, batch_id should be set.
+
+=cut
+has '+id_run'   =>        (required        => 0,);
+
+=head2 position
+
+Position, optional attribute.
+
+=cut
+has '+position' =>        (required        => 0,);
+
+
+=head2 is_pool
+
+Read-only boolean accessor, not possible to set from the constructor.
+True for a pooled lane on a lane level, otherwise false.
+
+=cut
+has 'is_pool' =>          (isa             => 'Bool',
+                           is              => 'ro',
+                           init_arg        => undef,
+                           lazy_build      => 1,
+                          );
+sub _build_is_pool {
+  my $self = shift;
+  if ($self->position) {
+    if (!exists $self->data->{$DATA_SECTION}->{$self->position}->{$NOT_INDEXED_FLAG}) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+has '_entity' =>          (isa             => 'Maybe[HashRef]',
+                           is              => 'ro',
+                           init_arg        => undef,
+                           lazy_build      => 1,
+                          );
+sub _build__entity {
+  my $self = shift;
+  if ($self->position) {
+    if (!exists $self->data->{$DATA_SECTION}->{$self->position}) {
+      croak sprintf 'Position %s not defined for %s',
+                    $self->position, $self->to_string;
+    }
+    if ($self->is_pool) {
+      if (defined $self->tag_index) {
+        if (!exists $self->data->{$DATA_SECTION}->{$self->position}->{$self->tag_index}) {
+           croak sprintf 'Tag index %s not defined for %s',
+                    $self->tag_index, $self->to_string;
+	}
+        return $self->data->{$DATA_SECTION}->{$self->position}->{$self->tag_index};
+      }
+    } else {
+      return $self->data->{$DATA_SECTION}->{$self->position}->{$NOT_INDEXED_FLAG};
+    }
+  }
+  return;
+}
+
+=head2 is_control
+
+Read-only boolean accessor, not possible to set from the constructor.
+True for a control lane and for the spiked phix plex, otherwise false.
+
+=cut
+has 'is_control' =>       (isa             => 'Bool',
+                           is              => 'ro',
+                           init_arg        => undef,
+                           lazy_build      => 1,
+                          );
+sub _build_is_control {
+  my $self = shift;
+  if ($self->_entity) {
+    return $self->_entity->{$IS_CONTROL_COLUMN} ? 1 : 0;
+  }
+  return 0;
+}
+
+has '_sschildren' =>      (isa             => 'ArrayRef',
+                           is              => 'ro',
+                           init_arg        => undef,
+                           lazy_build      => 1,
+                          );
+sub _build__sschildren {
+  my $self = shift;
+  my @children = ();
+  if (defined $self->position) {
+    if ($self->is_pool && !$self->tag_index) {
+      foreach my $tag_index (sort keys %{$self->data->{$DATA_SECTION}->{$self->position}}) {
+        my $init = $self->init_args();
+        $init->{'tag_index'} = $tag_index;
+        #$init->{'data'}     = $self->data;
+        push @children, __PACKAGE__->new($init);
+      }
+    }
+  } else {
+    foreach my $position (sort keys %{$self->data->{$DATA_SECTION}}) {
+      my $init = $self->init_args();
+      $init->{'position'} = $position;
+      #$init->{'data'}     = $self->data;
+      push @children, __PACKAGE__->new($init);
+    }
+  }
+  return \@children;
+}
+
+=head2 library_id
+
+Read-only accessor, not possible to set from the constructor.
+
+=cut
+has 'library_id' =>       (isa             => 'Maybe[Int]',
+                           is              => 'ro',
+                           init_arg        => undef,
+                           lazy_build      => 1,
+                          );
+sub _build_library_id {
+  my $self = shift;
+  my $id;
+  if($self->_entity) {
+    $id = $self->_entity->{$LIB_ID_COLUMN};
+  }
+  $id ||= undef;
+  return $id;
+}
+
+=head2 library_name
+
+Read-only accessor, not possible to set from the constructor.
+
+=cut
+has 'library_name' =>     (isa             => 'Maybe[Str]',
+                           is              => 'ro',
+                           init_arg        => undef,
+                           lazy_build      => 1,
+                          );
+sub _build_library_name {
+  my $self = shift;
+  my $name;
+  if($self->_entity) {
+    $name = $self->_entity->{$LIB_NAME_COLUMN};
+  }
+  $name ||= undef;
+  return $name;
+}
+
+=head2 children
+
+Method returning a list objects that are associated with this object
+and belong to the next (one lower) level. An empty list for a non-pool lane and for a plex.
+For a pooled lane contains plex-level objects. On a batch level, when the position 
+accessor is not set, returns lane level objects.
+
+=cut
+sub children {
+  my $self = shift;
+  return @{$self->_sschildren()};
+}
+
 has '_template_text' => (
   'isa'       => 'Str',
   'is'        => 'ro',
@@ -193,6 +365,10 @@ has '_template_text' => (
   'lazy'      =>1,
   'builder'   => '_build__template_text',
 );
+
+
+
+
 sub _build__template_text {
   my $tt = <<'END_OF_TEMPLATE';
 [% 
@@ -250,10 +426,20 @@ sub _validate_data { # this is a callback for Moose trigger
     croak 'Information about read lengths is not available';
   }
   #Are read lengths numbers?
-  if (!exists $data->{'Data'}) {
-    croak 'Data section is missing';
+
+  foreach my $section (($DATA_SECTION, $HEADER_SECTION)) {
+    if (!exists $data->{$section}) {
+      croak "$section section is missing";
+    }
   }
-  #What are compalsory Data section? - check for them
+
+  my $id_run = $data->{$HEADER_SECTION}->{'Experiment Name'};
+  if ($id_run && $self->id_run && $id_run != $self->id_run) {
+    croak sprintf 'Supplied id_run %i does not match "Experiment Name" %s',
+                  $self->id_run, $id_run;
+  }
+
+  #What are compulsory Data section? - check for them
   #Do we have at least one lane? - should be numbers as well
   #Do we have a mixture of indices and non-indexed in one lane?
   #Are all indices numbers?

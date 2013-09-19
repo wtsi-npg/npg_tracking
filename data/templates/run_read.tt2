@@ -15,6 +15,7 @@
     is_miseq_instrument = model.instrument.is_miseq_instrument
     flabel = is_miseq_instrument ? 'Reagent kit id' : 'Flowcell id';
  -%]
+[% PROCESS urls.tt2 -%]
 <div>
 <div class="lfloat roundborder">
 <div class="page_title"[% IF model.current_run_status.description == 'run pending'; st = ' style="color: #FF0000"'; st; END; %]>[% model.run_folder %]</div>
@@ -29,7 +30,13 @@
  <tr><th>Single run</th><td>one runfolder, [% IF model.is_paired_read == 1 %]paired read[% ELSIF model.is_paired_read == 0 %]single read [% ELSE %]data not available about single or paired read[% END %]</td></tr>
   [%- END -%]
 [%- END -%]
-  <tr><th>Batch id</th><td>[% IF batch_id %]<a href="http://psd-production.internal.sanger.ac.uk:6600/batches/[% batch_id %]">[% batch_id %]</a>[% ELSE %]unknown[% END %]</td></tr>
+  <tr>
+[%- IF batch_id >= 1000000000000 -%]
+<th>QC tube EAN13</th><td>[% batch_id %]</td>
+[%- ELSE -%]
+<th>Batch id</th><td>[% IF batch_id %]<a href="[% lims_batches_url _ batch_id %]">[% batch_id %]</a>[% ELSE %]unknown[% END %]</td>
+[%- END -%]
+</tr>
 [% IF model.flowcell_id %]<tr><th>[% flabel %]</th><td>[% model.flowcell_id %]</td></tr>[% END -%]
 
   <tr><th>Priority</th><td>
@@ -110,7 +117,7 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 [%- IF !is_miseq_instrument && batch_id %]
   <li><a class="npg_menu" href="http://psd-production.internal.sanger.ac.uk:6900/batches/search?id=[% batch_id %]">SybrGreen Images</a></li>
 [% END -%]
- <li><a class="npg_menu" href="http://intweb.sanger.ac.uk/cgi-bin/prodsoft/npg_qc/npg_qc/summary/[% earliest_id %]">NPG QC</a></li>
+ <li><a class="npg_menu" href="[% SCRIPT_NAME _ '_qc/summary/' _ earliest_id %]">NPG QC</a></li>
 [%- IF model.has_analysis_in_progress %]
  <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:1959/checks/runs/[% earliest_id %]">NPG SeqQC</a></li>
 [% END -%]

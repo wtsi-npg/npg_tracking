@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batch>
+  <id>22061</id>
+  <status>released</status>
+  <lanes>
+    <lane position="1" id="7737291" priority="0">
+      <pool id="7737180" name="2693_100713_1" request_id="5396570" qc_state="fail">
+        <sample sample_id="1660781" library_id="7736587" library_name="RV-BOB_K27me3_A 7736587" library_type="ChiP-seq" study_id="2693" project_id="1387" consent_withdrawn="false">
+          <tag tag_id="155">
+            <index>66</index>
+            <expected_sequence>TGAAGCCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="200" to="700"/>
+        </sample>
+        <sample sample_id="1660782" library_id="7736588" library_name="RV-BOB_K4me3_FP 7736588" library_type="ChiP-seq" study_id="2693" project_id="1387" consent_withdrawn="false">
+          <tag tag_id="164">
+            <index>67</index>
+            <expected_sequence>TACCACCA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="200" to="700"/>
+        </sample>
+        <sample sample_id="1660783" library_id="7736589" library_name="RV-BOB_K27Ac_FP 7736589" library_type="ChiP-seq" study_id="2693" project_id="1387" consent_withdrawn="false">
+          <tag tag_id="169">
+            <index>68</index>
+            <expected_sequence>TGCGTGAA</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="200" to="700"/>
+        </sample>
+        <sample sample_id="1660784" library_id="7736590" library_name="RV-BOB_K27me3_FP 7736590" library_type="ChiP-seq" study_id="2693" project_id="1387" consent_withdrawn="false">
+          <tag tag_id="176">
+            <index>69</index>
+            <expected_sequence>GGTGAGTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="200" to="700"/>
+        </sample>
+        <sample sample_id="1660785" library_id="7736591" library_name="FS13R_K4me3_FP_20May 7736591" library_type="ChiP-seq" study_id="2693" project_id="1387" consent_withdrawn="false">
+          <tag tag_id="181">
+            <index>70</index>
+            <expected_sequence>GATCTCTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="200" to="700"/>
+        </sample>
+        <sample sample_id="1660786" library_id="7736592" library_name="FS13R_K27Ac_FP_20May 7736592" library_type="ChiP-seq" study_id="2693" project_id="1387" consent_withdrawn="false">
+          <tag tag_id="197">
+            <index>71</index>
+            <expected_sequence>GTGTCCTT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="200" to="700"/>
+        </sample>
+        <sample sample_id="1660787" library_id="7736593" library_name="FS13R_K27me3_FP_20May 7736593" library_type="ChiP-seq" study_id="2693" project_id="1387" consent_withdrawn="false">
+          <tag tag_id="202">
+            <index>72</index>
+            <expected_sequence>GACGGATT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="200" to="700"/>
+        </sample>
+        <sample sample_id="1660788" library_id="7736594" library_name="FS13R_K4me3_FP_10Jun 7736594" library_type="ChiP-seq" study_id="2693" project_id="1387" consent_withdrawn="false">
+          <tag tag_id="206">
+            <index>73</index>
+            <expected_sequence>GCAACATT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="200" to="700"/>
+        </sample>
+        <sample sample_id="1660789" library_id="7736595" library_name="FS13R_K27me3_FP_10Jun 7736595" library_type="ChiP-seq" study_id="2693" project_id="1387" consent_withdrawn="false">
+          <tag tag_id="212">
+            <index>74</index>
+            <expected_sequence>GGTCGTGT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+          <insert_size from="200" to="700"/>
+        </sample>
+      </pool>
+    </lane>
+  </lanes>
+</batch>

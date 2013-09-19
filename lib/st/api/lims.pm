@@ -1,4 +1,4 @@
-#########
+#######
 # Author:        Marina Gourtovaia
 # Created:       July 2013
 # copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/lims.pm, r16549
@@ -54,7 +54,7 @@ Readonly::Hash   my  %METHODS           => {
                            bait_name
                            default_tag_sequence
                            required_insert_size_range
-                           seq_qc_state
+                           qc_state
                       /],
 
     'lane'         => [qw/ lane_id
@@ -72,7 +72,6 @@ Readonly::Hash   my  %METHODS           => {
                            organism
                            sample_common_name
                            sample_public_name
-                           sample_publishable_name
                            sample_accession_number
                            sample_consent_withdrawn
                            sample_description
@@ -88,11 +87,11 @@ Readonly::Hash   my  %METHODS           => {
                            alignments_in_bam
                            study_accession_number
                            study_title
-                           study_publishable_name
                            study_description
                            study_reference_genome
                            study_contains_nonconsented_xahuman
                            study_contains_nonconsented_human
+                           separate_y_chromosome_data
                       /],
 
     'project'      => [qw/ project_id
@@ -104,10 +103,8 @@ Readonly::Hash   my  %METHODS           => {
                       /],
 };
 
-Readonly::Array my @DELEGATED_METHODS => sort map { @{$_} } values %METHODS;
-
-Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml/;
-
+Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml samplesheet/;
+Readonly::Array our @DELEGATED_METHODS => sort map { @{$_} } values %METHODS;
 
 =head2 driver_type
 
@@ -120,29 +117,30 @@ has 'driver_type' => (
                         default => $IMPLEMENTED_DRIVERS[0],
                      );
 
-has '_driver' => (
+=head2 driver
+
+Driver object (xml, warehouse, samplesheet)
+
+=cut
+has 'driver' => (
                           'is'      => 'ro',
                           'lazy'    => 1,
-                          'builder' => '_build__driver',
+                          'builder' => '_build_driver',
 );
-sub _build__driver {
+sub _build_driver {
   my $self = shift;
   my $d_package = $self->_driver_package_name;
   ##no critic (ProhibitStringyEval RequireCheckingReturnValueOfEval)
   eval "require $d_package";
   ##use critic
   my $ref = {};
-  if ($self->driver_type eq 'xml') {
-    foreach my $attr (qw/tag_index position id_run/) {
-      if (defined $self->$attr) {
-        $ref->{$attr} = $self->$attr;
-      }
-      if ($self->has_batch_id) {
-        $ref->{'batch_id'} = $self->batch_id;
-      }
+  foreach my $attr (qw/tag_index position id_run path/) {
+    if (defined $self->$attr) {
+      $ref->{$attr} = $self->$attr;
     }
-  } else {
-    croak 'Do not know how to instantiate driver type ' . $self->driver_type;
+    if ($self->has_batch_id) {
+      $ref->{'batch_id'} = $self->batch_id;
+    }
   }
   return $d_package->new($ref);
 }
@@ -158,7 +156,7 @@ sub _driver_package_name {
 }
 
 for my$m ( @DELEGATED_METHODS ){
-  __PACKAGE__->meta->add_method( $m, sub {my$d=shift->_driver; if( $d->can($m) ){ return $d->$m(@_) } return; });
+  __PACKAGE__->meta->add_method($m, sub{my$d=shift->driver; if( $d->can($m) ){ return $d->$m(@_) } return; });
 }
 
 =head2 inline_index_end
@@ -171,6 +169,17 @@ class_has 'inline_index_end' => (isa => 'Int',
                                  required => 0,
                                  default => $INLINE_INDEX_END,
                                 );
+
+=head2 path
+
+Samplesheet path
+
+=cut
+has 'path' => (
+                  isa      => 'Str',
+                  is       => 'ro',
+                  required => 0,
+              );
 
 =head2 id_run
 
@@ -206,7 +215,7 @@ sub _build_batch_id {
 
   if ($self->id_run) {
     if ($self->driver_type eq 'xml') {
-      return $self->_driver->batch_id;
+      return $self->driver->batch_id;
     }
     croak q[Cannot build batch_id from id_run for driver type ] . $self->driver_type;
   }
@@ -319,6 +328,26 @@ sub _entity_required_insert_size {
   return;
 }
 
+=head2 seq_qc_state
+
+ 1 for passes, 0 for failed, undef if the value is not set
+
+=cut
+sub  seq_qc_state {
+  my $self = shift;
+  my $state = $self->driver->qc_state;
+  if (!defined $state || $state eq '1' || $state eq '0') {
+    return $state;
+  }
+  if ($state eq q[]) {
+    return;
+  }
+  if (!exists  $QC_EVAL_MAPPING{$state}) {
+    croak qq[Unexpected value '$state' for seq qc state in ] . $self->to_string;
+  }
+  return $QC_EVAL_MAPPING{$state};
+}
+
 =head2 reference_genome
 
 Read-only accessor, not possible to set from the constructor.
@@ -413,13 +442,20 @@ has '_cached_children'              => (isa             => 'ArrayRef',
 sub _build__cached_children {
   my $self = shift;
   my @children = ();
-  foreach my $c ($self->_driver->children) {
-    my $init = $c->init_attrs();
-    $init->{'driver_type'} = $self->driver_type;
-    $init->{'_driver'} = $c;
-    push @children, st::api::lims->new($init);
+  if($self->driver->can('children')) {
+    foreach my $c ($self->driver->children) {
+      my $init = {'driver_type' => $self->driver_type, 'driver' => $c};
+      foreach my $attr (qw/id_run position tag_index/) {
+        if(my $attr_value=$self->$attr || ($c->can($attr) ? $c->$attr : undef)) {
+          $init->{$attr}=$attr_value;
+        }
+      }
+      push @children, st::api::lims->new($init);
+    }
+    if($self->driver->can('free_children')) {
+      $self->driver->free_children;
+    }
   }
-  $self->_driver->free_children;
   return \@children;
 }
 
@@ -446,14 +482,11 @@ lane and, if appropriate, plex level.
 =cut
 sub descendants {
   my $self = shift;
-
   my @lims = $self->children;
   if (!defined $self->position) {
-    my @all_lims = ();
     foreach my $alims (@lims) {
-      push @all_lims, $alims->children;
+      push @lims, $alims->children;
     }
-    push @lims, @all_lims;
   }
   return @lims;
 }
@@ -490,6 +523,26 @@ sub children_ia {
     $h->{$key} = $alims;
   }
   return $h;
+}
+
+=head2 study_publishable_name
+
+Study publishable name
+
+=cut
+sub study_publishable_name {
+  my $self = shift;
+  return $self->study_accession_number() || $self->study_title() || $self->study_name();
+}
+
+=head2 sample_publishable_name
+
+Sample publishable name
+
+=cut
+sub sample_publishable_name {
+  my $self = shift;
+  return $self->sample_accession_number() || $self->sample_public_name() || $self->sample_name();
 }
 
 =head2 associated_child_lims_ia
@@ -708,14 +761,19 @@ Human friendly description of the object
 sub to_string {
   my $self = shift;
 
-  my $s = __PACKAGE__ . q[ object, driver - ] . $self->driver_type;
-  my %attrs = %{$self->_driver->init_attrs()};
-  foreach my $attr (sort keys %attrs) {
-    $s .= q[, ] . join q[ ], $attr, $attrs{$attr};
+  my $d = ref $self->driver;
+  ($d)= $d=~/::(\w+?)\z/smx;
+  my $s = __PACKAGE__ . q[ object, driver - ] . $d;
+  foreach my $attr (sort qw(id_run batch_id position tag_index)) {
+    my $value=$self->$attr;
+    if (defined $value){
+      $s .= q[, ] . join q[ ], $attr, $value;
+    }
   }
   return $s;
 }
 
+__PACKAGE__->meta->make_immutable;
 no Moose;
 
 1;
@@ -736,8 +794,6 @@ __END__
 =item MooseX::ClassAttribute
 
 =item MooseX::StrictConstructor
-
-=item Scalar::Util
 
 =item List::MoreUtils
 
