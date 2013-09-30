@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sample api_version="0.6">
+  <id>1672019</id>
+  <name>SB-2-K4</name>
+  <study_id>2712</study_id>
+  <consent_withdrawn>false</consent_withdrawn>
+  <properties>
+    <property>
+      <name>Organism</name>
+      <value>Human</value>
+    </property>
+    <property>
+      <name>Cohort</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Country of origin</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Geographical region</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Ethnicity</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Volume (&#181;l)</name>
+      <value>25</value>
+    </property>
+    <property>
+      <name>Plate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Mother</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Father</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Replicate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>GC content</name>
+      <value>Neutral</value>
+    </property>
+    <property>
+      <name>Gender</name>
+      <value>Female</value>
+    </property>
+    <property>
+      <name>Donor Id</name>
+      <value></value>
+    </property>
+    <property>
+      <name>DNA source</name>
+      <value>Genomic</value>
+    </property>
+    <property>
+      <name>Public Name</name>
+      <value>SB_H3K4me3_replicate2</value>
+    </property>
+    <property>
+      <name>Common Name</name>
+      <value>Homo sapiens</value>
+    </property>
+    <property>
+      <name>Strain</name>
+      <value></value>
+    </property>
+    <property>
+      <name>TAXON ID</name>
+      <value>9606</value>
+    </property>
+    <property>
+      <name>ENA Sample Accession Number</name>
+      <value>ERS329834</value>
+    </property>
+    <property>
+      <name>Sample Description</name>
+      <value>ChIP for H3K4me3 from H9 cells treated with 10uM SB431542</value>
+    </property>
+    <property>
+      <name>Sample Visibility</name>
+      <value>Hold</value>
+    </property>
+    <property>
+      <name>Sibling</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Is re-submitted?</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Date of sample collection</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Date of sample extraction</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample extraction method</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample purified</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Purification method</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Concentration</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Concentration determind by</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample type</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample storage conditions</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Genotype</name>
+      <value>Wildtype</value>
+    </property>
+    <property>
+      <name>Phenotype</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Age</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Developmental Stage</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Cell Type</name>
+      <value>H9 hESC line</value>
+    </property>
+    <property>
+      <name>Disease State</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Compound</name>
+      <value>SB431542</value>
+    </property>
+    <property>
+      <name>Dose</name>
+      <value>10 uM</value>
+    </property>
+    <property>
+      <name>Immunoprecipitate</name>
+      <value>Anti H3K4me3</value>
+    </property>
+    <property>
+      <name>Growth Condition</name>
+      <value>SB431542</value>
+    </property>
+    <property>
+      <name>RNAi</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Organism Part</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Time Point</name>
+      <value>4h</value>
+    </property>
+    <property>
+      <name>Treatment</name>
+      <value>SB431542</value>
+    </property>
+    <property>
+      <name>Subject</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Disease</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Reference Genome</name>
+      <value>Homo_sapiens (1000Genomes_hs37d5)</value>
+    </property>
+  </properties>
+  <assets>
+    <asset id="7838388" href="/assets/7838388"/>
+    <asset id="7942467" href="/assets/7942467"/>
+    <asset id="7942500" href="/assets/7942500"/>
+    <asset id="7942501" href="/assets/7942501"/>
+    <asset id="7944163" href="/assets/7944163"/>
+    <asset id="7944196" href="/assets/7944196"/>
+    <asset id="7944682" href="/assets/7944682"/>
+    <asset id="7944877" href="/assets/7944877"/>
+    <asset id="7997209" href="/assets/7997209"/>
+    <asset id="7997242" href="/assets/7997242"/>
+    <asset id="7997340" href="/assets/7997340"/>
+    <asset id="8042447" href="/assets/8042447"/>
+    <asset id="8041172" href="/assets/8041172"/>
+    <asset id="8041173" href="/assets/8041173"/>
+    <asset id="8041174" href="/assets/8041174"/>
+    <asset id="8041175" href="/assets/8041175"/>
+    <asset id="8041176" href="/assets/8041176"/>
+    <asset id="8041177" href="/assets/8041177"/>
+    <asset id="8041178" href="/assets/8041178"/>
+  </assets>
+  <study_id>2712</study_id>
+</sample>
