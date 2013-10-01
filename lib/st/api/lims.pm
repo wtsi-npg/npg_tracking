@@ -753,7 +753,7 @@ sub _parse_sample_description {
 	my $end=undef;
 	if ($desc && (($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx))) {
 		($tag) = $desc =~ /\(([ACGT]+)\)/smx;
-		($start, $end) = $desc =~ /bases (\d+) to (\d+) of read/;
+		($start, $end) = $desc =~ /bases (\d+) to (\d+) of read 1/;
 	}
 	return ($tag, $start, $end);
 }
