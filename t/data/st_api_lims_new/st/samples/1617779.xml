@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sample api_version="0.6">
+  <id>1617779</id>
+  <name>SC_ASDN5522592</name>
+  <study_id>2609</study_id>
+  <consent_withdrawn>false</consent_withdrawn>
+  <properties>
+    <property>
+      <name>Organism</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Cohort</name>
+      <value>MoBa</value>
+    </property>
+    <property>
+      <name>Country of origin</name>
+      <value>Norway</value>
+    </property>
+    <property>
+      <name>Geographical region</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Ethnicity</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Volume (&#181;l)</name>
+      <value>70</value>
+    </property>
+    <property>
+      <name>Plate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Mother</name>
+      <value>88751</value>
+    </property>
+    <property>
+      <name>Father</name>
+      <value>88752</value>
+    </property>
+    <property>
+      <name>Replicate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>GC content</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Gender</name>
+      <value>Male</value>
+    </property>
+    <property>
+      <name>Donor Id</name>
+      <value></value>
+    </property>
+    <property>
+      <name>DNA source</name>
+      <value>Blood</value>
+    </property>
+    <property>
+      <name>Public Name</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Common Name</name>
+      <value>Homo Sapien</value>
+    </property>
+    <property>
+      <name>Strain</name>
+      <value></value>
+    </property>
+    <property>
+      <name>TAXON ID</name>
+      <value>9606</value>
+    </property>
+    <property>
+      <name>ENA Sample Accession Number</name>
+      <value>EGAN00001101042</value>
+    </property>
+    <property>
+      <name>Sample Description</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample Visibility</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sibling</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Is re-submitted?</name>
+      <value>false</value>
+    </property>
+    <property>
+      <name>Date of sample collection</name>
+      <value>2003</value>
+    </property>
+    <property>
+      <name>Date of sample extraction</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample extraction method</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample purified</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Purification method</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Concentration</name>
+      <value>100</value>
+    </property>
+    <property>
+      <name>Concentration determind by</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample type</name>
+      <value>SU2PT_CHILD</value>
+    </property>
+    <property>
+      <name>Sample storage conditions</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Genotype</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Phenotype</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Age</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Developmental Stage</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Cell Type</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Disease State</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Compound</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Dose</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Immunoprecipitate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Growth Condition</name>
+      <value></value>
+    </property>
+    <property>
+      <name>RNAi</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Organism Part</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Time Point</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Treatment</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Subject</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Disease</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Reference Genome</name>
+      <value></value>
+    </property>
+  </properties>
+  <assets>
+    <asset id="7227219" href="/assets/7227219"/>
+    <asset id="7585298" href="/assets/7585298"/>
+    <asset id="7585589" href="/assets/7585589"/>
+    <asset id="7586420" href="/assets/7586420"/>
+    <asset id="7586517" href="/assets/7586517"/>
+    <asset id="7587447" href="/assets/7587447"/>
+    <asset id="7591591" href="/assets/7591591"/>
+    <asset id="7814205" href="/assets/7814205"/>
+    <asset id="7927043" href="/assets/7927043"/>
+    <asset id="7927140" href="/assets/7927140"/>
+    <asset id="7927237" href="/assets/7927237"/>
+    <asset id="7937682" href="/assets/7937682"/>
+    <asset id="7939739" href="/assets/7939739"/>
+    <asset id="7939933" href="/assets/7939933"/>
+    <asset id="7943377" href="/assets/7943377"/>
+    <asset id="7950656" href="/assets/7950656"/>
+    <asset id="7959477" href="/assets/7959477"/>
+    <asset id="7959574" href="/assets/7959574"/>
+    <asset id="7979015" href="/assets/7979015"/>
+    <asset id="7979112" href="/assets/7979112"/>
+    <asset id="7864003" href="/assets/7864003"/>
+    <asset id="8042441" href="/assets/8042441"/>
+    <asset id="8056489" href="/assets/8056489"/>
+  </assets>
+  <study_id>2609</study_id>
+</sample>
