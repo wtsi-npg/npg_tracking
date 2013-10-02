@@ -8,7 +8,7 @@
 #
 use strict;
 use warnings;
-use Test::More tests => 26;
+use Test::More tests => 28;
 use Test::Exception;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 8603 $ =~ /(\d+)/mx; $r; };
@@ -27,6 +27,7 @@ use_ok('st::api::study');
   is($study->name(), q{Trypanosoma brucei}, 'correct study name');
   ok(!$study->contains_unconsented_human(), 'study 11 no unconsented human');
   is($study->reference_genome, 'dodo', 'reference genome ');
+  ok( !$study->data_access_group(), 'no data access group set');
 }
 
 {
@@ -61,6 +62,7 @@ use_ok('st::api::study');
   is( $study->title(), 'Genetic variation in Kuusamo', q{title obtained} );
   is( $study->accession_number(), 'EGAS00001000020', q{accession obtained} );
   ok(! $study->separate_y_chromosome_data, 'separate_y_chromosome_data false for study');
+  is( $study->data_access_group(), 'kuusamo', 'data access group set');
 }
 
 {

@@ -5,7 +5,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 357;
+use Test::More tests => 364;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -32,9 +32,6 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is(scalar $lims->descendants, 185, '185 descendant lims');
   is(scalar $lims->children, 8, '8 child lims');
   is($lims->to_string, 'st::api::lims object, driver - xml, batch_id 12141, id_run 6551', 'object as string');
-  is($lims->inline_index_end, 10, 'inline index end for an object instance');
-  is(st::api::lims->inline_index_end, 10, 'inline index end as a class method');
-
   throws_ok { $lims->_list_of_properties(q[id], q[bird]) } qr/Invalid object type bird in st::api::lims::_list_of_properties/, 'error with invalid entity name';
   throws_ok { $lims->_list_of_properties(q[colour], q[sample]) } qr/Invalid property colour in st::api::lims::_list_of_properties/, 'error with invalid entity name';
   is(scalar($lims->library_names), 0, 'batch-level library_names list empty');
@@ -437,10 +434,22 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
 {
   my $sample_description =  'AB GO (grandmother) of the MGH meiotic cross. The same DNA was split into three aliquots (of which this';
   is(st::api::lims::_tag_sequence_from_sample_description($sample_description), undef, q{tag undefined for a description containing characters in round brackets} );
-  $sample_description = "3' end enriched mRNA from morphologically abnormal embryos from dag1 knockout incross 3. A 6 base indexing sequence (GTAGAC) is bases 5 to 10 of read 1 followed by polyT.  More information describing the mutant phenotype can be found at the Wellcome Trust Sanger Institute Zebrafish Mutation Project website http://www.sanger.ac.uk/cgi-bin/Projects/D_rerio/zmp/search.pl?q=zmp_phD";
+  $sample_description = "3' end enriched mRNA from morphologically abnormal embryos from dag1 knockout incross 3. A 6 base indexing sequence (GTAGAC) is bases 5 to 11 of read 1 followed by polyT.  More information describing the mutant phenotype can be found at the Wellcome Trust Sanger Institute Zebrafish Mutation Project website http://www.sanger.ac.uk/cgi-bin/Projects/D_rerio/zmp/search.pl?q=zmp_phD";
   is(st::api::lims::_tag_sequence_from_sample_description($sample_description), q{GTAGAC}, q{correct tag from a complex description} );
+#  is(st::api::lims::
   $sample_description = "^M";
   is(st::api::lims::_tag_sequence_from_sample_description($sample_description), undef, q{tag undefined for a description with carriage return} );
+}
+
+{
+	my $lims = st::api::lims->new(id_run=>10638, position=>5);
+	is ($lims->id_run(), 10638, "Found the run");
+	my @children = $lims->children();
+	isnt (scalar @children, 0, "We have children");
+	is($lims->inline_index_exists,1,'Found an inline index');
+	is($lims->inline_index_start,7,'found correct inline index start');
+	is($lims->inline_index_end,12,'found correct inline index end');
+	is($lims->tag_sequence,undef,'tag sequence undefined for lane level');
 }
 
 {
