@@ -17,7 +17,7 @@ use File::Spec::Functions;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
 
-Readonly::Array our @STAGING_AREAS_INDEXES => 18 .. 49 , 51;
+Readonly::Array our @STAGING_AREAS_INDEXES => 18 .. 51;
 Readonly::Array our @STAGING_AREAS => map { "/nfs/sf$_" } @STAGING_AREAS_INDEXES;
 
 Readonly::Scalar our $HOST_GLOB_PATTERN => q[/nfs/sf{].join(q(,), @STAGING_AREAS_INDEXES).q[}];

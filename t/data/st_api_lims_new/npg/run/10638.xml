@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<run id_run="10638" batch_id="22829" id_instrument="106" expected_cycle_count="158" actual_cycle_count="158" priority="2" id_run_pair="0" is_paired="0" team="joint" id_instrument_format="10" flowcell_id="D2ARFACXX" folder_name="130826_HS30_10638_B_D2ARFACXX" folder_path_glob="/{export,nfs}/sf43/ILorHSany_sf43/*/" name="HS30_10638" loader="gkh" loading_date="2013-08-26" run_folder="130826_HS30_10638_B_D2ARFACXX">
+ <instrument id_instrument="106" name="HS30" id_instrument_format="10" external_name="" serial="" iscurrent="1" />
+ <run_lanes><run_lane id_run_lane="77973" id_run="10638" tile_count="48" tracks="6" position="1" />
+<run_lane id_run_lane="77974" id_run="10638" tile_count="48" tracks="6" position="2" />
+<run_lane id_run_lane="77975" id_run="10638" tile_count="48" tracks="6" position="3" />
+<run_lane id_run_lane="77976" id_run="10638" tile_count="48" tracks="6" position="4" />
+<run_lane id_run_lane="77977" id_run="10638" tile_count="48" tracks="6" position="5" />
+<run_lane id_run_lane="77978" id_run="10638" tile_count="48" tracks="6" position="6" />
+<run_lane id_run_lane="77979" id_run="10638" tile_count="48" tracks="6" position="7" />
+<run_lane id_run_lane="77980" id_run="10638" tile_count="48" tracks="6" position="8" />
+</run_lanes>
+ <current_run_status id_run_status="141407" id_run="10638" date="2013-09-06 16:13:00" id_run_status_dict="25" id_user="89" username="ces" iscurrent="1" description="qc on hold" />
+ <run_statuses>
+ <run_status id_run_status="141407" id_run="10638" date="2013-09-06 16:13:00" id_run_status_dict="25" id_user="89" username="ces" iscurrent="1" description="qc on hold" />
+ <run_status id_run_status="141399" id_run="10638" date="2013-09-06 15:50:03" id_run_status_dict="26" id_user="89" username="ces" iscurrent="0" description="qc in progress" />
+ <run_status id_run_status="141398" id_run="10638" date="2013-09-06 15:49:51" id_run_status_dict="19" id_user="89" username="ces" iscurrent="0" description="qc review pending" />
+ <run_status id_run_status="141383" id_run="10638" date="2013-09-06 14:28:34" id_run_status_dict="26" id_user="93" username="ces" iscurrent="0" description="qc in progress" />
+ <run_status id_run_status="141379" id_run="10638" date="2013-09-06 14:10:39" id_run_status_dict="19" id_user="7" username="ces" iscurrent="0" description="qc review pending" />
+ <run_status id_run_status="141378" id_run="10638" date="2013-09-06 14:10:34" id_run_status_dict="9" id_user="7" username="ces" iscurrent="0" description="analysis complete" />
+ <run_status id_run_status="141243" id_run="10638" date="2013-09-05 07:51:28" id_run_status_dict="24" id_user="7" username="ces" iscurrent="0" description="secondary analysis in progress" />
+ <run_status id_run_status="141137" id_run="10638" date="2013-09-04 12:26:26" id_run_status_dict="7" id_user="7" username="ces" iscurrent="0" description="analysis in progress" />
+ <run_status id_run_status="141135" id_run="10638" date="2013-09-04 12:10:40" id_run_status_dict="11" id_user="7" username="ces" iscurrent="0" description="run mirrored" />
+ <run_status id_run_status="141136" id_run="10638" date="2013-09-04 12:10:40" id_run_status_dict="6" id_user="7" username="ces" iscurrent="0" description="analysis pending" />
+ <run_status id_run_status="141126" id_run="10638" date="2013-09-04 11:36:25" id_run_status_dict="4" id_user="7" username="ces" iscurrent="0" description="run complete" />
+ <run_status id_run_status="139990" id_run="10638" date="2013-08-26 13:11:21" id_run_status_dict="2" id_user="7" username="ces" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="139986" id_run="10638" date="2013-08-26 11:20:09" id_run_status_dict="1" id_user="46" username="ces" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ <annotation id_run_annotation="51375" id_run="10638" id_annotation="45604" date="2013-08-27 15:47:24" id_user="46" username="gkh" comment="" attachment_name="" run_current_ok="1" current_cycle="16" />
+ <annotation id_run_annotation="51433" id_run="10638" id_annotation="45650" date="2013-08-28 16:15:08" id_user="57" username="lc2" comment="" attachment_name="" run_current_ok="1" current_cycle="38" />
+ <annotation id_run_annotation="51504" id_run="10638" id_annotation="45687" date="2013-08-29 15:24:08" id_user="46" username="gkh" comment="" attachment_name="" run_current_ok="1" current_cycle="57" />
+ <annotation id_run_annotation="51567" id_run="10638" id_annotation="45777" date="2013-08-30 18:02:04" id_user="28" username="pav" comment="" attachment_name="" run_current_ok="1" current_cycle="80" />
+ <annotation id_run_annotation="51585" id_run="10638" id_annotation="45783" date="2013-08-31 15:28:54" id_user="9" username="ah1" comment="Run checked AM but unable to log at the time as NPG was down." attachment_name="" run_current_ok="1" current_cycle="83" />
+ <annotation id_run_annotation="51633" id_run="10638" id_annotation="45806" date="2013-09-01 10:54:43" id_user="9" username="ah1" comment="" attachment_name="" run_current_ok="1" current_cycle="98" />
+ <annotation id_run_annotation="51701" id_run="10638" id_annotation="45899" date="2013-09-02 15:45:12" id_user="28" username="pav" comment="" attachment_name="" run_current_ok="1" current_cycle="122" />
+ <annotation id_run_annotation="51750" id_run="10638" id_annotation="45955" date="2013-09-03 15:03:52" id_user="57" username="lc2" comment="" attachment_name="" run_current_ok="1" current_cycle="141" />
+ <annotation id_run_annotation="51909" id_run="10638" id_annotation="46150" date="2013-09-06 15:14:23" id_user="93" username="ae4" comment="QC complete" attachment_name="" run_current_ok="" current_cycle="" />
+ <annotation id_run_annotation="51910" id_run="10638" id_annotation="46153" date="2013-09-06 16:11:15" id_user="89" username="ces" comment="on hold in case lane 6 need reprocessing by NPG (lane 1 can be passed)" attachment_name="" run_current_ok="" current_cycle="" />
+ </annotations>
+ <tags>
+   <tag id_tag="23" description="fc_slotB" />
+   <tag id_tag="43" description="loaded_r2" />
+   <tag id_tag="20" description="multiplex" />
+   <tag id_tag="17" description="paired_read" />
+   <tag id_tag="16" description="rta" />
+   <tag id_tag="19" description="staging" />
+   <tag id_tag="41" description="verified_fc" />
+   <tag id_tag="42" description="verified_r1" />
+ </tags>
+</run>
