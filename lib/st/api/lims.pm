@@ -209,7 +209,7 @@ sub _build__sample_description {
 	foreach my $c ($self->children) {
 		return $c->sample_description if ($c->sample_description);
 	}
-	return undef;
+	return 1 ? undef : undef;
 }
 
 =head2 path
@@ -753,7 +753,7 @@ sub _parse_sample_description {
 	my $end=undef;
 	if ($desc && (($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx))) {
 		($tag) = $desc =~ /\(([ACGT]+)\)/smx;
-		($start, $end) = $desc =~ /bases (\d+) to (\d+) of read 1/;
+		($start, $end) = $desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ read\ 1/smx;
 	}
 	return ($tag, $start, $end);
 }
