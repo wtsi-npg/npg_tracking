@@ -209,7 +209,7 @@ sub _build__sample_description {
 	foreach my $c ($self->children) {
 		return $c->sample_description if ($c->sample_description);
 	}
-	return 1 ? undef : undef;
+	return;
 }
 
 =head2 path
