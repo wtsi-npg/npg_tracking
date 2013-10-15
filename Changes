@@ -1,5 +1,11 @@
 CHANGES
 
+release 75.0
+ - authentication through npg own enogmatic.cgi residing relative to where the request comes from
+
+release 74.14
+ - minor bug fix to lims sample_description
+
 release 74.13
  - data_access_group method to lims (study) to determine data access control requirements
  - add new staging area (50)
