@@ -51,7 +51,8 @@ sub consent_withdrawn {
 sub description {
     my $self = shift;
     $self->parse();
-    return $self->get(q[Sample Description])->[0];
+	my $result = $self->get('Sample Description');
+	return ref $result ? $result->[0] : $result;
 }
 
 sub organism {

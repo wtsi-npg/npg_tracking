@@ -29,6 +29,12 @@
       <name>Eija Hamalainen</name>
       <id>337</id>
     </follower>
+    <follower>
+      <login>tk2</login>
+      <email>thomas.keane@sanger.ac.uk</email>
+      <name>Thomas Keane</name>
+      <id>43</id>
+    </follower>
   </followers>
   <managers>
     <manager>
@@ -61,44 +67,8 @@
   <!-- Family has been deprecated -->
   <family_id></family_id>
   <created_at>2010-10-08 12:27:10 +0100</created_at>
-  <updated_at>2011-08-19 12:16:25 +0100</updated_at>
+  <updated_at>2012-11-26 14:15:35 +0000</updated_at>
   <descriptors>
-    <descriptor>
-      <name>SNP study ID</name>
-      <value></value>
-    </descriptor>
-    <descriptor>
-      <name>What is the reason for preventing data release?</name>
-      <value></value>
-    </descriptor>
-    <descriptor>
-      <name>ArrayExpress Accession Number</name>
-      <value></value>
-    </descriptor>
-    <descriptor>
-      <name>Please explain the reason for delaying release (e.g., pre-existing collaborative agreement)</name>
-      <value></value>
-    </descriptor>
-    <descriptor>
-      <name>Alignments in BAM</name>
-      <value>false</value>
-    </descriptor>
-    <descriptor>
-      <name>Reason for delaying release</name>
-      <value></value>
-    </descriptor>
-    <descriptor>
-      <name>Comment regarding prevention of data release and approval</name>
-      <value></value>
-    </descriptor>
-    <descriptor>
-      <name>How is the data release to be timed?</name>
-      <value>standard</value>
-    </descriptor>
-    <descriptor>
-      <name>Policy</name>
-      <value>http://wwwdev.sanger.ac.uk/datasharing/</value>
-    </descriptor>
     <descriptor>
       <name>Study description</name>
       <value>The aim of this study is to characterize as completely as possible the genetic variation and structure of Kuusamo and surrounding regions. We will perform low coverage, whole genome sequencing in a relatively limited number (approximately 200) of individuals from the FINRISK study both of whose parents are born in Kuusamo, Posio or Taivalkoski. Sequencing will be performed at the Wellcome Trust Sanger Institute (WTSI). We have previously shown using simulations and genome wide SNP data that the genetic characteristics agree with known genealogical data, and that approximately 200 individuals suffice to capture the majority of the genetic variation in this population.
@@ -106,31 +76,75 @@
 We have also developed methods for long-range haplotyping and long-range imputation, which are more accurate than traditional methods. This will allow us to identify a majority of the founder haplotypes in this population. The information from the haplotypes identified in this study can be used in other studies to impute from genome-wide SNP data the full genome sequence of samples ascertained for specific phenotypes.</value>
     </descriptor>
     <descriptor>
-      <name>EGA Policy Accession Number</name>
-      <value></value>
-    </descriptor>
-    <descriptor>
-      <name>Will you be using WTSI's standard access agreement?</name>
-      <value>Yes</value>
-    </descriptor>
-    <descriptor>
-      <name>Study name abbreviation</name>
-      <value>KUU</value>
-    </descriptor>
-    <descriptor>
       <name>Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?</name>
       <value>No</value>
+    </descriptor>
+    <descriptor>
+      <name>Does this study require the removal of X chromosome and autosome sequence?</name>
+      <value>No</value>
+    </descriptor>
+    <descriptor>
+      <name>Does this study require y chromosome data to be separated from x and autosomal data before archival?</name>
+      <value>false</value>
+    </descriptor>
+    <descriptor>
+      <name>ENA Project ID</name>
+      <value>0</value>
+    </descriptor>
+    <descriptor>
+      <name>Abstract</name>
+      <value>In this study, we aim to fully characterize a very high proportion of the genetic variation in a population. Information obtained from this study can be used  by imputation in other studies aiming to identify genetic risk factors for disorders in the same population.  It will also serve as a proof-of-principle study and allow method development for other similar projects in the future involving sequencing of other population isolates.</value>
+    </descriptor>
+    <descriptor>
+      <name>Title</name>
+      <value>Genetic variation in Kuusamo</value>
+    </descriptor>
+    <descriptor>
+      <name>ENA Study Accession Number</name>
+      <value>EGAS00001000020</value>
     </descriptor>
     <descriptor>
       <name>Study Visibility</name>
       <value>Hold</value>
     </descriptor>
     <descriptor>
+      <name>Do any of the samples in this study contain human DNA?</name>
+      <value>Yes</value>
+    </descriptor>
+    <descriptor>
+      <name>Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?</name>
+      <value>No</value>
+    </descriptor>
+    <descriptor>
+      <name>Study name abbreviation</name>
+      <value>KUU</value>
+    </descriptor>
+    <descriptor>
+      <name>What is the data release strategy for this study?</name>
+      <value>managed</value>
+    </descriptor>
+    <descriptor>
+      <name>Will you be using WTSI's standard access agreement?</name>
+      <value>Yes</value>
+    </descriptor>
+    <descriptor>
+      <name>How is the data release to be timed?</name>
+      <value>standard</value>
+    </descriptor>
+    <descriptor>
+      <name>Reason for delaying release</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
       <name>Delay for</name>
       <value></value>
     </descriptor>
     <descriptor>
-      <name>SNP parent study ID</name>
+      <name>Alignments in BAM</name>
+      <value>false</value>
+    </descriptor>
+    <descriptor>
+      <name>Please explain the reason for delaying release</name>
       <value></value>
     </descriptor>
     <descriptor>
@@ -138,11 +152,23 @@ We have also developed methods for long-range haplotyping and long-range imputat
       <value></value>
     </descriptor>
     <descriptor>
-      <name>EGA DAC Accession Number</name>
+      <name>Policy Url</name>
+      <value>http://www.sanger.ac.uk/datasharing/</value>
+    </descriptor>
+    <descriptor>
+      <name>Policy title</name>
       <value></value>
     </descriptor>
     <descriptor>
-      <name>Has this been approved?</name>
+      <name>EGA DAC Accession Number</name>
+      <value>EGAC00001000039</value>
+    </descriptor>
+    <descriptor>
+      <name>EGA Policy Accession Number</name>
+      <value>EGAP00001000041</value>
+    </descriptor>
+    <descriptor>
+      <name>ArrayExpress Accession Number</name>
       <value></value>
     </descriptor>
     <descriptor>
@@ -150,40 +176,36 @@ We have also developed methods for long-range haplotyping and long-range imputat
       <value></value>
     </descriptor>
     <descriptor>
-      <name>What is the data release strategy for this study?</name>
-      <value>managed</value>
+      <name>What is the reason for preventing data release?</name>
+      <value></value>
     </descriptor>
     <descriptor>
-      <name>Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?</name>
-      <value>No</value>
+      <name>Has this been approved?</name>
+      <value></value>
     </descriptor>
     <descriptor>
-      <name>Do any of the samples in this study contain human DNA?</name>
-      <value>Yes</value>
+      <name>Comment regarding prevention of data release and approval</name>
+      <value></value>
     </descriptor>
     <descriptor>
-      <name>ENA Study Accession Number</name>
-      <value>EGAS00001000020</value>
+      <name>SNP study ID</name>
+      <value></value>
     </descriptor>
     <descriptor>
-      <name>Title</name>
-      <value>Genetic variation in Kuusamo</value>
+      <name>SNP parent study ID</name>
+      <value></value>
     </descriptor>
     <descriptor>
-      <name>Abstract</name>
-      <value>In this study, we aim to fully characterize a very high proportion of the genetic variation in a population. Information obtained from this study can be used  by imputation in other studies aiming to identify genetic risk factors for disorders in the same population.  It will also serve as a proof-of-principle study and allow method development for other similar projects in the future involving sequencing of other population isolates.</value>
+      <name>Number of gigabases per sample (minimum 0.15)</name>
+      <value></value>
     </descriptor>
     <descriptor>
-      <name>ENA Project ID</name>
-      <value>0</value>
+      <name>HMDMC approval number</name>
+      <value></value>
     </descriptor>
     <descriptor>
       <name>Study Type</name>
       <value>Population Genomics</value>
-    </descriptor>
-    <descriptor>
-      <name>Faculty Sponsor</name>
-      <value>Richard Durbin</value>
     </descriptor>
     <descriptor>
       <name>What sort of study is this?</name>
@@ -191,7 +213,12 @@ We have also developed methods for long-range haplotyping and long-range imputat
     </descriptor>
     <descriptor>
       <name>Reference Genome</name>
-      <value>Homo_sapiens (1000Genomes)</value>
+      <value>Homo_sapiens (1000Genomes_hs37d5)</value>
     </descriptor>
-  </descriptors>
+    <descriptor>
+      <name>Faculty Sponsor</name>
+      <value>Richard Durbin</value>
+    </descriptor>
+<descriptor><name>Data access group</name><value>kuusamo</value></descriptor>
+</descriptors>
 </study>
