@@ -67,7 +67,7 @@ SKIP: {
   $r = npg_tracking::data::reference->new(id_run => 5175,position=>1);
   @refs =  @{$r->refs};
   is(join(q[ ], @refs), 
-     $REP_ROOT . q[references/Bordetella_bronchiseptica/RB50/all/bwa/B_bronchiseptica_RB50.fasta],
+     $REP_ROOT . q[references/Streptococcus_pneumoniae/ATCC_700669/all/bwa/S_pneumoniae_700669.fasta],
      'reference for run 5175 lane 1 through the reference genome field');
 
   $r = npg_tracking::data::reference->new(id_run => 5970,position=>1);

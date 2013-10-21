@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 [%- image = requestor.username == 'public' ? 'key' : 'logout';
-    address = image == 'key' ? 'https://enigma.sanger.ac.uk/sso/login' : 'http://intweb.sanger.ac.uk/logout';
+    address = SCRIPT_NAME _ '/enigmatic.cgi';
+    address = address.replace('/npg/', '/');
     dev = view.is_prod ? '' : ' DEV';
     npg_title = 'NPG' _ dev _ ' v' _  view.app_version _ ' [' _ view.time_rendered _ ']';
     key = model.primary_key;
@@ -22,8 +23,8 @@
   <script type="text/javascript" src="/prodsoft/npg/js/scriptaculous/scriptaculous.js" ></script>
   <script type="text/javascript" src="/prodsoft/npg/js/wtsi/sorttable.js" ></script>
   [% PROCESS urls.tt2 -%]
-  <script type="text/javascript">var lims_batches_url='[% lims_batches_url %]'</script>
   <script type="text/javascript" src="/prodsoft/npg/js/npg.js" ></script>
+  <script type="text/javascript">var lims_batches_url='[% lims_batches_url %]';</script>
   [% IF run_read %] <script type="text/javascript" src="/prodsoft/npg/js/npg_run.js" ></script>[% END %]
   [% IF rfid %] <script type="text/javascript" src="/prodsoft/npg/js/npg_rfid.js" ></script>[% END %]
   [%- IF view.no_main_menu %]<base target="_parent" />[% END -%]
@@ -35,8 +36,8 @@
   <div class="lfloat"><img src="/prodsoft/npg/icons/sanger-logo.png" alt="WTSI logo" /></div>
   <div class="rfloat">
     <div class="npg_title [% dev ? 'dev_highlight' : '' %]">[% npg_title %]</div>
-    <div><a href="[% address %]"><img src="/prodsoft/npg/icons/navigation/[% image %].gif" alt="[% image == 'logout' ? 'Logout' : 'Login';  %] button" /></a>
-   [%- IF image == 'logout' %]Logged in as <a href="[% SCRIPT_NAME %]/user/[% requestor.username %]">[% view.realname(requestor.username);%]</a>[% ELSE %]&nbsp;<a href="[% address %]">Log in</a>[% END -%]
+    <div><a href="#" onclick="authlink();return false;"><img src="/prodsoft/npg/icons/navigation/[% image %].gif" alt="[% image == 'logout' ? 'Logout' : 'Login';  %] button" /></a>
+   [%- IF image == 'logout' %]Logged in as <a href="[% SCRIPT_NAME %]/user/[% requestor.username %]">[% view.realname(requestor.username);%]</a>[% ELSE %]&nbsp;<a href="#" onclick="authlink();return false;">Log in</a>[% END -%]
 <div>Group[% IF requestor.usergroups.size > 1; 's'; END; %]:[% FOREACH usergroup = requestor.usergroups %]&nbsp;[% usergroup.groupname %][% END %]</div>
     </div>
     [% IF rfid -%]
