@@ -1,5 +1,7 @@
 CHANGES
 
+ - add new staging areas 52 to 55
+
 release 74.13
  - data_access_group method to lims (study) to determine data access control requirements
  - add new staging area (50)
