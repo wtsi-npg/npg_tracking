@@ -312,7 +312,6 @@ lib/npg_tracking/glossary/tag.pm
 lib/npg_tracking/illumina/run/folder/location.pm
 lib/npg_tracking/illumina/run/folder.pm
 lib/npg_tracking/illumina/run/folder/validation.pm
-lib/npg_tracking/illumina/run/lims/samplesheet.pm
 lib/npg_tracking/illumina/run/long_info.pm
 lib/npg_tracking/illumina/run.pm
 lib/npg_tracking/illumina/run/short_info.pm
@@ -594,7 +593,6 @@ t/60-illumina-run-folder-validation.t
 t/60-illumina-run-long_info.t
 t/60-illumina-run-short_info.t
 t/60-illumina-run.t
-t/60-illumina-run-lims-samplesheet.t
 t/60-util-image_graph.t
 t/60-util-image_heatmap.t
 t/60-util-image_map.t

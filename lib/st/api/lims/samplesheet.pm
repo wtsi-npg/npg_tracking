@@ -110,7 +110,7 @@ sub _build_data {
     if ($line) {$line =~ s/\s+$//mxs;}
     if (!$line) {
       next;
-    }    
+    }
     my @columns = split $SAMPLESHEET_RECORD_SEPARATOR, $line, $RECORD_SPLIT_LIMIT;
     my @empty = grep {(!defined $_ || $_ eq q[] || $_ =~ /^\s+$/smx)} @columns;
     if (scalar @empty == scalar @columns) {
@@ -323,7 +323,6 @@ for my $m (grep { my $delegated = $_; none {$_ eq $delegated} @attrs } @st::api:
 
   __PACKAGE__->meta->add_method( $m, sub {
         my $self=shift;
-        my $value;
         if ($self->_data_row) {
           my $column_name = $m;
           if ($m eq 'library_id') {
@@ -331,7 +330,7 @@ for my $m (grep { my $delegated = $_; none {$_ eq $delegated} @attrs } @st::api:
           } elsif ($m eq 'sample_name' && (!exists $self->_data_row->{$column_name}) ) {
             $column_name = 'Sample_Name';
           }
-          $value =  $self->_data_row->{$column_name};
+          my $value =  $self->_data_row->{$column_name};
           if (defined $value && $value eq q[]) {
             $value = undef;
 	  }
@@ -343,8 +342,8 @@ for my $m (grep { my $delegated = $_; none {$_ eq $delegated} @attrs } @st::api:
             if ($value) {
               my @temp = split $SAMPLESHEET_ARRAY_SEPARATOR, $value;
               foreach my $pair (@temp) {
-                my ($key, $value) = split $SAMPLESHEET_HASH_SEPARATOR, $pair;
-                $h->{$key} = $value;
+                my ($key, $val) = split $SAMPLESHEET_HASH_SEPARATOR, $pair;
+                $h->{$key} = $val;
 	      }
             }
             $value = $h;
@@ -353,8 +352,9 @@ for my $m (grep { my $delegated = $_; none {$_ eq $delegated} @attrs } @st::api:
               $value =~ tr/\|/,/;
 	    }
 	  }
+          return $value;
 	}
-        return $value;
+        return;
   });
 }
 

@@ -46,6 +46,7 @@ Class for creating a MiSeq samplesheet using NPG tracking info and Sequencescape
 Readonly::Scalar our $REP_ROOT => q(/nfs/sf45);
 Readonly::Scalar our $SAMPLESHEET_PATH => q(/nfs/sf49/ILorHSorMS_sf49/samplesheets/);
 Readonly::Scalar our $DEFAULT_FALLBACK_REFERENCE_SPECIES=> q(PhiX);
+Readonly::Scalar my  $MIN_COLUMN_NUM => 3;
 
 with 'MooseX::Getopt';
 with 'npg_tracking::glossary::run';
@@ -157,7 +158,7 @@ has _limsreflist => (
 sub _build__limsreflist {
   my $self = shift;
   my @lims;
-  for my $l (@{$self->lims}) {      
+  for my $l (@{$self->lims}) {
     for my $tmpl ( $l->is_pool ? $l->children : ($l) ) {
 
       my @refs = @{npg_tracking::data::reference->new(
@@ -232,7 +233,7 @@ has _num_columns => ('isa' => 'Int', 'is'  => 'ro', 'lazy_build' => 1,);
 sub _build__num_columns {
   my $self = shift;
 
-  my $num_columns = 3;
+  my $num_columns = $MIN_COLUMN_NUM;
   if ($self->_index_read) {
     $num_columns ++; # a column for index
   }
@@ -267,8 +268,8 @@ sub _csv_compatible_value {
       croak "Do not know how to serialize $type to a samplesheet";
       }
     } else {
-      $value =~ s/$rs/$cr/smg;      #descriptions might contain commas
-      $value =~ s/\s+/\ /smg; #and line returns
+      $value =~ s/$rs/$cr/xsmg;      #descriptions might contain commas
+      $value =~ s/\s+/\ /xsmg; #and line returns
     }
   }
   if (!defined $value) {
