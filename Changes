@@ -5,6 +5,7 @@ release 75.0
    where the request comes from
  - updated expected result for a live reference retrieval test following
    a change in the reference genome study field
+ - add new staging areas 52 to 55
 
 release 74.14
  - minor bug fix to lims sample_description
