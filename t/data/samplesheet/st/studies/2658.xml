@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<study api_version="0.6">
+  <id>2658</id>
+  <name>Single-cell analysis of the transcriptomic heterogeneity of ground state pluripotency</name>
+  <active>true</active>
+  <user_id>191</user_id>
+  <managers>
+    <manager>
+      <login>ncb</login>
+      <email>ncb@sanger.ac.uk</email>
+      <name>Nathalie C Smerdon</name>
+      <id>191</id>
+    </manager>
+  </managers>
+  <owners>
+    <owner>
+      <login>ola</login>
+      <email>ola@ebi.ac.uk</email>
+      <name>Aleksandra Kolodziejczyk</name>
+      <id>762</id>
+    </owner>
+  </owners>
+  <!-- Family has been deprecated -->
+  <family_id></family_id>
+  <created_at>2013-06-06 21:47:20 +0100</created_at>
+  <updated_at>2013-06-06 21:47:32 +0100</updated_at>
+  <descriptors>
+    <descriptor>
+      <name>Study description</name>
+      <value>This study aims to investigate the transcriptomic heterogeneity of mouse embryonic stem cells (mES cells) in different culturing conditions with single-cell mRNA-seq technology. Previous studies have reported heterogeneous and differential allelic expression of specific pluripotency genes, e.g. Nanog, in mES cells in different culturing conditions. The fluctuation of gene expression has been linked to drift of pluripotent state. In this study, we will dissect the transcriptome of mouse ES cells culturing in conventiaonal serum/LIF and 2i/LIF conditions at the single-cell level. The usage of a hybrid mouse ES cell line in this study provides additional insight into differential allelic expression in these two culturing conditions. The data generated in this study will shed light on the regulation of pluripotency network.
+ 
+</value>
+    </descriptor>
+    <descriptor>
+      <name>Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?</name>
+      <value>No</value>
+    </descriptor>
+    <descriptor>
+      <name>Does this study require the removal of X chromosome and autosome sequence?</name>
+      <value>No</value>
+    </descriptor>
+    <descriptor>
+      <name>Does this study require y chromosome data to be separated from x and autosomal data before archival?</name>
+      <value>false</value>
+    </descriptor>
+    <descriptor>
+      <name>ENA Project ID</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Abstract</name>
+      <value>This study aims to investigate the transcriptomic heterogeneity of mouse embryonic stem cells (mES cells) in different culturing conditions with single-cell mRNA-seq technology. Previous studies have reported heterogeneous and differential allelic expression of specific pluripotency genes, e.g. Nanog, in mES cells in different culturing conditions. The fluctuation of gene expression has been linked to drift of pluripotent state. In this study, we will dissect the transcriptome of mouse ES cells culturing in conventiaonal serum/LIF and 2i/LIF conditions at the single-cell level. The usage of a hybrid mouse ES cell line in this study provides additional insight into differential allelic expression in these two culturing conditions. The data generated in this study will shed light on the regulation of pluripotency network.
+ 
+</value>
+    </descriptor>
+    <descriptor>
+      <name>Title</name>
+      <value>Single-cell analysis of the transcriptomic heterogeneity of ground state pluripotency     </value>
+    </descriptor>
+    <descriptor>
+      <name>ENA Study Accession Number</name>
+      <value>ERP003293</value>
+    </descriptor>
+    <descriptor>
+      <name>Study Visibility</name>
+      <value>Hold</value>
+    </descriptor>
+    <descriptor>
+      <name>Do any of the samples in this study contain human DNA?</name>
+      <value>No</value>
+    </descriptor>
+    <descriptor>
+      <name>Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?</name>
+      <value>No</value>
+    </descriptor>
+    <descriptor>
+      <name>Study name abbreviation</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>What is the data release strategy for this study?</name>
+      <value>open</value>
+    </descriptor>
+    <descriptor>
+      <name>Will you be using WTSI's standard access agreement?</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>How is the data release to be timed?</name>
+      <value>standard</value>
+    </descriptor>
+    <descriptor>
+      <name>Reason for delaying release</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Delay for</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Alignments in BAM</name>
+      <value>true</value>
+    </descriptor>
+    <descriptor>
+      <name>Please explain the reason for delaying release</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Comment regarding data release timing and approval</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Policy Url</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Policy title</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>EGA DAC Accession Number</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>EGA Policy Accession Number</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>ArrayExpress Accession Number</name>
+      <value>E-ERAD-186</value>
+    </descriptor>
+    <descriptor>
+      <name>Has the delay period been approved by the data sharing committee for this project?</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>What is the reason for preventing data release?</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Has this been approved?</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Comment regarding prevention of data release and approval</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Data access group</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>SNP study ID</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>SNP parent study ID</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Number of gigabases per sample (minimum 0.15)</name>
+      <value>1.0</value>
+    </descriptor>
+    <descriptor>
+      <name>HMDMC approval number</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Study Type</name>
+      <value>Transcriptome Analysis</value>
+    </descriptor>
+    <descriptor>
+      <name>What sort of study is this?</name>
+      <value>transcriptomics</value>
+    </descriptor>
+    <descriptor>
+      <name>Reference Genome</name>
+      <value>Mus_musculus (NCBIm37)</value>
+    </descriptor>
+    <descriptor>
+      <name>Faculty Sponsor</name>
+      <value>Sarah Teichmann</value>
+    </descriptor>
+  </descriptors>
+</study>
