@@ -349,7 +349,7 @@ for my $m (grep { my $delegated = $_; none {$_ eq $delegated} @attrs } @st::api:
             $value = $h;
 	  } else {
             if ($value) {
-              $value =~ tr/\|/,/;
+              $value =~ s/\Q$SAMPLESHEET_RECORD_SEPARATOR_REPLACEMENT\E/$SAMPLESHEET_RECORD_SEPARATOR/msxg;
 	    }
 	  }
           return $value;
