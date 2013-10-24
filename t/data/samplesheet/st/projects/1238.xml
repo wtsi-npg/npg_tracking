@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project api_version="0.6">
+  <id>1238</id>
+  <name>Mouse model to quantify genotype-epigenotype variations</name>
+  <approved>true</approved>
+  <state>active</state>
+  <descriptors>
+    <descriptor>
+      <name>Project cost code</name>
+      <value>S1553</value>
+    </descriptor>
+    <descriptor>
+      <name>Funding comments</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Collaborators</name>
+      <value>Anne Ferguson-Smith</value>
+    </descriptor>
+    <descriptor>
+      <name>External funding source</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Sequencing budget cost centre</name>
+      <value></value>
+    </descriptor>
+    <descriptor>
+      <name>Project funding model</name>
+      <value>External</value>
+    </descriptor>
+    <descriptor>
+      <name>Genotyping committee Tracking ID</name>
+      <value></value>
+    </descriptor>
+  </descriptors>
+</project>

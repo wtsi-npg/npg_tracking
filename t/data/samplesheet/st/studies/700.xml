@@ -99,16 +99,16 @@
       <name>Abstract</name>
       <value>Purpose of experiment					
 					
-&#8722; To evaluate kapa hifi qPCR kit					
-&#8722; To evaluate kapa hifi and "robust" enzymes as alternatives to phusion. How do libraries prepared with these enzymes compare in terms of fidelity and coverage? 					
-&#8722; To generate data on test genomes that can be used in Pacbio data analysis 					
+- To evaluate kapa hifi qPCR kit					
+- To evaluate kapa hifi and "robust" enzymes as alternatives to phusion. How do libraries prepared with these enzymes compare in terms of fidelity and coverage? 					
+- To generate data on test genomes that can be used in Pacbio data analysis 					
 </value>
     </descriptor>
     <descriptor>
       <name>Study description</name>
-      <value>&#8722; I have agreed to alpha test the kapa hifi qPCR kit. This allows prep PCR to be followed in real time and stopped when sufficient product has accumulated so preventing overcycling and allowing user to interrogate prep PCR step. 					
-&#8722; If we are to use this enzyme we need to know that it is at least as good as Phusion in terms of fidelity and coverage.					
-&#8722; In theory kapa hifi has higher fidelity than phusion.					
+      <value>- I have agreed to alpha test the kapa hifi qPCR kit. This allows prep PCR to be followed in real time and stopped when sufficient product has accumulated so preventing overcycling and allowing user to interrogate prep PCR step. 					
+- If we are to use this enzyme we need to know that it is at least as good as Phusion in terms of fidelity and coverage.					
+- In theory kapa hifi has higher fidelity than phusion.					
 </value>
     </descriptor>
     <descriptor>
