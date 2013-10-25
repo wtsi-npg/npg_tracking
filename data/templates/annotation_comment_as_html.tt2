@@ -1,3 +1,4 @@
+[% SET acomment = acomment | html_entity | html_line_break %]
 [% PERL %]
     my $comment = $stash->get('acomment');
     if ($comment) {
@@ -5,4 +6,4 @@
     }
     $stash->set('acomment' => $comment);
 [% END %]
-[% FILTER html_line_break; acomment | html_entity; END; %]
+[% acomment %]
