@@ -12,6 +12,7 @@ use MooseX::StrictConstructor;
 use Readonly;
 use List::MoreUtils qw/none/;
 use Clone qw(clone);
+use URI::Escape qw(uri_unescape);
 
 use npg_tracking::util::types;
 use st::api::lims;
@@ -38,7 +39,6 @@ LIMs parser for the Illumina-style extended samplesheet
 Readonly::Scalar  our $SAMPLESHEET_RECORD_SEPARATOR => q[,];
 Readonly::Scalar  our $SAMPLESHEET_ARRAY_SEPARATOR  => q[ ];
 Readonly::Scalar  our $SAMPLESHEET_HASH_SEPARATOR   => q[:];
-Readonly::Scalar  our $SAMPLESHEET_RECORD_SEPARATOR_REPLACEMENT => q[|];
 Readonly::Scalar  my  $NOT_INDEXED_FLAG             => q[NO_INDEX];
 Readonly::Scalar  my  $RECORD_SPLIT_LIMIT           => -1;
 Readonly::Scalar  my  $DATA_SECTION                 => q[Data];
@@ -349,7 +349,7 @@ for my $m (grep { my $delegated = $_; none {$_ eq $delegated} @attrs } @st::api:
             $value = $h;
 	  } else {
             if ($value) {
-              $value =~ tr/\|/,/;
+              $value = uri_unescape($value);
 	    }
 	  }
           return $value;
