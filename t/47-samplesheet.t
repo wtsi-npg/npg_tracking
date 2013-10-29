@@ -189,7 +189,6 @@ RESULT_7825
   my $result = q();
   lives_ok { $ss = npg::samplesheet->new(npg_tracking_schema=>$schema, extend => 1, id_run=>7007, output=>\$result); } 'extended sample sheet object for unplexed paired run';
   lives_ok { $ss->process(); } ' sample sheet generated';
-  #_write_file('t/data/samplesheet/7007_extended.csv', $result);
   is_string($result, read_file('t/data/samplesheet/7007_extended.csv'));
 }
 
@@ -198,7 +197,6 @@ RESULT_7825
   my $result = q();
   lives_ok { $ss = npg::samplesheet->new(npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); } 'extended sample sheet object for plexed paired run';
   lives_ok { $ss->process(); } ' sample sheet generated';
-  #_write_file('t/data/samplesheet/6946_extended.csv', $result);
   is_string($result, read_file('t/data/samplesheet/6946_extended.csv'));
 }
 
@@ -212,7 +210,6 @@ RESULT_7825
   lives_ok { $ss = npg::samplesheet->new(npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for unplexed paired 8 lane run with a control lane';
   lives_ok { $ss->process(); } 'sample sheet generated';
-  #_write_file('t/data/samplesheet/1control7libs_extended.csv', $result);
   is_string($result, read_file('t/data/samplesheet/1control7libs_extended.csv'));
 }
 
@@ -226,7 +223,6 @@ RESULT_7825
   lives_ok { $ss = npg::samplesheet->new(npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for plexed paired 8 lane run';
   lives_ok { $ss->process(); } 'sample sheet generated';
-  #_write_file('t/data/samplesheet/8pools_extended.csv', $result);
   is_string($result, read_file('t/data/samplesheet/8pools_extended.csv'));
 }
 
@@ -241,14 +237,7 @@ RESULT_7825
   lives_ok { $ss = npg::samplesheet->new(npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for plexed paired run with both pool and library lanes';
   lives_ok { $ss->process(); } 'sample sheet generated';
-  #_write_file('t/data/samplesheet/4pool4libs_extended.csv', $result);
   is_string($result, read_file('t/data/samplesheet/4pool4libs_extended.csv'));
 }
 
-#sub _write_file {
-#  my ($name, $string) = @_;
-#  open my $fh, '>', $name;
-#  print $fh $string;
-#  close $fh;
-#}
 1;
