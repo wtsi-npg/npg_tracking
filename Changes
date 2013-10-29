@@ -7,6 +7,7 @@ release 75.0
    a change in the reference genome study field
  - add new staging areas 52 to 55
  - don't bail out on finding no runfolders when FTP'ing to instrument for update info
+ - sample sheet generator extended to include npg specific fields and deal with multiple lanes
 
 release 74.14
  - minor bug fix to lims sample_description
