@@ -14,6 +14,7 @@ use Template;
 use Carp;
 use English qw(-no_match_vars);
 use List::MoreUtils qw/any/;
+use URI::Escape qw(uri_escape);
 
 use npg_tracking::Schema;
 use st::api::lims;
@@ -252,8 +253,6 @@ sub _csv_compatible_value {
   if ($value) {
     my $as = $st::api::lims::samplesheet::SAMPLESHEET_ARRAY_SEPARATOR;
     my $hs = $st::api::lims::samplesheet::SAMPLESHEET_HASH_SEPARATOR;
-    my $rs = $st::api::lims::samplesheet::SAMPLESHEET_RECORD_SEPARATOR;
-    my $cr = $st::api::lims::samplesheet::SAMPLESHEET_RECORD_SEPARATOR_REPLACEMENT;
     my $type = ref $value;
     if ($type) {
       if ($type eq 'ARRAY') {
@@ -268,8 +267,11 @@ sub _csv_compatible_value {
       croak "Do not know how to serialize $type to a samplesheet";
       }
     } else {
-      $value =~ s/$rs/$cr/xsmg;      #descriptions might contain commas
-      $value =~ s/\s+/\ /xsmg; #and line returns
+      $value = uri_escape($value);
+      $value =~ s/\%20/ /smxg;
+      $value =~ s/\%28/(/smxg;
+      $value =~ s/\%29/)/smxg;
+      #value is URI escaped other than spaces and brackets
     }
   }
   if (!defined $value) {
