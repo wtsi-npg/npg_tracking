@@ -220,8 +220,6 @@ sub _lane_hash {
       if (defined $value) {
         if ($value eq '0' || $value eq q[]) {
           $value = undef;
-        } elsif (!ref $value) {
-          $value =~ s/\s+/\ /gsmx
         }
       }
       $tag_h->{$method} = $value;

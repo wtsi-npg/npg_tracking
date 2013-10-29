@@ -171,12 +171,12 @@ RESULT_7825
   is (npg::samplesheet::_csv_compatible_value(33.9), 33.9, 'value conversion: float - no conversion');
   is (npg::samplesheet::_csv_compatible_value('simple_string'), 'simple_string',
     'value conversion: simple string - no conversion');
-  is (npg::samplesheet::_csv_compatible_value('simple,str,ing'), 'simple|str|ing',
-    'value conversion: commas replaced by pipes');
-  is (npg::samplesheet::_csv_compatible_value("simple,str\ning"), 'simple|str ing',
-    'value conversion: comma replaced by pipe, LF by white space');
-  is (npg::samplesheet::_csv_compatible_value("s  imple\nstr\r\ning\r\n"), 's imple str ing ',
-    'value conversion: LFs, CRs and multiple white spaces replaced by one white space');
+  is (npg::samplesheet::_csv_compatible_value('simple,str,ing'), 'simple%2Cstr%2Cing',
+    'value conversion: commas replaced by URI escapes');
+  is (npg::samplesheet::_csv_compatible_value("simple,str\ning"), 'simple%2Cstr%0Aing',
+    'value conversion: comma and LF by URI escapes');
+  is (npg::samplesheet::_csv_compatible_value("s  imple\nstr\r\ning\r\n"), 's  imple%0Astr%0D%0Aing%0D%0A',
+    'value conversion: LFs, CRs and multiple white spaces replaced by URI escapes');
   is (npg::samplesheet::_csv_compatible_value(['d@sea', 'r@see']), 'd@sea r@see', 'value conversion: array concatenated');
   is (npg::samplesheet::_csv_compatible_value({'middle' => 250, 'from' => 200, 'to' => 300,}),
     'from:200 middle:250 to:300', 'value conversion: hash stringified');
