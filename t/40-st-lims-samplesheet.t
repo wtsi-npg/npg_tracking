@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 108;
+use Test::More tests => 116;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -115,7 +115,7 @@ use_ok('st::api::lims::samplesheet');
 
   is ($plexes[0]->tag_index, 3, 'tag index for the first plex');
   is ($plexes[0]->default_tag_sequence, 'ATCACGTT', 'tag sequence for the first plex');
-  is ($plexes[0]->is_control, undef, 'plex is not control');
+  is ($plexes[0]->is_control, 0, 'plex is not control');
   is ($plexes[0]->sample_name, 'library_1', 'plex sample name from the extended set rather than from Sample_Name');
   is ($plexes[0]->study_id, 55, 'plex study_id');
   is ($plexes[0]->sample_reference_genome, 'Enterococcus hirae (ATCC_9790)', 'sample ref genome');
@@ -143,7 +143,7 @@ use_ok('st::api::lims::samplesheet');
 
   $lane = $lanes[1];
   is ($lane->is_pool, 0, 'lane 2 is not a pool');
-  is ($lane->is_control, undef, 'lane 2 is not control');
+  is ($lane->is_control, 0, 'lane 2 is not control');
   is (scalar $lane->children, 0, 'no children for a library');
   is ($lane->library_id, 7583413, 'library id on lane level');
   is ($lane->study_id, 57, 'study id on lane level');
@@ -174,6 +174,63 @@ use_ok('st::api::lims::samplesheet');
   $lane = $lanes[4];
   is ($lane->is_pool, 0, 'lane 5 is not a pool');
   is ($lane->is_control, 1, 'lane 5 is control');
+}
+
+{
+  use_ok('st::api::lims::xml');
+  use_ok('st::api::lims');
+  my $path = 't/data/samplesheet/6946_extended.csv'; #extended MiSeq samplesheet
+  my @ss_lanes = st::api::lims::samplesheet->new(id_run => 6946, path => $path)->children;
+  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/samplesheet];
+  my @xml_lanes = st::api::lims::xml->new(batch_id => 13994)->children;
+  my @methods = grep {$_ ne 'lane_id' && $_ ne 'lane_priority'} @st::api::lims::DELEGATED_METHODS;
+  push @methods, 'is_pool';
+
+  ok($ss_lanes[0]->is_pool, 'lane is a pool');
+  is_deeply(_lane_hash($ss_lanes[0], @methods), _lane_hash($xml_lanes[0], @methods),
+    'xml and samplesheet drivers give the same result for plexes' );
+}
+
+{
+  my $path = 't/data/samplesheet/4pool4libs_extended.csv';
+  my @ss_lanes = st::api::lims::samplesheet->new(id_run => 6946, path => $path)->children;
+  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/samplesheet];
+  my @xml_lanes = st::api::lims::xml->new(batch_id => 23798)->children;
+  my @methods = @st::api::lims::DELEGATED_METHODS;
+  push @methods, 'is_pool';
+
+  ok(!$ss_lanes[0]->is_pool, 'lane 1 is a not pool');
+  is_deeply(_lane_hash($ss_lanes[0], @methods), _lane_hash($xml_lanes[0], @methods),
+    'xml and samplesheet drivers give the same result for a library' );
+
+  @methods = grep {$_ ne 'lane_id' && $_ ne 'lane_priority'} @methods;
+  ok($ss_lanes[6]->is_pool, 'lane 7 is a pool');
+  is_deeply(_lane_hash($ss_lanes[6], @methods), _lane_hash($xml_lanes[6], @methods),
+    'xml and samplesheet drivers give the same result for plexes' );
+}
+
+sub _lane_hash {
+  my ($lane_l, @methods) = @_;
+
+  my $h = {};
+  foreach my $plex ($lane_l->is_pool ? $lane_l->children : ($lane_l)) {
+    my $tag_h = {};
+    foreach my $method (@methods) {
+      my $value = $plex->$method;
+      if (defined $value) {
+        if ($value eq '0' || $value eq q[]) {
+          $value = undef;
+        }
+      }
+      $tag_h->{$method} = $value;
+    }
+    if ($lane_l->is_pool) {
+      $h->{$plex->tag_index} = $tag_h;
+    } else {
+      $h = $tag_h;
+    }
+  }
+  return $h; 
 }
 
 1;
