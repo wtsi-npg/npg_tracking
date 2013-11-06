@@ -97,9 +97,6 @@ sub get_normal_run_paths {
     my $io      = io($path);
     my $listing = $io->all();
 
-    # Let the caller decide if this is bad news or not.
-    croak "Nothing at all found at $path" if $listing eq q{};
-
     $self->update_latest_contact();
 
     my @run_paths;
