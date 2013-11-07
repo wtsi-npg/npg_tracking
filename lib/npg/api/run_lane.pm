@@ -1,10 +1,7 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-09-13 11:28:27 +0100 (Thu, 13 Sep 2012) $
-# Id:            $Id: run_lane.pm 16046 2012-09-13 10:28:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/run_lane.pm $
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/run_lane.pm, r16046
 #
 package npg::api::run_lane;
 use strict;
@@ -12,9 +9,8 @@ use warnings;
 use base qw(npg::api::base);
 use Carp;
 use npg::api::run;
-use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16046 $ =~ /(\d+)/smx; $r; };
+use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16046 $ =~ /(\d+)/smx; $r; };
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -126,24 +122,6 @@ sub manual_qc {
   return $manual_qc;
 }
 
-sub library {
-  my $self = shift;
-  warn "Method npg::api::run_lane->library is depricated.\n";
-  return $self->is_library();
-}
-
-sub control {
-  my $self = shift;
-  warn "Method npg::api::run_lane->control is depricated.\n";
-  return $self->is_control();
-}
-
-sub pool {
-  my $self = shift;
-  warn "Method npg::api::run_lane->pool is depricated.\n";
-  return $self->is_pool();
-}
-
 1;
 __END__
 
@@ -213,15 +191,9 @@ $Revision: 16046 $
 
 =head2 asset_id
 
-=head2 library - see is_library
-
 =head2 is_library - returns a boolean value indicating whether this lane is a simple library, as oppesed to being a control lane or a pool
 
-=head2 control - see is_control
-
 =head2 is_control - returns a boolean value indicating whether this lane is used as a control lane
-  
-=head2 pool - see is_pool
 
 =head2 is_pool - returns a boolean value indicating whether this lane is a pool
 

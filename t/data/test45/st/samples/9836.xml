@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sample api_version="0.6">
+  <id>9836</id>
+  <name>phiX CT1462-2 1</name>
+  <consent_withdrawn>false</consent_withdrawn>
+  <properties>
+    <property>
+      <name>Organism</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Cohort</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Country of origin</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Geographical region</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Ethnicity</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Volume (&#181;l)</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Plate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Mother</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Father</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Replicate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>GC content</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Gender</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Donor Id</name>
+      <value></value>
+    </property>
+    <property>
+      <name>DNA source</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Public Name</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Common Name</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Strain</name>
+      <value></value>
+    </property>
+    <property>
+      <name>TAXON ID</name>
+      <value></value>
+    </property>
+    <property>
+      <name>ENA Sample Accession Number</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample Description</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample Visibility</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sibling</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Is re-submitted?</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Date of sample collection</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Date of sample extraction</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample extraction method</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample purified</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Purification method</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Concentration</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Concentration determind by</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample type</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample storage conditions</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Genotype</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Phenotype</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Age</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Developmental Stage</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Cell Type</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Disease State</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Compound</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Dose</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Immunoprecipitate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Growth Condition</name>
+      <value></value>
+    </property>
+    <property>
+      <name>RNAi</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Organism Part</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Time Point</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Treatment</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Subject</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Disease</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Reference Genome</name>
+      <value></value>
+    </property>
+  </properties>
+  <assets>
+    <asset id="79577" href="/assets/79577"/>
+    <asset id="82263" href="/assets/82263"/>
+    <asset id="82311" href="/assets/82311"/>
+    <asset id="82419" href="/assets/82419"/>
+    <asset id="82421" href="/assets/82421"/>
+    <asset id="82422" href="/assets/82422"/>
+    <asset id="82423" href="/assets/82423"/>
+    <asset id="82424" href="/assets/82424"/>
+    <asset id="82425" href="/assets/82425"/>
+    <asset id="82426" href="/assets/82426"/>
+    <asset id="82427" href="/assets/82427"/>
+    <asset id="82428" href="/assets/82428"/>
+    <asset id="82429" href="/assets/82429"/>
+    <asset id="82431" href="/assets/82431"/>
+    <asset id="82432" href="/assets/82432"/>
+    <asset id="82433" href="/assets/82433"/>
+    <asset id="82434" href="/assets/82434"/>
+    <asset id="82435" href="/assets/82435"/>
+    <asset id="82436" href="/assets/82436"/>
+    <asset id="82437" href="/assets/82437"/>
+    <asset id="82438" href="/assets/82438"/>
+    <asset id="82439" href="/assets/82439"/>
+    <asset id="82440" href="/assets/82440"/>
+    <asset id="82442" href="/assets/82442"/>
+    <asset id="82443" href="/assets/82443"/>
+    <asset id="82444" href="/assets/82444"/>
+    <asset id="82445" href="/assets/82445"/>
+    <asset id="82446" href="/assets/82446"/>
+    <asset id="82447" href="/assets/82447"/>
+    <asset id="82448" href="/assets/82448"/>
+    <asset id="82449" href="/assets/82449"/>
+    <asset id="82450" href="/assets/82450"/>
+    <asset id="82451" href="/assets/82451"/>
+    <asset id="82459" href="/assets/82459"/>
+    <asset id="82467" href="/assets/82467"/>
+    <asset id="82468" href="/assets/82468"/>
+    <asset id="82469" href="/assets/82469"/>
+    <asset id="82470" href="/assets/82470"/>
+    <asset id="82478" href="/assets/82478"/>
+    <asset id="82486" href="/assets/82486"/>
+    <asset id="82487" href="/assets/82487"/>
+    <asset id="82488" href="/assets/82488"/>
+    <asset id="82489" href="/assets/82489"/>
+    <asset id="82490" href="/assets/82490"/>
+    <asset id="82491" href="/assets/82491"/>
+    <asset id="82492" href="/assets/82492"/>
+    <asset id="82493" href="/assets/82493"/>
+    <asset id="82494" href="/assets/82494"/>
+    <asset id="82495" href="/assets/82495"/>
+    <asset id="82496" href="/assets/82496"/>
+    <asset id="82497" href="/assets/82497"/>
+    <asset id="82498" href="/assets/82498"/>
+    <asset id="82499" href="/assets/82499"/>
+    <asset id="82500" href="/assets/82500"/>
+    <asset id="82501" href="/assets/82501"/>
+    <asset id="82502" href="/assets/82502"/>
+    <asset id="82507" href="/assets/82507"/>
+    <asset id="82508" href="/assets/82508"/>
+    <asset id="82509" href="/assets/82509"/>
+    <asset id="82510" href="/assets/82510"/>
+    <asset id="82511" href="/assets/82511"/>
+    <asset id="82516" href="/assets/82516"/>
+    <asset id="82517" href="/assets/82517"/>
+    <asset id="82518" href="/assets/82518"/>
+    <asset id="82519" href="/assets/82519"/>
+    <asset id="82520" href="/assets/82520"/>
+    <asset id="82521" href="/assets/82521"/>
+    <asset id="82522" href="/assets/82522"/>
+    <asset id="82523" href="/assets/82523"/>
+    <asset id="82524" href="/assets/82524"/>
+    <asset id="82525" href="/assets/82525"/>
+    <asset id="82526" href="/assets/82526"/>
+    <asset id="82527" href="/assets/82527"/>
+    <asset id="82528" href="/assets/82528"/>
+    <asset id="82529" href="/assets/82529"/>
+    <asset id="82530" href="/assets/82530"/>
+    <asset id="82531" href="/assets/82531"/>
+    <asset id="82533" href="/assets/82533"/>
+    <asset id="82534" href="/assets/82534"/>
+    <asset id="82535" href="/assets/82535"/>
+    <asset id="82536" href="/assets/82536"/>
+    <asset id="82537" href="/assets/82537"/>
+    <asset id="82538" href="/assets/82538"/>
+    <asset id="82539" href="/assets/82539"/>
+    <asset id="82540" href="/assets/82540"/>
+    <asset id="82541" href="/assets/82541"/>
+    <asset id="82542" href="/assets/82542"/>
+    <asset id="82543" href="/assets/82543"/>
+    <asset id="82544" href="/assets/82544"/>
+    <asset id="82545" href="/assets/82545"/>
+    <asset id="82546" href="/assets/82546"/>
+    <asset id="82547" href="/assets/82547"/>
+    <asset id="82548" href="/assets/82548"/>
+    <asset id="82549" href="/assets/82549"/>
+    <asset id="82550" href="/assets/82550"/>
+    <asset id="82551" href="/assets/82551"/>
+    <asset id="82552" href="/assets/82552"/>
+    <asset id="82553" href="/assets/82553"/>
+    <asset id="82554" href="/assets/82554"/>
+    <asset id="82555" href="/assets/82555"/>
+    <asset id="82556" href="/assets/82556"/>
+    <asset id="82557" href="/assets/82557"/>
+    <asset id="82558" href="/assets/82558"/>
+    <asset id="82559" href="/assets/82559"/>
+    <asset id="82560" href="/assets/82560"/>
+    <asset id="82561" href="/assets/82561"/>
+    <asset id="82562" href="/assets/82562"/>
+    <asset id="82563" href="/assets/82563"/>
+    <asset id="82564" href="/assets/82564"/>
+    <asset id="82565" href="/assets/82565"/>
+    <asset id="82567" href="/assets/82567"/>
+    <asset id="82568" href="/assets/82568"/>
+    <asset id="82569" href="/assets/82569"/>
+    <asset id="82570" href="/assets/82570"/>
+    <asset id="82571" href="/assets/82571"/>
+    <asset id="82572" href="/assets/82572"/>
+    <asset id="82573" href="/assets/82573"/>
+    <asset id="82574" href="/assets/82574"/>
+    <asset id="82575" href="/assets/82575"/>
+    <asset id="82576" href="/assets/82576"/>
+    <asset id="82577" href="/assets/82577"/>
+    <asset id="82578" href="/assets/82578"/>
+    <asset id="82579" href="/assets/82579"/>
+    <asset id="82580" href="/assets/82580"/>
+    <asset id="82581" href="/assets/82581"/>
+    <asset id="82582" href="/assets/82582"/>
+    <asset id="82583" href="/assets/82583"/>
+    <asset id="82584" href="/assets/82584"/>
+    <asset id="82585" href="/assets/82585"/>
+    <asset id="82586" href="/assets/82586"/>
+    <asset id="82587" href="/assets/82587"/>
+    <asset id="82588" href="/assets/82588"/>
+    <asset id="82589" href="/assets/82589"/>
+    <asset id="82590" href="/assets/82590"/>
+    <asset id="82591" href="/assets/82591"/>
+    <asset id="82593" href="/assets/82593"/>
+    <asset id="82595" href="/assets/82595"/>
+    <asset id="82596" href="/assets/82596"/>
+    <asset id="82597" href="/assets/82597"/>
+    <asset id="82598" href="/assets/82598"/>
+    <asset id="82599" href="/assets/82599"/>
+    <asset id="82600" href="/assets/82600"/>
+    <asset id="82601" href="/assets/82601"/>
+    <asset id="82602" href="/assets/82602"/>
+    <asset id="82603" href="/assets/82603"/>
+    <asset id="82604" href="/assets/82604"/>
+    <asset id="82605" href="/assets/82605"/>
+    <asset id="82606" href="/assets/82606"/>
+    <asset id="82607" href="/assets/82607"/>
+    <asset id="82608" href="/assets/82608"/>
+    <asset id="82609" href="/assets/82609"/>
+    <asset id="82610" href="/assets/82610"/>
+    <asset id="82611" href="/assets/82611"/>
+    <asset id="82612" href="/assets/82612"/>
+    <asset id="82613" href="/assets/82613"/>
+    <asset id="82614" href="/assets/82614"/>
+    <asset id="82615" href="/assets/82615"/>
+    <asset id="82616" href="/assets/82616"/>
+    <asset id="82617" href="/assets/82617"/>
+    <asset id="82618" href="/assets/82618"/>
+    <asset id="82619" href="/assets/82619"/>
+    <asset id="82620" href="/assets/82620"/>
+    <asset id="82621" href="/assets/82621"/>
+    <asset id="82623" href="/assets/82623"/>
+    <asset id="82625" href="/assets/82625"/>
+    <asset id="82626" href="/assets/82626"/>
+    <asset id="82627" href="/assets/82627"/>
+    <asset id="82628" href="/assets/82628"/>
+    <asset id="82629" href="/assets/82629"/>
+    <asset id="82630" href="/assets/82630"/>
+    <asset id="82631" href="/assets/82631"/>
+    <asset id="82632" href="/assets/82632"/>
+    <asset id="82633" href="/assets/82633"/>
+    <asset id="82634" href="/assets/82634"/>
+    <asset id="82635" href="/assets/82635"/>
+    <asset id="82636" href="/assets/82636"/>
+    <asset id="82637" href="/assets/82637"/>
+    <asset id="82638" href="/assets/82638"/>
+    <asset id="82639" href="/assets/82639"/>
+    <asset id="82640" href="/assets/82640"/>
+    <asset id="82641" href="/assets/82641"/>
+    <asset id="82642" href="/assets/82642"/>
+    <asset id="82643" href="/assets/82643"/>
+    <asset id="82644" href="/assets/82644"/>
+    <asset id="82645" href="/assets/82645"/>
+    <asset id="82647" href="/assets/82647"/>
+    <asset id="82648" href="/assets/82648"/>
+    <asset id="82649" href="/assets/82649"/>
+    <asset id="82650" href="/assets/82650"/>
+    <asset id="82651" href="/assets/82651"/>
+    <asset id="82652" href="/assets/82652"/>
+    <asset id="82653" href="/assets/82653"/>
+    <asset id="82654" href="/assets/82654"/>
+    <asset id="82655" href="/assets/82655"/>
+    <asset id="82656" href="/assets/82656"/>
+    <asset id="82657" href="/assets/82657"/>
+    <asset id="82658" href="/assets/82658"/>
+    <asset id="82659" href="/assets/82659"/>
+    <asset id="82660" href="/assets/82660"/>
+    <asset id="82661" href="/assets/82661"/>
+    <asset id="82662" href="/assets/82662"/>
+    <asset id="82663" href="/assets/82663"/>
+    <asset id="82664" href="/assets/82664"/>
+    <asset id="82665" href="/assets/82665"/>
+    <asset id="82666" href="/assets/82666"/>
+    <asset id="82667" href="/assets/82667"/>
+    <asset id="82668" href="/assets/82668"/>
+    <asset id="82669" href="/assets/82669"/>
+    <asset id="82670" href="/assets/82670"/>
+    <asset id="82671" href="/assets/82671"/>
+    <asset id="82672" href="/assets/82672"/>
+    <asset id="82673" href="/assets/82673"/>
+    <asset id="82674" href="/assets/82674"/>
+    <asset id="82675" href="/assets/82675"/>
+    <asset id="82676" href="/assets/82676"/>
+    <asset id="82677" href="/assets/82677"/>
+    <asset id="82679" href="/assets/82679"/>
+    <asset id="82680" href="/assets/82680"/>
+    <asset id="82681" href="/assets/82681"/>
+    <asset id="82682" href="/assets/82682"/>
+    <asset id="82683" href="/assets/82683"/>
+    <asset id="82689" href="/assets/82689"/>
+    <asset id="82690" href="/assets/82690"/>
+    <asset id="82691" href="/assets/82691"/>
+    <asset id="82692" href="/assets/82692"/>
+    <asset id="82698" href="/assets/82698"/>
+    <asset id="82699" href="/assets/82699"/>
+    <asset id="82700" href="/assets/82700"/>
+    <asset id="82701" href="/assets/82701"/>
+    <asset id="82702" href="/assets/82702"/>
+    <asset id="82703" href="/assets/82703"/>
+    <asset id="82704" href="/assets/82704"/>
+    <asset id="82705" href="/assets/82705"/>
+    <asset id="82706" href="/assets/82706"/>
+    <asset id="82707" href="/assets/82707"/>
+    <asset id="82708" href="/assets/82708"/>
+    <asset id="82709" href="/assets/82709"/>
+    <asset id="82710" href="/assets/82710"/>
+    <asset id="82711" href="/assets/82711"/>
+    <asset id="82712" href="/assets/82712"/>
+    <asset id="82713" href="/assets/82713"/>
+    <asset id="82714" href="/assets/82714"/>
+    <asset id="82715" href="/assets/82715"/>
+    <asset id="82716" href="/assets/82716"/>
+    <asset id="82717" href="/assets/82717"/>
+    <asset id="82718" href="/assets/82718"/>
+    <asset id="82719" href="/assets/82719"/>
+    <asset id="82720" href="/assets/82720"/>
+    <asset id="465706" href="/assets/465706"/>
+    <asset id="238186" href="/assets/238186"/>
+    <asset id="238134" href="/assets/238134"/>
+  </assets>
+</sample>

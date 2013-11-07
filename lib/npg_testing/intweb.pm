@@ -1,8 +1,5 @@
 #########
 # Author:        mg8
-# Last Modified: $Date: 2010-02-19 13:52:39 +0000 (Fri, 19 Feb 2010) $ $Author: mg8 $
-# Id:            $Id: db.pm 8316 2010-02-19 13:52:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/useful_modules/branches/prerelease-18.0/lib/npg_testing/db.pm $
 #
 
 package npg_testing::intweb;
@@ -14,6 +11,7 @@ use English qw{-no_match_vars};
 use Exporter;
 use LWP::UserAgent;
 use HTTP::Request::Common;
+use npg::api::util;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 8316 $ =~ /(\d+)/mxs; $r; };
 
@@ -37,7 +35,6 @@ A collection of functions to test the availability of internal Sanger sites
 
 Readonly::Scalar our $LWP_TIMEOUT       => 60;
 Readonly::Scalar our $MAX_NUM_ATTEMPTS  => 2;
-Readonly::Scalar our $NPG_HOME     => q[http://npg.sanger.ac.uk/perl/npg];
 
 ## no critic (ProhibitExplicitISA)
 our @ISA       = qw(Exporter);
@@ -70,7 +67,7 @@ Tests whether it is possible to access NPG home page
 sub npg_is_accessible {
     my $url = shift;
 
-    $url ||= $NPG_HOME;
+    $url ||= $npg::api::util::LIVE_BASE_URI;
     my $request =  GET $url;
     my $ua = LWP::UserAgent->new();
     $ua->agent("npg_testing::intweb $VERSION");

@@ -12,6 +12,7 @@ use MooseX::StrictConstructor;
 use Readonly;
 use List::MoreUtils qw/none/;
 use Clone qw(clone);
+use URI::Escape qw(uri_unescape);
 
 use npg_tracking::util::types;
 use st::api::lims;
@@ -35,10 +36,12 @@ LIMs parser for the Illumina-style extended samplesheet
 
 =cut
 
-Readonly::Scalar  my  $SAMPLESHEET_RECORD_SEPARATOR => q[,];
+Readonly::Scalar  our $SAMPLESHEET_RECORD_SEPARATOR => q[,];
+Readonly::Scalar  our $SAMPLESHEET_ARRAY_SEPARATOR  => q[ ];
+Readonly::Scalar  our $SAMPLESHEET_HASH_SEPARATOR   => q[:];
 Readonly::Scalar  my  $NOT_INDEXED_FLAG             => q[NO_INDEX];
 Readonly::Scalar  my  $RECORD_SPLIT_LIMIT           => -1;
-Readonly::Scalar  my  $DATA_SECTION                  => q[Data];
+Readonly::Scalar  my  $DATA_SECTION                 => q[Data];
 Readonly::Scalar  my  $HEADER_SECTION               => q[Header];
 
 =head2 path #or input as a filehandle?
@@ -104,6 +107,7 @@ sub _build_data {
   my @data_columns = ();
 
   foreach my $line (@lines) {
+    if ($line) {$line =~ s/\s+$//mxs;}
     if (!$line) {
       next;
     }
@@ -158,7 +162,7 @@ sub _build_data {
      if (!@reads) {
        next;
      }
-     if (length @reads > 1) {
+     if (scalar @reads > 1) {
        croak 'Multiple read lengths in one row';
      }
      if (!exists $d->{$current_section}) {
@@ -167,8 +171,8 @@ sub _build_data {
        push @{$d->{$current_section}}, $reads[0];
      }
    } else {
-     my @row = grep { defined $_ } @columns;
-     if (length @row > 2) {
+     my @row = grep { defined $_ && ($_ ne q[]) } @columns;
+     if (scalar @row > 2) {
        croak "More than two columns defined in one row in section $current_section";
      }
      $d->{$current_section}->{$row[0]} = $row[1];
@@ -316,9 +320,9 @@ sub children {
 
 my @attrs = __PACKAGE__->meta->get_attribute_list;
 for my $m (grep { my $delegated = $_; none {$_ eq $delegated} @attrs } @st::api::lims::DELEGATED_METHODS ) {
+
   __PACKAGE__->meta->add_method( $m, sub {
         my $self=shift;
-        my $value;
         if ($self->_data_row) {
           my $column_name = $m;
           if ($m eq 'library_id') {
@@ -326,9 +330,31 @@ for my $m (grep { my $delegated = $_; none {$_ eq $delegated} @attrs } @st::api:
           } elsif ($m eq 'sample_name' && (!exists $self->_data_row->{$column_name}) ) {
             $column_name = 'Sample_Name';
           }
-          $value =  $self->_data_row->{$column_name} || undef;
+          my $value =  $self->_data_row->{$column_name};
+          if (defined $value && $value eq q[]) {
+            $value = undef;
+	  }
+          if ($m =~ /s$/smx) {
+            my @temp = $value ? split $SAMPLESHEET_ARRAY_SEPARATOR, $value : ();
+            $value = \@temp;
+	  } elsif ($m eq 'required_insert_size_range') {
+            my $h = {};
+            if ($value) {
+              my @temp = split $SAMPLESHEET_ARRAY_SEPARATOR, $value;
+              foreach my $pair (@temp) {
+                my ($key, $val) = split $SAMPLESHEET_HASH_SEPARATOR, $pair;
+                $h->{$key} = $val;
+	      }
+            }
+            $value = $h;
+	  } else {
+            if ($value) {
+              $value = uri_unescape($value);
+	    }
+	  }
+          return $value;
 	}
-        return $value;
+        return;
   });
 }
 
