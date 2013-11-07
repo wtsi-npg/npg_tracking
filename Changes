@@ -1,5 +1,14 @@
 CHANGES
 
+release 75.1
+ - patch for samplesheet parser
+ - switch live npg api base URL to a different host in order to separate
+     human- and api-driven requests
+ - removed depricated methods from npg::api::run_lane
+ - removed unused save2cache method from npg::api::util
+ - simplified logic for saving to cache in npg::api::request;
+     removed unused save2cache method
+
 release 75.0
  - authentication through npg own enigmatic.cgi residing relative to
    where the request comes from

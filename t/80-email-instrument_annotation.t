@@ -12,8 +12,6 @@ use Test::MockModule;
 use t::dbic_util;
 use t::util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16389 $ =~ /(\d+)/msx; $r; };
-
 local $ENV{dev} = 'test';
 my $schema    = t::dbic_util->new->test_schema();
 my $util      = t::util->new();

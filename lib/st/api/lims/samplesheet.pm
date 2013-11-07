@@ -162,7 +162,7 @@ sub _build_data {
      if (!@reads) {
        next;
      }
-     if (length @reads > 1) {
+     if (scalar @reads > 1) {
        croak 'Multiple read lengths in one row';
      }
      if (!exists $d->{$current_section}) {
@@ -171,8 +171,8 @@ sub _build_data {
        push @{$d->{$current_section}}, $reads[0];
      }
    } else {
-     my @row = grep { defined $_ } @columns;
-     if (length @row > 2) {
+     my @row = grep { defined $_ && ($_ ne q[]) } @columns;
+     if (scalar @row > 2) {
        croak "More than two columns defined in one row in section $current_section";
      }
      $d->{$current_section}->{$row[0]} = $row[1];

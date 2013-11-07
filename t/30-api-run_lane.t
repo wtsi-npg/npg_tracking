@@ -1,14 +1,11 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-10
-# Last Modified: $Date: 2012-09-13 11:28:27 +0100 (Thu, 13 Sep 2012) $
-# Id:            $Id: 30-api-run_lane.t 16046 2012-09-13 10:28:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-run_lane.t $
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-run_lane.t, r16046
 #
 use strict;
 use warnings;
-use Test::More tests => 35;
+use Test::More tests => 30;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16046 $ =~ /(\d+)/mx; $r; };
 
@@ -21,16 +18,11 @@ isa_ok($run_lane, 'npg::api::run_lane');
 
 {
   my $run_lane = npg::api::run_lane->new({'id_run_lane' => 1500,});
-
   my $run = $run_lane->run();
   is($run->id_run(), 194);
-
   is($run_lane->position(), 8);
-  is($run_lane->control(),  0, 'no unprimed cache - control');
   is($run_lane->is_control(),  0, 'not a control');
-  is($run_lane->pool(),  0, 'no  pool');
   is($run_lane->is_pool(),  0, 'not a pool');
-  is($run_lane->library(), 1, 'library');
 }
 
 {
@@ -46,8 +38,6 @@ isa_ok($run_lane, 'npg::api::run_lane');
 					  'id_run_lane' => 5,
 					 });
   my $run = $run_lane->run();
-  is($run_lane->library(), 0, 'no batch, no library');
-  is($run_lane->control(), 0, 'no batch, no control');
   is($run_lane->lims(), undef, 'no batch, no lims');
   is($run_lane->is_library(), 0, 'no batch, no library info');
   is($run_lane->is_control(), 0, 'no batch, no control info');
