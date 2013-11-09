@@ -10,8 +10,16 @@ package npg::view::usage;
 use strict;
 use warnings;
 use base qw(npg::view);
+use npg_tracking::illumina::run::folder::location;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+
+sub list {
+  my ($self) = @_;
+  my $model      = $self->model();
+  $model->{staging_area_indexes} = [@npg_tracking::illumina::run::folder::location::STAGING_AREAS_INDEXES];
+  return;
+}
 
 1;
 __END__
@@ -30,6 +38,8 @@ $LastChangedRevision: 9207 $
 
 =head1 SUBROUTINES/METHODS
 
+=head2 list
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -40,6 +50,7 @@ strict
 warnings
 base
 npg::view
+npg_tracking::illumina::run::folder::location
 
 =head1 INCOMPATIBILITIES
 
