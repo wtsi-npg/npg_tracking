@@ -9,6 +9,7 @@ release 75.1
  - simplified logic for saving to cache in npg::api::request;
      removed unused save2cache method
  - host-agnostic jenkins daemon
+ - staging area indexes defined in single place
 
 release 75.0
  - authentication through npg own enigmatic.cgi residing relative to
