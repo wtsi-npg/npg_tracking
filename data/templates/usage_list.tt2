@@ -1,38 +1,9 @@
 <p style="clear:left">
 Sequencing Farm:
 <ul class="inline">
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf18" alt="SF18" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf19" alt="SF19" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf20" alt="SF20" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf21" alt="SF21" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf22" alt="SF22" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf23" alt="SF23" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf24" alt="SF24" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf25" alt="SF25" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf26" alt="SF26" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf27" alt="SF27" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf28" alt="SF28" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf29" alt="SF29" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf30" alt="SF30" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf31" alt="SF31" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf32" alt="SF32" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf33" alt="SF33" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf34" alt="SF34" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf35" alt="SF35" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf36" alt="SF36" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf37" alt="SF37" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf38" alt="SF38" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf39" alt="SF39" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf40" alt="SF40" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf41" alt="SF41" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf42" alt="SF42" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf43" alt="SF43" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf44" alt="SF44" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf45" alt="SF45" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf46" alt="SF46" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf47" alt="SF47" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf48" alt="SF48" /></li>
- <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf49" alt="SF49" /></li>
+[% FOREACH si IN model.staging_area_indexes -%]
+ <li><img src="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/storage/sf[% si %]" alt="SF[% si %]" /></li>
+[% END -%]
 </ul>
 </p>
 <p>
