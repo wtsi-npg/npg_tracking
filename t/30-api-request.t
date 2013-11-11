@@ -1,10 +1,7 @@
 #########
 # Author:        Marina Gourtovaia
-# Maintainer:    $Author: mg8 $
 # Created:       14 June 2010
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: 30-api-request.t 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-request.t $
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-request.t, r16549
 #
 
 use strict;
@@ -23,16 +20,19 @@ use npg::api::util;
 use st::api::sample;
 
 use t::useragent;
+my $lims_url = q[http://psd-support.internal.sanger.ac.uk:6600];
 my $ua = t::useragent->new({
                          is_success => 1,
                          mock       => {
-   q{http://psd-support.internal.sanger.ac.uk:6600/batches/1027}  => q{t/data/npg_api/st/batches/1027.xml},
-   q{http://psd-support.internal.sanger.ac.uk:6600/batches/1826}  => q{t/data/npg_api/st/batches/1826.xml},
-   q{http://psd-support.internal.sanger.ac.uk:6600/samples/10014} => q{t/data/npg_api/st/samples/10014.xml},
+   $lims_url.q{/batches/1027}  => q{t/data/npg_api/st/batches/1027.xml},
+   $lims_url.q{/batches/1826}  => q{t/data/npg_api/st/batches/1826.xml},
+   $lims_url.q{/samples/10014} => q{t/data/npg_api/st/samples/10014.xml},
                                        },   
                           });
 
 use_ok('npg::api::request');
+
+my $base_url = $npg::api::util::LIVE_BASE_URI;
 my $VAR_NAME = q[];
 my $TEST_CACHE = q[t/data/npg_api];
 
@@ -64,12 +64,13 @@ my $TEST_CACHE = q[t/data/npg_api];
   local $ENV{$VAR_NAME} = q[t];
   my $r = npg::api::request->new();
 
-  is( $r->_create_path(q{http://npg.sanger.ac.uk/perl/npg/run/1234.xml}), 
+  is( $r->_create_path($base_url.q{/run/1234.xml}), 
                        q{t/npg/run/1234.xml}, q{npg path generated ok} );
-  is( $r->_create_path(q{http://psd-support.internal.sanger.ac.uk:6600/batches/6935.xml}), 
+  is( $r->_create_path($lims_url.q{/batches/6935.xml}), 
                        q{t/st/batches/6935.xml}, q{st path created ok});
-  is( $r->_create_path(q{http://http://news.bbc.co.uk/sport1/hi/football/world_cup_2010/matches/match_01}), 
-     q{t/ext/news.bbc.co.uk/sport1/hi/football/world_cup_2010/matches/match_01}, q{external path generated ok} );
+  is( $r->_create_path(q{http://news.bbc.co.uk/sport1/hi/football/world_cup_2010/matches/match_01}), 
+     q{t/ext/sport1/hi/football/world_cup_2010/matches/match_01},
+     q{external path generated ok} );
 }
 
 {
@@ -99,10 +100,12 @@ my $TEST_CACHE = q[t/data/npg_api];
 
     my $dir = tempdir( CLEANUP => 1 );
     local $ENV{$VAR_NAME} = $dir;
-    throws_ok { st::api::batch->new({id => $batch_id, util => $util,})->read()} qr/is not in the cache/, 'error when a resource is not in cache';
+    throws_ok { st::api::batch->new({id => $batch_id, util => $util,})->read()}
+      qr/is not in the cache/, 'error when a resource is not in cache';
 
-    $util = npg::api::util->new({save2cache => 1, useragent => $ua, max_retries => 1,});
-    lives_ok { st::api::batch->new({util => $util, id => $batch_id})->read() } 'call to request and save the resource lives';
+    local $ENV{npg::api::request->save2cache_dir_var_name} = 1;
+    lives_ok { st::api::batch->new({util => $util, id => $batch_id})->read() }
+      'call to request and save the resource lives';
     ok (-e catfile($dir, $url), 'batch xml saved to cache');
 
     $batch_id = 1826;
@@ -111,7 +114,6 @@ my $TEST_CACHE = q[t/data/npg_api];
     lives_ok { st::api::batch->new({util => $util, id => $batch_id, })->read() } 'call to save a second batch lives';
     ok (-e catfile($dir, $url), 'second batch xml saved to cache');
 }
-
 
 {
   my $batch_id = 3022;
@@ -142,10 +144,12 @@ my $TEST_CACHE = q[t/data/npg_api];
   $mockUA->set_always('agent', q[npg::api::request]);
   $mockUA->set_always('env_proxy', q[]);
   my $returned;
-  lives_ok {$returned = npg::api::request->new()->make(q[http://npg.sanger.ac.uk/perl/npg/run/4913], q[POST])} 'post request lives';
+  lives_ok {$returned = npg::api::request->new()->make($base_url.q[/run/4913], q[POST])} 'post request lives';
   is ($returned, $content, 'correct response returned');
 
   local $ENV{$VAR_NAME} = q[t];
-  throws_ok {npg::api::request->new()->make(q[http://npg.sanger.ac.uk/perl/npg/run/4913], q[POST])}  qr/POST requests cannot use cache:/, 'post request croaks if cache is set';
+  throws_ok {npg::api::request->new()->make($base_url.q[/run/4913], q[POST])}
+    qr/POST requests cannot use cache:/, 'post request croaks if cache is set';
 }
 
+1;

@@ -1,22 +1,16 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: mg8 $
 # Created:       2009-02-03
-# Last Modified: $Date: 2012-03-01 10:36:10 +0000 (Thu, 01 Mar 2012) $
-# Id:            $Id: 30-api-instrument_status.t 15277 2012-03-01 10:36:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-instrument_status.t $
+# copied from : svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-instrument_status.t, r15277
 #
 use strict;
 use warnings;
 use Test::More tests => 13;
-use English qw(-no_match_vars);
 use t::useragent;
 use npg::api::util;
-use DateTime;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::api::instrument_status');
+my $base_url = $npg::api::util::LIVE_BASE_URI;
 {
   my $i_s  = npg::api::instrument_status->new();
   isa_ok($i_s,'npg::api::instrument_status', '$i_s');
@@ -26,7 +20,7 @@ use_ok('npg::api::instrument_status');
   my $ua   = t::useragent->new({
 				is_success => 1,
 				mock => {
-				   q{http://npg.sanger.ac.uk/perl/npg/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
+				   $base_url . q{/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
 			    },
 			  });
 
@@ -57,3 +51,5 @@ use_ok('npg::api::instrument_status');
   is_deeply($instruments, $test_deeply, 'correct data structure obtained from $i_s->uptimes()');
   is($i_s->uptimes(), $instruments, 'caching of $i_u->uptimes() is ok');
 }
+
+1
