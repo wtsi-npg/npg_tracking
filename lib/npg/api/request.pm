@@ -16,8 +16,10 @@ use HTTP::Request::Common;
 use File::Basename;
 use File::Path;
 use File::Spec::Functions qw(catfile);
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '75.2';
+
 ## no critic (RequirePodAtEnd RequireCheckingReturnValueOfEval)
 
 =head1 NAME
