@@ -8,6 +8,7 @@ release 75.1
  - removed unused save2cache method from npg::api::util
  - simplified logic for saving to cache in npg::api::request;
      removed unused save2cache method
+ - staging area indexes defined in single place
 
 release 75.0
  - authentication through npg own enigmatic.cgi residing relative to
