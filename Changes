@@ -1,5 +1,9 @@
 CHANGES
 
+release 75.2
+ - host-agnostic jenkins daemon
+ - version of npg::api::request module updated to help tracking requests
+
 release 75.1
  - patch for samplesheet parser
  - switch live npg api base URL to a different host in order to separate
