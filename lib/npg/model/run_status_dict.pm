@@ -73,7 +73,18 @@ sub runs {
 						  $params->{len},
 						  $params->{start});
 
-  return $self->gen_getarray($pkg, $query, $self->id_run_status_dict());
+  my $runArray = $self->gen_getarray($pkg, $query, $self->id_run_status_dict());
+  my $countQuery = 'select count(*) from run_lane where id_run=?';
+  foreach my $r (@$runArray) {
+    my $ref = $self->util->dbh->selectall_arrayref( $countQuery, {}, $r->{id_run} );
+    if (defined $ref->[0] && defined $ref->[0]->[0]) {
+       $r->{laneCount} = $ref->[0]->[0];
+    } else {
+       $r->{laneCount} = '';
+    }
+  }
+
+  return $runArray;
 }
 
 sub count_runs {

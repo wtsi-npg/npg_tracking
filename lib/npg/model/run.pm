@@ -12,7 +12,7 @@ use warnings;
 use base qw(npg::model Exporter);
 use English qw(-no_match_vars);
 use Scalar::Util qw/isweak weaken/;
-use Carp;
+use Carp qw(cluck croak);
 use POSIX qw(strftime);
 use List::MoreUtils qw(none);
 use npg::model::instrument;
@@ -228,7 +228,6 @@ sub runs {
   my ( $self, $params ) = @_;
 
   $params->{id_instrument_format} ||= q{all};
-
   # once we have determined this, we will set the runs to be what has been requested for the templates benefit
   if ( $self->{runs} && ref $self->{runs} eq q{ARRAY} ) {
     return $self->{runs};
@@ -261,7 +260,17 @@ sub runs {
 						 $params->{start});
   }
 
-  $self->{runs}->{ $params->{id_instrument_format} } = $self->gen_getarray( $pkg, $query );
+  my $runArray = $self->gen_getarray( $pkg, $query );
+  my $countQuery = 'select count(*) from run_lane where id_run=?';
+  foreach my $r (@$runArray) {
+    my $ref = $self->util->dbh->selectall_arrayref( $countQuery, {}, $r->{id_run} );
+    if (defined $ref->[0] && defined $ref->[0]->[0]) {
+       $r->{laneCount} = $ref->[0]->[0];
+    } else {
+       $r->{laneCount} = '';
+    }
+  }
+  $self->{runs}->{ $params->{id_instrument_format} } = $runArray;
   return $self->{runs}->{ $params->{id_instrument_format} };
 }
 
@@ -299,6 +308,49 @@ sub count_runs {
   if( defined $ref->[0] &&
       defined $ref->[0]->[0] ) {
     $self->{count_runs}->{ $params->{id_instrument_format} } = $ref->[0]->[0];
+    return $ref->[0]->[0];
+  }
+
+  return;
+}
+
+sub count_lanes {
+  my ( $self, $params ) = @_;
+  $params ||= {};
+  $params->{id_instrument_format} ||= q{all};
+warn "count_lanes() : param = $params\n";
+foreach my $k (keys %$params) { 
+warn "  $k = $params->{$k}\n";
+}
+
+  # once we have determined this, we will set the lanes to be what has been requested for the templates benefit
+  if ( defined $self->{count_lanes} && ! ref $self->{count_lanes} ) {
+    return $self->{count_lanes};
+  }
+
+  if ( ! $self->{count_lanes} || ref $self->{count_lanes} ne q{HASH} ) {
+    $self->{count_lanes} = {};
+  }
+
+  if ( defined $self->{count_lanes}->{ $params->{id_instrument_format} } ) {
+    return $self->{count_lanes}->{ $params->{id_instrument_format} };
+  }
+
+  my $pkg   = ref $self;
+  my $query = qq[SELECT COUNT(*) FROM run_lane];
+
+  if ( $params->{id_instrument} && $params->{id_instrument} =~ /\d+/xms ) {
+    $query .= qq[ WHERE id_instrument = $params->{id_instrument}];
+  } else {
+    if ( $params->{id_instrument_format} ne q{all} && $params->{id_instrument_format} =~ /\A\d+\z/xms ) {
+      $query .= qq[ WHERE id_instrument_format = $params->{id_instrument_format}];
+    }
+  }
+
+  my $ref = $self->util->dbh->selectall_arrayref( $query );
+  if( defined $ref->[0] &&
+      defined $ref->[0]->[0] ) {
+    $self->{count_lanes}->{ $params->{id_instrument_format} } = $ref->[0]->[0];
     return $ref->[0]->[0];
   }
 
