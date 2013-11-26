@@ -12,7 +12,7 @@ use warnings;
 use base qw(npg::model Exporter);
 use English qw(-no_match_vars);
 use Scalar::Util qw/isweak weaken/;
-use Carp qw(cluck croak);
+use Carp;
 use POSIX qw(strftime);
 use List::MoreUtils qw(none);
 use npg::model::instrument;
