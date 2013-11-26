@@ -314,49 +314,6 @@ sub count_runs {
   return;
 }
 
-sub count_lanes {
-  my ( $self, $params ) = @_;
-  $params ||= {};
-  $params->{id_instrument_format} ||= q{all};
-warn "count_lanes() : param = $params\n";
-foreach my $k (keys %$params) { 
-warn "  $k = $params->{$k}\n";
-}
-
-  # once we have determined this, we will set the lanes to be what has been requested for the templates benefit
-  if ( defined $self->{count_lanes} && ! ref $self->{count_lanes} ) {
-    return $self->{count_lanes};
-  }
-
-  if ( ! $self->{count_lanes} || ref $self->{count_lanes} ne q{HASH} ) {
-    $self->{count_lanes} = {};
-  }
-
-  if ( defined $self->{count_lanes}->{ $params->{id_instrument_format} } ) {
-    return $self->{count_lanes}->{ $params->{id_instrument_format} };
-  }
-
-  my $pkg   = ref $self;
-  my $query = qq[SELECT COUNT(*) FROM run_lane];
-
-  if ( $params->{id_instrument} && $params->{id_instrument} =~ /\d+/xms ) {
-    $query .= qq[ WHERE id_instrument = $params->{id_instrument}];
-  } else {
-    if ( $params->{id_instrument_format} ne q{all} && $params->{id_instrument_format} =~ /\A\d+\z/xms ) {
-      $query .= qq[ WHERE id_instrument_format = $params->{id_instrument_format}];
-    }
-  }
-
-  my $ref = $self->util->dbh->selectall_arrayref( $query );
-  if( defined $ref->[0] &&
-      defined $ref->[0]->[0] ) {
-    $self->{count_lanes}->{ $params->{id_instrument_format} } = $ref->[0]->[0];
-    return $ref->[0]->[0];
-  }
-
-  return;
-}
-
 sub current_run_status {
   my $self = shift;
 
