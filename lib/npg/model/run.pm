@@ -228,6 +228,7 @@ sub runs {
   my ( $self, $params ) = @_;
 
   $params->{id_instrument_format} ||= q{all};
+
   # once we have determined this, we will set the runs to be what has been requested for the templates benefit
   if ( $self->{runs} && ref $self->{runs} eq q{ARRAY} ) {
     return $self->{runs};
@@ -260,17 +261,7 @@ sub runs {
 						 $params->{start});
   }
 
-  my $runArray = $self->gen_getarray( $pkg, $query );
-  my $countQuery = 'select count(*) from run_lane where id_run=?';
-  foreach my $r (@$runArray) {
-    my $ref = $self->util->dbh->selectall_arrayref( $countQuery, {}, $r->{id_run} );
-    if (defined $ref->[0] && defined $ref->[0]->[0]) {
-       $r->{laneCount} = $ref->[0]->[0];
-    } else {
-       $r->{laneCount} = '';
-    }
-  }
-  $self->{runs}->{ $params->{id_instrument_format} } = $runArray;
+  $self->{runs}->{ $params->{id_instrument_format} } = $self->gen_getarray( $pkg, $query );
   return $self->{runs}->{ $params->{id_instrument_format} };
 }
 
