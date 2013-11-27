@@ -47,6 +47,7 @@
    <th title="Reagents R1 Verified">R1 Ver'd</th>
    <th title="Reagents R2 Verified">R2 Ver'd</th>
    <th title="Cycles">Cycles</th>
+   <th title="Number of Lanes">L</th>
    <th title="Priority">Pri</th>
    <th title="Team Name">Team</th>
    <th>Status</th>
@@ -67,6 +68,7 @@
  <td>[% IF run.verified.reagent1 %]<span style="display:none">1</span><img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<span style="display:none">0</span><img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
  <td>[% IF run.verified.reagent2 %]<span style="display:none">1</span><img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<span style="display:none">0</span><img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
  <td class="npg_nbsp">[% run.actual_cycle_count %] / [% run.expected_cycle_count %]</td>
+ <td>[% run.run_lanes.size %]</td>
  <td>[% run.priority %]</td>
  <td>[% run.team %]</td>
  <td>[% run.current_run_status.description %]</td>
