@@ -1,5 +1,7 @@
 CHANGES
 
+ - add number of lanes to run list views
+
 release 75.2
  - host-agnostic jenkins daemon
  - version of npg::api::request module updated to help tracking requests
