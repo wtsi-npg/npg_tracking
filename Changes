@@ -1,5 +1,6 @@
 CHANGES
 
+ - default UTF8 output for samplesheets
  - add number of lanes to run list views
 
 release 75.2
