@@ -1,6 +1,7 @@
 CHANGES
 
 release 75.3
+ - default UTF8 output for samplesheets
  - add number of lanes to run list views
  - new farm host for a samplesheet daemon
 
