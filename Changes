@@ -1,5 +1,10 @@
 CHANGES
 
+release 75.3
+ - default UTF8 output for samplesheets
+ - add number of lanes to run list views
+ - new farm host for a samplesheet daemon
+
 release 75.2
  - host-agnostic jenkins daemon
  - version of npg::api::request module updated to help tracking requests
