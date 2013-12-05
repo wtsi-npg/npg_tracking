@@ -10,13 +10,6 @@ package npg::oidc;
 use strict;
 use warnings;
 
-BEGIN {
-	# These magic runes are required to make LWP::UserAgent work with https urls
-	$ENV{PERL_NET_HTTPS_SSL_SOCKET_CLASS} = "Net::SSL";
-	$ENV{PERL_LWP_SSL_VERIFY_HOSTNAME} = 0;
-	$ENV{HTTPS_PROXY}='https://wwwcache.sanger.ac.uk:3128';
-}
-
 use Moose;
 use MIME::Base64::URLSafe;
 use Crypt::OpenSSL::X509;
@@ -28,8 +21,13 @@ use JSON;
 use CGI;
 use Carp;
 use Config::Auto;
+#use IO::Socket::SSL qw(debug3);
+use Net::SSLeay;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+
+$Net::HTTPS::SSL_SOCKET_CLASS = "Net::SSL"; # Force use of Net::SSL
+$Net::SSLeay::trace = 4;
 
 Readonly::Scalar our $CONFIG_FILE  => '/nfs/users/nfs_j/js10/.npg/npg_tracking-Schema';
 
@@ -162,6 +160,16 @@ sub getIdToken
 	my $code = shift;
 	my $redirect_uri = shift;
 
+{
+no strict 'refs';
+warn "\n=== MODULES ===\n";
+foreach my $k( sort keys %INC){ my $x=$k;$x=~s/.pm//;$x=~s#/#::#g;my $v=${$x."::VERSION"};$v||='';warn "$k ($v): $INC{$k}\n";}
+warn "===============\n";
+warn "\n=== ENVIRONMENT ===\n";
+foreach my $k (sort keys %ENV) { warn "$k = $ENV{$k}\n"; }
+warn "===================\n\n";
+}
+
 	croak "No code specified to getIdToken" if !$code;
 	croak "No redirect_uri specified to getIdToken" if !$redirect_uri;
 
@@ -171,6 +179,12 @@ sub getIdToken
 	              'redirect_uri' => $redirect_uri,
 	              'grant_type' => 'authorization_code');
 	my $ua = new LWP::UserAgent();
+#	$ua->ssl_opts(verify_hostname => 0, SSL_Version=>'SSLv3');
+#	$ua->ssl_opts(verify_hostname => 0, SSL_Debug => 3, SSL_Version => 2);
+#	$ua->proxy(['http','https'], 'https://wwwcache.sanger.ac.uk:3128');
+	$ua->ssl_opts(verify_hostname => 0, SSL_Debug => 3);
+	$ua->proxy(['https'], undef);
+	$ENV{'https_proxy'} = 'https://wwwcache.sanger.ac.uk:3128';
 	my $response = new HTTP::Response();
 	$response = $ua->post($self->server.$self->access_token_path, \%fields);
 	if (!$response->is_success) {
@@ -246,6 +260,9 @@ sub get_certs_from_web
 {
 	my $self = shift;
 	my $ua = new LWP::UserAgent();
+	$ENV{'https_proxy'} = 'https://wwwcache.sanger.ac.uk:3128';
+	$ua->ssl_opts(verify_hostname => 0);
+	$ua->proxy(['https'], undef);
 	my $response = new HTTP::Response();
 	$response = $ua->get($self->certs_url);
 	if ($response->is_success) {
