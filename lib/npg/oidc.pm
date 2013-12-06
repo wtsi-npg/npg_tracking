@@ -142,7 +142,7 @@ has long_cookie_name => (
 	default		=> 'OIDC_LONG_COOKIE',
 );
 
-
+=head
 sub oidc_verify_signature
 {
 	my $self = shift;
@@ -153,6 +153,7 @@ sub oidc_verify_signature
 		app_client_ids  => [$self->client_id]							# Array of your Client ID for installed applications received in Google APIs console
     );
 }
+=cut
 
 sub getIdToken
 {
@@ -163,13 +164,15 @@ sub getIdToken
 {
 no strict 'refs';
 warn "\n=== MODULES ===\n";
-foreach my $k( sort keys %INC){ my $x=$k;$x=~s/.pm//;$x=~s#/#::#g;my $v=${$x."::VERSION"};$v||='';warn "$k ($v): $INC{$k}\n";}
+foreach my $k( sort keys %INC){ if ($k=~/SSL/) {my $x=$k;$x=~s/.pm//;$x=~s#/#::#g;my $v=${$x."::VERSION"};$v||='';warn "$k ($v): $INC{$k}\n";}}
 warn "===============\n";
-warn "\n=== ENVIRONMENT ===\n";
-foreach my $k (sort keys %ENV) { warn "$k = $ENV{$k}\n"; }
-warn "===================\n\n";
+#warn "\n=== ENVIRONMENT ===\n";
+#foreach my $k (sort keys %ENV) { warn "$k = $ENV{$k}\n"; }
+#warn "===================\n\n";
+use strict;
 }
 
+warn "oidc::getIdToken($code)\n";
 	croak "No code specified to getIdToken" if !$code;
 	croak "No redirect_uri specified to getIdToken" if !$redirect_uri;
 
@@ -183,8 +186,9 @@ warn "===================\n\n";
 #	$ua->ssl_opts(verify_hostname => 0, SSL_Debug => 3, SSL_Version => 2);
 #	$ua->proxy(['http','https'], 'https://wwwcache.sanger.ac.uk:3128');
 	$ua->ssl_opts(verify_hostname => 0, SSL_Debug => 3);
-	$ua->proxy(['https'], undef);
-	$ENV{'https_proxy'} = 'https://wwwcache.sanger.ac.uk:3128';
+#	$ua->proxy(['https'], undef);
+#	$ENV{'https_proxy'} = 'https://wwwcache.sanger.ac.uk:3128';
+	$ENV{'https_proxy'} = 'http://172.18.24.1:3128';
 	my $response = new HTTP::Response();
 	$response = $ua->post($self->server.$self->access_token_path, \%fields);
 	if (!$response->is_success) {
@@ -205,7 +209,7 @@ warn "===================\n\n";
 sub verify 
 {
 	my ($self, $token) = @_;
-
+warn "oidc::verify($token)\n";
 	$self->get_certs() if ($self->certs_expired());
 
 	my ($env, $payload, $signature) = split /\./, $token;
