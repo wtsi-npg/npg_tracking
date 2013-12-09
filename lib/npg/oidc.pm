@@ -21,15 +21,15 @@ use JSON;
 use CGI;
 use Carp;
 use Config::Auto;
-#use IO::Socket::SSL qw(debug3);
-use Net::SSLeay;
+use Net::SSL 2.85;
+use Net::SSLeay 1.55;
+use Crypt::SSLeay 0.57;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
 
 $Net::HTTPS::SSL_SOCKET_CLASS = "Net::SSL"; # Force use of Net::SSL
-$Net::SSLeay::trace = 4;
 
-Readonly::Scalar our $CONFIG_FILE  => '/nfs/users/nfs_j/js10/.npg/npg_tracking-Schema';
+Readonly::Scalar our $CONFIG_FILE  => $ENV{NPG_DATA_ROOT}.'/config.ini';
 
 has domain => (
 	is			=> 'ro',
@@ -124,6 +124,17 @@ sub _build_certs_url {
 	return $self->config->{$self->domain}->{certs_url};
 }
 
+has https_proxy => (
+	is			=> 'ro',
+	isa			=> 'Maybe[Str]',
+	lazy_build => 1,
+);
+
+sub _build_https_proxy {
+	my $self = shift;
+	return $self->config->{$self->domain}->{https_proxy};
+}
+
 has certs_cache_file => (
 	is			=> 'ro',
 	isa			=> 'Str',
@@ -142,25 +153,13 @@ has long_cookie_name => (
 	default		=> 'OIDC_LONG_COOKIE',
 );
 
-=head
-sub oidc_verify_signature
-{
-	my $self = shift;
-	my $token = shift;
-	my $validator = GoogleIDToken::Validator->new(
-		certs_cache_file    => '/www/tmp/js10/google.crt',	# will cache certs in this file for faster verify if you are using CGI
-		web_client_id   => $self->client_id,							# Your Client ID for web applications received in Google APIs console
-		app_client_ids  => [$self->client_id]							# Array of your Client ID for installed applications received in Google APIs console
-    );
-}
-=cut
-
 sub getIdToken
 {
 	my $self = shift;
 	my $code = shift;
 	my $redirect_uri = shift;
 
+=debug
 {
 no strict 'refs';
 warn "\n=== MODULES ===\n";
@@ -171,8 +170,8 @@ warn "===============\n";
 #warn "===================\n\n";
 use strict;
 }
+=cut
 
-warn "oidc::getIdToken($code)\n";
 	croak "No code specified to getIdToken" if !$code;
 	croak "No redirect_uri specified to getIdToken" if !$redirect_uri;
 
@@ -182,13 +181,10 @@ warn "oidc::getIdToken($code)\n";
 	              'redirect_uri' => $redirect_uri,
 	              'grant_type' => 'authorization_code');
 	my $ua = new LWP::UserAgent();
-#	$ua->ssl_opts(verify_hostname => 0, SSL_Version=>'SSLv3');
-#	$ua->ssl_opts(verify_hostname => 0, SSL_Debug => 3, SSL_Version => 2);
-#	$ua->proxy(['http','https'], 'https://wwwcache.sanger.ac.uk:3128');
-	$ua->ssl_opts(verify_hostname => 0, SSL_Debug => 3);
+	$ua->ssl_opts(verify_hostname => 0, SSL_Debug => 0);
 #	$ua->proxy(['https'], undef);
 #	$ENV{'https_proxy'} = 'https://wwwcache.sanger.ac.uk:3128';
-	$ENV{'https_proxy'} = 'http://172.18.24.1:3128';
+	$ENV{'https_proxy'} = $self->https_proxy;
 	my $response = new HTTP::Response();
 	$response = $ua->post($self->server.$self->access_token_path, \%fields);
 	if (!$response->is_success) {
@@ -209,7 +205,6 @@ warn "oidc::getIdToken($code)\n";
 sub verify 
 {
 	my ($self, $token) = @_;
-warn "oidc::verify($token)\n";
 	$self->get_certs() if ($self->certs_expired());
 
 	my ($env, $payload, $signature) = split /\./, $token;
