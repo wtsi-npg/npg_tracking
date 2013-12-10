@@ -48,7 +48,7 @@
             <!-- Offer logout option -->
             <a href="#" onclick="authlink();return false;">
             <img src="/prodsoft/npg/icons/navigation/logout.gif" alt="'Logout button" />
-            </a>Logged in as <a href="[% SCRIPT_NAME %]/user/[% requestor.username %]">[% view.realname(requestor.username);%]</a>
+            </a>Logged in as <a href="[% SCRIPT_NAME %]/user/[% requestor.username %]">[% view.realname(requestor.username);%] ([% requestor.username %])</a>
          [% END -%]
 <div>Group[% IF requestor.usergroups.size > 1; 's'; END; %]:[% FOREACH usergroup = requestor.usergroups %]&nbsp;[% usergroup.groupname %][% END %]</div>
     </div>
