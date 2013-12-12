@@ -159,19 +159,6 @@ sub getIdToken
 	my $code = shift;
 	my $redirect_uri = shift;
 
-=debug
-{
-no strict 'refs';
-warn "\n=== MODULES ===\n";
-foreach my $k( sort keys %INC){ if ($k=~/SSL/) {my $x=$k;$x=~s/.pm//;$x=~s#/#::#g;my $v=${$x."::VERSION"};$v||='';warn "$k ($v): $INC{$k}\n";}}
-warn "===============\n";
-#warn "\n=== ENVIRONMENT ===\n";
-#foreach my $k (sort keys %ENV) { warn "$k = $ENV{$k}\n"; }
-#warn "===================\n\n";
-use strict;
-}
-=cut
-
 	croak "No code specified to getIdToken" if !$code;
 	croak "No redirect_uri specified to getIdToken" if !$redirect_uri;
 
@@ -308,7 +295,7 @@ __END__
 
 =head1 NAME
 
-  npg::authentication::sanger_sso
+  npg::oidc
 
 =head1 VERSION
 
@@ -318,15 +305,17 @@ $LastChangedRevision: 16549 $
 
 =head1 DESCRIPTION
 
-Module to extract username from WTSI single sign-on cookie value
+Module to handle the Open ID Connect protocol
 
 =head1 SUBROUTINES/METHODS
 
-=head2 sanger_cookie_name
-
-=head2 sanger_username
-
-Called by Catalyst authentication infrastructure....
+=head2 certs_expired
+=head2 getIdToken
+=head2 get_certs
+=head2 get_certs_from_file
+=head2 get_certs_from_web
+=head2 parse_certs
+=head2 verify
 
 =head1 DIAGNOSTICS
 
@@ -362,7 +351,7 @@ $Author: mg8 $
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2012 GRL, by Jennifer Liddle (js10@sanger.ac.uk)
+Copyright (C) 2013 GRL, by Jennifer Liddle (js10@sanger.ac.uk)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
