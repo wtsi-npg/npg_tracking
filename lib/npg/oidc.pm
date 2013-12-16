@@ -1,10 +1,8 @@
 # Author:        js10@sanger.ac.uk
-# Maintainer:    $Author: mg8 $
-# Created:       2010-04-28
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: sanger_sso.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/authentication/sanger_sso.pm $
-
+# Created:       2013-12-16
+#
+# Helper methods for handling Open ID Connect authentication
+#
 package npg::oidc;
 
 use strict;
@@ -25,7 +23,7 @@ use Net::SSL 2.85;
 use Net::SSLeay 1.55;
 use Crypt::SSLeay 0.57;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+use Readonly; 
 
 $Net::HTTPS::SSL_SOCKET_CLASS = "Net::SSL"; # Force use of Net::SSL
 
@@ -169,8 +167,6 @@ sub getIdToken
 	              'grant_type' => 'authorization_code');
 	my $ua = new LWP::UserAgent();
 	$ua->ssl_opts(verify_hostname => 0, SSL_Debug => 0);
-#	$ua->proxy(['https'], undef);
-#	$ENV{'https_proxy'} = 'https://wwwcache.sanger.ac.uk:3128';
 	$ENV{'https_proxy'} = $self->https_proxy;
 	my $response = new HTTP::Response();
 	$response = $ua->post($self->server.$self->access_token_path, \%fields);
@@ -246,7 +242,7 @@ sub get_certs_from_web
 {
 	my $self = shift;
 	my $ua = new LWP::UserAgent();
-	$ENV{'https_proxy'} = 'https://wwwcache.sanger.ac.uk:3128';
+	$ENV{'https_proxy'} = $self->https_proxy;
 	$ua->ssl_opts(verify_hostname => 0);
 	$ua->proxy(['https'], undef);
 	my $response = new HTTP::Response();
@@ -299,8 +295,6 @@ __END__
 
 =head1 VERSION
 
-$LastChangedRevision: 16549 $
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -310,12 +304,23 @@ Module to handle the Open ID Connect protocol
 =head1 SUBROUTINES/METHODS
 
 =head2 certs_expired
-=head2 getIdToken
+
+=head2 getIdToken - ask the OIDC server for an ID Token
+
+	my $idToken = $oidc->getIdToken($code, $redirect_uri);
+
 =head2 get_certs
+
 =head2 get_certs_from_file
+
 =head2 get_certs_from_web
+
 =head2 parse_certs
-=head2 verify
+
+=head2 verify - verify that a received signature is correct. Returns payload or undef
+
+	my $payload = $oidc->verify($token);
+	die "Invalid signature" if !$payload;
 
 =head1 DIAGNOSTICS
 
@@ -329,15 +334,35 @@ Module to handle the Open ID Connect protocol
 
 =item warnings
 
-=item Crypt::CBC
+=item Moose;
 
-=item MIME::Base64
+=item MIME::Base64::URLSafe;
 
-=item CGI
+=item Crypt::OpenSSL::X509;
 
-=item Readonly
+=item Crypt::OpenSSL::RSA;
 
-=item Exporter qw(import)
+=item Date::Parse;
+
+=item LWP::UserAgent;
+
+=item HTTP::Response;
+
+=item JSON;
+
+=item CGI;
+
+=item Carp;
+
+=item Config::Auto;
+
+=item Net::SSL 2.85;
+
+=item Net::SSLeay 1.55;
+
+=item Crypt::SSLeay 0.57;
+
+=item Readonly; 
 
 =back
 
@@ -347,7 +372,7 @@ Module to handle the Open ID Connect protocol
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Author: Jennifer Liddle <js10@sanger.ac.uk>
 
 =head1 LICENSE AND COPYRIGHT
 
