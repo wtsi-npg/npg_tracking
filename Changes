@@ -1,5 +1,9 @@
 CHANGES
 
+ - switch to samplesheet driver if NPG_CACHED_SAMPLESHEET_FILE is set
+ - spiked_phix_tag_index accessor implementation for the samplesheet
+   driver to ensure that spiked_phix_tag_index is defined for a pool
+
 release 75.3
  - default UTF8 output for samplesheets
  - add number of lanes to run list views
