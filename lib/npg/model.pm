@@ -130,7 +130,6 @@ sub location_is_instrument {
   }
 
   $self->{'location_is_instrument'} = $id_instrument;
-
   return $id_instrument;
 }
 

@@ -8,6 +8,7 @@ package npg::oidc;
 use strict;
 use warnings;
 
+use English '-no_match_vars';
 use Moose;
 use MIME::Base64::URLSafe;
 use Crypt::OpenSSL::X509;
@@ -44,6 +45,11 @@ has config => (
 sub _build_config {
     return Config::Auto::parse($CONFIG_FILE);
 }
+
+has certs => (
+	is			=> 'rw',
+	isa			=> 'HashRef',
+);
 
 has client_id => (
     is            => 'ro',
@@ -157,8 +163,8 @@ sub getidtoken
     my $code = shift;
     my $redirect_uri = shift;
 
-    croak 'No code specified to getIdToken' if !$code;
-    croak 'No redirect_uri specified to getIdToken' if !$redirect_uri;
+    croak 'No code specified to getidtoken' if !$code;
+    croak 'No redirect_uri specified to getidtoken' if !$redirect_uri;
 
     my %fields = ('code' => $code,
                   'client_id' => $self->client_id,
@@ -197,11 +203,11 @@ sub verify
     $env = decode_json(urlsafe_b64decode($env));
     $payload = decode_json(urlsafe_b64decode($payload));
 
-    if (!exists $self->{certs}->{$env->{kid}}) {
+    if (!exists $self->certs->{$env->{kid}}) {
         carp "There are no such certificate that used to sign this token (kid: $env->{kid}).";
         return;
     }
-    my $rsa = Crypt::OpenSSL::RSA->new_public_key($self->{certs}->{$env->{kid}}->pubkey());
+    my $rsa = Crypt::OpenSSL::RSA->new_public_key($self->certs->{$env->{kid}}->pubkey());
     $rsa->use_sha256_hash();
 
     if (!$rsa->verify($signed, $signature)) {
@@ -220,9 +226,9 @@ sub verify
 sub certs_expired
 {
     my $self = shift;
-    return 1 if (!$self->{certs});
-    foreach my $kid (keys %{$self->{certs}}) {
-        return 1 if (str2time($self->{certs}->{$kid}->notAfter()) < time);
+    return 1 if (!$self->certs);
+    foreach my $kid (keys %{$self->certs}) {
+        return 1 if (str2time($self->certs->{$kid}->notAfter()) < time);
     }
     return 0;
 }
@@ -271,7 +277,7 @@ sub get_certs_from_file
     if ($json_certs) {
         $self->parse_certs($json_certs);
     } else {
-        $self->{certs} = undef;
+        $self->certs = undef;
     }
     close $fh || croak "Failed to close certificate file $self->certs_cache_file";
 	return;
@@ -282,7 +288,7 @@ sub parse_certs
     my ($self, $json_certs) = @_;
     my $certs = decode_json($json_certs);
     foreach my $kid (keys %{$certs}) {
-        $self->{certs}->{$kid} = Crypt::OpenSSL::X509->new_from_string($certs->{$kid});
+        $self->certs->{$kid} = Crypt::OpenSSL::X509->new_from_string($certs->{$kid});
     }
 	return;
 }
@@ -309,9 +315,9 @@ Module to handle the Open ID Connect protocol
 
 =head2 certs_expired
 
-=head2 getIdToken - ask the OIDC server for an ID Token
+=head2 getidtoken - ask the OIDC server for an ID Token
 
-    my $idToken = $oidc->getIdToken($code, $redirect_uri);
+    my $idToken = $oidc->getidtoken($code, $redirect_uri);
 
 =head2 get_certs
 
