@@ -38,8 +38,8 @@ sub init {
                   WHERE  username = ?);
     my $ref   = [];
     eval {
-      $self->{username} =~ /(\w+)/;
-      $ref = $self->util->dbh->selectall_arrayref( $query, {}, $1 );
+      my $one = $self->{username} =~ /(\w+)/mxs;
+      $ref = $self->util->dbh->selectall_arrayref( $query, {}, $one );
     } or do {
       carp $EVAL_ERROR;
       return;
