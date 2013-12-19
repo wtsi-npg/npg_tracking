@@ -52,7 +52,7 @@ foreach my $pa (['test', 'using mocked data', q[t/data/test45]],
   SKIP: {
 
     if (!$do_test) {
-     skip 'Live test, but sanger intweb is not accessible',  33;
+     skip 'Live test, but sanger intweb is not accessible',  35;
     }
        {
     diag q[Tests for run 3905];
