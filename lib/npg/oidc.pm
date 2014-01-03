@@ -287,6 +287,7 @@ sub parse_certs
 {
     my ($self, $json_certs) = @_;
     my $certs = decode_json($json_certs);
+	$self->certs({});
     foreach my $kid (keys %{$certs}) {
         $self->certs->{$kid} = Crypt::OpenSSL::X509->new_from_string($certs->{$kid});
     }

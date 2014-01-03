@@ -138,8 +138,7 @@ sub person {
 
   my $info = {};
   eval {
-    my $one = $username =~ /(\w+)/msx;
-    $info = person_info($one);
+    $info = person_info($username);
     1;
   } or do {
     carp $EVAL_ERROR;
