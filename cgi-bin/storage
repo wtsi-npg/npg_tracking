@@ -24,6 +24,10 @@ use Carp;
 
 my ($partition) = ($ENV{PATH_INFO} || q()) =~ /((sf\d+))/smx;
 
+%ENV = (
+	PATH => join q(:), qw(/bin /usr/bin)
+       );
+
 my $gd    = GD::Image->new(40,40);
 my $white = $gd->colorAllocate(255,255,255);
 my $grey  = $gd->colorAllocate(128,128,128);
