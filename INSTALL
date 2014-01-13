@@ -38,10 +38,5 @@ The following two files are not copied by the deployment procedure, have to be c
 
   cp data/config.ini /my/perl/data/config.ini
 
-export PATH=/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin
-unset PERL5LIB
-
-export APACHE_ENVVARS=/nfs/users/nfs_m/mg8/working/www-dev/npg-sites/wtsi_local/envvars; /usr/sbin/apache2ctl -f $(dirname $(readlink -f $A
-PACHE_ENVVARS))/apache2.conf -k start
 
 
