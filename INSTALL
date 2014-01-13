@@ -37,21 +37,11 @@ follow the instructions in the file on commenting/uncommenting lines
 The following two files are not copied by the deployment procedure, have to be copied manually
 
   cp data/config.ini /my/perl/data/config.ini
-  cp data/httpd.conf /my/perl
 
-The following apache instructions are valid for apache v2.2.18
+export PATH=/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin
+unset PERL5LIB
 
-  cd /my/perl
-  mkdir logs
-  ln -s /path/to/apache/conf conf #softlink apache's config directory
-
-  cd data
-  ln -s . prodsoft
-  ln -s . npg
-  cd ..
-
-  /path/to/apache/bin/apachectl -f $PWD/httpd.conf -k restart
-
-Assuming the server is running on my_host port 9959, the site URL is http://my_host:9959/cgi-bin/npg and http://my_host:9959/perl/npg (under mod perl)
+export APACHE_ENVVARS=/nfs/users/nfs_m/mg8/working/www-dev/npg-sites/wtsi_local/envvars; /usr/sbin/apache2ctl -f $(dirname $(readlink -f $A
+PACHE_ENVVARS))/apache2.conf -k start
 
 

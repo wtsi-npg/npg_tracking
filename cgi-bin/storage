@@ -1,4 +1,4 @@
-#!/usr/bin/perl -T
+#!/usr/local/bin/perl -T
 #########
 # copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/sflogin_web_apps/trunk/cgi-bin/storage, r15717
 #
