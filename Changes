@@ -17,7 +17,9 @@ CHANGES
  - explicit setting of PATH is removed from CGI scripts - we'll restrict
    PATH in the shell where aoache server is started
  - SVN-dependant VERSION removed from CGI scripts
- - where necessary, PRL5LIB of CGI scripts is extended
+ - where necessary, PERL5LIB of CGI scripts is extended
+ - links to staging area server are picked up from config "staging_url" parameter,
+   and so are relative (to current host and port) if this is empty or non-existent
 
 release 75.3
  - default UTF8 output for samplesheets
