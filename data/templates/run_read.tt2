@@ -95,16 +95,17 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 <div id="run_menu_container">
 
 [%- IF model.is_in_staging -%]
+[% SET staging_url = view.util.config.val('application', 'staging_url') %]
 <div class="run_menu rfloat">
 <ul class="inline">
    [%- IF model.has_tag_with_value('rta') -%]
-   <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/locate_runfolder/[% run_folder %]/Data/Status.htm?redir">RTA Status</a></li>
+   <li><a class="npg_menu" href="[% staging_url %]/cgi-bin/locate_runfolder/[% run_folder %]/Data/Status.htm?redir">RTA Status</a></li>
    [%- END -%]
-   <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/locate_runfolder/[% run_folder %]?redir">Run Folder</a></li>
+   <li><a class="npg_menu" href="[% staging_url %]/cgi-bin/locate_runfolder/[% run_folder %]?redir">Run Folder</a></li>
    [%- IF model.has_analysis_in_progress -%]
-   <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/locate_runfolder/[% run_folder %]/latest?redir">Latest Analysis</a></li>
-   <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/locate_runfolder/[% run_folder %]/ivc?redir">Latest IVC</a></li>
-   <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/locate_runfolder/[% run_folder %]/Latest_Summary/archive/qc/tileviz?redir">Tileviz</a></li>
+   <li><a class="npg_menu" href="[% staging_url %]/cgi-bin/locate_runfolder/[% run_folder %]/latest?redir">Latest Analysis</a></li>
+   <li><a class="npg_menu" href="[% staging_url %]/cgi-bin/locate_runfolder/[% run_folder %]/ivc?redir">Latest IVC</a></li>
+   <li><a class="npg_menu" href="[% staging_url %]/cgi-bin/locate_runfolder/[% run_folder %]/Latest_Summary/archive/qc/tileviz?redir">Tileviz</a></li>
    [%- END -%]
 </ul>
 </div>
@@ -113,7 +114,7 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 
 <div class="run_menu rfloat">
 <ul class="inline">
-  <li><a class="npg_menu" href="http://sfweb.internal.sanger.ac.uk:9000/cgi-bin/mpsa_image/[% id_run %]/1/1/[% IF !is_miseq_instrument; '110'; END %]1.html">Image Browser</a></li>
+  <li><a class="npg_menu" href="[% staging_url %]/cgi-bin/mpsa_image/[% id_run %]/1/1/[% IF !is_miseq_instrument; '110'; END %]1.html">Image Browser</a></li>
 [%- IF !is_miseq_instrument && batch_id %]
   <li><a class="npg_menu" href="http://psd-production.internal.sanger.ac.uk:6900/batches/search?id=[% batch_id %]">SybrGreen Images</a></li>
 [% END -%]
