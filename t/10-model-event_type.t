@@ -20,7 +20,7 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $model = npg::model::event_type->new({
-					   id_event_type => 1,
+             id_event_type => 1,
                                            util          => $util,
                                           });
   my $events = $model->events();
@@ -29,8 +29,8 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $model = npg::model::event_type->new({
-					   id_entity_type => 6,
-					   description    => 'status change',
+             id_entity_type => 6,
+             description    => 'status change',
                                            util           => $util,
                                           });
   my $events = $model->events();
@@ -39,7 +39,7 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $model = npg::model::event_type->new({
-					   id_event_type => 1,
+             id_event_type => 1,
                                            util          => $util,
                                           });
   my $usergroups = $model->usergroups();

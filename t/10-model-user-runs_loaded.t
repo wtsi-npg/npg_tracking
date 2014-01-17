@@ -30,19 +30,19 @@ my $mock  = {
         ORDER BY rs.date DESC:1000) => [{intrument => 'IL1002', id_run => 1000, date => '2008-01-03'},
                                    {intrument => 'IL1001', id_run => 1001, date => '2008-01-02'},
                                    {intrument => 'IL1000', id_run => 1002, date => '2008-01-01'}],
-	    };
+      };
 {
   my $util  = t::util->new({mock => $mock});
   my $model = npg::model::user->new({
-				     util     => $util,
-				     id_user  => 1000,
-				     username => 'test',
-				    });
-	$model->{runs_loaded} = 'test';
-	is($model->runs_loaded(), 'test', 'nothing fetched as runs_loaded already present');
-	$model->{runs_loaded} = undef;
-	isa_ok($model->runs_loaded(), 'ARRAY');
-	is(scalar@{$model->runs_loaded()}, 3, 'correct number of elements in array');
-	isa_ok($model->runs_loaded()->[0], 'HASH');
+             util     => $util,
+             id_user  => 1000,
+             username => 'test',
+            });
+  $model->{runs_loaded} = 'test';
+  is($model->runs_loaded(), 'test', 'nothing fetched as runs_loaded already present');
+  $model->{runs_loaded} = undef;
+  isa_ok($model->runs_loaded(), 'ARRAY');
+  is(scalar@{$model->runs_loaded()}, 3, 'correct number of elements in array');
+  isa_ok($model->runs_loaded()->[0], 'HASH');
 }
 

@@ -119,9 +119,9 @@ sub add {
   my $id_run          = $cgi->param('id_run');        # Duplicate existing run
   my $id_instrument   = $cgi->param('id_instrument'); # New for instrument
   my $instrument      = npg::model::instrument->new({
-						     util          => $util,
-						     id_instrument => $id_instrument,
-						    });
+                 util          => $util,
+                 id_instrument => $id_instrument,
+                });
   my $instruments = $instrument->current_instruments();
 
   #########
@@ -134,9 +134,9 @@ sub add {
     # If we're duplicating a run, take the instrument from that one
     #
     $model = npg::model::run->new({
-				   util   => $util,
-				   id_run => $id_run,
-				  });
+           util   => $util,
+           id_run => $id_run,
+          });
     $self->model($model);
     $id_instrument = $model->id_instrument();
     $instrument    = $model->instrument();
@@ -201,9 +201,9 @@ sub list {
   $model->{len}   = $len;
 
   my $ref = {
-	   len   => $len,
-	   start => $start,
-	   id_instrument_format => $id_instrument_format,
+     len   => $len,
+     start => $start,
+     id_instrument_format => $id_instrument_format,
   };
   my $rsd_ref = { id_instrument_format => $id_instrument_format,};
   if ($id_instrument) {
@@ -219,17 +219,17 @@ sub list {
       $model->{count_runs} = $model->count_runs($rsd_ref);
     } else {
       my $rsd = npg::model::run_status_dict->new( {
-				util               => $util,
-				id_run_status_dict => $id_rsd,
-			} );
+        util               => $util,
+        id_run_status_dict => $id_rsd,
+      } );
       $model->{runs} = $rsd->runs($ref);
       $model->{count_runs} = $rsd->count_runs($rsd_ref);
     }
   } else {
     my $rsd = npg::model::run_status_dict->new( {
-			util        => $util,
-			description => 'run pending',  # Default to pending runs
-		} );
+      util        => $util,
+      description => 'run pending',  # Default to pending runs
+    } );
     $model->{runs} = $rsd->runs($ref);
     $model->{count_runs} = $rsd->count_runs($rsd_ref);
     $id_rsd = $rsd->id_run_status_dict();
@@ -244,7 +244,7 @@ sub list {
   }
 
 #  $model->{runs} = [sort { $b->id_run() <=> $a->id_run() ## no critic
-#			 } @{$model->runs()||[]}];
+#       } @{$model->runs()||[]}];
 
   return 1;
 }
@@ -264,9 +264,9 @@ sub list_xml {
     @id_run = grep { $_ && !$seen->{$_}++ }
               map  { split /[|,]/smx } @id_runs;
     $model->{runs} = [map { npg::model::run->new({
-						  util   => $util,
-						  id_run => $_,
-						 }) } @id_run];
+              util   => $util,
+              id_run => $_,
+             }) } @id_run];
     #########
     # switch to simple template
     #
@@ -373,14 +373,14 @@ sub create {
   }
 
   $model->{'run_lanes'} = [map {
-				 npg::model::run_lane->new({
-							    'util'             => $util,
-							    'tile_count'       => $lanes->{$_},
-							    'tracks'           => $tracks,
-							    'position'         => $_,
-							   });
-			       }
-			   sort { $a <=> $b } keys %{$lanes}];
+         npg::model::run_lane->new({
+                  'util'             => $util,
+                  'tile_count'       => $lanes->{$_},
+                  'tracks'           => $tracks,
+                  'position'         => $_,
+                 });
+             }
+         sort { $a <=> $b } keys %{$lanes}];
 
   #########
   # Configure run pairing
@@ -509,11 +509,11 @@ sub update_statuses {
     eval {
       for my $id_run (@id_runs) {
         my $run_status = npg::model::run_status->new({
-						      util               => $util,
-						      id_run             => $id_run,
-						      id_run_status_dict => $irsd,
-						      id_user            => $id_user,
-						     });
+                  util               => $util,
+                  id_run             => $id_run,
+                  id_run_status_dict => $irsd,
+                  id_user            => $id_user,
+                 });
         $run_status->create();
       }
       1;

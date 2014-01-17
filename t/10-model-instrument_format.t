@@ -24,15 +24,15 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $if = $IF->new({
-		     util => $util,
-		    });
+         util => $util,
+        });
   isa_ok($if, $IF);
 }
 
 {
   my $if = $IF->new({
-		     util => $util,
-		    });
+         util => $util,
+        });
   my $cifs = $if->current_instrument_formats();
   isa_ok($cifs, 'ARRAY');
   is((scalar @{$cifs}), 6, 'unprimed cache cif');
@@ -41,9 +41,9 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $if = $IF->new({
-		     util => $util,
-		     id_instrument_format => 4,
-		    });
+         util => $util,
+         id_instrument_format => 4,
+        });
   my $is = $if->instruments();
   isa_ok($is, 'ARRAY');
   is((scalar @{$is}), 13, 'instruments');
@@ -51,9 +51,9 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $if = $IF->new({
-		     util => $util,
-		     id_instrument_format => 4,
-		    });
+         util => $util,
+         id_instrument_format => 4,
+        });
   my $cis = $if->current_instruments();
   isa_ok($cis, 'ARRAY');
   is((scalar @{$cis}), 12, 'unprimed cache current_instruments');
@@ -62,9 +62,9 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $if = $IF->new({
-		     util => $util,
-		     id_instrument_format => 4,
-		    });
+         util => $util,
+         id_instrument_format => 4,
+        });
   my $ic = $if->instrument_count();
   is($ic, 13, 'instrument count');
 }
@@ -72,17 +72,17 @@ my $util = t::util->new({fixtures => 1});
 {
   trap {
     my $if = $IF->new({
-		       util => 'foo',
-		      });
+           util => 'foo',
+          });
     is($if->instrument_count(), undef, 'database query failure');
   };
 }
 
 {
   my $if = $IF->new({
-		     util => $util,
-		     id_instrument_format => 0,
-		    });
+         util => $util,
+         id_instrument_format => 0,
+        });
   my $ic = $if->instrument_count();
   is($ic, 0, 'zero instrument count');
 }

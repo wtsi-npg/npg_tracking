@@ -24,17 +24,17 @@ my $mock    = {
 
 my $cgi = CGI->new();
 my $util    = t::util->new({
-			    mock => $mock,
-			    cgi  => $cgi,
-			   });
+          mock => $mock,
+          cgi  => $cgi,
+         });
 {
   my $view = npg::view::run->new({
-				  util  => $util,
-				  model => npg::model::run->new({
-								 util   => $util,
-								 id_run => q(),
-								}),
-				 });
+          util  => $util,
+          model => npg::model::run->new({
+                 util   => $util,
+                 id_run => q(),
+                }),
+         });
   isa_ok($view, 'npg::view::run', 'isa npg::view::run');
   is($view->convert_is_good(0), 'Bad', '$view->convert_is_good(0) is Bad');
   is($view->convert_is_good(1), 'Good', '$view->convert_is_good(1) is Good');

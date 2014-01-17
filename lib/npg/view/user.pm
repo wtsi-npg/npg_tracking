@@ -54,8 +54,8 @@ sub read { ## no critic (ProhibitBuiltinHomonyms)
   my $util  = $self->util();
 
   my $all_public = npg::model::usergroup->new({
-					       util => $util,
-					      })->public_usergroups();
+                 util => $util,
+                })->public_usergroups();
   my $member_of = $model->usergroups();
   my @not_in = ();
   for my $group (@{$all_public}) {
