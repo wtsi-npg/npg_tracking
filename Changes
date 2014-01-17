@@ -5,17 +5,16 @@ CHANGES
    uncomment old code to restore the relative to the server root link for testing
  - apache2.2 compatible configuration files to run the tracking server under
    default apache version for Ubuntu precise; virtual host definitions in
-   stand-alone files thus allowing for dynamic inclusion of virtual hosts
+   stand-alone files allow for dynamic inclusion of virtual hosts
  - bam, cram, etc files access is prohibited from the runfolder directories listings,
    however, these files are visible in listings
- - more convinient sorting order of directories and files in the runfolder directories
+ - more convenient sorting order of directories and files in the runfolder directories
    listings
  - directory index CSS changed to get a margin on the left; brighter color scheme
    introduced
- - Build.PL file extended to ensure that teh shebang line og cgi scripts is
+ - Build.PL file extended to ensure that the shebang line of CGI scripts is
    set to the Perl interpreter that is used for deployment
- - explicit setting of PATH is removed from CGI scripts - we'll restrict
-   PATH in the shell where aoache server is started
+ - explicit setting of PATH is removed from CGI scripts that do not use shell commands
  - SVN-dependant VERSION removed from CGI scripts
  - where necessary, PERL5LIB of CGI scripts is extended
  - links to staging area server are picked up from config "staging_url" parameter,
