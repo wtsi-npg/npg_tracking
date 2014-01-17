@@ -19,8 +19,8 @@ Readonly::Scalar our $FUDGE_FACTOR => 12_000_000_000_000; # 12 Gbytes per PE lan
 sub current_repositories {
   my $self = shift;
   my $instrument = npg::model::instrument->new({
-						util => $self->util(),
-					       });
+                                              util => $self->util(),
+                                              });
   my $repositories = {};
 
   for my $i (@{$instrument->current_instruments()}) {
@@ -55,7 +55,7 @@ sub current_repositories {
   return [map { {
                  name     => $_,
                  required => $repositories->{$_},
-	        } } sort keys %{$repositories}];
+              } } sort keys %{$repositories}];
 }
 
 1;

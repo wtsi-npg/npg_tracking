@@ -23,9 +23,9 @@ my $util  = t::util->new({fixtures => 1});
 
 {
   my $model = npg::model::user->new({
-				     util     => $util,
-				     id_user  => 1,
-				    });
+             util     => $util,
+             id_user  => 1,
+            });
   is($model->username(), 'joe_admin', 'user by id');
   is($model->is_member_of('admin'), 1, 'admin user is_member_of admin');
   is($model->is_member_of('engineers'), 1, 'admin user is_member_of engineers');
@@ -33,9 +33,9 @@ my $util  = t::util->new({fixtures => 1});
 
 {
   my $model = npg::model::user->new({
-				     util     => $util,
-				     username => 'joe_engineer',
-				    });
+             util     => $util,
+             username => 'joe_engineer',
+            });
   is($model->id_user(), 4, 'user by username');
   is($model->is_member_of('admin'), undef, 'engineer user is not member of admin');
   is($model->is_member_of('engineers'), 1, 'admin user is_member_of engineers');
@@ -43,9 +43,9 @@ my $util  = t::util->new({fixtures => 1});
 
 {
   my $model = npg::model::user->new({
-				     util     => $util,
-				     username => 'joe_analyst',
-				    });
+             util     => $util,
+             username => 'joe_analyst',
+            });
   is($model->id_user(), 12, 'user by username');
   is($model->is_member_of('admin'), undef, 'analyst user is not member of admin');
   is($model->is_member_of('analyst'), 1, 'analyst user is_member_of analyst');

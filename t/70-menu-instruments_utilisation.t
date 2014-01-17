@@ -17,72 +17,72 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevis
 use Carp;
 
 my $util = t::util->new({
-			 fixtures => 1,
-			});
+       fixtures => 1,
+      });
 
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument_utilisation',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument_utilisation',
+           username       => 'public',
+           util           => $util,
+          });
 
   ok($util->test_rendered($str, 't/data/rendered/menus/instruments_utilisation_30days_textual.html'), 'menu instruments>utilisation>30days-textual');
 }
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument_utilisation/graphical',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument_utilisation/graphical',
+           username       => 'public',
+           util           => $util,
+          });
   
   ok($util->test_rendered($str, 't/data/rendered/menus/instruments_utilisation_30days_barchart.html'), 'menu instruments>utilisation>30days-barchart');
 }
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument_utilisation/graphical/line',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument_utilisation/graphical/line',
+           username       => 'public',
+           util           => $util,
+          });
 
   ok($util->test_rendered($str, 't/data/rendered/menus/instruments_utilisation_30days_lineplot.html'), 'menu instruments>utilisation>30days-lineplot');
 }
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument_utilisation/text90',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument_utilisation/text90',
+           username       => 'public',
+           util           => $util,
+          });
 
   ok($util->test_rendered($str, 't/data/rendered/menus/instruments_utilisation_90days_textual.html'), 'menu instruments>utilisation>90days-textual');
 }
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument_utilisation/graphical/line90',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument_utilisation/graphical/line90',
+           username       => 'public',
+           util           => $util,
+          });
 
   ok($util->test_rendered($str, 't/data/rendered/menus/instruments_utilisation_90days_lineplot.html'), 'menu instruments>utilisation>90days_lineplot');
 }
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument_status/graphical',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument_status/graphical',
+           username       => 'public',
+           util           => $util,
+          });
 
   ok($util->test_rendered($str, 't/data/rendered/menus/instruments_utilisation_uptime.html'), 'menu instruments>utilisation>uptime');
 }

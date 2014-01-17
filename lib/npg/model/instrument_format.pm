@@ -70,7 +70,7 @@ sub current_instrument_formats {
                    FROM   @{[$pkg->table()]}
                    WHERE  iscurrent = 1);
     $self->{'current_instrument_formats'} =  $self->gen_getarray($pkg,
-								 $query);
+                                                                $query);
   }
 
   return $self->{'current_instrument_formats'};
@@ -86,8 +86,8 @@ sub current_instruments {
                    WHERE  id_instrument_format = ?
                    AND    iscurrent            = 1);
     $self->{'current_instruments'} =  $self->gen_getarray($pkg,
-							  $query,
-							  $self->id_instrument_format());
+                                                          $query,
+                                                          $self->id_instrument_format());
   }
 
   return $self->{'current_instruments'};
@@ -101,7 +101,7 @@ sub instrument_count {
   my $ref = [];
   eval {
     $ref = $self->util->dbh->selectall_arrayref($query, {},
-						$self->id_instrument_format());
+                                                $self->id_instrument_format());
   } or do {
     carp $EVAL_ERROR;
     return;

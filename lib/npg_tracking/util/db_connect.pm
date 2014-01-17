@@ -118,7 +118,7 @@ around 'connection' => sub {
             if ($attr and ref $attr eq q[HASH]) {
               %{$info[0]} = (%{$info[0]}, %{$attr});
             }
-	} else {
+        } else {
             @info = ($dsn, $user, $pass, $attr);
         }
     }

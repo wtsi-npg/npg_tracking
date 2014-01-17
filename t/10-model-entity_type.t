@@ -21,9 +21,9 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $model = npg::model::entity_type->new({
-					    util           => $util,
-					    id_entity_type => 1,
-					   });
+              util           => $util,
+              id_entity_type => 1,
+             });
   isa_ok($model, 'npg::model::entity_type');
 
   my $events = $model->events();
@@ -40,18 +40,18 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $model = npg::model::entity_type->new({
-					    util        => $util,
-					    description => 'run',
-					   });
+              util        => $util,
+              description => 'run',
+             });
   is($model->id_entity_type(), 1, 'load by description');
 }
 
 {
   trap {
     my $model = npg::model::entity_type->new({
-					      util        => 'bla',
-					      description => 'fail!',
-					     });
+                util        => 'bla',
+                description => 'fail!',
+               });
     is($model->init(), undef, 'database query failure');
   };
 }

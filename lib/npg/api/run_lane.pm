@@ -25,9 +25,9 @@ sub new_from_xml {
   if($pkg eq 'npg::api::run_lane') {
     $util = $child->util();
     $child->{run} = npg::api::run->new({
-					util   => $util,
-					id_run => $xmlfrag->getAttribute('id_run'),
-				       });
+                                        util   => $util,
+                                        id_run => $xmlfrag->getAttribute('id_run'),
+                                      });
   }
 
   return $child;
@@ -38,9 +38,9 @@ sub run {
 
   if(!$self->{run}) {
     $self->{run} = npg::api::run->new({
-				       util   => $self->util(),
-				       id_run => $self->id_run(),
-				      });
+                                      util   => $self->util(),
+                                      id_run => $self->id_run(),
+                                      });
   }
   return $self->{run};
 }
