@@ -18,7 +18,6 @@ cgi-bin/npg
 cgi-bin/reflector
 cgi-bin/storage
 Changes
-data/config.ini
 data/gfx/1G_PE.png
 data/gfx/1G.png
 data/gfx/cBot.png
