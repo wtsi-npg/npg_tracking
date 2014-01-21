@@ -31,6 +31,8 @@ sub init {
   }
 
   # try to get the id_user from the username (i.e. logged in through sso)
+  my ($short_user,$domain) = $self->{username} =~ /(\w+)@?(\S+)?/sxm;
+
   if ( $self->{'username'} &&
        ! $self->{'id_user'} ) {
     my $query = q(SELECT id_user
@@ -38,7 +40,7 @@ sub init {
                   WHERE  username = ?);
     my $ref   = [];
     eval {
-      $ref = $self->util->dbh->selectall_arrayref( $query, {}, $self->{username} );
+      $ref = $self->util->dbh->selectall_arrayref( $query, {}, $short_user );
     } or do {
       carp $EVAL_ERROR;
       return;

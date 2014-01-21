@@ -1,8 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-[%- image = requestor.username == 'public' ? 'key' : 'logout';
-    image2 = requestor.username == 'public' ? 'google' : 'logout';
+[%- 
     dev = view.is_prod ? '' : ' DEV';
     npg_title = 'NPG' _ dev _ ' v' _  view.app_version _ ' [' _ view.time_rendered _ ']';
     key = model.primary_key;
@@ -38,12 +37,8 @@
     <div>
          [%- IF requestor.username == 'public' %]
             <!-- Offer login options -->
-            &nbsp;&nbsp;&nbsp;<a href="#" onclick="authlink('ldap');return false;">
-            <img src="/prodsoft/npg/icons/navigation/key.gif" alt="Login">
-            &nbsp;Log in</a>
-            &nbsp;&nbsp;&nbsp;<a href="#" onclick="authlink('google');return false;">
-            <img src="/prodsoft/npg/icons/navigation/google.gif" alt="Login via Google">
-            &nbsp;Log in via Google</a>
+            &nbsp;&nbsp;&nbsp;<a href="#" onclick="authlink('ldap');return false;">&nbsp;Log in via Sanger</a>
+            &nbsp;&nbsp;&nbsp;<a href="#" onclick="authlink('oidc');return false;">&nbsp;Log in via Google</a>
          [% ELSE %]
             <!-- Offer logout option -->
             <a href="#" onclick="authlink();return false;">

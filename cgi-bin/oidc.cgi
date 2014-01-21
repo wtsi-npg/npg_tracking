@@ -29,7 +29,7 @@ use HTTP::Response;
 use URI::Escape;
 use JSON;
 use MIME::Base64 qw(decode_base64url encode_base64 decode_base64);
-use npg::oidc;
+use npg::authentication::oidc;
 
 
 =head
@@ -45,7 +45,7 @@ foreach my $k (keys %ENV) { warn "$k = $ENV{$k}\n"; }
 
 our $VERSION = '0.0.1';
 
-our $oidc = npg::oidc->new;
+our $oidc = npg::authentication::oidc->new;
 our $q = CGI->new;
 our $COOKIE_EXPIRED = cookie(-name => 'WTSISignOn', -value => q(), -expires => '-1d', -domain => '.sanger.ac.uk', -httponly => 1, -secure => 0 );
 
@@ -56,8 +56,8 @@ my $code = $q->param('code') || '';
 $destination ||= $ENV{HTTP_REFERER};
 if ($destination) { ($destination) = $destination=~/\A(.+)\z/smx; } #TO CHECK: do I ned to be more careful here?
 
-if ($authtype eq 'google') {
-	googleLogin($destination);
+if ($authtype eq 'oidc') {
+	oidcLogin($destination);
 	exit 0;
 }
 
@@ -90,7 +90,7 @@ my $shortCookie = createShortCookie('','-1d');
 my $longCookie = createLongCookie('','-1d');
 my $url;
 my $cval = $q->cookie(-name => $oidc->short_cookie_name);
-# if we are logged in via google, then logout via google
+# if we are logged in via oidc, then logout via oidc
 if ($cval) {
 	$url = $oidc->server . $oidc->logout_path . "?continue=$destination";
 } else {
@@ -102,7 +102,7 @@ redirect($url,[$COOKIE_EXPIRED,$shortCookie, $longCookie]);
 
 
 
-sub googleLogin
+sub oidcLogin
 {
 	# the first thing to do is save the final destination. We'll need it later...
 	my $destination = shift;
