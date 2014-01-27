@@ -47,8 +47,8 @@ sub _build_config {
 }
 
 has certs => (
-	is			=> 'rw',
-	isa			=> 'HashRef',
+	is => 'rw',
+	isa => 'HashRef',
 );
 
 has client_id => (
@@ -302,7 +302,7 @@ __END__
 
 =head1 NAME
 
-  npg::oidc
+  npg::authentication::oidc
 
 =head1 VERSION
 
