@@ -20,9 +20,10 @@ if [[ "$NPG_TRACKING_SERVER_PATH" =~ "www-live" ]] ; then dev=''; fi;
 echo "dev: ${dev}"
 
 export APACHE_LOG_DIR=${NPG_TRACKING_SERVER_PATH}/logs
+
 echo "Log directory: ${APACHE_LOG_DIR}"
 export APACHE_PID_FILE=${APACHE_LOG_DIR}/apache_${NPG_APACHE_HOST}_${dev}.pid
-
+export APACHE_LOCK_DIR=${NPG_TRACKING_SERVER_PATH}/lock
 ## The locale used by some modules like mod_dav
 export LANG=C
 ## Uncomment the following line to use the system default locale instead:
@@ -39,3 +40,4 @@ export ORACLE_HOME=/software/oracle-ic-11.2
 ## If you need a higher file descriptor limit, uncomment and adjust the
 ## following line (default is 8192):
 #APACHE_ULIMIT_MAX_FILES='ulimit -n 65536'
+
