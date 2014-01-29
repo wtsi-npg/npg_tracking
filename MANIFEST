@@ -27,7 +27,7 @@ data/gfx/HiSeq.png
 data/gfx/HK_PE.png
 data/gfx/HK.png
 data/gfx/MiSeq.png
-data/httpd.conf
+data/config.ini
 data/npg_tracking_email/templates/devel_header.tt2
 data/npg_tracking_email/templates/instrument_annotation.tt2
 data/npg_tracking_email/templates/instrument_status_change.tt2
