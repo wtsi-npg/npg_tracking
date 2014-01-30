@@ -39,17 +39,17 @@ sub user {
 sub instrument {
   my $self = shift;
   return npg::model::instrument->new({
-				      util          => $self->util(),
-				      id_instrument => $self->id_instrument(),
-				     });
+              util          => $self->util(),
+              id_instrument => $self->id_instrument(),
+             });
 }
 
 sub instrument_mod_dict {
   my $self = shift;
   return npg::model::instrument_mod_dict->new({
-					       util => $self->util(),
-					       id_instrument_mod_dict => $self->id_instrument_mod_dict(),
-					      });
+                 util => $self->util(),
+                 id_instrument_mod_dict => $self->id_instrument_mod_dict(),
+                });
 }
 
 sub instruments {

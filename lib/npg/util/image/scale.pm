@@ -206,7 +206,7 @@ sub get_legend {
   my $colours = $arg_refs->{colours};
 
   foreach my $color (@{$colours}) {
-  		push @{$linear_gradient}, [$cmap->rgb_by_name($color)];
+      push @{$linear_gradient}, [$cmap->rgb_by_name($color)];
   }
 
   my $im = GD::Image->new($image_width,$image_height);

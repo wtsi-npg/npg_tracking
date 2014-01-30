@@ -359,8 +359,8 @@ sub _entity_required_insert_size {
       foreach my $key (qw/to from/) {
         my $value = $is->{$key};
         if ($value) {
-	  my $lib_key = $lims->library_id || $lims->tag_index || $lims->sample_id;
-	  $is_hash->{$lib_key}->{$key} = $value;
+    my $lib_key = $lims->library_id || $lims->tag_index || $lims->sample_id;
+    $is_hash->{$lib_key}->{$key} = $value;
         }
       }
     }

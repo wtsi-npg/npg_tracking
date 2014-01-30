@@ -99,17 +99,17 @@ sub list_graph_png {
 
 
   return $graph->plotter($data, {
-				 width             => $PLOTTER_WIDTH,
-				 height            => $PLOTTER_HEIGHT,
-				 x_label           => 'date',
-				 y_label           => 'percentage',
-				 y_min_value       => 0,
-				 y_max_value       => $PERCENTAGE,
-				 title             => $title,
-				 legend            => ['Total', 'Less Hot Spare', 'Production'],
-				 x_labels_vertical => 1,
+         width             => $PLOTTER_WIDTH,
+         height            => $PLOTTER_HEIGHT,
+         x_label           => 'date',
+         y_label           => 'percentage',
+         y_min_value       => 0,
+         y_max_value       => $PERCENTAGE,
+         title             => $title,
+         legend            => ['Total', 'Less Hot Spare', 'Production'],
+         x_labels_vertical => 1,
                                  x_label_skip      => $x_label_skip,
-			}, $graph_type);
+      }, $graph_type);
 }
 
 sub list_gantt_run_timeline_png {

@@ -163,7 +163,7 @@ sub make {
     if ($method ne $DEFAULT_METHOD) {
         if ($cache) {
             croak qq[$method requests cannot use cache: $uri];
-	}
+  }
         $content = $self->_from_web($uri, $method, $args);
     } else {
         my $path = q[];
@@ -172,7 +172,7 @@ sub make {
             $path = $self->_create_path($uri);
             if (!$path) {
                 croak qq[Empty path generated for $uri];
-	    }
+      }
         }
 
         $content = ($cache && !$ENV{$self->save2cache_dir_var_name}) ?
@@ -233,11 +233,11 @@ sub _check_cache_dir {
     if ($ENV{$self->save2cache_dir_var_name}) {
         if (!-w $cache) {
             croak qq[Cache directory $cache is not writable];
-	}
+  }
     } else {
         if (!-r $cache) {
             croak qq[Cache directory $cache is not readable];
-	}
+  }
     }
     return 1;
 }
@@ -265,11 +265,11 @@ sub _from_web {
     if ($path && $ENV{$self->save2cache_dir_var_name} && $ENV{$self->cache_dir_var_name}) {
         my $content;
         eval {
-	    $content = $self->_from_cache($path, $uri);
-	};
+      $content = $self->_from_cache($path, $uri);
+  };
         if ($content) {
             return $content;
-	}
+  }
     }
 
     my $req;
@@ -310,7 +310,7 @@ sub _from_web {
         my $content_type = $response->headers->header('Content-Type');
         if (!$content_type) {
             $content_type = $self->content_type;
-	}
+  }
         $self->_write2cache($path, $content, $content_type);
     }
 
@@ -327,7 +327,7 @@ sub _write2cache {
     if (-e $dir) {
         if (!-d $dir) {
             croak qq[$dir should be a directory];
-	}
+  }
     } else {
         File::Path::make_path($dir);
     }

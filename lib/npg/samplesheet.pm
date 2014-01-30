@@ -176,7 +176,7 @@ sub _build__limsreflist {
 
       my @row = ();
       if ($self->_multiple_lanes) {
-	push @row, $tmpl->position;
+  push @row, $tmpl->position;
       }
       push @row, $tmpl->library_id;
       push @row, $tmpl->sample_publishable_name;

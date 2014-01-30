@@ -114,16 +114,16 @@ sub create {
     my $rows = $dbh->do(q(UPDATE instrument_status
                           SET    iscurrent     = 0
                           WHERE  id_instrument = ?), {},
-			$self->id_instrument());
+      $self->id_instrument());
 
     my $query = q(INSERT INTO instrument_status (id_instrument,date,id_instrument_status_dict,id_user,iscurrent,comment)
                   VALUES (?,now(),?,?,1,?));
 
     $dbh->do($query, {},
-	     $self->id_instrument(),
-	     $self->id_instrument_status_dict(),
-	     $self->id_user(),
-	     $self->comment());
+       $self->id_instrument(),
+       $self->id_instrument_status_dict(),
+       $self->id_user(),
+       $self->comment());
 
     #########
     # Sometimes we have to change automatically to the next status
@@ -131,22 +131,22 @@ sub create {
     my $next_status = $self->instrument->status_to_change_to();
     if ($next_status) {
       my $isd = npg::model::instrument_status_dict->new({
-		util        => $util,
-	        description => $next_status,
-	     });
+    util        => $util,
+          description => $next_status,
+       });
       #########
       # reset our iscurrent again
       #
       $dbh->do(q(UPDATE instrument_status
                  SET    iscurrent     = 0
                  WHERE  id_instrument = ?), {},
-	       $self->id_instrument());
+         $self->id_instrument());
 
       $dbh->do($query, {},
-	       $self->id_instrument(),
-	       $isd->id_instrument_status_dict(),
-	       $self->id_user(),
-	       'automatic status update');
+         $self->id_instrument(),
+         $isd->id_instrument_status_dict(),
+         $self->id_user(),
+         'automatic status update');
     }
 
     my $idref = $dbh->selectall_arrayref('SELECT LAST_INSERT_ID()');
@@ -166,12 +166,12 @@ sub create {
     }
 
     my $event = npg::model::event->new({
-					util          => $util,
-					id_event_type => $id_event_type,
-					entity_id     => $self->id_instrument_status(),
-					id_user       => $self->id_user(),
-					description   => qq(New instrument_status: @{[$self->instrument_status_dict->description()||'unspecified']} for instrument @{[$self->instrument->name()||'unspecified']}\n@{[$self->comment()||'unspecified']}),
-				       });
+          util          => $util,
+          id_event_type => $id_event_type,
+          entity_id     => $self->id_instrument_status(),
+          id_user       => $self->id_user(),
+          description   => qq(New instrument_status: @{[$self->instrument_status_dict->description()||'unspecified']} for instrument @{[$self->instrument->name()||'unspecified']}\n@{[$self->comment()||'unspecified']}),
+               });
     $event->create();
 
   } or do {
@@ -433,8 +433,8 @@ sub gantt_map {
     if (ref$a && ref$a eq 'ARRAY') {
       foreach my $spot(@{$a}) {
         if (ref$spot && ref$spot eq 'ARRAY') {
-	  shift @{$spot};
-	  push @temp, $spot;
+    shift @{$spot};
+    push @temp, $spot;
         }
       }
     }
@@ -443,12 +443,12 @@ sub gantt_map {
     if (ref$a && ref$a eq 'ARRAY') {
       foreach my $annotation (@{$a}) {
         if ($annotation) {
-	  my $box = shift @temp;
-	  @{$box} = ($box->[0], $box->[3], $box->[1], $box->[2]); ## no critic (ProhibitMagicNumbers)
-	  my ($key, @info) = split /:/xms, $annotation;
-	  $annotation = join q{:}, @info;
-	  push @{$box}, {$key => $annotation, url => qq{$ENV{SCRIPT_NAME}/instrument/$key}};
-	  push @{$data}, $box;
+    my $box = shift @temp;
+    @{$box} = ($box->[0], $box->[3], $box->[1], $box->[2]); ## no critic (ProhibitMagicNumbers)
+    my ($key, @info) = split /:/xms, $annotation;
+    $annotation = join q{:}, @info;
+    push @{$box}, {$key => $annotation, url => qq{$ENV{SCRIPT_NAME}/instrument/$key}};
+    push @{$data}, $box;
         }
       }
     }
@@ -618,7 +618,7 @@ sub stripe_across_for_gantt {
     foreach my $s (@{$i->{statuses}}) {
       if (!ref$s->{date}) {
         my ($y,$m,$d) = $s->{date} =~ /(\d+)-(\d+)-(\d+)/xms;
-     	  $s->{date} = DateTime->new(year => $y, month => $m, day => $d);
+         $s->{date} = DateTime->new(year => $y, month => $m, day => $d);
       }
       if ( DateTime->compare( $s->{date}, $dt_less_ninety ) >= 0 ) {
         push @temp, $s;
@@ -804,10 +804,10 @@ sub seconds_uptime {
     my $duration;
     $duration = ($up_period->{up} <= $dt1 && $up_period->{down} >= $dt2) ? $dt2->subtract_datetime_absolute($dt1)
               : ($up_period->{up} >= $dt1 && $up_period->{down} <= $dt2) ? $up_period->{down}->subtract_datetime_absolute($up_period->{up})
-	      : ($dt1 >= $up_period->{up} && $dt1 <= $up_period->{down}) ? $up_period->{down}->subtract_datetime_absolute($dt1)
-	      : ($dt2 >= $up_period->{up} && $dt2 <= $up_period->{down}) ? $dt2->subtract_datetime_absolute($up_period->{up})
-	      :                                                            q{}
-	      ;
+        : ($dt1 >= $up_period->{up} && $dt1 <= $up_period->{down}) ? $up_period->{down}->subtract_datetime_absolute($dt1)
+        : ($dt2 >= $up_period->{up} && $dt2 <= $up_period->{down}) ? $dt2->subtract_datetime_absolute($up_period->{up})
+        :                                                            q{}
+        ;
     if ($duration) {
       $seconds_uptime += $duration->in_units('seconds');
     }

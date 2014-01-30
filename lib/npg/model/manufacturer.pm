@@ -63,8 +63,8 @@ sub current_instruments {
                  AND    i.iscurrent            = 1
                  ORDER BY i.id_instrument_format DESC);
   return $self->gen_getarray($pkg,
-			     $query,
-			     $self->id_manufacturer());
+           $query,
+           $self->id_manufacturer());
 }
 
 sub instrument_count {
@@ -77,7 +77,7 @@ sub instrument_count {
   my $ref = [];
   eval {
     $ref = $self->util->dbh->selectall_arrayref($query, {},
-						$self->id_manufacturer());
+            $self->id_manufacturer());
   } or do {
     carp $EVAL_ERROR;
     return;

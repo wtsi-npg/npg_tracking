@@ -333,27 +333,27 @@ for my $m (grep { my $delegated = $_; none {$_ eq $delegated} @attrs } @st::api:
           my $value =  $self->_data_row->{$column_name};
           if (defined $value && $value eq q[]) {
             $value = undef;
-	  }
+    }
           if ($m =~ /s$/smx) {
             my @temp = $value ? split $SAMPLESHEET_ARRAY_SEPARATOR, $value : ();
             $value = \@temp;
-	  } elsif ($m eq 'required_insert_size_range') {
+    } elsif ($m eq 'required_insert_size_range') {
             my $h = {};
             if ($value) {
               my @temp = split $SAMPLESHEET_ARRAY_SEPARATOR, $value;
               foreach my $pair (@temp) {
                 my ($key, $val) = split $SAMPLESHEET_HASH_SEPARATOR, $pair;
                 $h->{$key} = $val;
-	      }
+        }
             }
             $value = $h;
-	  } else {
+    } else {
             if ($value) {
               $value = uri_unescape($value);
-	    }
-	  }
+      }
+    }
           return $value;
-	}
+  }
         return;
   });
 }

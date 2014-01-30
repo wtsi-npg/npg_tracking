@@ -99,15 +99,15 @@ sub update {
 #    # if all lanes have been UNset, revert run status back to qc review pending
 #    #
 #    my $rsd = npg::model::run_status_dict->new({
-#						description => 'qc review pending',
-#						util        => $util,
-#					       });
+#            description => 'qc review pending',
+#            util        => $util,
+#                 });
 #    my $run_status = npg::model::run_status->new({
-#						  id_run             => $model->id_run,
-#						  id_run_status_dict => $rsd->id_run_status_dict,
-#						  id_user            => $util->requestor->id_user,
-#						  util               => $util,
-#						 });
+#              id_run             => $model->id_run,
+#              id_run_status_dict => $rsd->id_run_status_dict,
+#              id_user            => $util->requestor->id_user,
+#              util               => $util,
+#             });
 #    $model->{qc_reverted} = 1;
 #    return $run_status->create;
 #  }
@@ -120,15 +120,15 @@ sub update_status_to_qc_complete {
   my $model = $self->model;
   my $util  = $self->util;
   my $rsd   = npg::model::run_status_dict->new({
-						description => 'qc complete',
-						util        => $util,
-					       });
+            description => 'qc complete',
+            util        => $util,
+                 });
   my $run_status = npg::model::run_status->new({
-						id_run             => $model->id_run,
-						id_run_status_dict => $rsd->id_run_status_dict,
-						id_user            => $util->requestor->id_user,
-						util               => $util,
-					       });
+            id_run             => $model->id_run,
+            id_run_status_dict => $rsd->id_run_status_dict,
+            id_user            => $util->requestor->id_user,
+            util               => $util,
+                 });
   return $run_status->create;
 }
 

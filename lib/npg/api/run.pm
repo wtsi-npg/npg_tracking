@@ -173,7 +173,7 @@ sub run_pair {
 
   if(!$self->{'run_pair'}) {
     $self->{'run_pair'} = npg::api::run->new({
-					      'util'   => $self->util(),
+                'util'   => $self->util(),
                                               'id_run' => $self->id_run_pair(),
                                             });
   }
@@ -186,9 +186,9 @@ sub instrument {
 
   if(!$self->{instrument}) {
     $self->{instrument} = npg::api::instrument->new({
-						     util          => $self->util(),
-						     id_instrument => $self->id_instrument(),
-						    });
+                 util          => $self->util(),
+                 id_instrument => $self->id_instrument(),
+                });
   }
 
   return $self->{instrument};
@@ -207,8 +207,8 @@ sub run_lanes {
     ## no critic (ProhibitComplexMappings)
     $self->{run_lanes} = [map { weaken($_->{run}); $_; }
                           map { $_->{run} = $self; $_; }
-			  map { npg::api::run_lane->new_from_xml('npg::api::run_lane', $_, $self->util()); }
-			  $run_lanes->getElementsByTagName('run_lane')];
+        map { npg::api::run_lane->new_from_xml('npg::api::run_lane', $_, $self->util()); }
+        $run_lanes->getElementsByTagName('run_lane')];
   }
 
   ## use critic

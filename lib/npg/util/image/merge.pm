@@ -457,10 +457,10 @@ sub all_error_thumbs {
         my $b_image = npg::util::image::graph->new();
         my $bp = $b_image->plotter($tile_info->{blank_percentage}, $args_for_image, q{area}, 1);
 
-	if (ref$ep eq 'GD::Image' && ref$bp eq 'GD::Image') {
+  if (ref$ep eq 'GD::Image' && ref$bp eq 'GD::Image') {
           $tile_info->{joined_graphs} = GD::Image->new($args_for_image->{width},$args_for_image->{height}*2);
-	  $tile_info->{joined_graphs}->copy($ep, 0, 0, 0, 0,$args_for_image->{width}, $args_for_image->{height});
-	  $tile_info->{joined_graphs}->copy($bp, 0, $args_for_image->{height}, 0, 0,$args_for_image->{width}, $args_for_image->{height});
+    $tile_info->{joined_graphs}->copy($ep, 0, 0, 0, 0,$args_for_image->{width}, $args_for_image->{height});
+    $tile_info->{joined_graphs}->copy($bp, 0, $args_for_image->{height}, 0, 0,$args_for_image->{width}, $args_for_image->{height});
         }
         1;
       } or do {

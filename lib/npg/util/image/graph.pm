@@ -43,10 +43,10 @@ sub plotter {
     $gd->colorAllocate($COLOR_ALLOCATE,$COLOR_ALLOCATE,$COLOR_ALLOCATE);
     my $blk   = $gd->colorAllocate(0,0,0);
     $gd->string(gdSmallFont,
-		$width/2 - (length $title) * $THREE,
-		$height/2 - $FOUR,
-		$title,
-		$blk);
+    $width/2 - (length $title) * $THREE,
+    $height/2 - $FOUR,
+    $title,
+    $blk);
     return $gd->png();
   }
   my $cmap = $self->cmap();
@@ -55,10 +55,10 @@ sub plotter {
 
   $graph->set(
               dclrs        => [
-			       map {
-				 GD::Graph::colour::add_colour(q(#).$cmap->hex_by_name($_));
-			       } @{$self->colours()}
-			      ],
+             map {
+         GD::Graph::colour::add_colour(q(#).$cmap->hex_by_name($_));
+             } @{$self->colours()}
+            ],
               fgclr        => 'lgray',
               boxclr       => 'white',
               accentclr    => 'black',
