@@ -30,6 +30,10 @@ sub person_info {
     return $info;
   }
 
+  my $domain;
+  ($username,$domain) = $username =~ /(\w+)@?(\S+)?/sxm;
+  if (defined $domain and $domain ne 'sanger.ac.uk') { return $info; }
+
   my $ldap=Net::LDAP->new($SANGER_LDAP_SERVER) or croak qq[Cannot connect to LDAP server $SANGER_LDAP_SERVER: $EVAL_ERROR];
   $ldap->bind; # anonymous
   my $mesg=$ldap->search(base => $LDAP_SEARCH_BASE,

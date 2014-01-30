@@ -19,6 +19,7 @@ use npg::model::user;
 use npg::model::usergroup;
 use npg::authentication::sanger_sso qw/sanger_cookie_name sanger_username/;
 use npg::authentication::sanger_ldap qw/person_info/;
+use npg::authentication::oidc;
 
 use base qw(ClearPress::view);
 
@@ -37,7 +38,13 @@ sub new {
   }
 
   if (!$username) {
-    my $cookie = $cgi ? $cgi->cookie(sanger_cookie_name()) : q();
+	my $oidc = npg::authentication::oidc->new;
+    my $cookie = $cgi ? $cgi->cookie($oidc->long_cookie_name) : q();
+	if ($cookie) {
+		my $payload = $oidc->verify($cookie);
+		$username = $payload->{email};
+	}
+    $cookie = $cgi ? $cgi->cookie(sanger_cookie_name()) : q();
     if($cookie) {
       $username = sanger_username($cookie, $self->util()->decription_key());
     }
