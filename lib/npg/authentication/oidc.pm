@@ -31,7 +31,7 @@ $Net::HTTPS::SSL_SOCKET_CLASS = 'Net::SSL'; # Force use of Net::SSL
 Readonly::Scalar our $CONFIG_FILE  => $ENV{NPG_DATA_ROOT}.'/config.ini';
 
 has domain => (
-	is            => 'ro',
+    is            => 'ro',
     isa            => 'Str',
     default        => 'oidc_google',
 );
@@ -47,8 +47,8 @@ sub _build_config {
 }
 
 has certs => (
-	is => 'rw',
-	isa => 'HashRef',
+    is => 'rw',
+    isa => 'HashRef',
 );
 
 has client_id => (
@@ -242,7 +242,7 @@ sub get_certs
     if ($self->certs_expired()) {
         $self->get_certs_from_web();
     }
-	return;
+    return;
 }
 
 sub get_certs_from_web
@@ -265,7 +265,7 @@ sub get_certs_from_web
     } else {
         croak "ERROR getting certs from $self->certs_url";
     }
-	return;
+    return;
 }
 
 sub get_certs_from_file
@@ -280,18 +280,18 @@ sub get_certs_from_file
         $self->certs = undef;
     }
     close $fh || croak "Failed to close certificate file $self->certs_cache_file";
-	return;
+    return;
 }
 
 sub parse_certs
 {
     my ($self, $json_certs) = @_;
     my $certs = decode_json($json_certs);
-	$self->certs({});
+    $self->certs({});
     foreach my $kid (keys %{$certs}) {
         $self->certs->{$kid} = Crypt::OpenSSL::X509->new_from_string($certs->{$kid});
     }
-	return;
+    return;
 }
 
 
