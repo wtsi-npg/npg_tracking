@@ -31,18 +31,6 @@ use JSON;
 use MIME::Base64 qw(decode_base64url encode_base64 decode_base64);
 use npg::authentication::oidc;
 
-
-=head
-{
-no strict 'refs';
-warn "=== MODULES ===\n";
-foreach my $k( keys %INC){ my $x=$k;$x=~s/.pm//;$x=~s#/#::#g;my $v=${$x."::VERSION"};warn "$k ($v): $INC{$k}\n";}
-warn "=== ENVIRONMENT ===\n";
-foreach my $k (keys %ENV) { warn "$k = $ENV{$k}\n"; }
-}
-=cut
-
-
 our $VERSION = '0.0.1';
 
 our $oidc = npg::authentication::oidc->new;
