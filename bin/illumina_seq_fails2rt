@@ -97,7 +97,7 @@ sub tickets4run {
       next unless (defined $l->seq_qc_state && !$l->seq_qc_state);
       my @p = $l->study_names($with_illumina_controls);
       foreach my $p (@p) {
-	push @{$study2lane{$p}},$l;
+  push @{$study2lane{$p}},$l;
       }
     }
 
@@ -115,10 +115,10 @@ sub tickets4run {
       my @pos = ();
       my @study_names = ();
       foreach my $study_name (keys %{$emails2studies->{$emails_set}}) {
-	my @limsa = @{$emails2studies->{$emails_set}->{$study_name}};
-	push @study_names, $study_name;
-	push @pos, map{$_->position} @limsa; 
-	push @library_names, map{$_->library_name} @limsa;
+  my @limsa = @{$emails2studies->{$emails_set}->{$study_name}};
+  push @study_names, $study_name;
+  push @pos, map{$_->position} @limsa; 
+  push @library_names, map{$_->library_name} @limsa;
       }
 
       @pos = uniq @pos;
@@ -136,10 +136,10 @@ sub tickets4run {
       $data   .= 'set-owner: '.$seqpm[int(rand(@seqpm))].qq(\n) if @seqpm;
       $data   .= "\nLane".(@pos>1?q(s ):q( )).join(',',@pos)." of Illumina sequencing run $id_run, corresponding to librar".(@pos>1?q(ies ):q(y )).join(', ',map{q['].$_.q[']} @library_names)." have failed their NPG QC stage. Stud". (@study_names>1?q(ies ):q(y ))  .": $studies.\n";
       my $msg = MIME::Lite->new(
-	From => ((getpwuid($<))[0]).$EMAIL_DOMAIN,
-	To => "illumina-sequencing-failures$EMAIL_DOMAIN",
-	Subject => "Run $id_run -- lane".(@pos>1?q(s ):q( )).join(',',@pos) . " -- $studies",
-	Data => $data,
+  From => ((getpwuid($<))[0]).$EMAIL_DOMAIN,
+  To => "illumina-sequencing-failures$EMAIL_DOMAIN",
+  Subject => "Run $id_run -- lane".(@pos>1?q(s ):q( )).join(',',@pos) . " -- $studies",
+  Data => $data,
       );
       $msg->print() if not $sendmsg;
       push @msg, $msg;
@@ -159,10 +159,10 @@ sub _studies2emails {
     my $lims = $studies_hash->{$study_name}->[0];
     if ($lims->is_pool) {
       foreach my $l ($lims->associated_child_lims) {
-	if ($l->study_name && $l->study_name eq $study_name) {
-	  $lims = $l;
-	  last;
-	}
+  if ($l->study_name && $l->study_name eq $study_name) {
+    $lims = $l;
+    last;
+  }
       }
     }
     my @emails_a =  uniq @{$lims->email_addresses_of_managers};

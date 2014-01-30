@@ -27,16 +27,16 @@ isa_ok($run_lane, 'npg::api::run_lane');
 
 {
   my $run_lane = npg::api::run_lane->new({
-					  'id_run'   => 2888,
-					  'position' => 2,
-					 });
+            'id_run'   => 2888,
+            'position' => 2,
+           });
   is($run_lane->id_run_lane, 22657, 'lookup from id_run and position');
 }
 
 {
   my $run_lane = npg::api::run_lane->new({
-					  'id_run_lane' => 5,
-					 });
+            'id_run_lane' => 5,
+           });
   my $run = $run_lane->run();
   is($run_lane->lims(), undef, 'no batch, no lims');
   is($run_lane->is_library(), 0, 'no batch, no library info');
@@ -47,9 +47,9 @@ isa_ok($run_lane, 'npg::api::run_lane');
 
 {
   my $run_lane = npg::api::run_lane->new({
-					  'id_run'   => 3948,
-					  'position' => 1,
-					 });
+            'id_run'   => 3948,
+            'position' => 1,
+           });
   is($run_lane->id_run_lane, 31136, 'lookup from id_run and position');
   ok(!$run_lane->contains_nonconsented_human, 'does not contain nonconsented human');
   ok(!$run_lane->contains_unconsented_human, 'does not contain unconsented human (back compat)');
@@ -62,16 +62,16 @@ isa_ok($run_lane, 'npg::api::run_lane');
 
 {
   my $run_lane = npg::api::run_lane->new({
-					  'id_run'   => 4231,
-					  'position' => 1,
-					 });
+            'id_run'   => 4231,
+            'position' => 1,
+           });
   ok(!$run_lane->is_spiked_phix(), 'run 4231 lane 1 is not spiked phix');
   is($run_lane->manual_qc, 'pass', 'manual qc passed');
 
   $run_lane = npg::api::run_lane->new({
-					  'id_run'   => 7056,
-					  'position' => 1,
-					 });
+            'id_run'   => 7056,
+            'position' => 1,
+           });
   ok($run_lane->is_spiked_phix(), 'run 7056 lane 1 is spiked phix');
   ok($run_lane->is_pool, 'is a pool');
   is($run_lane->manual_qc, undef, 'manual qc undefined');
@@ -79,26 +79,26 @@ isa_ok($run_lane, 'npg::api::run_lane');
 
 {
   my $run_lane = npg::api::run_lane->new({
-					  'id_run'   => 4231,
-					  'position' => 4,
-					 });
+            'id_run'   => 4231,
+            'position' => 4,
+           });
   ok($run_lane->is_control, 'lane 4 is control');
 }
 
 {
   my $run_lane = npg::api::run_lane->new({
-					  'id_run'   => 883,
-					  'position' => 5,
-					 });
+            'id_run'   => 883,
+            'position' => 5,
+           });
   ok($run_lane->is_library, 'is a library');
   is($run_lane->contains_nonconsented_human, 1, 'contains nonconsented human');
 }
 
 {
   my $run_lane = npg::api::run_lane->new({
-					  'id_run'   => 6936,
-					  'position' => 2,
-					 });
+            'id_run'   => 6936,
+            'position' => 2,
+           });
   ok($run_lane->is_pool, 'is a pool');
   ok($run_lane->contains_nonconsented_human, 'contains nonconsented human');
 }

@@ -18,15 +18,15 @@ my $base_url = $npg::api::util::LIVE_BASE_URI;
 
 {
   my $ua   = t::useragent->new({
-				is_success => 1,
-				mock => {
-				   $base_url . q{/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
-			    },
-			  });
+        is_success => 1,
+        mock => {
+           $base_url . q{/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
+          },
+        });
 
   my $i_s  = npg::api::instrument_status->new({
-				 util   => npg::api::util->new({useragent => $ua}),
-				});
+         util   => npg::api::util->new({useragent => $ua}),
+        });
   isa_ok($i_s,'npg::api::instrument_status', '$i_s');
   my @fields = $i_s->fields();
   is($fields[0], 'id_instrument_status', '$fields[0] is id_instrument_status');

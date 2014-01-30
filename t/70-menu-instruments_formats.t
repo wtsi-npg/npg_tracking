@@ -17,10 +17,10 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevis
 my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
 {
   my $str = t::request->new({
-			     PATH_INFO      => '/instrument_format',
-			     REQUEST_METHOD => 'GET',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           PATH_INFO      => '/instrument_format',
+           REQUEST_METHOD => 'GET',
+           username       => 'public',
+           util           => $util,
+          });
   ok($util->test_rendered($str,  't/data/rendered/menus/instruments_formats.html'), 'menu instruments>formats');
 }

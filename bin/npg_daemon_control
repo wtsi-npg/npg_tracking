@@ -25,7 +25,7 @@ my $opts = {};
 
 my @classes = Module::Pluggable::Object->new(
                              require     => 0,
-			     search_path => $DAEMON_NAMESPACE,
+           search_path => $DAEMON_NAMESPACE,
                                             )->plugins;
 
 my @options = qw(help dry-run);

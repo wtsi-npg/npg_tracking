@@ -11,10 +11,10 @@ use_ok('npg::api::util');
 
 {
   my $util = npg::api::util->new({
-				  base_uri  => '/foo',
-				  useragent => 'foo',
-				  parser    => 'foo',
-				 });
+          base_uri  => '/foo',
+          useragent => 'foo',
+          parser    => 'foo',
+         });
   is($util->base_uri(),  '/foo', 'base url set explicitly');
   is($util->useragent(), 'foo');
   is($util->parser(),    'foo');

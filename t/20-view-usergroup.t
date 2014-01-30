@@ -20,15 +20,15 @@ my $util = t::util->new({fixtures=>1});
 
 {
   my $model = npg::model::usergroup->new({
-					  util         => $util,
-					  id_usergroup => 1000,
-					 });
+            util         => $util,
+            id_usergroup => 1000,
+           });
   my $view  = npg::view::usergroup->new({
-					 util   => $util,
-					 model  => $model,
-					 action => 'read',
-					 aspect => 'list',
-					});
+           util   => $util,
+           model  => $model,
+           action => 'read',
+           aspect => 'list',
+          });
 
   isa_ok($view, 'npg::view::usergroup');
   is($model->id_usergroup(), 1000);
@@ -36,15 +36,15 @@ my $util = t::util->new({fixtures=>1});
 
 {
   my $model = npg::model::usergroup->new({
-					  util         => $util,
-					  id_usergroup => 'testg',
-					 });
+            util         => $util,
+            id_usergroup => 'testg',
+           });
   my $view  = npg::view::usergroup->new({
-					 util   => $util,
-					 model  => $model,
-					 action => 'read',
-					 aspect => 'list',
-					});
+           util   => $util,
+           model  => $model,
+           action => 'read',
+           aspect => 'list',
+          });
 
   isa_ok($view, 'npg::view::usergroup');
   is($model->groupname(), 'testg');
@@ -52,14 +52,14 @@ my $util = t::util->new({fixtures=>1});
 
 {
   my $model = npg::model::usergroup->new({
-					  util => $util,
-					 });
+            util => $util,
+           });
   my $view  = npg::view::usergroup->new({
-					 util   => $util,
-					 model  => $model,
-					 action => 'read',
-					 aspect => 'list',
-					});
+           util   => $util,
+           model  => $model,
+           action => 'read',
+           aspect => 'list',
+          });
 
   isa_ok($view, 'npg::view::usergroup');
 }
