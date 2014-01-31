@@ -1,11 +1,15 @@
 CHANGES
 
- - hardcoded link for enigmatic authentication page so that the page
+ - hardcoded link for enigmatic authentication (not mod perl url) page so that the page
    is accessible from the server on sfweb, where enigmatic is not deployed;
    uncomment old code to restore the relative to the server root link for testing
  - apache2.2 compatible configuration files to run the tracking server under
    default apache version for Ubuntu precise; virtual host definitions in
    stand-alone files allow for dynamic inclusion of virtual hosts
+ - fixed occasional authentication problem (inability of a particular thread to load
+   additional modules due to the fact that on a second invocation of npg script in the
+   same server thread @INC array is not extended since BEGIN block is not run) when
+   running under apache2.2 by extending the server @INC array at server start up time 
  - bam, cram, etc files access is prohibited from the runfolder directories listings,
    however, these files are visible in listings
  - more convenient sorting order of directories and files in the runfolder directories

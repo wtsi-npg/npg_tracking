@@ -13,7 +13,7 @@ function authlink() {
   //path_array.unshift(window.location.host);
   //path_array.unshift('https:/');
   //window.location.href = path_array.join('/');
-  window.location.href = 'https://npg.sanger.ac.uk/perl/enigmatic.cgi';
+  window.location.href = 'https://npg.sanger.ac.uk/cgi-bin/enigmatic.cgi';
   return;
 }
 
