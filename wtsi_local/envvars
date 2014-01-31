@@ -11,12 +11,12 @@ unset HOME
 export NPG_APACHE_HOST=`hostname`
 export APACHE_RUN_USER=${USER}
 export APACHE_RUN_GROUP=solexa
-export NPG_TRACKING_SERVER_PATH=$(dirname $(dirname $(dirname $(readlink -f $APACHE_ENVVARS))))
+export NPG_TRACKING_SERVER_PATH=$(dirname $(dirname $APACHE_CONFDIR))
 echo "Server path: ${NPG_TRACKING_SERVER_PATH}"
 export APACHE_RUN_DIR=${NPG_TRACKING_SERVER_PATH}
 
 export dev='dev'
-if [[ "$NPG_TRACKING_SERVER_PATH" =~ "www-live" ]] ; then dev=''; fi;
+if [[ "$NPG_TRACKING_SERVER_PATH" =~ "www-live" ]] ; then dev='live'; fi;
 echo "dev: ${dev}"
 
 export APACHE_LOG_DIR=${NPG_TRACKING_SERVER_PATH}/logs
