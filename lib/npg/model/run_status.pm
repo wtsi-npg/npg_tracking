@@ -67,9 +67,9 @@ sub create {
                   VALUES (?,now(),?,?,1));
 
     $dbh->do($query, {},
-       $self->id_run(),
-       $self->id_run_status_dict(),
-       $self->id_user());
+            $self->id_run(),
+            $self->id_run_status_dict(),
+            $self->id_user());
 
     my $idref = $dbh->selectall_arrayref('SELECT LAST_INSERT_ID()');
     $self->id_run_status($idref->[0]->[0]);
@@ -90,13 +90,13 @@ sub create {
 
     my $msg = qq($desc for run @{[$self->run->name()]}\nhttp://npg.sanger.ac.uk/perl/npg/run/@{[$self->run->name()]}\n$history\n\n$contents_of_lanes);
     my $event = npg::model::event->new({
-          run                => $self->run(),
-          status_description => $desc,
-          util               => $util,
-          id_event_type      => 1, # run_status/status change
-          entity_id          => $self->id_run_status(),
-          description        => $msg,
-               });
+                                      run                => $self->run(),
+                                      status_description => $desc,
+                                      util               => $util,
+                                      id_event_type      => 1, # run_status/status change
+                                      entity_id          => $self->id_run_status(),
+                                      description        => $msg,
+                                      });
     $event->{id_run} = $self->id_run();
     $event->create({run => $self->id_run(), id_user => $self->id_user()});
 

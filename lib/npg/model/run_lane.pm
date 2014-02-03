@@ -111,28 +111,28 @@ sub save_tags {
   eval {
     for my $tag (@{$tags_to_save}) {
       $tag = npg::model::tag->new({
-           tag  => $tag,
-           util => $util,
-          });
+                                  tag  => $tag,
+                                  util => $util,
+                                  });
 
       if (!$tag->id_tag()) {
         $tag->create();
       }
 
       my $tag_run_lane = npg::model::tag_run_lane->new({
-              util         => $util,
-              id_tag       => $tag->id_tag(),
-              id_run_lane  => $self->id_run_lane(),
-                   });
+                                                      util         => $util,
+                                                      id_tag       => $tag->id_tag(),
+                                                      id_run_lane  => $self->id_run_lane(),
+                                                      });
       $tag_run_lane->date($date);
       $tag_run_lane->id_user($requestor->id_user());
       $tag_run_lane->create();
 
       my $tag_freq = 'npg::model::tag_frequency'->new({
-                   id_tag => $tag->id_tag(),
-                   id_entity_type => $entity_type->id_entity_type,
-                   util => $util,
-                  });
+                                                      id_tag => $tag->id_tag(),
+                                                      id_entity_type => $entity_type->id_entity_type,
+                                                      util => $util,
+                                                      });
 
       my $freq = $dbh->selectall_arrayref(q{SELECT COUNT(id_tag) FROM tag_run_lane WHERE id_tag = ?}, {}, $tag->id_tag())->[0]->[0];
       $tag_freq->frequency($freq);
@@ -163,20 +163,20 @@ sub remove_tags {
   eval {
     for my $tag (@{$tags_to_remove}) {
       $tag = npg::model::tag->new({
-           tag  => $tag,
-           util => $util,
-          });
+                                  tag  => $tag,
+                                  util => $util,
+                                  });
       my $tag_run_lane = npg::model::tag_run_lane->new({
-              id_tag      => $tag->id_tag(),
-              id_run_lane => $self->id_run_lane(),
-              util        => $util,
-                   });
+                                                       id_tag      => $tag->id_tag(),
+                                                       id_run_lane => $self->id_run_lane(),
+                                                       util        => $util,
+                                                       });
       $tag_run_lane->delete();
       my $tag_freq = 'npg::model::tag_frequency'->new({
-                   id_tag         => $tag->id_tag(),
-                   id_entity_type => $entity_type->id_entity_type,
-                   util           => $util,
-                  });
+                                                      id_tag         => $tag->id_tag(),
+                                                      id_entity_type => $entity_type->id_entity_type,
+                                                      util           => $util,
+                                                      });
       my $freq = $dbh->selectall_arrayref(q{SELECT COUNT(id_tag) FROM tag_run_lane WHERE id_tag = ?}, {}, $tag->id_tag())->[0]->[0];
       $tag_freq->frequency($freq);
       $tag_freq->save();

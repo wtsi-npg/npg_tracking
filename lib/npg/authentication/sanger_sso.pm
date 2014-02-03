@@ -36,11 +36,11 @@ sub sanger_username {
     $unescaped =~ s/\ /+/mxg;
     ##use critic
     my $decoded = decode_base64($unescaped);
-    my $crypt = Crypt::CBC->new(-key         => $enc_key,
-                          -literal_key => 1,
-                          -cipher      => 'Blowfish',
-                          -header      => 'randomiv',
-                          -padding     => 'space');
+    my $crypt = Crypt::CBC->new(  -key         => $enc_key,
+                                  -literal_key => 1,
+                                  -cipher      => 'Blowfish',
+                                  -header      => 'randomiv',
+                                  -padding     => 'space');
     my $decrypted = $crypt->decrypt($decoded);
     ($username, $at_domain) = $decrypted =~ /<<<<(\w+)(@[\w|\.]+)?/xms;
     if ($username && $at_domain) {

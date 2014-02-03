@@ -226,8 +226,8 @@ sub runs {
 
   if($params->{len} || $params->{start}) {
     $query = $self->util->driver->bounded_select($query,
-             $params->{len},
-             $params->{start});
+                                                $params->{len},
+                                                $params->{start});
   }
 
   return $self->gen_getarray($pkg, $query, @params);
@@ -323,8 +323,8 @@ sub current_instrument_status {
 sub utilisation {
   my ($self, $type) = @_;
   my $root_is = npg::model::instrument_status->new({
-                util => $self->util(),
-               });
+                                                    util => $self->util(),
+                                                  });
   return $root_is->utilisation($type);
 }
 
@@ -420,7 +420,7 @@ sub _fc_slots2runs {
       my $tag_value = $tag->tag;
       my @fcells =  grep { /^$tag_value$/smx } @FC_SLOT_TAGS;
       if (@fcells) {
-  push @{$slots->{$fcells[0]}}, $run->id_run;
+        push @{$slots->{$fcells[0]}}, $run->id_run;
       }
     }
   }

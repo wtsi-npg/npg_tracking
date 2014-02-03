@@ -53,12 +53,12 @@ sub create {
   $self->SUPER::create(); # we create this row here, so that the event table can receive the correct info
 
   my $event = npg::model::event->new({
-              util                    => $util,
-              entity_type_description => 'instrument_annotation',
-              event_type_description  => 'annotation',
-              entity_id               => $self->id_instrument_annotation(),
-              description             => $annotation->user->username() . q{ annotated instrument } . $self->instrument->name() . qq{\n} . $annotation->comment(),
-             });
+                                      util                    => $util,
+                                      entity_type_description => 'instrument_annotation',
+                                      event_type_description  => 'annotation',
+                                      entity_id               => $self->id_instrument_annotation(),
+                                      description             => $annotation->user->username() . q{ annotated instrument } . $self->instrument->name() . qq{\n} . $annotation->comment(),
+                                    });
   $event->create();
 
   #########

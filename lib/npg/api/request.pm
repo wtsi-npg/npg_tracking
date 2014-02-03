@@ -163,7 +163,7 @@ sub make {
     if ($method ne $DEFAULT_METHOD) {
         if ($cache) {
             croak qq[$method requests cannot use cache: $uri];
-  }
+        }
         $content = $self->_from_web($uri, $method, $args);
     } else {
         my $path = q[];
@@ -172,7 +172,7 @@ sub make {
             $path = $self->_create_path($uri);
             if (!$path) {
                 croak qq[Empty path generated for $uri];
-      }
+            }
         }
 
         $content = ($cache && !$ENV{$self->save2cache_dir_var_name}) ?
