@@ -97,7 +97,7 @@ sub tickets4run {
       next unless (defined $l->seq_qc_state && !$l->seq_qc_state);
       my @p = $l->study_names($with_illumina_controls);
       foreach my $p (@p) {
-  push @{$study2lane{$p}},$l;
+        push @{$study2lane{$p}},$l;
       }
     }
 
@@ -115,10 +115,10 @@ sub tickets4run {
       my @pos = ();
       my @study_names = ();
       foreach my $study_name (keys %{$emails2studies->{$emails_set}}) {
-  my @limsa = @{$emails2studies->{$emails_set}->{$study_name}};
-  push @study_names, $study_name;
-  push @pos, map{$_->position} @limsa; 
-  push @library_names, map{$_->library_name} @limsa;
+        my @limsa = @{$emails2studies->{$emails_set}->{$study_name}};
+        push @study_names, $study_name;
+        push @pos, map{$_->position} @limsa; 
+        push @library_names, map{$_->library_name} @limsa;
       }
 
       @pos = uniq @pos;
