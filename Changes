@@ -1,5 +1,13 @@
 CHANGES
 
+release 75.5
+ - on Ubuntu precise daemon .pid files in /tmp directory get deleted after a week,
+   making daemons non-responsive; change modification time of the .pid
+   file when pinging the daemon, which is done at least once a day
+
+release 75.4
+ - change of default reference repository location
+
 release 75.3
  - default UTF8 output for samplesheets
  - add number of lanes to run list views

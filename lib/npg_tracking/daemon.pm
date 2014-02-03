@@ -135,7 +135,9 @@ Command to ping a running script, as a string.
 =cut
 sub ping {
     my $self = shift;
-    return q[daemon --running -n ] . $self->daemon_name . q[ && echo -n 'ok' || echo -n 'not ok'];
+    my $dname = $self->daemon_name;
+    my $pid_file = q[/tmp/] . $dname . q[.pid];
+    return qq[daemon --running -n $dname && ((if [ -w $pid_file ]; then touch -mc $pid_file; fi) && echo -n 'ok') || echo -n 'not ok'];
 }
 
 =head2 stop
