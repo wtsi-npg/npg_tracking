@@ -14,8 +14,6 @@ use LWP::UserAgent;
 use CGI qw/:standard/;
 use URI;
 
-our $VERSION = do { my @r = (q$LastChangedRevision: 16549 $ =~ /\d+/smxg); sprintf '%d.'.'%03d' x $#r, @r };
-
 my $requested_url = param('url');
 my $u = URI->new($requested_url);
 eval {
