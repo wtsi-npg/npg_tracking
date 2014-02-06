@@ -164,6 +164,17 @@ index end
 
 =cut
 
+has 'inline_index_read' => (isa => 'Maybe[Int]',
+                           is => 'ro',
+                           lazy_build => 1,
+                          );
+
+sub _build_inline_index_read {
+  my $self = shift;
+  my @x = _parse_sample_description($self->_sample_description);
+  return $x[3];  ## no critic (ProhibitMagicNumbers)
+}
+
 has 'inline_index_end' => (isa => 'Maybe[Int]',
                            is => 'ro',
                            lazy_build => 1,
@@ -745,11 +756,18 @@ sub _parse_sample_description {
   my $tag=undef;
   my $start=undef;
   my $end=undef;
+  my $read=undef;
   if ($desc && (($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx))) {
     ($tag) = $desc =~ /\(([ACGT]+)\)/smx;
-    ($start, $end) = $desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ read\ 1/smx;
+    if ($desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ read\ 1/smx) {
+        ($start, $end, $read) = ($1, $2, 1);
+    } elsif ($desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ non\-index\ read\ (\d)/smx) {
+        ($start, $end, $read) = ($1, $2, $3);
+    } else {
+        croak q[Error parsing sample description ] . $desc;
+    }
   }
-  return ($tag, $start, $end);
+  return ($tag, $start, $end, $read);
 }
 
 =head2 library_types
