@@ -1,5 +1,6 @@
 CHANGES
 
+ - extended inline index to read 2
  - hardcoded link for enigmatic authentication (not mod perl url) page so that the page
    is accessible from the server on sfweb, where enigmatic is not deployed;
    uncomment old code to restore the relative to the server root link for testing

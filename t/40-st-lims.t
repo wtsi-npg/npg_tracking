@@ -5,7 +5,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 378;
+use Test::More tests => 387;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -449,6 +449,19 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
 	is($lims->inline_index_exists,1,'Found an inline index');
 	is($lims->inline_index_start,7,'found correct inline index start');
 	is($lims->inline_index_end,12,'found correct inline index end');
+	is($lims->inline_index_read,2,'found correct inline index read');
+	is($lims->tag_sequence,undef,'tag sequence undefined for lane level');
+}
+
+{
+	my $lims = st::api::lims->new(id_run=>10638, position=>6);
+	is ($lims->id_run(), 10638, "Found the run");
+	my @children = $lims->children();
+	isnt (scalar @children, 0, "We have children");
+	is($lims->inline_index_exists,1,'Found an inline index');
+	is($lims->inline_index_start,6,'found correct inline index start');
+	is($lims->inline_index_end,10,'found correct inline index end');
+	is($lims->inline_index_read,1,'found correct inline index read');
 	is($lims->tag_sequence,undef,'tag sequence undefined for lane level');
 }
 
