@@ -18,7 +18,6 @@ cgi-bin/npg
 cgi-bin/reflector
 cgi-bin/storage
 Changes
-data/config.ini
 data/gfx/1G_PE.png
 data/gfx/1G.png
 data/gfx/cBot.png
@@ -28,7 +27,7 @@ data/gfx/HiSeq.png
 data/gfx/HK_PE.png
 data/gfx/HK.png
 data/gfx/MiSeq.png
-data/httpd.conf
+data/config.ini
 data/npg_tracking_email/templates/devel_header.tt2
 data/npg_tracking_email/templates/instrument_annotation.tt2
 data/npg_tracking_email/templates/instrument_status_change.tt2
@@ -1841,4 +1840,7 @@ t/useragent.pm
 t/util.pm
 wtsi_local/httpd.conf
 wtsi_local/httpd_vm.conf
-
+wtsi_local/apache2.conf
+wtsi_local/envvars
+wtsi_local/httpd_instr_proxy.conf
+wtsi_local/httpd_sfweb.conf
