@@ -337,7 +337,7 @@ sub join_conditions {
         my $temp = $link . '.id_' . $link . ' = ' . $from . '.id_' . $link;
         if (!$seen{$temp}) {
           push @joins, $temp;
-        } 
+        }
       }
     }
   }

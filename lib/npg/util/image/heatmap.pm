@@ -227,7 +227,7 @@ sub give_datum_a_gradient {
       if (ref$tile eq 'ARRAY') {
         if ($tile->[0]) {
           $all_data_points->{$tile->[0]}++;
-  }
+        }
       } else {
         $all_data_points->{$tile}++;
       }
@@ -251,7 +251,7 @@ sub give_datum_a_gradient {
 
       if ($count == $group_count) {
         $count = 1;
-  $gradient_index++;
+        $gradient_index++;
       } else {
         $count++
       }
@@ -260,7 +260,7 @@ sub give_datum_a_gradient {
 
   } else {
     if ($total_different_values == 0) {
-  return $all_data_points;
+      return $all_data_points;
     }
     $group_count = scalar@{$linear_gradient}/$total_different_values;
     $group_count = floor($group_count);
@@ -345,7 +345,7 @@ sub give_datum_a_range_gradient {
       if (ref$tile eq 'ARRAY') {
         if ($tile->[0]) {
           $all_data_points->{$tile->[0]}++;
-  }
+        }
       } else {
         $all_data_points->{$tile}++;
       }
@@ -380,7 +380,7 @@ sub give_datum_a_range_gradient {
 
       if ( $tile_value >= $bin_starts[$i]->[0] && (!$bin_starts[$a] || $tile_value <= $bin_starts[$a]->[0])) {
         $all_data_points->{$tile_value} = $bin_starts[$i]->[1];
-  last;
+        last;
       }
 
     }

@@ -70,9 +70,9 @@ sub _emails_within_tag {
       if($email){
         $email=~s/\a\s+//smx;
         $email=~s/\s+\z//smx;
-  if($email){
+        if($email){
           push @{$results},$email;
-  }
+        }
       }
     }
   }

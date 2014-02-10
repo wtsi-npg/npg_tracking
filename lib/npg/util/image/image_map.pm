@@ -104,10 +104,10 @@ sub process_instrument_gantt_values {
       if (!$previous_box) {
         $previous_box = $box_info;
         push @boxes, $box_info;
-  next;
+        next;
       }
       foreach my $ti (0..(scalar@{$previous_box} - 2)) {
-  if ($previous_box->[$ti] != $box_info->[$ti]) {
+        if ($previous_box->[$ti] != $box_info->[$ti]) {
           push @boxes, $box_info;
           $previous_box = $box_info;
           last;
