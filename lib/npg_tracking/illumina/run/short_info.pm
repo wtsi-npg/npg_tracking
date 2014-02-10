@@ -80,9 +80,9 @@ sub _build_id_run {
   my ($self) = @_;
   if ( !( $self->has_run_folder() || $self->has_name() ) ) {
       eval {
-    $self->name();
+        $self->name();
       } or do {
-    croak qq{Unable to obtain id_run from name : $EVAL_ERROR};
+        croak qq{Unable to obtain id_run from name : $EVAL_ERROR};
       };
   }
 
@@ -95,7 +95,7 @@ sub _build_name {
   my ($self) = @_;
   if( !( $self->has_id_run() || $self->has_run_folder() ) ) {
     eval {
-  $self->run_folder();
+      $self->run_folder();
     } or do {
         croak qq{Unable to obtain name from run_folder : $EVAL_ERROR};
     };

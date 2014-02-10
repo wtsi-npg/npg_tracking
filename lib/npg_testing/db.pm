@@ -121,15 +121,15 @@ sub load_fixtures {
         my $rs;
         try {
             $rs = $schema->resultset($table);
-  } catch { #old-style names have to be mapped to DBIx classes
+        } catch { #old-style names have to be mapped to DBIx classes
             ##no critic (ProhibitParensWithBuiltins)
-      $table = join q[], map {ucfirst $_} split(/\./smx, $table);
+            $table = join q[], map {ucfirst $_} split(/\./smx, $table);
             ##use critic
             if ($table eq q[QxYield]) {$table = q[QXYield];}
             $rs = $schema->resultset($table);
-  };
+        };
         foreach my $row (@{$yml}) {
-      $rs->create($row);
+           $rs->create($row);
         }
     }
     return;

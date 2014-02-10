@@ -156,8 +156,8 @@ sub plot_illumina_map {
                       ;
 
       push @{$self->image_map_reference()}, [$x1, $y1, $x2, $y2, {
-  position => $lane_count+1,
-  tile     => $tile_number,
+        position => $lane_count+1,
+        tile     => $tile_number,
         value    => $value,
       }];
     }

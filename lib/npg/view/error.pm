@@ -91,7 +91,7 @@ sub render {
 
     my $msg = MIME::Lite->new(
           To      => $to_string,
-            From    => q[srpipe@].q[sanger.ac.uk],
+          From    => q[srpipe@].q[sanger.ac.uk],
           Subject => (sprintf q(%s NPG Error), $dev),
           Type    => 'text/plain',
           Data    => $email_body,

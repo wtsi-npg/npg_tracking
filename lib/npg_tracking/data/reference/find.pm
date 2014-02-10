@@ -314,9 +314,9 @@ sub ref_info {
       while (my $line = <$fh>) {
         if ($line ne qq[\n] && $line !~ /^\#/smx) {
           $line =~ s/^\s+//sxm;
-         $line =~ s/\s+$//sxm;
-         $found = $line;
-         last;
+          $line =~ s/\s+$//sxm;
+          $found = $line;
+          last;
        }
       }
       close $fh or croak qq[Cannot close $opts_in : $ERRNO];
@@ -394,18 +394,18 @@ sub lims2ref {
       if ($taxon_id) {
         my $description = $self->taxonid2species($taxon_id);
         if ($description->{species})  {
-    my $strain =  $description->{strain} ?  $description->{strain} : q[];
-    $ref_path = $self->_get_reference_path($description->{species}, $strain);
+          my $strain =  $description->{strain} ?  $description->{strain} : q[];
+          $ref_path = $self->_get_reference_path($description->{species}, $strain);
         }
         if (!$ref_path) {
-    $self->messages->push(qq[no reference for taxon id $taxon_id]);
+          $self->messages->push(qq[no reference for taxon id $taxon_id]);
         }
       } else {
         foreach my $name (($lims->library_name, $lims->sample_name)) {
-    if ($name && $name =~ /phix/ismx ) {
-      $ref_path = $self->_get_reference_path($PHIX);
-      last;
-    }
+          if ($name && $name =~ /phix/ismx ) {
+            $ref_path = $self->_get_reference_path($PHIX);
+            last;
+          }
         }
       }
     }

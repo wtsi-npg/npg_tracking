@@ -235,15 +235,15 @@ sub read_key_png {
   my $font     = gdSmallFont;
 
   Readonly::Scalar my $TYPES => [
-         {'busy'          => $colours->{'green'},  },
+                                 {'busy'          => $colours->{'green'},  },
                                  {'idle'          => $colours->{'blue'},   },
-         {'wash required' => $colours->{'yellow'}, },
-         {'req. approval'      => $colours->{'purple'}, },
+                                 {'wash required' => $colours->{'yellow'}, },
+                                 {'req. approval' => $colours->{'purple'}, },
                                  {'plnd. repair'  => $colours->{'pink'},   },
                                  {'down4repair'   => $colours->{'red'},    },
-                           {'plnd. service' => $colours->{'lorange'},},
+                                 {'plnd. service' => $colours->{'lorange'},},
                                  {'down4service'  => $colours->{'orange'},    },
-         ];
+                                ];
   my $y = $KEY_OFFSET_Y;
   for my $type (@{$TYPES}) {
     my ($k, $v) = %{$type};

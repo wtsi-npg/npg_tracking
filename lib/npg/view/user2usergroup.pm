@@ -27,8 +27,8 @@ sub authorised {
 
   if($action eq 'create' && $req_id_user) {
     my $public = npg::model::user->new({
-          util     => $self->util(),
-          username => 'public',
+                  util     => $self->util(),
+                  username => 'public',
                });
     if(defined $req_id_user &&
        $req_id_user != $public->id_user()) {

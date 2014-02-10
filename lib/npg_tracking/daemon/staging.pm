@@ -26,12 +26,12 @@ override '_build_hosts' => sub {
 };
 override 'command'      => sub { my ($self, $host) = @_;
                                  if (!$host) {
-           croak q{Need host name};
-         }
+                                  croak q{Need host name};
+                                 }
                                  (my $sfarea) = $host =~ /^sf(\d+)-nfs$/smx;
                                  if (!$sfarea) {
                                    croak qq{Host name $host does not follow expected pattern sfXX-nfs};
-         }
+                                 }
                                  return join q[ ], $SCRIPT_NAME, q{/export/sf} . $sfarea;
                                };
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };

@@ -108,7 +108,7 @@ sub list_graph_png {
          title             => $title,
          legend            => ['Total', 'Less Hot Spare', 'Production'],
          x_labels_vertical => 1,
-                                 x_label_skip      => $x_label_skip,
+         x_label_skip      => $x_label_skip,
       }, $graph_type);
 }
 

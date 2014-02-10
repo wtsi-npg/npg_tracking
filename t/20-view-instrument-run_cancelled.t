@@ -35,7 +35,7 @@ my $inst = npg::model::instrument->new({
           priority             => 0,
           id_user              => $util->requestor->id_user(),
           is_paired            => 1,
-                                  team                 => 'A',
+          team                 => 'A',
          });
   $run->create();
 
@@ -50,8 +50,8 @@ my $inst = npg::model::instrument->new({
                username       => 'joe_loader',
                util           => $util,
                cgi_params     => {
-                id_run             => $run->id_run(),
-                id_run_status_dict => $rsd->id_run_status_dict(),
+               id_run             => $run->id_run(),
+               id_run_status_dict => $rsd->id_run_status_dict(),
                },
               });
 
