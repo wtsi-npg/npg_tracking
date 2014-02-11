@@ -22,6 +22,14 @@ my $class = Module::Build->subclass(code => <<'EOF');
     return $version;
   }
 
+  sub dir_files {
+    my $dir = shift;
+    opendir(my $dh, $dir) || die "can't opendir $dir: $!";
+    my @files = map { "$dir/$_" } grep { /^\w+$/ && -f "$dir/$_" } readdir($dh);
+    closedir $dh;
+    return @files;
+  }
+
   sub process_data_files {
     my $self = shift;
     `find data/npg_tracking_email/templates -type f | cpio -pdv --quiet blib`;
@@ -38,7 +46,14 @@ my $class = Module::Build->subclass(code => <<'EOF');
   }
 
   sub process_cgi_files {
-    `find cgi-bin -type f | cpio -pdv --quiet blib`;
+    my $self = shift;
+    my @files = dir_files('cgi-bin');
+    foreach my $file (@files) {
+      my $dest_file = $self->copy_if_modified('from' => $file, 'to_dir' => 'blib');
+      if ($dest_file) {
+        $self->fix_shebang_line($dest_file);
+      }
+    }
     `chmod +x blib/cgi-bin/*`;
     return;
   }
