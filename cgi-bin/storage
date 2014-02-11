@@ -2,7 +2,21 @@
 #########
 # copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/sflogin_web_apps/trunk/cgi-bin/storage, r15717
 #
+
+my @npg_libs;
+BEGIN {
+  my $libs_string = $ENV{'NPG_PERL5LIB'};
+  if ($libs_string) {
+    my @libs = split /:/smx, $libs_string;
+    foreach my $l (@libs) {
+      my ($dtl) = $l =~ /([a-z0-9\/\._\-]+)/i;
+      if ($dtl) {push @npg_libs, $dtl;}
+    }
+  }
+}
+
 use strict;
+use lib @npg_libs;
 use warnings;
 use GD;
 use English qw(-no_match_vars);
@@ -10,9 +24,7 @@ use Carp;
 
 my ($partition) = ($ENV{PATH_INFO} || q()) =~ /((sf\d+))/smx;
 
-%ENV = (
-	PATH => join q(:), qw(/bin /usr/bin /usr/local/bin)
-       );
+local $ENV{'PATH'} = join q(:), qw(/bin /usr/bin);
 
 my $gd    = GD::Image->new(40,40);
 my $white = $gd->colorAllocate(255,255,255);
@@ -42,3 +54,5 @@ $gd->string(gdSmallFont, 18,18, "$perc", $black);
 
 print "Content-type: image/png\n\n" or croak $ERRNO;
 print $gd->png() or croak $ERRNO;
+
+exit 0;

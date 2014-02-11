@@ -1,8 +1,41 @@
 CHANGES
 
+release 75.6
+ - extended inline index to read 2
+ - hardcoded link for enigmatic authentication (not mod perl url) page so that the page
+   is accessible from the server on sfweb, where enigmatic is not deployed;
+   uncomment old code to restore the relative to the server root link for testing
+ - apache2.2 compatible configuration files to run the tracking server under
+   default apache version for Ubuntu precise; virtual host definitions in
+   stand-alone files allow for dynamic inclusion of virtual hosts
+ - fixed occasional authentication problem (inability of a particular thread to load
+   additional modules due to the fact that on a second invocation of npg script in the
+   same server thread @INC array is not extended since BEGIN block is not run) when
+   running under apache2.2 by extending the server @INC array at server start up time 
+ - bam, cram, etc files access is prohibited from the runfolder directories listings,
+   however, these files are visible in listings
+ - more convenient sorting order of directories and files in the runfolder directories
+   listings
+ - directory index CSS changed to get a margin on the left; brighter color scheme
+   introduced
+ - Build.PL file extended to ensure that the shebang line of CGI scripts is
+   set to the Perl interpreter that is used for deployment
+ - explicit setting of PATH is removed from CGI scripts that do not use shell commands
+ - SVN-dependant VERSION removed from CGI scripts
+ - where necessary, PERL5LIB of CGI scripts is extended
+ - links to staging area server are picked up from config "staging_url" parameter,
+   and so are relative (to current host and port) if this is empty or non-existent
  - switch to samplesheet driver if NPG_CACHED_SAMPLESHEET_FILE is set
  - spiked_phix_tag_index accessor implementation for the samplesheet
    driver to ensure that spiked_phix_tag_index is defined for a pool
+
+release 75.5
+ - on Ubuntu precise daemon .pid files in /tmp directory get deleted after a week,
+   making daemons non-responsive; change modification time of the .pid
+   file when pinging the daemon, which is done at least once a day
+
+release 75.4
+ - change of default reference repository location
 
 release 75.3
  - default UTF8 output for samplesheets
