@@ -118,9 +118,9 @@ sub list {
 
   if($id_instrument_format) {
     my $instrument_format = npg::model::instrument_format->new({
-								util => $util,
-								id_instrument_format => $id_instrument_format,
-							       });
+                util => $util,
+                id_instrument_format => $id_instrument_format,
+                     });
     $model->{instruments} = $instrument_format->instruments();
 
   } else {
@@ -148,13 +148,13 @@ sub list_edit_statuses {
   my ($self, @args) = @_;
 
   my $root_isd = npg::model::instrument_status_dict->new({
-							  util => $self->util(),
-							 });
+                util => $self->util(),
+               });
   $self->model->{instrument_status_dicts} = $root_isd->instrument_status_dicts();
 
   my $root_imd = npg::model::instrument_mod_dict->new({
-						       util => $self->util(),
-						      });
+                   util => $self->util(),
+                  });
   $self->model->{instrument_mod_dicts} = $root_imd->instrument_mod_dicts();
 
   return $self->list(@args);
@@ -183,12 +183,12 @@ sub update_statuses {
 
   for my $id_instrument (@id_instruments) {
     my $is = npg::model::instrument_status->new({
-						 util                      => $util,
-						 id_instrument             => $id_instrument,
-						 id_instrument_status_dict => $iisd,
-						 id_user                   => $id_user,
-						 comment                   => $comment,
-						});
+             util                      => $util,
+             id_instrument             => $id_instrument,
+             id_instrument_status_dict => $iisd,
+             id_user                   => $id_user,
+             comment                   => $comment,
+            });
     $is->create();
   }
 
@@ -207,18 +207,18 @@ sub read { ## no critic (ProhibitBuiltinHomonyms)
   my $start   = $cgi->param('start') || $PAGINATION_START;
   my $id_rsd  = $cgi->param('id_run_status_dict') || $session->{id_run_status_dict} || 'all';
   my $all_rsd = npg::model::run_status_dict->new({
-						  util => $util,
-						 })->run_status_dicts();
+              util => $util,
+             })->run_status_dicts();
 
   $model->{start}            = $start;
   $model->{len}              = $len;
   $model->{run_status_dicts} = $all_rsd;
 
   $model->{runs} = $model->runs({
-				 len                => $len,
-				 start              => $start,
-				 id_run_status_dict => ($id_rsd ne 'all')?$id_rsd:undef,
-				});
+         len                => $len,
+         start              => $start,
+         id_run_status_dict => ($id_rsd ne 'all')?$id_rsd:undef,
+        });
   $model->{count_runs} = $model->count_runs({id_run_status_dict => ($id_rsd ne 'all')?$id_rsd:undef});
 
   $model->{id_run_status_dict}   = $id_rsd;
@@ -235,15 +235,15 @@ sub read_key_png {
   my $font     = gdSmallFont;
 
   Readonly::Scalar my $TYPES => [
-				 {'busy'          => $colours->{'green'},  },
+                                 {'busy'          => $colours->{'green'},  },
                                  {'idle'          => $colours->{'blue'},   },
-				 {'wash required' => $colours->{'yellow'}, },
-				 {'req. approval'      => $colours->{'purple'}, },
+                                 {'wash required' => $colours->{'yellow'}, },
+                                 {'req. approval' => $colours->{'purple'}, },
                                  {'plnd. repair'  => $colours->{'pink'},   },
                                  {'down4repair'   => $colours->{'red'},    },
-	                         {'plnd. service' => $colours->{'lorange'},},
+                                 {'plnd. service' => $colours->{'lorange'},},
                                  {'down4service'  => $colours->{'orange'},    },
-				 ];
+                                ];
   my $y = $KEY_OFFSET_Y;
   for my $type (@{$TYPES}) {
     my ($k, $v) = %{$type};
@@ -604,8 +604,8 @@ sub list_utilisation_png {
   my $data   = $self->model->utilisation($type);
   my $graph  = npg::util::image::graph->new();
   my $instrument_status = npg::model::instrument_status->new({
-							      util => $self->util(),
-							     });
+                    util => $self->util(),
+                   });
 
   for my $date (@{$data}) {
     if ($type ne 'hour') {
@@ -616,37 +616,37 @@ sub list_utilisation_png {
 
   if ($type eq 'hour') {
     return $graph->plotter($data, {
-				   width             => $PLOTTER_WIDTH,
-				   height            => $PLOTTER_HEIGHT,
-				   x_label           => 'Hour',
-				   y_label           => 'Percentage Utilisation',
-				   x_label_skip      => $X_LABEL_SKIP,
-				   x_labels_vertical => 1,
-				  }, 'area');
+           width             => $PLOTTER_WIDTH,
+           height            => $PLOTTER_HEIGHT,
+           x_label           => 'Hour',
+           y_label           => 'Percentage Utilisation',
+           x_label_skip      => $X_LABEL_SKIP,
+           x_labels_vertical => 1,
+          }, 'area');
   }
 
   return $graph->plotter($data, {
-				 width   => $PLOTTER_WIDTH,
-				 height  => $PLOTTER_HEIGHT,
-				 x_label => 'date',
-				 y_label => 'percentage',
-				}, 'bars');
+         width   => $PLOTTER_WIDTH,
+         height  => $PLOTTER_HEIGHT,
+         x_label => 'date',
+         y_label => 'percentage',
+        }, 'bars');
 }
 
 sub list_uptime_png {
   my ($self) = @_;
   my $graph  = npg::util::image::graph->new();
   my $instrument_status = npg::model::instrument_status->new({
-							      util => $self->util(),
-							     });
+                    util => $self->util(),
+                   });
   my $data = $instrument_status->average_percentage_uptime_for_day();
   return $graph->plotter($data, {
-				 width             => $PLOTTER_WIDTH,
-				 height            => $PLOTTER_HEIGHT,
-				 x_label           => 'date',
-				 y_label           => 'percentage',
-				 x_labels_vertical => 1,
-				});
+         width             => $PLOTTER_WIDTH,
+         height            => $PLOTTER_HEIGHT,
+         x_label           => 'date',
+         y_label           => 'percentage',
+         x_labels_vertical => 1,
+        });
 }
 
 1;

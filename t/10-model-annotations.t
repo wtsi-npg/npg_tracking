@@ -68,9 +68,9 @@ my $util = t::util->new({fixtures => 1});
 
 
   my $model2 = npg::model::annotation->new({
-					    util => $util,
-					    id_annotation => $model->id_annotation(),
-					   });
+              util => $util,
+              id_annotation => $model->id_annotation(),
+             });
   is($model2->comment(), $model->comment(), 'comment matches');
 }
 
@@ -101,8 +101,8 @@ my $util = t::util->new({fixtures => 1});
   $model->delete();
 
   my $model2 = npg::model::annotation->new({
-					    util => $util,
-					   });
+              util => $util,
+             });
   my $list2 = $model2->annotations();
   is((scalar @{$list2}), 23, 'list size after deletion');
 }

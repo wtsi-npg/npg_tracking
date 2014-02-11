@@ -45,19 +45,19 @@ sub create {
   my $xg     = XML::Generator->new();
   my $ent    = $self->entity_name();
   my $xml    = q(<?xml version='1.0'?>).
-               $xg->$ent(map  { $xg->$_($self->$_()) }
-			 grep { defined $self->$_() }
-			 $self->fields());
+  $xg->$ent(map  { $xg->$_($self->$_()) }
+  grep { defined $self->$_() }
+  $self->fields());
 
   push @{ $ua->requests_redirectable }, 'POST';
 
   my $response = $ua->post(
-			   $self->service(),
-			   'Content_Type'   => 'application/xml',
-			   'Content_Length' => length $xml,
-			   'Content'        => $xml,
-			   'Accept'         => 'text/xml',
-			  );
+         $self->service(),
+         'Content_Type'   => 'application/xml',
+         'Content_Length' => length $xml,
+         'Content'        => $xml,
+         'Accept'         => 'text/xml',
+        );
   if (!$response->is_success()) {
     croak q{Unable to update Sample Tracking: } . $response->status_line();
   }

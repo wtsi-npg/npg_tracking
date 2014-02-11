@@ -21,9 +21,9 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $model = $ISD->new({
-			 util        => $util,
-			 description => 'up',
-			});
+       util        => $util,
+       description => 'up',
+      });
   isa_ok($model, $ISD, '$model');
   is($model->id_instrument_status_dict(), 1, 'initialised by description ok');
 }
@@ -31,18 +31,18 @@ my $util = t::util->new({fixtures => 1});
 {
   trap {
     my $model = $ISD->new({
-			   util        => 'bla',
-			   description => 'fail!',
-			  });
+         util        => 'bla',
+         description => 'fail!',
+        });
     is($model->init(), undef, 'database query failure');
   };
 }
 
 {
   my $model = $ISD->new({
-			 util                      => $util,
-			 id_instrument_status_dict => 2,
-			});
+       util                      => $util,
+       id_instrument_status_dict => 2,
+      });
   isa_ok($model, $ISD, '$model');
   is($model->description(), 'down', 'initialised by id_instrument_status_dict ok');
   is($model->iscurrent, 0, 'depricated flag is retrieved');
@@ -50,8 +50,8 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $model = $ISD->new({
-			 util => $util,
-			});
+       util => $util,
+      });
   my $isds = $model->instrument_status_dicts();
   isa_ok($isds, 'ARRAY', 'unprimed cache $model->instrument_status_dicts()');
   is((scalar @{$isds}), 11, 'unprimed cache number of instrument_status_dicts');
@@ -60,9 +60,9 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $model = $ISD->new({
-			 util => $util,
-			 id_instrument_status_dict => 2,
-			});
+       util => $util,
+       id_instrument_status_dict => 2,
+      });
   my $instruments = $model->instruments();
   isa_ok($instruments, 'ARRAY', '$model->instruments()');
   is_deeply($model->instruments(), $instruments, 'primed cache instruments');
@@ -72,10 +72,10 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $model = $ISD->new({
-			 util        => $util,
-			 description => 'another status',
+       util        => $util,
+       description => 'another status',
                          iscurrent   => 1,
-			});
+      });
   ok($model->create(), 'instrument_status_dict create');
 
   is($model->id_instrument_status_dict(), 12, 'new status id');
@@ -89,9 +89,9 @@ my $util = t::util->new({fixtures => 1});
 {
 
   my $model = $ISD->new({
-			 util => $util,
-			 id_instrument_status_dict => 2,
-			});
+       util => $util,
+       id_instrument_status_dict => 2,
+      });
   is(join(q[;], sort keys %npg::model::instrument_status_dict::SHORT_DESCRIPTIONS),
   'down;down for repair;down for service;planned maintenance;planned repair;planned service;request approval;up;wash in progress;wash performed;wash required',
   'statuses for which short descriptions are available');

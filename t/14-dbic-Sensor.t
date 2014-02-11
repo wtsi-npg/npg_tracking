@@ -42,19 +42,19 @@ $n2 = $schema->resultset('SensorDataInstrument')->count();
 
 my $now = strftime("%Y-%m-%d %H:%M:%S", localtime);
 $test = $schema->resultset('SensorData')->create({
-	id_sensor => 1,
-	date => $now,
-	value => 22.4});
+  id_sensor => 1,
+  date => $now,
+  value => 22.4});
 
 $test = $schema->resultset('SensorData')->create({
-	id_sensor => 2,
-	date => $now,
-	value => -3});
+  id_sensor => 2,
+  date => $now,
+  value => -3});
 
 $test = $schema->resultset('SensorData')->create({
-	id_sensor => 3,
-	date => $now,
-	value => 100.01});
+  id_sensor => 3,
+  date => $now,
+  value => 100.01});
 
 $n = $schema->resultset('SensorDataInstrument')->count();
 is($n-$n2,3,'The trigger emulation seems to be working');

@@ -147,16 +147,16 @@ Override the insert function to emulate a database trigger
 =cut
 
 sub insert {
-	my ($self, @args) = @_;
+  my ($self, @args) = @_;
 
-	# first insert the sensor_data record
-	$self->next::method(@args);
+  # first insert the sensor_data record
+  $self->next::method(@args);
 
-	# Then emulate the database trigger to fill the sensor_data_instrument table
-	my @rs = $self->sensor->sensor_instruments;
-	foreach my $row (@rs) {
-		$self->create_related('sensor_data_instruments',{ id_instrument=>$row->id_instrument});
-	}
+  # Then emulate the database trigger to fill the sensor_data_instrument table
+  my @rs = $self->sensor->sensor_instruments;
+  foreach my $row (@rs) {
+    $self->create_related('sensor_data_instruments',{ id_instrument=>$row->id_instrument});
+  }
 }
 
 =head2 instruments

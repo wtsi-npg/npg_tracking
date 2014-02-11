@@ -212,7 +212,7 @@ sub determine_instrument_designations {
       }
       if ($d->description() eq 'Hot spare') {
         $hot_spare++;
-	      $hot_spare_count++;
+        $hot_spare_count++;
       }
     }
     if (!$r_and_d)   {
