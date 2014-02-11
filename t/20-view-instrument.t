@@ -22,17 +22,17 @@ use_ok('npg::view::instrument');
 my $util = t::util->new({
                 fixtures => 1,
                 fixtures_path => q[t/data/fixtures],
-			});
+      });
 
 my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument/',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/',
+           username       => 'public',
+           util           => $util,
+          });
 
   ok($util->test_rendered($str, 't/data/rendered/instrument.html'),
     'list instruments default');
@@ -40,11 +40,11 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument;list_graphical',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument;list_graphical',
+           username       => 'public',
+           util           => $util,
+          });
 
   ok($util->test_rendered($str, 't/data/rendered/instrument.html'),
     'list instruments graphical');
@@ -52,10 +52,10 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument.xml',
-			     username       => 'public',
-			     util           => $util,
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument.xml',
+           username       => 'public',
+           util           => $util,
                 });
   ok($util->test_rendered($str, 't/data/rendered/instrument.xml'),
     'list instruments xml');
@@ -63,14 +63,14 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument/',
-			     username       => 'public',
-			     util           => $util,
-			     cgi_params     => {
-						id_instrument_format => 21,
-					       },
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/',
+           username       => 'public',
+           util           => $util,
+           cgi_params     => {
+            id_instrument_format => 21,
+                 },
+          });
 
   ok($util->test_rendered($str, 't/data/rendered/instrument.html'),
     'list instruments for format 21');
@@ -78,34 +78,34 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument/11',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/11',
+           username       => 'public',
+           util           => $util,
+          });
   ok($util->test_rendered($str, 't/data/rendered/instrument/11.html'), 'read instrument');
 }
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument/13.xml',
-			     username       => 'public',
-			     util           => $util,
-			     cgi_params     => {
-						id_run_status_dict => 71,
-					       },
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/13.xml',
+           username       => 'public',
+           util           => $util,
+           cgi_params     => {
+            id_run_status_dict => 71,
+                 },
+          });
   ok($util->test_rendered($str, 't/data/rendered/instrument/13.xml'), 'read_xml renders ok');
 }
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'POST',
-			     PATH_INFO      => '/instrument/group;update_statuses',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'POST',
+           PATH_INFO      => '/instrument/group;update_statuses',
+           username       => 'public',
+           util           => $util,
+          });
 
   like($str, qr/not\ authorised/,
     'public not authorised for group status update');
@@ -113,11 +113,11 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'POST',
-			     PATH_INFO      => '/instrument/group;update_statuses',
-			     username       => 'joe_engineer',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'POST',
+           PATH_INFO      => '/instrument/group;update_statuses',
+           username       => 'joe_engineer',
+           util           => $util,
+          });
 
   unlike($str, qr/not\ authorised/, 'engineer authorised for group status update');
   like($str, qr/no\ comment\ given/mix, 'no-comment warning');
@@ -125,69 +125,69 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument;list_uptime_png',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument;list_uptime_png',
+           username       => 'public',
+           util           => $util,
+          });
 
   like($str, qr{image/png.*PNG}smx, 'instrument graphical uptime is a png');
 }
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument;list_utilisation_png',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument;list_utilisation_png',
+           username       => 'public',
+           util           => $util,
+          });
 
   like($str, qr{image/png.*PNG}smx, 'instrument graphical utilisation');
 }
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument/utilisation.png',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/utilisation.png',
+           username       => 'public',
+           util           => $util,
+          });
 
   like($str, qr{image/png.*PNG}smx, 'instrument graphical utilisation (new-style)');
 }
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument;list_utilisation_png',
-			     username       => 'public',
-			     util           => $util,
-			     cgi_params     => {
-						type => 'hour',
-					       },
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument;list_utilisation_png',
+           username       => 'public',
+           util           => $util,
+           cgi_params     => {
+            type => 'hour',
+                 },
+          });
 
   like($str, qr{image/png.*PNG}smx, 'instrument graphical utilisation by hour');
 }
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument/12.png',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/12.png',
+           username       => 'public',
+           util           => $util,
+          });
 
   like($str, qr{image/png.*PNG}smx, 'instrument graphical read');
 }
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument/key.png',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/key.png',
+           username       => 'public',
+           util           => $util,
+          });
 
   like($str, qr{image/png.*PNG}smx, 'instrument key graphical read');
   my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'key.png'));
@@ -200,11 +200,11 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 
 {
   my $str = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument/64.png',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/64.png',
+           username       => 'public',
+           util           => $util,
+          });
 
   like($str, qr{image/png.*PNG}smx, 'HiSeq instrument graphical read');
   my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'HS3.png'));

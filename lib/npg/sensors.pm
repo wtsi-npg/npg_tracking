@@ -55,7 +55,7 @@ has schema => (
 );
 
 sub _build_schema {
-	return npg_tracking::Schema->connect();
+  return npg_tracking::Schema->connect();
 }
 
 =head1 NAME
@@ -77,71 +77,71 @@ $LastChangedRevision: 15402 $
 =cut
 
 sub main {
-	my $self = shift;
-	$self->load_data();
-	$self->post_data();
-	return 0;
+  my $self = shift;
+  $self->load_data();
+  $self->post_data();
+  return 0;
 }
 
 =head2 load_data
 
 =cut
 sub load_data {
-	my ($self, $arg_refs) = @_;
+  my ($self, $arg_refs) = @_;
 
-	# create a user agent object
-	my $ua = LWP::UserAgent->new();
+  # create a user agent object
+  my $ua = LWP::UserAgent->new();
 
-	# Create a request
-	my $req = HTTP::Request->new(POST => $self->url);
-	$req->authorization_basic($self->username, $self->password);
+  # Create a request
+  my $req = HTTP::Request->new(POST => $self->url);
+  $req->authorization_basic($self->username, $self->password);
 
-	# Pass request to the user agent and get a response back
-	my $res = $ua->request($req);
+  # Pass request to the user agent and get a response back
+  my $res = $ua->request($req);
 
-	# Check the outcome of the response
-	if (!$res->is_success) {
-		die $res->status_line, "\n";
-	}
+  # Check the outcome of the response
+  if (!$res->is_success) {
+    die $res->status_line, "\n";
+  }
 
-	$data = $res->content;
-	return $data;
+  $data = $res->content;
+  return $data;
 }
 
 =head2 post_data
 
 =cut
 sub post_data {
-	my $self = shift;
-	my $xml = XML::Simple->new();
-	my $schema = $self->schema;
+  my $self = shift;
+  my $xml = XML::Simple->new();
+  my $schema = $self->schema;
 
-	my $ref = XMLin($data);
-	my $sensors = $ref->{variable};
-	foreach my $s (@{$sensors}) {
-		if (exists $s->{guid} && exists $s->{'double-val'}) {
-			my $guid = $s->{guid};
-			my $temperature = $s->{'double-val'};
-			my $dbic_sensor = $schema->resultset('Sensor')->find({guid => $guid});
+  my $ref = XMLin($data);
+  my $sensors = $ref->{variable};
+  foreach my $s (@{$sensors}) {
+    if (exists $s->{guid} && exists $s->{'double-val'}) {
+      my $guid = $s->{guid};
+      my $temperature = $s->{'double-val'};
+      my $dbic_sensor = $schema->resultset('Sensor')->find({guid => $guid});
                         if (!$dbic_sensor) {
                             carp "Sensor with guid $guid not found in the sensor table";
-			    next;
-			}
-			$schema->resultset('SensorData')->create({
-				id_sensor => $dbic_sensor->id_sensor,
-				date => $ref->{time},
-				value => $temperature});
-			if (($temperature > $MAX_TEMPERATURE) || ($temperature < $MIN_TEMPERATURE)) {
-				npg::util::mailer->new({
-					to => 'js10@sanger.ac.uk',
-					from => 'npg@sanger.ac.uk',
-					subject => 'Temperature warning',
-					body => "The temperature of sensor $guid is now $temperature.",
-				})->mail();
-			}
-		}
-	}
-	return 0;
+          next;
+      }
+      $schema->resultset('SensorData')->create({
+        id_sensor => $dbic_sensor->id_sensor,
+        date => $ref->{time},
+        value => $temperature});
+      if (($temperature > $MAX_TEMPERATURE) || ($temperature < $MIN_TEMPERATURE)) {
+        npg::util::mailer->new({
+          to => 'js10@sanger.ac.uk',
+          from => 'npg@sanger.ac.uk',
+          subject => 'Temperature warning',
+          body => "The temperature of sensor $guid is now $temperature.",
+        })->mail();
+      }
+    }
+  }
+  return 0;
 }
 
 no Moose;

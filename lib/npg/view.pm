@@ -65,13 +65,13 @@ sub new {
     my $model = $self->model();
     $model->aspect($self->aspect());
 
-    if ( $model->location_is_instrument() &&
-         $requestor->username() eq q{public} &&
-	 $self->method_name() !~ m/\A(?:create|update|delete)/xms ) {
+    if ($model->location_is_instrument() &&
+        $requestor->username() eq q{public} &&
+        $self->method_name() !~ m/\A(?:create|update|delete)/xms ) {
       my $usergroups = $requestor->usergroups();
       push @{ $usergroups }, npg::model::usergroup->new({
         util => $self->util(),
-	groupname => q{loaders},
+        groupname => q{loaders},
       });
     }
 

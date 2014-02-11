@@ -27,9 +27,9 @@ sub authorised {
 
   if($action eq 'create' && $req_id_user) {
     my $public = npg::model::user->new({
-					util     => $self->util(),
-					username => 'public',
-				       });
+                  util     => $self->util(),
+                  username => 'public',
+               });
     if(defined $req_id_user &&
        $req_id_user != $public->id_user()) {
       #########
@@ -66,9 +66,9 @@ sub create {
   }
 
   my $usergroup = npg::model::usergroup->new({
-					      util         => $util,
-					      id_usergroup => $id_usergroup,
-					     });
+                util         => $util,
+                id_usergroup => $id_usergroup,
+               });
   if(!$usergroup->is_public()) {
     croak $usergroup->groupname() . q( is not open for subscription);
   }

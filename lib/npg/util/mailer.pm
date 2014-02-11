@@ -58,14 +58,14 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevis
     }
 
     my $msg = MIME::Lite->new(
-			  To            => (join q(, ), @{$self->get_to()}),
-			  From          => $self->get_from(),
+        To            => (join q(, ), @{$self->get_to()}),
+        From          => $self->get_from(),
         Cc            => (join q(, ), @{$self->get_cc}),
         Bcc           => (join q(, ), @{$self->get_bcc}),
-			  Subject       => $self->get_subject(),
-			  Type          => $self->get_type(),
-			  Data          => $self->get_body(),
-			  'Precedence:' => $self->get_precendence(),
+        Subject       => $self->get_subject(),
+        Type          => $self->get_type(),
+        Data          => $self->get_body(),
+        'Precedence:' => $self->get_precendence(),
       );
 
     eval {
