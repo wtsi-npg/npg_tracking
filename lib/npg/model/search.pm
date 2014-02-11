@@ -313,20 +313,20 @@ sub join_conditions {
   foreach my $table (sort keys %{$foreign_keys}) {
     foreach my $pair (@from_pairs) {
       if (( List::MoreUtils::any {$_ eq $pair->[0]} @{$foreign_keys->{$table}} ) && ( List::MoreUtils::any {$_ eq $pair->[1]} @{$foreign_keys->{$table}} )) {
-  	my $temp = $pair->[0] . '.id_' . $pair->[0] . ' = ' . $table . '.id_' . $pair->[0];
-  	if(!$seen{$temp}) {
-  	  push @joins, $temp;
-  	  $seen{$temp}++;
-  	}
-  	$temp = $pair->[1] . '.id_' . $pair->[1] . ' = ' . $table . '.id_' . $pair->[1];
-  	if(!$seen{$temp}) {
-  	  push @joins, $temp;
-  	  $seen{$temp}++;
-  	}
-  	if (!$from_seen->{$table}) {
-  	  push @{$from_array}, $table;
-  	  $from_seen->{$table}++;
-  	}
+        my $temp = $pair->[0] . '.id_' . $pair->[0] . ' = ' . $table . '.id_' . $pair->[0];
+        if(!$seen{$temp}) {
+          push @joins, $temp;
+          $seen{$temp}++;
+        }
+        $temp = $pair->[1] . '.id_' . $pair->[1] . ' = ' . $table . '.id_' . $pair->[1];
+        if(!$seen{$temp}) {
+          push @joins, $temp;
+          $seen{$temp}++;
+        }
+        if (!$from_seen->{$table}) {
+          push @{$from_array}, $table;
+          $from_seen->{$table}++;
+        }
       }
     }
   }
@@ -334,10 +334,10 @@ sub join_conditions {
     my $links = $foreign_keys->{$from};
     if ($links) {
       foreach my $link (@{$links}) {
-  	my $temp = $link . '.id_' . $link . ' = ' . $from . '.id_' . $link;
-  	if (!$seen{$temp}) {
-  	  push @joins, $temp;
-  	}
+        my $temp = $link . '.id_' . $link . ' = ' . $from . '.id_' . $link;
+        if (!$seen{$temp}) {
+          push @joins, $temp;
+        }
       }
     }
   }
@@ -345,7 +345,7 @@ sub join_conditions {
     my $count = 0;
     foreach my $from (@{$from_array}) {
       if ($join =~ /$from[.]/xms) {
-  	$count++;
+        $count++;
       }
     }
     if ($count > 1) {

@@ -21,18 +21,18 @@ my $util = t::util->new({ fixtures => 1 });
 
 {
   my $inst = npg::model::instrument->new({
-					  id_instrument => 3,
-					  util          => $util,
-					 });
+            id_instrument => 3,
+            util          => $util,
+           });
   my $runs = $inst->runs();
   is((scalar @{$runs}), 12, 'all runs for instrument');
 }
 
 {
   my $inst = npg::model::instrument->new({
-					  id_instrument => 3,
-					  util          => $util,
-					 });
+            id_instrument => 3,
+            util          => $util,
+           });
   my $runs = $inst->runs({len => 4});
   is((scalar @{$runs}), 4, 'limited all runs for instrument');
   is($runs->[0]->id_run(), 12, 'first run ok');
@@ -40,37 +40,37 @@ my $util = t::util->new({ fixtures => 1 });
 
 {
   my $inst = npg::model::instrument->new({
-					  id_instrument => 3,
-					  util          => $util,
-					 });
+            id_instrument => 3,
+            util          => $util,
+           });
   my $runs = $inst->runs({
-			  len   => 4,
-			  start => 1,
-			 });
+        len   => 4,
+        start => 1,
+       });
   is((scalar @{$runs}), 4, 'limited, offset all runs for instrument');
   is($runs->[0]->id_run(), 11, 'first run ok');
 }
 
 {
   my $inst = npg::model::instrument->new({
-					  id_instrument => 3,
-					  util          => $util,
-					 });
+            id_instrument => 3,
+            util          => $util,
+           });
   my $runs = $inst->runs({
-			  id_run_status_dict => 11,
-			 });
+        id_run_status_dict => 11,
+       });
   is((scalar @{$runs}), 3, 'id_rsd-restricted runs for instrument');
 }
 
 {
   my $inst = npg::model::instrument->new({
-					  id_instrument => 3,
-					  util          => $util,
-					 });
+            id_instrument => 3,
+            util          => $util,
+           });
   my $runs = $inst->runs({
-			  id_run_status_dict => 11,
-			  len => 2,
-			 });
+        id_run_status_dict => 11,
+        len => 2,
+       });
   is((scalar @{$runs}), 2, 'limited, id_rsd-restricted runs for instrument');
   is($runs->[0]->id_run(), 5, 'first run ok');
   is($runs->[1]->id_run(), 12, 'second run ok');
@@ -78,14 +78,14 @@ my $util = t::util->new({ fixtures => 1 });
 
 {
   my $inst = npg::model::instrument->new({
-					  id_instrument => 3,
-					  util          => $util,
-					 });
+            id_instrument => 3,
+            util          => $util,
+           });
   my $runs = $inst->runs({
-			  id_run_status_dict => 11,
-			  len   => 2,
-			  start => 1,
-			 });
+        id_run_status_dict => 11,
+        len   => 2,
+        start => 1,
+       });
   is((scalar @{$runs}), 2, 'limited, offset, id_rsd-restricted runs for instrument');
   is($runs->[0]->id_run(), 12, 'first run ok');
   is($runs->[1]->id_run(), 11, 'second run ok');
@@ -93,17 +93,17 @@ my $util = t::util->new({ fixtures => 1 });
 
 {
   my $inst = npg::model::instrument->new({
-					  id_instrument => 3,
-					  util          => $util,
-					 });
+            id_instrument => 3,
+            util          => $util,
+           });
   is($inst->count_runs(), 12);
   is($inst->count_runs({id_run_status_dict=>11}), 3);
 }
 
 {
   my $model = npg::model::instrument->new({
-					   util => $util,
-					  });
+             util => $util,
+            });
 
   isa_ok($model, 'npg::model::instrument', '$model');
   my @fields = $model->fields();
@@ -123,9 +123,9 @@ my $util = t::util->new({ fixtures => 1 });
 
 {
   my $model = npg::model::instrument->new({
-					   util => $util,
-					   name => 'IL1',
-					  });
+             util => $util,
+             name => 'IL1',
+            });
   isa_ok($model, 'npg::model::instrument', '$model with name predeclared');
   is($model->id_instrument(), 3, 'id_instrument correct');
 
@@ -140,9 +140,9 @@ my $util = t::util->new({ fixtures => 1 });
 
 {
   my $model = npg::model::instrument->new({
-					   util          => $util,
-					   id_instrument => 4,
-					  });
+             util          => $util,
+             id_instrument => 4,
+            });
   my $runs = $model->runs();
   isa_ok($runs, 'ARRAY', '$model->runs()');
   isa_ok($runs->[0], 'npg::model::run', '$model->runs()->[0]');
@@ -226,17 +226,17 @@ my $util = t::util->new({ fixtures => 1 });
 
 {
   my $model = npg::model::instrument->new({
-					   util          => $util,
-					   id_instrument => 7,
-					  });
+             util          => $util,
+             id_instrument => 7,
+            });
   ok(!$model->status_to_change_to(), 'no need to auto change status, as status is down');
 }
 
 {
   my $model = npg::model::instrument->new({
-					   util          => $util,
-					   id_instrument => 48,
-					  });
+             util          => $util,
+             id_instrument => 48,
+            });
   is( $model->instrument_format->model(), 'cBot', 'cbot instrument model');
   is( $model->latest_contact(), '2010-05-11 13:34:04',
       'Read latest_contact field' );

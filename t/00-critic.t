@@ -23,8 +23,8 @@ if($EVAL_ERROR) {
   plan skip_all => 'Test::Perl::Critic not installed';
 } else {
   Test::Perl::Critic->import(
-	         -severity => 1,
-	         -exclude => ['tidy',
+           -severity => 1,
+           -exclude => ['tidy',
                               'ValuesAndExpressions::ProhibitImplicitNewlines',
                               'Documentation::PodSpelling',
                               'RegularExpressions::ProhibitEscapedMetacharacters',
@@ -36,7 +36,7 @@ if($EVAL_ERROR) {
                              ],
                  -verbose => "%m at %f line %l, policy %p\n",
                  -profile => 't/perlcriticrc',
-			    );
+          );
  
  my @files = grep {$_ !~ /npg_tracking\/Schema/ && $_ !~ /Monitor/}
              Perl::Critic::Utils::all_perl_files(-e 'blib' ? 'blib/lib' : 'lib');

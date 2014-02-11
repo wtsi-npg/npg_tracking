@@ -25,7 +25,7 @@ my $do_test = 1;
 foreach my $pa (['test', 'using mocked data'],
                 ['live', 'using live'],
                 ['dev',  'using dev'],
-		) {
+    ) {
     diag($pa->[1]);
     local $ENV{dev}=$pa->[0];
 
@@ -42,10 +42,10 @@ foreach my $pa (['test', 'using mocked data'],
     }
 
     my $run = npg::api::run->new({
-				     max_retries => 2,
-				     retry_delay => 1,
-				     id_run       => 3905,
-				    });
+             max_retries => 2,
+             retry_delay => 1,
+             id_run       => 3905,
+            });
     isa_ok($run, 'npg::api::run', 'run isa');
 
     # Test the fields.

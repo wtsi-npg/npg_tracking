@@ -21,25 +21,25 @@ my $util = t::util->new({fixtures=>1});
 
 {
   my $rsd = npg::model::run_status_dict->new({
-					      util        => $util,
-					      description => 'run pending',
-					     });
+                util        => $util,
+                description => 'run pending',
+               });
   is($rsd->id_run_status_dict(), 1, 'load by description');
 }
 
 {
   my $rsd = npg::model::run_status_dict->new({
-					      util        => $util,
-					      id_run_status_dict => 22,
-					     });
+                util        => $util,
+                id_run_status_dict => 22,
+               });
   is($rsd->description(), 'run stopped early', 'load by id');
 }
 
 {
   my $rsd = npg::model::run_status_dict->new({
-					      util        => $util,
-					      id_run_status_dict => 22,
-					     });
+                util        => $util,
+                id_run_status_dict => 22,
+               });
   my $rsds = $rsd->run_status_dicts();
 
   isa_ok($rsds, 'ARRAY');
@@ -49,9 +49,9 @@ my $util = t::util->new({fixtures=>1});
 
 {
   my $rsd = npg::model::run_status_dict->new({
-					      util        => $util,
-					      id_run_status_dict => 22,
-					     });
+                util        => $util,
+                id_run_status_dict => 22,
+               });
   my $rsds = $rsd->run_status_dicts_sorted();
   my $rsds_length = scalar @{$rsds};
 
@@ -68,9 +68,9 @@ my $util = t::util->new({fixtures=>1});
 
 {
   my $rsd = npg::model::run_status_dict->new({
-					      util        => $util,
-					      description => 'analysis complete',
-					     });
+                util        => $util,
+                description => 'analysis complete',
+               });
   my $runs = $rsd->runs();
   isa_ok($runs, 'ARRAY');
   is((scalar @{$runs}), 2, 'unprimed cache runs');
@@ -82,18 +82,18 @@ my $util = t::util->new({fixtures=>1});
 
 {
   my $rsd = npg::model::run_status_dict->new({
-					      util               => $util,
-					      id_run_status_dict => 11,
-					     });
+                util               => $util,
+                id_run_status_dict => 11,
+               });
   my $first_two = $rsd->runs({len => 2});
   is((scalar @{$first_two}),     2, 'first two runs for id_rsd 11');
   is($first_two->[0]->id_run(), 12, 'first run id for id_rsd 11');
   is($first_two->[1]->id_run(), 11, 'second run id ');
 
   my $second_two = $rsd->runs({
-			       len   => 2,
-			       start => 1,
-			      });
+             len   => 2,
+             start => 1,
+            });
   is((scalar @{$second_two}),     2, 'second two runs for id_rsd 11');
   is($second_two->[0]->id_run(), 11, 'second run id');
   is($second_two->[1]->id_run(), 5,  'third run id');
@@ -103,9 +103,9 @@ my $util = t::util->new({fixtures=>1});
 
 {
   my $rsd = npg::model::run_status_dict->new({
-					      util        => $util,
-					      description => 'analysis complete',
-					     });
+                util        => $util,
+                description => 'analysis complete',
+               });
   my $count_runs = $rsd->count_runs();
   is($count_runs, 2, 'unprimed cache count_runs - analysis complete - all formats');
   is($count_runs, 2, 'primed cache count_runs - analysis complete - all formats');
@@ -113,9 +113,9 @@ my $util = t::util->new({fixtures=>1});
 {
 
   my $rsd = npg::model::run_status_dict->new({
-					      util        => $util,
-					      description => 'run complete',
-					     });
+                util        => $util,
+                description => 'run complete',
+               });
 
   my $count_runs = $rsd->count_runs( {
     id_instrument_format => 10,
