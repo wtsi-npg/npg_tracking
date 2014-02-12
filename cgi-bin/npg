@@ -23,10 +23,6 @@ use warnings; # loads Carp, which we want to source from our cpan build
 use npg::controller;
 use npg::util;
 
-our $VERSION = do { my @r = (q$LastChangedRevision: 16549 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
-
-$ENV{'PATH'} = join q(:), qw(/bin /usr/bin /usr/local/bin);
-
 npg::controller->handler(npg::util->new());
 
 0;

@@ -83,7 +83,7 @@
     </property>
     <property>
       <name>Sample Description</name>
-      <value>3' end enriched mRNA from morphologically normal sibling embryos from ZMP phenotype 23 clutch 2. A 5 base indexing sequence (GCACGG) is bases 7 to 12 of read 1 followed by polyT.  More information describing the mutant phenotype can be found at the Wellcome Trust Sanger Institute Zebrafish Mutation Project website http://www.sanger.ac.uk/cgi-bin/Projects/D_rerio/zmp/search.pl?q=zmp_ph23</value>
+      <value>3' end enriched mRNA from morphologically normal sibling embryos from ZMP phenotype 23 clutch 2. A 5 base indexing sequence (GCACGG) is bases 7 to 12 of non-index read 2 followed by polyT.  More information describing the mutant phenotype can be found at the Wellcome Trust Sanger Institute Zebrafish Mutation Project website http://www.sanger.ac.uk/cgi-bin/Projects/D_rerio/zmp/search.pl?q=zmp_ph23</value>
     </property>
     <property>
       <name>Sample Visibility</name>

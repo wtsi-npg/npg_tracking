@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 116;
+use Test::More tests => 117;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -203,10 +203,13 @@ use_ok('st::api::lims::samplesheet');
   is_deeply(_lane_hash($ss_lanes[0], @methods), _lane_hash($xml_lanes[0], @methods),
     'xml and samplesheet drivers give the same result for a library' );
 
-  @methods = grep {$_ ne 'lane_id' && $_ ne 'lane_priority'} @methods;
+  @methods = grep {$_ ne 'lane_id' && $_ ne 'lane_priority' && $_ ne 'spiked_phix_tag_index'} @methods;
   ok($ss_lanes[6]->is_pool, 'lane 7 is a pool');
   is_deeply(_lane_hash($ss_lanes[6], @methods), _lane_hash($xml_lanes[6], @methods),
     'xml and samplesheet drivers give the same result for plexes' );
+
+  my @spiked = grep {$_->spiked_phix_tag_index} $ss_lanes[6]->children;
+  is (scalar @spiked, 0, 'spiked_phix_tag_index is not defined on plex level');
 }
 
 sub _lane_hash {

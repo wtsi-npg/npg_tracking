@@ -1,4 +1,5 @@
-######### # Author:        Marina Gourtovaia
+######### 
+# Author:        Marina Gourtovaia
 # Created:       14 December 2012
 # copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/instrument_handling/trunk/lib/srpipe/runner/jenkins.pm, r17056
 #

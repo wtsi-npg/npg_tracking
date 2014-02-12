@@ -113,8 +113,20 @@ Driver type (xml, etc), currently defaults to xml
 has 'driver_type' => (
                         isa     => 'Str',
                         is      => 'ro',
-                        default => $IMPLEMENTED_DRIVERS[0],
+                        lazy_build => 1,
                      );
+sub _build_driver_type {
+  my $self = shift;
+  my $cached_path = $ENV{'NPG_CACHED_SAMPLESHEET_FILE'};
+  if ($self->_has_path || ($cached_path && -f $cached_path)) {
+    if (!$self->_has_path) {
+      $self->_set_path($cached_path);
+      $self->clear_batch_id();
+    }
+    return $IMPLEMENTED_DRIVERS[1];
+  }
+  return $IMPLEMENTED_DRIVERS[0];
+}
 
 =head2 driver
 
@@ -129,8 +141,8 @@ has 'driver' => (
 sub _build_driver {
   my $self = shift;
   my $d_package = $self->_driver_package_name;
-  ##no critic (ProhibitStringyEval RequireCheckingReturnValueOfEval)
-  eval "require $d_package";
+  ##no critic (ProhibitStringyEval)
+  eval "require $d_package" or croak "Error loading package $d_package: " . $EVAL_ERROR;
   ##use critic
   my $ref = {};
   foreach my $attr (qw/tag_index position id_run path/) {
@@ -163,6 +175,17 @@ for my$m ( @DELEGATED_METHODS ){
 index end
 
 =cut
+
+has 'inline_index_read' => (isa => 'Maybe[Int]',
+                           is => 'ro',
+                           lazy_build => 1,
+                          );
+
+sub _build_inline_index_read {
+  my $self = shift;
+  my @x = _parse_sample_description($self->_sample_description);
+  return $x[3];  ## no critic (ProhibitMagicNumbers)
+}
 
 has 'inline_index_end' => (isa => 'Maybe[Int]',
                            is => 'ro',
@@ -216,9 +239,11 @@ Samplesheet path
 
 =cut
 has 'path' => (
-                  isa      => 'Str',
-                  is       => 'ro',
-                  required => 0,
+                  isa       => 'Str',
+                  is        => 'ro',
+                  required  => 0,
+                  predicate => '_has_path',
+                  writer    => '_set_path',
               );
 
 =head2 id_run
@@ -246,20 +271,16 @@ Tag index, optional attribute.
 Batch id, optional attribute.
 
 =cut
-has 'batch_id'  =>        (isa             => 'NpgTrackingPositiveInt',
+has 'batch_id'  =>        (isa             => 'Maybe[NpgTrackingPositiveInt]',
                            is              => 'ro',
                            lazy_build      => 1,
                           );
 sub _build_batch_id {
   my $self = shift;
-
-  if ($self->id_run) {
-    if ($self->driver_type eq 'xml') {
-      return $self->driver->batch_id;
-    }
-    croak q[Cannot build batch_id from id_run for driver type ] . $self->driver_type;
+  if ($self->id_run && $self->driver_type eq 'xml') {
+    return $self->driver->batch_id;
   }
-  croak q[Cannot build batch_id: id_run is not supplied];
+  return;
 }
 
 =head2 tag_sequence
@@ -745,11 +766,18 @@ sub _parse_sample_description {
   my $tag=undef;
   my $start=undef;
   my $end=undef;
+  my $read=undef;
   if ($desc && (($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx))) {
     ($tag) = $desc =~ /\(([ACGT]+)\)/smx;
-    ($start, $end) = $desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ read\ 1/smx;
+    if ($desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ read\ 1/smx) {
+        ($start, $end, $read) = ($1, $2, 1);
+    } elsif ($desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ non\-index\ read\ (\d)/smx) {
+        ($start, $end, $read) = ($1, $2, $3);
+    } else {
+        croak q[Error parsing sample description ] . $desc;
+    }
   }
-  return ($tag, $start, $end);
+  return ($tag, $start, $end, $read);
 }
 
 =head2 library_types
