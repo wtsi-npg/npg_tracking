@@ -128,9 +128,6 @@ my $util = t::util->new({fixtures  => 1,});
 						 priority             => 1,
 						},
 			     });
-diag("***");
-diag($str);
-diag("***");
   ok($util->test_rendered($str, 't/data/rendered/run/16;update_xml'), 'loader update_xml');
 }
 
