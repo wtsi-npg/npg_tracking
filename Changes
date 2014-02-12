@@ -1,5 +1,7 @@
 CHANGES
 
+- use ${JENKINS_HOME}/tmp instead of /tmp for jenkins tmpdir 
+
 release 75.6
  - extended inline index to read 2
  - hardcoded link for enigmatic authentication (not mod perl url) page so that the page
