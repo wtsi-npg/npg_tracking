@@ -5,10 +5,10 @@
 
 package st::api::lims::samplesheet;
 
-use Carp;
 use Moose;
-use File::Slurp;
 use MooseX::StrictConstructor;
+use Carp;
+use File::Slurp;
 use Readonly;
 use List::MoreUtils qw/none/;
 use Clone qw(clone);
@@ -44,7 +44,7 @@ Readonly::Scalar  my  $RECORD_SPLIT_LIMIT           => -1;
 Readonly::Scalar  my  $DATA_SECTION                 => q[Data];
 Readonly::Scalar  my  $HEADER_SECTION               => q[Header];
 
-=head2 path #or input as a filehandle?
+=head2 path
 
 Samplesheet path
 
@@ -235,6 +235,37 @@ sub _build_is_pool {
   return 0;
 }
 
+=head2 spiked_phix_tag_index
+
+ Read-only integer accessor, not possible to set from the constructor.
+ Defined only on a lane level or for tag zero if the lane is spiked with phix
+
+=cut
+has 'spiked_phix_tag_index' =>  (isa             => 'Maybe[NpgTrackingTagIndex]',
+                                 is              => 'ro',
+                                 init_arg        => undef,
+                                 lazy_build      => 1,
+                                );
+sub _build_spiked_phix_tag_index {
+  my $self = shift;
+  if (!$self->position) {
+    return;
+  }
+  if ($self->is_pool) {
+    my @controls = grep {$_->is_control } @{$self->_sschildren};
+    my $num_controls = scalar @controls;
+    if ($num_controls) {
+      if( $num_controls > 1) {
+        croak qq[$num_controls controls in lane];
+      }
+      return $controls[0]->tag_index;
+    }
+  } else {
+    return $self->data->{$DATA_SECTION}->{$self->position}->{$NOT_INDEXED_FLAG}->{'spiked_phix_tag_index'} || undef;
+  }
+  return;
+}
+
 has '_data_row' =>        (isa             => 'Maybe[HashRef]',
                            is              => 'ro',
                            init_arg        => undef,
@@ -277,7 +308,6 @@ sub _build__sschildren {
   } else { # run level - return lanes
     $child_attr_name = 'position';
   }
-
   my @children = ();
   if ($child_attr_name) {
 
