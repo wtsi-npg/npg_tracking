@@ -3,7 +3,7 @@
    flabel = this_instr_id && model.instrument.is_miseq_instrument ? 'Reagent kit' : 'Flowcell';
 %]
 <form id="run_create_form" name="run_create_form" method="post" action="[% SCRIPT_NAME %]/run" onsubmit="return check_run();">
-<input type="hidden" value="no" id="id_run_pair" name="id_run_pair" />
+<input type="hidden" id="id_run_pair" name="id_run_pair" value="0"/>
 <input type="hidden" id="expected_cycle_count" name="expected_cycle_count" value="0" />
 <input type="hidden" id="priority" name="priority" value="1" />
 <input type="hidden" name="library_names" id="library_names" />

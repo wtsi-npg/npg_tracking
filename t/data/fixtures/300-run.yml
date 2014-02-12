@@ -15,7 +15,7 @@
   expected_cycle_count: 0
   id_instrument: 3
   id_run: 2
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 0
   priority: 1
@@ -25,7 +25,7 @@
   expected_cycle_count: 0
   id_instrument: 3
   id_run: 3
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 0
   priority: 1
@@ -35,7 +35,7 @@
   expected_cycle_count: 0
   id_instrument: 3
   id_run: 4
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 0
   priority: 1
@@ -45,7 +45,7 @@
   expected_cycle_count: 31
   id_instrument: 3
   id_run: 5
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 0
   priority: 1
@@ -55,7 +55,7 @@
   expected_cycle_count: 33
   id_instrument: 3
   id_run: 6
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 0
   priority: 1
@@ -65,7 +65,7 @@
   expected_cycle_count: 33
   id_instrument: 3
   id_run: 7
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 0
   priority: 1
@@ -75,7 +75,7 @@
   expected_cycle_count: 35
   id_instrument: 3
   id_run: 8
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 0
   priority: 1
@@ -85,7 +85,7 @@
   expected_cycle_count: 35
   id_instrument: 3
   id_run: 9
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 0
   priority: 1
@@ -95,7 +95,7 @@
   expected_cycle_count: 35
   id_instrument: 3
   id_run: 10
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 0
   priority: 1
@@ -105,7 +105,7 @@
   expected_cycle_count: 35
   id_instrument: 3
   id_run: 11
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 1
   priority: 1
@@ -125,7 +125,7 @@
   expected_cycle_count: 35
   id_instrument: 4
   id_run: 13
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 1
   priority: 1
@@ -135,7 +135,7 @@
   expected_cycle_count: 35
   id_instrument: 13
   id_run: 14
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 1
   priority: 1
@@ -155,7 +155,7 @@
   expected_cycle_count: 35
   id_instrument: 14
   id_run: 16
-  id_run_pair: ~
+  id_run_pair: 0
   team: RAD
   is_paired: 1
   priority: 1
@@ -165,7 +165,7 @@
   expected_cycle_count: 37
   id_instrument: 14
   id_run: 700
-  id_run_pair: ~
+  id_run_pair: 0
   team: joint
   is_paired: 0
   priority: 1
@@ -176,7 +176,7 @@
   priority: 4
   actual_cycle_count: 0
   expected_cycle_count: 43
-  id_run_pair: ~
+  id_run_pair: 0
   is_paired: 0
   batch_id: 62
   team: RAD
@@ -186,7 +186,7 @@
   priority: 1
   actual_cycle_count: 76
   expected_cycle_count: 76
-  id_run_pair: ~
+  id_run_pair: 0
   is_paired: 1
   batch_id: 3022
   team: joint
@@ -196,7 +196,7 @@
   priority: 1
   actual_cycle_count: 115
   expected_cycle_count: 115
-  id_run_pair: ~
+  id_run_pair: 0
   is_paired: 0
   batch_id: 4861
   team: joint
@@ -206,7 +206,7 @@
   priority: 1
   actual_cycle_count: 0
   expected_cycle_count: 0
-  id_run_pair: ~
+  id_run_pair: 0
   is_paired: 0
   batch_id: 4862
   team: joint
@@ -216,7 +216,7 @@
   priority: 1
   actual_cycle_count: 0
   expected_cycle_count: 0
-  id_run_pair: ~
+  id_run_pair: 0
   is_paired: 0
   batch_id: 9999
   team: joint
@@ -226,7 +226,7 @@
   priority: 1
   actual_cycle_count: 0
   expected_cycle_count: 0
-  id_run_pair: ~
+  id_run_pair: 0
   is_paired: 0
   batch_id: 10000
   team: joint
@@ -236,7 +236,7 @@
   priority: 1
   actual_cycle_count: 0
   expected_cycle_count: 0
-  id_run_pair: ~
+  id_run_pair: 0
   is_paired: 0
   batch_id: 10000
   team: joint
