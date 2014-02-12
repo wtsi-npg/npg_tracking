@@ -13,7 +13,7 @@ use npg::model::instrument;
 use npg::model::user;
 use npg::model::annotation;
 use English qw{-no_match_vars};
-use Test::More tests => 118;
+use Test::More tests => 120;
 use Test::Exception;
 
 use_ok('npg::model::run');
@@ -298,6 +298,35 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
             team                 => 'joint',
             id_user              => $util->requestor->id_user(),
            });
+  eval { $model->create(); };
+  is($EVAL_ERROR, q{}, 'Unpaired run created even if id_run_pair is NULL');
+}
+
+{
+  my $model = npg::model::run->new({
+				    util                 => $util,
+				    batch_id             => 939,
+				    id_instrument        => 3,
+            id_run_pair          => "NO",
+				    expected_cycle_count => 35,
+				    priority             => 1,
+				    team                 => 'joint',
+				    id_user              => $util->requestor->id_user(),
+				   });
+  eval { $model->create(); };
+  is($EVAL_ERROR, q{}, 'Unpaired run created even if id_run_pair is NO (from ClearPress)');
+}
+
+{
+  my $model = npg::model::run->new({
+				    util                 => $util,
+				    batch_id             => 939,
+				    id_instrument        => 3,
+				    expected_cycle_count => 35,
+				    priority             => 1,
+				    team                 => 'joint',
+				    id_user              => $util->requestor->id_user(),
+				   });
   eval { $model->create(); };
   is($EVAL_ERROR, q{}, 'created run ok - not paired');
 }
