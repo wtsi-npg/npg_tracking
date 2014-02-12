@@ -6,7 +6,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 use Test::Deep;
 use Test::Exception;
 use Readonly;
@@ -21,16 +21,21 @@ use_ok('npg_tracking::daemon::jenkins');
 }
 
 {
-  my $tmpdir = $ENV{'JENKINS_HOME'} ?  "-Djava.io.tmpdir=$ENV{'JENKINS_HOME'}/tmp" : q[]; #no need to reinforce /tmp
+  local $ENV{'JENKINS_HOME'} = q{};
+
   my $r = npg_tracking::daemon::jenkins->new(timestamp => '20130419-144441');    
   is_deeply($r->env_vars, {'http_proxy' => q[http://wwwcache.sanger.ac.uk:3128]},
     'http proxy environment variable set correctly');
   is(join(q[ ], @{$r->hosts}), q[sf2-farm-srv2], 'list of hosts');
-  is($r->command('host1'), qq[java -Xmx2g $tmpdir -Dhttp.proxyHost=wwwcache.sanger.ac.uk -Dhttp.proxyPort=3128 -jar ~srpipe/jenkins.war --httpPort=9960 --logfile=]. getcwd() .q[/logs/jenkins_host1_20130419-144441.log], 'command to run');
+  is($r->command('host1'), qq[java -Xmx2g  -Dhttp.proxyHost=wwwcache.sanger.ac.uk -Dhttp.proxyPort=3128 -jar ~srpipe/jenkins.war --httpPort=9960 --logfile=]. getcwd() .q[/logs/jenkins_host1_20130419-144441.log], 'command to run');
   is($r->daemon_name, 'npg_jenkins', 'daemon name');
   is($r->ping, q[daemon --running -n npg_jenkins && echo -n 'ok' || echo -n 'not ok'], 'ping command');
   is($r->stop, q[daemon --stop -n npg_jenkins], 'stop command');
   my $start_command = $r->start('host1');
   like($start_command, qr/jenkins.war --httpPort=9960/, 'the command contains jar file and port');
+
+  local $ENV{'JENKINS_HOME'} = q{/does/not/exist};
+
+  is($r->command('host1'), qq[java -Xmx2g -Djava.io.tmpdir=/does/not/exist/tmp -Dhttp.proxyHost=wwwcache.sanger.ac.uk -Dhttp.proxyPort=3128 -jar ~srpipe/jenkins.war --httpPort=9960 --logfile=]. getcwd() .q[/logs/jenkins_host1_20130419-144441.log], 'command to run');
 }
 1;

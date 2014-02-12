@@ -22,7 +22,7 @@ override '_build_env_vars' => sub { return {'http_proxy' => qq[http://$PROXY_SER
 override 'command'  => sub {
   my ($self, $host) = @_;
 
-  my $tmpdir = $ENV{'JENKINS_HOME'} ?  "-Djava.io.tmpdir=$ENV{'JENKINS_HOME'}/tmp" : q[]; #no need to reinforce /tmp
+  my $tmpdir = $ENV{'JENKINS_HOME'} ?  "-Djava.io.tmpdir=$ENV{'JENKINS_HOME'}/tmp" : q[]; 
   my $command = qq[java -Xmx2g $tmpdir -Dhttp.proxyHost=$PROXY_SERVER -Dhttp.proxyPort=$PROXY_PORT -jar ~srpipe/jenkins.war --httpPort=9960];
 
   my $log_name = join q[_], q[jenkins], $host, $self->timestamp();
