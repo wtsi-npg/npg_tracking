@@ -80,7 +80,7 @@ my $util = t::util->new({fixtures  => 1,});
 			     util           => $util,
 			     cgi_params     => {
 						id_instrument        => 3,
-            id_run_pair          => 0,
+						id_run_pair          => 0,
 						team                 => 'RAD',
 						batch_id             => 42,
 						tracks               => 3,
@@ -119,7 +119,7 @@ my $util = t::util->new({fixtures  => 1,});
 			      util           => $util,
 			      cgi_params     => {
 						 id_instrument        => 3,
-             id_run_pair          => 0,
+						 id_run_pair          => 0,
 						 team                 => 'RAD',
 						 batch_id             => 42,
 						 tracks               => 3,
@@ -322,7 +322,7 @@ my $util = t::util->new({fixtures  => 1,});
 			       util           => $util,
 			       cgi_params     => {
 						  id_instrument        => 3,
-              id_run_pair          => 0,
+						  id_run_pair          => 0,
 						  team                 => 'RAD',
 						  batch_id             => 42,
 						  tracks               => 3,
@@ -355,15 +355,15 @@ my $util = t::util->new({fixtures  => 1,});
 			       util           => $util,
 			       cgi_params     => {
 						  id_instrument        => 3,
-              id_run_pair          => 0,
+						  id_run_pair          => 0,
 						  batch_id             => 42,
 						  tracks               => 3,
 						  lane_1_tile_count    => 330,
 						  expected_cycle_count => 37,
-                                                  team                 => 'A',
-              priority             => 1,
-             },
-            });
+						  team                 => 'A',
+						  priority             => 1,
+						 },
+			      });
 
   unlike($str, qr/Error/smx);
   my $runs2 = {map { $_->id_run() => 1 } @{npg::model::run->new({util=>$util})->runs()}};
@@ -390,7 +390,7 @@ my $util = t::util->new({fixtures  => 1,});
 			       util           => $util,
 			       cgi_params     => {
 						  id_instrument        => 3,
-              id_run_pair          => 0,
+						  id_run_pair          => 0,
 						  team                 => 'RAD',
 						  batch_id             => 42,
 						  tracks               => 3,

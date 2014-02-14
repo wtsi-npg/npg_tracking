@@ -170,12 +170,6 @@ sub init {
     my ($id_match) = $id =~ /(\d+)$/smx;
     $self->id_run(0+$id_match);
   }
-
-  #TODO Whilst it would be good to use NULL for id_run_pair where there is no pair, the production database has been using 0
-  # Turning on sql_mode=STRICT_TRANS_TABLES means that having the value "NO" put into a numeric field is no longer allowed.
-  if (!$self->{'id_run_pair'}) {$self->{'id_run_pair'} = 0};
-  if ($self->{'id_run_pair'} && $self->{'id_run_pair'} eq q{NO}) {$self->{'id_run_pair'} = 0};
-
   return $self;
 }
 
@@ -478,6 +472,7 @@ sub recent_runs {
 
     $self->{recent_runs} = [grep { !$seen->{$_->id_run()}++ &&
                                     (!$_->run_pair() || !$seen->{$_->run_pair->id_run()}++) }
+                    @{$runs}];
   }
   return $self->{recent_runs};
 }
