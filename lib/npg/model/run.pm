@@ -59,7 +59,7 @@ sub fields {
             flowcell_id
             folder_name
             folder_path_glob
-      );
+	    );
 }
 
 sub scs28 {
@@ -170,12 +170,6 @@ sub init {
     my ($id_match) = $id =~ /(\d+)$/smx;
     $self->id_run(0+$id_match);
   }
-
-  #TODO Whilst it would be good to use NULL for id_run_pair where there is no pair, the production database has been using 0
-  # Turning on sql_mode=STRICT_TRANS_TABLES means that having the value "NO" put into a numeric field is no longer allowed.
-  if (!$self->{'id_run_pair'}) {$self->{'id_run_pair'} = 0};
-  if ($self->{'id_run_pair'} && $self->{'id_run_pair'} eq q{NO}) {$self->{'id_run_pair'} = 0};
-
   return $self;
 }
 
@@ -263,8 +257,8 @@ sub runs {
 
   if ( $params ) {
     $query = $self->util->driver->bounded_select( $query,
-             $params->{len},
-             $params->{start});
+						 $params->{len},
+						 $params->{start});
   }
 
   $self->{runs}->{ $params->{id_instrument_format} } = $self->gen_getarray( $pkg, $query );
@@ -378,10 +372,10 @@ sub attach_annotation {
   }
 
   my $run_annotation = npg::model::run_annotation->new({
-              'util'       => $util,
-              'id_run'     => $self->id_run(),
-              'annotation' => $annotation,
-                   });
+							'util'       => $util,
+							'id_run'     => $self->id_run(),
+							'annotation' => $annotation,
+						       });
   if(!$self->id_run()) {
     push @{$self->{'annotations'}}, $annotation;
     return 1;
@@ -473,12 +467,12 @@ sub recent_runs {
 
     my $db_runs = $self->gen_getarray($pkg, $query);
     my $runs    = [sort { $a->id_run() <=> $b->id_run() }
-       grep { defined $_ }
-       map  { ($_, $_->run_pair()?$_->run_pair():undef) } @{$db_runs}];
+		   grep { defined $_ }
+		   map  { ($_, $_->run_pair()?$_->run_pair():undef) } @{$db_runs}];
 
     $self->{recent_runs} = [grep { !$seen->{$_->id_run()}++ &&
-             (!$_->run_pair() || !$seen->{$_->run_pair->id_run()}++) }
-            @{$runs}];
+				     (!$_->run_pair() || !$seen->{$_->run_pair->id_run()}++) }
+			      @{$runs}];
   }
   return $self->{recent_runs};
 }
@@ -504,12 +498,12 @@ sub recent_mirrored_runs {
 
     my $db_runs = $self->gen_getarray($pkg, $query);
     my $runs    = [sort { $a->id_run() <=> $b->id_run() }
-       grep { defined $_ }
-       map  { ($_, $_->run_pair()?$_->run_pair():undef) } @{$db_runs}];
+		   grep { defined $_ }
+		   map  { ($_, $_->run_pair()?$_->run_pair():undef) } @{$db_runs}];
 
     $self->{recent_mirrored_runs} = [grep { !$seen->{$_->id_run()}++ &&
-              (!$_->run_pair() || !$seen->{$_->run_pair->id_run()}++) }
-             @{$runs}];
+					    (!$_->run_pair() || !$seen->{$_->run_pair->id_run()}++) }
+				     @{$runs}];
   }
 
   return $self->{recent_mirrored_runs};
@@ -631,9 +625,9 @@ sub run_pair {
                    AND    rsd.description NOT IN ('run cancelled', 'data discarded')];
 
     $self->{run_pair} = $self->gen_getarray($pkg,
-              $query,
-              $self->id_run_pair(),
-              $self->id_run())->[0];
+					    $query,
+					    $self->id_run_pair(),
+					    $self->id_run())->[0];
   }
 
   return $self->{run_pair};
@@ -703,16 +697,16 @@ sub create {
     # create a new status
     #
     my $run_status_dict = npg::model::run_status_dict->new({
-                  util        => $util,
-                  description => 'run pending',
-                 });
+							    util        => $util,
+							    description => 'run pending',
+							   });
     my $run_status      = npg::model::run_status->new({
-                   util               => $util,
-                   id_run             => $id,
-                   id_run_status_dict => $run_status_dict->id_run_status_dict(),
-                   iscurrent          => 1,
-                   id_user            => $self->id_user(),
-                  });
+						       util               => $util,
+						       id_run             => $id,
+						       id_run_status_dict => $run_status_dict->id_run_status_dict(),
+						       iscurrent          => 1,
+						       id_user            => $self->id_user(),
+						      });
     $run_status->create();
 
     #########
@@ -849,16 +843,16 @@ sub _create_lanes {
     #
     for my $st_library_name (keys %{$st_library_names}) {
       $dbh->do(q(INSERT INTO st_cache(id_run,type,content) VALUES(?,'library',?)),
-         {},
-         $self->id_run(),
-         $st_library_name);
+	       {},
+	       $self->id_run(),
+	       $st_library_name);
     }
 
     for my $st_study_name (keys %{$st_study_names}) {
       $dbh->do(q(INSERT INTO st_cache(id_run,type,content) VALUES(?,'project',?)),
-         {},
-         $self->id_run(),
-         $st_study_name);
+	       {},
+	       $self->id_run(),
+	       $st_study_name);
     }
   }
   return 1;
@@ -914,9 +908,9 @@ sub save_tags {
   $requestor    ||= $util->requestor();
   my $dbh         = $util->dbh();
   my $entity_type = npg::model::entity_type->new({
-              description => $self->model_type(),
-              util => $util,
-             });
+						  description => $self->model_type(),
+						  util => $util,
+						 });
   my $tr_state    = $util->transactions();
   $util->transactions(0);
 
@@ -924,26 +918,26 @@ sub save_tags {
     my $date = strftime q(%Y-%m-%d %H:%M:%S), localtime;
     for my $tag (@{$tags_to_save}) {
       $tag = npg::model::tag->new({
-           tag  => $tag,
-           util => $util,
-          });
+				   tag  => $tag,
+				   util => $util,
+				  });
       if (!$tag->id_tag()) {
         $tag->create();
       }
 
       my $tag_run = npg::model::tag_run->new({
-                util    => $util,
-                id_tag  => $tag->id_tag(),
-                id_run  => $self->id_run(),
-                date    => $date,
-                id_user => $requestor->id_user(),
-               });
+					      util    => $util,
+					      id_tag  => $tag->id_tag(),
+					      id_run  => $self->id_run(),
+					      date    => $date,
+					      id_user => $requestor->id_user(),
+					     });
       $tag_run->save();
       my $tag_freq = 'npg::model::tag_frequency'->new({
-                   id_tag         => $tag->id_tag(),
-                   id_entity_type => $entity_type->id_entity_type,
-                   util           => $util,
-                  });
+						       id_tag         => $tag->id_tag(),
+						       id_entity_type => $entity_type->id_entity_type,
+						       util           => $util,
+						      });
       my $freq = $dbh->selectall_arrayref(q{SELECT COUNT(id_tag) FROM tag_run WHERE id_tag = ?}, {}, $tag->id_tag())->[0]->[0];
       $tag_freq->frequency($freq);
       $tag_freq->save();
@@ -978,26 +972,26 @@ sub remove_tags {
 
   eval {
     my $entity_type = npg::model::entity_type->new({
-                description => $self->model_type(),
-                util        => $util,
-               });
+						    description => $self->model_type(),
+						    util        => $util,
+						   });
     for my $tag (@{$tags_to_remove}) {
       $tag = npg::model::tag->new({
-           tag  => $tag,
-           util => $util,
-          });
+				   tag  => $tag,
+				   util => $util,
+				  });
       my $tag_run = npg::model::tag_run->new({
-                id_tag => $tag->id_tag(),
-                id_run => $self->id_run(),
-                util   => $util,
-               });
+					      id_tag => $tag->id_tag(),
+					      id_run => $self->id_run(),
+					      util   => $util,
+					     });
       $tag_run->delete();
 
       my $tag_freq = npg::model::tag_frequency->new({
-                 id_tag         => $tag->id_tag(),
-                 id_entity_type => $entity_type->id_entity_type,
-                 util           => $util,
-                });
+						     id_tag         => $tag->id_tag(),
+						     id_entity_type => $entity_type->id_entity_type,
+						     util           => $util,
+						    });
       my $freq = $dbh->selectall_arrayref(q{SELECT COUNT(id_tag) FROM tag_run WHERE id_tag = ?}, {}, $tag->id_tag())->[0]->[0];
       $tag_freq->frequency($freq);
       $tag_freq->save();

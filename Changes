@@ -1,7 +1,8 @@
 CHANGES
 
-- Remove id_run_pair from template. In the run table, make the default 0 and the field not null
-  In model, initialise id_run_pair or a NO value to 0.
+- Remove id_run_pair from template creating the view. In the run table, make the default 0 and the field not null
+  In model, initialise id_run_pair to 0.
+- Make id_user NOT NULL with no default
 
 release 75.6
  - extended inline index to read 2
