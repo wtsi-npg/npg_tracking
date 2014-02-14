@@ -20,27 +20,27 @@ my $util = t::util->new({fixtures=>1});
   $util->requestor('joe_loader');
 
   my $inst = npg::model::instrument->new({
-					  util => $util,
-					  name => 'IL29',
-					 });
+            util => $util,
+            name => 'IL29',
+           });
   my $run = npg::model::run->new({
-				  util                 => $util,
-				  id_instrument        => $inst->id_instrument(),
-				  batch_id             => 2690,
-				  expected_cycle_count => 0,
-				  actual_cycle_count   => 0,
-				  priority             => 0,
-				  id_user              => $util->requestor->id_user(),
+          util                 => $util,
+          id_instrument        => $inst->id_instrument(),
+          batch_id             => 2690,
+          expected_cycle_count => 0,
+          actual_cycle_count   => 0,
+          priority             => 0,
+          id_user              => $util->requestor->id_user(),
                                   team                 => 'B',
-				 });
+         });
   $run->create();
 
   my $png = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument/IL29.png',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/IL29.png',
+           username       => 'public',
+           util           => $util,
+          });
 
   t::util::is_colour($png, $npg::view::instrument::COLOUR_GREEN, 'run pending = status green');
 }

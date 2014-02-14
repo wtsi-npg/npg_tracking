@@ -18,11 +18,11 @@ my $util = t::util->new({fixtures=>1});
 
 {
   my $png = t::request->new({
-			     REQUEST_METHOD => 'GET',
-			     PATH_INFO      => '/instrument/IL29.png',
-			     username       => 'public',
-			     util           => $util,
-			    });
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/IL29.png',
+           username       => 'public',
+           util           => $util,
+          });
 
   t::util::is_colour($png, $npg::view::instrument::COLOUR_YELLOW, 'no runs = status yellow');
 }

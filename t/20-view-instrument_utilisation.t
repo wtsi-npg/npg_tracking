@@ -44,11 +44,11 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
 }
 {
   my $str  = t::request->new({
-			      PATH_INFO      => '/instrument_utilisation.xml',
-			      REQUEST_METHOD => 'POST',
-			      username       => 'pipeline',
-			      util           => $util,
-			      cgi_params     => {
+            PATH_INFO      => '/instrument_utilisation.xml',
+            REQUEST_METHOD => 'POST',
+            username       => 'pipeline',
+            util           => $util,
+            cgi_params     => {
                  pipeline =>      '1',
                  date =>      '2009-02-02 00:00:00',
                  total_insts =>      '9',
@@ -61,17 +61,17 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
                  perc_utilisation_prod_insts =>     '0.00',
                  perc_uptime_prod_insts => '50.00',
                  id_instrument_format => q{10},
-						},
-			     });
+            },
+           });
   ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/create.xml'), 'pipeline create ok');
 }
 
 {
   my $str = t::request->new({
-			      PATH_INFO      => '/instrument_utilisation',
-			      REQUEST_METHOD => 'GET',
-			      username       => 'joe_public',
-			      util           => $util,
+            PATH_INFO      => '/instrument_utilisation',
+            REQUEST_METHOD => 'GET',
+            username       => 'joe_public',
+            util           => $util,
            });
 
   ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list.html'), 'table list view ok');
@@ -79,20 +79,20 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
 
 {
   my $str = t::request->new({
-			      PATH_INFO      => '/instrument_utilisation/graphical',
-			      REQUEST_METHOD => 'GET',
-			      username       => 'joe_public',
-			      util           => $util,
+            PATH_INFO      => '/instrument_utilisation/graphical',
+            REQUEST_METHOD => 'GET',
+            username       => 'joe_public',
+            util           => $util,
            });
   ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list_graphical.html'), 'graphical list view ok');
 }
 
 {
   my $str = t::request->new({
-			      PATH_INFO      => '/instrument_utilisation/text90',
-			      REQUEST_METHOD => 'GET',
-			      username       => 'joe_public',
-			      util           => $util,
+            PATH_INFO      => '/instrument_utilisation/text90',
+            REQUEST_METHOD => 'GET',
+            username       => 'joe_public',
+            util           => $util,
            });
   ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list.html'), '90 days table list view ok');
 }
@@ -100,10 +100,10 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
 
 {
   my $str = t::request->new({
-			      PATH_INFO      => '/instrument_utilisation/graphical/line90',
-			      REQUEST_METHOD => 'GET',
-			      username       => 'joe_public',
-			      util           => $util,
+            PATH_INFO      => '/instrument_utilisation/graphical/line90',
+            REQUEST_METHOD => 'GET',
+            username       => 'joe_public',
+            util           => $util,
            });
 
   ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list_graphical_90days.html'), 'graphical list view ok');

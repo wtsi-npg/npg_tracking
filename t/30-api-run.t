@@ -27,10 +27,10 @@ my $run3 = npg::api::run->new({'id_run'=>'IL45_0456'});
 is($run3->id_run(), 456, 'yields id from name');
 
 my $run4 = npg::api::run->new({
-			       'id_run'      => 457,
-			       'id_run_pair' => $run3->id_run(),
-			       'run_pair'    => $run3,
-			      });
+             'id_run'      => 457,
+             'id_run_pair' => $run3->id_run(),
+             'run_pair'    => $run3,
+            });
 my $run_pair = $run4->run_pair();
 is($run3, $run_pair);
 
@@ -92,15 +92,15 @@ is($run3->id_run(999), 999);
 
 {
   my $run  = npg::api::run->new({
-				 'id_run' => 'IL99_FOO',
-				});
+         'id_run' => 'IL99_FOO',
+        });
   is($run->id_run(), 0, 'bad run by name ok');
 }
 
 {
   my $run  = npg::api::run->new({
-				 id_run => 1104,
-				});
+         id_run => 1104,
+        });
   my $instrument = $run->instrument();
   isa_ok($instrument, 'npg::api::instrument', 'run->instrument');
   is($instrument->name(), 'IL9');
@@ -138,10 +138,10 @@ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[];
   my $ua   = t::useragent->new({
     is_success => 1,
     mock => { $base_url.q{/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml} },
-			       });
+             });
   my $run  = npg::api::run->new({
-				 util   => npg::api::util->new({useragent => $ua,}),
-				});
+         util   => npg::api::util->new({useragent => $ua,}),
+        });
 
   my $runs;
   lives_ok { $runs = $run->recent_running_runs(); } 'no croak on recent_running_runs';
@@ -161,11 +161,11 @@ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[];
     $base_url.q{/run/2888;update_tags} => q{Run 2888 tagged},
     $base_url.q{/run/2888} => q{t/data/npg_api/npg/run/2888.xml},
             },
-			      });
+            });
   my $run  = npg::api::run->new({
-				 util   => npg::api::util->new({useragent => $ua,}),
-				 id_run => 2888,
-				});
+         util   => npg::api::util->new({useragent => $ua,}),
+         id_run => 2888,
+        });
   lives_ok { $run->add_tags('rta', 'paired_read', 'staging'); } 'no croak when adding new tags rta, paired_read and staging';
 }
 
@@ -176,11 +176,11 @@ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[];
     $base_url.q{/run/2888;update_tags} => q{Run 2888 tagged},
     $base_url.q{/run/2888} => q{t/data/npg_api/npg/run/2888.xml}, 
             },
-			      });
+            });
   my $run  = npg::api::run->new({
-				 util   => npg::api::util->new({useragent => $ua,}),
-				 id_run => 2888,
-				});
+         util   => npg::api::util->new({useragent => $ua,}),
+         id_run => 2888,
+        });
   lives_ok { $run->remove_tags('staging'); } 'no croak when removing rta and staging';
 }
 

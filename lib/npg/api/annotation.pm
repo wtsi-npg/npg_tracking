@@ -47,8 +47,8 @@ sub attachment {
     $self->{'attachment'} = $blob;
 
   } elsif(!defined $self->{'attachment'} &&
-	  $self->attachment_name() &&
-	  $self->id_annotation()) {
+    $self->attachment_name() &&
+    $self->id_annotation()) {
     #########
     # If we've no attachment cached
     # but we do have an attachment name
