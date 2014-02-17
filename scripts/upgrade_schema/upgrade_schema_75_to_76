@@ -1,0 +1,11 @@
+/* changes from setting SQL_MODE = STRICT_TRANS_TABLES*/
+ALTER TABLE `run` CHANGE `id_run_pair` `id_run_pair` bigint(20) unsigned NOT NULL DEFAULT 0;
+
+ALTER TABLE `annotation` CHANGE `id_user` `id_user` bigint(20) unsigned NOT NULL;
+ALTER TABLE `event` CHANGE `id_user` `id_user` bigint(20) unsigned NOT NULL;
+ALTER TABLE `instrument_status` CHANGE `id_user` `id_user` bigint(20) unsigned NOT NULL;
+ALTER TABLE `run_lane_status` CHANGE `id_user` `id_user` bigint(20) unsigned NOT NULL;
+ALTER TABLE `run_status` CHANGE `id_user` `id_user` bigint(20) unsigned NOT NULL;
+ALTER TABLE `tag_run` CHANGE `id_user` `id_user` bigint(20) unsigned NOT NULL;
+ALTER TABLE `tag_run_lane` CHANGE `id_user` `id_user` bigint(20) unsigned NOT NULL;
+ALTER TABLE `user2usergroup` CHANGE `id_user` `id_user` bigint(20) unsigned NOT NULL;
