@@ -15,7 +15,7 @@ use_ok('npg::model::run_status');
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/mx; $r; };
 
 my $mock = {
-	           q(SELECT id_run, date
+             q(SELECT id_run, date
                FROM run_status
                WHERE date > DATE_SUB(NOW(), INTERVAL 30 DAY)
                AND id_run_status_dict in (SELECT id_run_status_dict

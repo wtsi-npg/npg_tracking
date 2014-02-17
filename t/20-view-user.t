@@ -20,21 +20,21 @@ use_ok('npg::view::user');
 my $util = t::util->new({
                 fixtures => 1,
                 fixtures_path => q[t/data/fixtures],
-			});
+      });
 
 {
   my $model = npg::model::user->new({
-				     util     => $util,
-				     id_user  => 1,
-				     username => 'test',
-				    });
+             util     => $util,
+             id_user  => 1,
+             username => 'test',
+            });
   $util->requestor($model);
   my $view  = npg::view::user->new({
-				    util   => $util,
-				    model  => $model,
-				    action => 'read',
-				    aspect => 'list',
-				   });
+            util   => $util,
+            model  => $model,
+            action => 'read',
+            aspect => 'list',
+           });
 
   isa_ok($view, 'npg::view::user');
   ok($util->test_rendered($view->render(), 't/data/rendered/user.html'), '20-view-user-list rendered ok');
@@ -42,18 +42,18 @@ my $util = t::util->new({
 
 {
   my $model = npg::model::user->new({
-				     util     => $util,
-				     id_user  => 1,
-				     username => 'test',
-				    });
+             util     => $util,
+             id_user  => 1,
+             username => 'test',
+            });
   $util->requestor($model);
 
   my $view = npg::view::user->new({
-				   util   => $util,
-				   action => 'read',
-				   aspect => 'read',
-				   model  => $model,
-				  });
+           util   => $util,
+           action => 'read',
+           aspect => 'read',
+           model  => $model,
+          });
 
   my $str;
   lives_ok { $str = $view->render();} q{no croak rendering read};

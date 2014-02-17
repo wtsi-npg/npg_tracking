@@ -15,13 +15,13 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 
 use_ok('npg::model::search');
 
 my $util = t::util->new({
-			 fixtures => 1,
-			});
+       fixtures => 1,
+      });
 
 {
   my $search = npg::model::search->new({
-					util => $util,
-				       });
+          util => $util,
+               });
 
   $search->query('Lack of clusters');
   my $results = $search->results();
@@ -30,8 +30,8 @@ my $util = t::util->new({
 
 {
   my $search = npg::model::search->new({
-					util => $util,
-				       });
+          util => $util,
+               });
 
   $search->query('networked');
   my $results = $search->results();
@@ -40,8 +40,8 @@ my $util = t::util->new({
 
 {
   my $search = npg::model::search->new({
-					util => $util,
-				       });
+          util => $util,
+               });
 
   $search->query('1000Genomes-A2-TriosPilot');
   my $results = $search->results();
@@ -50,8 +50,8 @@ my $util = t::util->new({
 
 {
   my $search = npg::model::search->new({
-					util => $util,
-				       });
+          util => $util,
+               });
 
   $search->query('NA12878-WG');
   my $results = $search->results();
@@ -60,8 +60,8 @@ my $util = t::util->new({
 
 {
   my $search = npg::model::search->new({
-					util => $util,
-				       });
+          util => $util,
+               });
 
   $search->query('939');
   my $results = $search->results();

@@ -24,13 +24,13 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevis
 #
 
 my $util  = t::util->new({
-			  fixtures => 1,
-			 });
+        fixtures => 1,
+       });
 {
   my $model = npg::model::run_lane_annotation->new({
-						    util => $util,
-						    id_run_lane_annotation => 1,
-						   });
+                util => $util,
+                id_run_lane_annotation => 1,
+               });
 
   isa_ok($model, 'npg::model::run_lane_annotation', '$model');
   my @fields = $model->fields();
@@ -47,9 +47,9 @@ my $util  = t::util->new({
   my $annotext = 'This is a library annotation for a run lane';
 
   my $model = npg::model::run_lane_annotation->new({
-						    util        => $util,
-						    id_run_lane => 9,
-						   });
+                util        => $util,
+                id_run_lane => 9,
+               });
   $util->requestor('joe_annotator');
   $model->annotation->comment($annotext);
   $model->annotation->id_user($util->requestor->id_user());

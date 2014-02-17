@@ -93,9 +93,9 @@ sub create {
   if($requestor->username() eq 'pipeline') {
     my $username       = $cgi->param('username');
     my $pipe_requestor = npg::model::user->new({
-						util     => $util,
-						username => $username,
-					       });
+            util     => $util,
+            username => $username,
+                 });
     $model->annotation->id_user($pipe_requestor->id_user());
 
   } else {
