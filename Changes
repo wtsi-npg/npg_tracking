@@ -1,8 +1,19 @@
 CHANGES
 
-- use ${JENKINS_HOME}/tmp instead of /tmp for jenkins tmpdir 
-- add perlcritic policy to prohibit tabs, convert tab to two white space, correct 
-  indentation issues
+release 76.0
+ - use ${JENKINS_HOME}/tmp instead of /tmp for jenkins tmpdir 
+ - add perlcritic policy to prohibit tabs, convert tab to two white space, correct 
+   indentation issues
+ - old and unused apache configuration files removed
+ - IL instruments removed from instrument utilisation menu (we do not have them any more)
+ - instrument uptime menu link removed - target graph is broken
+ - consolidated all instrument menu 70* tests in one 20 test
+ - removed code repetition from bin/ga_II_checker
+ - removed depricated last_30_days method from npg::model::instrument_utilisation
+ - fixed the code where in test conditions operations on undefined variables
+   were performed
+ - removed excessive verbosity in most of the tests
+ - documentation in README, INSTALL and REDESIGN_PROPOSAL updated
 
 release 75.6
  - extended inline index to read 2

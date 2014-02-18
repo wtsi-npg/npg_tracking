@@ -532,6 +532,7 @@ t/20-view-instrument-no_runs.t
 t/20-view-instrument-run_cancelled.t
 t/20-view-instrument-run_pending.t
 t/20-view-instrument.t
+t/20-view-instrument_menus.t
 t/20-view-instrument_mod.t
 t/20-view-instrument_status.t
 t/20-view-instrument_status_annotation.t
@@ -601,10 +602,6 @@ t/60-util-image_map.t
 t/60-util-image_merge.t
 t/60-util-image_scale.t
 t/60-util-mailer.t
-t/70-menu-instruments_formats.t
-t/70-menu-instruments_make_change.t
-t/70-menu-instruments_status.t
-t/70-menu-instruments_utilisation.t
 t/80-email-instrument_annotation.t
 t/80-email-instrument_status_change.t
 t/80-email-run.t
@@ -1011,7 +1008,6 @@ t/data/rendered/menus/instruments_utilisation_30days_lineplot.html
 t/data/rendered/menus/instruments_utilisation_30days_textual.html
 t/data/rendered/menus/instruments_utilisation_90days_lineplot.html
 t/data/rendered/menus/instruments_utilisation_90days_textual.html
-t/data/rendered/menus/instruments_utilisation_uptime.html
 t/data/rendered/run.html
 t/data/rendered/run.html-POST
 t/data/rendered/run.html;add
@@ -1725,7 +1721,5 @@ t/useragent.pm
 t/util.pm
 wtsi_local/apache2.conf
 wtsi_local/envvars
-wtsi_local/httpd.conf
-wtsi_local/httpd_instr_proxy.conf
 wtsi_local/httpd_sfweb.conf
 wtsi_local/httpd_vm.conf
