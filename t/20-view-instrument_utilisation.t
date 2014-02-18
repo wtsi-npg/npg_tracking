@@ -1,22 +1,15 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2009-02-05
-# Last Modified: $Date: 2012-03-01 10:36:10 +0000 (Thu, 01 Mar 2012) $
-# Id:            $Id: 20-view-instrument_utilisation.t 15277 2012-03-01 10:36:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/20-view-instrument_utilisation.t $
-#
 use strict;
 use warnings;
-use Test::More tests => 7;
-use English qw(-no_match_vars);
+use Test::More tests => 8;
+use Test::Exception;
 use t::util;
 use t::request;
-use npg::model::instrument_utilisation;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15277 $ =~ /(\d+)/mx; $r; };
 
+use_ok('npg::model::instrument_utilisation');
 use_ok('npg::view::instrument_utilisation');
-my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
+
+my $util = t::util->new({ fixtures => 1});
+
 {
   my $cgi = $util->cgi();
   $cgi->param( q{pipeline}, q{1} );
@@ -31,16 +24,15 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
   $cgi->param( q{perc_utilisation_prod_insts}, q{0.00} );
   $cgi->param( q{perc_uptime_prod_insts}, q{50.00} );
   $cgi->param( q{id_instrument_format}, q{10} );
-  my $model = npg::model::instrument_utilisation->new({ util => $util });
+
   my $view  = npg::view::instrument_utilisation->new({
     util => $util,
-    model => $model,
+    model =>  npg::model::instrument_utilisation->new({ util => $util }),
     action => q{create},
     aspect => q{}
   });
-  my $render;
-  eval { $render = $view->render(); };
-  like($EVAL_ERROR, qr{You\ \(public\)\ are\ not\ authorised\ for\ this\ view}, 'croaked as not legitimate to create');
+  throws_ok { $view->render(); } qr{You\ \(public\)\ are\ not\ authorised\ for\ this\ view},
+    'croaked as not legitimate to create';
 }
 {
   my $str  = t::request->new({
@@ -63,7 +55,8 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
                  id_instrument_format => q{10},
             },
            });
-  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/create.xml'), 'pipeline create ok');
+  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/create.xml'),
+    'pipeline create ok');
 }
 
 {
@@ -73,8 +66,8 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
             username       => 'joe_public',
             util           => $util,
            });
-
-  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list.html'), 'table list view ok');
+  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list.html'),
+    'table list view ok');
 }
 
 {
@@ -84,7 +77,8 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
             username       => 'joe_public',
             util           => $util,
            });
-  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list_graphical.html'), 'graphical list view ok');
+  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list_graphical.html'),
+    'graphical list view ok');
 }
 
 {
@@ -94,9 +88,9 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
             username       => 'joe_public',
             util           => $util,
            });
-  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list.html'), '90 days table list view ok');
+  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list.html'),
+    '90 days table list view ok');
 }
-
 
 {
   my $str = t::request->new({
@@ -105,8 +99,8 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
             username       => 'joe_public',
             util           => $util,
            });
-
-  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list_graphical_90days.html'), 'graphical list view ok');
+  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list_graphical_90days.html'),
+    'graphical list view ok');
 }
 
 1;

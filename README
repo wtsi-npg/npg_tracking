@@ -33,8 +33,11 @@ data directory:
  templates for the web app and some cron jobs
  db config file for the web app
  some icons
- Apache web server config file
  db schema dump
+
+wtsi_local directory
+--------------------
+ Apache web server config file
 
 t directory:
 ------------

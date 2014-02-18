@@ -63,7 +63,7 @@ sub _check_order_ok {
   my $self = shift;
 
   my $status = $self->instrument_status_dict;
-  my $new = $status->description();
+  my $new = $status->description() || q[];
   if (!$status->iscurrent) {
     croak "Status \"$new\" is depricated";
   }
@@ -85,7 +85,7 @@ sub _check_order_ok {
 sub _request_approval {
   my $self = shift;
 
-  my $new_status = $self->instrument_status_dict->description();
+  my $new_status = $self->instrument_status_dict->description() || q[];
   if ($new_status ne 'up') {
     return;
   }
@@ -777,7 +777,7 @@ sub instrument_percentage_uptimes {
     $dt2->set_second(0);
     $dt->subtract( days => $interval );
 
-    my $seconds_uptime = $self->seconds_uptime($dt, $dt2, $up_periods_this_machine);
+    my $seconds_uptime = $self->seconds_uptime($dt, $dt2, $up_periods_this_machine) || 0;
     my $seconds_of_last_interval_days = $dt2->subtract_datetime_absolute($dt)->in_units('seconds');
     my $percentage_of_total = sprintf '%.2f', $seconds_uptime*$PERCENTAGE/$seconds_of_last_interval_days;
 
@@ -786,7 +786,7 @@ sub instrument_percentage_uptimes {
     $dt->set_minute(0);
     $dt->set_second(0);
     $dt->subtract( days => $DAYS_TO_SUBTRACT);
-    $seconds_uptime = $self->seconds_uptime($dt, $dt2, $up_periods_this_machine);
+    $seconds_uptime = $self->seconds_uptime($dt, $dt2, $up_periods_this_machine) || 0;
 
     my $seconds_of_last_30_days = $dt2->subtract_datetime_absolute($dt)->in_units('seconds');
     my $percentage_of_last_30_days = sprintf '%.2f', $seconds_uptime*$PERCENTAGE/$seconds_of_last_30_days;
