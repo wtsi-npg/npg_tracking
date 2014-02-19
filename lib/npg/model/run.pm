@@ -677,7 +677,7 @@ sub create {
 
   eval {
     if (!$self->validate_team($self->{team})) { croak 'Invalid team name ' . $self->{team}; }
-    $self->{id_run_pair}        ||= 0;
+    $self->{batch_id}           ||= 0;
     $self->{is_paired}          ||= 0;
     $self->{actual_cycle_count} ||= 0;
     $self->{id_instrument_format} = $self->instrument->id_instrument_format();
