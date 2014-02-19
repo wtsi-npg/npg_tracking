@@ -243,6 +243,7 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
 				    id_instrument        => 3,
 				    expected_cycle_count => 35,
 				    priority             => 1,
+				    id_run_pair          => 3,
 				    is_paired            => 1,
 				    team                 => 'RAD',
 				    id_user              => $util->requestor->id_user(),
@@ -291,21 +292,22 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
 {
   my $model = npg::model::run->new({
 				    util                 => $util,
-				    batch_id             => 939,
 				    id_instrument        => 3,
+				    id_run_pair          => 3,
 				    expected_cycle_count => 35,
 				    priority             => 1,
 				    team                 => 'joint',
 				    id_user              => $util->requestor->id_user(),
 				   });
   eval { $model->create(); };
-  is($EVAL_ERROR, q{}, 'Unpaired run created even if id_run_pair is NULL');
+  is($EVAL_ERROR, q{}, 'Unpaired run created even if batch_id is NULL');
 }
 
 {
   my $model = npg::model::run->new({
 				    util                 => $util,
 				    batch_id             => 939,
+				    id_run_pair          => 3,
 				    id_instrument        => 3,
 				    expected_cycle_count => 35,
 				    priority             => 1,
@@ -323,6 +325,7 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
 				   util                 => $util,
 				   batch_id             => 939,
 				   id_instrument        => 3,
+				   id_run_pair          => 3,
 				   expected_cycle_count => 35,
 				   priority             => 1,
 				   team                 => 'A',
