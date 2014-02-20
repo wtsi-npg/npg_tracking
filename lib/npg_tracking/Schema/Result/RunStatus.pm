@@ -71,9 +71,7 @@ __PACKAGE__->table("run_status");
   data_type: 'bigint'
   extra: {unsigned => 1}
   is_foreign_key: 1
-  is_nullable: 1
-
-operator
+  is_nullable: 0
 
 =head2 iscurrent
 
@@ -113,7 +111,7 @@ __PACKAGE__->add_columns(
     data_type => "bigint",
     extra => { unsigned => 1 },
     is_foreign_key => 1,
-    is_nullable => 1,
+    is_nullable => 0,
   },
   "iscurrent",
   { data_type => "tinyint", default_value => 0, is_nullable => 0 },
@@ -175,17 +173,12 @@ __PACKAGE__->belongs_to(
   "user",
   "npg_tracking::Schema::Result::User",
   { id_user => "id_user" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "NO ACTION",
-    on_update     => "NO ACTION",
-  },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:K4FbsHr+zvJa6Gsb2KMpfg
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:39
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:orIX7xdPPHiChilWRRZiUA
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: mg8 $
 # Created:       2010-04-08
