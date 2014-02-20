@@ -78,7 +78,6 @@ the id of the entity having id_event_type.id_entity_type
 =head2 id_user
 
   data_type: 'bigint'
-  default_value: 0
   extra: {unsigned => 1}
   is_foreign_key: 1
   is_nullable: 0
@@ -127,7 +126,6 @@ __PACKAGE__->add_columns(
   "id_user",
   {
     data_type => "bigint",
-    default_value => 0,
     extra => { unsigned => 1 },
     is_foreign_key => 1,
     is_nullable => 0,
@@ -186,8 +184,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:41
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:y2Y9SOEuUMYACHcvYHOOqg
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:38
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:8jC0uuUcbVywwhkgYl7M8A
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: ajb $
 # Created:       2010-04-08
@@ -215,6 +213,8 @@ sub BUILD {
     # '0000-00-00 00:00:00' gets written to the database, but undef gets
     # returned.
 
+    $self->id_user(0)
+        unless $self->id_user();
     $self->notification_sent('0000-00-00 00:00:00')
         unless $self->notification_sent();
 
