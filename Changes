@@ -1,6 +1,6 @@
 CHANGES
 
-- Explicitly set batch_id to 0 in the run model create for case where no batch id is set (nullable in database with default 0 not apparently honoured)
+- Explicitly set batch_id to 0 in the run model create for case where no batch id is set.
 - Explicitly remove expected_cycle_count from run model create.
 - Remove configure run pairing from run model create.
 - Remove id_run_pair from template creating the view. 
