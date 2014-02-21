@@ -1,5 +1,9 @@
 /* changes from setting SQL_MODE = STRICT_TRANS_TABLES*/
 
+/* remove database default of 0 */
+ALTER TABLE `run` CHANGE `batch_id` `batch_id` bigint(20) unsigned;
+
+/* make id_user NOT NULL */
 ALTER TABLE `annotation` CHANGE `id_user` `id_user` bigint(20) unsigned NOT NULL;
 ALTER TABLE `event` CHANGE `id_user` `id_user` bigint(20) unsigned NOT NULL;
 ALTER TABLE `instrument_status` CHANGE `id_user` `id_user` bigint(20) unsigned NOT NULL;
