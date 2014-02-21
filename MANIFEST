@@ -444,7 +444,7 @@ scripts/upgrade_schema/upgrade_schema-7.0
 scripts/upgrade_schema/upgrade_schema-72.0
 scripts/upgrade_schema/upgrade_schema-72.8
 scripts/upgrade_schema/upgrade_schema-74.5
-scripts/upgrade_schema/upgrade_schema_75_to_76
+scripts/upgrade_schema/upgrade_schema_76.0
 scripts/upgrade_schema/upgrade_schema-9.0
 scripts/upgrade_schema/upgrade_schema_113_to_126
 scripts/upgrade_schema/upgrade_schema_155_to_158
