@@ -12,8 +12,7 @@ use t::util;
 use npg::model::instrument;
 use npg::model::user;
 use npg::model::annotation;
-use English qw{-no_match_vars};
-use Test::More tests => 119;
+use Test::More tests => 124;
 use Test::Exception;
 
 use_ok('npg::model::run');
@@ -51,8 +50,7 @@ is($point_v, 0, 'correct point version number for 2');
 is($whole_v, 0, 'correct whole version number for 0.01');
 is($point_v, 1, 'correct point version number for 0.01');
 
-eval{($whole_v, $point_v) = $model->_parse_version('dfasdf');1;};
-like($EVAL_ERROR, qr{Given version number is not valid:}, 'no valid version given');
+throws_ok {($whole_v, $point_v) = $model->_parse_version('dfasdf');} qr{Given version number is not valid:}, 'no valid version given';
 
 is($model->_cmp_version('2.01', '2.8'), -1, 'version 2.01 less than 2.8');
 is($model->_cmp_version('2.10', '2.8'), 1, 'version 2.10 greater than 2.8');
@@ -150,8 +148,9 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
   isa_ok($annotations, 'ARRAY', '$run->annotations()');
   is($run->annotations(), $annotations, 'annotations cached');
   isa_ok($annotations->[0], 'npg::model::annotation', '$annotations->[0]');
-  eval { $run->attach_annotation(); };
-  like($EVAL_ERROR, qr{No\ annotation\ to\ save}, '$run->attach_annotation() with no annotation');
+
+  throws_ok { $run->attach_annotation(); } qr{No\ annotation\ to\ save}, '$run->attach_annotation() with no annotation';
+
   $util->requestor('public');
   my $sub = sub {
     my $msg = shift;
@@ -191,10 +190,9 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
   is($run->id_user(), 5, 'id_user got from internal cache as set');
   $util->requestor('joe_annotator');
   $tags = [qw(good sorted)];
-  eval { $run->save_tags($tags, $util->requestor()); };
-  is($EVAL_ERROR, q{}, 'tags saved fine');
-  eval { $run->remove_tags(['good'], $util->requestor()); };
-  is($EVAL_ERROR, q{}, 'tags removed fine');
+
+  lives_ok { $run->save_tags($tags, $util->requestor()) } 'tags saved fine';
+  lives_ok { $run->remove_tags(['good'], $util->requestor()) } 'tags removed fine';
 }
 
 {
@@ -280,27 +278,65 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
            });
   my $annotation = npg::model::run_annotation->new({util => $util, id_annotation => 1});
   $model->{annotations} = [$annotation];
-  eval {
-    $model->create();
-  };
-  is($EVAL_ERROR, q{}, 'created run ok - is_paired with id_run_pair and declared actual_cycle_count');
+
+  lives_ok { $model->create(); } 'created run ok - is_paired with id_run_pair and declared actual_cycle_count';
+
   ok($model->has_tag_with_value('paired_read'), 'run has paired_read tag');
   ok(!$model->has_tag_with_value('multiplex'), 'run has no multiplex tag');
 }
 
 {
   my $model = npg::model::run->new({
-            util                 => $util,
-            batch_id             => 939,
-            id_instrument        => 3,
-            expected_cycle_count => 35,
-            priority             => 1,
-            team                 => 'joint',
-            id_user              => $util->requestor->id_user(),
-           });
-  eval { $model->create(); };
-  is($EVAL_ERROR, q{}, 'Unpaired run created even if id_run_pair is NULL');
+				    util                 => $util,
+				    id_instrument        => 3,
+				    id_run_pair          => 3,
+				    expected_cycle_count => 35,
+				    priority             => 1,
+				    team                 => 'joint',
+				    id_user              => $util->requestor->id_user(),
+				   });
+
+  lives_ok { $model->create(); } 'Unpaired run created without supplying batch_id explicitly';
+  is($model->batch_id(), 0, 'batch_id 0 if not set explicitly');
+
 }
+
+{
+  my $batch_id = undef;
+  my $model = npg::model::run->new({
+				    util                 => $util,
+				    id_instrument        => 3,
+				    id_run_pair          => 3,
+				    expected_cycle_count => 35,
+				    priority             => 1,
+				    team                 => 'joint',
+				    id_user              => $util->requestor->id_user(),
+            batch_id             => $batch_id
+				   });
+
+  lives_ok { $model->create(); } 'Unpaired run created supplying undef batch_id explicitly';
+  is($model->batch_id(), 0, 'batch_id 0 if provided as undef');
+
+}
+
+{
+  my $batch_id = q{};
+  my $model = npg::model::run->new({
+				    util                 => $util,
+				    id_instrument        => 3,
+				    id_run_pair          => 3,
+				    expected_cycle_count => 35,
+				    priority             => 1,
+				    team                 => 'joint',
+				    id_user              => $util->requestor->id_user(),
+            batch_id             => $batch_id
+				   });
+
+  lives_ok { $model->create(); } 'Unpaired run created supplying an empty string batch_id explicitly';
+  is($model->batch_id(), 0, 'batch_id 0 if provided as an empty string');
+
+}
+
 
 {
   my $model = npg::model::run->new({
@@ -312,8 +348,7 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
 				    team                 => 'joint',
 				    id_user              => $util->requestor->id_user(),
 				   });
-  eval { $model->create(); };
-  is($EVAL_ERROR, q{}, 'created run ok - not paired');
+  lives_ok { $model->create(); } 'created run ok - not paired';
 }
 
 {

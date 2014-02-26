@@ -27,7 +27,6 @@ my $inst = npg::model::instrument->new({
   # set up a cancelled run
   #
   my $run = npg::model::run->new({
-          util                 => $util,
           id_instrument        => $inst->id_instrument(),
           batch_id             => 2690,
           expected_cycle_count => 0,
