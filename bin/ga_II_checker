@@ -11,7 +11,6 @@ package ga_II_checker;
 
 use strict;
 use warnings;
-
 use Carp;
 use English qw(-no_match_vars);
 
@@ -72,14 +71,6 @@ foreach my $address (@run_paths) {
 
     # If $poll isa Monitor::SRS::FTP we can't use long_info for this.
     my $run_is_rta;
-    
-    if ( ref $poll eq 'Monitor::SRS::FTP' ) {
-        $run_is_rta = $poll->is_rta($address);
-    }
-
-    # If $poll isa Monitor::SRS::FTP we can't use long_info for this.
-    my $run_is_rta;
-    
     if ( ref $poll eq 'Monitor::SRS::FTP' ) {
         $run_is_rta = $poll->is_rta($address);
     }

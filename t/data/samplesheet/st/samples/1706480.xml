@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sample api_version="0.6">
+  <id>1706480</id>
+  <name>mES_ai2_s2_cell91</name>
+  <study_id>2658</study_id>
+  <consent_withdrawn>false</consent_withdrawn>
+  <properties>
+    <property>
+      <name>Organism</name>
+      <value>mus musculus</value>
+    </property>
+    <property>
+      <name>Cohort</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Country of origin</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Geographical region</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Ethnicity</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Volume (&#181;l)</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Plate</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Mother</name>
+      <value>129S6/SvEvTac</value>
+    </property>
+    <property>
+      <name>Father</name>
+      <value>C57BL/6Ncr</value>
+    </property>
+    <property>
+      <name>Replicate</name>
+      <value>91</value>
+    </property>
+    <property>
+      <name>GC content</name>
+      <value>Neutral</value>
+    </property>
+    <property>
+      <name>Gender</name>
+      <value>Male</value>
+    </property>
+    <property>
+      <name>Donor Id</name>
+      <value></value>
+    </property>
+    <property>
+      <name>DNA source</name>
+      <value>Cell Line</value>
+    </property>
+    <property>
+      <name>Public Name</name>
+      <value>mES_ai2_s2_cell91</value>
+    </property>
+    <property>
+      <name>Common Name</name>
+      <value>Mus Musculus</value>
+    </property>
+    <property>
+      <name>Strain</name>
+      <value>G4 ES cell line from a male blastocyst from a C57BL/6Ncr male x 129S6/SvEvTac female</value>
+    </property>
+    <property>
+      <name>TAXON ID</name>
+      <value>10090</value>
+    </property>
+    <property>
+      <name>ENA Sample Accession Number</name>
+      <value>ERS351316</value>
+    </property>
+    <property>
+      <name>Sample Description</name>
+      <value>mRNAseq Nextera library made from G4 ES cell line from a male blastocyst from a C57BL/6Ncr male x 129S6/SvEvTac female</value>
+    </property>
+    <property>
+      <name>Sample Visibility</name>
+      <value>Hold</value>
+    </property>
+    <property>
+      <name>Sibling</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Is re-submitted?</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Date of sample collection</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Date of sample extraction</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample extraction method</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample purified</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Purification method</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Concentration</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Concentration determind by</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample type</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Sample storage conditions</name>
+      <value></value>
+    </property>
+    <property>
+      <name>Genotype</name>
+      <value>G4 ES cell line from a male blastocyst from a C57BL/6Ncr male x 129S6/SvEvTac female</value>
+    </property>
+    <property>
+      <name>Phenotype</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Age</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Developmental Stage</name>
+      <value>embryonic stem cell line</value>
+    </property>
+    <property>
+      <name>Cell Type</name>
+      <value>ESC</value>
+    </property>
+    <property>
+      <name>Disease State</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Compound</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Dose</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Immunoprecipitate</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Growth Condition</name>
+      <value>alternative 2i/LIF</value>
+    </property>
+    <property>
+      <name>RNAi</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Organism Part</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Time Point</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Treatment</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Subject</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Disease</name>
+      <value>N/A</value>
+    </property>
+    <property>
+      <name>Reference Genome</name>
+      <value>Mus_musculus (NCBIm37)</value>
+    </property>
+  </properties>
+  <assets>
+    <asset id="8201055" href="/assets/8201055"/>
+    <asset id="8215109" href="/assets/8215109"/>
+    <asset id="8218390" href="/assets/8218390"/>
+    <asset id="8218391" href="/assets/8218391"/>
+  </assets>
+  <study_id>2658</study_id>
+</sample>

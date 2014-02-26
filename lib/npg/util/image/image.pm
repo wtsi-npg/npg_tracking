@@ -69,7 +69,7 @@ sub build_linear_gradient {
   $steps = $plot_type && $plot_type eq 'scale' && !$steps    ? $MAX_COLOUR_GRADIENTS_SCALE
          : !$steps || $steps > $MAX_COLOUR_GRADIENTS_HEATMAP ? $MAX_COLOUR_GRADIENTS_HEATMAP
          :                                                     $steps
-	 ;
+   ;
 
   my @gradient_array;
   if (ref$start_colour eq 'ARRAY') {

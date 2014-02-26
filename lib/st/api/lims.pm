@@ -11,7 +11,6 @@ use English qw(-no_match_vars);
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Aliases;
-use MooseX::ClassAttribute;
 use Readonly;
 use List::MoreUtils qw/none/;
 
@@ -114,8 +113,20 @@ Driver type (xml, etc), currently defaults to xml
 has 'driver_type' => (
                         isa     => 'Str',
                         is      => 'ro',
-                        default => $IMPLEMENTED_DRIVERS[0],
+                        lazy_build => 1,
                      );
+sub _build_driver_type {
+  my $self = shift;
+  my $cached_path = $ENV{'NPG_CACHED_SAMPLESHEET_FILE'};
+  if ($self->_has_path || ($cached_path && -f $cached_path)) {
+    if (!$self->_has_path) {
+      $self->_set_path($cached_path);
+      $self->clear_batch_id();
+    }
+    return $IMPLEMENTED_DRIVERS[1];
+  }
+  return $IMPLEMENTED_DRIVERS[0];
+}
 
 =head2 driver
 
@@ -130,8 +141,8 @@ has 'driver' => (
 sub _build_driver {
   my $self = shift;
   my $d_package = $self->_driver_package_name;
-  ##no critic (ProhibitStringyEval RequireCheckingReturnValueOfEval)
-  eval "require $d_package";
+  ##no critic (ProhibitStringyEval)
+  eval "require $d_package" or croak "Error loading package $d_package: " . $EVAL_ERROR;
   ##use critic
   my $ref = {};
   foreach my $attr (qw/tag_index position id_run path/) {
@@ -161,14 +172,66 @@ for my$m ( @DELEGATED_METHODS ){
 
 =head2 inline_index_end
 
-inlined index end, class method 
+index end
 
 =cut
-class_has 'inline_index_end' => (isa => 'Int',
-                                 is => 'ro',
-                                 required => 0,
-                                 default => $INLINE_INDEX_END,
-                                );
+
+has 'inline_index_read' => (isa => 'Maybe[Int]',
+                           is => 'ro',
+                           lazy_build => 1,
+                          );
+
+sub _build_inline_index_read {
+  my $self = shift;
+  my @x = _parse_sample_description($self->_sample_description);
+  return $x[3];  ## no critic (ProhibitMagicNumbers)
+}
+
+has 'inline_index_end' => (isa => 'Maybe[Int]',
+                           is => 'ro',
+                           lazy_build => 1,
+                          );
+
+sub _build_inline_index_end {
+  my $self = shift;
+  my @x = _parse_sample_description($self->_sample_description);
+  return $x[2];
+}
+
+has 'inline_index_start' => (isa => 'Maybe[Int]',
+                             is => 'ro',
+                             lazy_build => 1,
+                            );
+
+sub _build_inline_index_start {
+  my $self = shift;
+  my @x = _parse_sample_description($self->_sample_description);
+  return $x[1];
+}
+
+has 'inline_index_exists' => (isa => 'Bool',
+                              is => 'ro',
+                              lazy_build => 1,
+                             );
+
+sub _build_inline_index_exists {
+  my $self = shift;
+  return _tag_sequence_from_sample_description($self->_sample_description) ? 1 : 0;
+}
+
+has '_sample_description' => (isa => 'Maybe[Str]',
+                              is => 'ro',
+                              lazy_build => 1,
+                             );
+
+sub _build__sample_description {
+  my $self = shift;
+  return $self->sample_description if ($self->sample_description);
+  foreach my $c ($self->children) {
+    return $c->sample_description if ($c->sample_description);
+  }
+  return;
+}
 
 =head2 path
 
@@ -176,9 +239,11 @@ Samplesheet path
 
 =cut
 has 'path' => (
-                  isa      => 'Str',
-                  is       => 'ro',
-                  required => 0,
+                  isa       => 'Str',
+                  is        => 'ro',
+                  required  => 0,
+                  predicate => '_has_path',
+                  writer    => '_set_path',
               );
 
 =head2 id_run
@@ -206,20 +271,16 @@ Tag index, optional attribute.
 Batch id, optional attribute.
 
 =cut
-has 'batch_id'  =>        (isa             => 'NpgTrackingPositiveInt',
+has 'batch_id'  =>        (isa             => 'Maybe[NpgTrackingPositiveInt]',
                            is              => 'ro',
                            lazy_build      => 1,
                           );
 sub _build_batch_id {
   my $self = shift;
-
-  if ($self->id_run) {
-    if ($self->driver_type eq 'xml') {
-      return $self->driver->batch_id;
-    }
-    croak q[Cannot build batch_id from id_run for driver type ] . $self->driver_type;
+  if ($self->id_run && $self->driver_type eq 'xml') {
+    return $self->driver->batch_id;
   }
-  croak q[Cannot build batch_id: id_run is not supplied];
+  return;
 }
 
 =head2 tag_sequence
@@ -319,8 +380,8 @@ sub _entity_required_insert_size {
       foreach my $key (qw/to from/) {
         my $value = $is->{$key};
         if ($value) {
-	  my $lib_key = $lims->library_id || $lims->tag_index || $lims->sample_id;
-	  $is_hash->{$lib_key}->{$key} = $value;
+          my $lib_key = $lims->library_id || $lims->tag_index || $lims->sample_id;
+          $is_hash->{$lib_key}->{$key} = $value;
         }
       }
     }
@@ -696,11 +757,27 @@ sub _derived_library_type {
 
 sub _tag_sequence_from_sample_description {
   my $desc = shift;
-  my $tag;
-  if ($desc && (($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx))){
+  my @x = _parse_sample_description($desc);
+  return $x[0];
+}
+
+sub _parse_sample_description {
+  my $desc = shift;
+  my $tag=undef;
+  my $start=undef;
+  my $end=undef;
+  my $read=undef;
+  if ($desc && (($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx))) {
     ($tag) = $desc =~ /\(([ACGT]+)\)/smx;
+    if ($desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ read\ 1/smx) {
+        ($start, $end, $read) = ($1, $2, 1);
+    } elsif ($desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ non\-index\ read\ (\d)/smx) {
+        ($start, $end, $read) = ($1, $2, $3);
+    } else {
+        croak q[Error parsing sample description ] . $desc;
+    }
   }
-  return $tag;
+  return ($tag, $start, $end, $read);
 }
 
 =head2 library_types
@@ -732,6 +809,15 @@ sub library_types {
   }
   my @t = sort keys %{$lt_hash};
   return @t;
+}
+
+=head2 driver_method_list
+
+A sorted list of methods that should be implemented by a driver
+
+=cut
+sub driver_method_list {
+  return @DELEGATED_METHODS;
 }
 
 =head2 method_list
@@ -790,8 +876,6 @@ __END__
 =item Moose
 
 =item MooseX::Aliases
-
-=item MooseX::ClassAttribute
 
 =item MooseX::StrictConstructor
 

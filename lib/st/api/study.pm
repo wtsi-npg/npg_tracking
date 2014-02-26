@@ -70,9 +70,9 @@ sub _emails_within_tag {
       if($email){
         $email=~s/\a\s+//smx;
         $email=~s/\s+\z//smx;
-	if($email){
+        if($email){
           push @{$results},$email;
-	}
+        }
       }
     }
   }
@@ -136,6 +136,12 @@ sub description {
     $d = $e->[0];
   }
   return $d ? $d : undef;
+}
+
+sub data_access_group {
+  my ( $self ) = @_;
+  my $group = $self->get('Data access group') || [];
+  return $group->[0];
 }
 
 1;
@@ -223,6 +229,12 @@ returns the title for the study
 returns text description of the study
 
   my $sDescription = $oStudy->description();
+
+=head2 data_access_group
+
+returns group to which data access should be limited
+
+  my $sGroup = $oStudy->data_access_group();
 
 =head1 DIAGNOSTICS
 

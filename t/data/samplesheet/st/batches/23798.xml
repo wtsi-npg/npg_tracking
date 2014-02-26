@@ -1,0 +1,939 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batch>
+  <id>23798</id>
+  <status>started</status>
+  <lanes>
+    <lane position="1" id="8381746" priority="0">
+      <library id="7809257" name="Hc_4_BC4_P2_5046_340285 7809257" request_id="5707613" qc_state="">
+        <sample sample_id="1660679" library_id="7809257" library_name="Hc_4_BC4_P2_5046_340285 7809257" library_type="No PCR" study_id="1697" project_id="714" consent_withdrawn="false">
+          <insert_size from="400" to="550"/>
+        </sample>
+      </library>
+      <hyb_buffer id="7917651">
+        <sample sample_id="1255141" library_id="6200285" library_name="PhiX_PS_20120919" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="2" id="8381744" priority="0">
+      <library id="7809258" name="Hc_10_BC4_P2_5779_340285 7809258" request_id="5707611" qc_state="">
+        <sample sample_id="1660680" library_id="7809258" library_name="Hc_10_BC4_P2_5779_340285 7809258" library_type="No PCR" study_id="1697" project_id="714" consent_withdrawn="false">
+          <insert_size from="400" to="550"/>
+        </sample>
+      </library>
+      <hyb_buffer id="7917651">
+        <sample sample_id="1255141" library_id="6200285" library_name="PhiX_PS_20120919" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="3" id="8381745" priority="0">
+      <library id="7809258" name="Hc_10_BC4_P2_5779_340285 7809258" request_id="5707612" qc_state="">
+        <sample sample_id="1660680" library_id="7809258" library_name="Hc_10_BC4_P2_5779_340285 7809258" library_type="No PCR" study_id="1697" project_id="714" consent_withdrawn="false">
+          <insert_size from="400" to="550"/>
+        </sample>
+      </library>
+      <hyb_buffer id="7917651">
+        <sample sample_id="1255141" library_id="6200285" library_name="PhiX_PS_20120919" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="4" id="8381739" priority="0">
+      <pool id="8218390" name="2658_250913_3" request_id="5657274" qc_state="">
+        <sample sample_id="1706390" library_id="8215019" library_name="mES_ai2_s2_cell1 8215019" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1154">
+            <index>1</index>
+            <expected_sequence>TAAGGCGATAGATCGC</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706391" library_id="8215020" library_name="mES_ai2_s2_cell2 8215020" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1163">
+            <index>2</index>
+            <expected_sequence>CGTACTAGTAGATCGC</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706392" library_id="8215021" library_name="mES_ai2_s2_cell3 8215021" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1170">
+            <index>3</index>
+            <expected_sequence>AGGCAGAATAGATCGC</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706393" library_id="8215022" library_name="mES_ai2_s2_cell4 8215022" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1176">
+            <index>4</index>
+            <expected_sequence>TCCTGAGCTAGATCGC</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706394" library_id="8215023" library_name="mES_ai2_s2_cell5 8215023" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1182">
+            <index>5</index>
+            <expected_sequence>GGACTCCTTAGATCGC</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706395" library_id="8215024" library_name="mES_ai2_s2_cell6 8215024" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1186">
+            <index>6</index>
+            <expected_sequence>TAGGCATGTAGATCGC</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706396" library_id="8215025" library_name="mES_ai2_s2_cell7 8215025" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1189">
+            <index>7</index>
+            <expected_sequence>CTCTCTACTAGATCGC</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706397" library_id="8215026" library_name="mES_ai2_s2_cell8 8215026" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1193">
+            <index>8</index>
+            <expected_sequence>CAGAGAGGTAGATCGC</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706398" library_id="8215027" library_name="mES_ai2_s2_cell9 8215027" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1104">
+            <index>9</index>
+            <expected_sequence>GCTACGCTTAGATCGC</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706399" library_id="8215028" library_name="mES_ai2_s2_cell10 8215028" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1111">
+            <index>10</index>
+            <expected_sequence>CGAGGCTGTAGATCGC</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706400" library_id="8215029" library_name="mES_ai2_s2_cell11 8215029" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1172">
+            <index>11</index>
+            <expected_sequence>AAGAGGCATAGATCGC</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706401" library_id="8215030" library_name="mES_ai2_s2_cell12 8215030" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1180">
+            <index>12</index>
+            <expected_sequence>GTAGAGGATAGATCGC</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706402" library_id="8215031" library_name="mES_ai2_s2_cell13 8215031" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1185">
+            <index>13</index>
+            <expected_sequence>TAAGGCGACTCTCTAT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706403" library_id="8215032" library_name="mES_ai2_s2_cell14 8215032" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1191">
+            <index>14</index>
+            <expected_sequence>CGTACTAGCTCTCTAT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706404" library_id="8215033" library_name="mES_ai2_s2_cell15 8215033" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1195">
+            <index>15</index>
+            <expected_sequence>AGGCAGAACTCTCTAT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706405" library_id="8215034" library_name="mES_ai2_s2_cell16 8215034" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1101">
+            <index>16</index>
+            <expected_sequence>TCCTGAGCCTCTCTAT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706406" library_id="8215035" library_name="mES_ai2_s2_cell17 8215035" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1107">
+            <index>17</index>
+            <expected_sequence>GGACTCCTCTCTCTAT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706407" library_id="8215036" library_name="mES_ai2_s2_cell18 8215036" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1114">
+            <index>18</index>
+            <expected_sequence>TAGGCATGCTCTCTAT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706408" library_id="8215037" library_name="mES_ai2_s2_cell19 8215037" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1121">
+            <index>19</index>
+            <expected_sequence>CTCTCTACCTCTCTAT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706409" library_id="8215038" library_name="mES_ai2_s2_cell20 8215038" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1127">
+            <index>20</index>
+            <expected_sequence>CAGAGAGGCTCTCTAT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706410" library_id="8215039" library_name="mES_ai2_s2_cell21 8215039" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1120">
+            <index>21</index>
+            <expected_sequence>GCTACGCTCTCTCTAT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706411" library_id="8215040" library_name="mES_ai2_s2_cell22 8215040" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1126">
+            <index>22</index>
+            <expected_sequence>CGAGGCTGCTCTCTAT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706412" library_id="8215041" library_name="mES_ai2_s2_cell23 8215041" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1136">
+            <index>23</index>
+            <expected_sequence>AAGAGGCACTCTCTAT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706413" library_id="8215042" library_name="mES_ai2_s2_cell24 8215042" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1138">
+            <index>24</index>
+            <expected_sequence>GTAGAGGACTCTCTAT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706414" library_id="8215043" library_name="mES_ai2_s2_cell25 8215043" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1140">
+            <index>25</index>
+            <expected_sequence>TAAGGCGATATCCTCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706415" library_id="8215044" library_name="mES_ai2_s2_cell26 8215044" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1143">
+            <index>26</index>
+            <expected_sequence>CGTACTAGTATCCTCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706416" library_id="8215045" library_name="mES_ai2_s2_cell27 8215045" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1148">
+            <index>27</index>
+            <expected_sequence>AGGCAGAATATCCTCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706417" library_id="8215046" library_name="mES_ai2_s2_cell28 8215046" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1155">
+            <index>28</index>
+            <expected_sequence>TCCTGAGCTATCCTCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706418" library_id="8215047" library_name="mES_ai2_s2_cell29 8215047" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1164">
+            <index>29</index>
+            <expected_sequence>GGACTCCTTATCCTCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706419" library_id="8215048" library_name="mES_ai2_s2_cell30 8215048" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1169">
+            <index>30</index>
+            <expected_sequence>TAGGCATGTATCCTCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706420" library_id="8215049" library_name="mES_ai2_s2_cell31 8215049" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1162">
+            <index>31</index>
+            <expected_sequence>CTCTCTACTATCCTCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706421" library_id="8215050" library_name="mES_ai2_s2_cell32 8215050" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1171">
+            <index>32</index>
+            <expected_sequence>CAGAGAGGTATCCTCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706422" library_id="8215051" library_name="mES_ai2_s2_cell33 8215051" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1177">
+            <index>33</index>
+            <expected_sequence>GCTACGCTTATCCTCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706423" library_id="8215052" library_name="mES_ai2_s2_cell34 8215052" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1184">
+            <index>34</index>
+            <expected_sequence>CGAGGCTGTATCCTCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706424" library_id="8215053" library_name="mES_ai2_s2_cell35 8215053" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1190">
+            <index>35</index>
+            <expected_sequence>AAGAGGCATATCCTCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706425" library_id="8215054" library_name="mES_ai2_s2_cell36 8215054" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1194">
+            <index>36</index>
+            <expected_sequence>GTAGAGGATATCCTCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706426" library_id="8215055" library_name="mES_ai2_s2_cell37 8215055" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1102">
+            <index>37</index>
+            <expected_sequence>TAAGGCGAAGAGTAGA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706427" library_id="8215056" library_name="mES_ai2_s2_cell38 8215056" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1108">
+            <index>38</index>
+            <expected_sequence>CGTACTAGAGAGTAGA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706428" library_id="8215057" library_name="mES_ai2_s2_cell39 8215057" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1116">
+            <index>39</index>
+            <expected_sequence>AGGCAGAAAGAGTAGA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706429" library_id="8215058" library_name="mES_ai2_s2_cell40 8215058" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1123">
+            <index>40</index>
+            <expected_sequence>TCCTGAGCAGAGTAGA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706430" library_id="8215059" library_name="mES_ai2_s2_cell41 8215059" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1115">
+            <index>41</index>
+            <expected_sequence>GGACTCCTAGAGTAGA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706431" library_id="8215060" library_name="mES_ai2_s2_cell42 8215060" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1122">
+            <index>42</index>
+            <expected_sequence>TAGGCATGAGAGTAGA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706432" library_id="8215061" library_name="mES_ai2_s2_cell43 8215061" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1128">
+            <index>43</index>
+            <expected_sequence>CTCTCTACAGAGTAGA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706433" library_id="8215062" library_name="mES_ai2_s2_cell44 8215062" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1131">
+            <index>44</index>
+            <expected_sequence>CAGAGAGGAGAGTAGA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706434" library_id="8215063" library_name="mES_ai2_s2_cell45 8215063" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1139">
+            <index>45</index>
+            <expected_sequence>GCTACGCTAGAGTAGA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706435" library_id="8215064" library_name="mES_ai2_s2_cell46 8215064" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1141">
+            <index>46</index>
+            <expected_sequence>CGAGGCTGAGAGTAGA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706436" library_id="8215065" library_name="mES_ai2_s2_cell47 8215065" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1144">
+            <index>47</index>
+            <expected_sequence>AAGAGGCAAGAGTAGA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706437" library_id="8215066" library_name="mES_ai2_s2_cell48 8215066" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1150">
+            <index>48</index>
+            <expected_sequence>GTAGAGGAAGAGTAGA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706438" library_id="8215067" library_name="mES_ai2_s2_cell49 8215067" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1158">
+            <index>49</index>
+            <expected_sequence>TAAGGCGAGTAAGGAG</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706439" library_id="8215068" library_name="mES_ai2_s2_cell50 8215068" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1161">
+            <index>50</index>
+            <expected_sequence>CGTACTAGGTAAGGAG</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706440" library_id="8215069" library_name="mES_ai2_s2_cell51 8215069" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1156">
+            <index>51</index>
+            <expected_sequence>AGGCAGAAGTAAGGAG</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706441" library_id="8215070" library_name="mES_ai2_s2_cell52 8215070" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1165">
+            <index>52</index>
+            <expected_sequence>TCCTGAGCGTAAGGAG</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706442" library_id="8215071" library_name="mES_ai2_s2_cell53 8215071" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1168">
+            <index>53</index>
+            <expected_sequence>GGACTCCTGTAAGGAG</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706443" library_id="8215072" library_name="mES_ai2_s2_cell54 8215072" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1175">
+            <index>54</index>
+            <expected_sequence>TAGGCATGGTAAGGAG</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706444" library_id="8215073" library_name="mES_ai2_s2_cell55 8215073" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1181">
+            <index>55</index>
+            <expected_sequence>CTCTCTACGTAAGGAG</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706445" library_id="8215074" library_name="mES_ai2_s2_cell56 8215074" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1188">
+            <index>56</index>
+            <expected_sequence>CAGAGAGGGTAAGGAG</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706446" library_id="8215075" library_name="mES_ai2_s2_cell57 8215075" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1192">
+            <index>57</index>
+            <expected_sequence>GCTACGCTGTAAGGAG</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706447" library_id="8215076" library_name="mES_ai2_s2_cell58 8215076" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1105">
+            <index>58</index>
+            <expected_sequence>CGAGGCTGGTAAGGAG</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706448" library_id="8215077" library_name="mES_ai2_s2_cell59 8215077" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1112">
+            <index>59</index>
+            <expected_sequence>AAGAGGCAGTAAGGAG</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706449" library_id="8215078" library_name="mES_ai2_s2_cell60 8215078" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1119">
+            <index>60</index>
+            <expected_sequence>GTAGAGGAGTAAGGAG</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706450" library_id="8215079" library_name="mES_ai2_s2_cell61 8215079" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1109">
+            <index>61</index>
+            <expected_sequence>TAAGGCGAACTGCATA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706451" library_id="8215080" library_name="mES_ai2_s2_cell62 8215080" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1117">
+            <index>62</index>
+            <expected_sequence>CGTACTAGACTGCATA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706452" library_id="8215081" library_name="mES_ai2_s2_cell63 8215081" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1124">
+            <index>63</index>
+            <expected_sequence>AGGCAGAAACTGCATA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706453" library_id="8215082" library_name="mES_ai2_s2_cell64 8215082" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1129">
+            <index>64</index>
+            <expected_sequence>TCCTGAGCACTGCATA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706454" library_id="8215083" library_name="mES_ai2_s2_cell65 8215083" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1132">
+            <index>65</index>
+            <expected_sequence>GGACTCCTACTGCATA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706455" library_id="8215084" library_name="mES_ai2_s2_cell66 8215084" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1134">
+            <index>66</index>
+            <expected_sequence>TAGGCATGACTGCATA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706456" library_id="8215085" library_name="mES_ai2_s2_cell67 8215085" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1142">
+            <index>67</index>
+            <expected_sequence>CTCTCTACACTGCATA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706457" library_id="8215086" library_name="mES_ai2_s2_cell68 8215086" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1146">
+            <index>68</index>
+            <expected_sequence>CAGAGAGGACTGCATA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706458" library_id="8215087" library_name="mES_ai2_s2_cell69 8215087" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1152">
+            <index>69</index>
+            <expected_sequence>GCTACGCTACTGCATA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706459" library_id="8215088" library_name="mES_ai2_s2_cell70 8215088" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1160">
+            <index>70</index>
+            <expected_sequence>CGAGGCTGACTGCATA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706460" library_id="8215089" library_name="mES_ai2_s2_cell71 8215089" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1149">
+            <index>71</index>
+            <expected_sequence>AAGAGGCAACTGCATA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706461" library_id="8215090" library_name="mES_ai2_s2_cell72 8215090" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1157">
+            <index>72</index>
+            <expected_sequence>GTAGAGGAACTGCATA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706462" library_id="8215091" library_name="mES_ai2_s2_cell73 8215091" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1166">
+            <index>73</index>
+            <expected_sequence>TAAGGCGAAAGGAGTA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706463" library_id="8215092" library_name="mES_ai2_s2_cell74 8215092" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1173">
+            <index>74</index>
+            <expected_sequence>CGTACTAGAAGGAGTA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706464" library_id="8215093" library_name="mES_ai2_s2_cell75 8215093" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1178">
+            <index>75</index>
+            <expected_sequence>AGGCAGAAAAGGAGTA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706465" library_id="8215094" library_name="mES_ai2_s2_cell76 8215094" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1183">
+            <index>76</index>
+            <expected_sequence>TCCTGAGCAAGGAGTA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706466" library_id="8215095" library_name="mES_ai2_s2_cell77 8215095" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1187">
+            <index>77</index>
+            <expected_sequence>GGACTCCTAAGGAGTA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706467" library_id="8215096" library_name="mES_ai2_s2_cell78 8215096" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1196">
+            <index>78</index>
+            <expected_sequence>TAGGCATGAAGGAGTA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706468" library_id="8215097" library_name="mES_ai2_s2_cell79 8215097" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1106">
+            <index>79</index>
+            <expected_sequence>CTCTCTACAAGGAGTA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706469" library_id="8215098" library_name="mES_ai2_s2_cell80 8215098" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1113">
+            <index>80</index>
+            <expected_sequence>CAGAGAGGAAGGAGTA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706470" library_id="8215099" library_name="mES_ai2_s2_cell81 8215099" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1103">
+            <index>81</index>
+            <expected_sequence>GCTACGCTAAGGAGTA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706471" library_id="8215100" library_name="mES_ai2_s2_cell82 8215100" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1110">
+            <index>82</index>
+            <expected_sequence>CGAGGCTGAAGGAGTA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706472" library_id="8215101" library_name="mES_ai2_s2_cell83 8215101" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1118">
+            <index>83</index>
+            <expected_sequence>AAGAGGCAAAGGAGTA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706473" library_id="8215102" library_name="mES_ai2_s2_cell84 8215102" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1125">
+            <index>84</index>
+            <expected_sequence>GTAGAGGAAAGGAGTA</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706474" library_id="8215103" library_name="mES_ai2_s2_cell85 8215103" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1130">
+            <index>85</index>
+            <expected_sequence>TAAGGCGACTAAGCCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706475" library_id="8215104" library_name="mES_ai2_s2_cell86 8215104" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1133">
+            <index>86</index>
+            <expected_sequence>CGTACTAGCTAAGCCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706476" library_id="8215105" library_name="mES_ai2_s2_cell87 8215105" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1135">
+            <index>87</index>
+            <expected_sequence>AGGCAGAACTAAGCCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706477" library_id="8215106" library_name="mES_ai2_s2_cell88 8215106" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1137">
+            <index>88</index>
+            <expected_sequence>TCCTGAGCCTAAGCCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706478" library_id="8215107" library_name="mES_ai2_s2_cell89 8215107" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1147">
+            <index>89</index>
+            <expected_sequence>GGACTCCTCTAAGCCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706479" library_id="8215108" library_name="mES_ai2_s2_cell90 8215108" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1153">
+            <index>90</index>
+            <expected_sequence>TAGGCATGCTAAGCCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706480" library_id="8215109" library_name="mES_ai2_s2_cell91 8215109" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1145">
+            <index>91</index>
+            <expected_sequence>CTCTCTACCTAAGCCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706481" library_id="8215110" library_name="mES_ai2_s2_cell92 8215110" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1151">
+            <index>92</index>
+            <expected_sequence>CAGAGAGGCTAAGCCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706482" library_id="8215111" library_name="mES_ai2_s2_cell93 8215111" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1159">
+            <index>93</index>
+            <expected_sequence>GCTACGCTCTAAGCCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706483" library_id="8215112" library_name="mES_ai2_s2_cell94 8215112" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1167">
+            <index>94</index>
+            <expected_sequence>CGAGGCTGCTAAGCCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706484" library_id="8215113" library_name="mES_ai2_s2_cell95 8215113" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1174">
+            <index>95</index>
+            <expected_sequence>AAGAGGCACTAAGCCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+        <sample sample_id="1706485" library_id="8215114" library_name="mES_ai2_s2_cell96 8215114" library_type="qPCR only" study_id="2658" project_id="1366" consent_withdrawn="false">
+          <tag tag_id="1179">
+            <index>96</index>
+            <expected_sequence>GTAGAGGACTAAGCCT</expected_sequence>
+            <tag_group_id>24</tag_group_id>
+          </tag>
+          <insert_size from="300" to="1000"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="7917651">
+        <sample sample_id="1255141" library_id="6200285" library_name="PhiX_PS_20120919" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="5" id="8381740" priority="0">
+      <library id="8269740" name="PD14393b_wg 8269740" request_id="5676016" qc_state="">
+        <sample sample_id="1712041" library_id="8269740" library_name="PD14393b_wg 8269740" library_type="No PCR" study_id="2239" project_id="1422" consent_withdrawn="false">
+          <insert_size from="300" to="500"/>
+        </sample>
+      </library>
+      <hyb_buffer id="7917651">
+        <sample sample_id="1255141" library_id="6200285" library_name="PhiX_PS_20120919" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="6" id="8381741" priority="0">
+      <pool id="8326170" name="2501_190913_H2" request_id="5695274" qc_state="">
+        <sample sample_id="1694494" library_id="8324592" library_name="T_BCM1_F4 8324592" library_type="Pre-quality controlled" study_id="2501" project_id="1238" consent_withdrawn="false">
+          <tag tag_id="2289">
+            <index>64</index>
+            <expected_sequence>GAGATTCCTAATCTTA</expected_sequence>
+            <tag_group_id>37</tag_group_id>
+          </tag>
+          <insert_size from="100" to="1000"/>
+        </sample>
+        <sample sample_id="1694495" library_id="8324593" library_name="T_BCM1_F5 8324593" library_type="Pre-quality controlled" study_id="2501" project_id="1238" consent_withdrawn="false">
+          <tag tag_id="2290">
+            <index>65</index>
+            <expected_sequence>ATTCAGAATAATCTTA</expected_sequence>
+            <tag_group_id>37</tag_group_id>
+          </tag>
+          <insert_size from="100" to="1000"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="7917651">
+        <sample sample_id="1255141" library_id="6200285" library_name="PhiX_PS_20120919" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="7" id="8381742" priority="0">
+      <pool id="8326267" name="2501_190913_A3" request_id="5695277" qc_state="">
+        <sample sample_id="1694496" library_id="8324594" library_name="T_CBF1_G4 8324594" library_type="Pre-quality controlled" study_id="2501" project_id="1238" consent_withdrawn="false">
+          <tag tag_id="2301">
+            <index>76</index>
+            <expected_sequence>GAGATTCCCAGGACGT</expected_sequence>
+            <tag_group_id>37</tag_group_id>
+          </tag>
+          <insert_size from="100" to="1000"/>
+        </sample>
+        <sample sample_id="1694497" library_id="8324595" library_name="T_CBF1_G5 8324595" library_type="Pre-quality controlled" study_id="2501" project_id="1238" consent_withdrawn="false">
+          <tag tag_id="2302">
+            <index>77</index>
+            <expected_sequence>ATTCAGAACAGGACGT</expected_sequence>
+            <tag_group_id>37</tag_group_id>
+          </tag>
+          <insert_size from="100" to="1000"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="7917651">
+        <sample sample_id="1255141" library_id="6200285" library_name="PhiX_PS_20120919" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+    <lane position="8" id="8381743" priority="0">
+      <pool id="8326557" name="2501_190913_B3" request_id="5695280" qc_state="">
+        <sample sample_id="1694498" library_id="8324596" library_name="T_CBM2_H4 8324596" library_type="Pre-quality controlled" study_id="2501" project_id="1238" consent_withdrawn="false">
+          <tag tag_id="2313">
+            <index>88</index>
+            <expected_sequence>GAGATTCCGTACTGAC</expected_sequence>
+            <tag_group_id>37</tag_group_id>
+          </tag>
+          <insert_size from="100" to="1000"/>
+        </sample>
+        <sample sample_id="1694499" library_id="8324597" library_name="T_CBM2_H5 8324597" library_type="Pre-quality controlled" study_id="2501" project_id="1238" consent_withdrawn="false">
+          <tag tag_id="2314">
+            <index>89</index>
+            <expected_sequence>ATTCAGAAGTACTGAC</expected_sequence>
+            <tag_group_id>37</tag_group_id>
+          </tag>
+          <insert_size from="100" to="1000"/>
+        </sample>
+      </pool>
+      <hyb_buffer id="7917651">
+        <sample sample_id="1255141" library_id="6200285" library_name="PhiX_PS_20120919" library_type="" study_id="198" project_id="" consent_withdrawn="false">
+          <tag tag_id="264">
+            <index>168</index>
+            <expected_sequence>ACAACGCAAT</expected_sequence>
+            <tag_group_id>6</tag_group_id>
+          </tag>
+        </sample>
+      </hyb_buffer>
+    </lane>
+  </lanes>
+</batch>

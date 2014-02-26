@@ -29,11 +29,11 @@ my $command = q{perl -e '$|=1;while(1){print "daemon running\n";sleep5;}'};
     is($r->daemon_name, 'daemon', 'default daemon name');
 
     is($r->start($hostname), qq[daemon -i -r -a 10 -n daemon --umask 002 -A 10 -L 10 -M 10 -o $log_dir/daemon-] . $hostname . qq[-$timestamp.log -- $command], 'start command on local host');
-    is($r->ping($hostname), q[daemon --running -n daemon && echo -n 'ok' || echo -n 'not ok'], 'ping command on local host');
+    is($r->ping($hostname), q[daemon --running -n daemon && ((if [ -w /tmp/daemon.pid ]; then touch -mc /tmp/daemon.pid; fi) && echo -n 'ok') || echo -n 'not ok'], 'ping command on local host');
     is($r->stop($hostname), q[daemon --stop -n daemon], 'stop command on local host');
 
     is($r->start(), qq[daemon -i -r -a 10 -n daemon --umask 002 -A 10 -L 10 -M 10 -o $log_dir/daemon-] . $hostname . qq[-$timestamp.log -- $command], 'start command with an undefined host');
-    is($r->ping(), q[daemon --running -n daemon && echo -n 'ok' || echo -n 'not ok'], 'ping command with an undefined host');
+    is($r->ping(), q[daemon --running -n daemon && ((if [ -w /tmp/daemon.pid ]; then touch -mc /tmp/daemon.pid; fi) && echo -n 'ok') || echo -n 'not ok'], 'ping command with an undefined host');
     is($r->stop(), q[daemon --stop -n daemon], 'stop command with an undefined host');
 }
 

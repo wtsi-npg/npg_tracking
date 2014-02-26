@@ -47,8 +47,12 @@ Interface (Moose role) for retrieving a information about a reference repository
 
 =cut
 
+<<<<<<< HEAD
 Readonly::Scalar our $REP_ROOT         => q[/lustre/scratch110/srpipe/];
 Readonly::Scalar our $SNV_DIR          => q[population_snv];
+=======
+Readonly::Scalar our $REP_ROOT         => q[/lustre/scratch109/srpipe/];
+>>>>>>> eed22f1aeb40cbb91f210b0609cdc4a9a975bec2
 Readonly::Scalar our $REFERENCES_DIR   => q[references];
 Readonly::Scalar our $ADAPTERS_DIR     => q[adapters];
 Readonly::Scalar our $GENOTYPES_DIR    => q[genotypes];
@@ -79,7 +83,7 @@ has 'repository' => (isa       =>'NPG_TRACKING_REFERENCE_REPOSITORY',
                      is        => 'ro',
                      required  => 0,
                      default   => $REP_ROOT,
-		    );
+        );
 
 
 =head2 ref_repository
@@ -91,7 +95,7 @@ has 'ref_repository' => (isa       =>'NPG_TRACKING_REFERENCE_REPOSITORY',
                          is        => 'ro',
                          required  => 0,
                          lazy_build   => 1,
-			);
+      );
 sub _build_ref_repository {
     my $self = shift;
     return catdir($self->repository, $REFERENCES_DIR);
@@ -119,7 +123,7 @@ has '_ref_repository_name' => (isa       =>'Str',
                                is        => 'ro',
                                required  => 0,
                                lazy_build   => 1,
-			      );
+            );
 sub _build__ref_repository_name {
     my $self = shift;
     my @rep_dirs = splitdir(abs_path($self->ref_repository));
@@ -134,7 +138,7 @@ has 'bait_repository' => (isa       => 'NPG_TRACKING_REFERENCE_REPOSITORY',
                           is        => 'ro',
                           required  => 0,
                           lazy_build   => 1,
-			 );
+       );
 sub _build_bait_repository {
     my $self = shift;
     return catdir($self->repository, $BAITS_DIR);
@@ -147,7 +151,7 @@ has 'tag_sets_repository' => (isa       => 'NPG_TRACKING_REFERENCE_REPOSITORY',
                           is        => 'ro',
                           required  => 0,
                           lazy_build   => 1,
-			 );
+       );
 sub _build_tag_sets_repository {
     my $self = shift;
     return catdir($self->repository, $TAG_SETS_DIR);
@@ -162,7 +166,7 @@ has 'adapter_repository' => (isa       =>'NPG_TRACKING_REFERENCE_REPOSITORY',
                              is        => 'ro',
                              required  => 0,
                              lazy_build   => 1,
-			    );
+          );
 sub _build_adapter_repository {
     my $self = shift;
     return catdir($self->repository, $ADAPTERS_DIR);
@@ -177,7 +181,7 @@ has 'genotypes_repository' => (isa       =>'NPG_TRACKING_REFERENCE_REPOSITORY',
                                is        => 'ro',
                                required  => 0,
                                lazy_build   => 1,
-			      );
+            );
 sub _build_genotypes_repository {
     my $self = shift;
     return catdir($self->repository, $GENOTYPES_DIR);
@@ -192,7 +196,7 @@ has 'organism_name_delim' => (isa       =>'Str',
                               is        => 'ro',
                               required  => 0,
                               default   => $ORG_NAME_DELIM,
-			     );
+           );
 
 =head2 taxons_dir
 
@@ -203,7 +207,7 @@ has 'taxons_dir' => (isa       =>'Str',
                      is        => 'ro',
                      required  => 0,
                      default   => $TAXON_IDS_DIR,
-		    );
+        );
 
 =head2 all_species
 
@@ -215,7 +219,7 @@ has 'all_species' => (isa       =>'Bool',
                       is        => 'ro',
                       required  => 0,
                       default   => 1,
-		     );
+         );
 
 =head2 optional_species
 
@@ -227,7 +231,7 @@ has 'optional_species' => (isa       =>'ArrayRef',
                            is        => 'ro',
                            required  => 0,
                            default   => sub {[qw/ NPD_Chimera /]},
-		          );
+              );
 
 =head2 organisms
 
@@ -255,7 +259,7 @@ sub _build_organisms {
     foreach my $item (grep !/^[.]/smx, @listing) {
         if ($item eq $self->taxons_dir || $item eq $BIN_DIR ||
               (!$self->all_species && grep /^$item$/smx, @{$self->optional_species})) {
-	    next;
+      next;
         }
         if (-d catfile($self->ref_repository, $item)) {
             push @orgs, $item;
@@ -301,12 +305,12 @@ sub _build_repository_contents {
     foreach my $taxon_id (grep !/^[.]/smx, @listing) {
         if ($taxon_id !~ /^\d+$/smx) {
             croak qq[Wrong entry in the taxons directory: $taxon_id];
-	}
+  }
         my $path = catfile($self->ref_repository, $self->taxons_dir, $taxon_id);
         my $target = abs_path($path);
         if ($path eq $target) {
             croak qq[Taxon link $path does not point anywhere];
-	}
+  }
 
         my $description = $self->taxonid2species($taxon_id);
         my $key = $description->{species} . q[:];
@@ -314,16 +318,16 @@ sub _build_repository_contents {
             my $deafult_strain_path = catfile($self->ref_repository, $description->{species}, q[default]);
             if (!-e $deafult_strain_path) {
                 croak qq[Taxon id $taxon_id: no default strain link in ] .  catfile($self->ref_repository, $description->{species});
-	    }
+            }
             my @default_strain_dirs = splitdir(abs_path($deafult_strain_path));
             $key .= $default_strain_dirs[$LAST];
-	} else {
+            } else {
             $key .= $description->{strain};
-	}
+            }
 
         if (exists $known->{$key}->{taxon_id}) {
             push @{$known->{$key}->{taxon_id}}, $taxon_id
-	} else {
+        } else {
             $known->{$key}->{taxon_id} = [$taxon_id];
         }
     }
@@ -346,14 +350,14 @@ sub _build_repository_contents {
             $default_strain = $default_strain_dirs[$LAST];
         } else {
             croak qq[No default strain link for $sp];
-	}
+        }
 
         foreach my $strain (grep !/^[.]/smx, @slisting) {
             if (-d catfile($sdir,$strain) && !(-l catfile($sdir,$strain))) {
                 my $key = join q[:], $sp, $strain;
                 $known->{$key}->{default} =  ($strain eq $default_strain) ? 1 : 0;
-	    }
-	}
+            }
+        }
     }
 
     my @keys = keys %{$known};
@@ -364,17 +368,17 @@ sub _build_repository_contents {
         my @strains = grep /^$species/smx, @keys;
         if (!@strains) {
             croak qq[Soft link $synonym does not point to a species folder];
-	}
+        }
         @dirs = splitdir($synonym);
         foreach my $strain (@strains) {
             if ($known->{$strain}->{default}) {
                 if (exists $known->{$strain}->{synonyms}) {
                     push @{$known->{$strain}->{synonyms}}, $dirs[$LAST]
-	        } else {
+            } else {
                     $known->{$strain}->{synonyms} = [$dirs[$LAST]];
                 }
-	    }
-	}
+            }
+        }
     }
 
     return $known;
@@ -435,7 +439,7 @@ sub bait_report_by_reference {
     foreach my $bait_name (keys %{$self->bait_repository_contents}) {
         foreach my $ref (@{$self->bait_repository_contents->{$bait_name}}) {
             push @{$refs->{$ref}}, $bait_name;
-	}
+        }
     }
 
     my $report = qq[Reference\tBait Names\n];
@@ -487,7 +491,7 @@ sub report {
         if ($fh) {
             print {$fh} $list or croak qq[Cannot print to $filename];
             close $fh or croak qq[Cannot close $filename];
-	}
+        }
     }
 
     return $list;
@@ -525,7 +529,7 @@ sub taxonid2species {
     if (-e $path) {
       my @dirs = splitdir(abs_path($path));
       if ($dirs[$SECOND_FROM_END] eq $self->_ref_repository_name) {
-	  $description->{species} = $dirs[$LAST];
+        $description->{species} = $dirs[$LAST];
       } elsif  ($dirs[$THIRD_FROM_END] eq $self->_ref_repository_name) {
           $description->{species} = $dirs[$SECOND_FROM_END];
           $description->{strain} = $dirs[$LAST];

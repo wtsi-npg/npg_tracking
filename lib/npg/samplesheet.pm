@@ -8,13 +8,17 @@
 #
 
 package npg::samplesheet;
+
 use Moose;
 use Template;
 use Carp;
 use English qw(-no_match_vars);
+use List::MoreUtils qw/any/;
+use URI::Escape qw(uri_escape);
 
 use npg_tracking::Schema;
 use st::api::lims;
+use st::api::lims::samplesheet;
 use npg_tracking::data::reference;
 
 use Readonly; Readonly::Scalar our $VERSION    => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
@@ -43,6 +47,7 @@ Class for creating a MiSeq samplesheet using NPG tracking info and Sequencescape
 Readonly::Scalar our $REP_ROOT => q(/nfs/sf45);
 Readonly::Scalar our $SAMPLESHEET_PATH => q(/nfs/sf49/ILorHSorMS_sf49/samplesheets/);
 Readonly::Scalar our $DEFAULT_FALLBACK_REFERENCE_SPECIES=> q(PhiX);
+Readonly::Scalar my  $MIN_COLUMN_NUM => 3;
 
 with 'MooseX::Getopt';
 with 'npg_tracking::glossary::run';
@@ -72,6 +77,8 @@ sub _build_samplesheet_path {
   return $SAMPLESHEET_PATH;
 }
 
+has 'extend' => ( 'isa' => 'Bool', 'is' => 'ro',);
+
 has 'repository' => ( 'isa' => 'Str', 'is' => 'ro', default => $REP_ROOT );
 
 has 'npg_tracking_schema' => (
@@ -95,7 +102,7 @@ has 'run' => (
 sub _build_run { my $self=shift; my$r=$self->npg_tracking_schema->resultset(q(Run))->find($self->id_run); return $r;}
 
 has lims => (
-  'isa' => 'st::api::lims',
+  'isa' => 'ArrayRef[st::api::lims]',
   'is' => 'ro',
   'lazy_build' => 1,
   'metaclass' => 'NoGetopt',
@@ -107,9 +114,9 @@ sub _build_lims {
     ##no critic (ProhibitStringyEval)
     eval 'require st::api::lims::warehouse' or do { croak $EVAL_ERROR;} ;
     ##use critic
-    return st::api::lims->new( position=>1, driver => st::api::lims::warehouse->new( position=>1, tube_ean13_barcode=>$id) );
+    return [st::api::lims->new( position=>1, driver => st::api::lims::warehouse->new( position=>1, tube_ean13_barcode=>$id) )];
   }
-  return st::api::lims->new( batch_id=> $id, position=>1, );
+  return [st::api::lims->new( batch_id=> $id )->children];
 };
 
 has output => (
@@ -143,38 +150,135 @@ sub _build_fallback_reference {
 has _limsreflist => (
         'traits'  => ['Array'],
         'is'      => 'ro',
-        'isa'     => 'ArrayRef[HashRef]',
+        'isa'     => 'ArrayRef[ArrayRef]',
         'lazy_build'    => 1,
         'handles' => {
             limsreflist    => 'elements',
         },
 );
 sub _build__limsreflist {
-          my $self = shift;
-          my @lims;
-          my $l = $self->lims;
-          for my $tmpl ( $l->associated_lims ? $l->associated_lims : ($l) ){
-            my @refs = @{npg_tracking::data::reference->new(
+  my $self = shift;
+  my @lims;
+  for my $l (@{$self->lims}) {
+    for my $tmpl ( $l->is_pool ? $l->children : ($l) ) {
+
+      my @refs = @{npg_tracking::data::reference->new(
               ($self->repository ? ('repository' => $self->repository) : ()),
               aligner => q(fasta),
               lims=>$tmpl, position=>$tmpl->position, id_run=>$self->run->id_run
-            )->refs ||[]};
-            my $ref = shift @refs;
-            $ref ||= $self->fallback_reference();
-            $ref=~s{(/fasta/).*$}{$1}smgx;
-            $ref=~s{(/references)}{}smgx;
-            $ref=~s{^/nfs/sf(\d+)}{C:\\Illumina\\MiSeq Reporter\\Genomes\\WTSI_references}smgx;
-            $ref=~s{/}{\\}smgx;
-            my %h;
-            $h{'library_id'} = $tmpl->library_id;
-            $h{'sample_publishable_name'} = $tmpl->sample_publishable_name;
-            $h{'tag_sequence'} = $tmpl->tag_sequence;
-            $h{'reference_genome'} =  $ref;
-            push @lims, \%h;
-          }
-          return \@lims;
-};
+      )->refs ||[]};
+      my $ref = shift @refs;
+      $ref ||= $self->fallback_reference();
+      $ref=~s{(/fasta/).*$}{$1}smgx;
+      $ref=~s{(/references)}{}smgx;
+      $ref=~s{^/nfs/sf(\d+)}{C:\\Illumina\\MiSeq Reporter\\Genomes\\WTSI_references}smgx;
+      $ref=~s{/}{\\}smgx;
 
+      my @row = ();
+      if ($self->_multiple_lanes) {
+        push @row, $tmpl->position;
+      }
+      push @row, $tmpl->library_id;
+      push @row, $tmpl->sample_publishable_name;
+      push @row, $ref;
+      if($self->_index_read) {
+        push @row, $tmpl->tag_sequence || q[];
+      }
+      if ($self->extend) {
+        push @row, map { _csv_compatible_value($tmpl->$_) } @{$self->_additional_columns};
+      }
+      push @lims, \@row;
+    }
+  }
+  return \@lims;
+}
+
+has study_names => (isa => 'ArrayRef', 'is'  => 'ro', 'lazy_build' => 1,);
+sub _build_study_names {
+  my $self = shift;
+  my $studies = {};
+  foreach my $l (@{$self->lims}) {
+    foreach my $name ($l->study_names) {
+      $studies->{$name} = 1;
+    }
+  }
+  my @names = sort keys %{$studies};
+  return \@names;
+}
+
+has _index_read => (isa => 'Bool', 'is'  => 'ro', 'lazy_build' => 1,);
+sub _build__index_read {
+  my $self = shift;
+  return any {$_->is_pool} @{$self->lims};
+}
+
+has _multiple_lanes => (isa => 'Bool', 'is'  => 'ro', 'lazy_build' => 1,);
+sub _build__multiple_lanes {
+  my $self = shift;
+  return scalar(@{$self->lims}) > 1;
+}
+
+has _additional_columns => ('isa' => 'ArrayRef', 'is'  => 'ro', 'lazy_build' => 1,);
+sub _build__additional_columns {
+  my $self = shift;
+  my @names = ();
+  if ($self->extend) {
+    @names = grep {$_ ne 'library_id'} st::api::lims::driver_method_list();  #library_id goes to SAMPLE_ID
+    push @names, 'tag_index';
+    @names = sort @names;
+  }
+  return \@names;
+}
+
+has _num_columns => ('isa' => 'Int', 'is'  => 'ro', 'lazy_build' => 1,);
+sub _build__num_columns {
+  my $self = shift;
+
+  my $num_columns = $MIN_COLUMN_NUM;
+  if ($self->_index_read) {
+    $num_columns ++; # a column for index
+  }
+  if ($self->_multiple_lanes) {
+    $num_columns ++; # a column for lane number
+  }
+  if ($self->extend) {
+    $num_columns += scalar @{$self->_additional_columns};
+  }
+  return $num_columns;
+}
+
+sub _csv_compatible_value {
+  my $value = shift;
+
+  if ($value) {
+    my $as = $st::api::lims::samplesheet::SAMPLESHEET_ARRAY_SEPARATOR;
+    my $hs = $st::api::lims::samplesheet::SAMPLESHEET_HASH_SEPARATOR;
+    my $type = ref $value;
+    if ($type) {
+      if ($type eq 'ARRAY') {
+        $value = join $as, @{$value};
+      } elsif ($type eq 'HASH') {
+        my @tmp = ();
+        while (my ($key,$val) = each $value) {
+          push @tmp, join $hs, $key, $val;
+        }
+        $value = join $as, sort @tmp;
+      } else {
+      croak "Do not know how to serialize $type to a samplesheet";
+      }
+    } else {
+      $value = uri_escape($value);
+      $value =~ s/\%20/ /smxg;
+      $value =~ s/\%28/(/smxg;
+      $value =~ s/\%29/)/smxg;
+      #value is URI escaped other than spaces and brackets
+    }
+  }
+  if (!defined $value) {
+    $value = q[];
+  }
+  return $value;
+}
 
 has template_text => (
   'isa' => 'Str',
@@ -183,35 +287,42 @@ has template_text => (
   'lazy_build' =>1,
 );
 sub _build_template_text {
+
   my $tt = <<'END_OF_TEMPLATE';
-[Header],,,,
-Investigator Name,[% pendingstatus.user.username %],,,
-Project Name,[% lims.study_names || 'unknown' %],,,
-Experiment Name,[% run.id_run %],,,
-Date,[% pendingstatus.date %],,,
-Workflow,LibraryQC,,,
-Chemistry,Default,,,
-,,,,
-[Reads],,,,
-[% run.forward_read.expected_cycle_count %],,,,
+[% one_less_sep = num_sep; IF num_sep > 1; one_less_sep = num_sep - 1; END -%]
+[Header][% separator.repeat(num_sep) %]
+Investigator Name,[% pendingstatus.user.username %][% separator.repeat(one_less_sep) %]
+Project Name[% separator _ project_name %][% separator.repeat(one_less_sep) %]
+Experiment Name[% separator _ run.id_run %][% separator.repeat(one_less_sep) %]
+Date[% separator _ pendingstatus.date %][% separator.repeat(one_less_sep) %]
+Workflow[% separator %]LibraryQC[% separator.repeat(one_less_sep) %]
+Chemistry[% separator %]Default[% separator.repeat(one_less_sep) %]
+[% separator.repeat(num_sep) -%]
+
+[Reads][% separator.repeat(num_sep) %]
+[% run.forward_read.expected_cycle_count; separator.repeat(num_sep) %]
 [% SET rcycles = run.reverse_read.expected_cycle_count -%]
 [% IF rcycles -%]
-[% rcycles %],,,,
+[% rcycles %][% separator.repeat(num_sep) %]
 [% END -%]
-,,,,
-[Settings],,,,
-,,,,
-[Manifests],,,,
-,,,,
-[Data],,,,
-[% IF limsa.max; -%]
-Sample_ID,Sample_Name,GenomeFolder,Index,
-[% ELSE -%]
-Sample_ID,Sample_Name,GenomeFolder,,
+[% separator.repeat(num_sep) -%]
+
+[Settings][% separator.repeat(num_sep) %]
+[% separator.repeat(num_sep) %]
+[Manifests][% separator.repeat(num_sep) %]
+[% separator.repeat(num_sep) -%]
+
+[Data][% separator.repeat(num_sep) %]
+[% 
+   colnames = ['Sample_ID', 'Sample_Name', 'GenomeFolder'];
+   IF has_index_read; colnames.push('Index') ;END;
+   IF has_multiple_lanes; colnames.unshift('Lane'); END;
+   colnames.join(separator);
+   separator;
+   IF additional_columns.size; additional_columns.join(separator);separator;END;
+%]
+[% FOREACH values_list = limsa; values_list.join(separator); separator; %]
 [% END -%]
-[%  FOREACH lim = limsa -%]
-[%   lim.library_id %],[% lim.sample_publishable_name %],[% lim.reference_genome %],[% lim.tag_sequence %],
-[%  END -%]
 END_OF_TEMPLATE
   ##no critic(RegularExpressions::RequireExtendedFormatting)
   $tt =~s/(?<!\r)\n/\r\n/smg; # we need CRLF not just LF
@@ -221,14 +332,30 @@ END_OF_TEMPLATE
 
 sub process {
   my ($self, @processargs) = @_;
+  my %processargs = @processargs==1 ? %{$processargs[0]} : @processargs;
+  if (not exists $processargs{'binmode'}){
+    $processargs{'binmode'} = ':utf8';
+  }
   my$tt=Template->new();
+
   my $template = $self->template_text;
+  my $ir = $self->_index_read;
+  my $ml = $self->_multiple_lanes;
+  my $ac = $self->_additional_columns;
+  my $nc = $self->_num_columns;
+
   $tt->process(\$template,{
-    run=>$self->run,
-    pendingstatus=>$self->run->run_statuses->search({q(run_status_dict.description)=>q(run pending)},{join=>q(run_status_dict)})->first,
-    lims=>$self->lims,
-    limsa=>[$self->limsreflist]
-  }, $self->output,@processargs)||croak $tt->error();
+    run                =>$self->run,
+    pendingstatus      =>
+      $self->run->run_statuses->search({q(run_status_dict.description)=>q(run pending)},{join=>q(run_status_dict)})->first,
+    limsa              => [$self->limsreflist],
+    separator          => $st::api::lims::samplesheet::SAMPLESHEET_RECORD_SEPARATOR,
+    has_multiple_lanes => $ml,
+    has_index_read     => $ir,
+    additional_columns => $ac,
+    num_sep            => $nc,
+    project_name       => join(q[ ], @{$self->study_names}) || 'unknown',
+  }, $self->output, \%processargs) || croak $tt->error();
   return;
 }
 
@@ -248,10 +375,6 @@ __END__
 
 =over
 
-=item strict
-
-=item warnings
-
 =item Moose
 
 =item Template
@@ -259,6 +382,8 @@ __END__
 =item Readonly
 
 =item Carp
+
+=item List::MoreUtils
 
 =back
 

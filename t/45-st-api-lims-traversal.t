@@ -36,7 +36,7 @@ use_ok('st::api::lims');
 foreach my $pa (['test', 'using mocked data', q[t/data/test45]],
                 ['live', 'using live', q[]], # Put in test TODO perhaps?
                 ['dev',  'using dev', q[]],
-		) {
+    ) {
     diag($pa->[1]);
     my $env = $pa->[0];
     if ($env eq q[test]) { $env = q[live]; }
@@ -52,7 +52,7 @@ foreach my $pa (['test', 'using mocked data', q[t/data/test45]],
   SKIP: {
 
     if (!$do_test) {
-     skip 'Live test, but sanger intweb is not accessible',  33;
+     skip 'Live test, but sanger intweb is not accessible',  35;
     }
        {
     diag q[Tests for run 3905];

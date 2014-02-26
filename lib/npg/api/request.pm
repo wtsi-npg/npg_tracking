@@ -1,10 +1,7 @@
 #############
 # Created By: Marina Gourtovaia
-# Maintainer: $Author: mg8 $
-# Created On: 11June 2010
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $Id: request.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/request.pm $
+# Created On: 11 June 2010
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/request.pm, r16549
 
 package npg::api::request;
 
@@ -19,8 +16,10 @@ use HTTP::Request::Common;
 use File::Basename;
 use File::Path;
 use File::Spec::Functions qw(catfile);
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '75.2';
+
 ## no critic (RequirePodAtEnd RequireCheckingReturnValueOfEval)
 
 =head1 NAME
@@ -117,21 +116,6 @@ has 'content_type'=> (isa             => 'Maybe[Str]',
                       required        => 0,
                      );
 
-=head2 save2cache
-
-A boolean flag. If set, if the contents is retrieved from the web,
-it will be saved to a cache for further use. Default values is
-fasle if SAVE2NPG_WEBSERVICE_CACHE global variable is unset,
-true otherwise.
-
-=cut
-has 'save2cache'  => (isa             => 'Bool',
-                      is              => 'rw',
-                      required        => 0,
-                      default         => 0,
-                     );
-
-
 =head2 useragent
 
 Useragent for making an HTTP request.
@@ -151,7 +135,6 @@ sub _build_useragent {
     $ua->env_proxy();
     return $ua;
 }
-
 
 =head2 make
 
@@ -180,7 +163,7 @@ sub make {
     if ($method ne $DEFAULT_METHOD) {
         if ($cache) {
             croak qq[$method requests cannot use cache: $uri];
-	}
+        }
         $content = $self->_from_web($uri, $method, $args);
     } else {
         my $path = q[];
@@ -189,10 +172,10 @@ sub make {
             $path = $self->_create_path($uri);
             if (!$path) {
                 croak qq[Empty path generated for $uri];
-	    }
+            }
         }
 
-        $content = ($cache && !$self->save2cache) ?
+        $content = ($cache && !$ENV{$self->save2cache_dir_var_name}) ?
                   $self->_from_cache($path, $uri) :
                   $self->_from_web($uri, $method, $args, $path);
         if (!$content) {
@@ -208,7 +191,14 @@ sub _create_path {
   my ( $self, $url ) = @_;
 
   my ($stpath)  = $url =~ m{\Ahttps?://psd\-[^/]+(.*?)\z}xms; # sequencescape path
-  my ($npgpath) = $url =~ m{\Ahttps?://npg(?:\.dev)?\.sanger\.ac\.uk\/perl\/npg\/(.*?)\z}xms; # npg path
+  ##no critic(ProhibitComplexRegexes)
+  my ($npgpath) = $url =~ m{\Ahttps?://
+                            (?:npg|sfweb)
+                            (?:\.(?:dev|internal))?
+                             \.sanger\.ac\.uk?(?::\d+)?
+                             \/perl\/npg\/
+                            (.*?)\z}xms; # npg path
+  ##use critic
   my ($extpath) = $url =~ m{\Ahttps?://.*?/(.*?)\z}xms; # other source path
 
   my $path = $stpath || $npgpath || $extpath;
@@ -240,14 +230,14 @@ sub _check_cache_dir {
     if (!-d $cache) {
        croak qq[$cache (a proposed cache directory) is not a directory];
     }
-    if ($self->save2cache) {
+    if ($ENV{$self->save2cache_dir_var_name}) {
         if (!-w $cache) {
             croak qq[Cache directory $cache is not writable];
-	}
+        }
     } else {
         if (!-r $cache) {
             croak qq[Cache directory $cache is not readable];
-	}
+        }
     }
     return 1;
 }
@@ -256,7 +246,6 @@ sub _from_cache {
     my ($self, $path, $uri) = @_;
 
     $path .= $self->_extension($self->content_type);
-
     if (!-e $path) {
         croak qq[$path for $uri is not in the cache];
     }
@@ -273,14 +262,14 @@ sub _from_cache {
 sub _from_web {
     my ($self, $uri, $method, $args, $path) = @_;
 
-    if ($path && $self->save2cache && $ENV{$self->cache_dir_var_name}) {
+    if ($path && $ENV{$self->save2cache_dir_var_name} && $ENV{$self->cache_dir_var_name}) {
         my $content;
         eval {
-	    $content = $self->_from_cache($path, $uri);
-	};
+          $content = $self->_from_cache($path, $uri);
+        };
         if ($content) {
             return $content;
-	}
+        }
     }
 
     my $req;
@@ -317,11 +306,11 @@ sub _from_web {
         $content =~ s/<!DOCTYPE[ ]html.*//xms;
     }
 
-    if ($self->save2cache) {
+    if ($ENV{$self->save2cache_dir_var_name}) {
         my $content_type = $response->headers->header('Content-Type');
         if (!$content_type) {
             $content_type = $self->content_type;
-	}
+        }
         $self->_write2cache($path, $content, $content_type);
     }
 
@@ -338,7 +327,7 @@ sub _write2cache {
     if (-e $dir) {
         if (!-d $dir) {
             croak qq[$dir should be a directory];
-	}
+        }
     } else {
         File::Path::make_path($dir);
     }
