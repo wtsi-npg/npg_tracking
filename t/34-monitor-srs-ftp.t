@@ -39,7 +39,7 @@ Readonly::Scalar my $PORT => 11_223;
 
 use_ok('Monitor::SRS::FTP');
 
-my $schema = t::dbic_util->new->test_schema();
+my $schema = t::dbic_util->new ( { db_to_use => q{mysql}, })->test_schema();
 my $test;
 
 

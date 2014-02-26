@@ -22,7 +22,7 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11503 
 
 use_ok('Monitor::Staging');
 
-my $schema = t::dbic_util->new->test_schema();
+my $schema = t::dbic_util->new ( { db_to_use => q{mysql}, })->test_schema();
 my $test;
 
 lives_ok { $test = Monitor::Staging->new( _schema => $schema ) }

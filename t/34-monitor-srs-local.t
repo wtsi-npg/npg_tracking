@@ -34,7 +34,7 @@ Readonly::Scalar my $NOT_RUNFOLDER => "$MOCK_STAGING/Not_a_valid_instdir";
 
 use_ok('Monitor::SRS::Local');
 
-my $schema = t::dbic_util->new->test_schema();
+my $schema = t::dbic_util->new ( { db_to_use => q{mysql}, })->test_schema();
 my $test;
 
 lives_ok {

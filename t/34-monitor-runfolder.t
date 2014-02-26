@@ -26,7 +26,7 @@ Readonly::Scalar my $MOCK_STAGING => 't/data/gaii/staging';
 
 use_ok('Monitor::RunFolder');
 
-my $schema = t::dbic_util->new->test_schema();
+my $schema = t::dbic_util->new ( { db_to_use => q{mysql}, })->test_schema();
 my $test;
 my $mock_path = $MOCK_STAGING . '/IL12/incoming/100721_IL12_05222';
 

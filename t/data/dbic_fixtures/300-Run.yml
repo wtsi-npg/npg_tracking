@@ -96,7 +96,7 @@
   is_paired: 0
   batch_id: 62
   team: 'RAD'
-  id_instrument_format: 1
+  id_instrument_format: 4
 - id_run: 5329
   id_instrument: 67
   priority: 1
@@ -242,7 +242,7 @@
   folder_name: 111014_M00119_0028_AMS0001310-00300
   folder_path_glob: '/{export,nfs}/sf45/ILorHSorMS_sf45/*/'
   id_instrument: 90
-  id_instrument_format: 11
+  id_instrument_format: 4
   id_run: 6946
   id_run_pair: 0
   team: 'RAD'
@@ -255,7 +255,7 @@
   folder_name: 111103_M00119_0030_AMS0001309-00300
   folder_path_glob: '/{export,nfs}/sf45/ILorHSorMS_sf45/*/'
   id_instrument: 90
-  id_instrument_format: 11
+  id_instrument_format: 4
   id_run: 7007
   id_run_pair: 0
   team: 'RAD'
@@ -268,7 +268,7 @@
   folder_name: 111103_M00119_0030_AMS0001309-00300
   folder_path_glob: '/{export,nfs}/sf45/ILorHSorMS_sf45/*/'
   id_instrument: 90
-  id_instrument_format: 11
+  id_instrument_format: 4
   id_run: 4231
   id_run_pair: 0
   team: 'RAD'
@@ -281,7 +281,7 @@
   folder_name: 120403_MS1_7825_A_MS0009139-00300
   folder_path_glob: '/{export,nfs}/sf45/ILorHSorMS_sf45/*/'
   id_instrument: 90
-  id_instrument_format: 11
+  id_instrument_format: 4
   id_run: 7825
   id_run_pair: 0
   is_paired: 0

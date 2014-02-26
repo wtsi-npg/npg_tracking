@@ -31,9 +31,31 @@
    username: rt_error
  - id_user: 12
    username: full@address.already
+ - id_user: 14
+   username: joe_pasquale
+ - id_user: 15
+   username: joe_bloggs
  - id_user: 24
    rfid: ~
-   username: mq1
+   username: jo_de_messina
+ - id_user: 28
+   rfid: ~
+   username: jo_stafford
+ - id_user: 50
+   rfid: ~
+   username: joe_DiMaggio
+ - id_user: 56
+   rfid: ~
+   username: joe_cocker
+ - id_user: 57
+   rfid: ~
+   username: jo_wiley
+ - id_user: 62
+   rfid: ~
+   username: joe_lewis
+ - id_user: 73
+   rfid: ~
+   username: joe_90
  - id_user: 76
    rfid: ~
-   username: nh4
+   username: jo_brand

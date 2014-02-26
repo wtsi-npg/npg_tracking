@@ -45,3 +45,15 @@
   tag: fc_slotA
 - id_tag: 23
   tag: fc_slotB
+- id_tag: 35
+  tag: needed_whenever
+- id_tag: 41
+  tag: needed_soon
+- id_tag: 42
+  tag: needed_urgently
+- id_tag: 43
+  tag: needed_yesterday
+- id_tag: 46
+  tag: needed_last_week
+- id_tag: 57
+  tag: needed_last_month

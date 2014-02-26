@@ -99,3 +99,87 @@
   latest_contact: 
   percent_complete: 
 
+- id_instrument: 64
+  name: HS9
+  id_instrument_format: 10
+  external_name: ''
+  serial: ''
+  iscurrent: 1
+  ipaddr: 
+  instrument_comp: HS9
+  mirroring_host: 
+  staging_dir: 
+  latest_contact: 
+  percent_complete: 
+- id_instrument: 5
+  name: IL4
+  id_instrument_format: 4
+  external_name: ''
+  serial: ''
+  iscurrent: 1
+  ipaddr: 
+  instrument_comp: IL4
+  mirroring_host: 
+  staging_dir: 
+  latest_contact: 
+  percent_complete: 
+- id_instrument: 44 
+  name: IL6
+  id_instrument_format: 4
+  external_name: ''
+  serial: ''
+  iscurrent: 1
+  ipaddr: 
+  instrument_comp: IL6
+  mirroring_host: 
+  staging_dir: 
+  latest_contact: 
+  percent_complete: 
+- id_instrument: 89 
+  name: IL7
+  id_instrument_format: 4
+  external_name: ''
+  serial: ''
+  iscurrent: 1
+  ipaddr: 
+  instrument_comp: IL7
+  mirroring_host: 
+  staging_dir: 
+  latest_contact: 
+  percent_complete: 
+- id_instrument: 77 
+  name: IL8
+  id_instrument_format: 4
+  external_name: ''
+  serial: ''
+  iscurrent: 1
+  ipaddr: 
+  instrument_comp: IL8
+  mirroring_host: 
+  staging_dir: 
+  latest_contact: 
+  percent_complete: 
+- id_instrument: 39 
+  name: IL9
+  id_instrument_format: 4
+  external_name: ''
+  serial: ''
+  iscurrent: 1
+  ipaddr: 
+  instrument_comp: IL9
+  mirroring_host: 
+  staging_dir: 
+  latest_contact: 
+  percent_complete: 
+- id_instrument: 90 
+  name: IL10
+  id_instrument_format: 4
+  external_name: ''
+  serial: ''
+  iscurrent: 1
+  ipaddr: 
+  instrument_comp: IL10
+  mirroring_host: 
+  staging_dir: 
+  latest_contact: 
+  percent_complete: 

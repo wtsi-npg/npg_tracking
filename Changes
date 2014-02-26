@@ -1,6 +1,7 @@
 CHANGES
 
 - For 34 tests, add an extra attribute to dbic_util to allow a switch between mysql and SQLite
+- Complete dbic_features data set
 - Explicitly set batch_id to 0 in the run model create for case where no batch id is set.
 - Remove expected_cycle_count from run model create and template.
 - Remove configure run pairing from run model create.

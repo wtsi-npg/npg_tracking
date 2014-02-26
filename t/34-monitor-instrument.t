@@ -20,7 +20,7 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11439 
 
 
 local $ENV{dev} = 'test';
-my $mock_schema = t::dbic_util->new->test_schema();
+my $mock_schema = t::dbic_util->new ( { db_to_use => q{mysql}, })->test_schema();
 my $test;
 
 local $INC{'npg_common/run/folder_validation.pm'} = 1;
