@@ -40,17 +40,6 @@ sub _build_snv_file {
 	return;
 }
 
-sub _parse_reference_genome {
-  my ($self,$reference_genome) = @_;
-  if ($reference_genome) {
-    my @a = $reference_genome =~/ (\S+) \s+ [(] (\S+) [)] /smx;
-    if (scalar @a >= 2 && $a[0] && $a[1]) {
-      return @a;
-    }
-  }
-  return;
-}
-
 
 1;
 __END__
