@@ -27,7 +27,7 @@ my $util = t::util->new({fixtures=>1});
 				  util                 => $util,
 				  id_instrument        => $inst->id_instrument(),
 				  batch_id             => 2690,
-          id_run_pair          => 3,
+				  id_run_pair          => 3,
 				  expected_cycle_count => 0,
 				  actual_cycle_count   => 0,
 				  priority             => 0,

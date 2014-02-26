@@ -183,7 +183,7 @@ directory where the fixtures are located.
 
 =cut
 sub deploy_test_db {
-    my ($schema_package, $fixtures_path) = @_;
+    my ($self, $schema_package, $fixtures_path) = @_;
 
     if (!$ENV{dev} || $ENV{dev} ne 'test') {
       ##no critic (RequireInterpolationOfMetachars)

@@ -12,7 +12,13 @@ package t::dbic_util;    ## no critic (NamingConventions::Capitalization)
 use Moose;
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/msx; $r; };
 use Test::More;
+use t::util;
+use DBIx::Class::Schema::Loader;
+use npg_tracking::Schema;
+use Carp;
+
 Readonly::Scalar my $DEFAULT_FIXTURE_PATH => 't/data/dbic_fixtures';
+Readonly::Scalar my $DEFAULT_DB => 'SQLite';
 
 with 'npg_testing::db';
 
@@ -22,11 +28,24 @@ has fixture_path => (
     default => $DEFAULT_FIXTURE_PATH,
 );
 
+has db_to_use => (
+    is      => 'rw',
+    isa     => 'Str',
+    default => $DEFAULT_DB,
+);
+
 sub test_schema {
     my ($self) = @_;
-    return $self->create_test_db('npg_tracking::Schema', $self->fixture_path());
-}
 
+    my $db_to_use = $self->db_to_use();
+
+    if ($db_to_use eq q{mysql}) {
+      return $self->deploy_test_db('npg_tracking::Schema', $self->fixture_path());
+    }
+    else {
+      return $self->create_test_db('npg_tracking::Schema', $self->fixture_path());
+    }
+}
 
 no Moose;
 __PACKAGE__->meta->make_immutable();

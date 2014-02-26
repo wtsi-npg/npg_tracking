@@ -300,7 +300,9 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
 				    id_user              => $util->requestor->id_user(),
 				   });
   eval { $model->create(); };
-  is($EVAL_ERROR, q{}, 'Unpaired run created even if batch_id is NULL');
+  is($EVAL_ERROR, q{}, 'Unpaired run created without supplying batch_id explicitly');
+
+  # add test to see that it is set to 0 :)
 }
 
 {

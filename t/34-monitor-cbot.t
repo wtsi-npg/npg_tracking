@@ -22,7 +22,7 @@ use t::useragent;
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11440 $ =~ /(\d+)/msx; $r; };
 
 local $ENV{dev} = 'test';
-my $mock_schema = t::dbic_util->new->test_schema();
+my $mock_schema = t::dbic_util->new( { db_to_use => q{mysql}, })->test_schema();
 
 my $test;
 my $dummy_domain = 'test.domain.com';
