@@ -9,6 +9,7 @@ use strict;
 use warnings;
 use Moose::Role;
 use Carp;
+use Cwd 'abs_path';
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
 
@@ -26,7 +27,7 @@ sub _build_snv_path {
         my $bait = $self->bait_name;
         $bait =~ s/\ /_/msxg;
         $bait ||= 'Standard';
-        return $self->snv_repository . "/$organism/default/$bait/$strain";
+        return abs_path($self->snv_repository . "/$organism/default/$bait/$strain");
     }
     return;
 }
@@ -34,10 +35,18 @@ sub _build_snv_path {
 has 'snv_file' => ( isa => q{Maybe[Str]}, is => q{ro}, lazy_build => 1, documentation => 'full name of SNV file',);
 
 sub _build_snv_file {
-	my $self = shift;
-	my @snv_files = glob $self->snv_path . '/*.vcf.gz';
-	if (scalar @snv_files > 0) { return $snv_files[0]; }
-	return;
+   my $self = shift;
+   my @snv_files = glob $self->snv_path . '/*.vcf.gz';
+   if (scalar @snv_files > 1) { croak 'Too many vcf files in ' . $self->snv_path; }
+
+   if (scalar @snv_files == 0) {
+       my ($organism, $strain) = $self->_parse_reference_genome($self->lims->reference_genome);
+      if (-d $self->snv_repository . "/$organism") {
+         $self->messages->push('Directory ' . $self->snv_repository . "/$organism exists, but no VCF files found");
+      }
+      return;
+   }
+   return $snv_files[0];
 }
 
 
