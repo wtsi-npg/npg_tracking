@@ -69,11 +69,11 @@ A wrapper class for finding the location of VCF files.
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Author: Jennifer Liddle E<lt>js10@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by Marina Gourtovaia
+Copyright (C) 2014 GRL, by Jennifer Liddle
 
 This file is part of NPG.
 

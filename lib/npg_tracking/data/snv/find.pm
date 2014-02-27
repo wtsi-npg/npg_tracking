@@ -1,6 +1,5 @@
 #############
 # Created By: Jennifer Liddle (js10)
-# Last Maintained By: $Author: mg8 $
 # Created On: 2014-02-25
 
 package npg_tracking::data::snv::find;
@@ -104,8 +103,6 @@ A Moose role for finding the location of VCF files.
 =head1 BUGS AND LIMITATIONS
 
 =head1 AUTHOR
-
-$Author: mg8 $
 
 =head1 LICENSE AND COPYRIGHT
 
