@@ -25,8 +25,8 @@ sub _build_snv_path {
     my ($organism, $strain) = $self->_parse_reference_genome($self->lims->reference_genome);
     if ($organism && $strain) {
         my $bait = $self->bait_name;
-        $bait =~ s/\ /_/msxg;
         $bait ||= 'Standard';
+        $bait =~ s/\ /_/msxg;
         return abs_path($self->snv_repository . "/$organism/default/$bait/$strain");
     }
     return;
