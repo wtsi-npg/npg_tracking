@@ -508,6 +508,7 @@ t/10-reference-info.t
 t/10-reference-list.t
 t/10-reference.t
 t/10-scripts_compile.t
+t/10-snv.t
 t/10-util.t
 t/11-npg_tracking-Schema.t
 t/14-dbic-EntityType.t
