@@ -11,7 +11,7 @@ use Moose::Role;
 use Carp;
 use Cwd 'abs_path';
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '76.0';
 
 with qw/ npg_tracking::data::reference::find 
          npg_tracking::data::bait::find
