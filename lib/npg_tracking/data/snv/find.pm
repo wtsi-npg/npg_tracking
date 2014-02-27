@@ -36,7 +36,8 @@ has 'snv_file' => ( isa => q{Maybe[Str]}, is => q{ro}, lazy_build => 1, document
 
 sub _build_snv_file {
    my $self = shift;
-   my @snv_files = glob $self->snv_path . '/*.vcf.gz';
+   my @snv_files;
+  if ($self->snv_path) { @snv_files = glob $self->snv_path . '/*.vcf.gz'; }
    if (scalar @snv_files > 1) { croak 'Too many vcf files in ' . $self->snv_path; }
 
    if (scalar @snv_files == 0) {
