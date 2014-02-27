@@ -1,5 +1,6 @@
 CHANGES
 
+- Increase event.description size to 1024 (strict_trans_tables mode enabled means that over-long fields now generate an error rather than a silent truncation)
 - For 34 tests, add an extra attribute to dbic_util to allow a switch between mysql and SQLite
 - Complete dbic_features data set
 - Explicitly set batch_id to 0 in the run model create for case where no batch id is set.

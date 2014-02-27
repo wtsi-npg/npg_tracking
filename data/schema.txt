@@ -109,7 +109,7 @@ CREATE TABLE `event` (
   `id_event` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `id_event_type` bigint(20) unsigned NOT NULL DEFAULT '0',
   `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `description` varchar(255) DEFAULT NULL,
+  `description` varchar(1024) DEFAULT NULL,
   `entity_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'the id of the entity having id_event_type.id_entity_type',
   `id_user` bigint(20) unsigned NOT NULL,
   `notification_sent` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
