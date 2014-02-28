@@ -88,7 +88,6 @@ __PACKAGE__->table("run");
 =head2 batch_id
 
   data_type: 'bigint'
-  default_value: 0
   extra: {unsigned => 1}
   is_nullable: 1
 
@@ -162,12 +161,7 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
   "batch_id",
-  {
-    data_type => "bigint",
-    default_value => 0,
-    extra => { unsigned => 1 },
-    is_nullable => 1,
-  },
+  { data_type => "bigint", extra => { unsigned => 1 }, is_nullable => 1 },
   "id_instrument_format",
   {
     data_type => "bigint",
@@ -335,8 +329,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:43
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:FQWELc6PD0wBxA4jlGNcXw
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-28 12:00:59
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:30KwQYdLD+H3KvJKLf9OxQ
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: mg8 $
 # Created:       2010-04-08
