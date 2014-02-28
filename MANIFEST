@@ -629,6 +629,7 @@ t/data/dbic_fixtures/000-RunStatusDict.yml
 t/data/dbic_fixtures/000-Tag.yml
 t/data/dbic_fixtures/000-User.yml
 t/data/dbic_fixtures/000-Usergroup.yml
+t/data/dbic_fixtures/100-Annotation.yml
 t/data/dbic_fixtures/100-EventType.yml
 t/data/dbic_fixtures/100-InstrumentFormat.yml
 t/data/dbic_fixtures/100-User2usergroup.yml

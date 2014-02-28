@@ -28,23 +28,9 @@ has fixture_path => (
     default => $DEFAULT_FIXTURE_PATH,
 );
 
-has db_to_use => (
-    is      => 'rw',
-    isa     => 'Str',
-    default => $DEFAULT_DB,
-);
-
 sub test_schema {
     my ($self) = @_;
-
-    my $db_to_use = $self->db_to_use();
-
-    if ($db_to_use eq q{mysql}) {
-      return $self->deploy_test_db('npg_tracking::Schema', $self->fixture_path());
-    }
-    else {
-      return $self->create_test_db('npg_tracking::Schema', $self->fixture_path());
-    }
+    return $self->create_test_db('npg_tracking::Schema', $self->fixture_path());
 }
 
 no Moose;

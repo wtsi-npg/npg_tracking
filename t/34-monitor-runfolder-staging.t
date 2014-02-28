@@ -32,7 +32,7 @@ Readonly::Scalar my $MOCK_STAGING => 't/data/gaii/staging';
 
 use_ok('Monitor::RunFolder::Staging');
 
-my $schema = t::dbic_util->new ( { db_to_use => q{mysql}, })->test_schema();
+my $schema = t::dbic_util->new->test_schema();
 
 {
     my $test;

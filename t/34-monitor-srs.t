@@ -21,7 +21,7 @@ use t::dbic_util;
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11474 $ =~ /(\d+)/msx; $r; };
 
 local $ENV{dev} = 'test';
-my $schema = t::dbic_util->new ( { db_to_use => q{mysql}, })->test_schema();
+my $schema = t::dbic_util->new->test_schema();
 
 
 use_ok('Monitor::SRS');

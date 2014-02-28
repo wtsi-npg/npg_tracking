@@ -35,7 +35,7 @@ my $disposable_string;
 
 BEGIN { use_ok('Monitor::SRS::File'); }
 
-my $schema = t::dbic_util->new ( { db_to_use => q{mysql}, })->test_schema();
+my $schema = t::dbic_util->new->test_schema();
 
 dies_ok { Monitor::SRS::File->new( runfolder_path => '/abc/def' ) }
         'Constructor requires run_folder argument';
