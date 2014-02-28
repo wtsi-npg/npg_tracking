@@ -64,7 +64,7 @@ __PACKAGE__->table("event");
 
   data_type: 'varchar'
   is_nullable: 1
-  size: 255
+  size: 1024
 
 =head2 entity_id
 
@@ -115,7 +115,7 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
   "description",
-  { data_type => "varchar", is_nullable => 1, size => 255 },
+  { data_type => "varchar", is_nullable => 1, size => 1024 },
   "entity_id",
   {
     data_type => "bigint",
@@ -184,8 +184,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:38
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:8jC0uuUcbVywwhkgYl7M8A
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-28 12:00:59
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Va2X3mrYQthvC7JygMXvSw
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: ajb $
 # Created:       2010-04-08
