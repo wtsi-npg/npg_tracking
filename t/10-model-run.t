@@ -330,7 +330,7 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
 				    priority             => 1,
 				    team                 => 'joint',
 				    id_user              => $util->requestor->id_user(),
-            batch_id             => $batch_id
+				    batch_id             => $batch_id,
 				   });
 
   lives_ok { $model->create(); } 'Unpaired run created supplying an empty string batch_id explicitly';
