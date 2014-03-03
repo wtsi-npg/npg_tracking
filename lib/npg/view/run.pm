@@ -343,7 +343,6 @@ sub create {
   my $util        = $self->util();
   my $cgi         = $util->cgi();
   my $model       = $self->model();
-  my $id_run_pair = $cgi->param('id_run_pair') || q();
   my $tracks      = $cgi->param('tracks');
 
   my $paired_read = $cgi->param('paired_read');
@@ -381,16 +380,6 @@ sub create {
                  });
              }
          sort { $a <=> $b } keys %{$lanes}];
-
-  #########
-  # Configure run pairing
-  #
-  $cgi->param('is_paired', !($id_run_pair eq 'no'));
-  if($id_run_pair !~ /^\d+$/smx) {
-    $cgi->param('id_run_pair', undef);
-  }
-
-  $model->expected_cycle_count($cgi->param('expected_cycle_count') || 0);
 
   #########
   # fake the cgi id_user parameter based on requestor's id_user

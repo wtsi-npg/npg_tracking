@@ -74,21 +74,22 @@ my $util = t::util->new({fixtures  => 1,});
   MIME::Lite->send('sub',$sub);
 
   my $str = t::request->new({
-           PATH_INFO      => '/run',
-           REQUEST_METHOD => 'POST',
-           username       => 'joe_loader',
-           util           => $util,
-           cgi_params     => {
-            id_instrument        => 3,
-            team                 => 'RAD',
-            batch_id             => 42,
-            tracks               => 3,
-            lane_1_tile_count    => 330,
-            expected_cycle_count => 37,
-            priority             => 1,
-                 },
+			     PATH_INFO      => '/run',
+			     REQUEST_METHOD => 'POST',
+			     username       => 'joe_loader',
+			     util           => $util,
+			     cgi_params     => {
+						id_instrument        => 3,
+						id_run_pair          => 0,
+						team                 => 'RAD',
+						batch_id             => 42,
+						tracks               => 3,
+						lane_1_tile_count    => 330,
+						expected_cycle_count => 37,
+						priority             => 1,
+					       },
 
-          });
+			    });
   ok($util->test_rendered($str, 't/data/rendered/run.html-POST'), 'loader create render ok');
 }
 
@@ -112,20 +113,21 @@ my $util = t::util->new({fixtures  => 1,});
   MIME::Lite->send('sub',$sub);
 
   my $str  = t::request->new({
-            PATH_INFO      => '/run/16.xml',
-            REQUEST_METHOD => 'POST',
-            username       => 'pipeline',
-            util           => $util,
-            cgi_params     => {
-             id_instrument        => 3,
-             team                 => 'RAD',
-             batch_id             => 42,
-             tracks               => 3,
-             lane_1_tile_count    => 330,
-             expected_cycle_count => 37,
-             priority             => 1,
-            },
-           });
+			      PATH_INFO      => '/run/16.xml',
+			      REQUEST_METHOD => 'POST',
+			      username       => 'pipeline',
+			      util           => $util,
+			      cgi_params     => {
+						 id_instrument        => 3,
+						 id_run_pair          => 0,
+						 team                 => 'RAD',
+						 batch_id             => 42,
+						 tracks               => 3,
+						 lane_1_tile_count    => 330,
+						 expected_cycle_count => 37,
+						 priority             => 1,
+						},
+			     });
   ok($util->test_rendered($str, 't/data/rendered/run/16;update_xml'), 'loader update_xml');
 }
 
@@ -314,20 +316,21 @@ my $util = t::util->new({fixtures  => 1,});
 {
   my $runs1 = [map { $_->id_run() } @{npg::model::run->new({util=>$util})->runs()}];
   my $str   = t::request->new({
-             PATH_INFO      => '/run',
-             REQUEST_METHOD => 'POST',
-             username       => 'joe_loader',
-             util           => $util,
-             cgi_params     => {
-              id_instrument        => 3,
-              team                 => 'RAD',
-              batch_id             => 42,
-              tracks               => 3,
-              lane_1_tile_count    => 330,
-              expected_cycle_count => 37,
-              priority             => 1,
-             },
-            });
+			       PATH_INFO      => '/run',
+			       REQUEST_METHOD => 'POST',
+			       username       => 'joe_loader',
+			       util           => $util,
+			       cgi_params     => {
+						  id_instrument        => 3,
+						  id_run_pair          => 0,
+						  team                 => 'RAD',
+						  batch_id             => 42,
+						  tracks               => 3,
+						  lane_1_tile_count    => 330,
+						  expected_cycle_count => 37,
+						  priority             => 1,
+						 },
+			      });
   my $runs2 = {map { $_->id_run() => 1 } @{npg::model::run->new({util=>$util})->runs()}};
 
   for my $run (@{$runs1}) {
@@ -346,20 +349,21 @@ my $util = t::util->new({fixtures  => 1,});
 {
   my $runs1 = [map { $_->id_run() } @{npg::model::run->new({util=>$util})->runs()}];
   my $str   = t::request->new({
-             PATH_INFO      => '/run',
-             REQUEST_METHOD => 'POST',
-             username       => 'joe_loader',
-             util           => $util,
-             cgi_params     => {
-              id_instrument        => 3,
-              batch_id             => 42,
-              tracks               => 3,
-              lane_1_tile_count    => 330,
-              expected_cycle_count => 37,
-                                                  team                 => 'A',
-              priority             => 1,
-             },
-            });
+			       PATH_INFO      => '/run',
+			       REQUEST_METHOD => 'POST',
+			       username       => 'joe_loader',
+			       util           => $util,
+			       cgi_params     => {
+						  id_instrument        => 3,
+						  id_run_pair          => 0,
+						  batch_id             => 42,
+						  tracks               => 3,
+						  lane_1_tile_count    => 330,
+						  expected_cycle_count => 37,
+						  team                 => 'A',
+						  priority             => 1,
+						 },
+			      });
 
   unlike($str, qr/Error/smx);
   my $runs2 = {map { $_->id_run() => 1 } @{npg::model::run->new({util=>$util})->runs()}};
@@ -380,20 +384,21 @@ my $util = t::util->new({fixtures  => 1,});
 {
   my $runs1 = [map { $_->id_run() } @{npg::model::run->new({util=>$util})->runs()}];
   my $str   = t::request->new({
-             PATH_INFO      => '/run',
-             REQUEST_METHOD => 'POST',
-             username       => 'joe_r_n_d',
-             util           => $util,
-             cgi_params     => {
-              id_instrument        => 3,
-              team                 => 'RAD',
-              batch_id             => 42,
-              tracks               => 3,
-              lane_1_tile_count    => 330,
-              expected_cycle_count => 37,
-              priority             => 1,
-             },
-            });
+			       PATH_INFO      => '/run',
+			       REQUEST_METHOD => 'POST',
+			       username       => 'joe_r_n_d',
+			       util           => $util,
+			       cgi_params     => {
+						  id_instrument        => 3,
+						  id_run_pair          => 0,
+						  team                 => 'RAD',
+						  batch_id             => 42,
+						  tracks               => 3,
+						  lane_1_tile_count    => 330,
+						  expected_cycle_count => 37,
+						  priority             => 1,
+						 },
+			      });
   my $runs2 = {map { $_->id_run() => 1 } @{npg::model::run->new({util=>$util})->runs()}};
 
   for my $run (@{$runs1}) {
