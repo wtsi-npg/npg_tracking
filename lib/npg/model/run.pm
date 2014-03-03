@@ -472,7 +472,7 @@ sub recent_runs {
 
     $self->{recent_runs} = [grep { !$seen->{$_->id_run()}++ &&
                                     (!$_->run_pair() || !$seen->{$_->run_pair->id_run()}++) }
-            @{$runs}];
+                    @{$runs}];
   }
   return $self->{recent_runs};
 }
@@ -677,6 +677,7 @@ sub create {
 
   eval {
     if (!$self->validate_team($self->{team})) { croak 'Invalid team name ' . $self->{team}; }
+    $self->{batch_id}           ||= 0;
     $self->{is_paired}          ||= 0;
     $self->{actual_cycle_count} ||= 0;
     $self->{id_instrument_format} = $self->instrument->id_instrument_format();
