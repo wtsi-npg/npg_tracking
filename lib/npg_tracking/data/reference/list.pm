@@ -48,6 +48,7 @@ Interface (Moose role) for retrieving a information about a reference repository
 =cut
 
 Readonly::Scalar our $REP_ROOT         => q[/lustre/scratch109/srpipe/];
+Readonly::Scalar our $SNV_DIR          => q[population_snv];
 Readonly::Scalar our $REFERENCES_DIR   => q[references];
 Readonly::Scalar our $ADAPTERS_DIR     => q[adapters];
 Readonly::Scalar our $GENOTYPES_DIR    => q[genotypes];
@@ -96,6 +97,24 @@ sub _build_ref_repository {
     return catdir($self->repository, $REFERENCES_DIR);
 }
 
+=head2 snv repository
+
+An absolute path to the snv repository
+
+=cut
+has 'snv_repository' => (isa       =>'NPG_TRACKING_REFERENCE_REPOSITORY',
+                         is        => 'ro',
+                         required  => 0,
+                         lazy_build   => 1,
+         );
+sub _build_snv_repository {
+    my $self = shift;
+    return catdir($self->repository, $SNV_DIR);
+}
+
+=head2 repository name
+
+=cut
 has '_ref_repository_name' => (isa       =>'Str',
                                is        => 'ro',
                                required  => 0,
