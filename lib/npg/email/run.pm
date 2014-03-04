@@ -94,7 +94,7 @@ sub study_lane_followers {
     foreach my $dlims ($lims->associated_lims) {
       my $study_name = $dlims->study_name;
       if ( $study_name && exists $return_hash->{$study_name} && !$return_hash->{$study_name}->{followers} ) {
-	my @addresses = $dlims->email_addresses;
+        my @addresses = $dlims->email_addresses;
         $return_hash->{$study_name}->{followers} = $dlims->email_addresses;
       }
     }

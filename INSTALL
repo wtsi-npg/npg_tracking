@@ -31,12 +31,9 @@ dbuser=root
 dbpass=
 dbname=npgt
 
-edit data/httpd.conf - set correct paths, locations of libraries and the port number
-follow the instructions in the file on commenting/uncommenting lines
+This file has to be copied manually to the deployment area.
+Edit files in wtsi_local to suit your Apache server setup.
 
-The following two files are not copied by the deployment procedure, have to be copied manually
-
-  cp data/config.ini /my/perl/data/config.ini
 
 
 

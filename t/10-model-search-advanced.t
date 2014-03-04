@@ -1,18 +1,9 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2007-10
-# Last Modified: $Date: 2012-03-08 11:21:27 +0000 (Thu, 08 Mar 2012) $
-# Id:            $Id: 10-model-search-advanced.t 15308 2012-03-08 11:21:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-search-advanced.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 44;
 use CGI;
 use t::util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15308 $ =~ /(\d+)/mx; $r; };
 use_ok('npg::model::search');
 
   my $mock = {
@@ -112,7 +103,6 @@ use_ok('npg::model::search');
   
   my $util = t::util->new({ mock => $mock, cgi => $cgi });
   my $model = npg::model::search->new({ util => $util });
-warn $util.q{:}.$model . q{:}. $mock;
   my $results = $model->advanced_search();
   is(scalar @{$results}, 1, '1 result - creates a query via a joining table');
   my @keys =  @{$model->{'result_keys'}};

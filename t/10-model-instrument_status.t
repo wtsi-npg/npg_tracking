@@ -19,21 +19,21 @@ use_ok('npg::model::instrument_status');
 my $util = t::util->new({fixtures => 1});
 
 my $already_at_status_wash_required = npg::model::instrument_status->new({
-									  util => $util,
-									  id_instrument_status => 5,
-									 });
+                    util => $util,
+                    id_instrument_status => 5,
+                   });
 my $already_at_status_down = npg::model::instrument_status->new({
-								 util => $util,
-								 id_instrument_status => 4,
-								});
+                 util => $util,
+                 id_instrument_status => 4,
+                });
 my $already_at_status_request_approval = npg::model::instrument_status->new({
-									     util => $util,
-									     id_instrument_status => 1,
-									    });
+                       util => $util,
+                       id_instrument_status => 1,
+                      });
 my $already_at_status_up = npg::model::instrument_status->new({
-							       util => $util,
-							       id_instrument_status => 13,
-							      });
+                     util => $util,
+                     id_instrument_status => 13,
+                    });
 
 {
   my $model = npg::model::instrument_status->new({ util => $util });
@@ -152,20 +152,20 @@ my $already_at_status_up = npg::model::instrument_status->new({
     q{error on moving status to 'wash required' from 'down'};
 
   $model = npg::model::instrument_status->new({
-					       util => $util,
-					       id_instrument => $already_at_status_down->instrument->id_instrument(),
-					       id_user => $already_at_status_down->user->id_user(),
-					       id_instrument_status_dict => 5,
-					      });
+                 util => $util,
+                 id_instrument => $already_at_status_down->instrument->id_instrument(),
+                 id_user => $already_at_status_down->user->id_user(),
+                 id_instrument_status_dict => 5,
+                });
   lives_ok { $model->_request_approval(); } q{no croak on request approval for moving status to not 'up'};
   lives_ok { $model->_check_order_ok(); } q{no croak on moving status to 'request approval' from 'down'};
 
   $model = npg::model::instrument_status->new({
-					       util => $util,
-					       id_instrument => $already_at_status_request_approval->instrument->id_instrument(),
-					       id_user => $already_at_status_request_approval->user->id_user(),
-					       id_instrument_status_dict => 1,
-					      });
+                 util => $util,
+                 id_instrument => $already_at_status_request_approval->instrument->id_instrument(),
+                 id_user => $already_at_status_request_approval->user->id_user(),
+                 id_instrument_status_dict => 1,
+                });
   lives_ok { $model->_check_order_ok(); } q{no croak on moving status to 'up' from 'request approval'};
   throws_ok { $model->_request_approval(); }
     qr/public is not a member of 'approvers' usergroup/,
@@ -177,11 +177,11 @@ my $already_at_status_up = npg::model::instrument_status->new({
 
 {
   my $model = npg::model::instrument_status->new({
-						  util => $util,
-						  id_instrument => 13,
-						  id_instrument_status_dict => 8,
-						  id_user => 4,
-						 });
+              util => $util,
+              id_instrument => 13,
+              id_instrument_status_dict => 8,
+              id_user => 4,
+             });
   $util->requestor('joe_engineer');
   $util->catch_email($model);
   lives_ok { $model->create(); }  q{no croak on create of 'down for repair' status for id_instrument 13};

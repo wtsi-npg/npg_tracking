@@ -64,7 +64,6 @@ __PACKAGE__->table("tag_run_lane");
 =head2 id_user
 
   data_type: 'bigint'
-  default_value: 0
   extra: {unsigned => 1}
   is_foreign_key: 1
   is_nullable: 0
@@ -105,7 +104,6 @@ __PACKAGE__->add_columns(
   "id_user",
   {
     data_type => "bigint",
-    default_value => 0,
     extra => { unsigned => 1 },
     is_foreign_key => 1,
     is_nullable => 0,
@@ -179,8 +177,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:JgLHlqhwfZFpMAI4IC9KxA
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:39
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:vsGkeNEmY6ZJUVCDJYUL8w
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: jo3 $
 # Created:       2010-04-08

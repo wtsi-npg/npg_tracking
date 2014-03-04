@@ -1,5 +1,29 @@
 CHANGES
 
+release 76.0
+ - added defaults for Perl indentation in Emacs for this repository
+ - definition of the repository root for single nucleotide variation files
+ - a new module defining rules for finding single nucleotide variation files
+ - changes to the database schema and code to ensure compliance with sql
+   strict mode, relevant changes to tests and test data
+ - if batch_id is not supplied at run creation, enforce zero in the model,
+     wider tests to be performed if NULL needs to be used
+ - id_run_pair defaults to null; examining and setting this field removed
+     from the code, the concept of run-pair has not been used for a long time
+ - use ${JENKINS_HOME}/tmp instead of /tmp for jenkins tmpdir 
+ - add perlcritic policy to prohibit tabs, convert tab to two white space, correct 
+   indentation issues
+ - old and unused apache configuration files removed
+ - IL instruments removed from instrument utilisation menu (we do not have them any more)
+ - instrument uptime menu link removed - target graph is broken
+ - consolidated all instrument menu 70* tests in one 20 test
+ - removed code repetition from bin/ga_II_checker
+ - removed depricated last_30_days method from npg::model::instrument_utilisation
+ - fixed the code where in test conditions operations on undefined variables
+   were performed
+ - removed excessive verbosity in most of the tests
+ - documentation in README, INSTALL and REDESIGN_PROPOSAL updated
+
 release 75.6
  - extended inline index to read 2
  - hardcoded link for enigmatic authentication (not mod perl url) page so that the page

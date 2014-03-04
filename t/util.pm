@@ -1,11 +1,3 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2007-10
-# Last Modified: $Date: 2012-12-17 14:00:36 +0000 (Mon, 17 Dec 2012) $
-# Id:            $Id: util.pm 16335 2012-12-17 14:00:36Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/util.pm $
-#
 package t::util;
 
 use strict;
@@ -394,8 +386,6 @@ sub is_colour {
   my ($width, $height) = $gd->getBounds();
   my $rgb_index        = $gd->getPixel($width-1, $height-1);
   my @rgb              = $gd->rgb($rgb_index);
-  diag("status colour is (@rgb)");
-
   return is_deeply(\@rgb, @args);
 }
 

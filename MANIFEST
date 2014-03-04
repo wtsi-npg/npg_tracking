@@ -333,6 +333,8 @@ lib/npg_tracking/daemon/samplesheet.pm
 lib/npg_tracking/daemon/staging.pm
 lib/npg_tracking/data/bait.pm
 lib/npg_tracking/data/bait/find.pm
+lib/npg_tracking/data/snv.pm
+lib/npg_tracking/data/snv/find.pm
 lib/npg_tracking/data/reference.pm
 lib/npg_tracking/data/reference/find.pm
 lib/npg_tracking/data/reference/info.pm
@@ -444,6 +446,7 @@ scripts/upgrade_schema/upgrade_schema-7.0
 scripts/upgrade_schema/upgrade_schema-72.0
 scripts/upgrade_schema/upgrade_schema-72.8
 scripts/upgrade_schema/upgrade_schema-74.5
+scripts/upgrade_schema/upgrade_schema_76.0
 scripts/upgrade_schema/upgrade_schema-9.0
 scripts/upgrade_schema/upgrade_schema_113_to_126
 scripts/upgrade_schema/upgrade_schema_155_to_158
@@ -506,6 +509,7 @@ t/10-reference-info.t
 t/10-reference-list.t
 t/10-reference.t
 t/10-scripts_compile.t
+t/10-snv.t
 t/10-util.t
 t/11-npg_tracking-Schema.t
 t/14-dbic-EntityType.t
@@ -532,6 +536,7 @@ t/20-view-instrument-no_runs.t
 t/20-view-instrument-run_cancelled.t
 t/20-view-instrument-run_pending.t
 t/20-view-instrument.t
+t/20-view-instrument_menus.t
 t/20-view-instrument_mod.t
 t/20-view-instrument_status.t
 t/20-view-instrument_status_annotation.t
@@ -601,10 +606,6 @@ t/60-util-image_map.t
 t/60-util-image_merge.t
 t/60-util-image_scale.t
 t/60-util-mailer.t
-t/70-menu-instruments_formats.t
-t/70-menu-instruments_make_change.t
-t/70-menu-instruments_status.t
-t/70-menu-instruments_utilisation.t
 t/80-email-instrument_annotation.t
 t/80-email-instrument_status_change.t
 t/80-email-run.t
@@ -1011,7 +1012,6 @@ t/data/rendered/menus/instruments_utilisation_30days_lineplot.html
 t/data/rendered/menus/instruments_utilisation_30days_textual.html
 t/data/rendered/menus/instruments_utilisation_90days_lineplot.html
 t/data/rendered/menus/instruments_utilisation_90days_textual.html
-t/data/rendered/menus/instruments_utilisation_uptime.html
 t/data/rendered/run.html
 t/data/rendered/run.html-POST
 t/data/rendered/run.html;add
@@ -1100,6 +1100,8 @@ t/data/repos1/baits/Human_all_exon_50MB/1000Genomes_hs37d5/S02972011-GRCh37_hs37
 t/data/repos1/baits/Human_all_exon_50MB/1000Genomes_hs37d5/S02972011-GRCh37_hs37d5-PTR.interval_list
 t/data/repos1/npg/run/7753.xml
 t/data/repos1/npg/run/7754.xml
+t/data/repos1/population_snv/Homo_sapiens/default/Standard/1000Genomes_hs37d5/Human_all_exon_50MB-1000Genomes_hs37d5.vcf.gz
+t/data/repos1/population_snv/Homo_sapiens/default/Human_all_exon_50MB/1000Genomes_hs37d5/Human_all_exon_50MB-1000Genomes_hs37d5.vcf.gz
 t/data/repos1/references/Homo_sapiens/1000Genomes_hs37d5/all/fasta/hs37d5.fa
 t/data/repos1/references/Homo_sapiens/NCBI36/all/bwa/ncbi36.fa.amb
 t/data/repos1/references/Homo_sapiens/NCBI36/all/fasta/ncbi36.fa
@@ -1107,6 +1109,7 @@ t/data/repos1/st/batches/16442.xml
 t/data/repos1/st/batches/16467.xml
 t/data/repos1/st/samples/1327533.xml
 t/data/repos1/st/samples/1327535.xml
+t/data/repos1/st/samples/1382839.xml
 t/data/repos1/st/studies/2072.xml
 t/data/request/npg/run/1234.xml
 t/data/request/npg/run_status.xml
@@ -1725,7 +1728,5 @@ t/useragent.pm
 t/util.pm
 wtsi_local/apache2.conf
 wtsi_local/envvars
-wtsi_local/httpd.conf
-wtsi_local/httpd_instr_proxy.conf
 wtsi_local/httpd_sfweb.conf
 wtsi_local/httpd_vm.conf

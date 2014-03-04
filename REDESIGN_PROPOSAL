@@ -1,10 +1,7 @@
 #########
 # Author:        Marina Gourtovaia
-# Maintainer:    $Author: mg8 $
 # Created:       23 November 2012
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: REDESIGN_PROPOSAL 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/REDESIGN_PROPOSAL $
+#
 
 ------------------------------------------------------------------
 
@@ -73,6 +70,9 @@ TASK: consider options for config files location and a reliable way of propagati
       if any decision is reached, further task might be added
 ( urgency: urgent,
   time estimate: 1 day
+  status: COMPLETED
+  details: all implementation SOPS use files in .npg as a master copy and either link to
+    these files or copy them
 )
 
 
@@ -82,6 +82,7 @@ TASK: use git for version control
 ( depends on: TASK(remove circular dependencies between package)
   urgency: moderate
   time estimate: 1 day
+  status: COMPLETED
 )
 
 REQUIREMENT: atomic deployment
@@ -99,6 +100,7 @@ TASK: precise perl 5.14.2 complience
 TASK: remove circular dependencies between packages
 ( time estimate: 7days,
   urgency: urgent
+  status: COMPLETED
 )
 DETAILS: main useful modules dependency
   config -> npg_tracking::util::config  see if we can depend directly on ConfigAny 
@@ -122,6 +124,7 @@ TASK: set up dev and production server on sfweb with tracking and cpan modules d
 ( time estimate: ??
   urgency: moderate
   depends on: TASK(atomic deployment),
+  status: COMPLETED, January 2014
 )
 TASK: move from intweb to web team-hosted vms
 ( time estimate: ??
@@ -129,11 +132,13 @@ TASK: move from intweb to web team-hosted vms
   depends on: EXTERNAL_RESOURCE(test, dev, live vm machines),
               EXTERNAL_RESOURCE(web team deployment procedure),
               TASK(atomic deployment)
+  syatus: COMPLETED, 2013
 )
 TASK: point npg::api to sfweb instance
 ( time estimate: ??
   urgency: moderate
   depends on: TASK(atomic deployment),
+  status: COMPLETED, autumn 2013
 )
 
 
@@ -184,6 +189,7 @@ TASK: RT#191884: Ensure NPG tracking works with MySQL in strict SQL mode.
 ( time estimate: ??,
   urgency: medium,
   dependencies: none
+  status: COMPLETED, moved to MySQL 5.5 in 2013
 )
 
 
@@ -261,6 +267,7 @@ TASK: create abstract lims interface to query all lims and reference-related inf
       ensure st::api::lims and caching works with the new inplementation
 ( time estimate: 3 weeks?
   urgency: medium
+  status: COMPLETED (not references), autumn 2013
 )
 TASK: two modes for reference finder - live and from cached info through this interface
       also see RT#186087: reference override ability from a config file
@@ -303,6 +310,7 @@ TASK: reorder listing of statuses on run page
 ( time estimate: 4 days,
   urgency: urgent, 
   depends on: TASK(model-level run status rules)
+  status: COMPLETED, 2013
 )
 
 REQUIREMENT: 
@@ -347,6 +355,7 @@ TASK: RT#225087: Add release flag information to NPG web pages
 
 REQUIREMENT
 RT#232284: add ability for intewdev to look at db of choice
+(status: COMPLETED, 2013)
 
 REQUIREMENT:
 independent tracking of flowcell on HiSeq instruments
@@ -394,7 +403,7 @@ CATEGORY: MISC
 
 TASK: RT#180083: Correct long_info's tile count correction
 
-TASK: tracking archuval failures: RT#236563: post qc review script success/failure feedback
+TASK: tracking archival failures: RT#236563: post qc review script success/failure feedback
 
 TASK: RT#264290: npg::api::request revise wait time between repeating requests
 
