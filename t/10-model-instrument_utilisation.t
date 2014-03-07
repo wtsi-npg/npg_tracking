@@ -1,21 +1,10 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2009-01-28
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: 10-model-instrument_utilisation.t 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-instrument_utilisation.t $
-#
 use strict;
 use warnings;
-use English qw{-no_match_vars};
+use Test::More tests => 38;
+use Test::Exception;
 use t::util;
-use Test::More tests => 40;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14928 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::model::instrument_utilisation');
-
 my $util = t::util->new({ fixtures => 1 });
 
 {
@@ -57,8 +46,8 @@ my $util = t::util->new({ fixtures => 1 });
 {
   my $model = npg::model::instrument_utilisation->new({ util => $util });
   my $data;
-  eval { $data = $model->table_data_total_insts(); };
-  is($EVAL_ERROR, q{}, 'no croak on obtaining $model->graph_data_total_insts()');
+  lives_ok { $data = $model->table_data_total_insts(); }
+    'no croak on obtaining $model->graph_data_total_insts()';
   my $total_insts_30_days = [
     [qw(2008-01-01 10 100.00 100.00)],
     [qw(2008-01-02 10 100.00 100.00)],
@@ -67,8 +56,8 @@ my $util = t::util->new({ fixtures => 1 });
     [qw(2008-01-05 10 100.00 100.00)],
   ];
   is_deeply($data, $total_insts_30_days, '$model->graph_data_total_insts()');
-  eval { $data = $model->table_data_official_insts(); };
-  is($EVAL_ERROR, q{}, 'no croak on obtaining $model->graph_data_official_insts()');
+  lives_ok { $data = $model->table_data_official_insts(); }
+    'no croak on obtaining $model->graph_data_official_insts()';
   my $official_insts_30_days = [
     [qw(2008-01-01 8 100.00 100.00)],
     [qw(2008-01-02 9 100.00 100.00)],
@@ -77,8 +66,8 @@ my $util = t::util->new({ fixtures => 1 });
     [qw(2008-01-05 8 100.00 100.00)],
   ];
   is_deeply($data, $official_insts_30_days, '$model->graph_data_official_insts()');
-  eval { $data = $model->table_data_prod_insts(); };
-  is($EVAL_ERROR, q{}, 'no croak on obtaining $model->graph_data_prod_insts()');
+  lives_ok { $data = $model->table_data_prod_insts(); }
+    'no croak on obtaining $model->graph_data_prod_insts()';
   $total_insts_30_days = [
     [qw(2008-01-01 7 100.00 100.00)],
     [qw(2008-01-02 8 100.00 100.00)],
@@ -88,16 +77,11 @@ my $util = t::util->new({ fixtures => 1 });
   ];
   is_deeply($data, $total_insts_30_days, '$model->graph_data_prod_insts()');
 
-  eval { $data = $model->last_30_days(); };
-  like($EVAL_ERROR, qr/no\ instrument\ grouping\ provided/, 'croaked last_30_days method call as no string provided');
-  eval { $data = $model->last_30_days( { insts => 'iwantsomeinsts', } ); };
-  like($EVAL_ERROR, qr/Unknown\ column\ 'iwantsomeinsts'\ in\ 'field\ list'/, 'croaked last_30_days method call as string does not match a column header');
-
-
-  eval { $data = $model->last_x_days(); };
-  like($EVAL_ERROR, qr/no\ instrument\ grouping\ provided/, 'croaked last_x_days method call as no string provided');
-  eval { $data = $model->last_x_days( { insts => 'iwantsomeinsts', } ); };
-  like($EVAL_ERROR, qr/Unknown\ column\ 'iwantsomeinsts'\ in\ 'field\ list'/, 'croaked last_x_days method call as string does not match a column header');
+  throws_ok { $data = $model->last_x_days(); } qr/no\ instrument\ grouping\ provided/,
+    'croaked last_x_days method call as no string provided';
+  throws_ok { $data = $model->last_x_days( { insts => 'iwantsomeinsts', } ); }
+    qr/Unknown\ column\ 'iwantsomeinsts'\ in\ 'field\ list'/,
+    'croaked last_x_days method call as string does not match a column header';
 
   eval { $data = $model->graph_data( 'utilisation', q{}, q{HK} ); };
   my $test_deeply = [
@@ -109,8 +93,8 @@ my $util = t::util->new({ fixtures => 1 });
   ];
   is_deeply($data, $test_deeply, 'utilisation data is correct');
 
-  eval { $data = $model->graph_data( 'utilisation_uptime', q{}, q{HK} ); };
-  is($EVAL_ERROR, q{}, q{no croak with $model->graph_data('utilisation_uptime')});
+  lives_ok  { $data = $model->graph_data( 'utilisation_uptime', q{}, q{HK} ); } 
+    q{no croak with $model->graph_data('utilisation_uptime')};
   $test_deeply = [
     [qw(2008-01-01 100.00 100.00 100.00 )],
     [qw(2008-01-02 100.00 100.00 100.00 )],
@@ -135,6 +119,7 @@ my $util = t::util->new({ fixtures => 1 });
     perc_uptime_prod_insts => '0.00',
     id_instrument_format => 10,
   });
-  eval { $model->create(); };
-  is($EVAL_ERROR, q{}, 'no croak on create');
+  lives_ok { $model->create(); } 'no croak on create';
 }
+
+1;

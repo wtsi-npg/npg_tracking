@@ -48,7 +48,6 @@ __PACKAGE__->table("annotation");
 =head2 id_user
 
   data_type: 'bigint'
-  default_value: 0
   extra: {unsigned => 1}
   is_foreign_key: 1
   is_nullable: 0
@@ -89,7 +88,6 @@ __PACKAGE__->add_columns(
   "id_user",
   {
     data_type => "bigint",
-    default_value => 0,
     extra => { unsigned => 1 },
     is_foreign_key => 1,
     is_nullable => 0,
@@ -199,8 +197,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:41
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:yLOk5N1O1jfCvIAuVSf2Rw
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:38
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fw1PGLynbasn+IKgeZzzTw
 # Author:        david.jackson@sanger.ac.uk
 # Maintainer:    $Author: dj3 $
 # Created:       2010-04-08

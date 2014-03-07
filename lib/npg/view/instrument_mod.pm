@@ -106,13 +106,13 @@ sub update_mods {
         }
       }
       my $new_mod = npg::model::instrument_mod->new({
-						     util => $util,
-						     id_instrument => $id_instrument,
-						     id_instrument_mod_dict => $id_instrument_mod_dict,
-						     id_user    => $id_user,
-						     date_added => $date,
-						     iscurrent  => $iscurrent,
-						    });
+                 util => $util,
+                 id_instrument => $id_instrument,
+                 id_instrument_mod_dict => $id_instrument_mod_dict,
+                 id_user    => $id_user,
+                 date_added => $date,
+                 iscurrent  => $iscurrent,
+                });
       $new_mod->create();
     }
     1;

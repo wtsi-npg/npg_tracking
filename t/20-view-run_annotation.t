@@ -18,30 +18,30 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevis
 use_ok('npg::view::run_annotation');
 
 my $util = t::util->new({
-			 fixtures => 1,
-			});
+       fixtures => 1,
+      });
 {
   my $str = t::request->new({
-			     PATH_INFO      => '/run_annotation;add_ajax',
+           PATH_INFO      => '/run_annotation;add_ajax',
                              REQUEST_METHOD => 'GET',
                              username       => 'public',
                              util           => $util,
-			     cgi_params     => {
-						id_run => 42,
-					       },
+           cgi_params     => {
+            id_run => 42,
+                 },
                             });
   like($str, qr/not\ authorised/smx, 'public add_ access');
 }
 
 {
   my $str = t::request->new({
-			     PATH_INFO      => '/run_annotation;add_ajax',
+           PATH_INFO      => '/run_annotation;add_ajax',
                              REQUEST_METHOD => 'GET',
                              username       => 'joe_annotator',
                              util           => $util,
-			     cgi_params     => {
-						id_run => 42,
-					       },
+           cgi_params     => {
+            id_run => 42,
+                 },
                             });
   ok($util->test_rendered($str, 't/data/rendered/run_annotation_add_ajax.html'), 'add_ajax render');
 }

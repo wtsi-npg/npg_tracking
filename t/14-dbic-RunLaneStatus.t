@@ -1,23 +1,15 @@
-# Id:            $Id: 14-dbic-RunStatusDict.t 14068 2011-08-26 10:24:09Z ajb $
 use strict;
 use warnings;
-use English qw(-no_match_vars);
-
 use Test::More tests => 38;
 use Test::Deep;
 use Test::Exception::LessClever;
-use Test::MockModule;
 use DateTime;
 
-use lib q{t};
 use t::dbic_util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15060 $ =~ /(\d+)/msx; $r; };
 
 Readonly::Scalar my $ABSURD_ID => 100_000_000;
 
 use_ok( q{npg_tracking::Schema::Result::RunLaneStatus} );
-
 
 my $schema = t::dbic_util->new->test_schema();
 my $test;
@@ -85,7 +77,6 @@ lives_ok {
 cmp_ok( $schema->resultset( q{RunLane} )->find({id_run => 1, position => 7})->related_resultset(q(run_lane_statuses))->count, q(==), 2, 'check run lane 7 statuses');
 cmp_ok( $schema->resultset( q{RunLane} )->find({id_run => 1, position => 7})->related_resultset(q(run_lane_statuses))->search({iscurrent => 1})->count, q(==), 1, 'check run lane 7 current statuses');
 
-diag $row2;
 my $retrieved_row;
 lives_ok {
   $retrieved_row = $schema->resultset( q{RunLaneStatus} )->search({
@@ -96,7 +87,7 @@ is( $retrieved_row->id_run_lane_status(), 2, q{id_run_lane_status assigned} );
 is( $retrieved_row->description(), q{analysis complete}, q{description saved correctly} );
 is( $retrieved_row->user->username(), q{joe_annotator}, q{user saved correctly} );
 is( $retrieved_row->iscurrent(), 1, q{saved row iscurrent} );
-note q().DateTime->now();
+
 is( $retrieved_row->date()->ymd(), DateTime->now()->ymd(), q{date is the same as todays date - if this fails, it might be because it thinks it is around midnight} ); # note, this test may fail if you run around midnight
 lives_ok {
   $retrieved_row = $schema->resultset( q{RunLaneStatus} )->search({
@@ -146,7 +137,5 @@ lives_ok {
 } q{update a run_lane status as manual qc complete - success};
 cmp_ok( $schema->resultset( q{RunLane} )->find({id_run => 1, position => 7})->related_resultset(q(run_lane_statuses))->count, q(==), 4, 'check run lane 7 statuses');
 cmp_ok( $schema->resultset( q{RunLane} )->find({id_run => 1, position => 7})->related_resultset(q(run_lane_statuses))->search({iscurrent => 1})->count, q(==), 1, 'check run lane 7 current statuses');
-diag $schema->resultset( q{RunLane} )->search({id_run => 1})->count().' lanes for run 1';
-diag $schema->resultset( q{RunLane} )->search({id_run => 1})->search_related(q(run_lane_statuses),{iscurrent => 1, q(run_lane_status_dict.description) => q(manual qc complete)}, {join=>q(run_lane_status_dict)})->count().' current manual qc complete lanes for run 1';
 is( $schema->resultset( q{Run} )->find(1)->current_run_status_description(), q{archival pending}, q{run has had it's status updated to 'archival pending'} );
 1;

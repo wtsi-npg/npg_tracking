@@ -1,10 +1,7 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: js10 $
 # Created:       2009-01-30
-# Last Modified: $Date: 2012-06-19 12:17:04 +0100 (Tue, 19 Jun 2012) $
-# Id:            $Id: 30-api-instrument_utilisation.t 15743 2012-06-19 11:17:04Z js10 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-instrument_utilisation.t $
+# copied from : svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-instrument_utilisation.t, r15743
 #
 use strict;
 use warnings;
@@ -13,9 +10,6 @@ use Test::Exception;
 use t::useragent;
 use npg::api::util;
 use DateTime;
-use Readonly;
-
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15743 $ =~ /(\d+)/mx; $r; };
 
 sub test_instrument_stack {
    return  { 3 => { name => 'IL1', production => 1, official => 1 },
@@ -44,32 +38,32 @@ sub test_required_three_days_ago {
 }
 
 use_ok('npg::api::instrument_utilisation');
-
+my $base_url = $npg::api::util::LIVE_BASE_URI;
 {
   my $ua   = t::useragent->new({
-				is_success => 1,
-				mock => {
-				   q{http://npg.sanger.ac.uk/perl/npg/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://npg.sanger.ac.uk/perl/npg/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://npg.sanger.ac.uk/perl/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
-				   q{http://npg.sanger.ac.uk/perl/npg/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
-                                   q{http://npg.sanger.ac.uk/perl/npg/run/1} => q{t/data/npg_api/npg/run/1.xml},
-           q{http://npg.sanger.ac.uk/perl/npg/run/6} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="6" is_paired="" id_run_pair=""></run>},
-           q{http://npg.sanger.ac.uk/perl/npg/run/7} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="7" is_paired="" id_run_pair=""></run>},
-           q{http://npg.sanger.ac.uk/perl/npg/run/9} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="9" is_paired="1" id_run_pair="10"></run>},
-           q{http://npg.sanger.ac.uk/perl/npg/run/13} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="9" is_paired="0" id_run_pair=""></run>},
-           q{http://npg.sanger.ac.uk/perl/npg/run/18} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="18" is_paired="0" id_run_pair=""></run>},
-			    },
-			  });
+        is_success => 1,
+        mock => {
+  $base_url.q{/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+  $base_url.q{/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+  $base_url.q{/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
+  $base_url.q{/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
+  $base_url.q{/run/1} => q{t/data/npg_api/npg/run/1.xml},
+  $base_url.q{/run/6} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="6" is_paired="" id_run_pair=""></run>},
+  $base_url.q{/run/7} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="7" is_paired="" id_run_pair=""></run>},
+  $base_url.q{/run/9} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="9" is_paired="1" id_run_pair="10"></run>},
+  $base_url . q{/run/13} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="9" is_paired="0" id_run_pair=""></run>},
+  $base_url . q{/run/18} => q{<?xml version="1.0" encoding="utf-8"?><run id_run="18" is_paired="0" id_run_pair=""></run>},
+          },
+        });
   my $util = npg::api::util->new({
-				  useragent => $ua,
-				 });
+          useragent => $ua,
+         });
   my $i_u  = npg::api::instrument_utilisation->new({
-				 util   => $util,
-				 yesterday_datetime_object => test_required_yesterday(),
-				 two_days_ago_datetime_object => test_required_two_days_ago(),
-				 three_days_ago_datetime_object => test_required_three_days_ago(),
-				});
+         util   => $util,
+         yesterday_datetime_object => test_required_yesterday(),
+         two_days_ago_datetime_object => test_required_two_days_ago(),
+         three_days_ago_datetime_object => test_required_three_days_ago(),
+        });
 
   isa_ok($i_u,'npg::api::instrument_utilisation', '$i_u');
 
@@ -135,20 +129,20 @@ use_ok('npg::api::instrument_utilisation');
 
 {
   my $ua   = t::useragent->new({
-				is_success => 1,
-				mock => {
-				   q{http://npg.sanger.ac.uk/perl/npg/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://npg.sanger.ac.uk/perl/npg/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://npg.sanger.ac.uk/perl/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
-				   q{http://npg.sanger.ac.uk/perl/npg/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
-			    },
-			  });
+        is_success => 1,
+        mock => {
+    $base_url . q{/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+    $base_url . q{/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+    $base_url . q{/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
+    $base_url . q{/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
+          },
+        });
   my $util = npg::api::util->new({
-				  useragent => $ua,
-				 });
+          useragent => $ua,
+         });
   my $i_u  = npg::api::instrument_utilisation->new({
-				 util   => $util,
-				});
+         util   => $util,
+        });
 
   isa_ok($i_u,'npg::api::instrument_utilisation', '$i_u');
 
@@ -282,25 +276,25 @@ use_ok('npg::api::instrument_utilisation');
     },
   ];
   my $ua   = t::useragent->new({
-				is_success => 1,
-			  });
+        is_success => 1,
+        });
   my $util = npg::api::util->new({
-				  useragent => $ua,
-				 });
-				 
-	my $instrument_status = npg::api::instrument_status->new({util => $util, uptimes => $uptimes_data});
+          useragent => $ua,
+         });
+         
+  my $instrument_status = npg::api::instrument_status->new({util => $util, uptimes => $uptimes_data});
 
   my $i_u  = npg::api::instrument_utilisation->new({
-				 util   => $util,
-				 instrument_status_object => $instrument_status,
-				 yesterday_datetime_object => test_required_yesterday(),
-				 two_days_ago_datetime_object => test_required_two_days_ago(),
-				 three_days_ago_datetime_object => test_required_three_days_ago(),
-				 instruments => test_instrument_stack(),
-				 total_insts => 6,
-				 prod_insts => 4,
-				 official_insts => 5,
-				});
+         util   => $util,
+         instrument_status_object => $instrument_status,
+         yesterday_datetime_object => test_required_yesterday(),
+         two_days_ago_datetime_object => test_required_two_days_ago(),
+         three_days_ago_datetime_object => test_required_three_days_ago(),
+         instruments => test_instrument_stack(),
+         total_insts => 6,
+         prod_insts => 4,
+         official_insts => 5,
+        });
 
   isa_ok($i_u,'npg::api::instrument_utilisation', '$i_u');
   $i_u->_type( q{ga2} );
@@ -336,24 +330,24 @@ use_ok('npg::api::instrument_utilisation');
 
 {
   my $ua   = t::useragent->new({
-				is_success => 1,
-				mock => {
-				   q{http://npg.sanger.ac.uk/perl/npg/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://npg.sanger.ac.uk/perl/npg/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://npg.sanger.ac.uk/perl/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
-				   q{http://npg.sanger.ac.uk/perl/npg/instrument_status/up/down.xml} => q{t/data/npg_api/npg/instrument_status/list_up_down_xml.xml},
-           q{http://npg.sanger.ac.uk/perl/npg/instrument_utilisation.xml} => q{t/data/npg_api/npg/instrument_utilisation/20090202.xml},
-			    },
-			  });
+        is_success => 1,
+        mock => {
+    $base_url . q{/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+    $base_url . q{/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+    $base_url . q{/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
+    $base_url . q{/instrument_status/up/down.xml} => q{t/data/npg_api/npg/instrument_status/list_up_down_xml.xml},
+    $base_url . q{/instrument_utilisation.xml} => q{t/data/npg_api/npg/instrument_utilisation/20090202.xml},
+          },
+        });
   my $util = npg::api::util->new({
-				  useragent => $ua,
-				 });
+          useragent => $ua,
+         });
   my $i_u  = npg::api::instrument_utilisation->new({
-				 util   => $util,
-				 yesterday_datetime_object => test_required_yesterday(),
-				 two_days_ago_datetime_object => test_required_two_days_ago(),
-				 three_days_ago_datetime_object => test_required_three_days_ago(),
-				});
+         util   => $util,
+         yesterday_datetime_object => test_required_yesterday(),
+         two_days_ago_datetime_object => test_required_two_days_ago(),
+         three_days_ago_datetime_object => test_required_three_days_ago(),
+        });
   isa_ok($i_u,'npg::api::instrument_utilisation', '$i_u');
   $i_u->_type( q{ga2} );
   
@@ -393,23 +387,23 @@ use_ok('npg::api::instrument_utilisation');
 
 {
   my $ua   = t::useragent->new({
-				is_success => 1,
-				mock => {
-				   q{http://npg.sanger.ac.uk/perl/npg/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://npg.sanger.ac.uk/perl/npg/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
-				   q{http://npg.sanger.ac.uk/perl/npg/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
-				   q{http://npg.sanger.ac.uk/perl/npg/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
-			    },
-			  });
+        is_success => 1,
+        mock => {
+    $base_url . q{/instument.xml} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+    $base_url . q{/instrument} => q{t/data/npg_api/npg/instrument_designation_list.xml},
+    $base_url . q{/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml},
+    $base_url . q{/instrument_status/up/down.xml} => q{t/data/rendered/instrument_status/list_up_down_xml.xml},
+          },
+        });
   my $util = npg::api::util->new({
-				  useragent => $ua,
-				 });
+          useragent => $ua,
+         });
   my $i_u  = npg::api::instrument_utilisation->new({
-				 util   => $util,
-				 yesterday_datetime_object => test_required_yesterday(),
-				 two_days_ago_datetime_object => test_required_two_days_ago(),
-				 three_days_ago_datetime_object => test_required_three_days_ago(),
-				});
+         util   => $util,
+         yesterday_datetime_object => test_required_yesterday(),
+         two_days_ago_datetime_object => test_required_two_days_ago(),
+         three_days_ago_datetime_object => test_required_three_days_ago(),
+        });
   isa_ok($i_u,'npg::api::instrument_utilisation', '$i_u');
   
   throws_ok { $i_u->calculate_ga2_values(); } qr{Unable[ ]to[ ]calculate[ ]ga2[ ]values}, q{croaked on running $i_u->calculate_ga2_values()};

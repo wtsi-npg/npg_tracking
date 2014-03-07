@@ -19,16 +19,16 @@ use_ok('npg::model::run_status');
 use_ok('npg::model::instrument_status');
 
 my $util = t::util->new({
-			 fixtures  => 1,
-			});
+       fixtures  => 1,
+      });
 
 {
   my $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => 16,
-					   id_run_status_dict => 4,
-					   id_user            => 1,
-					  });
+             util               => $util,
+             id_run             => 16,
+             id_run_status_dict => 4,
+             id_user            => 1,
+            });
   my $run = npg::model::run->new({id_run => 16,util   => $util,});
   $model->{run} = $run;
 
@@ -43,11 +43,11 @@ my $util = t::util->new({
   is($instr_status, 'planned maintenance', 'no automatic change from planned maintenance on run complete)');
 
   $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => 16,
-					   id_run_status_dict => 11,
-					   id_user            => 1,
-					  });
+             util               => $util,
+             id_run             => 16,
+             id_run_status_dict => 11,
+             id_user            => 1,
+            });
   $run = npg::model::run->new({id_run => 16,util   => $util,});
   $model->{run} = $run;
   $util->catch_email($model);
@@ -61,11 +61,11 @@ my $util = t::util->new({
 {
   my $run = npg::model::run->new({id_run => 16,util   => $util,});
   my $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => 16,
-					   id_run_status_dict => 1,
-					   id_user            => 1,
-					  });
+             util               => $util,
+             id_run             => 16,
+             id_run_status_dict => 1,
+             id_user            => 1,
+            });
   $model->{run} = $run;
   $util->catch_email($model);
   lives_ok { $model->create() } 'run status run pending created';  
@@ -115,11 +115,11 @@ my $util = t::util->new({
   $run = npg::model::run->new({id_run => 16,util   => $util,});
   is ($run->id_instrument, $id_instrument, 'new run is on the instrument under test');
   $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => 16,
-					   id_run_status_dict => 5,
-					   id_user            => 1,
-					  });
+             util               => $util,
+             id_run             => 16,
+             id_run_status_dict => 5,
+             id_user            => 1,
+            });
   $model->{run} = $run;
   $util->catch_email($model);
   lives_ok { $model->create() } 'run status run cancelled created';
@@ -134,11 +134,11 @@ my $util = t::util->new({
 {
   my $run = npg::model::run->new({id_run => 16,util   => $util,});
   my $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => 16,
-					   id_run_status_dict => 5,
-					   id_user            => 1,
-					  });
+             util               => $util,
+             id_run             => 16,
+             id_run_status_dict => 5,
+             id_user            => 1,
+            });
   $model->{run} = $run;
   $util->catch_email($model);
   lives_ok { $model->create() } 'run status run cancelled created';
@@ -186,11 +186,11 @@ diag 'Status change for runs on HiSeq instruments';
   my $run = npg::model::run->new({id_run => $id_run,util   => $util,});
   lives_ok { $run->save_tags(['fc_slotA']) } 'fc_slotA tag added';
   my $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => $id_run,
-					   id_run_status_dict => 5,
-					   id_user            => 1,
-					  });
+             util               => $util,
+             id_run             => $id_run,
+             id_run_status_dict => 5,
+             id_user            => 1,
+            });
   $model->{run} = $run;
   $util->catch_email($model);
   lives_ok { $model->create() } 'run status run cancelled created';
@@ -225,11 +225,11 @@ diag 'Status change for runs on HiSeq instruments';
   my $run = npg::model::run->new({id_run => $id_run1,util   => $util,});
   lives_ok { $run->save_tags(['fc_slotA']) } 'fc_slotA tag added';
   my $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => $id_run1,
-					   id_run_status_dict => 5,
-					   id_user            => 1,
-					  });
+             util               => $util,
+             id_run             => $id_run1,
+             id_run_status_dict => 5,
+             id_user            => 1,
+            });
   $model->{run} = $run;
   $util->catch_email($model);
   lives_ok { $model->create() } 'run status run cancelled created for a run in one of the slots';
@@ -265,11 +265,11 @@ diag 'Status change for runs on HiSeq instruments';
   $run = npg::model::run->new({id_run => $id_run2,util   => $util,});
   lives_ok { $run->save_tags(['fc_slotB']) } 'fc_slotB tag added';
   $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => $id_run2,
-					   id_run_status_dict => 5,
-					   id_user            => 1,
-				      });
+             util               => $util,
+             id_run             => $id_run2,
+             id_run_status_dict => 5,
+             id_user            => 1,
+              });
   $model->{run} = $run;
   $util->catch_email($model);
   lives_ok { $model->create() } 'run status run cancelled created for a run in the other slot';
@@ -302,11 +302,11 @@ diag 'Status change for runs on HiSeq instruments';
   my $run = npg::model::run->new({id_run => $id_run1,util   => $util,});
   lives_ok { $run->save_tags(['fc_slotA']) } 'fc_slotA tag added';
   my $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => $id_run1,
-					   id_run_status_dict => 1,
-					   id_user            => 1,
-				      });
+             util               => $util,
+             id_run             => $id_run1,
+             id_run_status_dict => 1,
+             id_user            => 1,
+              });
   $model->{run} = $run;
   $util->catch_email($model);
   lives_ok { $model->create() } 'run status run pending created for a run in one of the slots';
@@ -314,11 +314,11 @@ diag 'Status change for runs on HiSeq instruments';
   $run = npg::model::run->new({id_run => $id_run2,util   => $util,});
   lives_ok { $run->save_tags(['fc_slotB']) } 'fc_slotB tag added';
   $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => $id_run2,
-					   id_run_status_dict => 1,
-					   id_user            => 1,
-				      });
+             util               => $util,
+             id_run             => $id_run2,
+             id_run_status_dict => 1,
+             id_user            => 1,
+              });
   $model->{run} = $run;
   $util->catch_email($model);
   lives_ok { $model->create() } 'run status run cancelled created for a run in the other slot';
@@ -337,11 +337,11 @@ diag 'Status change for runs on HiSeq instruments';
 
   $run = npg::model::run->new({id_run => $id_run1,util   => $util,});
   $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => $id_run1,
-					   id_run_status_dict => 11,
-					   id_user            => 1,
-				      });
+             util               => $util,
+             id_run             => $id_run1,
+             id_run_status_dict => 11,
+             id_user            => 1,
+              });
   $model->{run} = $run;
   $util->catch_email($model);
   lives_ok { $model->create() } 'run status run mirrored created for a run in one of the slots';
@@ -351,11 +351,11 @@ diag 'Status change for runs on HiSeq instruments';
 
   $run = npg::model::run->new({id_run => $id_run2,util   => $util,});
   $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => $id_run2,
-					   id_run_status_dict => 11,
-					   id_user            => 1,
-				      });
+             util               => $util,
+             id_run             => $id_run2,
+             id_run_status_dict => 11,
+             id_user            => 1,
+              });
   $model->{run} = $run;
   $util->catch_email($model);
   lives_ok { $model->create() } 'run status run mirrored created for a run in one of the slots';

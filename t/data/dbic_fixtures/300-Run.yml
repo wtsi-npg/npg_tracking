@@ -5,7 +5,7 @@
   id_instrument: 3
   id_instrument_format: 4
   id_run: 1
-  id_run_pair: 0
+  id_run_pair: 2
   team: 'RAD'
   is_paired: 0
   priority: 1
@@ -92,7 +92,7 @@
   priority: 4
   actual_cycle_count: 0
   expected_cycle_count: 43
-  id_run_pair: ~
+  id_run_pair: 0
   is_paired: 0
   batch_id: 62
   team: 'RAD'

@@ -1,41 +1,21 @@
-#########
-# Author:        jo3
-# Maintainer:    $Author: jo3 $
-# Created:       2010-06-15
-# Last Modified: $Date: 2010-11-03 10:58:34 +0000 (Wed, 03 Nov 2010) $
-# Id:            $Id: 34-monitor-srs-ftp.t 11585 2010-11-03 10:58:34Z jo3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/34-monitor-srs-ftp.t $
-#
-
-# NOTE. Errors like the following:
-#sh: -c: line 0: syntax error near unexpected token `0xa3242b8'
-#sh: -c: line 0: `Test::FTP::Server::Server=HASH(0xa3242b8)'
-#           ...come from IO::All::FTP
-
-
 use strict;
 use warnings;
-
-use Carp;
 use English qw(-no_match_vars);
 use File::chdir;
 use File::Copy;
 use Perl6::Slurp;
 use IPC::System::Simple; #needed for Fatalised/autodying system()
 use autodie qw(:all);
-
+use Readonly;
 use Test::More tests => 28;
 use Test::Deep;
 use Test::Exception::LessClever;
 use Test::MockModule;
 use Test::Warn;
 
-use lib q{t};
 use t::dbic_util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11585 $ =~ /(\d+)/msx; $r; };
 Readonly::Scalar my $PORT => 11_223;
-
 
 use_ok('Monitor::SRS::FTP');
 

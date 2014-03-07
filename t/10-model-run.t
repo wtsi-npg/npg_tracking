@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-10
-# Last Modified: $Date: 2012-03-08 11:21:27 +0000 (Thu, 08 Mar 2012) $
-# Id:            $Id: 10-model-run.t 15308 2012-03-08 11:21:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-run.t $
 #
 use strict;
 use warnings;
@@ -12,15 +8,11 @@ use t::util;
 use npg::model::instrument;
 use npg::model::user;
 use npg::model::annotation;
-use English qw{-no_match_vars};
-use Test::More tests => 118;
+use Test::More tests => 125;
 use Test::Exception;
 
 use_ok('npg::model::run');
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15308 $ =~ /(\d+)/mx; $r; };
-
-#########
 # using fixtures to import data
 #
 my $util  = t::util->new({
@@ -51,8 +43,7 @@ is($point_v, 0, 'correct point version number for 2');
 is($whole_v, 0, 'correct whole version number for 0.01');
 is($point_v, 1, 'correct point version number for 0.01');
 
-eval{($whole_v, $point_v) = $model->_parse_version('dfasdf');1;};
-like($EVAL_ERROR, qr{Given version number is not valid:}, 'no valid version given');
+throws_ok {($whole_v, $point_v) = $model->_parse_version('dfasdf');} qr{Given version number is not valid:}, 'no valid version given';
 
 is($model->_cmp_version('2.01', '2.8'), -1, 'version 2.01 less than 2.8');
 is($model->_cmp_version('2.10', '2.8'), 1, 'version 2.10 greater than 2.8');
@@ -104,7 +95,6 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
    is($run2->name(), 'IL10_00015', "correct run name for run $got");
 }
 
-
 {
   my $runs_on_batch = $run->runs_on_batch();
   isnt($runs_on_batch->[0], undef, '$run->runs_on_batch() has found some runs');
@@ -150,8 +140,9 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
   isa_ok($annotations, 'ARRAY', '$run->annotations()');
   is($run->annotations(), $annotations, 'annotations cached');
   isa_ok($annotations->[0], 'npg::model::annotation', '$annotations->[0]');
-  eval { $run->attach_annotation(); };
-  like($EVAL_ERROR, qr{No\ annotation\ to\ save}, '$run->attach_annotation() with no annotation');
+
+  throws_ok { $run->attach_annotation(); } qr{No\ annotation\ to\ save}, '$run->attach_annotation() with no annotation';
+
   $util->requestor('public');
   my $sub = sub {
     my $msg = shift;
@@ -191,73 +182,63 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
   is($run->id_user(), 5, 'id_user got from internal cache as set');
   $util->requestor('joe_annotator');
   $tags = [qw(good sorted)];
-  eval { $run->save_tags($tags, $util->requestor()); };
-  is($EVAL_ERROR, q{}, 'tags saved fine');
-  eval { $run->remove_tags(['good'], $util->requestor()); };
-  is($EVAL_ERROR, q{}, 'tags removed fine');
+
+  lives_ok { $run->save_tags($tags, $util->requestor()) } 'tags saved fine';
+  lives_ok { $run->remove_tags(['good'], $util->requestor()) } 'tags removed fine';
 }
 
 {
   my $run = npg::model::run->new({
-				  util        => $util,
-				  id_run_pair => 0,
-				  is_paired   => 1,
-				 });
-
+          util        => $util,
+          id_run_pair => 0,
+          is_paired   => 1,
+         });
   is($run->end(), 1, 'PE first end=1');
-}
 
-{
-  my $run = npg::model::run->new({
-				  util        => $util,
-				  id_run_pair => 1,
-				  is_paired   => 1,
-				 });
-
+  $run = npg::model::run->new({
+          util        => $util,
+          id_run_pair => 1,
+          is_paired   => 1,
+         });
   is($run->end(), 2, 'PE second end=2');
 }
 
-########
-# test where name is given as opposed to id_run
-#
 {
   my $model = npg::model::run->new({
     util => $util,
     name => 'IL1_0007',
   });
-  is($model->id_run(), 7, 'model initialised ok by run name');
+  is($model->id_run(), 7, 'model initialised ok by run name, no id_run given');
 
   $model = npg::model::run->new({
     util => $util,
     name => 'HS1_0007',
   });
-  is($model->id_run(), 7, 'model initialised ok by run name');
+  is($model->id_run(), 7, 'model initialised ok by run name, no id_run given');
 }
-############
-# testing creation of runs
-#
+
 {
   my $model = npg::model::run->new({
-				    util                 => $util,
-				    batch_id             => 939,
-				    id_instrument        => 3,
-				    expected_cycle_count => 35,
-				    priority             => 1,
-				    is_paired            => 1,
-				    team                 => 'RAD',
-				    id_user              => $util->requestor->id_user(),
-				    flowcell_id          => '619MJAAXX'
-				   });
+            util                 => $util,
+            batch_id             => 939,
+            id_instrument        => 3,
+            expected_cycle_count => 35,
+            priority             => 1,
+            is_paired            => 1,
+            team                 => 'RAD',
+            id_user              => $util->requestor->id_user(),
+            flowcell_id          => '619MJAAXX'
+           });
   $model->{'run_lanes'} = [];
 
   for my $position (1..8) {
     my $rl = npg::model::run_lane->new({
-					util         => $util,
-					tile_count   => 300,
-					tracks       => 3,
-					projectname  => 'SLX_TEST',
-					position     => $position,
-				       });
+          util         => $util,
+          tile_count   => 300,
+          tracks       => 3,
+          projectname  => 'SLX_TEST',
+          position     => $position,
+               });
     push @{$model->{run_lanes}}, $rl;
   }
 
@@ -266,26 +247,63 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
 
 {
   my $model = npg::model::run->new({
-				    util                 => $util,
-				    batch_id             => 939,
-				    id_instrument        => 3,
-				    expected_cycle_count => 35,
-				    actual_cycle_count   => 10,
-				    priority             => 1,
-				    id_run_pair          => 3,
-				    is_paired            => 1,
-				    team                 => 'RAD',
-				    id_user              => $util->requestor->id_user(),
-				    paired_read          => 'paired_read',
-				   });
+            util                 => $util,
+            batch_id             => 939,
+            id_instrument        => 3,
+            expected_cycle_count => 35,
+            actual_cycle_count   => 10,
+            priority             => 1,
+            id_run_pair          => 3,
+            is_paired            => 1,
+            team                 => 'RAD',
+            id_user              => $util->requestor->id_user(),
+            paired_read          => 'paired_read',
+           });
   my $annotation = npg::model::run_annotation->new({util => $util, id_annotation => 1});
   $model->{annotations} = [$annotation];
-  eval {
-    $model->create();
-  };
-  is($EVAL_ERROR, q{}, 'created run ok - is_paired with id_run_pair and declared actual_cycle_count');
+
+  lives_ok { $model->create(); } 'created run ok - is_paired with id_run_pair and declared actual_cycle_count';
+
   ok($model->has_tag_with_value('paired_read'), 'run has paired_read tag');
   ok(!$model->has_tag_with_value('multiplex'), 'run has no multiplex tag');
+}
+
+{
+  my $model = npg::model::run->new({
+				    util                 => $util,
+				    id_instrument        => 3,
+				    expected_cycle_count => 35,
+				    priority             => 1,
+				    team                 => 'joint',
+				    id_user              => $util->requestor->id_user(),
+				   });
+  lives_ok { $model->create(); } 'Unpaired run created without supplying batch_id explicitly';
+  is($model->batch_id(), 0, 'batch_id 0 if not set explicitly');
+
+  $model = npg::model::run->new({
+				    util                 => $util,
+				    id_instrument        => 3,
+				    expected_cycle_count => 35,
+				    priority             => 1,
+				    team                 => 'joint',
+				    id_user              => $util->requestor->id_user(),
+                                    batch_id             => undef,
+				});
+  lives_ok { $model->create(); } 'Unpaired run created supplying undef batch_id explicitly';
+  is($model->batch_id(), 0, 'batch_id 0 if provided as undef');
+  is($model->id_run_pair, undef, 'id_run_pair is undef is not supplied');
+
+  $model = npg::model::run->new({
+				    util                 => $util,
+				    id_instrument        => 3,
+				    expected_cycle_count => 35,
+				    priority             => 1,
+				    team                 => 'joint',
+				    id_user              => $util->requestor->id_user(),
+				    batch_id             => q{},
+				});
+  lives_ok { $model->create(); } 'Unpaired run created supplying an empty string batch_id explicitly';
+  is($model->batch_id(), 0, 'batch_id 0 if provided as an empty string');
 }
 
 {
@@ -298,61 +316,60 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
 				    team                 => 'joint',
 				    id_user              => $util->requestor->id_user(),
 				   });
-  eval { $model->create(); };
-  is($EVAL_ERROR, q{}, 'created run ok - not paired');
+  lives_ok { $model->create(); } 'created run ok - not paired';
 }
 
 {
   $util->requestor('joe_loader');
 
   my $run1 = npg::model::run->new({
-				   util                 => $util,
-				   batch_id             => 939,
-				   id_instrument        => 3,
-				   expected_cycle_count => 35,
-				   priority             => 1,
-				   team                 => 'A',
-				   id_user              => $util->requestor->id_user(),
-				  });
+           util                 => $util,
+           batch_id             => 939,
+           id_instrument        => 3,
+           expected_cycle_count => 35,
+           priority             => 1,
+           team                 => 'A',
+           id_user              => $util->requestor->id_user(),
+          });
   $run1->create();
 
   my $run2 = npg::model::run->new({
-				   util                 => $util,
-				   id_run_pair          => $run1->id_run(),
-				   batch_id             => 939,
-				   id_instrument        => 3,
-				   expected_cycle_count => 35,
-				   priority             => 1,
-				   team                 => 'B',
-				   id_user              => $util->requestor->id_user(),
-				  });
+           util                 => $util,
+           id_run_pair          => $run1->id_run(),
+           batch_id             => 939,
+           id_instrument        => 3,
+           expected_cycle_count => 35,
+           priority             => 1,
+           team                 => 'B',
+           id_user              => $util->requestor->id_user(),
+          });
   $run2->create();
 
   my $cancelled = npg::model::run_status_dict->new({
-						    util        => $util,
-						    description => 'run cancelled',
-						   });
+                util        => $util,
+                description => 'run cancelled',
+               });
   my $rs2 = npg::model::run_status->new({
-					 util               => $util,
-					 id_run             => $run2->id_run(),
-					 id_run_status_dict => $cancelled->id_run_status_dict(),
-					 iscurrent          => 1,
-					 id_user            => $util->requestor->id_user(),
-					});
+           util               => $util,
+           id_run             => $run2->id_run(),
+           id_run_status_dict => $cancelled->id_run_status_dict(),
+           iscurrent          => 1,
+           id_user            => $util->requestor->id_user(),
+          });
   $rs2->create();
 
   is($run1->run_pair, undef, 'run paired with cancelled run');
 
   my $run3 = npg::model::run->new({
-				   util                 => $util,
-				   id_run_pair          => $run1->id_run(),
-				   batch_id             => 939,
-				   id_instrument        => 3,
-				   expected_cycle_count => 35,
-				   priority             => 1,
-				   team                 => 'C',
-				   id_user              => $util->requestor->id_user(),
-				  });
+           util                 => $util,
+           id_run_pair          => $run1->id_run(),
+           batch_id             => 939,
+           id_instrument        => 3,
+           expected_cycle_count => 35,
+           priority             => 1,
+           team                 => 'C',
+           id_user              => $util->requestor->id_user(),
+          });
   $run3->create();
 
   is($run1->run_pair->id_run(), $run3->id_run(), 'run paired with non-cancelled run');
@@ -360,49 +377,43 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
 
 {
   my $run = npg::model::run->new({
-				  util   => $util,
-				  id_run => 700,
-				 });
+          util   => $util,
+          id_run => 700,
+         });
   cmp_ok($run->flowcell_id, 'eq', '619MJAAXX', 'flowcell_id');
 
   my $run_lanes = $run->run_lanes();
   is((scalar @{$run_lanes}), 8, 'number of lanes for run');
-
 }
 
 {
   my $run = npg::model::run->new({
-				  util   => $util,
-				  id_run => 6,
-				 });
+          util   => $util,
+          id_run => 6,
+         });
   is($run->is_paired_read(), 1, 'run 6 is paired read based on tag information');
-}
 
-{
-  my $run = npg::model::run->new({
-				  util   => $util,
-				  id_run => 7,
-				 });
+  $run = npg::model::run->new({
+          util   => $util,
+          id_run => 7,
+         });
   is($run->is_paired_read(), 0, 'run 7 is paired read based on tag information');
   ok(!$run->is_in_staging ,'run 7 is not in staging');
   ok(!$run->has_tag_with_value('rta') ,'run 7 does not have an rta tag');
-}
 
-{
-  my $run = npg::model::run->new({
-				  util   => $util,
-				  id_run => 8,
-				 });
+  $run = npg::model::run->new({
+          util   => $util,
+          id_run => 8,
+         });
   is($run->is_paired_read(), undef, 'run 8 is paired read or not, unknown based on tag information');
   ok($run->is_in_staging ,'run 8 is in staging');
   ok($run->has_tag_with_value('rta') ,'run 8 does have an rta tag');
-}
-{
-  my $run = npg::model::run->new({
-				  util   => $util,
-				  id_run => 9,
-				  is_paired =>1,
-				 });
+
+ $run = npg::model::run->new({
+          util   => $util,
+          id_run => 9,
+          is_paired =>1,
+         });
   is($run->is_paired_read(), 1, 'run 9 is paired run so it is paired read as well');
 }
 
@@ -410,21 +421,17 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a ne
 
 {
   my $model = npg::model::run->new({
-				    util                 => $util,
-				    batch_id             => 939,
-				    id_instrument        => 64,
-				    expected_cycle_count => 35,
-				    actual_cycle_count   => 10,
-				    priority             => 1,
-				    id_run_pair          => 3,
-				    is_paired            => 1,
-				    team                 => 'RAD',
-				    id_user              => $util->requestor->id_user(),
-				    fc_slot              => 'fc_slotA',
-				   });
-
-
-
+            util                 => $util,
+            batch_id             => 939,
+            id_instrument        => 64,
+            expected_cycle_count => 35,
+            actual_cycle_count   => 10,
+            priority             => 1,
+            is_paired            => 1,
+            team                 => 'RAD',
+            id_user              => $util->requestor->id_user(),
+            fc_slot              => 'fc_slotA',
+           });
   lives_ok { $model->create(); } 'created run ok - fc_slotA tag passed';
   ok($model->has_tag_with_value('fc_slotA'), 'run has fc_slotA tag');
   cmp_ok($model->run_folder, 'eq', DateTime->now()->strftime(q(%y%m%d)).'_HS3_09952_A', 'HiSeq run folder');
@@ -432,40 +439,40 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a ne
 
 {
   my $model = npg::model::run->new({
-				    util                 => $util,
-				    batch_id             => 939,
-				    id_instrument        => 64,
-				    expected_cycle_count => 35,
-				    actual_cycle_count   => 10,
-				    priority             => 1,
-				    id_run_pair          => 3,
-				    is_paired            => 1,
-				    team                 => 'RAD',
-				    id_user              => $util->requestor->id_user(),
-				    fc_slot              => 'fc_slotB',
-				    flowcell_id          => '20353ABXX',
-				   });
+            util                 => $util,
+            batch_id             => 939,
+            id_instrument        => 64,
+            expected_cycle_count => 35,
+            actual_cycle_count   => 10,
+            priority             => 1,
+            id_run_pair          => 3,
+            is_paired            => 1,
+            team                 => 'RAD',
+            id_user              => $util->requestor->id_user(),
+            fc_slot              => 'fc_slotB',
+            flowcell_id          => '20353ABXX',
+           });
   lives_ok { $model->create(); } 'created run ok - fc_slotB tag passed';
   ok($model->has_tag_with_value('fc_slotB'), 'run has fc_slotB tag');
   cmp_ok($model->run_folder, 'eq', DateTime->now()->strftime(q(%y%m%d)).'_HS3_09953_B_20353ABXX', 'HiSeq run folder');
 }
+
 {
   my $model = npg::model::run->new({
-				    util                 => $util,
-				    batch_id             => 939,
-				    id_instrument        => 64,
-				    expected_cycle_count => 35,
-				    actual_cycle_count   => 10,
-				    priority             => 1,
-				    id_run_pair          => 0,
-				    is_paired            => 0,
-				    team                 => 'RAD',
-				    id_user              => $util->requestor->id_user(),
-				    fc_slot              => 'fc_slotB',
-				    flowcell_id          => '20353ABXX',
-                                    folder_name          => '110401_HS3_B939_B_20353ABXX',
-                                    folder_path_glob     => '/{export,nfs}/sf40/ILorHSany_sf40/*/',
-				   });
+            util                 => $util,
+            batch_id             => 939,
+            id_instrument        => 64,
+            expected_cycle_count => 35,
+            actual_cycle_count   => 10,
+            priority             => 1,
+            is_paired            => 0,
+            team                 => 'RAD',
+            id_user              => $util->requestor->id_user(),
+            fc_slot              => 'fc_slotB',
+            flowcell_id          => '20353ABXX',
+            folder_name          => '110401_HS3_B939_B_20353ABXX',
+            folder_path_glob     => '/{export,nfs}/sf40/ILorHSany_sf40/*/',
+           });
   lives_ok { $model->create(); } 'created run ok - folder name and glob passed';
   cmp_ok($model->folder_name, 'eq', '110401_HS3_B939_B_20353ABXX', 'folder name set');
   cmp_ok($model->run_folder, 'eq', '110401_HS3_B939_B_20353ABXX', 'run folder overrided');

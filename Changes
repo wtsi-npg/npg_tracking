@@ -1,5 +1,85 @@
 CHANGES
 
+release 76.0
+ - added defaults for Perl indentation in Emacs for this repository
+ - definition of the repository root for single nucleotide variation files
+ - a new module defining rules for finding single nucleotide variation files
+ - changes to the database schema and code to ensure compliance with sql
+   strict mode, relevant changes to tests and test data
+ - if batch_id is not supplied at run creation, enforce zero in the model,
+     wider tests to be performed if NULL needs to be used
+ - id_run_pair defaults to null; examining and setting this field removed
+     from the code, the concept of run-pair has not been used for a long time
+ - use ${JENKINS_HOME}/tmp instead of /tmp for jenkins tmpdir 
+ - add perlcritic policy to prohibit tabs, convert tab to two white space, correct 
+   indentation issues
+ - old and unused apache configuration files removed
+ - IL instruments removed from instrument utilisation menu (we do not have them any more)
+ - instrument uptime menu link removed - target graph is broken
+ - consolidated all instrument menu 70* tests in one 20 test
+ - removed code repetition from bin/ga_II_checker
+ - removed depricated last_30_days method from npg::model::instrument_utilisation
+ - fixed the code where in test conditions operations on undefined variables
+   were performed
+ - removed excessive verbosity in most of the tests
+ - documentation in README, INSTALL and REDESIGN_PROPOSAL updated
+
+release 75.6
+ - extended inline index to read 2
+ - hardcoded link for enigmatic authentication (not mod perl url) page so that the page
+   is accessible from the server on sfweb, where enigmatic is not deployed;
+   uncomment old code to restore the relative to the server root link for testing
+ - apache2.2 compatible configuration files to run the tracking server under
+   default apache version for Ubuntu precise; virtual host definitions in
+   stand-alone files allow for dynamic inclusion of virtual hosts
+ - fixed occasional authentication problem (inability of a particular thread to load
+   additional modules due to the fact that on a second invocation of npg script in the
+   same server thread @INC array is not extended since BEGIN block is not run) when
+   running under apache2.2 by extending the server @INC array at server start up time 
+ - bam, cram, etc files access is prohibited from the runfolder directories listings,
+   however, these files are visible in listings
+ - more convenient sorting order of directories and files in the runfolder directories
+   listings
+ - directory index CSS changed to get a margin on the left; brighter color scheme
+   introduced
+ - Build.PL file extended to ensure that the shebang line of CGI scripts is
+   set to the Perl interpreter that is used for deployment
+ - explicit setting of PATH is removed from CGI scripts that do not use shell commands
+ - SVN-dependant VERSION removed from CGI scripts
+ - where necessary, PERL5LIB of CGI scripts is extended
+ - links to staging area server are picked up from config "staging_url" parameter,
+   and so are relative (to current host and port) if this is empty or non-existent
+ - switch to samplesheet driver if NPG_CACHED_SAMPLESHEET_FILE is set
+ - spiked_phix_tag_index accessor implementation for the samplesheet
+   driver to ensure that spiked_phix_tag_index is defined for a pool
+
+release 75.5
+ - on Ubuntu precise daemon .pid files in /tmp directory get deleted after a week,
+   making daemons non-responsive; change modification time of the .pid
+   file when pinging the daemon, which is done at least once a day
+
+release 75.4
+ - change of default reference repository location
+
+release 75.3
+ - default UTF8 output for samplesheets
+ - add number of lanes to run list views
+ - new farm host for a samplesheet daemon
+
+release 75.2
+ - host-agnostic jenkins daemon
+ - version of npg::api::request module updated to help tracking requests
+
+release 75.1
+ - patch for samplesheet parser
+ - switch live npg api base URL to a different host in order to separate
+     human- and api-driven requests
+ - removed depricated methods from npg::api::run_lane
+ - removed unused save2cache method from npg::api::util
+ - simplified logic for saving to cache in npg::api::request;
+     removed unused save2cache method
+ - staging area indexes defined in single place
+
 release 75.0
  - authentication through npg own enigmatic.cgi residing relative to
    where the request comes from

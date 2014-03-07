@@ -46,9 +46,9 @@ sub init {
   if($self->{entity_type_description} &&
      !$self->{id_entity_type}) {
     my $ent = npg::model::entity_type->new({
-					    description => $self->{entity_type_description},
-					    util        => $self->util(),
-					   });
+                                          description => $self->{entity_type_description},
+                                          util        => $self->util(),
+                                          });
     $self->{id_entity_type} = $ent->id_entity_type();
   }
 
@@ -56,10 +56,10 @@ sub init {
      !$self->{id_event_type} &&
      $self->{id_entity_type}) {
     my $ent = npg::model::event_type->new({
-					   description    => $self->{event_type_description},
-					   id_entity_type => $self->{id_entity_type},
-					   util           => $self->util(),
-					  });
+                                          description    => $self->{event_type_description},
+                                          id_entity_type => $self->{id_entity_type},
+                                          util           => $self->util(),
+                                          });
     $self->{id_event_type} = $ent->id_event_type();
   }
   return $self;
@@ -72,9 +72,9 @@ sub create {
   if($self->{entity_type_description} &&
      !$self->{id_entity_type}) {
     my $et = npg::model::entity_type->new({
-					   util        => $util,
-					   description => $self->{'entity_type_description'},
-					  });
+                                          util        => $util,
+                                          description => $self->{'entity_type_description'},
+                                          });
     $self->{id_entity_type} = $et->id_entity_type();
   }
 
@@ -82,10 +82,10 @@ sub create {
      $self->{id_entity_type} &&
      !$self->{id_event_type}) {
     my $et = npg::model::event_type->new({
-					  util           => $util,
-					  description    => $self->{event_type_description},
-					  id_entity_type => $self->{id_entity_type},
-					 });
+                                         util           => $util,
+                                         description    => $self->{event_type_description},
+                                         id_entity_type => $self->{id_entity_type},
+                                        });
     $self->{event_type}    = $et;
     $self->{id_event_type} = $et->id_event_type();
   }

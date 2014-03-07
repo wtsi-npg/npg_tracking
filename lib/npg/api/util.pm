@@ -1,10 +1,7 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-03-01 10:36:10 +0000 (Thu, 01 Mar 2012) $
-# Id:            $Id: util.pm 15277 2012-03-01 10:36:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/util.pm $
+# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/util.pm, r15277
 #
 package npg::api::util;
 
@@ -18,7 +15,7 @@ use npg::api::request;
 
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/smx; $r; };
 
-Readonly::Scalar our $LIVE_BASE_URI => 'http://npg.sanger.ac.uk/perl/npg';
+Readonly::Scalar our $LIVE_BASE_URI => 'http://sfweb.internal.sanger.ac.uk:9000/perl/npg';
 Readonly::Scalar our $DEV_BASE_URI  => 'http://npg.dev.sanger.ac.uk/perl/npg';
 
 Readonly::Scalar our $MAX_RETRIES      => 3;
@@ -29,14 +26,6 @@ sub new {
   $ref ||= {};
   bless $ref, $class;
   return $ref;
-}
-
-sub save2cache {
-  my ($self, $flag) = @_;
-  if (defined $flag) {
-      $self->{save2cache} = $flag;
-  }
-  return exists $self->{save2cache} ? $self->{save2cache} : 0;
 }
 
 sub parser {
@@ -75,9 +64,7 @@ sub useragent {
 
 sub request {
   my ($self, $content_type) = @_;
-
-  my $var_name = npg::api::request->save2cache_dir_var_name;
-  my $h = { save2cache  => $self->save2cache ? 1 : ($ENV{$var_name} ? 1 : 0), };
+  my $h = {};
   $h->{max_retries} = $self->max_retries;
   $h->{retry_delay} = $self->retry_delay;
   if ($content_type) {
@@ -142,8 +129,6 @@ May take optional base_uri, useragent and parser attributes, see respective meth
     'useragent' => LWP::UserAgent->new(),
     'parser'    => XML::LibXML->new();
   });
-
-=head2 save2cache - a boolean flag
 
 =head2 parser - an instance of XML parser
 

@@ -176,7 +176,7 @@ sub _build__limsreflist {
 
       my @row = ();
       if ($self->_multiple_lanes) {
-	push @row, $tmpl->position;
+        push @row, $tmpl->position;
       }
       push @row, $tmpl->library_id;
       push @row, $tmpl->sample_publishable_name;
@@ -332,6 +332,10 @@ END_OF_TEMPLATE
 
 sub process {
   my ($self, @processargs) = @_;
+  my %processargs = @processargs==1 ? %{$processargs[0]} : @processargs;
+  if (not exists $processargs{'binmode'}){
+    $processargs{'binmode'} = ':utf8';
+  }
   my$tt=Template->new();
 
   my $template = $self->template_text;
@@ -351,7 +355,7 @@ sub process {
     additional_columns => $ac,
     num_sep            => $nc,
     project_name       => join(q[ ], @{$self->study_names}) || 'unknown',
-  }, $self->output, @processargs) || croak $tt->error();
+  }, $self->output, \%processargs) || croak $tt->error();
   return;
 }
 
