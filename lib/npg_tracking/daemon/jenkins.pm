@@ -14,15 +14,17 @@ use Readonly;
 
 extends 'npg_tracking::daemon';
 
-subtype 'NonNegativeInt',
+subtype 'PositiveInt',
   as 'Int',
-  where { $_ >= 0 },
+  where { $_ > 0 },
   message { "The number you provided, $_, was not a positive number" };
 
-has 'session_timeout' => ('is'       => 'ro',
-                          'isa'      => 'NonNegativeInt',
-                          'required' => 0,
-                          'default'  => 0);
+has 'session_timeout' => ('is'        => 'ro',
+                          'isa'       => 'PositiveInt',
+                          'required'  => 0,
+                          'default'   => 60 * 6, # 6 hours
+                          'predicate' => 'has_session_timeout',
+                          'clearer'   => 'clear_session_timeout',);
 
 Readonly::Scalar our $PROXY_SERVER        => q[wwwcache.sanger.ac.uk];
 Readonly::Scalar our $PROXY_PORT          => 3128;
@@ -43,7 +45,7 @@ override 'command'  => sub {
 
   # Extra, optional arguments appear at the end of the generated
   # command line
-  if ($self->session_timeout > 0) {
+  if ($self->has_session_timeout) {
     $command = join q[ ], $command,
       q[--sessionTimeout=] . $self->session_timeout;
   }

@@ -6,7 +6,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 12;
 use Test::Deep;
 use Cwd;
 
@@ -21,6 +21,7 @@ use_ok('npg_tracking::daemon::jenkins');
   local $ENV{'JENKINS_HOME'} = q{};
 
   my $r = npg_tracking::daemon::jenkins->new(timestamp => '20130419-144441');
+  $r->clear_session_timeout; # Unset the default timeout to test base command
 
   is_deeply($r->env_vars, {'http_proxy' => q[http://wwwcache.sanger.ac.uk:3128]},
       'http proxy environment variable set correctly');
@@ -33,11 +34,16 @@ use_ok('npg_tracking::daemon::jenkins');
   like($start_command, qr/jenkins.war --httpPort=9960/, 'the command contains jar file and port');
 
   # Test optional CLI arguments
-  my $expected_timeout = 60 * 6;
+  like(npg_tracking::daemon::jenkins->new
+       (timestamp => '20130419-144441')->command('host1'),
+       qr/--sessionTimeout=\d+/, 'Default session timeout is present');
+
+  my $supplied_timeout = 60;
   like(npg_tracking::daemon::jenkins->new
        (timestamp       => '20130419-144441',
-        session_timeout => $expected_timeout)->command('host1'),
-       qr/--sessionTimeout=$expected_timeout/, 'Session timeout');
+        session_timeout => $supplied_timeout)->command('host1'),
+       qr/--sessionTimeout=$supplied_timeout/,
+       'Non-zero session timeout is set');
 
   local $ENV{'JENKINS_HOME'} = q{/does/not/exist};
 
