@@ -14,6 +14,11 @@ use Readonly;
 
 extends 'npg_tracking::daemon';
 
+Readonly::Scalar our $PROXY_SERVER     => q[wwwcache.sanger.ac.uk];
+Readonly::Scalar our $PROXY_PORT       => 3128;
+Readonly::Scalar our $TIMEOUT_HOURS    => 6;
+Readonly::Scalar our $MINUTES_PER_HOUR => 60;
+
 subtype 'PositiveInt',
   as 'Int',
   where { $_ > 0 },
@@ -22,12 +27,9 @@ subtype 'PositiveInt',
 has 'session_timeout' => ('is'        => 'ro',
                           'isa'       => 'PositiveInt',
                           'required'  => 0,
-                          'default'   => 60 * 6, # 6 hours
+                          'default'   => $MINUTES_PER_HOUR * $TIMEOUT_HOURS,
                           'predicate' => 'has_session_timeout',
                           'clearer'   => 'clear_session_timeout',);
-
-Readonly::Scalar our $PROXY_SERVER        => q[wwwcache.sanger.ac.uk];
-Readonly::Scalar our $PROXY_PORT          => 3128;
 
 override '_build_hosts' => sub { return ['sf2-farm-srv2']; };
 override '_build_env_vars' => sub { return {'http_proxy' => qq[http://$PROXY_SERVER:$PROXY_PORT]}; };
