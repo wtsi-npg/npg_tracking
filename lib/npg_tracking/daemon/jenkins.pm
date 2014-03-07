@@ -7,15 +7,25 @@
 package npg_tracking::daemon::jenkins;
 
 use Moose;
+use Moose::Util::TypeConstraints;
 use Carp;
 use English qw(-no_match_vars);
 use Readonly;
 
 extends 'npg_tracking::daemon';
 
+subtype 'NonNegativeInt',
+  as 'Int',
+  where { $_ >= 0 },
+  message { "The number you provided, $_, was not a positive number" };
+
+has 'session_timeout' => ('is'       => 'ro',
+                          'isa'      => 'NonNegativeInt',
+                          'required' => 0,
+                          'default'  => 0);
+
 Readonly::Scalar our $PROXY_SERVER        => q[wwwcache.sanger.ac.uk];
 Readonly::Scalar our $PROXY_PORT          => 3128;
-Readonly::Scalar our $SESSION_TIMEOUT_MIN => 60 * 6;
 
 override '_build_hosts' => sub { return ['sf2-farm-srv2']; };
 override '_build_env_vars' => sub { return {'http_proxy' => qq[http://$PROXY_SERVER:$PROXY_PORT]}; };
@@ -25,11 +35,20 @@ override 'command'  => sub {
   my ($self, $host) = @_;
 
   my $tmpdir = $ENV{'JENKINS_HOME'} ?  "-Djava.io.tmpdir=$ENV{'JENKINS_HOME'}/tmp" : q[];
-  my $command = qq[java -Xmx2g $tmpdir -Dhttp.proxyHost=$PROXY_SERVER -Dhttp.proxyPort=$PROXY_PORT -jar ~srpipe/jenkins.war --httpPort=9960 --sessionTimeout=$SESSION_TIMEOUT];
+  my $command = qq[java -Xmx2g $tmpdir -Dhttp.proxyHost=$PROXY_SERVER -Dhttp.proxyPort=$PROXY_PORT -jar ~srpipe/jenkins.war --httpPort=9960];
 
   my $log_name = join q[_], q[jenkins], $host, $self->timestamp();
   $log_name .=  q[.log];
-  return join q[ ], $command, q[--logfile=] . $self->log_dir . q[/]. $log_name;
+  $command = join q[ ], $command, q[--logfile=] . $self->log_dir . q[/]. $log_name;
+
+  # Extra, optional arguments appear at the end of the generated
+  # command line
+  if ($self->session_timeout > 0) {
+    $command = join q[ ], $command,
+      q[--sessionTimeout=] . $self->session_timeout;
+  }
+
+  return $command;
 };
 
 override 'daemon_name'  => sub { return 'npg_jenkins'; };
