@@ -36,6 +36,20 @@ override 'command'      => sub { my ($self, $host) = @_;
                                };
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };
 
+override '_build_log_dir' => sub { my $self = shift;
+    my $host = @{$self->hosts}[0];
+    (my $sfarea) = $host =~ /^sf(\d+)-nfs$/smx;
+    if (!$sfarea) {
+      croak qq{Host name $host does not follow expected pattern sfXX-nfs};
+    }
+    
+    my $log_dir = "/nfs/sf$sfarea/staging_logs"; 
+    croak "Directory $log_dir used for the log for this daemon does not exist" unless (-d $log_dir);
+    croak "Directory $log_dir used for the log for this daemon cannot be written to" unless (-w $log_dir);
+
+    return $log_dir;
+};
+
 no Moose;
 
 1;
