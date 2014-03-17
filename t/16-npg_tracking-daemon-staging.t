@@ -5,7 +5,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 11;
 use Test::Exception;
 use Cwd;
 
@@ -29,5 +29,14 @@ use_ok('npg_tracking::daemon::staging');
     is($r->ping, q[daemon --running -n staging_area_monitor && ((if [ -w /tmp/staging_area_monitor.pid ]; then touch -mc /tmp/staging_area_monitor.pid; fi) && echo -n 'ok') || echo -n 'not ok'], 'ping command');
     is($r->stop, q[daemon --stop -n staging_area_monitor], 'stop command');
 }
+
+{ 
+    my $log_dir = '/tmp/logs';
+    my $script = 'staging_area_monitor';
+    my $r = npg_tracking::daemon::staging->new(timestamp => '2013', log_dir => $log_dir, hosts => ['sf2-nfs']);
+    is($r->log_dir(), $log_dir, 'override default log location to $logdir');
+    is($r->start(q[sf2-nfs]), qq[daemon -i -r -a 10 -n staging_area_monitor --umask 002 -A 10 -L 10 -M 10 -o $log_dir/staging_area_monitor-sf2-nfs-2013.log -- $script /export/sf2], 'start command with new log location');
+}
+
 1;
 
