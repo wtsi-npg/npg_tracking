@@ -44,8 +44,7 @@ override '_build_log_dir' => sub { my $self = shift;
     }
 
     my $log_dir = "/nfs/sf$sfarea/staging_logs";
-    croak "Directory $log_dir used for the log for this daemon does not exist" unless (-d $log_dir);
-    croak "Directory $log_dir used for the log for this daemon cannot be written to" unless (-w $log_dir);
+    (-d $log_dir ) || (mkdir $log_dir);
 
     return $log_dir;
 };
