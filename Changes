@@ -1,5 +1,9 @@
 CHANGES
 
+release 76.1
+  - use scratch110 for references as scratch109 is hanging
+  - extend timeout for Jenkins auto-logout
+
 release 76.0
  - added defaults for Perl indentation in Emacs for this repository
  - definition of the repository root for single nucleotide variation files
