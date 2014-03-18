@@ -95,7 +95,7 @@ has 'log_dir'   =>    (isa             => 'Str',
                       );
 
 sub _build_log_dir {
-  return abs_path "$Bin/../logs"; 
+  return abs_path "$Bin/../logs";
 }
 
 sub _class_name {
