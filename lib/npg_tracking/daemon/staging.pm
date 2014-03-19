@@ -36,6 +36,34 @@ override 'command'      => sub { my ($self, $host) = @_;
                                };
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };
 
+override 'start' => sub { my ($self, $host) = @_;
+                          my $perl5lib = q[];
+                          if (defined $self->libs) {
+                            $perl5lib = join q[:], @{$self->libs};
+                          }
+                          my $action = q[daemon -i -r -a 10 -n ] . $self->daemon_name;
+                          if ($perl5lib) {
+                            $action .= qq[ --env=\"PERL5LIB=$perl5lib\"];
+                          }
+                          if ($self->env_vars) {
+                            ##no critic (Variables::ProhibitUnusedVariables)
+                            while ((my $var, my $value) = each %{$self->env_vars}) {
+                              $action .= qq[ --env=\"$var=$value\"];
+                            }
+                            ##use critic
+                          }
+
+                          (my $sfarea) = $host =~ /^sf(\d+)-nfs$/smx;
+                          if (!$sfarea) {
+                            croak qq{Host name $host does not follow expected pattern sfXX-nfs};
+                          }
+                          my $log_dir = "/nfs/sf$sfarea/staging_daemon_logs"; 
+
+                          my $script_call = $self->command($host);
+                          my $log_path_prefix = join q[/], $log_dir, $self->daemon_name;
+                          return $action . q[ --umask 002 -A 10 -L 10 -M 10 -o ] . $log_path_prefix . qq[-$host] . q[-]. $self->timestamp() . q[.log ] . qq[-- $script_call];
+};
+
 no Moose;
 
 1;
