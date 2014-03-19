@@ -26,12 +26,9 @@ override '_build_hosts' => sub {
 };
 override 'command'      => sub { my ($self, $host) = @_;
                                  if (!$host) {
-                                  croak q{Need host name};
+                                   croak q{Need host name};
                                  }
-                                 (my $sfarea) = $host =~ /^sf(\d+)-nfs$/smx;
-                                 if (!$sfarea) {
-                                   croak qq{Host name $host does not follow expected pattern sfXX-nfs};
-                                 }
+                                 my $sfarea = $self->host_to_sfarea($host); 
                                  return join q[ ], $SCRIPT_NAME, q{/export/sf} . $sfarea;
                                };
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };
@@ -53,16 +50,25 @@ override 'start' => sub { my ($self, $host) = @_;
                             ##use critic
                           }
 
-                          (my $sfarea) = $host =~ /^sf(\d+)-nfs$/smx;
-                          if (!$sfarea) {
-                            croak qq{Host name $host does not follow expected pattern sfXX-nfs};
-                          }
+                          my $sfarea = $self->host_to_sfarea($host); 
                           my $log_dir = "/nfs/sf$sfarea/staging_daemon_logs"; 
 
                           my $script_call = $self->command($host);
                           my $log_path_prefix = join q[/], $log_dir, $self->daemon_name;
                           return $action . q[ --umask 002 -A 10 -L 10 -M 10 -o ] . $log_path_prefix . qq[-$host] . q[-]. $self->timestamp() . q[.log ] . qq[-- $script_call];
 };
+
+sub host_to_sfarea {
+    my ($self, $host) = @_;  
+    if (!$host) {
+      croak q{Need host name};
+    }
+    (my $sfarea) = $host =~ /^sf(\d+)-nfs$/smx; 
+    if (!$sfarea) { 
+      croak qq{Host name $host does not follow expected pattern sfXX-nfs};
+     }
+    return $sfarea;
+}
 
 no Moose;
 
