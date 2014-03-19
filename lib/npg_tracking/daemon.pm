@@ -90,8 +90,13 @@ Directory where the log file is created, defaults to 'logs' parallel to the curr
 =cut
 has 'log_dir'   =>    (isa             => 'Str',
                        is              => 'ro',
-                       default         => sub {abs_path "$Bin/../logs"},
+                       required        =>  0,
+                       lazy_build      =>  1,
                       );
+
+sub _build_log_dir {
+  return abs_path "$Bin/../logs";
+}
 
 sub _class_name {
     my $self = shift;

@@ -36,6 +36,19 @@ override 'command'      => sub { my ($self, $host) = @_;
                                };
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };
 
+override '_build_log_dir' => sub { my $self = shift;
+    my $host = @{$self->hosts}[0];
+    (my $sfarea) = $host =~ /^sf(\d+)-nfs$/smx;
+    if (!$sfarea) {
+      croak qq{Host name $host does not follow expected pattern sfXX-nfs};
+    }
+
+    my $log_dir = "/nfs/sf$sfarea/staging_logs";
+    (-d $log_dir ) || (mkdir $log_dir);
+
+    return $log_dir;
+};
+
 no Moose;
 
 1;

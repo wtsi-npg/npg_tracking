@@ -3,6 +3,7 @@ CHANGES
 release 76.1
   - use scratch110 for references as scratch109 is hanging
   - extend timeout for Jenkins auto-logout
+  - use /nfs/sfNN/staging_logs instead of /nfs/srpipe-data/logs for staging daemon logs
 
 release 76.0
  - added defaults for Perl indentation in Emacs for this repository
