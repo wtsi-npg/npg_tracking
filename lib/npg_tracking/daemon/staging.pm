@@ -33,6 +33,8 @@ override 'command'      => sub { my ($self, $host) = @_;
                                };
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };
 
+override 'log_dir' => sub { return q{}; };
+
 override 'start' => sub { my ($self, $host) = @_;
                           my $perl5lib = q[];
                           if (defined $self->libs) {
