@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 117;
+use Test::More tests => 118;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -208,8 +208,11 @@ use_ok('st::api::lims::samplesheet');
   is_deeply(_lane_hash($ss_lanes[6], @methods), _lane_hash($xml_lanes[6], @methods),
     'xml and samplesheet drivers give the same result for plexes' );
 
-  my @spiked = grep {$_->spiked_phix_tag_index} $ss_lanes[6]->children;
-  is (scalar @spiked, 0, 'spiked_phix_tag_index is not defined on plex level');
+  my @plexes = $ss_lanes[6]->children;
+  my @spiked = grep {$_->spiked_phix_tag_index == 168} $ss_lanes[6]->children;
+  is (scalar @spiked, scalar @plexes, 'spiked_phix_tag_index is set on plex level');
+  my $tag_zero = st::api::lims::samplesheet->new(id_run => 6946, position => 7, tag_index => 0, path => $path);
+  is ($tag_zero->spiked_phix_tag_index, 168, 'spiked_phix_tag_index is set for tag zero');
 }
 
 sub _lane_hash {

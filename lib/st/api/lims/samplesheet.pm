@@ -238,7 +238,7 @@ sub _build_is_pool {
 =head2 spiked_phix_tag_index
 
  Read-only integer accessor, not possible to set from the constructor.
- Defined only on a lane level or for tag zero if the lane is spiked with phix
+ Defined for a lane and all tags, including tag zero
 
 =cut
 has 'spiked_phix_tag_index' =>  (isa             => 'Maybe[NpgTrackingTagIndex]',
@@ -251,7 +251,7 @@ sub _build_spiked_phix_tag_index {
   if (!$self->position) {
     return;
   }
-  if ($self->is_pool) {
+  if ($self->is_pool) { #this covers the lane level and tag zero
     my @controls = grep {$_->is_control } @{$self->_sschildren};
     my $num_controls = scalar @controls;
     if ($num_controls) {
@@ -261,7 +261,8 @@ sub _build_spiked_phix_tag_index {
       return $controls[0]->tag_index;
     }
   } else {
-    return $self->data->{$DATA_SECTION}->{$self->position}->{$NOT_INDEXED_FLAG}->{'spiked_phix_tag_index'} || undef;
+    my $index = $self->tag_index ? $self->tag_index : $NOT_INDEXED_FLAG;
+    return $self->data->{$DATA_SECTION}->{$self->position}->{$index}->{'spiked_phix_tag_index'} || undef;
   }
   return;
 }
