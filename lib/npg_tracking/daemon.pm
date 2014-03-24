@@ -88,10 +88,10 @@ has 'timestamp' =>    (isa             => 'Str',
 Directory where the log file is created, defaults to 'logs' parallel to the current bin
 
 =cut
-has 'log_dir'   =>    (isa             => 'Str',
-                       is              => 'ro',
-                       default         => sub {abs_path "$Bin/../logs"},
-                      );
+sub log_dir {
+    my ($self, $host) = @_;
+    return abs_path "$Bin/../logs";
+}
 
 sub _class_name {
     my $self = shift;
@@ -124,7 +124,7 @@ sub start {
     }
 
     my $script_call = $self->command($host);
-    my $log_path_prefix = join q[/], $self->log_dir, $self->daemon_name;
+    my $log_path_prefix = join q[/], $self->log_dir($host), $self->daemon_name;
     return $action . q[ --umask 002 -A 10 -L 10 -M 10 -o ] . $log_path_prefix . qq[-$host] . q[-]. $self->timestamp() . q[.log ] . qq[-- $script_call];
 }
 

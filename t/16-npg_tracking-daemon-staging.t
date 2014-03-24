@@ -5,7 +5,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 13;
 use Test::Exception;
 use Cwd;
 
@@ -46,8 +46,7 @@ my $script = 'staging_area_monitor';
     is($r->start($hostname), qq[daemon -i -r -a 10 -n staging_area_monitor --umask 002 -A 10 -L 10 -M 10 -o $log_dir/staging_area_monitor-sf18-nfs-2013.log -- $script /export/sf18], 'start command');
     is($r->ping, q[daemon --running -n staging_area_monitor && ((if [ -w /tmp/staging_area_monitor.pid ]; then touch -mc /tmp/staging_area_monitor.pid; fi) && echo -n 'ok') || echo -n 'not ok'], 'ping command');
     is($r->stop, q[daemon --stop -n staging_area_monitor], 'stop command');
-    isnt($r->log_dir, $log_dir, q[log directory is not set per host]);
-    is($r->log_dir, q{}, q[log directory is not set at all]);
+    is($r->log_dir($hostname), $log_dir, q[log directory is not set per host]);
 }
 
 1;

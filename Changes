@@ -1,5 +1,7 @@
 CHANGES
 
+- use staging area for staging daemon logs
+
 release 76.0
  - added defaults for Perl indentation in Emacs for this repository
  - definition of the repository root for single nucleotide variation files

@@ -33,35 +33,14 @@ override 'command'      => sub { my ($self, $host) = @_;
                                };
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };
 
-override 'log_dir' => sub { return q{}; };
+override 'log_dir' => sub { my ($self, $host) = @_;
+                            my $sfarea = $self->host_to_sfarea($host);
+                            my $log_dir = "/nfs/sf$sfarea/staging_daemon_logs";
 
-override 'start' => sub { my ($self, $host) = @_;
-                          my $perl5lib = q[];
-                          if (defined $self->libs) {
-                            $perl5lib = join q[:], @{$self->libs};
-                          }
-                          my $action = q[daemon -i -r -a 10 -n ] . $self->daemon_name;
-                          if ($perl5lib) {
-                            $action .= qq[ --env=\"PERL5LIB=$perl5lib\"];
-                          }
-                          if ($self->env_vars) {
-                            ##no critic (Variables::ProhibitUnusedVariables)
-                            while ((my $var, my $value) = each %{$self->env_vars}) {
-                              $action .= qq[ --env=\"$var=$value\"];
-                            }
-                            ##use critic
-                          }
-
-                          my $sfarea = $self->host_to_sfarea($host);
-                          my $log_dir = "/nfs/sf$sfarea/staging_daemon_logs";
-
-                          (-e $log_dir) || croak qq[Log directory $log_dir for staging host $host does not exist];
-                          (-w $log_dir) || croak qq[Log directory $log_dir for staging host $host cannot be written to];
-
-                          my $script_call = $self->command($host);
-                          my $log_path_prefix = join q[/], $log_dir, $self->daemon_name;
-                          return $action . q[ --umask 002 -A 10 -L 10 -M 10 -o ] . $log_path_prefix . qq[-$host] . q[-]. $self->timestamp() . q[.log ] . qq[-- $script_call];
-};
+                            (-e $log_dir) || croak qq[Log directory $log_dir for staging host $host does not exist];
+                            (-w $log_dir) || croak qq[Log directory $log_dir for staging host $host cannot be written to];
+                            return $log_dir;
+                          };
 
 =head2 host_to_sfarea
 
