@@ -47,16 +47,17 @@ Interface (Moose role) for retrieving a information about a reference repository
 
 =cut
 
-Readonly::Scalar our $REP_ROOT         => q[/lustre/scratch110/srpipe/];
-Readonly::Scalar our $SNV_DIR          => q[population_snv];
-Readonly::Scalar our $REFERENCES_DIR   => q[references];
-Readonly::Scalar our $ADAPTERS_DIR     => q[adapters];
-Readonly::Scalar our $GENOTYPES_DIR    => q[genotypes];
-Readonly::Scalar our $BAITS_DIR        => q[baits];
-Readonly::Scalar our $TAG_SETS_DIR     => q[tag_sets];
-Readonly::Scalar our $TAXON_IDS_DIR    => q[taxon_ids];
-Readonly::Scalar our $BIN_DIR          => q[bin];
-Readonly::Scalar our $ORG_NAME_DELIM   => q[_];
+Readonly::Scalar our $REP_ROOT           => q[/lustre/scratch110/srpipe/];
+Readonly::Scalar our $SNV_DIR            => q[population_snv];
+Readonly::Scalar our $TRANSCRIPTOMES_DIR => q[transcriptomes];
+Readonly::Scalar our $REFERENCES_DIR     => q[references];
+Readonly::Scalar our $ADAPTERS_DIR       => q[adapters];
+Readonly::Scalar our $GENOTYPES_DIR      => q[genotypes];
+Readonly::Scalar our $BAITS_DIR          => q[baits];
+Readonly::Scalar our $TAG_SETS_DIR       => q[tag_sets];
+Readonly::Scalar our $TAXON_IDS_DIR      => q[taxon_ids];
+Readonly::Scalar our $BIN_DIR            => q[bin];
+Readonly::Scalar our $ORG_NAME_DELIM     => q[_];
 
 Readonly::Scalar our $LAST             => -1;
 Readonly::Scalar our $SECOND_FROM_END  => -2;
@@ -110,6 +111,21 @@ has 'snv_repository' => (isa       =>'NPG_TRACKING_REFERENCE_REPOSITORY',
 sub _build_snv_repository {
     my $self = shift;
     return catdir($self->repository, $SNV_DIR);
+}
+
+=head2 transcriptomes repository
+
+An absolute path to the transcriptomes repository
+
+=cut
+has 'transcriptome_repository' => (isa        =>'NPG_TRACKING_REFERENCE_REPOSITORY',
+                                   is         => 'ro',
+                                   required   => 0,
+                                   lazy_build => 1,
+     );
+sub _build_transcriptome_repository{
+    my $self = shift;
+    return catdir($self->repository, $TRANSCRIPTOMES_DIR);
 }
 
 =head2 repository name
