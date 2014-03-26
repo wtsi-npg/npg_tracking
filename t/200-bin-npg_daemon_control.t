@@ -32,7 +32,6 @@ foreach my $app (qw/jenkins samplesheet staging/) {
     my $prid = open2($child_out, $child_in, $cmd);
     waitpid( $prid, 0 );
     my $cexit_status = $? >> 8;
-diag($cmd);
     is ($cexit_status, 0, qq{no error running $cmd});
     my $out = slurp $child_out;
     like ($out, qr/DRY RUN/, 'output marked as dry run');
