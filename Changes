@@ -1,5 +1,13 @@
 CHANGES
 
+-
+  - added modules to handle locating of transcriptome files required by tophat2
+  - updated reference module with additions needed by transcriptome
+  - added new test for transcriptome
+  - updated reference test to check that transcriptome directory structure exists
+  - added files from a transcriptomics run for use in test
+  - added empty directory structure equivalent to actual transcriptomes path for use in test
+
 release 76.1
   - use scratch110 for references as scratch109 is hanging
   - extend timeout for Jenkins auto-logout
