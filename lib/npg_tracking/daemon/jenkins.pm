@@ -7,14 +7,29 @@
 package npg_tracking::daemon::jenkins;
 
 use Moose;
+use Moose::Util::TypeConstraints;
 use Carp;
 use English qw(-no_match_vars);
 use Readonly;
 
 extends 'npg_tracking::daemon';
 
-Readonly::Scalar our $PROXY_SERVER => q[wwwcache.sanger.ac.uk];
-Readonly::Scalar our $PROXY_PORT   => 3128;
+Readonly::Scalar our $PROXY_SERVER     => q[wwwcache.sanger.ac.uk];
+Readonly::Scalar our $PROXY_PORT       => 3128;
+Readonly::Scalar our $TIMEOUT_HOURS    => 6;
+Readonly::Scalar our $MINUTES_PER_HOUR => 60;
+
+subtype 'PositiveInt',
+  as 'Int',
+  where { $_ > 0 },
+  message { "The number you provided, $_, was not a positive number" };
+
+has 'session_timeout' => ('is'        => 'ro',
+                          'isa'       => 'PositiveInt',
+                          'required'  => 0,
+                          'default'   => $MINUTES_PER_HOUR * $TIMEOUT_HOURS,
+                          'predicate' => 'has_session_timeout',
+                          'clearer'   => 'clear_session_timeout',);
 
 override '_build_hosts' => sub { return ['sf2-farm-srv2']; };
 override '_build_env_vars' => sub { return {'http_proxy' => qq[http://$PROXY_SERVER:$PROXY_PORT]}; };
@@ -28,7 +43,16 @@ override 'command'  => sub {
 
   my $log_name = join q[_], q[jenkins], $host, $self->timestamp();
   $log_name .=  q[.log];
-  return join q[ ], $command, q[--logfile=] . $self->log_dir . q[/]. $log_name;
+  $command = join q[ ], $command, q[--logfile=] . $self->log_dir . q[/]. $log_name;
+
+  # Extra, optional arguments appear at the end of the generated
+  # command line
+  if ($self->has_session_timeout) {
+    $command = join q[ ], $command,
+      q[--sessionTimeout=] . $self->session_timeout;
+  }
+
+  return $command;
 };
 
 override 'daemon_name'  => sub { return 'npg_jenkins'; };
