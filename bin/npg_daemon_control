@@ -53,7 +53,7 @@ if (defined $request && $request) {
 
   if (!$ENV{USER} || ($ENV{USER} ne $PRODUCTION_USER)) {
     warn "\n************************************\n";
-    warn   "*** YOUR ARE NOT PRODUCTION USER ***\n";
+    warn   "*** YOU ARE NOT PRODUCTION USER  ***\n";
     warn   "************************************\n";
   }
 
