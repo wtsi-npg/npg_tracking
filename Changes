@@ -3,6 +3,15 @@ CHANGES
 release 76.3
 - use staging area for staging daemon logs
 
+release 76.2
+  - lims samplesheet driver bug fix - spiked phix tag index should be defined for plexes
+  - method to return the name of the env. var for the cached samplesheet file
+  - misleading xml lims driver POD entry fixed
+
+release 76.1
+  - use scratch110 for references as scratch109 is hanging
+  - extend timeout for Jenkins auto-logout
+
 release 76.0
  - added defaults for Perl indentation in Emacs for this repository
  - definition of the repository root for single nucleotide variation files

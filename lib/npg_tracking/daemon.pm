@@ -112,8 +112,9 @@ sub start {
         $perl5lib = join q[:], @{$self->libs};
     }
 
-    my $test = q{[[ -d } . $self->log_dir($host) . q{ && -w } . $self->log_dir($host) . q{ ]] && };
-    my $error = q{ || echo Log directory } .  $self->log_dir($host) . q{ for staging host } . $host . q{ cannot be written to};
+    my $log_dir = $self->log_dir($host);
+    my $test = q{[[ -d } . $log_dir . q{ && -w } . $log_dir . q{ ]] && };
+    my $error = q{ || echo Log directory } .  $log_dir . q{ for staging host } . $host . q{ cannot be written to};
     my $action = $test . q[daemon -i -r -a 10 -n ] . $self->daemon_name;
     if ($perl5lib) {
         $action .= qq[ --env=\"PERL5LIB=$perl5lib\"];
@@ -127,7 +128,7 @@ sub start {
     }
 
     my $script_call = $self->command($host);
-    my $log_path_prefix = join q[/], $self->log_dir($host), $self->daemon_name;
+    my $log_path_prefix = join q[/], $log_dir, $self->daemon_name;
     return $action . q[ --umask 002 -A 10 -L 10 -M 10 -o ] . $log_path_prefix . qq[-$host] . q[-]. $self->timestamp() . q[.log ] . qq[-- $script_call] . $error;
 }
 
