@@ -12,8 +12,40 @@ use Cwd 'abs_path';
 
 our $VERSION = do { my ($r) = q$Revision$ =~ /(\d+)/smx; $r; };
 
+Readonly::Scalar our $ENSEMBL_RELEASE_VERSION => q[default];
+
 with qw/ npg_tracking::data::reference::find 
 /;
+
+has '_organism_dir' => ( isa => q{Maybe[Str]},
+                         is => q{ro},
+                         lazy_build => 1,
+                       );
+
+sub _build__organism_dir {
+    my $self = shift;
+    
+    my ($organism, $strain) = $self->_parse_reference_genome($self->lims->reference_genome);
+    
+    if ($organism){
+        return($self->transcriptome_repository . "/$organism");
+    }
+}
+
+
+has '_version_dir' => ( isa => q{Maybe[Str]},
+                         is => q{ro},
+                         lazy_build => 1,
+                       );
+
+sub _build__version_dir {
+    my $self = shift;
+    my ($organism, $strain) = $self->_parse_reference_genome($self->lims->reference_genome);
+    
+    if ($organism && $strain){
+        return($self->_organism_dir . "/$ENSEMBL_RELEASE_VERSION/$strain");
+    }
+}
 
 has 'gtf_path'     => ( isa => q{Maybe[Str]},
                         is => q{ro},
@@ -22,12 +54,8 @@ has 'gtf_path'     => ( isa => q{Maybe[Str]},
 
 sub _build_gtf_path {
     my $self = shift;
-    my ($organism, $strain) = $self->_parse_reference_genome($self->lims->reference_genome);
-    if ($organism && $strain) {
-        ## symbolic link to default resolved with abs_path
-        return abs_path($self->transcriptome_repository . "/$organism/default/$strain/gtf");
-    }
-    return;
+    ## symbolic link to default resolved with abs_path
+    return abs_path($self->_version_dir . "/gtf");
 }
 
 has 'gtf_file' => ( isa => q{Maybe[Str]},
@@ -42,9 +70,8 @@ sub _build_gtf_file {
    if (scalar @gtf_files > 1) { croak 'More than 1 gtf file in ' . $self->gtf_path; }
 
    if (scalar @gtf_files == 0) {
-       my ($organism, $strain) = $self->_parse_reference_genome($self->lims->reference_genome);
-      if (-d $self->transcriptome_repository . "/$organism") {
-         $self->messages->push('Directory ' . $self->transcriptome_repository . "/$organism exists, but GTF file not found");
+      if (-d $self->_organism_dir) {
+         $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but GTF file not found');
       }
       return;
    }
@@ -60,11 +87,7 @@ has 'transcriptome_index_path' => ( isa => q{Maybe[Str]},
 
 sub _build_transcriptome_index_path {
     my $self = shift;
-    my ($organism, $strain) = $self->_parse_reference_genome($self->lims->reference_genome);
-    if ($organism && $strain) {
-    return abs_path($self->transcriptome_repository . "/$organism/default/$strain/tophat2");
-    }
-    return;
+    return abs_path($self->_version_dir . "/tophat2");
 }
 #e.g. 1000Genomes_hs37d5.known (from 1000Genomes_hs37d5.known.1.bt2, 1000Genomes_hs37d5.known.2.bt2 ...)
 has 'transcriptome_index_name' => ( isa => q{Maybe[Str]},
@@ -79,9 +102,8 @@ sub _build_transcriptome_index_name {
   if ($self->transcriptome_index_path){ @indices = glob $self->transcriptome_index_path . '/*.bt2'}
 
   if (scalar @indices == 0){
-     my ($organism, $strain) = $self->_parse_reference_genome($self->lims->reference_genome);
-     if (-d $self->transcriptome_repository . "/$organism") {
-         $self->messages->push('Directory ' . $self->transcriptome_repository . "/$organism exists, but GTF file not found");
+     if (-d $self->_organism_dir) {
+         $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but GTF file not found');
       }
      return;
   }
