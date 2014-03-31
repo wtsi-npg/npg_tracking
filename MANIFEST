@@ -1117,7 +1117,6 @@ t/data/repos1/st/samples/1327535.xml
 t/data/repos1/st/samples/1382839.xml
 t/data/repos1/st/samples/1830658.xml
 t/data/repos1/st/studies/2072.xml
-t/data/repos1/transcriptomes/Homo_sapiens/default
 t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/gtf/ensembl_release_75-1000Genomes_hs37d5.gtf
 t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known.1.bt2
 t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known.2.bt2
