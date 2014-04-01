@@ -1,21 +1,9 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2008-02-22
-# Last Modified: $Date: 2012-03-01 10:36:10 +0000 (Thu, 01 Mar 2012) $
-# Id:            $Id: 40-st-event.t 15277 2012-03-01 10:36:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/40-st-event.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 24;
 use Test::Exception;
 use t::useragent;
 use npg::api::util;
-
-use Readonly;
-
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/mx; $r; };
 
 use_ok('st::api::event');
 

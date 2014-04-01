@@ -1,11 +1,3 @@
-#########
-# Author:        dj3
-# Maintainer:    $Author: mg8 $
-# Created:       2011-11-10
-# Last Modified: $Date: 2011-09-09 14:59:49 +0100 (Fri, 09 Sep 2011) $
-# Id:            $Id: 14-dbic-Run.t 14155 2011-09-09 13:59:49Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/branches/prerelease-63.0/t/14-dbic-Run.t $
-
 use strict;
 use warnings;
 
@@ -18,8 +10,6 @@ use File::Slurp;
 
 use t::dbic_util;
 local $ENV{dev} = q(wibble); # ensure we're not going live anywhere
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14155 $ =~ /(\d+)/msx; $r; };
 
 use_ok('npg::samplesheet');
 

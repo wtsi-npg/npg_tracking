@@ -1,21 +1,9 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2008-01-08
-# Last Modified: $Date: 2012-03-27 13:38:46 +0100 (Tue, 27 Mar 2012) $
-# Id:            $Id: 10-model-user.t 15395 2012-03-27 12:38:46Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-user.t $
-#
-
 use strict;
 use warnings;
 use Test::More tests => 20;
-use English qw(-no_match_vars);
 use Test::Exception;
 use Digest::SHA qw(sha256_hex);
 use t::util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15395 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::model::user');
 

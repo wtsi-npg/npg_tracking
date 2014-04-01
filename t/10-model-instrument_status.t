@@ -1,18 +1,8 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2008-01-11
-# Last Modified: $Date: 2013-01-15 10:27:57 +0000 (Tue, 15 Jan 2013) $
-# Id:            $Id: 10-model-instrument_status.t 16477 2013-01-15 10:27:57Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-instrument_status.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 39;
 use Test::Exception;
 use t::util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my @r = (q$Revision: 16477 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
 
 use_ok('npg::model::instrument_status');
 

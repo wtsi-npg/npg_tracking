@@ -1,11 +1,3 @@
-#########
-# Author:        jo3
-# Maintainer:    $Author: dj3 $
-# Created:       2010_07_29
-# Last Modified: $Date: 2010-10-07 13:00:50 +0100 (Thu, 07 Oct 2010) $
-# Id:            $Id: 14-dbic-EventType.t 11232 2010-10-07 12:00:50Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/14-dbic-EventType.t $
-
 use strict;
 use warnings;
 
@@ -15,14 +7,9 @@ use Test::More tests => 8;
 use Test::Exception::LessClever;
 use Test::MockModule;
 
-use lib q{t};
 use t::dbic_util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11232 $ =~ /(\d+)/msx; $r; };
-
-
 use_ok('npg_tracking::Schema::Result::EventType');
-
 
 my $schema = t::dbic_util->new->test_schema();
 my $test;

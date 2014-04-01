@@ -1,17 +1,8 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2007-10
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: 10-model-search.t 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-search.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 6;
 use t::util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/mx; $r; };
 use_ok('npg::model::search');
 
 my $util = t::util->new({

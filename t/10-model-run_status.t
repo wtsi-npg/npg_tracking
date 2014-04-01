@@ -1,20 +1,9 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2008-01-15
-# Last Modified: $Date: 2012-02-29 14:14:10 +0000 (Wed, 29 Feb 2012) $
-# Id:            $Id: 10-model-run_status.t 15265 2012-02-29 14:14:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-run_status.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 25;
 use English qw(-no_match_vars);
 use t::util;
 use npg::model::run;
-#use MIME::Lite;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15265 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::model::run_status');
 

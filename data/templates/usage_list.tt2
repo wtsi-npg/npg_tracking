@@ -2,7 +2,7 @@
 Sequencing Farm:
 <ul class="inline">
 [% SET staging_url = view.util.config.val('application', 'staging_url') %]
-[% FOREACH si IN model.staging_area_indexes -%]
+[% FOREACH si IN view.staging_area_indexes -%]
  <li><img src="[% staging_url %]/cgi-bin/storage/sf[% si %]" alt="SF[% si %]" /></li>
 [% END -%]
 </ul>

@@ -1,4 +1,3 @@
-# $Id: 80-email-instrument_status_change.t 16269 2012-11-26 09:53:48Z mg8 $
 use strict;
 use warnings;
 use DateTime;
@@ -11,8 +10,6 @@ use Test::MockModule;
 
 use t::dbic_util;
 use t::util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/msx; $r; };
 
 local $ENV{dev} = 'test';
 my $schema    = t::dbic_util->new->test_schema();

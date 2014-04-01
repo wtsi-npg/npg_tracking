@@ -1,19 +1,9 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2007-10
-# Last Modified: $Date: 2013-01-15 10:27:57 +0000 (Tue, 15 Jan 2013) $
-# Id:            $Id: 10-model-instrument.t 16477 2013-01-15 10:27:57Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-instrument.t $
-#
 use strict;
 use warnings;
 use t::util;
 use Test::More tests => 121;
 use Test::Deep;
 use Test::Exception;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16477 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::model::instrument');
 

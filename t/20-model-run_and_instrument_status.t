@@ -1,18 +1,8 @@
-#########
-# Author:        Marina Gourtovaia
-# Maintainer:    $Author: mg8 $
-# Created:       1 March 2011
-# Last Modified: $Date: 2013-01-15 10:27:57 +0000 (Tue, 15 Jan 2013) $
-# Id:            $Id: 20-model-run_and_instrument_status.t 16477 2013-01-15 10:27:57Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/20-model-run_and_instrument_status.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 56;
 use Test::Exception;
 use t::util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16477 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::model::run');
 use_ok('npg::model::run_status');

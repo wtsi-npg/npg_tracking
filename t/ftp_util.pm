@@ -1,12 +1,3 @@
-#########
-# Author:        jo3
-# Maintainer:    $Author: dj3 $
-# Created:       2010-06-16
-# Last Modified: $Date: 2010-10-07 13:00:50 +0100 (Thu, 07 Oct 2010) $
-# Id:            $Id: ftp_util.pm 11232 2010-10-07 12:00:50Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/ftp_util.pm $
-#
-
 package t::ftp_util;    ## no critic (NamingConventions::Capitalization)
 
 use strict;

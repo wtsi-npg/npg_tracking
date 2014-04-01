@@ -22,10 +22,9 @@ use Test::Deep;
 use IPC::System::Simple; #needed for Fatalised/autodying system()
 use autodie qw(:all);
 
-#use lib q{t};
 use t::dbic_util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11585 $ =~ /(\d+)/msx; $r; };
+use Readonly;
 
 Readonly::Scalar my $MOCK_STAGING => 't/data/gaii/staging';
 

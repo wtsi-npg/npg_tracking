@@ -1,8 +1,3 @@
-#########
-# Author:        rmp
-# Created:       2007-10
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-util.t, r14647
-#
 use strict;
 use warnings;
 use Test::More tests => 10;

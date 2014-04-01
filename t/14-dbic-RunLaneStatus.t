@@ -4,6 +4,7 @@ use Test::More tests => 38;
 use Test::Deep;
 use Test::Exception::LessClever;
 use DateTime;
+use Readonly;
 
 use t::dbic_util;
 
