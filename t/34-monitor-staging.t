@@ -1,11 +1,3 @@
-#########
-# Author:        jo3
-# Maintainer:    $Author: jo3 $
-# Created:       2010-06-15
-# Last Modified: $Date: 2010-10-27 16:02:34 +0100 (Wed, 27 Oct 2010) $
-# Id:            $Id: 34-monitor-staging.t 11503 2010-10-27 15:02:34Z jo3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/34-monitor-staging.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 11;
@@ -17,8 +9,6 @@ use File::Temp qw/ tempdir /;
 use File::Path qw/ make_path /;
 
 use t::dbic_util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11503 $ =~ /(\d+)/msx; $r; };
 
 use_ok('Monitor::Staging');
 

@@ -1,21 +1,9 @@
-#########
-# Author:        
-# Maintainer:    $Author: mg8 $
-# Created:       2008-02-22
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: 80-email-run.t 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/80-email-run.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 3;
 use Test::Exception;
 use t::util;
 use t::dbic_util;
-
-use Readonly;
-
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/mx; $r; };
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/email';
 

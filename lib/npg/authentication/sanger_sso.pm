@@ -14,6 +14,7 @@ use Crypt::CBC;
 use MIME::Base64;
 use CGI;
 use Carp;
+use Readonly;
 
 our $VERSION = '0';
 

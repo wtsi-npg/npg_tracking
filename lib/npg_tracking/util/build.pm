@@ -10,13 +10,15 @@ use warnings;
 
 ##no critic (NamingConventions::Capitalization InputOutput::ProhibitBacktickOperators ErrorHandling::RequireCarping ValuesAndExpressions::ProhibitNoisyQuotes ControlStructures::ProhibitPostfixControls RegularExpressions::RequireDotMatchAnything RegularExpressions::ProhibitUnusedCapture) 
 
+##no critic (Variables::ProhibitPunctuationVars RegularExpressions::RequireExtendedFormatting RegularExpressions::RequireLineBoundaryMatching ErrorHandling::RequireCheckingReturnValueOfEval Subroutines::RequireFinalReturn InputOutput::RequireCheckedSyscalls)
+
 =head2 dir_files
 =cut
 
  sub dir_files {
     my $dir = shift;
-    opendir(my $dh, $dir) || die "can't opendir $dir: $!";
-    my @files = map { "$dir/$_" } grep { /^\w+$/ && -f "$dir/$_" } readdir($dh);
+    opendir my $dh, $dir || die "can't opendir $dir: $!";
+    my @files = map { "$dir/$_" } grep { /^\w+$/ && -f "$dir/$_" } readdir $dh;
     closedir $dh;
     return @files;
   }
@@ -135,26 +137,26 @@ use warnings;
       my $root = q[./blib/lib];
       my @dirs  = ($root);
       for my $path (@dirs){
-        opendir ( DIR, $path ) or next;   # skip dirs we can't read
+        opendir DIR, $path or next;   # skip dirs we can't read
         while (my $file = readdir DIR) {
           my $full_path = join '/', $path, $file;
           next if $file eq '.' or $file eq '..'; # skip dot files
            if ( -d $full_path ) {
-            push @dirs, $full_path;     # add dir to list
-          } 
+            push @dirs, $full_path; # add dir to list
+          }
         }
         closedir DIR;
       }
 
       my @modules;
       foreach my $dir (@dirs) {
-        opendir(DIR, $dir) or die $!;
-        while (my $file = readdir(DIR)) {
+        opendir DIR, $dir or die $!;
+        while (my $file = readdir DIR) {
           next unless (-f "$dir/$file");
           next unless ($file =~ m/\.pm$/);
           push @modules, $dir . q[/] . $file;
         }
-        closedir(DIR);
+        closedir DIR;
       }
 
       foreach my $module (@modules) {
@@ -178,7 +180,9 @@ use warnings;
   }
 1;
 
-=head1 npg_util::Build
+=head1 NAME 
+
+npg_tracking::util::build
 
 =head1 VERSION
 

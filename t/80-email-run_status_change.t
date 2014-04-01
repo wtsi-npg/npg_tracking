@@ -1,12 +1,3 @@
-#########
-# Author:        jo3
-# Maintainer:    $Author: mg8 $
-# Created:       2010_07_29
-# Last Modified: $Date: 2013-01-08 15:26:40 +0000 (Tue, 08 Jan 2013) $
-# Id:            $Id: 80-email-run_status_change.t 16411 2013-01-08 15:26:40Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/80-email-run_status_change.t $
-
-
 use strict;
 use warnings;
 use DateTime;

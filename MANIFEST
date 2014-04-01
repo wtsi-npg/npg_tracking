@@ -463,8 +463,8 @@ t/10-authentication-sanger_sso.t
 t/10-bait.t
 t/10-model-administration.t
 t/10-model-annotations.t
-t/10-model-cost_code.pm
-t/10-model-cost_group.pm
+t/10-model-cost_code.t
+t/10-model-cost_group.t
 t/10-model-designation.t
 t/10-model-entity_type.t
 t/10-model-event.t
@@ -495,7 +495,6 @@ t/10-model-run_tags.t
 t/10-model-search-advanced.t
 t/10-model-search.t
 t/10-model-tag.t
-t/10-model-usage.t
 t/10-model-user-runs_loaded.t
 t/10-model-user.t
 t/10-model-user_usergroup.t
@@ -533,9 +532,6 @@ t/16-npg_tracking-daemon.t
 t/20-model-run_and_instrument_status.t
 t/20-view-administration.t
 t/20-view-error.t
-t/20-view-instrument-no_runs.t
-t/20-view-instrument-run_cancelled.t
-t/20-view-instrument-run_pending.t
 t/20-view-instrument.t
 t/20-view-instrument_menus.t
 t/20-view-instrument_mod.t
@@ -543,7 +539,6 @@ t/20-view-instrument_status.t
 t/20-view-instrument_status_annotation.t
 t/20-view-instrument_utilisation.t
 t/20-view-run-create_tags.t
-t/20-view-run-refactored_methods.t
 t/20-view-run.t
 t/20-view-run_annotation.t
 t/20-view-run_lane-update_tags.t
@@ -553,6 +548,7 @@ t/20-view-run_status.t
 t/20-view-run_status_dict.t
 t/20-view-search-advanced.t
 t/20-view-search.t
+t/20-view-usage.t
 t/20-view-user.t
 t/20-view-user2usergroup.t
 t/20-view-usergroup.t

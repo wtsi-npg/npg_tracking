@@ -13,6 +13,7 @@ use Exporter qw( import );
 use Net::LDAP;
 use English qw(-no_match_vars);
 use Carp;
+use Readonly;
 
 our $VERSION = '0';
 

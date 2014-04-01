@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: run.pm 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/run.pm $
 #
 package npg::view::run;
 use base qw(npg::view);
@@ -22,6 +18,7 @@ use Socket;
 our $VERSION = '0';
 Readonly::Scalar our $PAGINATION_LEN   => 40;
 Readonly::Scalar our $PAGINATION_START => 0;
+Readonly::Scalar my  $DAYS_IN_WEEK     => 14;
 
 sub new {
   my ($class, @args) = @_;
@@ -243,9 +240,6 @@ sub list {
     $model->{id_instrument} = $id_instrument;
   }
 
-#  $model->{runs} = [sort { $b->id_run() <=> $a->id_run() ## no critic
-#       } @{$model->runs()||[]}];
-
   return 1;
 }
 
@@ -317,21 +311,9 @@ sub list_summary_xml {
   return 1;
 }
 
-sub convert_is_good {
-  my ($self, $is_good) = @_;
-  if ($is_good == 2) {
-    return 'Unknown';
-  } elsif ($is_good == 1) {
-    return 'Good';
-  }
-  return 'Bad';
-}
-
 sub selected_days {
   my $self = shift;
-  Readonly::Scalar my $DAYS_IN_WEEK => 14;
   my $days;
-
   if ($self->util->cgi->param('days')) {
     ($days) = $self->util->cgi->param('days') =~ /(\d+)/smx;
   }
@@ -587,8 +569,6 @@ npg::view::run - view handling for runs
 =head2 read - handling for override id_run_pair (which will be empty for R1) using the id_run of any existing second end
 
 =head2 read_simple_xml - handle to read XML
-
-=head2 convert_is_good - converts the numerical results of $run_lane->is_good() into words
 
 =head2 update_tags - handles incoming request to add/remove tags for the run. Wraps all in a single
        transaction so that all tags are done, or none at all

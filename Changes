@@ -1,6 +1,11 @@
 CHANGES
 
-- Global removal of [LastChanged]Version from POD; change VERSION svn declaration to ='0'; code action only on webinstall
+  - global removal of [LastChanged]Version from POD; change VERSION svn declaration to ='0'; code action only on webinstall
+  - some unused code removed
+  - some small test scripts merged into related larger test scripts
+  - VERSION variable and headers with SVN properties removed from test files
+  - all test scripts are given .t extension 
+  - unnecessary 'use' statements removed from tests
 
 release 76.3
 - use staging area for staging daemon logs

@@ -1,8 +1,3 @@
-#########
-# Author:        ajb
-# Created:       2009-01-30
-# copied from : svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-instrument_utilisation.t, r15743
-#
 use strict;
 use warnings;
 use Test::More tests => 91;
