@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- modified from 12161.xml -->
+<run id_run="12071" batch_id="25539" id_instrument="111" expected_cycle_count="56" actual_cycle_count="56" priority="1" id_run_pair="0" is_paired="0" team="C" id_instrument_format="11" flowcell_id="MS2012814-050V2" folder_name="140213_MS7_12071_A_MS2012814-050V2" folder_path_glob="/{export,nfs}/sf49/ILorHSorMS_sf49/*/" name="MS7_12071" loader="ajw" loading_date="2014-02-13" run_folder="140213_MS7_12071_A_MS2012814-050V2">
+ <instrument id_instrument="111" name="MS7" id_instrument_format="11" external_name="" serial="" iscurrent="1" />
+ <run_lanes><run_lane id_run_lane="83913" id_run="12071" tile_count="12" tracks="1" position="4" />
+</run_lanes>
+ <current_run_status id_run_status="161163" id_run="12071" date="2014-02-13 22:27:45" id_run_status_dict="6" id_user="7" username="pipeline" iscurrent="1" description="analysis pending" />
+ <run_statuses>
+ <run_status id_run_status="161162" id_run="12071" date="2014-02-13 22:27:45" id_run_status_dict="11" id_user="7" username="pipeline" iscurrent="0" description="run mirrored" />
+ <run_status id_run_status="161163" id_run="12071" date="2014-02-13 22:27:45" id_run_status_dict="6" id_user="7" username="pipeline" iscurrent="1" description="analysis pending" />
+ <run_status id_run_status="161161" id_run="12071" date="2014-02-13 22:08:34" id_run_status_dict="4" id_user="7" username="pipeline" iscurrent="0" description="run complete" />
+ <run_status id_run_status="161152" id_run="12071" date="2014-02-13 18:08:43" id_run_status_dict="2" id_user="7" username="pipeline" iscurrent="0" description="run in progress" />
+ <run_status id_run_status="161145" id_run="12071" date="2014-02-13 16:35:55" id_run_status_dict="1" id_user="33" username="pipeline" iscurrent="0" description="run pending" />
+ </run_statuses>
+ <annotations>
+ </annotations>
+ <tags>
+   <tag id_tag="20" description="multiplex" />
+   <tag id_tag="16" description="rta" />
+   <tag id_tag="18" description="single_read" />
+   <tag id_tag="19" description="staging" />
+ </tags>
+</run>
