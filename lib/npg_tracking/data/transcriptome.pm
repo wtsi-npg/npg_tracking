@@ -4,11 +4,9 @@
 #
 package npg_tracking::data::transcriptome;
 
-use strict;
-use warnings;
 use Moose;
 
-our $VERSION = do { my ($r) = q$Revision$ =~ /(\d+)/smx; $r; };
+our $VERSION = '0.0';
 
 with qw/
           npg_tracking::glossary::run
@@ -46,10 +44,6 @@ A wrapper class for finding the location of transcriptome files.
 =head1 DEPENDENCIES
 
 =over
-
-=item warnings
-
-=item strict
 
 =item Moose
 

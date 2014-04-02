@@ -341,7 +341,7 @@ sub _build_default_tag_sequence {
 =head2 spiked_phix_tag_index
 
 Read-only integer accessor, not possible to set from the constructor.
-Defined only on a lane level if the lane is spiked with phix
+Defined for a lane and all tags, including tag zero
 
 =cut
 has 'spiked_phix_tag_index' =>  (isa             => 'Maybe[NpgTrackingTagIndex]',

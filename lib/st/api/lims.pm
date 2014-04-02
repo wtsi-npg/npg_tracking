@@ -41,6 +41,8 @@ Generic NPG pipeline oriented LIMS wrapper capable of retrieving data from multi
 
 =cut
 
+Readonly::Scalar my  $CACHED_SAMPLESHEET_FILE_VAR_NAME => 'NPG_CACHED_SAMPLESHEET_FILE';
+
 Readonly::Scalar my  $PROC_NAME_INDEX   => 3;
 Readonly::Hash   my  %QC_EVAL_MAPPING   => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
 Readonly::Scalar my  $INLINE_INDEX_END  => 10;
@@ -117,7 +119,7 @@ has 'driver_type' => (
                      );
 sub _build_driver_type {
   my $self = shift;
-  my $cached_path = $ENV{'NPG_CACHED_SAMPLESHEET_FILE'};
+  my $cached_path = $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
   if ($self->_has_path || ($cached_path && -f $cached_path)) {
     if (!$self->_has_path) {
       $self->_set_path($cached_path);
@@ -518,6 +520,17 @@ sub _build__cached_children {
     }
   }
   return \@children;
+}
+
+=head2 cached_samplesheet_var_name
+
+Returns the name of the env. variable for storing the full path of the cached
+samplesheet. If this variable is set and the driver is not given explicitly,
+a samplesheet driver is used by this class.
+
+=cut
+sub cached_samplesheet_var_name {
+  return $CACHED_SAMPLESHEET_FILE_VAR_NAME;
 }
 
 =head2 children

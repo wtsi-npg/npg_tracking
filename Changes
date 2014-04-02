@@ -1,16 +1,23 @@
 CHANGES
 
--
-  - added modules to handle locating of transcriptome files required by tophat2
-  - updated reference module with additions needed by transcriptome
-  - added new test for transcriptome
-  - updated reference test to check that transcriptome directory structure exists
-  - added files from a transcriptomics run for use in test
-  - added empty directory structure equivalent to actual transcriptomes path for use in test
+ - added modules to handle locating of transcriptome files required by tophat2
+ - updated reference module with additions needed by transcriptome
+ - added new test for transcriptome
+ - updated reference test to check that transcriptome directory structure exists
+ - added files from a transcriptomics run for use in test
+ - added empty directory structure equivalent to actual transcriptomes path for use in test
+
+release 76.3
+ - use staging area for staging daemon logs
+
+release 76.2
+ - lims samplesheet driver bug fix - spiked phix tag index should be defined for plexes
+ - method to return the name of the env. var for the cached samplesheet file
+ - misleading xml lims driver POD entry fixed
 
 release 76.1
-  - use scratch110 for references as scratch109 is hanging
-  - extend timeout for Jenkins auto-logout
+ - use scratch110 for references as scratch109 is hanging
+ - extend timeout for Jenkins auto-logout
 
 release 76.0
  - added defaults for Perl indentation in Emacs for this repository
