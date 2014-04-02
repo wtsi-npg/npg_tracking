@@ -17,7 +17,7 @@ use npg::model::run_lane;
 use npg::model::event;
 use npg::model::entity_type;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 13390 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -82,7 +82,7 @@ npg::model::run_lane_annotation
 
 =head1 VERSION
 
-$LastChangedRevision: 13390 $
+
 
 =head1 SYNOPSIS
 

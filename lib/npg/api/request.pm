@@ -28,7 +28,7 @@ npg::api::request
 
 =head1 VERSION
 
-$Revision: 16549 $
+
 
 =head1 SYNOPSIS
 

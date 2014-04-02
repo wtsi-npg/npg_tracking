@@ -14,8 +14,9 @@ use GD;
 use npg::util::image::colourmap;
 use base qw(Class::Accessor);
 use Carp;
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 Readonly our $MAX_COLOUR_GRADIENTS_SCALE   => 255;
 Readonly our $MAX_COLOUR_GRADIENTS_HEATMAP => 250;
@@ -96,7 +97,7 @@ npg::util::image::image
 
 =head1 VERSION
 
-$LastChangedRevision: 16549 $
+
 
 =head1 SYNOPSIS
 

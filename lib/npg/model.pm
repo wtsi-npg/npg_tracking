@@ -16,7 +16,7 @@ use Carp;
 use Socket;
 use npg::model::cost_group;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $NINETY_DAYS => 90;
 
@@ -168,7 +168,7 @@ npg::model - a base class for the NPG family, derived from ClearPress::model
 
 =head1 VERSION
 
-$Revision: 16269 $
+
 
 =head1 SYNOPSIS
 

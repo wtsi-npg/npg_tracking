@@ -12,7 +12,7 @@ use warnings;
 use Moose;
 use Carp;
 use English qw{-no_match_vars};
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16411 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 extends qw{npg::email};
 
@@ -35,7 +35,7 @@ npg::email::event::status_change::instrument
 
 =head1 VERSION
 
-$LastChangedRevision: 16411 $
+
 
 =head1 SYNOPSIS
 

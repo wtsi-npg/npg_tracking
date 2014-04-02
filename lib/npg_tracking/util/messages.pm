@@ -14,7 +14,7 @@ use warnings;
 use Moose;
 use MooseX::AttributeHelpers;
 
-our $VERSION    = do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 has 'mlist' => (
       metaclass => 'Collection::Array',
@@ -41,7 +41,7 @@ npg_tracking::util::messages
 
 =head1 VERSION
 
-$Revision: 16549 $
+
 
 =head1 SYNOPSIS
 

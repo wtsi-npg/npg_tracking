@@ -19,7 +19,7 @@ use npg::model::event;
 use Date::Parse;
 use DateTime;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Hash our %DAYS_PER_STATUS => (
   'run complete' => 1,
@@ -233,7 +233,7 @@ npg::model::run_status
 
 =head1 VERSION
 
-$Revision: 16269 $
+
 
 =head1 SYNOPSIS
 

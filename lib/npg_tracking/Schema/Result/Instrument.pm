@@ -325,8 +325,10 @@ use DateTime;
 use DateTime::TimeZone;
 use Try::Tiny;
 use Carp;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/mxs; $r; };
 
+our $VERSION = '0';
+
+use Readonly;
 Readonly::Scalar my $HISEQ_INSTR_MODEL => 'HiSeq';
 Readonly::Scalar my $MISEQ_INSTR_MODEL => 'MiSeq';
 Readonly::Scalar my $CBOT_INSTR_MODEL  => 'cBot';

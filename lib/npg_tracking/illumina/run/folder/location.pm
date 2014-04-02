@@ -15,8 +15,9 @@ use Carp qw(croak);
 use Cwd;
 use File::Spec::Functions;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly::Array our @STAGING_AREAS_INDEXES => 18 .. 55;
 Readonly::Array our @STAGING_AREAS => map { "/nfs/sf$_" } @STAGING_AREAS_INDEXES;
 
@@ -114,7 +115,7 @@ npg_tracking::illumina::run::folder::location
 
 =head1 VERSION
 
-$Revision: 16549 $
+
 
 =head1 SYNOPSIS
 

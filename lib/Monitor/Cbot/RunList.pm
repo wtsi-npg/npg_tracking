@@ -14,7 +14,7 @@ extends 'Monitor::Cbot';
 
 use namespace::autoclean;
 use XML::LibXML;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11472 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 
 has '_url' => (
@@ -66,7 +66,7 @@ Monitor::Cbot::RunList - methods and to retrieve and parse Cbot RunList.xml
 
 =head1 VERSION
 
-$Revision: 11472 $
+
 
 =head1 SYNOPSIS
     C<<use Monitor::Cbot::RunList;

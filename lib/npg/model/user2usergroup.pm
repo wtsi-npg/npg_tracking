@@ -15,7 +15,7 @@ use Carp;
 use npg::model::user;
 use npg::model::usergroup;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15395 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a([qw(user usergroup)]);
@@ -56,7 +56,7 @@ npg::model::user2usergroup
 
 =head1 VERSION
 
-$LastChangedRevision: 15395 $
+
 
 =head1 SYNOPSIS
 

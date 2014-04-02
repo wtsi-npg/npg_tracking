@@ -16,7 +16,7 @@ use npg::api::run;
 
 with qw{npg_tracking::illumina::run::short_info};
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 has 'no_npg_check'=>  ( isa            => q{Bool},
                          is            => q{rw},
@@ -72,7 +72,7 @@ npg_tracking::illumina::run::folder::validation
 
 =head1 VERSION
 
-$LastChangedRevision: 16549 $
+
 
 =head1 SYNOPSIS
 

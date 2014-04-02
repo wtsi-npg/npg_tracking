@@ -13,7 +13,7 @@ use Moose;
 use Carp;
 use English qw{-no_match_vars};
 use Template;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16411 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 use npg::util::mailer;
 use npg_tracking::Schema;
@@ -28,7 +28,7 @@ npg::email
 
 =head1 VERSION
 
-$LastChangedRevision: 16411 $
+
 
 =head1 SYNOPSIS
 

@@ -24,7 +24,7 @@ use st::api::lims;
 
 with qw/ npg_tracking::data::reference::list /;
 
-our $VERSION = do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $NPG_DEFAULT_ALIGNER_OPTION => q{npg_default};
 Readonly::Scalar our $MINUS_ONE                  => -1;
@@ -35,7 +35,7 @@ npg_tracking::data::reference::find
 
 =head1 VERSION
 
-$Revision: 16549 $
+
 
 =head1 SYNOPSIS
 

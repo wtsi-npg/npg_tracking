@@ -14,7 +14,7 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::usergroup;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub authorised {
   my ($self, @args) = @_;
@@ -95,7 +95,7 @@ npg::view::user2usergroup
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
+
 
 =head1 SYNOPSIS
 

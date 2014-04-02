@@ -12,7 +12,7 @@ use warnings;
 use English qw(-no_match_vars);
 use Carp;
 use base qw(npg::model);
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 13963 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 use npg::model::cost_code;
 
@@ -73,7 +73,7 @@ npg::model::cost_group
 
 =head1 VERSION
 
-$LastChangedRevision: 13963 $
+
 
 =head1 SYNOPSIS
 

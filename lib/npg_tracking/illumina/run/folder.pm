@@ -20,7 +20,7 @@ use Try::Tiny;
 use npg_tracking::Schema;
 use npg_tracking::glossary::lane;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 with 'npg_tracking::illumina::run::folder::location';
 
@@ -511,7 +511,7 @@ npg_tracking::illumina::run::folder
 
 =head1 VERSION
 
-$Revision: 16549 $
+
 
 =head1 SYNOPSIS
 

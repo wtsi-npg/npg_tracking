@@ -22,7 +22,7 @@ __PACKAGE__->load_namespaces;
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema.pm $
 
 BEGIN {
-  use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16389 $ =~ /(\d+)/mxs; $r; };
+  our $VERSION ='0';
 }
 
 with qw/npg_tracking::util::db_connect/;
@@ -37,7 +37,7 @@ npg_tracking::Schema
 
 =head1 VERSION
 
-$LastChangedRevision: 16389 $
+
 
 =head1 SYNOPSIS
 

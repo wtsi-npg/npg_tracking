@@ -21,7 +21,7 @@ use st::api::lims;
 use st::api::lims::samplesheet;
 use npg_tracking::data::reference;
 
-use Readonly; Readonly::Scalar our $VERSION    => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 =head1 NAME
 
@@ -29,7 +29,7 @@ npg::samplesheet
 
 =head1 VERSION
 
-$Revision: 16549 $
+
 
 =head1 SYNOPSIS
 

@@ -19,7 +19,7 @@ use npg::model::event;
 use npg::model::entity_type;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 12395 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $DEFAULT_INSTRUMENT_UPTIME_INTERVAL => 90;
 
@@ -191,7 +191,7 @@ npg::model::instrument_annotation
 
 =head1 VERSION
 
-$LastChangedRevision: 12395 $
+
 
 =head1 SYNOPSIS
 

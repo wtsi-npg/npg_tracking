@@ -29,7 +29,7 @@ use List::MoreUtils qw(any);
 use DateTime::Format::MySQL;
 use DateTime;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 ##no critic(ProhibitManyArgs ProhibitMagicNumbers)
 
 Readonly::Scalar our $PAGINATION_LEN   => 40;
@@ -659,7 +659,7 @@ npg::view::instrument - view handling for instruments
 
 =head1 VERSION
 
-$Revision: 16269 $
+
 
 =head1 SYNOPSIS
 

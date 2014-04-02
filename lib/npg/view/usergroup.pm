@@ -11,7 +11,7 @@ use strict;
 use warnings;
 use base qw(npg::view);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub new {
   my ($class, @args) = @_;
@@ -38,7 +38,7 @@ npg::view::usergroup
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
+
 
 =head1 SYNOPSIS
 

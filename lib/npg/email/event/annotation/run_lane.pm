@@ -12,7 +12,7 @@ use warnings;
 use Moose;
 use Carp;
 use English qw{-no_match_vars};
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14884 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 extends qw{npg::email::run};
 with qw{npg::email::roles::event_attributes};
@@ -32,7 +32,7 @@ npg::email::event::annotation::run_lane
 
 =head1 VERSION
 
-$LastChangedRevision: 14884 $
+
 
 =head1 SYNOPSIS
 

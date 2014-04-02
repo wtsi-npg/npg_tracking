@@ -18,8 +18,9 @@ use Cwd;
 use Moose::Role;
 use Try::Tiny;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16261 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly::Scalar our $FEATURE_EXTENSION => q[.yml];
 Readonly::Scalar our $TEMP_DIR => q{/tmp};
 
@@ -29,7 +30,7 @@ npg_testing::db
 
 =head1 VERSION
 
-$Revision: 16261 $
+
 
 =head1 SYNOPSIS
 

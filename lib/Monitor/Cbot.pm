@@ -16,8 +16,9 @@ use Carp;
 use LWP::UserAgent;
 use namespace::autoclean;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16017 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly::Scalar my $DOMAIN          => 'internal.sanger.ac.uk';
 Readonly::Scalar my $DEFAULT_TIMEOUT => 10;
 
@@ -107,7 +108,7 @@ Monitor::Cbot - base class for cBot XML interrogation
 
 =head1 VERSION
 
-$Revision: 16017 $
+
 
 =head1 SYNOPSIS
 

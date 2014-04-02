@@ -12,7 +12,7 @@ package t::ftp_util;    ## no critic (NamingConventions::Capitalization)
 use strict;
 use warnings;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11232 $ =~ /(\d+)/msx; $r; };
+our $VERSION = '0';
 
 use Carp;
 use Data::Dumper;

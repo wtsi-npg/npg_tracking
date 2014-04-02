@@ -15,7 +15,7 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::run_lane_annotation;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15265 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub new {
   my ($class, @args) = @_;
@@ -137,7 +137,7 @@ npg::view::run_lane_annotation - view handling for run_lane_annotationes
 
 =head1 VERSION
 
-$LastChangedRevision: 15265 $
+
 
 =head1 SYNOPSIS
 

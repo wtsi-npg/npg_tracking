@@ -19,12 +19,11 @@ use npg::model::user;
 use npg::model::run;
 use npg::util;
 
-use Readonly;
-
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 my $MAIL_DOMAIN = npg::util::mail_domain();
 
+use Readonly;
 Readonly::Scalar our $LAST_INDEX => -1;
 Readonly::Scalar our $DESCRIPTION_LENGTH => 255;
 
@@ -113,7 +112,7 @@ npg::model::event
 
 =head1 VERSION
 
-$Revision: 14928 $
+
 
 =head1 SYNOPSIS
 

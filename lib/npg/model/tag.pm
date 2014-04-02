@@ -15,7 +15,7 @@ use Carp;
 use npg::model::run;
 use npg::model::run_lane;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 9670 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -99,7 +99,7 @@ npg::model::tag
 
 =head1 VERSION
 
-$Revision: 9670 $
+
 
 =head1 SYNOPSIS
 

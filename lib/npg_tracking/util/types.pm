@@ -10,7 +10,9 @@
 package npg_tracking::util::types;
 
 use Moose::Util::TypeConstraints;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16411 $ =~ /(\d+)/mxs; $r; };
+use Readonly;
+
+our $VERSION = '0';
 
 Readonly::Scalar our $POSITION_MIN  => 1;
 Readonly::Scalar our $POSITION_MAX  => 9;
@@ -60,7 +62,7 @@ npg_tracking::util::types
 
 =head1 VERSION
 
-$Revision: 16411 $
+
 
 =head1 SYNOPSIS
 

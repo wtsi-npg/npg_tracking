@@ -13,7 +13,7 @@ use warnings;
 use Carp;
 use English qw(-no_match_vars);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub new {
   my ($class, @args) = @_;
@@ -76,7 +76,7 @@ npg::view::run_status_dict - view handling for run_status_dicts
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
+
 
 =head1 SYNOPSIS
 

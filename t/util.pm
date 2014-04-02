@@ -16,7 +16,7 @@ use MIME::Parser;
 use MIME::Lite;
 use GD;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16335 $ =~ /(\d+)/mx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $DEFAULT_FIXTURES_PATH => q[t/data/fixtures];
 

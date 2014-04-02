@@ -19,7 +19,7 @@ use POSIX qw(strftime);
 
 use npg_tracking::illumina::run::folder::validation;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 
 has ident => (
@@ -160,7 +160,7 @@ information.
 
 =head1 VERSION
 
-$Revision: 16549 $
+
 
 =head1 SYNOPSIS
 

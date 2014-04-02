@@ -13,7 +13,7 @@ use Readonly;
 
 __PACKAGE__->mk_accessors(fields());
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 8603 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub live {
     my $self = shift;
@@ -153,7 +153,7 @@ st::api::study - an interface to Sample Tracking studies
 
 =head1 VERSION
 
-$Revision: 8603 $
+
 
 =head1 SYNOPSIS
 

@@ -15,7 +15,7 @@ use Carp;
 use npg::model::event_type;
 use npg::model::event;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_many('event_type');
@@ -89,7 +89,7 @@ npg::model::entity_type
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
+
 
 =head1 SYNOPSIS
 

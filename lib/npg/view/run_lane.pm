@@ -17,7 +17,7 @@ use npg::model::run_status;
 use npg::model::run_status_dict;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15265 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 Readonly::Scalar our $GRAPH_HEIGHT => 200;
 Readonly::Scalar our $GRAPH_WIDTH  => 400;
 
@@ -215,7 +215,7 @@ npg::view::run_lane - view handling for run_lanes
 
 =head1 VERSION
 
-$LastChangedRevision: 15265 $
+
 
 =head1 SYNOPSIS
 

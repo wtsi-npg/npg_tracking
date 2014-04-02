@@ -14,7 +14,7 @@ use Net::LDAP;
 use English qw(-no_match_vars);
 use Carp;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15341 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 our @EXPORT_OK = qw(person_info);  # symbols to export on request
 
@@ -71,7 +71,7 @@ __END__
 
 =head1 VERSION
 
-$LastChangedRevision: 15341 $
+
 
 =head1 SYNOPSIS
 

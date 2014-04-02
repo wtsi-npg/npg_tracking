@@ -9,7 +9,7 @@ package npg_tracking::data::reference::info;
 
 use Moose;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 7844 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 =head1 NAME
 
@@ -17,7 +17,7 @@ npg_tracking::data::reference::info
 
 =head1 VERSION
 
-$Revision: 7844 $
+
 
 =head1 SYNOPSIS
 

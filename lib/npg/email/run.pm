@@ -13,7 +13,7 @@ use Moose;
 use Carp;
 use English qw{-no_match_vars};
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16411 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 use st::api::lims;
 extends qw{npg::email};
@@ -24,7 +24,7 @@ npg::email::run
 
 =head1 VERSION
 
-$LastChangedRevision: 16411 $
+
 
 =head1 SYNOPSIS
 

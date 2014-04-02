@@ -14,8 +14,9 @@ use Moose;
 use Try::Tiny;
 use npg::samplesheet;
 use npg_tracking::Schema;
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION    => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 Readonly::Scalar our $DEFAULT_SLEEP => 90;
 
 with q(MooseX::Log::Log4perl);
@@ -26,7 +27,7 @@ npg::samplesheet::auto
 
 =head1 VERSION
 
-$Revision: 16549 $
+
 
 =head1 SYNOPSIS
 

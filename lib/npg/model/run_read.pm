@@ -13,7 +13,7 @@ use base qw(npg::model);
 use English qw(-no_match_vars);
 use Carp;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 9670 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a([qw(run)]);
@@ -36,7 +36,7 @@ npg::model::run_read
 
 =head1 VERSION
 
-$Revision: 9670 $
+
 
 =head1 SYNOPSIS
 

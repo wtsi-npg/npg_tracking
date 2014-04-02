@@ -14,7 +14,7 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::instrument_status;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16477 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Hash our %SHORT_DESCRIPTIONS => {
                   'down'             => 'down',
@@ -92,7 +92,7 @@ npg::model::instrument_status_dict
 
 =head1 VERSION
 
-$LastChangedRevision: 16477 $
+
 
 =head1 SYNOPSIS
 

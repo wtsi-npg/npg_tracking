@@ -12,7 +12,7 @@ use warnings;
 use base qw(npg::api::annotation);
 use Carp;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 #########
 # most accessors are handled by the annotation superclass
@@ -32,7 +32,7 @@ npg::api::run_annotation - An interface onto npg.run_annotation + annotation
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
+
 
 =head1 SYNOPSIS
 

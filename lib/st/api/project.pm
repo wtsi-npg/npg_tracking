@@ -18,7 +18,7 @@ use base qw(st::api::base);
 
 __PACKAGE__->mk_accessors(fields());
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 13925 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub live {
     my $self = shift;
@@ -47,7 +47,7 @@ st::api::project - an interface to a project
 
 =head1 VERSION
 
-$Revision: 13925 $
+
 
 =head1 SYNOPSIS
 

@@ -117,7 +117,7 @@ local staging.
 
 =head1 VERSION
 
-$Revision: 16075 $
+
 
 =head1 SYNOPSIS
 

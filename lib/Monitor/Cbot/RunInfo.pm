@@ -14,7 +14,7 @@ extends 'Monitor::Cbot';
 
 use namespace::autoclean;
 use XML::LibXML;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11472 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 
 # A new element <Name/> has been added to the XML (26/5/2010) with an
@@ -176,7 +176,7 @@ Monitor::Cbot::RunInfo
 
 =head1 VERSION
 
-$Revision: 11472 $
+
 
 =head1 SYNOPSIS
 

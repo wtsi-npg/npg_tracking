@@ -13,7 +13,7 @@ use warnings;
 use Moose::Role;
 use Carp qw(croak );
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 
 ##############
@@ -49,7 +49,7 @@ npg_tracking::illumina::run
 
 =head1 VERSION
 
-$Revision: 16549 $
+
 
 =head1 SYNOPSIS
 

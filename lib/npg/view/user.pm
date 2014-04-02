@@ -14,7 +14,7 @@ use npg::model::usergroup;
 use Carp;
 use Digest::SHA qw(sha256_hex);;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15395 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub new {
   my ($class, @args) = @_;
@@ -120,7 +120,7 @@ npg::view::user
 
 =head1 VERSION
 
-$LastChangedRevision: 15395 $
+
 
 =head1 SYNOPSIS
 

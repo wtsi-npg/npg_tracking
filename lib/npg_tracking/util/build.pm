@@ -8,6 +8,8 @@ package npg_tracking::util::build;
 use strict;
 use warnings;
 
+##no critic (NamingConventions::Capitalization InputOutput::ProhibitBacktickOperators ErrorHandling::RequireCarping ValuesAndExpressions::ProhibitNoisyQuotes ControlStructures::ProhibitPostfixControls RegularExpressions::RequireDotMatchAnything RegularExpressions::ProhibitUnusedCapture) 
+
 =head2 dir_files
 =cut
 
@@ -74,7 +76,7 @@ use warnings;
       require CGI;
       $version = $CGI::VERSION;
     };
-    return $version && ($version eq '3.43') ? $version : '3.52'; 
+    return $version && ($version eq '3.43') ? $version : '3.52';
   }
 
 =head2 ACTION_webinstall
@@ -93,7 +95,7 @@ use warnings;
     $self->add_build_element('cgi');
     $self->install_path('wtsi_local' => join q{/}, $self->install_base(), 'wtsi_local');
     $self->add_build_element('wtsilocal');
-    $self->depends_on("install");
+    $self->depends_on('install');
 
     return;
   }
@@ -125,49 +127,52 @@ use warnings;
 
   sub ACTION_code {
     my $self = shift;
-
     $self->SUPER::ACTION_code;
 
-    my $root = q[./blib/lib];
-    my @dirs  = ($root);
-    for my $path (@dirs){
-      opendir ( DIR, $path ) or next;   # skip dirs we can't read
-      while (my $file = readdir DIR) {
-        my $full_path = join '/', $path, $file;
-        next if $file eq '.' or $file eq '..'; # skip dot files
+    if ($self->invoked_action() ne q[webinstall]) {
+      return;
+    } else {
+      my $root = q[./blib/lib];
+      my @dirs  = ($root);
+      for my $path (@dirs){
+        opendir ( DIR, $path ) or next;   # skip dirs we can't read
+        while (my $file = readdir DIR) {
+          my $full_path = join '/', $path, $file;
+          next if $file eq '.' or $file eq '..'; # skip dot files
            if ( -d $full_path ) {
             push @dirs, $full_path;     # add dir to list
           } 
-      }
-      closedir DIR;
-    }
-
-    my @modules;
-    foreach my $dir (@dirs) {
-    opendir(DIR, $dir) or die $!;
-    while (my $file = readdir(DIR)) {
-        next unless (-f "$dir/$file");
-        next unless ($file =~ m/\.pm$/);
-        push @modules, $dir . q[/] . $file;
-    }
-    closedir(DIR);
-  }
-
-    foreach my $module (@modules) {
-      my $gitver = $self->git_tag();
-      if (-e $module) {
-        warn "Changing version of $module to $gitver\n";
-        my $backup = '.original';
-        local $^I = $backup;
-        local @ARGV = ($module);
-        while (<>) {
-          s/(\$VERSION\s*=\s*)('?\S+'?)\s*;/${1}'$gitver';/;
-          s/head1 VERSION$/head1  VERSION\n\nVersion $gitver/;
-          print; 
         }
-        unlink "$module$backup";
-      } else {
-        warn "File $module not found\n";
+        closedir DIR;
+      }
+
+      my @modules;
+      foreach my $dir (@dirs) {
+        opendir(DIR, $dir) or die $!;
+        while (my $file = readdir(DIR)) {
+          next unless (-f "$dir/$file");
+          next unless ($file =~ m/\.pm$/);
+          push @modules, $dir . q[/] . $file;
+        }
+        closedir(DIR);
+      }
+
+      foreach my $module (@modules) {
+        my $gitver = $self->git_tag();
+        if (-e $module) {
+          warn "Changing version of $module to $gitver\n";
+          my $backup = '.original';
+          local $^I = $backup;
+          local @ARGV = ($module);
+          while (<>) {
+            s/(\$VERSION\s*=\s*)('?\S+'?)\s*;/${1}'$gitver';/;
+            s/head1 VERSION$/head1  VERSION\n\nVersion $gitver/;
+            print;
+          }
+          unlink "$module$backup";
+        } else {
+          warn "File $module not found\n";
+        }
       }
     }
   }
@@ -176,8 +181,6 @@ use warnings;
 =head1 npg_util::Build
 
 =head1 VERSION
-
-$Revision$
 
 =head1 SYNOPSIS
 
@@ -198,6 +201,10 @@ Provide the methods to add git tag and SHA to VERSION and POD VERSION
 =item Module::Build
 
 =back
+
+=head1 NAME
+
+=head1 BUGS AND LIMITATIONS
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

@@ -14,10 +14,11 @@ use Moose::Role;
 use Carp;
 use File::Spec::Functions qw(catdir);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 with qw/ npg_tracking::data::reference::find /;
 
+use Readonly;
 Readonly::Scalar my $STRAIN_ARRAY_INDEX => 1;
 
 has 'bait_name'     => ( isa => q{Maybe[Str]}, is => q{ro}, lazy_build => 1,
@@ -114,7 +115,7 @@ npg_tracking::data::bait::find
 
 =head1 VERSION
 
-$Revision: 16549 $
+
 
 =head1 SYNOPSIS
 

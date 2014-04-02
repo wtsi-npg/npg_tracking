@@ -13,7 +13,7 @@ use Moose::Role;
 use Carp;
 use POSIX qw(strftime);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16395 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 requires qw{_build_template default_recipient_host schema_connection};
 
@@ -23,7 +23,7 @@ npg::email::roles::event_attributes
 
 =head1 VERSION
 
-$LastChangedRevision: 16395 $
+
 
 =head1 SYNOPSIS
 

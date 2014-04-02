@@ -15,7 +15,7 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::instrument_status_annotation;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 9207 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 sub new {
   my ($class, @args) = @_;
@@ -116,7 +116,7 @@ npg::view::instrument_status_annotation - view handling for instrument_status_an
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
+
 
 =head1 SYNOPSIS
 

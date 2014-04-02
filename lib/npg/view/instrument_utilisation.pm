@@ -16,7 +16,7 @@ use npg::util::image::graph;
 use Readonly;
 use Math::Round qw(round);
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15357 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $PLOTTER_WIDTH  => 1000;
 Readonly::Scalar our $PLOTTER_HEIGHT => 400;
@@ -134,7 +134,7 @@ npg::view::instrument_utilisation - view handling for instrument_utilisation
 
 =head1 VERSION
 
-$LastChangedRevision: 15357 $
+
 
 =head1 SYNOPSIS
 

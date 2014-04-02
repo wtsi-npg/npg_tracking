@@ -14,7 +14,7 @@ use Carp;
 use English qw(-no_match_vars);
 use npg::api::user;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15277 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 #########
 # we'll handle 'attachment' ourselves
@@ -116,7 +116,7 @@ npg::api::annotation - Annotation base-class, an interface onto npg.annotation
 
 =head1 VERSION
 
-$LastChangedRevision: 15277 $
+
 
 =head1 SYNOPSIS
 

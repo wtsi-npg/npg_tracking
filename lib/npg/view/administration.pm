@@ -21,7 +21,7 @@ use npg::model::entity_type;
 use npg::model::run_status_dict;
 use npg::model::user2usergroup;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16269 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub authorised {
   my $self = shift;
@@ -151,7 +151,7 @@ npg::view::administration
 
 =head1 VERSION
 
-$LastChangedRevision: 16269 $
+
 
 =head1 SYNOPSIS
 

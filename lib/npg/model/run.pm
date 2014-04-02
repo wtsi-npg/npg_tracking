@@ -32,7 +32,9 @@ use DateTime::Format::Strptime;
 use npg::model::run_read;
 use JSON;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/smx; $r; };
+use Readonly;
+
+our $VERSION = '0';
 
 Readonly::Scalar our $DEFAULT_SUMMARY_DAYS => 14;
 Readonly::Scalar our $MAX_LANES => 8;
@@ -1178,7 +1180,7 @@ npg::model::run
 
 =head1 VERSION
 
-$Revision: 16269 $
+
 
 =head1 SYNOPSIS
 

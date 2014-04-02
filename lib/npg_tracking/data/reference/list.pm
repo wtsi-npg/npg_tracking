@@ -20,7 +20,7 @@ use File::Spec::Functions qw(catfile splitdir catdir);
 use File::Basename;
 use Cwd qw(abs_path);
 
-our $VERSION    = do { my ($r) = q$Revision: 16566 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 =head1 NAME
 
@@ -28,7 +28,7 @@ npg_tracking::data::reference::list
 
 =head1 VERSION
 
-$Revision: 16566 $
+
 
 =head1 SYNOPSIS
 

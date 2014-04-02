@@ -1,5 +1,7 @@
 CHANGES
 
+- Global removal of [LastChanged]Version from POD; change VERSION svn declaration to ='0'; code action only on webinstall
+
 release 76.3
 - use staging area for staging daemon logs
 

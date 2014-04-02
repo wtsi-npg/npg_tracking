@@ -13,7 +13,7 @@ use base qw(npg::model);
 use Carp;
 use List::MoreUtils;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15308 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -444,7 +444,7 @@ npg::model::search
 
 =head1 VERSION
 
-$LastChangedRevision: 15308 $
+
 
 =head1 SYNOPSIS
 

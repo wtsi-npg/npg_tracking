@@ -15,7 +15,7 @@ extends 'Monitor::Cbot';
 use namespace::autoclean;
 use XML::LibXML;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11416 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 
 has '_url' => (
@@ -167,7 +167,7 @@ Monitor::Cbot::InstrumentStatus
 
 =head1 VERSION
 
-$Revision: 11416 $
+
 
 =head1 SYNOPSIS
 

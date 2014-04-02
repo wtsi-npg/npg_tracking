@@ -17,8 +17,9 @@ with 'npg_tracking::illumina::run::short_info';    # id_run
 
 use Carp;
 use English qw(-no_match_vars);
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/msx; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly::Scalar our $ACCEPTABLE_CYCLE_DELAY => 6;
 
 # short_info's documentation says that run_folder will be constrained to the
@@ -219,7 +220,7 @@ Monitor::RunFolder - provide methods to get run details from a folder path
 
 =head1 VERSION
 
-$Revision: 16549 $
+
 
 =head1 SYNOPSIS
 

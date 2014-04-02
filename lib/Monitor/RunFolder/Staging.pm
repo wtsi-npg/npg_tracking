@@ -19,7 +19,7 @@ use IO::All;
 use List::Util qw(max);
 use Perl6::Slurp;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16389 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar my $MAXIMUM_CYCLE_LAG  =>  6;
 Readonly::Scalar my $MTIME_INDEX        =>  9;
@@ -275,7 +275,7 @@ local staging
 
 =head1 VERSION
 
-$Revision: 16389 $
+
 
 =head1 SYNOPSIS
 

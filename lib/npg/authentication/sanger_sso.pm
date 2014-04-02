@@ -15,7 +15,7 @@ use MIME::Base64;
 use CGI;
 use Carp;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 our @EXPORT_OK = qw(sanger_cookie_name sanger_username);
 
@@ -59,7 +59,7 @@ __END__
 
 =head1 VERSION
 
-$LastChangedRevision: 16549 $
+
 
 =head1 SYNOPSIS
 

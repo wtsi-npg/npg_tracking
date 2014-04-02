@@ -15,7 +15,7 @@ use English qw{-no_match_vars};
 use Class::Std;
 use MIME::Lite;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 {
   ## no critic (ProhibitUnusedVariables)
@@ -88,7 +88,7 @@ __END__
 
 =head1 VERSION
 
-$LastChangedRevision: 16549 $
+
 
 =head1 SYNOPSIS
 

@@ -13,7 +13,7 @@ use base qw(npg::model);
 use English qw(-no_match_vars);
 use Carp;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub fields {
   return qw(id_event_type_subscriber
@@ -30,7 +30,7 @@ npg::model::event_type_subscriber
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
+
 
 =head1 SYNOPSIS
 

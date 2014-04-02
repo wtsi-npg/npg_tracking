@@ -13,7 +13,7 @@ use XML::LibXML;
 
 use npg::api::request;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $LIVE_BASE_URI => 'http://sfweb.internal.sanger.ac.uk:9000/perl/npg';
 Readonly::Scalar our $DEV_BASE_URI  => 'http://npg.dev.sanger.ac.uk/perl/npg';
@@ -111,7 +111,7 @@ npg::api::util
 
 =head1 VERSION
 
-$LastChangedRevision: 15277 $
+
 
 =head1 SYNOPSIS
 

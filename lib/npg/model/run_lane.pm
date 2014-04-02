@@ -19,7 +19,7 @@ use npg::model::run_lane_annotation;
 use npg::model::annotation;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15308 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 Readonly::Scalar our $GOOD_CLUSTERS_PF        => 10_000;
 Readonly::Scalar our $GOOD_PERC_ERROR_RATE_PF => 1;
 Readonly::Scalar our $GOOD_PERC_CLUSTERS_PF   => 45;
@@ -203,7 +203,7 @@ npg::model::run_lane
 
 =head1 VERSION
 
-$Revision: 15308 $
+
 
 =head1 SYNOPSIS
 

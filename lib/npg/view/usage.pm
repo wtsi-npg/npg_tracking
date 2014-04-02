@@ -12,7 +12,7 @@ use warnings;
 use base qw(npg::view);
 use npg_tracking::illumina::run::folder::location;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub list {
   my ($self) = @_;
@@ -30,7 +30,7 @@ npg::view::usage
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
+
 
 =head1 SYNOPSIS
 

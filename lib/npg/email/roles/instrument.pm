@@ -11,7 +11,7 @@ use strict;
 use warnings;
 use Moose::Role;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14884 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 requires qw{schema_connection};
 
@@ -21,7 +21,7 @@ npg::email::roles::instrument
 
 =head1 VERSION
 
-$LastChangedRevision: 14884 $
+
 
 =head1 SYNOPSIS
 

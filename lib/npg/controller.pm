@@ -58,7 +58,7 @@ use npg::view::intensity;
 use npg::view::instrument_status_annotation;
 use npg::view::usage;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14928 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub session {
   my ($self, $util) = @_;
@@ -108,7 +108,7 @@ npg::controller - NPG tracking controller
 
 =head1 VERSION
 
-$Revision: 14928 $
+
 
 =head1 SYNOPSIS
 

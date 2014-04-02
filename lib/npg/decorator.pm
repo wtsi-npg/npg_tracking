@@ -11,7 +11,7 @@ use strict;
 use warnings;
 use base qw(ClearPress::decorator);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15402 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub username {
   my ($self, $username) = @_;
@@ -46,7 +46,7 @@ npg::decorator - NPG tracking decorator
 
 =head1 VERSION
 
-$LastChangedRevision: 15402 $
+
 
 =head1 SYNOPSIS
 

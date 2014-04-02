@@ -13,7 +13,7 @@ use base qw(npg::model);
 use npg::model::instrument;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 Readonly::Scalar our $FUDGE_FACTOR => 12_000_000_000_000; # 12 Gbytes per PE lane (most common case)
 
 sub current_repositories {
@@ -67,7 +67,7 @@ npg::model::usage
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
+
 
 =head1 SYNOPSIS
 

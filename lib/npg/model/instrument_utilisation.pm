@@ -22,7 +22,7 @@ use npg::util::image::merge;
 use DateTime;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15357 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $PERCENTAGE    => 100;
 Readonly::Scalar our $DATE          => 0;
@@ -460,7 +460,7 @@ npg::model::instrument_utilisation
 
 =head1 VERSION
 
-$Revision: 15357 $
+
 
 =head1 SYNOPSIS
 
