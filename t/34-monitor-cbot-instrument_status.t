@@ -1,11 +1,3 @@
-#########
-# Author:        jo3
-# Maintainer:    $Author: jo3 $
-# Created:       2010-05-25
-# Last Modified: $Date: 2010-10-25 15:32:05 +0100 (Mon, 25 Oct 2010) $
-# Id:            $Id: 34-monitor-cbot-instrument_status.t 11471 2010-10-25 14:32:05Z jo3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/34-monitor-cbot-instrument_status.t $
-#
 use strict;
 use warnings;
 
@@ -18,12 +10,8 @@ use Test::Exception::LessClever;
 use t::dbic_util;
 use t::useragent;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11471 $ =~ /(\d+)/msx; $r; };
-
 local $ENV{dev} = 'test';
 my $mock_schema = t::dbic_util->new->test_schema();
-
-## no critic (ValuesAndExpressions::ProhibitMagicNumbers)
 
 my $test;
 my $dummy_cbot = 'cBot1';

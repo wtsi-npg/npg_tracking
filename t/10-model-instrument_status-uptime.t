@@ -1,19 +1,9 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2008-0-11
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: 10-model-instrument_status-uptime.t 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-instrument_status-uptime.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 44;
 use t::util;
 use English qw{-no_match_vars};
 use DateTime;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my @r = (q$Revision: 16269 $ =~ /\d+/mxg); sprintf '%d.'.'%03d' x $#r, @r };
 
 use_ok('npg::model::instrument_status');
 

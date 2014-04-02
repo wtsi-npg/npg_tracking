@@ -1,11 +1,3 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2007-10
-# Last Modified: $Date: 2012-03-29 17:35:02 +0100 (Thu, 29 Mar 2012) $
-# Id:            $Id: 25-template-actions.t 15404 2012-03-29 16:35:02Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/25-template-actions.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 14;
@@ -15,8 +7,6 @@ use npg::model::user;
 use npg::model::usergroup;
 use npg::model::user2usergroup;
 use t::util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15404 $ =~ /(\d+)/mx; $r; };
 
 my $duplicate_run_reg = qr/<a.*href=\"\/cgi-perl\/npg\/run\/;add\?id_run=4\">Duplicate\ Run<\/a>/;
 

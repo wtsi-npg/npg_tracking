@@ -1,9 +1,3 @@
-#########
-# Author:        mg8
-# Created:       18 December 2009
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/instrument_handling/trunk/t/10-srpipe-runner-runner.t, r17037
-#
-
 use strict;
 use warnings;
 use Test::More tests => 15;

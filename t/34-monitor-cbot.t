@@ -1,11 +1,3 @@
-#########
-# Author:        jo3
-# Maintainer:    $Author: jo3 $
-# Created:       2010-05-25
-# Last Modified: $Date: 2010-10-21 17:39:58 +0100 (Thu, 21 Oct 2010) $
-# Id:            $Id: 34-monitor-cbot.t 11440 2010-10-21 16:39:58Z jo3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/34-monitor-cbot.t $
-#
 use strict;
 use warnings;
 
@@ -15,11 +7,8 @@ use XML::LibXML;
 use Test::More tests => 13;
 use Test::Exception::LessClever;
 
-use lib q{t};
 use t::dbic_util;
 use t::useragent;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11440 $ =~ /(\d+)/msx; $r; };
 
 local $ENV{dev} = 'test';
 my $mock_schema = t::dbic_util->new->test_schema();

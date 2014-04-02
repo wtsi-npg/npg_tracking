@@ -1,20 +1,8 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2008-01-09
-# Last Modified: $Date: 2012-02-22 10:12:17 +0000 (Wed, 22 Feb 2012) $
-# Id:            $Id: 10-model-annotations.t 15220 2012-02-22 10:12:17Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-annotations.t $
-#
-
 use strict;
 use warnings;
-use English qw(-no_match_vars);
 use DateTime;
 use Test::More tests => 17;
 use t::util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15220 $ =~ /(\d+)/msx; $r; };
 
 use_ok('npg::model::annotation');
 

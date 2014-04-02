@@ -1,4 +1,3 @@
-# Id:            $Id: 14-dbic-RunStatusDict.t 14068 2011-08-26 10:24:09Z ajb $
 use strict;
 use warnings;
 use English qw(-no_match_vars);
@@ -8,10 +7,9 @@ use Test::Deep;
 use Test::Exception::LessClever;
 use Test::MockModule;
 
-use lib q{t};
 use t::dbic_util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14155 $ =~ /(\d+)/msx; $r; };
+use Readonly;
 
 Readonly::Scalar my $ABSURD_ID => 100_000_000;
 

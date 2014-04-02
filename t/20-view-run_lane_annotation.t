@@ -1,11 +1,3 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2009-05-09
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: 20-view-run_lane_annotation.t 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/20-view-run_lane_annotation.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 31;
@@ -15,7 +7,6 @@ use npg::model::run_lane_annotation;
 use npg::model::annotation;
 use IO::Scalar;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14928 $ =~ /(\d+)/mx; $r; };
 our $TEST_ANNOTATION_COMMENT = 'A test annotation for a run lane';
 use_ok('npg::view::run_lane_annotation');
 
