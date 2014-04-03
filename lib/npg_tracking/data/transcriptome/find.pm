@@ -42,7 +42,6 @@ sub _build__version_dir {
   if ($organism && $strain){
     return($self->_organism_dir . "/$ENSEMBL_RELEASE_VERSION/$strain");
   }
-  
   return;
 }
 
