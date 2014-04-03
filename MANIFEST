@@ -1120,6 +1120,7 @@ t/data/repos1/st/samples/1382839.xml
 t/data/repos1/st/samples/1807468.xml
 t/data/repos1/st/samples/1830658.xml
 t/data/repos1/st/studies/2072.xml
+t/data/repos1/st/studies/2091.xml
 t/data/request/npg/run/1234.xml
 t/data/request/npg/run_status.xml
 t/data/request/npg/run_status_dict.xml
