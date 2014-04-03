@@ -12,97 +12,6 @@ use warnings;
 
 ##no critic (Variables::ProhibitPunctuationVars RegularExpressions::RequireExtendedFormatting RegularExpressions::RequireLineBoundaryMatching ErrorHandling::RequireCheckingReturnValueOfEval Subroutines::RequireFinalReturn InputOutput::RequireCheckedSyscalls)
 
-=head2 dir_files
-=cut
-
- sub dir_files {
-    my $dir = shift;
-    opendir my $dh, $dir || die "can't opendir $dir: $!";
-    my @files = map { "$dir/$_" } grep { /^\w+$/ && -f "$dir/$_" } readdir $dh;
-    closedir $dh;
-    return @files;
-  }
-
-=head2 process_data_files
-=cut
-
-  sub process_data_files {
-    my $self = shift;
-    `find data/npg_tracking_email/templates -type f | cpio -pdv --quiet blib`;
-    if ($self->invoked_action() eq q[webinstall]) {
-      `find data/templates -type f | cpio -pdv --quiet blib`;
-      `find data/gfx -type f | cpio -pdv --quiet blib`;
-    }
-    return;
-  }
-
-
-=head2 process_htdocs_files
-=cut
-
-  sub process_htdocs_files {
-    `find htdocs -type f | cpio -pdv --quiet blib`;
-    return;
-  }
-
-=head2 process_cgi_files
-=cut
-
-  sub process_cgi_files {
-    my $self = shift;
-    my @files = dir_files('cgi-bin');
-    foreach my $file (@files) {
-      my $dest_file = $self->copy_if_modified('from' => $file, 'to_dir' => 'blib');
-      if ($dest_file) {
-        $self->fix_shebang_line($dest_file);
-      }
-    }
-    `chmod +x blib/cgi-bin/*`;
-    return;
-  }
-
-=head2 process_wtsilocal_files
-=cut
-
-  sub process_wtsilocal_files {
-    `find wtsi_local -type f | cpio -pdv --quiet blib`;
-    return;
-  }
-
-=head2 cgi_version
-=cut
-
-  sub cgi_version {
-    my $version;
-    eval {
-      require CGI;
-      $version = $CGI::VERSION;
-    };
-    return $version && ($version eq '3.43') ? $version : '3.52';
-  }
-
-=head2 ACTION_webinstall
-=cut
-
-  sub ACTION_webinstall {
-    my $self = shift;
-    if (!$self->install_base()) {
-      warn "WARNING: '--install_base' option is not given, nothing to do for the 'webinstall' action\n\n";
-      return;
-    }
-
-    $self->install_path('htdocs' => join q{/}, $self->install_base(), 'htdocs');
-    $self->add_build_element('htdocs');
-    $self->install_path('cgi-bin' => join q{/}, $self->install_base(), 'cgi-bin');
-    $self->add_build_element('cgi');
-    $self->install_path('wtsi_local' => join q{/}, $self->install_base(), 'wtsi_local');
-    $self->add_build_element('wtsilocal');
-    $self->depends_on('install');
-
-    return;
-  }
-
-
 =head2 git_tag
 =cut
 
@@ -131,7 +40,7 @@ use warnings;
     my $self = shift;
     $self->SUPER::ACTION_code;
 
-    if ($self->invoked_action() ne q[webinstall]) {
+    if ( ($self->invoked_action() ne q[install]) && ($self->invoked_action() ne q[webinstall]) ){
       return;
     } else {
       my $root = q[./blib/lib];
