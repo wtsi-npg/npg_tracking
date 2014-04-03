@@ -131,7 +131,7 @@ use warnings;
     my $self = shift;
     $self->SUPER::ACTION_code;
 
-    if ($self->invoked_action() ne q[webinstall]) {
+    if ( ($self->invoked_action() ne q[install]) && ($self->invoked_action() ne q[webinstall]) ){
       return;
     } else {
       my $root = q[./blib/lib];
