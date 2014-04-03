@@ -26,6 +26,7 @@ sub _build__organism_dir {
   if ($organism){
     return($self->transcriptome_repository . "/$organism");
   }
+  $self->messages->push('No organism found');
   return;
 }
 
@@ -41,6 +42,7 @@ sub _build__version_dir {
   if ($organism && $strain){
     return($self->_organism_dir . "/$ENSEMBL_RELEASE_VERSION/$strain");
   }
+  
   return;
 }
 
@@ -52,7 +54,10 @@ has 'gtf_path'     => ( isa => q{Maybe[Str]},
 sub _build_gtf_path {
   my $self = shift;
   ## symbolic link to default resolved with abs_path
-  return abs_path($self->_version_dir . '/gtf');
+  if ($self->_version_dir){
+      return abs_path($self->_version_dir . '/gtf');
+  }
+  return;
 }
 
 has 'gtf_file' => ( isa => q{Maybe[Str]},
@@ -67,7 +72,7 @@ sub _build_gtf_file {
   if (scalar @gtf_files > 1) { croak 'More than 1 gtf file in ' . $self->gtf_path; }
 
   if (scalar @gtf_files == 0) {
-    if (-d $self->_organism_dir) {
+    if ($self->_organism_dir && -d $self->_organism_dir) {
       $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but GTF file not found');
     }
     return;
@@ -84,7 +89,10 @@ has 'transcriptome_index_path' => ( isa => q{Maybe[Str]},
 
 sub _build_transcriptome_index_path {
   my $self = shift;
-  return abs_path($self->_version_dir . '/tophat2');
+  if ( $self->_version_dir){
+     return abs_path($self->_version_dir . '/tophat2');
+  }
+  return;
 }
 
 #e.g. 1000Genomes_hs37d5.known (from 1000Genomes_hs37d5.known.1.bt2, 1000Genomes_hs37d5.known.2.bt2 ...)
