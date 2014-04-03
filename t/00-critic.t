@@ -1,10 +1,7 @@
 #########
 # Author:        rmp
-# Last Modified: $Date: 2011-02-16 14:20:10 +0000 (Wed, 16 Feb 2011) $ $Author: mg8 $
-# Id:            $Id: 00-critic.t 12618 2011-02-16 14:20:10Z mg8 $
-# Source:        $Source: /cvsroot/Bio-DasLite/Bio-DasLite/t/00-critic.t,v $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/00-critic.t $
 #
+
 use strict;
 use warnings;
 use Test::More;
@@ -23,8 +20,8 @@ if($EVAL_ERROR) {
   plan skip_all => 'Test::Perl::Critic not installed';
 } else {
   Test::Perl::Critic->import(
-	         -severity => 1,
-	         -exclude => ['tidy',
+           -severity => 1,
+           -exclude => ['tidy',
                               'ValuesAndExpressions::ProhibitImplicitNewlines',
                               'Documentation::PodSpelling',
                               'RegularExpressions::ProhibitEscapedMetacharacters',
@@ -36,7 +33,7 @@ if($EVAL_ERROR) {
                              ],
                  -verbose => "%m at %f line %l, policy %p\n",
                  -profile => 't/perlcriticrc',
-			    );
+          );
  
  my @files = grep {$_ !~ /npg_tracking\/Schema/ && $_ !~ /Monitor/}
              Perl::Critic::Utils::all_perl_files(-e 'blib' ? 'blib/lib' : 'lib');

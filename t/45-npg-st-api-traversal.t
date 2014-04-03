@@ -1,19 +1,9 @@
-#########
-# Author:        dj3
-# Maintainer:    $Author: mg8 $
-# Created:       2009-11
-# Last Modified: $Date: 2012-09-13 11:28:27 +0100 (Thu, 13 Sep 2012) $
-# Id:            $Id: 45-npg-st-api-traversal.t 16046 2012-09-13 10:28:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/45-npg-st-api-traversal.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 148; #remember to change the skip number below as well!
 use Test::Deep;
 use Test::Exception;
 use npg_testing::intweb qw(npg_is_accessible);
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16046 $ =~ /(\d+)/smx; $r; };
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/test45];
 
@@ -25,7 +15,7 @@ my $do_test = 1;
 foreach my $pa (['test', 'using mocked data'],
                 ['live', 'using live'],
                 ['dev',  'using dev'],
-		) {
+    ) {
     diag($pa->[1]);
     local $ENV{dev}=$pa->[0];
 
@@ -42,10 +32,10 @@ foreach my $pa (['test', 'using mocked data'],
     }
 
     my $run = npg::api::run->new({
-				     max_retries => 2,
-				     retry_delay => 1,
-				     id_run       => 3905,
-				    });
+             max_retries => 2,
+             retry_delay => 1,
+             id_run       => 3905,
+            });
     isa_ok($run, 'npg::api::run', 'run isa');
 
     # Test the fields.

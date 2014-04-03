@@ -1,30 +1,19 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2008-01-15
-# Last Modified: $Date: 2012-02-29 14:14:10 +0000 (Wed, 29 Feb 2012) $
-# Id:            $Id: 10-model-run_status.t 15265 2012-02-29 14:14:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-run_status.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 25;
 use English qw(-no_match_vars);
 use t::util;
 use npg::model::run;
-#use MIME::Lite;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15265 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::model::run_status');
 
 my $util = t::util->new({
-			 fixtures  => 1,
-			});
+       fixtures  => 1,
+      });
 {
   my $rs = npg::model::run_status->new({
-					util => $util,
-				       });
+          util => $util,
+               });
   isa_ok($rs, 'npg::model::run_status');
   my $expected_data = [
     [ '9948', '2010-01-01 10:10:30', 'run complete',      1 ],
@@ -64,9 +53,9 @@ my $util = t::util->new({
 
 {
   my $rs = npg::model::run_status->new({
-					util => $util,
-					id_run_status => 1,
-				       });
+          util => $util,
+          id_run_status => 1,
+               });
   isa_ok($rs->run(), 'npg::model::run');
   is($rs->run->id_run(), 1, 'id_run');
 
@@ -81,8 +70,8 @@ my $util = t::util->new({
 
 {
   my $rs = npg::model::run_status->new({
-					util => $util,
-				       });
+          util => $util,
+               });
   isa_ok($rs->current_run_statuses(), 'ARRAY');
   is((scalar @{$rs->current_run_statuses()}), 14, 'current run_statuses');
   isa_ok($rs->current_run_statuses->[0], 'npg::model::run_status', 'first current run status isa_ok');
@@ -90,26 +79,26 @@ my $util = t::util->new({
 
 {
   my $rs = npg::model::run_status->new({
-					util => $util,
-				       });
+          util => $util,
+               });
   isa_ok($rs->latest_current_run_status(), 'npg::model::run_status');
 }
 
 {
   my $rs = npg::model::run_status->new({
-					util => $util,
-				       });
+          util => $util,
+               });
   isa_ok($rs->active_runs_over_last_30_days(), 'ARRAY');
   is((scalar @{$rs->active_runs_over_last_30_days()}), 0, 'no recent active runs');
 }
 
 {
   my $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => 1,
-					   id_run_status_dict => 9,
-					   id_user            => 1,
-					  });
+             util               => $util,
+             id_run             => 1,
+             id_run_status_dict => 9,
+             id_user            => 1,
+            });
   $model->{run} = npg::model::run->new({id_run => 1, util => $util});
   $util->catch_email($model);
   eval {
@@ -120,11 +109,11 @@ my $util = t::util->new({
 }
 {
   my $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => 1,
-					   id_run_status_dict => 12,
-					   id_user            => 1,
-					  });
+             util               => $util,
+             id_run             => 1,
+             id_run_status_dict => 12,
+             id_user            => 1,
+            });
   $model->{run} = npg::model::run->new({id_run => 1, util => $util});
   $util->catch_email($model);
   eval {
@@ -137,11 +126,11 @@ my $util = t::util->new({
 
 {
   my $model = npg::model::run_status->new({
-					   util               => $util,
-					   id_run             => 1,
-					   id_run_status_dict => 4,
-					   id_user            => 1,
-					  });
+             util               => $util,
+             id_run             => 1,
+             id_run_status_dict => 4,
+             id_user            => 1,
+            });
   $model->{run} = npg::model::run->new({id_run => 1, util => $util});
   $util->catch_email($model);
   eval {

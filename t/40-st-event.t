@@ -1,11 +1,3 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2008-02-22
-# Last Modified: $Date: 2012-03-01 10:36:10 +0000 (Thu, 01 Mar 2012) $
-# Id:            $Id: 40-st-event.t 15277 2012-03-01 10:36:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/40-st-event.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 24;
@@ -13,24 +5,20 @@ use Test::Exception;
 use t::useragent;
 use npg::api::util;
 
-use Readonly;
-
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/mx; $r; };
-
 use_ok('st::api::event');
 
 {
   my $ua = t::useragent->new({
-			      is_success => 1,
-			     });
+            is_success => 1,
+           });
   my $mock = {
-	      q(http://psd-support.internal.sanger.ac.uk:6600/events)  => $ua,
-	     };
+        q(http://psd-support.internal.sanger.ac.uk:6600/events)  => $ua,
+       };
   $ua->{mock} = $mock;
   my $ev = st::api::event->new({
-				    util => npg::api::util->new({useragent =>  $ua,}), 
-				    sample_id   => 11,
-			      });
+            util => npg::api::util->new({useragent =>  $ua,}), 
+            sample_id   => 11,
+            });
 
   isa_ok($ev, 'st::api::event');
   is($ev->entity_name(), 'event', 'entity_name returns event');
@@ -43,23 +31,23 @@ use_ok('st::api::event');
   my $XML = q[<?xml version='1.0'?><event><message>Run 10 : %s</message><eventful_id>11</eventful_id><eventful_type>Item</eventful_type><family>%s</family><identifier>10</identifier><key>%s</key><location>4</location></event>];
 
   my $STATES = {
-		'run pending'              => 'start',
-		'analysis pending'         => 'start',
-		'archival pending'         => 'start',
-		'qc review pending'        => 'start',
-		'analysis prelim'          => 'start',
-		'run cancelled'            => 'complete',
-		'run complete'             => 'complete',
-		'analysis complete'        => 'complete',
-		'analysis cancelled'       => 'complete',
-		'run archived'             => 'complete',
-		'analysis prelim complete' => 'complete',
-		'run quarantined'          => 'complete',
-		'data discarded'           => 'complete',
-		'run stopped early'        => 'complete',
-		'qc complete'              => 'complete',
-		'run in progress'          => 'update',
-	       };
+    'run pending'              => 'start',
+    'analysis pending'         => 'start',
+    'archival pending'         => 'start',
+    'qc review pending'        => 'start',
+    'analysis prelim'          => 'start',
+    'run cancelled'            => 'complete',
+    'run complete'             => 'complete',
+    'analysis complete'        => 'complete',
+    'analysis cancelled'       => 'complete',
+    'run archived'             => 'complete',
+    'analysis prelim complete' => 'complete',
+    'run quarantined'          => 'complete',
+    'data discarded'           => 'complete',
+    'run stopped early'        => 'complete',
+    'qc complete'              => 'complete',
+    'run in progress'          => 'update',
+         };
 
   for my $state (keys %{$STATES}) {
     my $family = $STATES->{$state};
@@ -70,14 +58,14 @@ use_ok('st::api::event');
 
 {
   my $ev = st::api::event->new({
-				util => npg::api::util->new({useragent =>  t::useragent->new({is_success => 1,}),}),
-				message       => 'a message',
-				eventful_type => 'run',
-				eventful_id   => 999,
-				family        => 'update',
-				identifier    => 100,
-				location      => 1,
-			       });
+        util => npg::api::util->new({useragent =>  t::useragent->new({is_success => 1,}),}),
+        message       => 'a message',
+        eventful_type => 'run',
+        eventful_id   => 999,
+        family        => 'update',
+        identifier    => 100,
+        location      => 1,
+             });
   $ev->create();
   my $req = $ev->util->useragent->last_request();
 
@@ -87,12 +75,12 @@ use_ok('st::api::event');
 {
   my $ev = st::api::event->new({
                                 util => npg::api::util->new({useragent =>  t::useragent->new({is_success => 0,}),}),
-				service       => 'dev',
-				message       => 'a message',
-				eventful_type => 'run',
-				eventful_id   => 999,
-				family        => 'update',
-			       });
+        service       => 'dev',
+        message       => 'a message',
+        eventful_type => 'run',
+        eventful_id   => 999,
+        family        => 'update',
+             });
   throws_ok { $ev->create();} qr/unable\ to\ update/mix, 'failure to post';
 }
 

@@ -509,8 +509,8 @@ font.npgmenu2-highlighted a{
 
 p.npgmenu2 {
   text-indent:20px;
-  margin-top:0px;
-  margin-bottom:20px;
+  margin-top:5px;
+  margin-bottom:5px;
 }
 
 /* end of styles for lower-level menues */

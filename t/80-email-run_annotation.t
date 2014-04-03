@@ -1,4 +1,3 @@
-# $Id: 80-email-run_annotation.t 14928 2012-01-17 13:57:20Z mg8 $
 use strict;
 use warnings;
 use DateTime;
@@ -11,8 +10,6 @@ use Test::MockModule;
 
 use t::dbic_util;
 use t::util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/msx; $r; };
 
 local $ENV{dev} = 'test';
 my $schema    = t::dbic_util->new->test_schema();

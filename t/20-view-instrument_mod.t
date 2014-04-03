@@ -1,11 +1,3 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2008-03-29
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: 20-view-instrument_mod.t 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/20-view-instrument_mod.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 19;
@@ -13,21 +5,19 @@ use English qw(-no_match_vars);
 use t::util;
 use npg::model::instrument_mod;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14928 $ =~ /(\d+)/mx; $r; };
-
 use_ok('npg::view::instrument_mod');
 my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
 {
   $util->requestor('public');
 
   my $view = npg::view::instrument_mod->new({
-					     util   => $util,
-					     action => 'list',
-					     aspect => q{},
-					     model  => npg::model::instrument_mod->new({
-											util => $util,
-										       }),
-					    });
+               util   => $util,
+               action => 'list',
+               aspect => q{},
+               model  => npg::model::instrument_mod->new({
+                      util => $util,
+                           }),
+              });
   my $render;
   eval { $render = $view->render(); };
   is($EVAL_ERROR, q{}, 'no croak on render for public');
@@ -47,13 +37,13 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
   $util->requestor('public');
 
   my $view = npg::view::instrument_mod->new({
-					     util   => $util,
-					     action => 'create',
-					     aspect => q{},
-					     model  => npg::model::instrument_mod->new({
-											util => $util,
-										       }),
-					    });
+               util   => $util,
+               action => 'create',
+               aspect => q{},
+               model  => npg::model::instrument_mod->new({
+                      util => $util,
+                           }),
+              });
   isa_ok($view, 'npg::view::instrument_mod');
   eval { $view->render(); };
   like($EVAL_ERROR, qr/not\ authorised/mx, 'croak as not authorised for create');
@@ -77,13 +67,13 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
   $cgi->param('remove', 1);
   $util->requestor('joe_engineer');
   my $view = npg::view::instrument_mod->new({
-					     util   => $util,
-					     action => 'create',
-					     aspect => q{},
-					     model  => npg::model::instrument_mod->new({
-											util => $util,
-										       }),
-					    });
+               util   => $util,
+               action => 'create',
+               aspect => q{},
+               model  => npg::model::instrument_mod->new({
+                      util => $util,
+                           }),
+              });
   eval { $view->render(); };
   is($EVAL_ERROR, q{}, 'engineers authorised for create');
   $view->action('update');
@@ -107,13 +97,13 @@ $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
   $cgi->param('remove', 1);
   $util->requestor('pipeline');
   my $view = npg::view::instrument_mod->new({
-					     util   => $util,
-					     action => 'create',
-					     aspect => 'create_xml',
-					     model  => npg::model::instrument_mod->new({
-											util => $util,
-										       }),
-					    });
+               util   => $util,
+               action => 'create',
+               aspect => 'create_xml',
+               model  => npg::model::instrument_mod->new({
+                      util => $util,
+                           }),
+              });
   my $render;
   eval { $render = $view->render(); };
   is($EVAL_ERROR, q{}, 'create_xml and pipeline member');
@@ -129,13 +119,13 @@ $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
   $cgi->param('iscurrent',1);
 
   my $view = npg::view::instrument_mod->new({
-					     util   => $util,
-					     action => 'create',
-					     aspect => 'update_mods',
-					     model  => npg::model::instrument_mod->new({
-											util => $util,
-										       }),
-					    });
+               util   => $util,
+               action => 'create',
+               aspect => 'update_mods',
+               model  => npg::model::instrument_mod->new({
+                      util => $util,
+                           }),
+              });
   my $render = $view->render();
   is($EVAL_ERROR, qq{}, 'no croak on batch update of mods');
   ok($util->test_rendered($render, 't/data/rendered/20-view-instrument_mod_batch_update.html'), 'batch update renders ok');

@@ -1,11 +1,3 @@
-#########
-# Author:        Marina Gourtovaia
-# Maintainer:    $Author: ajb $
-# Created:       02 August 2011
-# Last Modified: $Date: 2011-04-07 11:34:12 +0100 (Thu, 07 Apr 2011) $
-# Id:            $Id: 45-npg-st-api-traversal.t 12954 2011-04-07 10:34:12Z ajb $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/branches/prerelease-60.0/t/45-npg-st-api-traversal.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 106; #remember to change the skip number below as well!
@@ -15,8 +7,6 @@ use English qw(-no_match_vars);
 
 use npg_testing::intweb qw(npg_is_accessible);
 use st::api::lims;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 12954 $ =~ /(\d+)/smx; $r; };
 
 sub _positions {
   my @lims = @_;
@@ -36,7 +26,7 @@ use_ok('st::api::lims');
 foreach my $pa (['test', 'using mocked data', q[t/data/test45]],
                 ['live', 'using live', q[]], # Put in test TODO perhaps?
                 ['dev',  'using dev', q[]],
-		) {
+    ) {
     diag($pa->[1]);
     my $env = $pa->[0];
     if ($env eq q[test]) { $env = q[live]; }

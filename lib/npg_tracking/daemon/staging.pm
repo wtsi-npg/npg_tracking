@@ -15,6 +15,12 @@ extends 'npg_tracking::daemon';
 
 Readonly::Scalar our $SCRIPT_NAME => q[staging_area_monitor];
 
+has 'root_dir'  => (isa       => 'Str',
+                    is        => 'ro',
+                    required  => 0,
+                    default => q[/export],
+                   );
+
 override '_build_hosts' => sub {
     ##no critic (TestingAndDebugging::ProhibitNoWarnings)
     no warnings 'once';
@@ -25,16 +31,36 @@ override '_build_hosts' => sub {
     return \@full_list;
 };
 override 'command'      => sub { my ($self, $host) = @_;
-                                 if (!$host) {
-				   croak q{Need host name};
-				 }
-                                 (my $sfarea) = $host =~ /^sf(\d+)-nfs$/smx;
-                                 if (!$sfarea) {
-                                   croak qq{Host name $host does not follow expected pattern sfXX-nfs};
-				 }
-                                 return join q[ ], $SCRIPT_NAME, q{/export/sf} . $sfarea;
+                                 my $sfarea = $self->_host_to_sfarea($host);
+                                 return join q[ ], $SCRIPT_NAME, $sfarea;
                                };
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };
+
+override 'log_dir' => sub { my ($self, $host) = @_;
+                            my $sfarea = $self->_host_to_sfarea($host);
+                            my $log_dir = "$sfarea/staging_daemon_logs";
+
+                            return $log_dir;
+                          };
+
+=head2 _host_to_sfarea
+
+Convert sfNN-nfs to NN and prefix the root_dir
+
+=cut
+sub _host_to_sfarea {
+    my ($self, $host) = @_;
+    if (!$host) {
+      croak q{Need host name};
+    }
+    (my $sfarea) = $host =~ /^sf(\d+)-nfs$/smx;
+    if (!$sfarea) {
+      croak qq{Host name $host does not follow expected pattern sfXX-nfs};
+     }
+
+    my $root_dir = $self->root_dir;
+    return qq[$root_dir/sf$sfarea];
+}
 
 no Moose;
 

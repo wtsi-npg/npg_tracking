@@ -1,19 +1,9 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2008-01
-# Last Modified: $Date: 2012-03-08 11:21:27 +0000 (Thu, 08 Mar 2012) $
-# Id:            $Id: 20-view-search-advanced.t 15308 2012-03-08 11:21:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/20-view-search-advanced.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 7;
 use t::util;
 use npg::model::search;
 use CGI;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15308 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::view::search');
 

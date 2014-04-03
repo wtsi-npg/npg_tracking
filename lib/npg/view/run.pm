@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: run.pm 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/run.pm $
 #
 package npg::view::run;
 use base qw(npg::view);
@@ -22,6 +18,7 @@ use Socket;
 use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/smx; $r; };
 Readonly::Scalar our $PAGINATION_LEN   => 40;
 Readonly::Scalar our $PAGINATION_START => 0;
+Readonly::Scalar my  $DAYS_IN_WEEK     => 14;
 
 sub new {
   my ($class, @args) = @_;
@@ -119,9 +116,9 @@ sub add {
   my $id_run          = $cgi->param('id_run');        # Duplicate existing run
   my $id_instrument   = $cgi->param('id_instrument'); # New for instrument
   my $instrument      = npg::model::instrument->new({
-						     util          => $util,
-						     id_instrument => $id_instrument,
-						    });
+                 util          => $util,
+                 id_instrument => $id_instrument,
+                });
   my $instruments = $instrument->current_instruments();
 
   #########
@@ -134,9 +131,9 @@ sub add {
     # If we're duplicating a run, take the instrument from that one
     #
     $model = npg::model::run->new({
-				   util   => $util,
-				   id_run => $id_run,
-				  });
+           util   => $util,
+           id_run => $id_run,
+          });
     $self->model($model);
     $id_instrument = $model->id_instrument();
     $instrument    = $model->instrument();
@@ -201,9 +198,9 @@ sub list {
   $model->{len}   = $len;
 
   my $ref = {
-	   len   => $len,
-	   start => $start,
-	   id_instrument_format => $id_instrument_format,
+     len   => $len,
+     start => $start,
+     id_instrument_format => $id_instrument_format,
   };
   my $rsd_ref = { id_instrument_format => $id_instrument_format,};
   if ($id_instrument) {
@@ -219,17 +216,17 @@ sub list {
       $model->{count_runs} = $model->count_runs($rsd_ref);
     } else {
       my $rsd = npg::model::run_status_dict->new( {
-				util               => $util,
-				id_run_status_dict => $id_rsd,
-			} );
+        util               => $util,
+        id_run_status_dict => $id_rsd,
+      } );
       $model->{runs} = $rsd->runs($ref);
       $model->{count_runs} = $rsd->count_runs($rsd_ref);
     }
   } else {
     my $rsd = npg::model::run_status_dict->new( {
-			util        => $util,
-			description => 'run pending',  # Default to pending runs
-		} );
+      util        => $util,
+      description => 'run pending',  # Default to pending runs
+    } );
     $model->{runs} = $rsd->runs($ref);
     $model->{count_runs} = $rsd->count_runs($rsd_ref);
     $id_rsd = $rsd->id_run_status_dict();
@@ -242,9 +239,6 @@ sub list {
     $self->{no_main_menu} = 1;
     $model->{id_instrument} = $id_instrument;
   }
-
-#  $model->{runs} = [sort { $b->id_run() <=> $a->id_run() ## no critic
-#			 } @{$model->runs()||[]}];
 
   return 1;
 }
@@ -264,9 +258,9 @@ sub list_xml {
     @id_run = grep { $_ && !$seen->{$_}++ }
               map  { split /[|,]/smx } @id_runs;
     $model->{runs} = [map { npg::model::run->new({
-						  util   => $util,
-						  id_run => $_,
-						 }) } @id_run];
+              util   => $util,
+              id_run => $_,
+             }) } @id_run];
     #########
     # switch to simple template
     #
@@ -317,21 +311,9 @@ sub list_summary_xml {
   return 1;
 }
 
-sub convert_is_good {
-  my ($self, $is_good) = @_;
-  if ($is_good == 2) {
-    return 'Unknown';
-  } elsif ($is_good == 1) {
-    return 'Good';
-  }
-  return 'Bad';
-}
-
 sub selected_days {
   my $self = shift;
-  Readonly::Scalar my $DAYS_IN_WEEK => 14;
   my $days;
-
   if ($self->util->cgi->param('days')) {
     ($days) = $self->util->cgi->param('days') =~ /(\d+)/smx;
   }
@@ -343,7 +325,6 @@ sub create {
   my $util        = $self->util();
   my $cgi         = $util->cgi();
   my $model       = $self->model();
-  my $id_run_pair = $cgi->param('id_run_pair') || q();
   my $tracks      = $cgi->param('tracks');
 
   my $paired_read = $cgi->param('paired_read');
@@ -373,24 +354,14 @@ sub create {
   }
 
   $model->{'run_lanes'} = [map {
-				 npg::model::run_lane->new({
-							    'util'             => $util,
-							    'tile_count'       => $lanes->{$_},
-							    'tracks'           => $tracks,
-							    'position'         => $_,
-							   });
-			       }
-			   sort { $a <=> $b } keys %{$lanes}];
-
-  #########
-  # Configure run pairing
-  #
-  $cgi->param('is_paired', !($id_run_pair eq 'no'));
-  if($id_run_pair !~ /^\d+$/smx) {
-    $cgi->param('id_run_pair', undef);
-  }
-
-  $model->expected_cycle_count($cgi->param('expected_cycle_count') || 0);
+         npg::model::run_lane->new({
+                  'util'             => $util,
+                  'tile_count'       => $lanes->{$_},
+                  'tracks'           => $tracks,
+                  'position'         => $_,
+                 });
+             }
+         sort { $a <=> $b } keys %{$lanes}];
 
   #########
   # fake the cgi id_user parameter based on requestor's id_user
@@ -509,11 +480,11 @@ sub update_statuses {
     eval {
       for my $id_run (@id_runs) {
         my $run_status = npg::model::run_status->new({
-						      util               => $util,
-						      id_run             => $id_run,
-						      id_run_status_dict => $irsd,
-						      id_user            => $id_user,
-						     });
+                  util               => $util,
+                  id_run             => $id_run,
+                  id_run_status_dict => $irsd,
+                  id_user            => $id_user,
+                 });
         $run_status->create();
       }
       1;
@@ -598,8 +569,6 @@ $Revision: 16269 $
 =head2 read - handling for override id_run_pair (which will be empty for R1) using the id_run of any existing second end
 
 =head2 read_simple_xml - handle to read XML
-
-=head2 convert_is_good - converts the numerical results of $run_lane->is_good() into words
 
 =head2 update_tags - handles incoming request to add/remove tags for the run. Wraps all in a single
        transaction so that all tags are done, or none at all

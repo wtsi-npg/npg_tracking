@@ -1,11 +1,3 @@
-#########
-# Author:        jo3
-# Maintainer:    $Author: mg8 $
-# Created:       2010_05_26
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: 14-dbic-Run.t 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/14-dbic-Run.t $
-
 use strict;
 use warnings;
 
@@ -19,8 +11,6 @@ use Test::MockModule;
 use Test::Warn;
 
 use t::dbic_util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/msx; $r; };
 
 use_ok('npg_tracking::Schema::Result::Run');
 
@@ -447,14 +437,12 @@ my $test_date = $paired_tag_rs->first->date();
     my$r = $schema->resultset('Run')->find($test_run_id);
     my $crs = $r->current_run_status();
     $crs->update({iscurrent=>0});
-diag $r->run_statuses->count()." run_statuses for run $test_run_id";
-diag $r->run_statuses->search({iscurrent=>1})->count()." current run_statuses for run $test_run_id";
+
     is( $r->current_run_status_description(), undef,
         'Return undef for no current run status' );
 
   TODO: { local $TODO = 'hope to get this working with a suitable database schema/constraint and relationship';
     $r->run_statuses->update({iscurrent=>1});
-diag $r->run_statuses->search({iscurrent=>1})->count()." current run_statuses for run $test_run_id";
     dies_ok { $r->current_run_status_description()} 'Dies for multiple current run statuses' ;
   }
 }

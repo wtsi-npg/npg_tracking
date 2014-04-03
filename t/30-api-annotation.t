@@ -1,8 +1,3 @@
-#########
-# Author:        rmp
-# Created:       2007-10
-# copied from : svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-annotation.t, r15277
-#
 use strict;
 use warnings;
 use Test::More tests => 9;
@@ -26,8 +21,8 @@ $ann1->attachment($data);
 is($ann1->attachment(), $data);
 
 my $ann2 = npg::api::annotation->new({
-				      'attachment' => IO::Scalar->new(\$data),
-				     });
+              'attachment' => IO::Scalar->new(\$data),
+             });
 is($ann2->attachment(), $data);
 
 my $ann3 = npg::api::annotation->new();
@@ -40,11 +35,11 @@ is($ann3->attachment(), $data);
   my $util = npg::api::util->new({'useragent' => $ua});
 
   my $ann4 = npg::api::annotation->new({
-					'util'            => $util,
-					'id_annotation'   => 1,
-					'attachment_name' => 'test attachment',
+          'util'            => $util,
+          'id_annotation'   => 1,
+          'attachment_name' => 'test attachment',
                                         'max_retries'     => 1,
-				       });
+               });
   is($ann4->attachment(), $data, 'attachment retrieved');
 }
 
@@ -54,9 +49,9 @@ is($ann3->attachment(), $data);
   my $util = npg::api::util->new({'useragent' => $ua});
   my $ann4;
   $ann4 = npg::api::annotation->new({
-				     'util'            => $util,
-				     'attachment_name' => 'test attachment',
-				    });
+             'util'            => $util,
+             'attachment_name' => 'test attachment',
+            });
   is($ann4->attachment(), undef);
 }
 

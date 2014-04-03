@@ -1,8 +1,3 @@
-#########
-# Author:        rmp
-# Created:       2007-10
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-util.t, r14647
-#
 use strict;
 use warnings;
 use Test::More tests => 10;
@@ -11,10 +6,10 @@ use_ok('npg::api::util');
 
 {
   my $util = npg::api::util->new({
-				  base_uri  => '/foo',
-				  useragent => 'foo',
-				  parser    => 'foo',
-				 });
+          base_uri  => '/foo',
+          useragent => 'foo',
+          parser    => 'foo',
+         });
   is($util->base_uri(),  '/foo', 'base url set explicitly');
   is($util->useragent(), 'foo');
   is($util->parser(),    'foo');

@@ -1,17 +1,7 @@
-#########
-# Author:        Marina Gourtovaia
-# Maintainer:    $Author: mg8 $
-# Created:       08 September 2011
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: 40-st-lims-insert_size.t 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/40-st-lims-insert_size.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 40;
 use Test::Exception;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/smx; $r; };
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/test40_lims_edited];
 

@@ -1,16 +1,13 @@
-#########
-# Author:        Marina Gourtovaia
-# Created:       July 2011
-# copied from svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/40-st-lims.t, r16549
-
 use strict;
 use warnings;
-use Test::More tests => 387;
+use Test::More tests => 389;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
 
 use_ok('st::api::lims');
+is(st::api::lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
+    'correct name of the cached samplesheet env var');
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 
@@ -20,6 +17,8 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
 
 {
   my $lims = st::api::lims->new(id_run => 6551);
+  is($lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
+    'correct name of the cached samplesheet env var');
   is($lims->lane_id(), undef, q{lane_id undef for id_run 6551, not a lane} );
   is($lims->batch_id, 12141, 'batch id is 12141');
   is($lims->is_control, 0, 'not control');
@@ -442,27 +441,27 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
 }
 
 {
-	my $lims = st::api::lims->new(id_run=>10638, position=>5);
-	is ($lims->id_run(), 10638, "Found the run");
-	my @children = $lims->children();
-	isnt (scalar @children, 0, "We have children");
-	is($lims->inline_index_exists,1,'Found an inline index');
-	is($lims->inline_index_start,7,'found correct inline index start');
-	is($lims->inline_index_end,12,'found correct inline index end');
-	is($lims->inline_index_read,2,'found correct inline index read');
-	is($lims->tag_sequence,undef,'tag sequence undefined for lane level');
+  my $lims = st::api::lims->new(id_run=>10638, position=>5);
+  is ($lims->id_run(), 10638, "Found the run");
+  my @children = $lims->children();
+  isnt (scalar @children, 0, "We have children");
+  is($lims->inline_index_exists,1,'Found an inline index');
+  is($lims->inline_index_start,7,'found correct inline index start');
+  is($lims->inline_index_end,12,'found correct inline index end');
+  is($lims->inline_index_read,2,'found correct inline index read');
+  is($lims->tag_sequence,undef,'tag sequence undefined for lane level');
 }
 
 {
-	my $lims = st::api::lims->new(id_run=>10638, position=>6);
-	is ($lims->id_run(), 10638, "Found the run");
-	my @children = $lims->children();
-	isnt (scalar @children, 0, "We have children");
-	is($lims->inline_index_exists,1,'Found an inline index');
-	is($lims->inline_index_start,6,'found correct inline index start');
-	is($lims->inline_index_end,10,'found correct inline index end');
-	is($lims->inline_index_read,1,'found correct inline index read');
-	is($lims->tag_sequence,undef,'tag sequence undefined for lane level');
+  my $lims = st::api::lims->new(id_run=>10638, position=>6);
+  is ($lims->id_run(), 10638, "Found the run");
+  my @children = $lims->children();
+  isnt (scalar @children, 0, "We have children");
+  is($lims->inline_index_exists,1,'Found an inline index');
+  is($lims->inline_index_start,6,'found correct inline index start');
+  is($lims->inline_index_end,10,'found correct inline index end');
+  is($lims->inline_index_read,1,'found correct inline index read');
+  is($lims->tag_sequence,undef,'tag sequence undefined for lane level');
 }
 
 {

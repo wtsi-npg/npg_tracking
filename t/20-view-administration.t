@@ -1,12 +1,3 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2008-04-28
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: 20-view-administration.t 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/20-view-administration.t $
-#
-
 use strict;
 use warnings;
 use English qw(-no_match_vars);
@@ -15,20 +6,18 @@ use npg::model::administration;
 
 use Test::More tests => 31;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/mx; $r; };
-
 use_ok('npg::view::administration');
 my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
 
 {
   my $view = npg::view::administration->new({
-					     util   => $util,
-					     model  => npg::model::administration->new({
-											util => $util,
-										       }),
-					     action => q{list},
-					     aspect => q{},
-					    });
+               util   => $util,
+               model  => npg::model::administration->new({
+                      util => $util,
+                           }),
+               action => q{list},
+               aspect => q{},
+              });
 
   $util->requestor('public');
   my $render;
@@ -46,13 +35,13 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
 
 {
   my $view = npg::view::administration->new({
-					     util   => $util,
-					     model  => npg::model::administration->new({
-											util => $util,
-										       }),
-					     action => q{create},
-					     aspect => q{create_instrument_mod},
-					    });
+               util   => $util,
+               model  => npg::model::administration->new({
+                      util => $util,
+                           }),
+               action => q{create},
+               aspect => q{create_instrument_mod},
+              });
   $util->requestor('public');
   my $render;
   eval { $render = $view->render(); };
@@ -69,13 +58,13 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
   $cgi->param('revision', 'G');
 
   my $view = npg::view::administration->new({
-					     util   => $util,
-					     model  => npg::model::administration->new({
-											util => $util,
-										       }),
-					     action => q{create},
-					     aspect => q{create_instrument_mod},
-					    });
+               util   => $util,
+               model  => npg::model::administration->new({
+                      util => $util,
+                           }),
+               action => q{create},
+               aspect => q{create_instrument_mod},
+              });
   $util->requestor('joe_engineer');
   my $render;
   eval { $render = $view->render(); };
@@ -259,13 +248,13 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
   $cgi->param('id_usergroup',1);
 
   my $view = npg::view::administration->new({
-					     util   => $util,
-					     model  => npg::model::administration->new({
-											util => $util,
-										       }),
-					     action => q{create},
-					     aspect => q{create_user_to_usergroup},
-					    });
+               util   => $util,
+               model  => npg::model::administration->new({
+                      util => $util,
+                           }),
+               action => q{create},
+               aspect => q{create_user_to_usergroup},
+              });
   $util->requestor('joe_admin');
 
   my $render;

@@ -1,17 +1,8 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2008-03-28
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: 10-model-instrument_mod_dict.t 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-instrument_mod_dict.t $
-#
 use strict;
 use warnings;
 use t::util;
 use Test::More tests => 12;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14928 $ =~ /(\d+)/mx; $r; };
 use_ok('npg::model::instrument_mod_dict');
 {
   my $util  = t::util->new({fixtures => 1});

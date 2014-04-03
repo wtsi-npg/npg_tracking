@@ -254,7 +254,7 @@ sub _build__entity_xml_element {
             $is_control ||= $plex->parentNode->nodeName() eq q{hyb_buffer} ? 1 : 0;
             last;
           }
-          	      }
+        }
       }
     }
 
@@ -341,7 +341,7 @@ sub _build_default_tag_sequence {
 =head2 spiked_phix_tag_index
 
 Read-only integer accessor, not possible to set from the constructor.
-Defined only on a lane level if the lane is spiked with phix
+Defined for a lane and all tags, including tag zero
 
 =cut
 has 'spiked_phix_tag_index' =>  (isa             => 'Maybe[NpgTrackingTagIndex]',
@@ -422,8 +422,8 @@ sub _build_bait_name {
       if ($be) {
         $be = $be->[0]->getElementsByTagName('name');
         if ($be) {
-	  $bait_name = $be->[0]->textContent();
-	}
+          $bait_name = $be->[0]->textContent();
+        }
       }
    }
    $bait_name ||= undef;
@@ -718,7 +718,7 @@ sub _build_required_insert_size_range {
       foreach my $key (qw/to from/) {
         my $value = $is_element->getAttribute($key);
         if ($value) {
-	  $is_hash->{$key} = $value;
+          $is_hash->{$key} = $value;
         }
       }
     }

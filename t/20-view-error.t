@@ -1,18 +1,8 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2009-03-24
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: 20-view-error.t 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/20-view-error.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 13;
 use English qw(-no_match_vars);
 use t::util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::view::error');
 
@@ -20,38 +10,38 @@ my $util = t::util->new({fixtures => 1});
 
 {
   my $view = npg::view::error->new({
-				      util => $util,
-				     });
+              util => $util,
+             });
   isa_ok($view, 'npg::view::error', 'constructs ok');
 }
 {
   my $view = npg::view::error->new({
-				      util => $util,
-				      aspect => q{add},
-				      action => q{list},
-				     });
-	my $model = {};
-	$util->catch_email($model);
-	my $render;
-	eval{$render = $view->render()};
-	is($EVAL_ERROR, q{}, 'no croak on render with aspect add');
-	is(scalar@{$model->{emails}}, 0, 'no email sent, as authentication error');
-	ok($util->test_rendered($render, q{t/data/rendered/error/add.html}), 'html output for error on add ok');
+              util => $util,
+              aspect => q{add},
+              action => q{list},
+             });
+  my $model = {};
+  $util->catch_email($model);
+  my $render;
+  eval{$render = $view->render()};
+  is($EVAL_ERROR, q{}, 'no croak on render with aspect add');
+  is(scalar@{$model->{emails}}, 0, 'no email sent, as authentication error');
+  ok($util->test_rendered($render, q{t/data/rendered/error/add.html}), 'html output for error on add ok');
 }
 {
   my $view = npg::view::error->new({
-				      util => $util,
-				      aspect => q{},
-				      action => q{list},
-				     });
-	my $model = {};
+              util => $util,
+              aspect => q{},
+              action => q{list},
+             });
+  my $model = {};
 
-	$util->catch_email($model);
-	my $render;
-	eval{$render = $view->render()};
-	is($EVAL_ERROR, q{}, 'no croak on render with action list');
-	ok($util->test_rendered($render, q{t/data/rendered/error/list.html}), 'html output for error on list ok');
-	is(scalar@{$model->{emails}}, 1, 'email sent, as not authentication error');
+  $util->catch_email($model);
+  my $render;
+  eval{$render = $view->render()};
+  is($EVAL_ERROR, q{}, 'no croak on render with action list');
+  ok($util->test_rendered($render, q{t/data/rendered/error/list.html}), 'html output for error on list ok');
+  is(scalar@{$model->{emails}}, 1, 'email sent, as not authentication error');
 
   my $parsed_email = $util->parse_email($model->{emails}->[0]);
   like($parsed_email->{annotation}, qr/\[\d{4}[-]\d{2}[-]\d{2}T\d{2}:\d{2}:\d{2}\]Error: -\n\nCheck the error logs to find out the problem[.]\n\nThe following user was logged in: public/ms, 'body is an error');
@@ -63,9 +53,9 @@ my $util = t::util->new({fixtures => 1});
 # check that no emails are sent if there are no members of the errors group
 {
   my $user = npg::model::user->new({
-				    util => $util,
-				    username => q{rt_error},
-				   });
+            util => $util,
+            username => q{rt_error},
+           });
   my $usergroup = $user->usergroups()->[0];
   my $uug = npg::model::user2usergroup->new( {
     util => $util,
@@ -75,10 +65,10 @@ my $util = t::util->new({fixtures => 1});
   $uug->delete();
 
   my $view = npg::view::error->new({
-				    util => $util,
-				    aspect => q{},
-				    action => q{list},
-				   });
+            util => $util,
+            aspect => q{},
+            action => q{list},
+           });
   my $model = {};
   $util->catch_email($model);
   my $render;

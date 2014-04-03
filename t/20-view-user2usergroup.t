@@ -1,12 +1,3 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2008-04-28
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: 20-view-user2usergroup.t 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/20-view-user2usergroup.t $
-#
-
 use strict;
 use warnings;
 use Test::More tests => 12;
@@ -15,8 +6,6 @@ use npg::model::user;
 use npg::model::user2usergroup;
 use CGI;
 use English qw(-no_match_vars);
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/mx; $r; };
 
 my $util = t::util->new({fixtures => 1});
 
@@ -30,42 +19,42 @@ use_ok('npg::view::user2usergroup');
 
 {
   my $model = npg::model::user2usergroup->new({
-					       util => $util,
-					       id_user_usergroup => 3
-					      });
+                 util => $util,
+                 id_user_usergroup => 3
+                });
   my $view = npg::view::user2usergroup->new({
-					     util   => $util,
-					     model  => $model,
-					     action => 'create',
-					    });
+               util   => $util,
+               model  => $model,
+               action => 'create',
+              });
   is($view->authorised(), undef, 'public unauthorised for create');
 }
 
 {
   $util->requestor('joe_engineer');
   my $model = npg::model::user2usergroup->new({
-					       util => $util,
-					       id_user_usergroup => 3
-					      });
+                 util => $util,
+                 id_user_usergroup => 3
+                });
   my $view = npg::view::user2usergroup->new({
-					     util   => $util,
-					     model  => $model,
-					     action => 'create',
-					    });
+               util   => $util,
+               model  => $model,
+               action => 'create',
+              });
   is($view->authorised(), 1, 'joe_engineer authorised for create');
 }
 
 {
   $util->requestor('joe_engineer');
   my $model = npg::model::user2usergroup->new({
-					       util => $util,
-					       id_user_usergroup => 3
-					      });
+                 util => $util,
+                 id_user_usergroup => 3
+                });
   my $view = npg::view::user2usergroup->new({
-					     util   => $util,
-					     model  => $model,
-					     action => 'delete',
-					    });
+               util   => $util,
+               model  => $model,
+               action => 'delete',
+              });
   is($model->id_user(), $util->requestor->id_user(), 'fixture user ids match');
   is($view->authorised(), 1, 'joe_engineer authorised for delete');
 }
@@ -74,8 +63,8 @@ my $new_membership_id;
 
 {
   my $model = npg::model::user2usergroup->new({
-					       util => $util,
-					      });
+                 util => $util,
+                });
   $util->requestor('joe_engineer');
 
   my $cgi = CGI->new();
@@ -83,19 +72,19 @@ my $new_membership_id;
   $util->{cgi} = $cgi;
 
   my $view = npg::view::user2usergroup->new({
-					     util   => $util,
-					     model  => $model,
-					     action => 'create',
-					    });
+               util   => $util,
+               model  => $model,
+               action => 'create',
+              });
 
   is($util->requestor->is_member_of('results'), undef, 'not a member of group');
 
   $view->create();
 
   my $user2 = npg::model::user->new({
-				     util     => $util,
-				     username => 'joe_engineer',
-				    });
+             util     => $util,
+             username => 'joe_engineer',
+            });
   is($user2->is_member_of('results'), 1, 'is a member of group');
 
   $new_membership_id = $model->id_user_usergroup();
@@ -103,40 +92,40 @@ my $new_membership_id;
 
 {
   my $model = npg::model::user2usergroup->new({
-					       id_user_usergroup => $new_membership_id,
-					       util => $util,
-					      });
+                 id_user_usergroup => $new_membership_id,
+                 util => $util,
+                });
   $util->requestor('joe_engineer');
 
   my $view = npg::view::user2usergroup->new({
-					     util   => $util,
-					     model  => $model,
-					     action => 'delete',
-					    });
+               util   => $util,
+               model  => $model,
+               action => 'delete',
+              });
 
   is($util->requestor->is_member_of('results'), 1, 'is a member of group');
 
   $view->delete();
 
   my $user2 = npg::model::user->new({
-				     util     => $util,
-				     username => 'joe_engineer',
-				    });
+             util     => $util,
+             username => 'joe_engineer',
+            });
   is($user2->is_member_of('results'), undef, 'not a member of group');
 }
 
 {
   my $model = npg::model::user2usergroup->new({
-					       util => $util,
-					      });
+                 util => $util,
+                });
   $util->requestor('joe_engineer');
   $util->{cgi} = CGI->new();
 
   my $view = npg::view::user2usergroup->new({
-					     util   => $util,
-					     model  => $model,
-					     action => 'create',
-					    });
+               util   => $util,
+               model  => $model,
+               action => 'create',
+              });
   eval {
     $view->create();
   };
@@ -145,18 +134,18 @@ my $new_membership_id;
 
 {
   my $model = npg::model::user2usergroup->new({
-					       util => $util,
-					      });
+                 util => $util,
+                });
   $util->requestor('joe_engineer');
   my $cgi = CGI->new();
   $cgi->param('id_usergroup', 1);
   $util->{cgi} = $cgi;
 
   my $view = npg::view::user2usergroup->new({
-					     util   => $util,
-					     model  => $model,
-					     action => 'create',
-					    });
+               util   => $util,
+               model  => $model,
+               action => 'create',
+              });
   eval {
     $view->create();
   };

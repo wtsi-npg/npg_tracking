@@ -1,11 +1,3 @@
-#########
-# Author:        ajb
-# Maintainer:    $Author: mg8 $
-# Created:       2009-05-09
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: 20-view-run_lane_annotation.t 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/20-view-run_lane_annotation.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 31;
@@ -15,25 +7,24 @@ use npg::model::run_lane_annotation;
 use npg::model::annotation;
 use IO::Scalar;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14928 $ =~ /(\d+)/mx; $r; };
 our $TEST_ANNOTATION_COMMENT = 'A test annotation for a run lane';
 use_ok('npg::view::run_lane_annotation');
 
 my $util = t::util->new({
-			 fixtures  => 1,
-			});
+       fixtures  => 1,
+      });
 {
   my $cgi = CGI->new();
   $util->cgi($cgi);
   my $model = npg::model::run_lane_annotation->new({
-						    util => $util,
-						   });
+                util => $util,
+               });
   my $view  = npg::view::run_lane_annotation->new({
-						   util   => $util,
-						   model  => $model,
-						   action => 'create',
-						   aspect => 'create_xml',
-						  });
+               util   => $util,
+               model  => $model,
+               action => 'create',
+               aspect => 'create_xml',
+              });
   $util->catch_email($model);
 
   isa_ok($view, 'npg::view::run_lane_annotation', '$view');
@@ -100,13 +91,13 @@ my $util = t::util->new({
   $util->cgi($cgi);
 
   my $model = npg::model::run_lane_annotation->new({
-						    util => $util,
-						   });
+                util => $util,
+               });
   my $view  = npg::view::run_lane_annotation->new({
-						   util   => $util,
-						   model  => $model,
-						   action => 'create',
-						  });
+               util   => $util,
+               model  => $model,
+               action => 'create',
+              });
   $cgi->param('comment',     q[no comment]);
   $cgi->param('id_run_lane', 1);
   $cgi->param('attachment',  IO::Scalar->new(\'some content'));
@@ -121,13 +112,13 @@ my $util = t::util->new({
   $util->cgi($cgi);
 
   my $model = npg::model::run_lane_annotation->new({
-						    util => $util,
-						   });
+                util => $util,
+               });
   my $view  = npg::view::run_lane_annotation->new({
-						   util   => $util,
-						   model  => $model,
-						   action => 'create',
-						  });
+               util   => $util,
+               model  => $model,
+               action => 'create',
+              });
   $cgi->param('comment',     q[no comment]);
   $cgi->param('id_run_lane', 1);
   $cgi->param('attachment',  IO::Scalar->new(\'some content'));
@@ -143,13 +134,13 @@ my $util = t::util->new({
   $util->cgi($cgi);
 
   my $model = npg::model::run_lane_annotation->new({
-						    util => $util,
-						   });
+                util => $util,
+               });
   my $view  = npg::view::run_lane_annotation->new({
-						   util   => $util,
-						   model  => $model,
-						   action => 'create',
-						  });
+               util   => $util,
+               model  => $model,
+               action => 'create',
+              });
   $cgi->param('comment',     q[no comment]);
   $cgi->param('id_run_lane', 1);
   $cgi->param('attachment',  IO::Scalar->new(\'some content'));
@@ -164,30 +155,30 @@ my $util = t::util->new({
 #
 
   $view  = npg::view::run_lane_annotation->new({
-						util                   => $util,
-						model                  => $model,
-						id_run_lane_annotation => 3,
-						action                 => 'read',
-						aspect                 => 'read_attachment_xml',
-					       });
+            util                   => $util,
+            model                  => $model,
+            id_run_lane_annotation => 3,
+            action                 => 'read',
+            aspect                 => 'read_attachment_xml',
+                 });
   isa_ok($view, 'npg::view::run_lane_annotation', '$view - no attachment');
 
   my $annotation = npg::model::annotation->new({
-						util       => $util,
-						attachment => "foo\n",
-					       });
+            util       => $util,
+            attachment => "foo\n",
+                 });
 
   $model = npg::model::run_lane_annotation->new({
-						 util       => $util,
-						 annotation => $annotation,
-						});
+             util       => $util,
+             annotation => $annotation,
+            });
   $view  = npg::view::run_lane_annotation->new({
-						util                   => $util,
-						model                  => $model,
-						id_run_lane_annotation => 11,
-						action                 => 'read',
-						aspect                 => 'read_attachment_xml',
-					       });
+            util                   => $util,
+            model                  => $model,
+            id_run_lane_annotation => 11,
+            action                 => 'read',
+            aspect                 => 'read_attachment_xml',
+                 });
   isa_ok($view, 'npg::view::run_lane_annotation', '$view - has attachment');
 
 ##########
@@ -204,13 +195,13 @@ my $util = t::util->new({
   $util->cgi($cgi);
 
   my $model = npg::model::run_lane_annotation->new({
-						    util => $util,
-						   });
+                util => $util,
+               });
   my $view  = npg::view::run_lane_annotation->new({
-						   util  => $util,
-						   model => $model,
-						   action => 'create',
-						  });
+               util  => $util,
+               model => $model,
+               action => 'create',
+              });
   $util->requestor('joe_annotator');
   $util->catch_email($model);
   $cgi->param('comment', $TEST_ANNOTATION_COMMENT);
@@ -226,13 +217,13 @@ my $util = t::util->new({
   $util->cgi($cgi);
 
   my $model = npg::model::run_lane_annotation->new({
-						    util => $util,
-						   });
+                util => $util,
+               });
   my $view  = npg::view::run_lane_annotation->new({
-						   util  => $util,
-						   model => $model,
-						   action => 'create',
-						  });
+               util  => $util,
+               model => $model,
+               action => 'create',
+              });
   $util->requestor('joe_annotator');
   $util->catch_email($model);
   $cgi->param('comment', $TEST_ANNOTATION_COMMENT);
@@ -250,13 +241,13 @@ my $util = t::util->new({
   $util->cgi($cgi);
 
   my $model = npg::model::run_lane_annotation->new({
-						    util => $util,
-						   });
+                util => $util,
+               });
   my $view  = npg::view::run_lane_annotation->new({
-						   util   => $util,
-						   model  => $model,
-						   action => 'create',
-						  });
+               util   => $util,
+               model  => $model,
+               action => 'create',
+              });
   $util->requestor('joe_annotator');
   $util->catch_email($model);
   $cgi->param('comment', $TEST_ANNOTATION_COMMENT);
@@ -276,15 +267,15 @@ my $util = t::util->new({
   $util->requestor('public');
 
   my $model = npg::model::run_lane_annotation->new({
-						    util       => $util,
-						    id_run_lane => 1,
-						   });
+                util       => $util,
+                id_run_lane => 1,
+               });
   my $view  = npg::view::run_lane_annotation->new({
-						   util   => $util,
-						   model  => $model,
-						   action => 'read',
-						   aspect => 'add_ajax',
-						  });
+               util   => $util,
+               model  => $model,
+               action => 'read',
+               aspect => 'add_ajax',
+              });
   eval{ $render = $view->render(); };
   isnt($EVAL_ERROR, q[], 'public add_ajax should croak');
 
