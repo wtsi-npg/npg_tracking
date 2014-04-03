@@ -10,7 +10,7 @@ package transcriptome;
 
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 use File::Basename;
 use File::Spec::Functions qw(catfile);
 use Test::Exception;
@@ -19,6 +19,7 @@ use File::Path qw/make_path/;
 use File::chdir;
 use File::Copy;
 use Cwd;
+use Carp;
 
 my $repos = 't/data/repos1';
 
@@ -52,17 +53,20 @@ foreach my $spp (keys %builds){
 my $run_dir     = join q[/],'npg','run';
 my $batch_dir   = join q[/],'st','batches';
 my $samples_dir = join q[/],'st','samples';
+my $study_dir   = join q[/],'st','studies';
 
-make_path ("$tmp_repos/$run_dir","$tmp_repos/$batch_dir","$tmp_repos/$samples_dir",{verbose => 0}); #to create directory tree
+make_path ("$tmp_repos/$run_dir","$tmp_repos/$batch_dir","$tmp_repos/$samples_dir","$tmp_repos/$study_dir",{verbose => 0}); #to create directory tree
 
 #Mouse 
-copy("$repos/$run_dir/12071.xml","$tmp_repos/$run_dir/12071.xml") or die "Copy failed: $!";
-copy("$repos/$batch_dir/25539.xml","$tmp_repos/$batch_dir/25539.xml") or die "Copy failed: $!";
-copy("$repos/$samples_dir/1807468.xml","$tmp_repos/$samples_dir/1807468.xml") or die "Copy failed: $!";
+copy("$repos/$run_dir/12071.xml","$tmp_repos/$run_dir/12071.xml") or carp "Copy failed: $!";
+copy("$repos/$batch_dir/25539.xml","$tmp_repos/$batch_dir/25539.xml") or carp "Copy failed: $!";
+copy("$repos/$samples_dir/1807468.xml","$tmp_repos/$samples_dir/1807468.xml") or carp "Copy failed: $!";
 #Human
-copy("$repos/$run_dir/12161.xml","$tmp_repos/$run_dir/12161.xml") or die "Copy failed: $!";
-copy("$repos/$batch_dir/25715.xml","$tmp_repos/$batch_dir/25715.xml") or die "Copy failed: $!";
-copy("$repos/$samples_dir/1830658.xml","$tmp_repos/$samples_dir/1830658.xml") or die "Copy failed: $!";
+copy("$repos/$run_dir/12161.xml","$tmp_repos/$run_dir/12161.xml") or carp "Copy failed: $!";
+copy("$repos/$batch_dir/25715.xml","$tmp_repos/$batch_dir/25715.xml") or carp "Copy failed: $!";
+copy("$repos/$samples_dir/1830658.xml","$tmp_repos/$samples_dir/1830658.xml") or carp "Copy failed: $!";
+copy("$repos/$samples_dir/1830658.xml","$tmp_repos/$samples_dir/1830658.xml") or carp "Copy failed: $!";
+copy("$repos/$study_dir/2910.xml","$tmp_repos/$study_dir/2910.xml") or carp "Copy failed: $!";
 
 my @files = ();
 $files[0] = join(q[/], $dir, 'Mus_musculus','ensembl_release_75', 'GRCm38','gtf','ensembl_release_75-GRCm38.gtf');
@@ -92,6 +96,24 @@ lives_and { is $test->transcriptome_index_path, catfile($tmp_repos, q[transcript
 my $prefix_path = catfile($tmp_repos, q[transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known]);
 
 lives_and { is $test->transcriptome_index_name,$prefix_path } "correct index name path and prefix : $prefix_path ";
+
+##update sample xml so that Reference Genome is missing (study 2910.xml already has this field empty)
+use IO::File;
+copy("$tmp_repos/$samples_dir/1830658.xml", "$tmp_repos/$samples_dir/1830658.xml.1") or carp "Copy failed: $!";
+my $fh = IO::File->new("<$tmp_repos/$samples_dir/1830658.xml.1") or carp "cannot open $repos/$samples_dir/1830658.xml.1";
+my $w_fh = IO::File->new(">$tmp_repos/$samples_dir/1830658.xml") or carp "cannot open $repos/$samples_dir/1830658.xml";
+while(<$fh>){
+       if (/Homo_sapiens\s+(\S+)/){
+          print $w_fh " " x 6 . "<value></value>\n";
+       }      
+       else { print $w_fh $_ }
+}
+$w_fh->close;
+
+my $test2 = npg_tracking::data::transcriptome->new (id_run => 12161, position => 1, tag_index => 1, repository => $tmp_repos);
+lives_and { is $test2->transcriptome_index_path, undef } "no path for bowtie2 indices found (reference genome missing in sample and study xml)";
+
+
 
 }
 
