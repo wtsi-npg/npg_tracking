@@ -1101,6 +1101,7 @@ t/data/repos/st/studies/334.xml
 t/data/repos/st/studies/397.xml
 t/data/repos1/baits/Human_all_exon_50MB/1000Genomes_hs37d5/S02972011-GRCh37_hs37d5-CTR.interval_list
 t/data/repos1/baits/Human_all_exon_50MB/1000Genomes_hs37d5/S02972011-GRCh37_hs37d5-PTR.interval_list
+t/data/repos1/npg/run/12071.xml
 t/data/repos1/npg/run/12161.xml
 t/data/repos1/npg/run/7753.xml
 t/data/repos1/npg/run/7754.xml
@@ -1111,10 +1112,12 @@ t/data/repos1/references/Homo_sapiens/NCBI36/all/bwa/ncbi36.fa.amb
 t/data/repos1/references/Homo_sapiens/NCBI36/all/fasta/ncbi36.fa
 t/data/repos1/st/batches/16442.xml
 t/data/repos1/st/batches/16467.xml
+t/data/repos1/st/batches/25539.xml
 t/data/repos1/st/batches/25715.xml
 t/data/repos1/st/samples/1327533.xml
 t/data/repos1/st/samples/1327535.xml
 t/data/repos1/st/samples/1382839.xml
+t/data/repos1/st/samples/1807468.xml
 t/data/repos1/st/samples/1830658.xml
 t/data/repos1/st/studies/2072.xml
 t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/gtf/ensembl_release_75-1000Genomes_hs37d5.gtf
