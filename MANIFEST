@@ -1120,15 +1120,6 @@ t/data/repos1/st/samples/1382839.xml
 t/data/repos1/st/samples/1807468.xml
 t/data/repos1/st/samples/1830658.xml
 t/data/repos1/st/studies/2072.xml
-t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/gtf/ensembl_release_75-1000Genomes_hs37d5.gtf
-t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known.1.bt2
-t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known.2.bt2
-t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known.fa
-t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known.fa.tlst
-t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known.gff
-t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known.rev.1.bt2
-t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known.rev.2.bt2
-t/data/repos1/transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known.ver
 t/data/request/npg/run/1234.xml
 t/data/request/npg/run_status.xml
 t/data/request/npg/run_status_dict.xml
