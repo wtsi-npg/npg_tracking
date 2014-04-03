@@ -43,8 +43,7 @@ use warnings;
     if ( ($self->invoked_action() ne q[install]) && ($self->invoked_action() ne q[webinstall]) ){
       return;
     } else {
-      my $root = q[./blib/lib];
-      my @dirs  = ($root);
+      my @dirs  = (q[./blib/lib], q[./blib/script]);
       for my $path (@dirs){
         opendir DIR, $path or next;   # skip dirs we can't read
         while (my $file = readdir DIR) {
@@ -59,10 +58,9 @@ use warnings;
 
       my @modules;
       foreach my $dir (@dirs) {
-        opendir DIR, $dir or die $!;
+        opendir DIR, $dir or die qq[$dir: $!];
         while (my $file = readdir DIR) {
           next unless (-f "$dir/$file");
-          next unless ($file =~ m/\.pm$/);
           push @modules, $dir . q[/] . $file;
         }
         closedir DIR;

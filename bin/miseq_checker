@@ -19,7 +19,7 @@ use Monitor::SRS::FTP;
 use Monitor::SRS::Local;
 use Monitor::RunFolder;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16335 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Array my @DISKS => qw( MiSeqAnalysis MiSeqTemp );
 
@@ -118,7 +118,7 @@ miseq_checker - Monitor MiSeq instruments for run information.
 
 =head1 VERSION
 
-$Revision: 16335 $
+
 
 =head1 SYNOPSIS
 

@@ -22,7 +22,7 @@ use autodie qw(:all);
 use Monitor::Cbot;
 use Monitor::Cbot::InstrumentStatus;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16335 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar my $PROXY   => q{http://wwwcache.sanger.ac.uk:3128/};
 Readonly::Scalar my $ERR_504 => q{504 Gateway Time-out};
@@ -97,7 +97,7 @@ cbot_checker - Monitor cBot XML reports and update the database accordingly.
 
 =head1 VERSION
 
-$Revision: 16335 $
+
 
 =head1 SYNOPSIS
 

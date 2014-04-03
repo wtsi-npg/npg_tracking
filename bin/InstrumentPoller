@@ -21,7 +21,7 @@ use autodie qw(:all);
 
 use npg_tracking::Schema;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16389 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar my $LOG_ROOT => "$Bin/../logs/";
 
@@ -103,7 +103,7 @@ instrument_poller - Poll instruments to get data updates.
 
 =head1 VERSION
 
-$Revision: 16389 $
+
 
 =head1 SYNOPSIS
 

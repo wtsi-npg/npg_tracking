@@ -11,7 +11,7 @@ use strict;
 use warnings;
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16404 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 use npg::email;
 use npg::email::run::complete_archived;
@@ -30,7 +30,7 @@ email_project_followers_run_complete_archived
 
 =head1 VERSION
 
-$LastChangedRevision: 16404 $
+
 
 =head1 SYNOPSIS
 

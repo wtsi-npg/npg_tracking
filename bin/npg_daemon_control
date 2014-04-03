@@ -16,8 +16,10 @@ use English qw(-no_match_vars);
 use Getopt::Long;
 use Module::Pluggable::Object;
 use File::Basename;
-use Readonly;
 
+our $VERSION = '0';
+
+use Readonly;
 Readonly::Scalar my $PRODUCTION_USER  => 'srpipe';
 Readonly::Scalar my $DAEMON_NAMESPACE => 'npg_tracking::daemon';
 
@@ -101,3 +103,4 @@ sub help {
 
 1;
 
+=head1 VERSION
