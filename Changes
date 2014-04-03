@@ -5,7 +5,6 @@ CHANGES
  - added new test for transcriptome
  - updated reference test to check that transcriptome directory structure exists
  - added files from a transcriptomics run for use in test
- - added empty directory structure equivalent to actual transcriptomes path for use in test
 
 release 76.3
  - use staging area for staging daemon logs
