@@ -1,6 +1,7 @@
 CHANGES
 
 release 76.4
+ - replace uri_escape() by uri_escape_utf8()
  - some unused code removed
  - some small test scripts merged into related larger test scripts
  - VERSION variable and headers with SVN properties removed from test files
