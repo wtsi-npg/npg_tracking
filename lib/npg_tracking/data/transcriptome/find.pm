@@ -107,7 +107,7 @@ sub _build_transcriptome_index_name {
   if ($self->transcriptome_index_path){ @indices = glob $self->transcriptome_index_path . '/*.bt2'}
 
   if (scalar @indices == 0){
-    if (-d $self->_organism_dir) {
+    if ($self->_organism_dir && -d $self->_organism_dir) {
       $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but GTF file not found');
     }
     return;
