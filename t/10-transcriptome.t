@@ -1,10 +1,5 @@
-#################
 # Author:        Jillian Durham 
-# Maintainer:    $Author$
 # Created:       March 2014 
-# Last Modified: $Date$
-# Id:            $Id$
-# $HeadURL$
 
 package transcriptome;
 
@@ -20,6 +15,7 @@ use File::chdir;
 use File::Copy;
 use Cwd;
 use Carp;
+use IO::File;
 
 my $repos = 't/data/repos1';
 
@@ -98,7 +94,6 @@ my $prefix_path = catfile($tmp_repos, q[transcriptomes/Homo_sapiens/ensembl_rele
 lives_and { is $test->transcriptome_index_name,$prefix_path } "correct index name path and prefix : $prefix_path ";
 
 ##update sample xml so that Reference Genome is missing (study 2910.xml already has this field empty)
-use IO::File;
 copy("$tmp_repos/$samples_dir/1830658.xml", "$tmp_repos/$samples_dir/1830658.xml.1") or carp "Copy failed: $!";
 my $fh = IO::File->new("<$tmp_repos/$samples_dir/1830658.xml.1") or carp "cannot open $repos/$samples_dir/1830658.xml.1";
 my $w_fh = IO::File->new(">$tmp_repos/$samples_dir/1830658.xml") or carp "cannot open $repos/$samples_dir/1830658.xml";
