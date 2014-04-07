@@ -1,9 +1,3 @@
-#########
-# Author:        mg8
-# Created:       18 December 2009
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/instrument_handling/branches/prerelease-16.0/t/10-srpipe-runner-samplesheet.t, r15259
-#
-
 use strict;
 use warnings;
 use Test::More tests => 8;

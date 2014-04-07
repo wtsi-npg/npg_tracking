@@ -1,9 +1,3 @@
-#########
-# Author:        Marina Gourtovaia
-# Created:       14 June 2010
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-request.t, r16549
-#
-
 use strict;
 use warnings;
 use Test::More tests => 30;

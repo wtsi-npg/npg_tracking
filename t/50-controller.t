@@ -1,11 +1,3 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2007-10
-# Last Modified: $Date: 2012-03-08 11:21:27 +0000 (Thu, 08 Mar 2012) $
-# Id:            $Id: 50-controller.t 15308 2012-03-08 11:21:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/50-controller.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 8;
@@ -14,8 +6,6 @@ use npg::model::run;
 use npg::view::run;
 use Test::Trap;
 use CGI;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15308 $ =~ /(\d+)/mx; $r; };
 
 $ENV{SCRIPT_NAME} = '/cgi-test/npg';
 

@@ -1,12 +1,3 @@
-#########
-# Author:        jo3
-# Maintainer:    $Author: jo3 $
-# Created:       2010-06-15
-# Last Modified: $Date: 2010-11-03 10:58:34 +0000 (Wed, 03 Nov 2010) $
-# Id:            $Id: 34-monitor-srs-file.t 11585 2010-11-03 10:58:34Z jo3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/34-monitor-srs-file.t $
-#
-
 # NOTE. Errors like the following:
 #sh: -c: line 0: syntax error near unexpected token `0xa3242b8'
 #sh: -c: line 0: `Test::FTP::Server::Server=HASH(0xa3242b8)'
@@ -21,12 +12,9 @@ use File::chdir;
 
 use Test::More tests => 24;
 use Test::Exception::LessClever;
+use Readonly;
 
-use lib q{t};
 use t::dbic_util;
-
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11585 $ =~ /(\d+)/msx; $r; };
 
 Readonly::Scalar my $PORT => 12_124;
 

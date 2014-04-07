@@ -1,17 +1,7 @@
-#########
-# Author:        gq1
-# Maintainer:    $Author: dj3 $
-# Created:       2008-01-18
-# Last Modified: $Date: 2010-03-08 12:17:17 +0000 (Mon, 08 Mar 2010) $
-# Id:            $Id: 40-st-project.t 8603 2010-03-08 12:17:17Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/branches/prerelease-42.0/t/40-st-project.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 28;
 use Test::Exception;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 8603 $ =~ /(\d+)/mx; $r; };
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 

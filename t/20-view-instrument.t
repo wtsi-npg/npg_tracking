@@ -1,21 +1,11 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2007-10
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: 20-view-instrument.t 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/20-view-instrument.t $
-#
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 25;
 use Test::Exception::LessClever;
 use t::util;
 use t::request;
 use GD qw(:DEFAULT :cmp);
 use File::Spec;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::view::instrument');
 
@@ -223,6 +213,147 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
   });
 
   ok($util->test_rendered($str, 't/data/rendered/instrument_status;add-cis2.html'), 'render of add ok for current instrument status of down');
+}
+
+{
+  my $png = t::request->new({
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/IL29.png',
+           username       => 'public',
+           util           => $util,
+          });
+
+  t::util::is_colour($png, $npg::view::instrument::COLOUR_YELLOW, 'no runs = status yellow');
+}
+
+$util->requestor('joe_loader');
+my $inst = npg::model::instrument->new({
+          util => $util,
+          name => 'IL8',
+               });
+{
+  #########
+  # set up a cancelled run
+  #
+  my $run = npg::model::run->new({
+          util                 => $util,
+          id_instrument        => $inst->id_instrument(),
+          batch_id             => 2690,
+          expected_cycle_count => 0,
+          actual_cycle_count   => 0,
+          priority             => 0,
+          id_user              => $util->requestor->id_user(),
+          is_paired            => 1,
+          team                 => 'A',
+         });
+  $run->create();
+
+  my $rsd = npg::model::run_status_dict->new({
+                util        => $util,
+                description => 'run cancelled',
+               });
+
+  my $status_update = t::request->new({
+               REQUEST_METHOD => 'POST',
+               PATH_INFO      => '/run_status/',
+               username       => 'joe_loader',
+               util           => $util,
+               cgi_params     => {
+               id_run             => $run->id_run(),
+               id_run_status_dict => $rsd->id_run_status_dict(),
+               },
+              });
+
+  my $png = t::request->new({
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/IL8.png',
+           username       => 'public',
+           util           => $util,
+          });
+
+  t::util::is_colour($png, $npg::view::instrument::COLOUR_YELLOW, 'run cancelled + unwashed = status yellow');
+}
+
+{
+  #########
+  # wash the instrument
+  #
+  my $isd = npg::model::instrument_status_dict->new({
+                 util        => $util,
+                 description => 'wash in progress',
+                });
+  my $status_update = t::request->new({
+               REQUEST_METHOD => 'POST',
+               PATH_INFO      => '/instrument_status/',
+               username       => 'joe_admin',
+               util           => $util,
+               cgi_params     => {
+                id_instrument             => $inst->id_instrument(),
+                id_instrument_status_dict => $isd->id_instrument_status_dict(),
+               },
+              });
+
+  my $png = t::request->new({
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/IL8.png',
+           username       => 'public',
+           util           => $util,
+          });
+
+  t::util::is_colour($png, $npg::view::instrument::COLOUR_YELLOW, 'run cancelled + startedwash = status yellow');
+
+
+  $isd = npg::model::instrument_status_dict->new({
+                 util        => $util,
+                 description => 'wash performed',
+                });
+  $status_update = t::request->new({
+               REQUEST_METHOD => 'POST',
+               PATH_INFO      => '/instrument_status/',
+               username       => 'joe_admin',
+               util           => $util,
+               cgi_params     => {
+                id_instrument             => $inst->id_instrument(),
+                id_instrument_status_dict => $isd->id_instrument_status_dict(),
+               },
+              });
+
+  $png = t::request->new({
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/IL8.png',
+           username       => 'public',
+           util           => $util,
+          });
+
+  t::util::is_colour( $png, $npg::view::instrument::COLOUR_BLUE,
+                           'run cancelled + washed = status blue' );
+}
+
+{
+  $inst = npg::model::instrument->new({
+            util => $util,
+            name => 'IL29',
+           });
+  my $run = npg::model::run->new({
+          util                 => $util,
+          id_instrument        => $inst->id_instrument(),
+          batch_id             => 2690,
+          expected_cycle_count => 0,
+          actual_cycle_count   => 0,
+          priority             => 0,
+          id_user              => $util->requestor->id_user(),
+                                  team                 => 'B',
+         });
+  $run->create();
+
+  my $png = t::request->new({
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/IL29.png',
+           username       => 'public',
+           util           => $util,
+          });
+
+  t::util::is_colour($png, $npg::view::instrument::COLOUR_GREEN, 'run pending = status green');
 }
 
 1;

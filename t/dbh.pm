@@ -1,11 +1,3 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: ajb $
-# Created:       2007-03-28
-# Last Modified: $Date: 2011-06-16 09:12:32 +0100 (Thu, 16 Jun 2011) $
-# Id:            $Id: dbh.pm 13390 2011-06-16 08:12:32Z ajb $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/dbh.pm $
-#
 package t::dbh;
 use strict;
 use warnings;
