@@ -1,16 +1,6 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2007-10
-# Last Modified: $Date: 2012-03-01 10:36:10 +0000 (Thu, 01 Mar 2012) $
-# Id:            $Id: 30-api-run_status_dict.t 15277 2012-03-01 10:36:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-run_status_dict.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 4;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15277 $ =~ /(\d+)/mx; $r; };
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/npg_api';
 

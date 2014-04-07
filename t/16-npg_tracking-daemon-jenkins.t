@@ -1,9 +1,3 @@
-#########
-# Author:        mg8
-# Created:       18 December 2009
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/instrument_handling/branches/prerelease-16.0/t/10-srpipe-runner-qsea.t, r16149
-#
-
 use strict;
 use warnings;
 use Test::More tests => 12;

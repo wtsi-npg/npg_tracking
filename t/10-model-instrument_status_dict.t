@@ -1,18 +1,9 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2007-10
-# Last Modified: $Date: 2013-01-15 10:27:57 +0000 (Tue, 15 Jan 2013) $
-# Id:            $Id: 10-model-instrument_status_dict.t 16477 2013-01-15 10:27:57Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-instrument_status_dict.t $
-#
 use strict;
 use warnings;
 use t::util;
 use Test::More tests => 20;
 use Test::Trap;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16477 $ =~ /(\d+)/mx; $r; };
 our $ISD     = 'npg::model::instrument_status_dict';
 
 use_ok($ISD);

@@ -1,13 +1,6 @@
-#########
-# Author:        rmp
-# Created:       2007-10
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/30-api-run_lane.t, r16046
-#
 use strict;
 use warnings;
 use Test::More tests => 30;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16046 $ =~ /(\d+)/mx; $r; };
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/npg_api];
 

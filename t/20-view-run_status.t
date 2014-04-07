@@ -1,11 +1,3 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2007-10
-# Last Modified: $Date: 2012-03-08 11:21:27 +0000 (Thu, 08 Mar 2012) $
-# Id:            $Id: 20-view-run_status.t 15308 2012-03-08 11:21:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/20-view-run_status.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 12;
@@ -14,8 +6,6 @@ use t::util;
 use t::request;
 use npg::model::user;
 use npg::model::run_status;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15308 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::view::run_status');
 

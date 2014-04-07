@@ -6,6 +6,17 @@ CHANGES
  - updated reference test to check that transcriptome directory structure exists
  - added files from a transcriptomics run for use in test
 
+release 76.4
+ - replace uri_escape() by uri_escape_utf8()
+ - some unused code removed
+ - some small test scripts merged into related larger test scripts
+ - VERSION variable and headers with SVN properties removed from test files
+ - all test scripts are given .t extension 
+ - unnecessary 'use' statements removed from tests
+ - server-wide definition for modperl custom perl libraries location in order
+   to provide consistent perl environment for all scripts at server start-up
+   time
+
 release 76.3
  - use staging area for staging daemon logs
 

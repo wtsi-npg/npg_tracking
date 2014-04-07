@@ -1,12 +1,3 @@
-#########
-# Author:        Marina Gourtovaia
-# Maintainer:    $Author: mg8 $
-# Created:       29 July 2009
-# Last Modified: $Date: 2013-01-28 11:09:22 +0000 (Mon, 28 Jan 2013) $
-# Id:            $Id: 90-reference.t 16566 2013-01-28 11:09:22Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/90-reference.t $
-#
-
 package reference;
 
 use strict;

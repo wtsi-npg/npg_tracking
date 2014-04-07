@@ -1,11 +1,3 @@
-#########
-# Author:        mg8
-# Maintainer:    $Author: mg8 $
-# Created:       21 December 2012
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: 10-npg_tracking-util-db_connect.t 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-npg_tracking-util-db_connect.t $
-
 use strict;
 use warnings;
 use Test::More tests => 15;

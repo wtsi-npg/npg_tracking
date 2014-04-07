@@ -1,4 +1,3 @@
-# $Id: 80-email-instrument_annotation.t 16389 2013-01-07 11:04:50Z mg8 $
 use strict;
 use warnings;
 use DateTime;

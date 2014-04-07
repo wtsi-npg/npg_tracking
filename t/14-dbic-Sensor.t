@@ -1,11 +1,3 @@
-#########
-# Author:        Jennifer Liddle (js10@sanger.ac.uk)
-# Maintainer:    $Author: mg8 $
-# Created:       2012_03_09
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: 14-dbic-Sensor.t 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/14-dbic-Sensor.t $
-
 use strict;
 use warnings;
 use POSIX qw(strftime);

@@ -1,7 +1,3 @@
-#########
-# Author:        rmp
-# Created:       2007-10
-#
 use strict;
 use warnings;
 use t::util;

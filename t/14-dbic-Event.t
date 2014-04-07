@@ -1,11 +1,3 @@
-#########
-# Author:        jo3
-# Maintainer:    $Author: mg8 $
-# Created:       2010_07_29
-# Last Modified: $Date: 2011-02-25 14:09:27 +0000 (Fri, 25 Feb 2011) $
-# Id:            $Id: 14-dbic-Event.t 12706 2011-02-25 14:09:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/14-dbic-Event.t $
-
 use strict;
 use warnings;
 
@@ -16,11 +8,7 @@ use Test::More tests => 9;
 use Test::Exception::LessClever;
 use Test::MockModule;
 
-use lib q{t};
 use t::dbic_util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 12706 $ =~ /(\d+)/msx; $r; };
-
 
 use_ok('npg_tracking::Schema::Result::Event');
 
