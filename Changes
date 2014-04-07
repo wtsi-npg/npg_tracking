@@ -1,5 +1,11 @@
 CHANGES
 
+ - added modules to handle locating of transcriptome files required by tophat2
+ - updated reference module with additions needed by transcriptome
+ - added new test for transcriptome
+ - updated reference test to check that transcriptome directory structure exists
+ - added files from a transcriptomics run for use in test
+
 release 76.4
  - replace uri_escape() by uri_escape_utf8()
  - some unused code removed
