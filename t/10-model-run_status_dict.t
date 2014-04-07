@@ -1,11 +1,3 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: dj3 $
-# Created:       2007-10
-# Last Modified: $Date: 2012-01-30 14:59:22 +0000 (Mon, 30 Jan 2012) $
-# Id:            $Id: 10-model-run_status_dict.t 15060 2012-01-30 14:59:22Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-run_status_dict.t $
-#
 use strict;
 use warnings;
 use t::util;

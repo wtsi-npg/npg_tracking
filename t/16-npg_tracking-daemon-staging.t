@@ -1,8 +1,3 @@
-#########
-# Author:        mg8
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/instrument_handling/branches/prerelease-16.0/t/10-srpipe-runner-staging.t, r17037
-#
-
 use strict;
 use warnings;
 use Test::More tests => 14;

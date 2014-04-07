@@ -1,19 +1,9 @@
-#########
-# Author:        dj3
-# Maintainer:    $Author: mg8 $
-# Created:       2009-11
-# Last Modified: $Date: 2012-09-13 11:28:27 +0100 (Thu, 13 Sep 2012) $
-# Id:            $Id: 45-npg-st-api-traversal.t 16046 2012-09-13 10:28:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/45-npg-st-api-traversal.t $
-#
 use strict;
 use warnings;
 use Test::More tests => 148; #remember to change the skip number below as well!
 use Test::Deep;
 use Test::Exception;
 use npg_testing::intweb qw(npg_is_accessible);
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16046 $ =~ /(\d+)/smx; $r; };
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/test45];
 

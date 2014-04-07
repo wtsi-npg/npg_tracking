@@ -1,4 +1,3 @@
-# $Id: 10-model-cost_code.pm 14928 2012-01-17 13:57:20Z mg8 $
 use strict;
 use warnings;
 use Test::More tests => 11;

@@ -1,8 +1,3 @@
-#########
-# Author:        Marina Gourtovaia
-# Created:       July 2011
-# copied from svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/40-st-lims.t, r16549
-
 use strict;
 use warnings;
 use Test::More tests => 389;

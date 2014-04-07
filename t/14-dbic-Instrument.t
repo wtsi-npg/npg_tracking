@@ -1,11 +1,3 @@
-#########
-# Author:        jo3
-# Maintainer:    $Author: mg8 $
-# Created:       2010_05_26
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: 14-dbic-Instrument.t 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/14-dbic-Instrument.t $
-
 use strict;
 use warnings;
 use Test::More tests => 54;
@@ -15,8 +7,6 @@ use DateTime;
 use DateTime::Duration;
 
 use t::dbic_util;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/msx; $r; };
 
 use_ok('npg_tracking::Schema::Result::Instrument');
 

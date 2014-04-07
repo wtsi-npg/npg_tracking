@@ -1,20 +1,12 @@
-#########
-# Author:        rmp
-# Maintainer:    $Author: mg8 $
-# Created:       2007-10
-# Last Modified: $Date: 2012-03-27 13:38:46 +0100 (Tue, 27 Mar 2012) $
-# Id:            $Id: 20-view-run.t 15395 2012-03-27 12:38:46Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/20-view-run.t $
-#
 use strict;
 use warnings;
-use Test::More tests => 77;
+use Test::More tests => 79;
 use Test::Exception;
 use Test::Deep;
+use MIME::Lite;
+use CGI;
 use t::util;
 use t::request;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15395 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::view::run');
 
@@ -540,4 +532,30 @@ my $util = t::util->new({fixtures  => 1,});
           });
   like ($str, qr/<div\ id=\"verify_r1_div\">joe_engineer/, 'read1 reagents verified by correct user');
 }
+
+{
+  my $mock    = {
+    q(SELECT id_user FROM user WHERE username = ?:,public) => [[1]],
+    q(SELECT id_usergroup FROM usergroup WHERE groupname = ?:,public) => [[]],
+    q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.id_usergroup = uug.id_usergroup:1) => [{}],
+  };
+
+  my $cgi = CGI->new();
+  $util    = t::util->new({
+          mock => $mock,
+          cgi  => $cgi,
+         });
+  my $view = npg::view::run->new({
+          util  => $util,
+          model => npg::model::run->new({
+                 util   => $util,
+                 id_run => q(),
+                }),
+         });
+  is($view->selected_days(), 14, '$view->selected_days() gives default 14 days if not set as cgi param');
+  $cgi = $view->util->cgi();
+  $cgi->param('days', 7);
+  is($view->selected_days(), 7, '$view->selected_days() gives selected days if set as cgi param');
+}
+
 1;

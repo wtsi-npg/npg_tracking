@@ -16,8 +16,7 @@ use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevis
 
 sub list {
   my ($self) = @_;
-  my $model      = $self->model();
-  $model->{staging_area_indexes} = [@npg_tracking::illumina::run::folder::location::STAGING_AREAS_INDEXES];
+  $self->{staging_area_indexes} = [@npg_tracking::illumina::run::folder::location::STAGING_AREAS_INDEXES];
   return;
 }
 
