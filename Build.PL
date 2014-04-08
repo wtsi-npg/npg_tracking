@@ -46,15 +46,6 @@ my $class = npg_tracking::util::build->subclass(code => <<'EOF');
     return;
   }
 
-  sub cgi_version {
-    my $version;
-    eval {
-      require CGI;
-      $version = $CGI::VERSION;
-    };
-    return $version && ($version eq '3.43') ? $version : '3.52';
-  }
-
   sub ACTION_webinstall {
     my $self = shift;
     if (!$self->install_base()) {
