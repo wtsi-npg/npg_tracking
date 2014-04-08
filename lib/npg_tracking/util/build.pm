@@ -40,49 +40,49 @@ use warnings;
     my $self = shift;
     $self->SUPER::ACTION_code;
 
-    if ( ($self->invoked_action() ne q[install]) && ($self->invoked_action() ne q[webinstall]) ){
+    if (!$self->install_base()) {
       return;
-    } else {
-      my @dirs  = (q[./blib/lib], q[./blib/script]);
-      for my $path (@dirs){
-        opendir DIR, $path or next;   # skip dirs we can't read
-        while (my $file = readdir DIR) {
-          my $full_path = join '/', $path, $file;
-          next if $file eq '.' or $file eq '..'; # skip dot files
-           if ( -d $full_path ) {
-            push @dirs, $full_path; # add dir to list
-          }
-        }
-        closedir DIR;
-      }
+    } 
 
-      my @modules;
-      foreach my $dir (@dirs) {
-        opendir DIR, $dir or die qq[$dir: $!];
-        while (my $file = readdir DIR) {
-          next unless (-f "$dir/$file");
-          push @modules, $dir . q[/] . $file;
+    my @dirs  = (q[./blib/lib], q[./blib/script]);
+     for my $path (@dirs){
+      opendir DIR, $path or next;   # skip dirs we can't read
+      while (my $file = readdir DIR) {
+        my $full_path = join '/', $path, $file;
+        next if $file eq '.' or $file eq '..'; # skip dot files
+        if ( -d $full_path ) {
+          push @dirs, $full_path; # add dir to list
         }
-        closedir DIR;
       }
+      closedir DIR;
+    }
 
-      foreach my $module (@modules) {
-        my $gitver = $self->git_tag();
-        if (-e $module) {
-          warn "Changing version of $module to $gitver\n";
-          my $backup = '.original';
-          local $^I = $backup;
-          local @ARGV = ($module);
-          while (<>) {
-            s/(\$VERSION\s*=\s*)('?\S+'?)\s*;/${1}'$gitver';/;
-            s/head1 VERSION$/head1  VERSION\n\nVersion $gitver/;
-            print;
-          }
-          unlink "$module$backup";
-        } else {
-          warn "File $module not found\n";
-        }
+    my @modules;
+    foreach my $dir (@dirs) {
+      opendir DIR, $dir or die qq[$dir: $!];
+      while (my $file = readdir DIR) {
+        next unless (-f "$dir/$file");
+        push @modules, $dir . q[/] . $file;
       }
+      closedir DIR;
+    }
+
+    my $gitver = $self->git_tag();
+    warn "Changing version of all modules and scripts to $gitver\n";
+
+    foreach my $module (@modules) {
+      if ($self->invoked_action() eq q[fakeinstall]) {
+        warn "Changing version of $module to $gitver\n";
+      }
+      my $backup = '.original';
+      local $^I = $backup;
+      local @ARGV = ($module);
+      while (<>) {
+        s/(\$VERSION\s*=\s*)('?\S+'?)\s*;/${1}'$gitver';/;
+        s/head1 VERSION$/head1  VERSION\n\nVersion $gitver/;
+        print;
+      }
+      unlink "$module$backup";
     }
   }
 1;
