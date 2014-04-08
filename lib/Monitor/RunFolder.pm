@@ -221,7 +221,6 @@ Monitor::RunFolder - provide methods to get run details from a folder path
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
    C<<use Monitor::RunFolder;

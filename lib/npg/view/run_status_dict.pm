@@ -77,7 +77,6 @@ npg::view::run_status_dict - view handling for run_status_dicts
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

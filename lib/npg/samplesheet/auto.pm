@@ -28,7 +28,6 @@ npg::samplesheet::auto
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   use npg::samplesheet::auto;

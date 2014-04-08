@@ -135,7 +135,6 @@ npg::view::instrument_utilisation - view handling for instrument_utilisation
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

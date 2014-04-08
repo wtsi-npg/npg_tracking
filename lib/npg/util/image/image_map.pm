@@ -150,7 +150,6 @@ npg::util::image::image_map
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   my $oImageMap = npg::util::image::image_map->new();

@@ -24,6 +24,7 @@ use Monitor::Cbot::InstrumentStatus;
 
 our $VERSION = '0';
 
+use Readonly;
 Readonly::Scalar my $PROXY   => q{http://wwwcache.sanger.ac.uk:3128/};
 Readonly::Scalar my $ERR_504 => q{504 Gateway Time-out};
 Readonly::Scalar my $ERR_500 => q{500 read timeout};
@@ -96,7 +97,6 @@ __END__
 cbot_checker - Monitor cBot XML reports and update the database accordingly.
 
 =head1 VERSION
-
 
 
 =head1 SYNOPSIS

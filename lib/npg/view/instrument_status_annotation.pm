@@ -117,7 +117,6 @@ npg::view::instrument_status_annotation - view handling for instrument_status_an
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

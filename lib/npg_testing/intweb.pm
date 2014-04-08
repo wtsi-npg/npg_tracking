@@ -22,7 +22,6 @@ npg_testing::intweb
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

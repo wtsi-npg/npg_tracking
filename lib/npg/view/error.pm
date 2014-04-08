@@ -141,7 +141,6 @@ npg::view::error - subclass of npg::view for error-viewing purposes
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

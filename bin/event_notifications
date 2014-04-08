@@ -15,6 +15,7 @@ use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Carp;
 use English qw(-no_match_vars);
+use Readonly;
 
 use npg_tracking::Schema;
 use npg::email;
@@ -57,7 +58,6 @@ __END__
 event_notifications -- send notifications for events
 
 =head1 VERSION
-
 
 
 =head1 SYNOPSIS

@@ -109,7 +109,6 @@ npg::controller - NPG tracking controller
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

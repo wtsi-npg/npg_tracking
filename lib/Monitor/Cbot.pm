@@ -109,7 +109,6 @@ Monitor::Cbot - base class for cBot XML interrogation
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
     C<<use Monitor::Cbot;

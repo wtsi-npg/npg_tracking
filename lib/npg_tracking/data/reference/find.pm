@@ -36,7 +36,6 @@ npg_tracking::data::reference::find
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 An example of a class that implements this role

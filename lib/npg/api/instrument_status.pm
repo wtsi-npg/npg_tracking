@@ -61,7 +61,6 @@ npg::api::instrument_status - An interface onto npg.instrument_status
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

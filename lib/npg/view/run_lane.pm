@@ -216,7 +216,6 @@ npg::view::run_lane - view handling for run_lanes
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

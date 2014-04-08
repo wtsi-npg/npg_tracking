@@ -60,7 +60,6 @@ npg_tracking::data::snv::find
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   package MyPackage;

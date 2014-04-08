@@ -36,7 +36,6 @@ npg::email::event::annotation::instrument
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   use npg::email::event::annotation::instrument;

@@ -39,7 +39,6 @@ npg_tracking::glossary::tag
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

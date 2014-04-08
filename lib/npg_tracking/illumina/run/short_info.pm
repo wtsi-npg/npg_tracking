@@ -157,7 +157,6 @@ npg_tracking::illumina::run::short_info
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   package Mypackage;

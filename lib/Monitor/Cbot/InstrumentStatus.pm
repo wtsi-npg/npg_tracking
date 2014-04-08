@@ -168,7 +168,6 @@ Monitor::Cbot::InstrumentStatus
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
     C<<use Monitor::Cbot::InstrumentStatus;

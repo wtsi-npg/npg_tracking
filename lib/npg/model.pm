@@ -169,7 +169,6 @@ npg::model - a base class for the NPG family, derived from ClearPress::model
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
  use strict;

@@ -133,7 +133,6 @@ npg::model::run_status_dict
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

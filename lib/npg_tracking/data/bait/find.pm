@@ -116,7 +116,6 @@ npg_tracking::data::bait::find
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   package MyPackage;

@@ -148,7 +148,6 @@ npg::view::instrument_mod - view handling for instrument_mods
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

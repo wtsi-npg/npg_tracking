@@ -116,7 +116,6 @@ npg_tracking::illumina::run::folder::location
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   package MyPackage;

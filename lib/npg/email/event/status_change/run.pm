@@ -53,7 +53,6 @@ npg::email::event::status_change::run
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   use npg::email::event::status_change::run;

@@ -22,6 +22,7 @@ use Monitor::RunFolder;
 
 our $VERSION = '0';
 
+use Readonly;
 Readonly::Array my @DISKS => qw( Runs_D Runs_E );
 
 local $ENV{dev} = ( defined $ENV{dev} ? $ENV{dev} : 'live' );
@@ -118,7 +119,6 @@ __END__
 hiseq_checker - Monitor HiSeq instruments for run information.
 
 =head1 VERSION
-
 
 
 =head1 SYNOPSIS

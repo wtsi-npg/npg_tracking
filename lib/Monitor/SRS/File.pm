@@ -86,7 +86,6 @@ Monitor::SRS::File - methods to read recipe files and other files.
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
     C<<use Monitor::SRS::File;

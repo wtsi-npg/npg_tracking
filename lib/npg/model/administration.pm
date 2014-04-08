@@ -43,7 +43,6 @@ npg::model::administration
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   model to sit behind npg::view::administration, with methods for display items

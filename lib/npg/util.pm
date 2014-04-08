@@ -69,7 +69,6 @@ npg::util - A database handle and utility object
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

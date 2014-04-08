@@ -38,7 +38,6 @@ st::api::batch - an interface to Sample Tracking batches
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

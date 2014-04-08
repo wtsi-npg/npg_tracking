@@ -30,7 +30,6 @@ npg::api::designation - Designation base-class, an interface onto npg.designatio
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

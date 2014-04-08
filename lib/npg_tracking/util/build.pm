@@ -42,7 +42,7 @@ use warnings;
 
     if (!$self->install_base()) {
       return;
-    } 
+    }
 
     my @dirs  = (q[./blib/lib], q[./blib/script]);
      for my $path (@dirs){

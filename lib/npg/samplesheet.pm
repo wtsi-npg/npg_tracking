@@ -30,7 +30,6 @@ npg::samplesheet
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   my $samplesheet = npg::samplesheet->new(id_run => 7007);

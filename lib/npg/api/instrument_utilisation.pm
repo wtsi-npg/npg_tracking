@@ -759,7 +759,6 @@ npg::api::instrument_utilisation - An interface onto npg.instrument_utilisation
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

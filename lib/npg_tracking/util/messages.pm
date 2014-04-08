@@ -42,7 +42,6 @@ npg_tracking::util::messages
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
  my $mlist = npg_tracking::util::messages->new();

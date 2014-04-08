@@ -313,7 +313,6 @@ npg::util::image::scale
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   my $oImageScale = npg::util::image::scale->new({});

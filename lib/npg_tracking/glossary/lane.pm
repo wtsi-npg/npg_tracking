@@ -34,7 +34,6 @@ npg_tracking::glossary::lane
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

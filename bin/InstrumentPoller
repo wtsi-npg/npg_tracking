@@ -23,6 +23,7 @@ use npg_tracking::Schema;
 
 our $VERSION = '0';
 
+use Readonly;
 Readonly::Scalar my $LOG_ROOT => "$Bin/../logs/";
 
 
@@ -102,7 +103,6 @@ __END__
 instrument_poller - Poll instruments to get data updates.
 
 =head1 VERSION
-
 
 
 =head1 SYNOPSIS

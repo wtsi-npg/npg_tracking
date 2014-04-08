@@ -66,7 +66,6 @@ npg::model::cost_code
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

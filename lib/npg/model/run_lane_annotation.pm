@@ -83,7 +83,6 @@ npg::model::run_lane_annotation
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

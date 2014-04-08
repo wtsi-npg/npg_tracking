@@ -33,7 +33,6 @@ npg_tracking::illumina::run::long_info
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   package Mypackage;

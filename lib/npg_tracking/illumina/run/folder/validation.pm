@@ -73,7 +73,6 @@ npg_tracking::illumina::run::folder::validation
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 $validation = npg_tracking::illumina::run::folder::validation->new( run_folder => $run_folder, );

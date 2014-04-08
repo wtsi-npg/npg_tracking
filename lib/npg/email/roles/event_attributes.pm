@@ -24,7 +24,6 @@ npg::email::roles::event_attributes
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   package My::EventEmailer;

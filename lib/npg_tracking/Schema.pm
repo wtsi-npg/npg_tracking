@@ -38,7 +38,6 @@ npg_tracking::Schema
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

@@ -21,7 +21,6 @@ npg::email::event
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   use npg:email::event

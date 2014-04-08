@@ -29,7 +29,6 @@ npg_tracking::data::reference::list
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   my $lister = Moose::Meta::Class->create_anon_class(

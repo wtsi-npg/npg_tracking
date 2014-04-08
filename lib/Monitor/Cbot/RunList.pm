@@ -67,7 +67,6 @@ Monitor::Cbot::RunList - methods and to retrieve and parse Cbot RunList.xml
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
     C<<use Monitor::Cbot::RunList;
        my $rl = Monitor::Cbot::RunList->new( cbot_name => $dummy_cbot, );

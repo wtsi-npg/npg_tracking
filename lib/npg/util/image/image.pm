@@ -98,7 +98,6 @@ npg::util::image::image
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   my $oDerivedImageObject = npg::util::image::image::<derived_class>->new();

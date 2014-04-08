@@ -33,7 +33,6 @@ npg_tracking::data::reference
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
  my $r_user = npg_tracking::data::reference->new(id_run => 22, position => 1);

@@ -33,7 +33,6 @@ npg::email::event::annotation::run_lane
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

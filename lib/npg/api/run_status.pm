@@ -34,7 +34,6 @@ npg::api::run_status - An interface onto npg.run_status
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

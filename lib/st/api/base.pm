@@ -206,7 +206,6 @@ st::api::base - a base class for st::api::*
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

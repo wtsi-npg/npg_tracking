@@ -11,6 +11,8 @@ use strict;
 use warnings;
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use Readonly;
+
 our $VERSION = '0';
 
 use npg::email;
@@ -29,7 +31,6 @@ __END__
 email_project_followers_run_complete_archived
 
 =head1 VERSION
-
 
 
 =head1 SYNOPSIS

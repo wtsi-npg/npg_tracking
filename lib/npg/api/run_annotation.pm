@@ -33,7 +33,6 @@ npg::api::run_annotation - An interface onto npg.run_annotation + annotation
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

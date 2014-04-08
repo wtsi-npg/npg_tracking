@@ -58,7 +58,6 @@ modules.
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
     C<use Moose;

@@ -118,7 +118,6 @@ local staging.
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 A role for use by Monitor::Staging and Monitor::SRS::Local

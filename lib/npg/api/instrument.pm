@@ -91,7 +91,6 @@ npg::api::instrument - An interface onto npg.instrument
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

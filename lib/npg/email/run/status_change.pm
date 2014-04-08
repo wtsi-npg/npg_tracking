@@ -294,7 +294,6 @@ npg::email::run::status_change
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
     Supply either a DBIx event row or an event table row id.

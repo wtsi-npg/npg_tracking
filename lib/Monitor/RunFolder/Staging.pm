@@ -276,7 +276,6 @@ local staging
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
    C<<use Monitor::RunFolder::Staging;

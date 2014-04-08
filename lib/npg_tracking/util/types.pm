@@ -63,7 +63,6 @@ npg_tracking::util::types
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

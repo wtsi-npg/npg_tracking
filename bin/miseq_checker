@@ -13,6 +13,7 @@ use warnings;
 
 use Carp;
 use English qw(-no_match_vars);
+use Readonly;
 
 use Monitor::SRS::File;
 use Monitor::SRS::FTP;
@@ -117,7 +118,6 @@ __END__
 miseq_checker - Monitor MiSeq instruments for run information.
 
 =head1 VERSION
-
 
 
 =head1 SYNOPSIS

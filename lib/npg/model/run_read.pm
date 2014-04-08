@@ -37,7 +37,6 @@ npg::model::run_read
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

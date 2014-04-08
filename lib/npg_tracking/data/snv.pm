@@ -30,7 +30,6 @@ npg_tracking::data::snv
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

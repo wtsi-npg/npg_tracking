@@ -535,7 +535,6 @@ npg::view::run - view handling for runs
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

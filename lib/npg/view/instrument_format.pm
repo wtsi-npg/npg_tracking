@@ -24,7 +24,6 @@ npg::view::instrument_format - view handling for instrument_formats
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

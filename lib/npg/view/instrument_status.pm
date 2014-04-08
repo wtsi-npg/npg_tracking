@@ -101,7 +101,6 @@ npg::view::instrument_status - view handling for instrument_statuses
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

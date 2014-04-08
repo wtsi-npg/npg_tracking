@@ -48,7 +48,6 @@ Monitor::Roles::Schema - provide the DBIx npg_tracking schema.
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
     C<<use Moose;

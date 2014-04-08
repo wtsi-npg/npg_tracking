@@ -36,7 +36,6 @@ npg::email::event::status_change::instrument
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   use npg::email::event::status_change::instrument;

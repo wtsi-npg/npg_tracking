@@ -48,7 +48,6 @@ npg::model::instrument_mod_dict
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

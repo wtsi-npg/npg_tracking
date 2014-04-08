@@ -852,7 +852,6 @@ npg::model::instrument_status
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

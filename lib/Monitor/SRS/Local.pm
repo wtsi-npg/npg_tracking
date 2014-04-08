@@ -118,7 +118,6 @@ Illumina short read sequencer.
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
     C<<use Monitor::SRS::Local;

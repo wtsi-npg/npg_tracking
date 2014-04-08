@@ -418,7 +418,6 @@ npg::util::image::heatmap
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   my $oImageHeatmap = npg::util::image::heatmap->new({

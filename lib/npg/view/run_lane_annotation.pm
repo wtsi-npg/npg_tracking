@@ -138,7 +138,6 @@ npg::view::run_lane_annotation - view handling for run_lane_annotationes
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

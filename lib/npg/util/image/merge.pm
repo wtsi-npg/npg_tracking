@@ -658,7 +658,6 @@ npg::util::image::merge
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   my $oImageMerge = npg::util::image::merge->new({});

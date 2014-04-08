@@ -65,7 +65,6 @@ npg::model::tag_run_lane
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

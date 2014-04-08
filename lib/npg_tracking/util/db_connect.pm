@@ -136,7 +136,6 @@ npg_tracking::util::db_connect
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 An example of a schema object consuming this role:

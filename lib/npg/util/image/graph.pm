@@ -110,7 +110,6 @@ npg::util::image::graph
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
   my $oImageGraph = npg::util::image::graph->new();

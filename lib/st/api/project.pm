@@ -48,7 +48,6 @@ st::api::project - an interface to a project
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

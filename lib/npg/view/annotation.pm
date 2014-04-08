@@ -125,7 +125,6 @@ npg::view::annotation - view superclass for handling various types of X_annotati
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

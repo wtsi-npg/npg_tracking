@@ -37,7 +37,6 @@ npg::model::instrument_designation
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

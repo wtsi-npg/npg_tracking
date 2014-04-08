@@ -23,7 +23,6 @@ npg::view::intensity
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
  use strict;

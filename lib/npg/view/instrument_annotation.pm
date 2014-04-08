@@ -36,7 +36,6 @@ npg::view::instrument_annotation - view handling for instrument_annotationes
 =head1 VERSION
 
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
