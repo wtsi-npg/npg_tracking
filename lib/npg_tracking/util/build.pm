@@ -95,6 +95,7 @@ npg_tracking::util::build
 
 =head1 VERSION
 
+
 =head1 SYNOPSIS
 
 use npg_tracking::util::Build

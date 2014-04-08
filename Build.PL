@@ -99,6 +99,7 @@ my $builder = $class->new(
                 'Test::Trap'                      => '0.2.0',
                 'Test::Warn'                      => '0.11',
                 'DateTime::Format::SQLite'        => 0,
+                'IO::File'                        => 0,
           },
 
           'requires'    => {

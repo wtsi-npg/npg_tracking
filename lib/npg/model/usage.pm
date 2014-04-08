@@ -16,12 +16,8 @@ __END__
 
 npg::model::usage
 
-<<<<<<< HEAD
 =head1 VERSION
 
-
-=======
->>>>>>> 9107090... some unused code removed; some small test scripts merged into related larger test scripts; VERSION variable and headers with SVN properties removed from test files; all test scripts are given .t extension; unnecessary "use" statements removed from tests
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION

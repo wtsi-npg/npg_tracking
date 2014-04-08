@@ -14,7 +14,7 @@ use Template;
 use Carp;
 use English qw(-no_match_vars);
 use List::MoreUtils qw/any/;
-use URI::Escape qw(uri_escape);
+use URI::Escape qw(uri_escape_utf8);
 
 use npg_tracking::Schema;
 use st::api::lims;
@@ -266,7 +266,7 @@ sub _csv_compatible_value {
       croak "Do not know how to serialize $type to a samplesheet";
       }
     } else {
-      $value = uri_escape($value);
+      $value = uri_escape_utf8($value);
       $value =~ s/\%20/ /smxg;
       $value =~ s/\%28/(/smxg;
       $value =~ s/\%29/)/smxg;
