@@ -1,5 +1,6 @@
 CHANGES
 
+release 76.5
  - code action on Build only if install target specified
  - global removal of [LastChanged]Version from POD; change VERSION svn declaration to ='0';
  - added modules to handle locating of transcriptome files required by tophat2
