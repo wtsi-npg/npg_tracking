@@ -12,7 +12,7 @@ use Moose::Role;
 use Carp;
 use File::Spec::Functions;
 use Config::Auto;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 use npg_tracking::util::types;
 
@@ -135,7 +135,6 @@ npg_tracking::util::db_connect
 
 =head1 VERSION
 
-$LastChangedRevision: 16549 $
 
 =head1 SYNOPSIS
 

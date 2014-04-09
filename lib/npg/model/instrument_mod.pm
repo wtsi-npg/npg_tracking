@@ -15,7 +15,7 @@ use Carp;
 use npg::model::instrument;
 use npg::model::instrument_mod_dict;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9380 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->has_a('instrument_mod_dict');
 
@@ -72,7 +72,6 @@ npg::model::instrument_mod
 
 =head1 VERSION
 
-$LastChangedRevision: 9380 $
 
 =head1 SYNOPSIS
 

@@ -273,7 +273,7 @@ __PACKAGE__->has_many(
 # Id:            $Id: User.pm 14647 2011-11-21 13:14:56Z mg8 $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/User.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14647 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 =head2 usergroups
 

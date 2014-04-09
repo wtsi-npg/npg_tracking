@@ -16,7 +16,7 @@ use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Carp;
 use English qw(-no_match_vars);
 use POSIX qw(strftime);
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/msx; $r; };
+use Readonly;
 use Monitor::Staging;
 use Monitor::RunFolder::Staging;
 use npg_tracking::Schema;
@@ -24,6 +24,7 @@ use npg_tracking::Schema;
 Readonly::Scalar my $SECONDS_PER_MINUTE => 60;
 Readonly::Scalar my $SLEEP_INTERVAL     => $SECONDS_PER_MINUTE * 15;
 
+our $VERSION = '0';
 
 local $OUTPUT_AUTOFLUSH = 1;
 
@@ -144,7 +145,6 @@ staging_area_monitor - monitor incoming runs for problems and completion
 
 =head1 VERSION
 
-$Revision: 16549 $
 
 =head1 SYNOPSIS
 

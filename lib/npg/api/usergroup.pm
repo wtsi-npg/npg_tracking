@@ -14,7 +14,7 @@ use Carp;
 use npg::api::user;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -41,7 +41,6 @@ npg::api::usergroup
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
 
 =head1 SYNOPSIS
 

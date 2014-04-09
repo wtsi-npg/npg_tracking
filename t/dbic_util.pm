@@ -1,11 +1,13 @@
 package t::dbic_util;    ## no critic (NamingConventions::Capitalization)
 
 use Moose;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/msx; $r; };
+use Readonly;
 use Test::More;
 Readonly::Scalar my $DEFAULT_FIXTURE_PATH => 't/data/dbic_fixtures';
 
 with 'npg_testing::db';
+
+our $VERSION = '0';
 
 has fixture_path => (
     is      => 'ro',

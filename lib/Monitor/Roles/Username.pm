@@ -9,8 +9,9 @@
 package Monitor::Roles::Username;
 
 use Moose::Role;
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11439 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar my $USERNAME => 'pipeline';
 
@@ -35,7 +36,6 @@ the npg tracking database.
 
 =head1 VERSION
 
-$Revision: 11439 $
 
 =head1 SYNOPSIS
 

@@ -13,7 +13,7 @@ use LWP::UserAgent;
 use HTTP::Request::Common;
 use npg::api::util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 8316 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 =head1 NAME
 
@@ -21,7 +21,6 @@ npg_testing::intweb
 
 =head1 VERSION
 
-$Revision: 7844 $
 
 =head1 SYNOPSIS
 

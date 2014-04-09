@@ -13,7 +13,7 @@ use base qw(npg::view);
 use npg::controller;
 use Carp;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14897 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub read { ## no critic (Subroutines::ProhibitBuiltinHomonyms)
   my ($self) = @_;
@@ -82,7 +82,6 @@ npg::view::search
 
 =head1 VERSION
 
-$LastChangedRevision: 14897 $
 
 =head1 SYNOPSIS
 

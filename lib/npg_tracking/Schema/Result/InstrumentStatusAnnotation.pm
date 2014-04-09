@@ -158,7 +158,7 @@ __PACKAGE__->belongs_to(
 # Id:            $Id: InstrumentStatusAnnotation.pm 11663 2010-11-08 15:02:27Z dj3 $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/InstrumentStatusAnnotation.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 11663 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 1;
 

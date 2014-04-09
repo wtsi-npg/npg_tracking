@@ -11,7 +11,7 @@ use Readonly;
 
 with qw/ npg_tracking::data::reference::find /;
 
-our $VERSION = '0.0';
+our $VERSION = '0';
 
 Readonly::Scalar our $ENSEMBL_RELEASE_VERSION => q[default];
 
@@ -126,6 +126,9 @@ __END__
 =head1 NAME
 
 npg_tracking::data::transcriptome::find
+
+=head1 VERSION
+
 
 =head1 SYNOPSIS
 

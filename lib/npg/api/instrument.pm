@@ -17,7 +17,7 @@ use npg::api::instrument_status;
 use npg::api::designation;
 use npg::api::run;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 9380 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->hasmany([qw(run instrument_status)]);
@@ -90,7 +90,6 @@ npg::api::instrument - An interface onto npg.instrument
 
 =head1 VERSION
 
-$Revision: 9380 $
 
 =head1 SYNOPSIS
 

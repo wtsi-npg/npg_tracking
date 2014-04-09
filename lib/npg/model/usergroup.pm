@@ -15,7 +15,7 @@ use Carp;
 use npg::model::user;
 use npg::model::event_type;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -94,7 +94,6 @@ npg::model::usergroup - data model for user groups
 
 =head1 VERSION
 
-$Revision: 9207 $
 
 =head1 SYNOPSIS
 
