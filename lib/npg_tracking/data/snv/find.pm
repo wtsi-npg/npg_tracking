@@ -9,8 +9,9 @@ use warnings;
 use Moose::Role;
 use Carp;
 use Cwd 'abs_path';
+use Readonly;
 
-our $VERSION = '76.0';
+our $VERSION = '0';
 
 with qw/ npg_tracking::data::reference::find 
          npg_tracking::data::bait::find

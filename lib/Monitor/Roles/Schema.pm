@@ -10,6 +10,7 @@ package Monitor::Roles::Schema;
 
 use Moose::Role;
 use npg_tracking::Schema;
+use Readonly;
 
 our $VERSION = '0';
 #Readonly::Scalar my $DEFAULT_DEV => 'live';

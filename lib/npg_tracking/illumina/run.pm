@@ -12,6 +12,7 @@ use strict;
 use warnings;
 use Moose::Role;
 use Carp qw(croak );
+use Readonly;
 
 our $VERSION = '0';
 

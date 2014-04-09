@@ -13,6 +13,7 @@ use Moose;
 use Carp;
 use English qw{-no_match_vars};
 use npg::api::run;
+use Readonly;
 
 with qw{npg_tracking::illumina::run::short_info};
 

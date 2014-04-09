@@ -74,8 +74,6 @@ npg::model::run_read
 
 =item npg::model::run
 
-=item Readonly
-
 =back
 
 =head1 INCOMPATIBILITIES

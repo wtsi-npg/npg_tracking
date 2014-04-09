@@ -12,6 +12,7 @@ use warnings;
 use Moose;
 use Carp;
 use English qw{-no_match_vars};
+use Readonly;
 
 our $VERSION = '0';
 

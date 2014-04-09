@@ -24,6 +24,8 @@ use XML::LibXML;
 use Try::Tiny;
 
 requires qw{runfolder_path};
+
+use Readonly;
 our $VERSION = '0';
 
 =head1 NAME

@@ -11,8 +11,10 @@ use strict;
 use warnings;
 use Carp;
 use English qw{-no_match_vars};
-our $VERSION = '0';
+use Readonly;
 use Module::PluginFinder;
+
+our $VERSION = '0';
 
 =head1 NAME
 

@@ -15,8 +15,7 @@ use YAML qw(LoadFile);
 use MIME::Parser;
 use MIME::Lite;
 use GD;
-
-our $VERSION = '0';
+use Readonly;
 
 Readonly::Scalar our $DEFAULT_FIXTURES_PATH => q[t/data/fixtures];
 

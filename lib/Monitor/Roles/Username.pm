@@ -9,6 +9,7 @@
 package Monitor::Roles::Username;
 
 use Moose::Role;
+use Readonly;
 
 our $VERSION = '0';
 

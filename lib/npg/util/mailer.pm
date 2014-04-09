@@ -14,6 +14,7 @@ use English qw{-no_match_vars};
 
 use Class::Std;
 use MIME::Lite;
+use Readonly;
 
 our $VERSION = '0';
 

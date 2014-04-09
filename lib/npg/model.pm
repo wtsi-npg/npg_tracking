@@ -15,6 +15,7 @@ use English qw(-no_match_vars);
 use Carp;
 use Socket;
 use npg::model::cost_group;
+use Readonly;
 
 our $VERSION = '0';
 

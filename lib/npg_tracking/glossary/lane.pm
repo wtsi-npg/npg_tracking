@@ -9,6 +9,8 @@
 package npg_tracking::glossary::lane;
 
 use Moose::Role;
+use Readonly;
+
 our $VERSION = '0';
 
 use npg_tracking::util::types;

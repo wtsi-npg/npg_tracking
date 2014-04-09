@@ -3,8 +3,6 @@ package t::ftp_util;    ## no critic (NamingConventions::Capitalization)
 use strict;
 use warnings;
 
-our $VERSION = '0';
-
 use Carp;
 use Data::Dumper;
 use English qw(-no_match_vars);
@@ -13,6 +11,7 @@ use File::Temp qw(tempfile);
 use Moose;
 use Test::TCP;
 use Test::FTP::Server;
+use Readonly;
 
 Readonly::Scalar my $SIGKILL => 9;
 

@@ -13,6 +13,7 @@ use base qw(npg::model);
 use English qw(-no_match_vars);
 use Carp;
 use npg::model::instrument_status;
+use Readonly;
 
 our $VERSION = '0';
 

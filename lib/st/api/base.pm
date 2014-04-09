@@ -15,6 +15,7 @@ use Carp;
 
 use npg::api::util;
 
+use Readonly;
 our $VERSION = '0';
 
 sub live_url { return q{http://psd-support.internal.sanger.ac.uk:6600}; }

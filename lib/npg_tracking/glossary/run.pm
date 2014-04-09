@@ -10,6 +10,7 @@ package npg_tracking::glossary::run;
 
 use Moose::Role;
 use npg_tracking::util::types;
+use Readonly;
 
 our $VERSION = '0';
 
