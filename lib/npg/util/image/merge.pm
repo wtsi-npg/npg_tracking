@@ -17,8 +17,9 @@ use npg::util::image::graph;
 use Carp qw(carp croak cluck confess);
 use POSIX qw(floor ceil);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15350 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly our $GRAPH_HEIGHT_DEFAULT          => 200;
 Readonly our $GRAPH_WIDTH_DEFAULT           => 400;
 Readonly our $HEIGHT_OF_COLUMN_HEADINGS_TP  => 50;
@@ -656,7 +657,6 @@ npg::util::image::merge
 
 =head1 VERSION
 
-$LastChangedRevision: 15350 $
 
 =head1 SYNOPSIS
 

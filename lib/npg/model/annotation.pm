@@ -15,7 +15,7 @@ use Carp;
 use POSIX qw(strftime);
 use npg::model::user;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15220 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_all();
@@ -55,7 +55,6 @@ npg::model::annotation
 
 =head1 VERSION
 
-$Revision: 15220 $
 
 =head1 SYNOPSIS
 

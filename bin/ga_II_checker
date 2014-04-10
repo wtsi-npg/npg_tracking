@@ -13,13 +13,14 @@ use strict;
 use warnings;
 use Carp;
 use English qw(-no_match_vars);
+use Readonly;
 
 use Monitor::SRS::File;
 use Monitor::SRS::FTP;
 use Monitor::SRS::Local;
 use Monitor::RunFolder;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16335 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 local $ENV{dev} = ( defined $ENV{dev} ? $ENV{dev} : 'live' );
 
@@ -101,7 +102,6 @@ ga_II_checker - Monitor GA-II computers for run information.
 
 =head1 VERSION
 
-$Revision: 16335 $
 
 =head1 SYNOPSIS
 

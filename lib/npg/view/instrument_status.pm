@@ -14,7 +14,7 @@ use Carp;
 use English qw{-no_match_vars};
 use npg::model::instrument_status;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15220 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub authorised {
   my $self   = shift;
@@ -100,7 +100,6 @@ npg::view::instrument_status - view handling for instrument_statuses
 
 =head1 VERSION
 
-$Revision: 15220 $
 
 =head1 SYNOPSIS
 

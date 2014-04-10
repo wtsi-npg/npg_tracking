@@ -11,7 +11,7 @@ use strict;
 use warnings;
 use Moose;
 
-our $VERSION = do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 with qw/
           npg_tracking::glossary::run
@@ -32,7 +32,6 @@ npg_tracking::data::bait
 
 =head1 VERSION
 
-$Revision: 16549 $
 
 =head1 SYNOPSIS
 

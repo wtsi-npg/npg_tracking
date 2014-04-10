@@ -11,7 +11,7 @@ use strict;
 use warnings;
 use base qw(npg::api::base);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -29,7 +29,6 @@ npg::api::designation - Designation base-class, an interface onto npg.designatio
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
 
 =head1 SYNOPSIS
 

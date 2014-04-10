@@ -17,7 +17,7 @@ use npg::model::entity_type;
 use npg::model::usergroup;
 use npg::model::event_type_subscriber;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_many_through('usergroup|event_type_subscriber');
@@ -67,7 +67,6 @@ npg::model::event_type
 
 =head1 VERSION
 
-$Revision: 9207 $
 
 =head1 SYNOPSIS
 

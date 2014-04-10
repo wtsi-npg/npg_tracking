@@ -15,7 +15,7 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::run_annotation;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 13585 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub authorised {
   my $self = shift;
@@ -60,7 +60,6 @@ npg::view::run_annotation - view handling for run_annotations
 
 =head1 VERSION
 
-$LastChangedRevision: 13585 $
 
 =head1 SYNOPSIS
 

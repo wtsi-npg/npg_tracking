@@ -9,7 +9,7 @@ use strict;
 use warnings;
 use base qw(ClearPress::util Exporter);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16335 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar my $MAIL_DOMAIN       => q(sanger.ac.uk);
 Readonly::Scalar my $DEFAULT_DATA_PATH => q(data);
@@ -68,7 +68,6 @@ npg::util - A database handle and utility object
 
 =head1 VERSION
 
-$Revision: 16335 $
 
 =head1 SYNOPSIS
 

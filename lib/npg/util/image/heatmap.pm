@@ -15,8 +15,9 @@ use base qw(npg::util::image::image);
 use Carp;
 use POSIX qw(floor ceil);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15414 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly our $NUMBER_OF_LANES               => 8;
 Readonly our $ACCOUNT_FOR_GAP_BETWEEN_LANES => 14;
 Readonly our $PERCENTAGE_RANGE_MAX          => 100;
@@ -416,7 +417,6 @@ npg::util::image::heatmap
 
 =head1 VERSION
 
-$LastChangedRevision: 15414 $
 
 =head1 SYNOPSIS
 

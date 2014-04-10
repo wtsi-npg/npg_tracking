@@ -15,12 +15,13 @@ use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Carp;
 use English qw(-no_match_vars);
+use Readonly;
 
 use npg_tracking::Schema;
 use npg::email;
 use npg::email::event;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16411 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 
 my $schema = npg_tracking::Schema->connect();
@@ -58,7 +59,6 @@ event_notifications -- send notifications for events
 
 =head1 VERSION
 
-$Revision: 16411 $
 
 =head1 SYNOPSIS
 

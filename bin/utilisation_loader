@@ -13,6 +13,8 @@ use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use npg::api::instrument_utilisation;
 
+our $VERSION = '0';
+
 my $instrument_utilisation = npg::api::instrument_utilisation->new();
 foreach my $method (qw/calculate_ga2_values calculate_hiseq_values calculate_miseq_values/) {
   $instrument_utilisation->$method;
@@ -24,4 +26,4 @@ foreach my $method (qw/calculate_ga2_values calculate_hiseq_values calculate_mis
 
 0;
 
-
+=head1 VERSION

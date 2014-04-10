@@ -16,7 +16,7 @@ use English qw(-no_match_vars);
 use Carp;
 use Digest::SHA qw(sha256_hex);;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15395 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -141,7 +141,6 @@ npg::model::user - data model for user
 
 =head1 VERSION
 
-$Revision: 15395 $
 
 =head1 SYNOPSIS
 

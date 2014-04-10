@@ -14,7 +14,7 @@ use Carp;
 use npg::api::run;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -57,7 +57,6 @@ npg::api::run_status_dict - an interface onto npg.run_status_dict
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
 
 =head1 SYNOPSIS
 

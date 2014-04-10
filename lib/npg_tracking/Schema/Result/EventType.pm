@@ -166,7 +166,7 @@ __PACKAGE__->has_many(
 # Id:            $Id: EventType.pm 11232 2010-10-07 12:00:50Z dj3 $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/EventType.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11232 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 use Carp;
 

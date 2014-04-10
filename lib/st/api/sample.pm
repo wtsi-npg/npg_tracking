@@ -13,7 +13,7 @@ use Data::Dumper;
 
 __PACKAGE__->mk_accessors(fields());
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16477 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub _parse_taxon_id {
     my ($self, $taxon_id) = @_;
@@ -113,7 +113,6 @@ st::api::sample - an interface to sample lims
 
 =head1 VERSION
 
-$Revision: 16477 $
 
 =head1 SYNOPSIS
 

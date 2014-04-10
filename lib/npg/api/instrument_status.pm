@@ -15,7 +15,7 @@ use English qw{-no_match_vars};
 use npg::api::instrument;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15277 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields(), 'name');
 __PACKAGE__->hasa(qw(instrument));
@@ -60,7 +60,6 @@ npg::api::instrument_status - An interface onto npg.instrument_status
 
 =head1 VERSION
 
-$LastChangedRevision: 15277 $
 
 =head1 SYNOPSIS
 

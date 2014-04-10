@@ -224,7 +224,7 @@ __PACKAGE__->has_many(
 # Id:            $Id: RunLane.pm 15357 2012-03-20 12:02:08Z js10 $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/RunLane.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15357 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 =head2 current_run_lane_status
 

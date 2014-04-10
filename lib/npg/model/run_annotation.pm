@@ -18,7 +18,7 @@ use npg::model::event;
 use npg::model::entity_type;
 use npg::model::instrument_annotation;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a([qw(run annotation)]);
@@ -236,7 +236,6 @@ npg::model::run_annotation
 
 =head1 VERSION
 
-$Revision: 14928 $
 
 =head1 SYNOPSIS
 

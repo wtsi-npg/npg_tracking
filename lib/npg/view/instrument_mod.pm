@@ -16,7 +16,7 @@ use npg::model::instrument_mod;
 use npg::model::instrument_mod_dict;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 Readonly::Scalar our $LIMIT_ATOM_ENTRIES => 40;
 
 sub authorised {
@@ -147,7 +147,6 @@ npg::view::instrument_mod - view handling for instrument_mods
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
 
 =head1 SYNOPSIS
 

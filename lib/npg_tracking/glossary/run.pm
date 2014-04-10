@@ -10,8 +10,9 @@ package npg_tracking::glossary::run;
 
 use Moose::Role;
 use npg_tracking::util::types;
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 has 'id_run'    =>   (isa       => 'NpgTrackingRunId',
                       is        => 'ro',
@@ -27,7 +28,6 @@ npg_tracking::glossary::run
 
 =head1 VERSION
 
-$LastChangedRevision: 16549 $
 
 =head1 SYNOPSIS
 
