@@ -70,7 +70,7 @@ my $builder = $class->new(
 
                 'module_name'         => 'npg-tracking',
                 'dist_author'         => q(wtsi-npg <npg@sanger.ac.uk>),
-                'dist_version'        => npg_tracking::util::build->git_tag(),
+                'dist_version'        => $class->git_tag(),
                 'dist_abstract'       => 'Illumina sequencing instruments tracking',
                 'license'             => 'gpl',
 
@@ -174,7 +174,7 @@ my $builder = $class->new(
                 'MIME::Base64'                    => 0,
                 'MIME::Lite'                      => '3.024',
                 'MIME::Parser'                    => '5.427',
-		'Module::PluginFinder'            => '0.04',
+                'Module::PluginFinder'            => '0.04',
                 'Moose'                           => '0.93',
                 'Moose::Meta::Class'              => 0,
                 'Moose::Role'                     => '0.93',
@@ -216,7 +216,8 @@ if ($builder->install_base()) {
   $builder->install_path('data' => join q{/}, $builder->install_base(), 'data');
   $builder->add_build_element('data');
 } else {
-  warn "WARNING: '--install_base' option is not given, 'data' element will not be installed\n\n";
+  warn qq[WARNING: '--install_base' option is not given, 'data' element will not be installed,\n] .
+       qq[         version will not be changed in modules and scripts\n\n];
 }
 
 $builder->create_build_script();

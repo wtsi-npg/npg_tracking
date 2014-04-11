@@ -3,30 +3,35 @@
 # Created on:       1 April 2014
 
 package npg_tracking::util::build;
+
 use strict;
 use warnings;
-
+use Carp;
+use English qw(-no_match_vars);
 use base 'Module::Build';
 
-##no critic (NamingConventions::Capitalization InputOutput::ProhibitBacktickOperators ErrorHandling::RequireCarping ValuesAndExpressions::ProhibitNoisyQuotes ControlStructures::ProhibitPostfixControls RegularExpressions::RequireDotMatchAnything RegularExpressions::ProhibitUnusedCapture) 
-
-##no critic (Variables::ProhibitPunctuationVars ErrorHandling::RequireCheckingReturnValueOfEval Subroutines::RequireFinalReturn InputOutput::RequireCheckedSyscalls)
+##no critic (NamingConventions::Capitalization)
 
 =head2 git_tag
+
+ Returns values for a version based on git tag.
+ Relies on scripts/gitver script being present.
+
 =cut
 
 sub git_tag {
   my $version;
   my $gitver = q[./scripts/gitver];
   if (!-e $gitver) {
-    warn "$gitver script not found";
+    carp "$gitver script not found";
     $version = q[unknown];
   }
   if (!-x $gitver) {
-    warn "$gitver script is not executable";
+    carp "$gitver script is not executable";
     $version = q[unknown];
   }
   if (!$version) {
+    ##no critic (InputOutput::ProhibitBacktickOperators)
     $version = `$gitver`;
     $version =~ s/\s$//smxg;
   }
@@ -34,6 +39,7 @@ sub git_tag {
 }
 
 =head2 ACTION_code
+
 =cut
 
 sub ACTION_code {
@@ -48,8 +54,8 @@ sub ACTION_code {
    for my $path (@dirs){
     opendir DIR, $path or next;   # skip dirs we can't read
     while (my $file = readdir DIR) {
-      my $full_path = join '/', $path, $file;
-      next if $file eq '.' or $file eq '..'; # skip dot files
+      my $full_path = join q[/], $path, $file;
+      if ($file eq q[.] or $file eq q[..]) { next; } # skip dot files
       if ( -d $full_path ) {
         push @dirs, $full_path; # add dir to list
       }
@@ -59,10 +65,11 @@ sub ACTION_code {
 
   my @modules;
   foreach my $dir (@dirs) {
-    opendir DIR, $dir or die qq[$dir: $!];
+    opendir DIR, $dir or croak qq[Cannot read $dir: $ERRNO];
     while (my $file = readdir DIR) {
-      next unless (-f "$dir/$file");
-      push @modules, $dir . q[/] . $file;
+      if (-f "$dir/$file") {
+        push @modules, $dir . q[/] . $file;
+      }
     }
     closedir DIR;
   }
@@ -70,39 +77,43 @@ sub ACTION_code {
   my $gitver = $self->git_tag();
   warn "Changing version of all modules and scripts to $gitver\n";
 
-##no critic (RegularExpressions::RequireExtendedFormatting RegularExpressions::RequireLineBoundaryMatching)
-
   foreach my $module (@modules) {
-    if ($self->invoked_action() eq q[fakeinstall]) {
+    if ($self->verbose || $self->invoked_action() eq q[fakeinstall]) {
       warn "Changing version of $module to $gitver\n";
     }
     my $backup = '.original';
-    local $^I = $backup;
+    local $INPLACE_EDIT = $backup;
     local @ARGV = ($module);
     while (<>) {
+      ##no critic (RegularExpressions::RequireExtendedFormatting RegularExpressions::RequireLineBoundaryMatching)
+      ##no critic (RegularExpressions::RequireDotMatchAnything RegularExpressions::ProhibitUnusedCapture)
       s/(\$VERSION\s*=\s*)('?\S+'?)\s*;/${1}'$gitver';/;
       s/head1 VERSION$/head1  VERSION\n\nVersion $gitver/;
-      print;
+      print or croak 'Cannot print';
     }
     unlink "$module$backup";
   }
+  return;
 }
 1;
 
 =head1 NAME 
 
-npg_tracking::util::build
+ npg_tracking::util::build
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
-
-use npg_tracking::util::Build
+ 
+ # in your Build.PL
+ use npg_tracking::util::Build
+ # then use npg_tracking::util::Build as you would normally use Module::Build
 
 =head1 DESCRIPTION
 
-Provide the methods to add git tag and SHA to VERSION and POD VERSION
+ This module extends method of the Module::Build module. It uses gitver script
+ provided in scripts in this package to get the git tag bases expression for
+ the version and assigns this version to a $VERSION variable in all modules and scripts.
 
 =head1 SUBROUTINES/METHODS
 
@@ -112,7 +123,15 @@ Provide the methods to add git tag and SHA to VERSION and POD VERSION
 
 =over
 
+=item strict
+
+=item warnings
+
 =item Module::Build
+
+=item English
+
+=item base
 
 =back
 
@@ -130,7 +149,7 @@ Kate Taylor, E<lt>kt6@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by Kate Taylor
+Copyright (C) 2014 GRL, by Kate Taylor
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

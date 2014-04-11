@@ -1,5 +1,7 @@
 CHANGES
 
+ - the build file and module - code improvements, POD and PBP for the module
+
 release 76.5
  - code action on Build only if install target specified
  - global removal of [LastChanged]Version from POD; change VERSION svn declaration to ='0';
