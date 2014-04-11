@@ -16,7 +16,7 @@ use Lingua::EN::Inflect qw(PL);
 use English qw(-no_match_vars);
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15277 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 sub new {
   my ($class, $ref) = @_;
@@ -312,7 +312,6 @@ npg::api::base
 
 =head1 VERSION
 
-$Revision: 15277 $
 
 =head1 SYNOPSIS
 

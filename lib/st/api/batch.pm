@@ -13,7 +13,7 @@ use warnings;
 
 __PACKAGE__->mk_accessors(fields());
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 
 sub live {
@@ -37,7 +37,6 @@ st::api::batch - an interface to Sample Tracking batches
 
 =head1 VERSION
 
-$LastChangedRevision: 15277 $
 
 =head1 SYNOPSIS
 

@@ -109,7 +109,7 @@ __PACKAGE__->has_many(
 # Id:            $Id: RunLaneStatusDict.pm 14155 2011-09-09 13:59:49Z mg8 $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/RunLaneStatusDict.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14155 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 use Carp;
 

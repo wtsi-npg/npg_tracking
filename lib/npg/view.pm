@@ -164,7 +164,6 @@ __END__
 npg::view - New pipeline MVC view superclass, derived from ClearPress::View
 
 =head1 VERSION
-
 =head1 SYNOPSIS
 
   my $oView = npg::view::<subclass>->new({'util' => $oUtil});

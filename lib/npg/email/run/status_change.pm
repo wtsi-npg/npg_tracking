@@ -18,7 +18,7 @@ use Moose::Util::TypeConstraints;
 use POSIX qw(strftime);
 use st::api::event;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16395 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 
 Readonly::Scalar my $TEMPLATE => 'run_status_change.tt2';
@@ -293,7 +293,6 @@ npg::email::run::status_change
 
 =head1 VERSION
 
-$Revision: 16395 $
 
 =head1 SYNOPSIS
 

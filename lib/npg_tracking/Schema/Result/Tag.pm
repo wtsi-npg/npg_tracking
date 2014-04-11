@@ -149,7 +149,7 @@ __PACKAGE__->has_many(
 # Id:            $Id: Tag.pm 14844 2012-01-03 15:55:58Z gq1 $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/Tag.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14844 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 use Carp;
 

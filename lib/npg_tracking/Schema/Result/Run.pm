@@ -338,7 +338,7 @@ __PACKAGE__->has_many(
 # Id:            $Id: Run.pm 16269 2012-11-26 09:53:48Z mg8 $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/Run.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 use Carp;
 use DateTime;
 use DateTime::TimeZone;

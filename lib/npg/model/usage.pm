@@ -7,7 +7,7 @@ use strict;
 use warnings;
 use base qw(npg::model);
 
-our $VERSION = '0.0';
+our $VERSION = '0';
 
 1;
 __END__
@@ -15,6 +15,8 @@ __END__
 =head1 NAME
 
 npg::model::usage
+
+=head1 VERSION
 
 =head1 SYNOPSIS
 

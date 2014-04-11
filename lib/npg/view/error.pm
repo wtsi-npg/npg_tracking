@@ -17,7 +17,7 @@ use MIME::Lite;
 use npg::model::usergroup;
 use DateTime;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 12618 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors('access');
 
@@ -140,7 +140,6 @@ npg::view::error - subclass of npg::view for error-viewing purposes
 
 =head1 VERSION
 
-$Revision: 12618 $
 
 =head1 SYNOPSIS
 

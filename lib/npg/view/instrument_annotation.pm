@@ -15,7 +15,7 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::instrument_annotation;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub add_ajax {
   my $self    = shift;
@@ -35,7 +35,6 @@ npg::view::instrument_annotation - view handling for instrument_annotationes
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
 
 =head1 SYNOPSIS
 

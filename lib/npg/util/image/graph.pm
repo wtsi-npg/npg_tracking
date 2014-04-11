@@ -16,8 +16,9 @@ use GD::Graph::mixed;
 use GD;
 use base qw(npg::util::image::image);
 use Carp qw(carp croak cluck confess);
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15350 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 Readonly our $THREE          => 3;
 Readonly our $FOUR           => 4;
@@ -108,7 +109,6 @@ npg::util::image::graph
 
 =head1 VERSION
 
-$LastChangedRevision: 15350 $
 
 =head1 SYNOPSIS
 

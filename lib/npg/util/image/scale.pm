@@ -15,8 +15,9 @@ use base qw(npg::util::image::image);
 use Carp;
 use POSIX qw(floor ceil);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15350 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly our $VERTICAL_DEFAULTS => {
                                     BAR_WIDTH    => 6,
                                     BAR_HEIGHT   => 255,
@@ -311,7 +312,6 @@ npg::util::image::scale
 
 =head1 VERSION
 
-$LastChangedRevision: 15350 $
 
 =head1 SYNOPSIS
 

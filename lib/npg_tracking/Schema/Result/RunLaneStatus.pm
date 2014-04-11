@@ -194,7 +194,7 @@ __PACKAGE__->belongs_to(
 # Id:            $Id: RunLaneStatus.pm 15422 2012-04-02 14:17:16Z mg8 $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/RunLaneStatus.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15422 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 use Carp;
 use DateTime;

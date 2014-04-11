@@ -14,7 +14,7 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::run_status;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15220 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_all();
@@ -132,7 +132,6 @@ npg::model::run_status_dict
 
 =head1 VERSION
 
-$LastChangedRevision: 15220 $
 
 =head1 SYNOPSIS
 

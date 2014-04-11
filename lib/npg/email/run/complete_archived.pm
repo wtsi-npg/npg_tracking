@@ -13,7 +13,7 @@ use Moose;
 use Carp;
 use English qw{-no_match_vars};
 use POSIX qw(strftime);
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14884 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 extends qw{npg::email::run};
 
@@ -23,7 +23,6 @@ npg::email::run::complete_archived
 
 =head1 VERSION
 
-$LastChangedRevision: 14884 $
 
 =head1 SYNOPSIS
 

@@ -20,8 +20,9 @@ use Monitor::SRS::FTP;
 use Monitor::SRS::Local;
 use Monitor::RunFolder;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16335 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly::Array my @DISKS => qw( Runs_D Runs_E );
 
 local $ENV{dev} = ( defined $ENV{dev} ? $ENV{dev} : 'live' );
@@ -119,7 +120,6 @@ hiseq_checker - Monitor HiSeq instruments for run information.
 
 =head1 VERSION
 
-$Revision: 16335 $
 
 =head1 SYNOPSIS
 
