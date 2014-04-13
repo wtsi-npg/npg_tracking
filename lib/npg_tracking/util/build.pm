@@ -48,12 +48,8 @@ sub ACTION_code {
   my $self = shift;
   $self->SUPER::ACTION_code;
 
-  if (!$self->install_base()) {
-    return;
-  }
-
   my @dirs  = (q[./blib/lib], q[./blib/script]);
-   for my $path (@dirs){
+  for my $path (@dirs){
     opendir DIR, $path or next;   # skip dirs we can't read
     while (my $file = readdir DIR) {
       my $full_path = join q[/], $path, $file;

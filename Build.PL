@@ -76,8 +76,6 @@ my $builder = $class->new(
 
           'configure_requires' => {
                 'ExtUtils::CBuilder'              => 0,
-                'Readonly'                        => 0,
-                'Readonly::XS'                    => 0,
           },
 
           'build_requires' => {
@@ -216,8 +214,7 @@ if ($builder->install_base()) {
   $builder->install_path('data' => join q{/}, $builder->install_base(), 'data');
   $builder->add_build_element('data');
 } else {
-  warn qq[WARNING: '--install_base' option is not given, 'data' element will not be installed,\n] .
-       qq[         version will not be changed in modules and scripts\n\n];
+  warn qq[WARNING: '--install_base' option is not given, 'data' element will not be installed,\n];
 }
 
 $builder->create_build_script();
