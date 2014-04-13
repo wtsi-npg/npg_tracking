@@ -1,4 +1,4 @@
-package t::ftp_util;    ## no critic (NamingConventions::Capitalization)
+package t::ftp_util;
 
 use strict;
 use warnings;
@@ -135,8 +135,6 @@ __END__
 t::ftp_util - a mock FTP server to run tests against.
 
 =head1 VERSION
-
-$Revision: 11232 $
 
 =head1 SYNOPSIS
 

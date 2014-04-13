@@ -187,12 +187,9 @@ __PACKAGE__->belongs_to(
 
 # Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:38
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TkFv5J36/M51WwS1WQKs8Q
+
 # Author:        david.jackson@sanger.ac.uk
-# Maintainer:    $Author: mg8 $
 # Created:       2010-04-08
-# Last Modified: $Date: 2012-04-02 15:17:16 +0100 (Mon, 02 Apr 2012) $
-# Id:            $Id: RunLaneStatus.pm 15422 2012-04-02 14:17:16Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/RunLaneStatus.pm $
 
 our $VERSION = '0';
 
@@ -367,11 +364,5 @@ sub _update_run_status {
   return 1;
 }
 
-
-1;
-
-
-
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;

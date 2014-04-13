@@ -1,10 +1,6 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       19/10/2010
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: RunFolder.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/RunFolder.pm $
 
 package Monitor::RunFolder;
 
@@ -17,9 +13,10 @@ with 'npg_tracking::illumina::run::short_info';    # id_run
 
 use Carp;
 use English qw(-no_match_vars);
+use Readonly;
+
 our $VERSION = '0';
 
-use Readonly;
 Readonly::Scalar our $ACCEPTABLE_CYCLE_DELAY => 6;
 
 # short_info's documentation says that run_folder will be constrained to the
@@ -219,7 +216,6 @@ __END__
 Monitor::RunFolder - provide methods to get run details from a folder path
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

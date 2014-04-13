@@ -10,6 +10,8 @@ use Carp;
 use English qw(-no_match_vars);
 use base 'Module::Build';
 
+our $VERSION = '0';
+
 ##no critic (NamingConventions::Capitalization)
 
 =head2 git_tag
@@ -88,7 +90,7 @@ sub ACTION_code {
       ##no critic (RegularExpressions::RequireExtendedFormatting RegularExpressions::RequireLineBoundaryMatching)
       ##no critic (RegularExpressions::RequireDotMatchAnything RegularExpressions::ProhibitUnusedCapture)
       s/(\$VERSION\s*=\s*)('?\S+'?)\s*;/${1}'$gitver';/;
-      s/head1 VERSION$/head1  VERSION\n\nVersion $gitver/;
+      s/head1 VERSION$/head1  VERSION\n\n$gitver/;
       print or croak 'Cannot print';
     }
     unlink "$module$backup";

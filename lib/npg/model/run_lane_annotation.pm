@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: ajb $
 # Created:       2008-05-08
-# Last Modified: $Date: 2011-06-16 09:12:32 +0100 (Thu, 16 Jun 2011) $
-# Id:            $Id: run_lane_annotation.pm 13390 2011-06-16 08:12:32Z ajb $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/run_lane_annotation.pm $
 #
 package npg::model::run_lane_annotation;
 use strict;
@@ -81,7 +77,6 @@ __END__
 npg::model::run_lane_annotation
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

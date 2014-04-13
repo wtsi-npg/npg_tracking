@@ -107,11 +107,7 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:N3BJOfYmujr6ASGwnfcqkg
 
+our $VERSION = '0';
 
-# You can replace this text with custom content, and it will be preserved on regeneration
-1;
-
-
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;

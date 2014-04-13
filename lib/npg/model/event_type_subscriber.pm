@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: gq1 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2010-05-04 15:28:42 +0100 (Tue, 04 May 2010) $
-# Id:            $Id: event_type_subscriber.pm 9207 2010-05-04 14:28:42Z gq1 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/event_type_subscriber.pm $
 #
 package npg::model::event_type_subscriber;
 use strict;
@@ -29,7 +25,6 @@ __END__
 npg::model::event_type_subscriber
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
@@ -70,7 +65,7 @@ npg::model::event_type_subscriber
 
 =head1 AUTHOR
 
-$Author: Roger M Pettett$
+Roger M Pettett
 
 =head1 LICENSE AND COPYRIGHT
 

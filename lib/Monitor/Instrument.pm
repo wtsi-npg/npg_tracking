@@ -1,10 +1,6 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: Instrument.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/Instrument.pm $
 
 package Monitor::Instrument;
 
@@ -160,7 +156,6 @@ information.
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
     C<<use Monitor::Instrument;
@@ -205,15 +200,9 @@ Return the current time in a format that can be inserted into a mysql table.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-
-
 =head1 INCOMPATIBILITIES
 
-
-
 =head1 BUGS AND LIMITATIONS
-
-
 
 =head1 AUTHOR
 

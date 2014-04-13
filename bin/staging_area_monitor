@@ -1,11 +1,7 @@
 #!/usr/bin/env perl
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-07-22
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: staging_area_monitor 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/bin/staging_area_monitor $
 
 package staging_area_monitor;
 
@@ -144,7 +140,6 @@ __END__
 staging_area_monitor - monitor incoming runs for problems and completion
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

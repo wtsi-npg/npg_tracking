@@ -1,10 +1,6 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: jo3 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2010-10-25 15:41:02 +0100 (Mon, 25 Oct 2010) $
-# Id:            $Id: RunInfo.pm 11472 2010-10-25 14:41:02Z jo3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/Cbot/RunInfo.pm $
 #
 
 package Monitor::Cbot::RunInfo;

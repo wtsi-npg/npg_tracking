@@ -1,10 +1,6 @@
 #########
 # Author:        gq1
-# Maintainer:    $Author: mg8 $
 # Created:       2010-05-05
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: validation.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/illumina/run/folder/validation.pm $
 #
 
 package npg_tracking::illumina::run::folder::validation;
@@ -13,7 +9,6 @@ use Moose;
 use Carp;
 use English qw{-no_match_vars};
 use npg::api::run;
-use Readonly;
 
 with qw{npg_tracking::illumina::run::short_info};
 
@@ -73,7 +68,6 @@ npg_tracking::illumina::run::folder::validation
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
 $validation = npg_tracking::illumina::run::folder::validation->new( run_folder => $run_folder, );
@@ -102,8 +96,6 @@ Given a run_folder, and get the final digits of it to be the id_run, check this 
 
 =item English -no_match_vars
 
-=item Readonly
-
 =item npg_tracking::illumina::run::folder::validation
 
 =back
@@ -114,7 +106,7 @@ Given a run_folder, and get the final digits of it to be the id_run, check this 
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Guoying Qi
 
 =head1 LICENSE AND COPYRIGHT
 

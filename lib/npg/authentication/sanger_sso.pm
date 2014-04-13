@@ -1,9 +1,5 @@
 # Author:        david.jackson@sanger.ac.uk
-# Maintainer:    $Author: mg8 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: sanger_sso.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/authentication/sanger_sso.pm $
 
 package npg::authentication::sanger_sso;
 
@@ -60,7 +56,6 @@ __END__
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -105,7 +100,7 @@ Called by Catalyst authentication infrastructure....
 
 =head1 AUTHOR
 
-$Author: mg8 $
+David Jackson
 
 =head1 LICENSE AND COPYRIGHT
 

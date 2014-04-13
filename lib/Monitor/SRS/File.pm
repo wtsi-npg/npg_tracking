@@ -1,15 +1,10 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-06-09
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: File.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/SRS/File.pm $
 
 package Monitor::SRS::File;
 
 use Moose;
-
 use Carp;
 use IO::All;
 use MooseX::StrictConstructor;

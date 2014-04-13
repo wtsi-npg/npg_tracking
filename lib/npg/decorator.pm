@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: mg8 $
 # Created:       2009-04-15
-# Last Modified: $Date: 2012-03-29 17:11:11 +0100 (Thu, 29 Mar 2012) $
-# Id:            $Id: decorator.pm 15402 2012-03-29 16:11:11Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/decorator.pm $
 #
 package npg::decorator;
 use strict;
@@ -46,7 +42,6 @@ npg::decorator - NPG tracking decorator
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -83,7 +78,7 @@ npg::decorator - NPG tracking decorator
 
 =head1 AUTHOR
 
-$Author: Andy Brown$
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

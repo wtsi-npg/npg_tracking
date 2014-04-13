@@ -1,7 +1,6 @@
 #########
 # Author:        Marina Gourtovaia
 # Created:       18 December 2009
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/instrument_handling/trunk/lib/srpipe/runner/runner.pm
 #
 
 package npg_tracking::daemon;
@@ -14,6 +13,9 @@ use Sys::Hostname;
 use POSIX qw(strftime);
 use FindBin qw($Bin);
 use Cwd qw/abs_path/;
+use Readonly;
+
+our $VERSION = '0';
 
 ## no critic (RequireInterpolationOfMetachars)
 Readonly::Scalar my $DEFAULT_COMMAND => q{perl -e '$|=1;while(1){print "daemon running\n";sleep5;}'};

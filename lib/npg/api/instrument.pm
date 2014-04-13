@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: dj3 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2010-05-20 13:44:46 +0100 (Thu, 20 May 2010) $
-# Id:            $Id: instrument.pm 9380 2010-05-20 12:44:46Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/instrument.pm $
 #
 package npg::api::instrument;
 use strict;
@@ -90,7 +86,6 @@ npg::api::instrument - An interface onto npg.instrument
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -160,8 +155,6 @@ npg::api::instrument - An interface onto npg.instrument
   my $arRuns = $oInstrument->runs();
 
 =head2 new_from_xml - Wrapper for base::new_from_xml. Populates designations for each instrument.
-
-
 
 =head2 designations - Arrayref of designations for this instrument
 

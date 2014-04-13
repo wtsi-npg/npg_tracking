@@ -1,10 +1,6 @@
 #########
 # Author:        Marina Gourtovaia
-# Maintainer:    $Author: mg8 $
 # Created:       June 2010
-# Last Modified: $Date: 2013-01-28 11:09:22 +0000 (Mon, 28 Jan 2013) $
-# Id:            $Id: list.pm 16566 2013-01-28 11:09:22Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/data/reference/list.pm $
 #
 
 package npg_tracking::data::reference::list;
@@ -27,7 +23,6 @@ our $VERSION = '0';
 npg_tracking::data::reference::list
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
@@ -614,7 +609,7 @@ __END__
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

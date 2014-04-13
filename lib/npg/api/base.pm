@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-03-01 10:36:10 +0000 (Thu, 01 Mar 2012) $
-# Id:            $Id: base.pm 15277 2012-03-01 10:36:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/base.pm $
 #
 package npg::api::base;
 use base qw(Class::Accessor);
@@ -14,7 +10,6 @@ use Carp;
 use npg::api::util;
 use Lingua::EN::Inflect qw(PL);
 use English qw(-no_match_vars);
-use Readonly;
 
 our $VERSION = '0';
 
@@ -312,7 +307,6 @@ npg::api::base
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -435,8 +429,6 @@ Fetches XML over HTTP based on self->util->base_uri().
 =item Lingua::EN::Inflect
 
 =item English
-
-=item Readonly
 
 =back
 

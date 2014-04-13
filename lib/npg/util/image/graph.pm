@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2008-06-10
-# Last Modified: $Date: 2012-03-19 09:50:46 +0000 (Mon, 19 Mar 2012) $
-# Id:            $Id: graph.pm 15350 2012-03-19 09:50:46Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util/image/graph.pm $
 #
 package npg::util::image::graph;
 use strict;
@@ -93,7 +89,6 @@ sub plotter {
   if ($attrs->{return_object}) {
     return $graph->plot($data);
   }
-#open (FH, ">:raw", 'image.png') || croak 'could not open';print FH $png;close FH;
 
   return $png;
 }
@@ -108,7 +103,6 @@ __END__
 npg::util::image::graph
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
