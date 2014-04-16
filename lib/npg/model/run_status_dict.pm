@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-02-22 10:12:17 +0000 (Wed, 22 Feb 2012) $
-# Id:            $Id: run_status_dict.pm 15220 2012-02-22 10:12:17Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/run_status_dict.pm $
 #
 package npg::model::run_status_dict;
 use strict;
@@ -131,7 +127,6 @@ __END__
 npg::model::run_status_dict
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

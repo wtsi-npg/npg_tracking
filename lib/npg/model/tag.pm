@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: dj3 $
 # Created:       2008-03-03
-# Last Modified: $Date: 2010-06-18 09:27:18 +0100 (Fri, 18 Jun 2010) $
-# Id:            $Id: tag.pm 9670 2010-06-18 08:27:18Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/tag.pm $
 #
 package npg::model::tag;
 use strict;
@@ -98,7 +94,6 @@ __END__
 npg::model::tag
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

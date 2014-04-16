@@ -22,6 +22,8 @@ with qw/
           npg_tracking::glossary::tag
        /;
 
+our $VERSION = '0';
+
 =head1 NAME
 
 st::api::lims::samplesheet
@@ -446,7 +448,7 @@ __END__
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

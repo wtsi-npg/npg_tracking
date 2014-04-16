@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: mg8 $
 # Created:       2009-01-28
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: instrument_utilisation.pm 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/instrument_utilisation.pm $
 #
 package npg::api::instrument_utilisation;
 use strict;
@@ -757,7 +753,6 @@ __END__
 npg::api::instrument_utilisation - An interface onto npg.instrument_utilisation
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

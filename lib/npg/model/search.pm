@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2008-01
-# Last Modified: $Date: 2012-03-08 11:21:27 +0000 (Thu, 08 Mar 2012) $
-# Id:            $Id: search.pm 15308 2012-03-08 11:21:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/search.pm $
 #
 package npg::model::search;
 use strict;
@@ -443,7 +439,6 @@ __END__
 npg::model::search
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

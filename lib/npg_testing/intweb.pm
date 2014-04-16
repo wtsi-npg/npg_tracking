@@ -1,7 +1,3 @@
-#########
-# Author:        mg8
-#
-
 package npg_testing::intweb;
 
 use strict;
@@ -20,7 +16,6 @@ our $VERSION = '0';
 npg_testing::intweb
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
@@ -115,7 +110,7 @@ __END__
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

@@ -1,10 +1,6 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: Local.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/SRS/Local.pm $
 
 package Monitor::SRS::Local;
 

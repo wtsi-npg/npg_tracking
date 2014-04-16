@@ -1,7 +1,6 @@
 #########
 # Author:        David K. Jackson
 # Created:       18 December 2009
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/instrument_handling/branches/prerelease-16.0/lib/srpipe/runner/analysis.pm, r15456
 #
 
 package npg_tracking::daemon::samplesheet;
@@ -9,7 +8,8 @@ package npg_tracking::daemon::samplesheet;
 use Moose;
 use Carp;
 use English qw(-no_match_vars);
-use Readonly;
+
+our $VERSION = '0';
 
 extends 'npg_tracking::daemon';
 
@@ -50,8 +50,6 @@ Class for a daemon that generates sample sheets.
 
 =item English
 
-=item Readonly
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -60,7 +58,7 @@ Class for a daemon that generates sample sheets.
 
 =head1 AUTHOR
 
-Author: David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
+David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

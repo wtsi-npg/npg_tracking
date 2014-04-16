@@ -1,7 +1,6 @@
 #######
 # Author:        Marina Gourtovaia
 # Created:       July 2013
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/lims.pm, r16549
 #
 
 package st::api::lims;
@@ -20,6 +19,8 @@ with qw/  npg_tracking::glossary::run
           npg_tracking::glossary::lane
           npg_tracking::glossary::tag
        /;
+
+our $VERSION = '0';
 
 =head1 NAME
 
@@ -916,7 +917,7 @@ __END__
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

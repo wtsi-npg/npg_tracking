@@ -159,12 +159,9 @@ __PACKAGE__->has_many(
 
 # Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:41
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BkRdBsUGse4wgTcpRHsS3A
+
 # Author:        david.jackson@sanger.ac.uk
-# Maintainer:    $Author: dj3 $
 # Created:       2010-04-08
-# Last Modified: $Date: 2010-10-07 13:00:50 +0100 (Thu, 07 Oct 2010) $
-# Id:            $Id: EventType.pm 11232 2010-10-07 12:00:50Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/EventType.pm $
 
 our $VERSION = '0';
 
@@ -230,11 +227,5 @@ sub _count {
     return $result_set->count();
 }
 
-1;
-
-
-
-
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;

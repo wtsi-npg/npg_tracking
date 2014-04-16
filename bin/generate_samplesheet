@@ -14,4 +14,3 @@ npg::samplesheet->new_with_options()->process;
 
 1;
 
-=head1 VERSION

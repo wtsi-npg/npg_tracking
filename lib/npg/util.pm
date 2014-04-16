@@ -1,13 +1,13 @@
 #########
 # Author:        rmp
 # Created:       2006-10-31
-# copied from : svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util.pm r16335
 #
 package npg::util;
 
 use strict;
 use warnings;
 use base qw(ClearPress::util Exporter);
+use Readonly;
 
 our $VERSION = '0';
 
@@ -67,7 +67,6 @@ __END__
 npg::util - A database handle and utility object
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

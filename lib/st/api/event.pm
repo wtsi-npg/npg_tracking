@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2008-02-22
-# Last Modified: $Date: 2012-03-01 10:36:10 +0000 (Thu, 01 Mar 2012) $
-# Id:            $Id: event.pm 15277 2012-03-01 10:36:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/event.pm $
 #
 package st::api::event;
 use base qw(st::api::base);
@@ -72,7 +68,6 @@ __END__
 st::api::event - an interface to Sample Tracking events
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

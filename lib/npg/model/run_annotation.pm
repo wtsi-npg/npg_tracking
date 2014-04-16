@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: run_annotation.pm 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/run_annotation.pm $
 #
 package npg::model::run_annotation;
 use strict;
@@ -235,7 +231,6 @@ __END__
 npg::model::run_annotation
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

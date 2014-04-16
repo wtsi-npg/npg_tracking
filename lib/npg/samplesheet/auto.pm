@@ -1,10 +1,6 @@
 #########
 # Author:        David K. Jackson
-# Maintainer:    $Author: mg8 $
 # Created:       2011-11-29
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: auto.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/samplesheet/auto.pm $
 #
 
 #package npg::samplesheet::auto; use Moose; use Try::Tiny; with q(MooseX::Log::Log4perl); use npg::samplesheet; use npg_tracking::Schema; has npg_tracking_schema => (isa => q(npg_tracking::Schema), is => q(ro), lazy_build => 1); has sleep_interval => ( q(is) => q(ro), q(isa) => q(Int), default => 90); sub _build_npg_tracking_schema {return npg_tracking::Schema->connect();}  has _miseq => ( q(is) => q(ro), lazy_build => 1 );  sub _build__miseq { my $self=shift; $self->npg_tracking_schema->resultset(q(InstrumentFormat))->find({model=>q(MiSeq)});}  has _pending => ( q(is) => q(ro), lazy_build => 1 );  sub _build__pending { my $self=shift; $self->npg_tracking_schema->resultset(q(RunStatusDict))->find({description=>q(run pending)});}  sub loop {my $self = shift; while(1){ $self->main; sleep $self->sleep_interval} }; sub main { my $self = shift; my $rs = $self->_pending->run_statuses->search({iscurrent=>1})->related_resultset(q(run))->search({q(run.id_instrument_format)=>$self->_miseq->id_instrument_format}); $self->log->debug( $rs->count." ".($self->_miseq->model)." runs marked as ".($self->_pending->description)); while(my$r=$rs->next){$self->log->debug( join",",$r->id_run,$r->instrument->name); my$ss=npg::samplesheet->new(npg_tracking_schema=>$self->npg_tracking_schema, run=>$r, id_run=>$r->id_run); my$o=$ss->output; if(-e $o){ $self->log->debug(qq($o already exists))}else{ try { $ss->process; $self->log->info(qq($o created for run ).($r->id_run)); } catch {  $self->log->error(qq(Trying to create $o for run ).($r->id_run).qq( experienced error: $_)); } } }  } no Moose; 1; use Log::Log4perl qw(:easy); BEGIN{ Log::Log4perl->easy_init({level=>$INFO,}); }
@@ -17,6 +13,7 @@ use npg_tracking::Schema;
 use Readonly;
 
 our $VERSION = '0';
+
 Readonly::Scalar our $DEFAULT_SLEEP => 90;
 
 with q(MooseX::Log::Log4perl);
@@ -26,7 +23,6 @@ with q(MooseX::Log::Log4perl);
 npg::samplesheet::auto
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
@@ -137,7 +133,7 @@ __END__
 
 =head1 AUTHOR
 
-Author: David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
+David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
