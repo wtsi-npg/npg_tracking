@@ -1,10 +1,6 @@
 #############
-# $Id: mailer.pm 16549 2013-01-23 16:49:39Z mg8 $
 # Created By: ajb
-# Mast Maintained By: $Author: mg8 $
 # Created On: 2009-06-15
-# Last Changed On: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util/mailer.pm $
 
 package npg::util::mailer;
 use strict;
@@ -14,7 +10,6 @@ use English qw{-no_match_vars};
 
 use Class::Std;
 use MIME::Lite;
-use Readonly;
 
 our $VERSION = '0';
 
@@ -89,7 +84,6 @@ __END__
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -118,8 +112,6 @@ __END__
 
 =item Class::Std
 
-=item Readonly
-
 =item base
 
 =back
@@ -130,7 +122,7 @@ __END__
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

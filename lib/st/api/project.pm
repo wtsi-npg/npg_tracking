@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2011-08-17 14:40:33 +0100 (Wed, 17 Aug 2011) $
-# Id:            $Id: project.pm 13925 2011-08-17 13:40:33Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/project.pm $
 #
 package st::api::project;
 
@@ -12,7 +8,6 @@ use strict;
 use warnings;
 use Carp;
 use English qw{-no_match_vars};
-use Readonly;
 
 use base qw(st::api::base);
 
@@ -46,7 +41,6 @@ __END__
 st::api::project - an interface to a project
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
@@ -91,11 +85,7 @@ st::api::project - an interface to a project
 
 =item Carp
 
-=item List::MoreUtils
-
 =item English
-
-=item Readonly
 
 =back
 

@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-02-22 10:12:17 +0000 (Wed, 22 Feb 2012) $
-# Id:            $Id: annotation.pm 15220 2012-02-22 10:12:17Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/annotation.pm $
 #
 package npg::model::annotation;
 use strict;
@@ -54,7 +50,6 @@ __END__
 npg::model::annotation
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

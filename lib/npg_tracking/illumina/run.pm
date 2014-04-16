@@ -1,10 +1,6 @@
 #############
-# $Id: run.pm 16549 2013-01-23 16:49:39Z mg8 $
 # Created By: dj3
-# Last Maintained By: $Author: mg8 $
 # Created On: 2011-09-12
-# Last Changed On: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/illumina/run.pm $
 
 package npg_tracking::illumina::run;
 
@@ -12,7 +8,6 @@ use strict;
 use warnings;
 use Moose::Role;
 use Carp qw(croak );
-use Readonly;
 
 our $VERSION = '0';
 
@@ -50,7 +45,6 @@ npg_tracking::illumina::run
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -71,8 +65,6 @@ Provides and NPG tracking Run object given an id_run and a NPG tracking schema.
 
 =item Carp
 
-=item Readonly
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -81,7 +73,7 @@ Provides and NPG tracking Run object given an id_run and a NPG tracking schema.
 
 =head1 AUTHOR
 
-$Author: mg8 $
+David K. Jackson
 
 =head1 LICENSE AND COPYRIGHT
 

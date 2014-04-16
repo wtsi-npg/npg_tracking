@@ -1,22 +1,18 @@
 #############
-# $Id: colourmap.pm 16549 2013-01-23 16:49:39Z mg8 $
 # Created By: ajb
-# Mast Maintained By: $Author: mg8 $
 # Created On: 2010-01-06
-# Last Changed On: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util/image/colourmap.pm $
 
 package npg::util::image::colourmap;
 use strict;
 use warnings;
 use Carp;
 use English qw{-no_match_vars};
+use Readonly;
 
 our $VERSION = '0';
 
 ## no critic (Documentation::RequirePodAtEnd ProhibitCStyleForLoops ProhibitParensWithBuiltins)
 
-use Readonly;
 Readonly::Scalar my $NUM_COLOURS => 256;
 Readonly::Scalar my $BOUNDARY_BRIGHTNESS => 140;
 
@@ -25,7 +21,6 @@ Readonly::Scalar my $BOUNDARY_BRIGHTNESS => 140;
 npg::util::image::colourmap
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
@@ -988,7 +983,7 @@ __END__
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

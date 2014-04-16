@@ -1,7 +1,6 @@
 #########
 # Author:        gq1
 # Created:       2010-04-29
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/branches/prerelease-42.0/lib/st/api/project.pm, r8603
 
 package st::api::study;
 
@@ -9,7 +8,6 @@ use base qw(st::api::base);
 use strict;
 use warnings;
 use List::MoreUtils qw/ uniq /;
-use Readonly;
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -153,7 +151,6 @@ st::api::study - an interface to Sample Tracking studies
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -252,8 +249,6 @@ returns group to which data access should be limited
 =item warnings
 
 =item List::MoreUtils
-
-=item Readonly
 
 =back
 

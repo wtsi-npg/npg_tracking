@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2011-02-16 14:20:10 +0000 (Wed, 16 Feb 2011) $
-# Id:            $Id: error.pm 12618 2011-02-16 14:20:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/error.pm $
 #
 package npg::view::error;
 use strict;
@@ -139,7 +135,6 @@ __END__
 npg::view::error - subclass of npg::view for error-viewing purposes
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: gq1 $
 # Created:       2008-04-24
-# Last Modified: $Date: 2010-05-04 15:28:42 +0100 (Tue, 04 May 2010) $
-# Id:            $Id: administration.pm 9207 2010-05-04 14:28:42Z gq1 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/administration.pm $
 #
 package npg::model::administration;
 use strict;
@@ -41,7 +37,6 @@ __END__
 npg::model::administration
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
@@ -93,7 +88,7 @@ npg::model::administration
 
 =head1 AUTHOR
 
-$Author: Roger M Pettett$
+Roger M Pettett
 
 =head1 LICENSE AND COPYRIGHT
 

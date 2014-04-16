@@ -1,11 +1,8 @@
 #!/usr/bin/env perl
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-05-27
-# Last Modified: $Date: 2012-12-17 14:00:36 +0000 (Mon, 17 Dec 2012) $
-# Id:            $Id: ga_II_checker 16335 2012-12-17 14:00:36Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/bin/ga_II_checker $
+#
 
 package ga_II_checker;
 
@@ -13,7 +10,6 @@ use strict;
 use warnings;
 use Carp;
 use English qw(-no_match_vars);
-use Readonly;
 
 use Monitor::SRS::File;
 use Monitor::SRS::FTP;
@@ -101,7 +97,6 @@ __END__
 ga_II_checker - Monitor GA-II computers for run information.
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

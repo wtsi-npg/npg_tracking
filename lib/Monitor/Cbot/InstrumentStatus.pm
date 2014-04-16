@@ -1,10 +1,6 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: jo3 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2010-10-20 18:14:06 +0100 (Wed, 20 Oct 2010) $
-# Id:            $Id: InstrumentStatus.pm 11416 2010-10-20 17:14:06Z jo3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/Cbot/InstrumentStatus.pm $
 #
 
 package Monitor::Cbot::InstrumentStatus;

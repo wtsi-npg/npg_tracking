@@ -1,10 +1,6 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: jo3 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2010-10-21 17:20:43 +0100 (Thu, 21 Oct 2010) $
-# Id:            $Id: Username.pm 11439 2010-10-21 16:20:43Z jo3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/Roles/Username.pm $
 
 package Monitor::Roles::Username;
 

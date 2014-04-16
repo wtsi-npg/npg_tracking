@@ -1,5 +1,16 @@
 CHANGES
 
+release 77.0
+ - the build file and module - code improvements, POD and PBP for the module
+ - scripts and modules:
+     version variable added where needed,
+     RSC keywords removed,
+     superfluous empty lines, 'Readonly' module import and other features removed,
+     where needed, 'use Readonly' added
+ - tests - remains of RSC keywords removed
+ - the distribution test does not perform pod tests (separate tests available),
+   checks that module version matches distribution version
+
 release 76.5
  - code action on Build only if install target specified
  - global removal of [LastChanged]Version from POD; change VERSION svn declaration to ='0';

@@ -1,7 +1,6 @@
 #########
 # Author:        Marina Gourtovaia
 # Created:       17 April 2013
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/instrument_handling/trunk/lib/srpipe/runner/staging.pm, r17037
 #
 
 package npg_tracking::daemon::staging;
@@ -12,6 +11,8 @@ use English qw(-no_match_vars);
 use Readonly;
 
 extends 'npg_tracking::daemon';
+
+our $VERSION = '0';
 
 Readonly::Scalar our $SCRIPT_NAME => q[staging_area_monitor];
 
@@ -105,7 +106,7 @@ Metadata for a daemon that starts up the analysis script.
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

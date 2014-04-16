@@ -1,10 +1,6 @@
 #############
-# $Id: folder.pm 16549 2013-01-23 16:49:39Z mg8 $
 # Created By: ajb
-# Last Maintained By: $Author: mg8 $
 # Created On: 2009-10-01
-# Last Changed On: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/illumina/run/folder.pm $
 
 package npg_tracking::illumina::run::folder;
 
@@ -612,7 +608,7 @@ selecting the first which has directories which should be present in a runfolder
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

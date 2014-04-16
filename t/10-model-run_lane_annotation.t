@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: mg8 $
 # Created:       2008-05-08
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: 10-model-run_lane_annotation.t 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/t/10-model-run_lane_annotation.t $
 #
 use strict;
 use warnings;
@@ -16,8 +12,6 @@ use English qw{-no_match_vars};
 
 use Test::More tests => 8;
 use_ok('npg::model::run_lane_annotation');
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14928 $ =~ /(\d+)/mx; $r; };
 
 #########
 # using fixtures to import data

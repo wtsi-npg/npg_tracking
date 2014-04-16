@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: ajb $
 # Created:       2011-08-15
-# Last Modified: $Date: 2011-08-19 10:50:30 +0100 (Fri, 19 Aug 2011) $
-# Id:            $Id: cost_code.pm 13963 2011-08-19 09:50:30Z ajb $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/cost_code.pm $
 #
 package npg::model::cost_code;
 use strict;
@@ -65,7 +61,6 @@ npg::model::cost_code
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -112,7 +107,7 @@ returns the name of the cost_group this cost code is for
 
 =head1 AUTHOR
 
-$Author: ajb $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

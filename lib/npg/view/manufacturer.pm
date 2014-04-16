@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: gq1 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2010-05-04 15:28:42 +0100 (Tue, 04 May 2010) $
-# Id:            $Id: manufacturer.pm 9207 2010-05-04 14:28:42Z gq1 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/manufacturer.pm $
 #
 package npg::view::manufacturer;
 use base qw(npg::view);
@@ -22,7 +18,6 @@ __END__
 npg::view::manufacturer - view handling for manufacturers
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

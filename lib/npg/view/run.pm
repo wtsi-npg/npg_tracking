@@ -14,8 +14,10 @@ use npg::model::run_lane;
 use npg::model::run;
 use POSIX qw(strftime);
 use Socket;
+use Readonly;
 
 our $VERSION = '0';
+
 Readonly::Scalar our $PAGINATION_LEN   => 40;
 Readonly::Scalar our $PAGINATION_START => 0;
 Readonly::Scalar my  $DAYS_IN_WEEK     => 14;
@@ -533,7 +535,6 @@ __END__
 npg::view::run - view handling for runs
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

@@ -1,19 +1,15 @@
 #!/usr/bin/env perl
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-05-27
-# Last Modified: $Date: 2012-12-17 14:00:36 +0000 (Mon, 17 Dec 2012) $
-# Id:            $Id: hiseq_checker 16335 2012-12-17 14:00:36Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/bin/hiseq_checker $
-
+#
 package hiseq_checker;
 
 use strict;
 use warnings;
-
 use Carp;
 use English qw(-no_match_vars);
+use Readonly;
 
 use Monitor::SRS::File;
 use Monitor::SRS::FTP;
@@ -22,7 +18,6 @@ use Monitor::RunFolder;
 
 our $VERSION = '0';
 
-use Readonly;
 Readonly::Array my @DISKS => qw( Runs_D Runs_E );
 
 local $ENV{dev} = ( defined $ENV{dev} ? $ENV{dev} : 'live' );
@@ -119,7 +114,6 @@ __END__
 hiseq_checker - Monitor HiSeq instruments for run information.
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

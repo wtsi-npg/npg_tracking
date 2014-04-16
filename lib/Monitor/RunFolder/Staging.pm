@@ -1,10 +1,6 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       19/10/2010
-# Last Modified: $Date: 2013-01-07 11:04:50 +0000 (Mon, 07 Jan 2013) $
-# Id:            $Id: Staging.pm 16389 2013-01-07 11:04:50Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/RunFolder/Staging.pm $
 
 package Monitor::RunFolder::Staging;
 
@@ -18,6 +14,7 @@ use File::Find;
 use IO::All;
 use List::Util qw(max);
 use Perl6::Slurp;
+use Readonly;
 
 our $VERSION = '0';
 

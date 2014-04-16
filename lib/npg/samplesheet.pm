@@ -1,10 +1,6 @@
 #########
 # Author:        David K. Jackson
-# Maintainer:    $Author: mg8 $
 # Created:       2011-11-04
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: samplesheet.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/samplesheet.pm $
 #
 
 package npg::samplesheet;
@@ -15,7 +11,7 @@ use Carp;
 use English qw(-no_match_vars);
 use List::MoreUtils qw/any/;
 use URI::Escape qw(uri_escape_utf8);
-
+use Readonly;
 use npg_tracking::Schema;
 use st::api::lims;
 use st::api::lims::samplesheet;
@@ -28,7 +24,6 @@ our $VERSION = '0';
 npg::samplesheet
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
@@ -392,7 +387,7 @@ __END__
 
 =head1 AUTHOR
 
-Author: David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
+David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

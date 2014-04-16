@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-03-27 13:38:46 +0100 (Tue, 27 Mar 2012) $
-# Id:            $Id: user.pm 15395 2012-03-27 12:38:46Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/user.pm $
 #
 package npg::model::user;
 use strict;
@@ -140,7 +136,6 @@ __END__
 npg::model::user - data model for user
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
