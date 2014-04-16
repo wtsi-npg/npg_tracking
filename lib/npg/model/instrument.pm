@@ -25,8 +25,9 @@ use npg::model::designation;
 use DateTime;
 use List::MoreUtils qw/any/;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16477 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly::Scalar our $HISEQ_INSTR_MODEL => 'HiSeq';
 Readonly::Scalar our $MISEQ_INSTR_MODEL => 'MiSeq';
 Readonly::Scalar our $CBOT_INSTR_MODEL  => 'cBot';
@@ -577,7 +578,6 @@ npg::model::instrument
 
 =head1 VERSION
 
-$Revision: 16477 $
 
 =head1 SYNOPSIS
 

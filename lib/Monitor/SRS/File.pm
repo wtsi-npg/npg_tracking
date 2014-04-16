@@ -15,7 +15,7 @@ use IO::All;
 use MooseX::StrictConstructor;
 use Perl6::Slurp;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 has [ 'run_folder', 'runfolder_path' ] => (
     is       => 'ro',
@@ -85,7 +85,6 @@ Monitor::SRS::File - methods to read recipe files and other files.
 
 =head1 VERSION
 
-$Revision: 16549 $
 
 =head1 SYNOPSIS
 

@@ -12,8 +12,9 @@ use warnings;
 use base qw(Class::Accessor);
 use Carp;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly our $MAX_COORDINATES  => 3;
 Readonly our $RETURN_FROM_GD_GRAPH_X1 => 0;
 Readonly our $RETURN_FROM_GD_GRAPH_Y1 => 1;
@@ -148,7 +149,6 @@ npg::util::image::image_map
 
 =head1 VERSION
 
-$LastChangedRevision: 16549 $
 
 =head1 SYNOPSIS
 

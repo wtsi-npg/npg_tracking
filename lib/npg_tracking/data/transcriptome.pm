@@ -6,7 +6,7 @@ package npg_tracking::data::transcriptome;
 
 use Moose;
 
-our $VERSION = '0.0';
+our $VERSION = '0';
 
 with qw/
           npg_tracking::glossary::run
@@ -27,7 +27,6 @@ npg_tracking::data::transcriptome
 
 =head1 VERSION
 
-$Revision$
 
 =head1 SYNOPSIS
 

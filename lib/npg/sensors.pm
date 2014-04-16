@@ -12,7 +12,7 @@ use warnings;
 use Moose;
 use Carp;
 use English qw{-no_match_vars};
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15402 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 use npg_tracking::Schema;
 use npg::util::mailer;
@@ -64,7 +64,6 @@ npg::sensors
 
 =head1 VERSION
 
-$LastChangedRevision: 15402 $
 
 =head1 SYNOPSIS
 

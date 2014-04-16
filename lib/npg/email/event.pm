@@ -11,8 +11,10 @@ use strict;
 use warnings;
 use Carp;
 use English qw{-no_match_vars};
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16411 $ =~ /(\d+)/mxs; $r; };
+use Readonly;
 use Module::PluginFinder;
+
+our $VERSION = '0';
 
 =head1 NAME
 
@@ -20,7 +22,6 @@ npg::email::event
 
 =head1 VERSION
 
-$LastChangedRevision: 16411 $
 
 =head1 SYNOPSIS
 

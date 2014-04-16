@@ -135,7 +135,7 @@ __PACKAGE__->belongs_to(
 # Id:            $Id: CostCode.pm 14071 2011-08-30 08:14:49Z srpipe $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/CostCode.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14071 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 1;
 

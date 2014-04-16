@@ -16,7 +16,7 @@ use npg::model::user;
 use npg::model::usergroup;
 use npg::model::instrument_mod_dict;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub instrument_mod_dict_descriptions {
   my $self = shift;
@@ -42,7 +42,6 @@ npg::model::administration
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
 
 =head1 SYNOPSIS
 

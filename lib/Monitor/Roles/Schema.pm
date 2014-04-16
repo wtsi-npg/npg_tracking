@@ -10,8 +10,9 @@ package Monitor::Roles::Schema;
 
 use Moose::Role;
 use npg_tracking::Schema;
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16389 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 #Readonly::Scalar my $DEFAULT_DEV => 'live';
 
 #has _dev => (
@@ -47,7 +48,6 @@ Monitor::Roles::Schema - provide the DBIx npg_tracking schema.
 
 =head1 VERSION
 
-$Revision: 16389 $
 
 =head1 SYNOPSIS
 

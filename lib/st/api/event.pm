@@ -17,7 +17,7 @@ require XML::Generator; # use() pollutes with AUTOLOAD
 
 __PACKAGE__->mk_accessors(fields());
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub live {
     my $self = shift;
@@ -73,7 +73,6 @@ st::api::event - an interface to Sample Tracking events
 
 =head1 VERSION
 
-$LastChangedRevision: 15277 $
 
 =head1 SYNOPSIS
 

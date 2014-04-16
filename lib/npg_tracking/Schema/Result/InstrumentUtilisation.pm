@@ -272,7 +272,7 @@ __PACKAGE__->belongs_to(
 # Id:            $Id: InstrumentUtilisation.pm 12361 2011-01-18 15:07:26Z ajb $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/InstrumentUtilisation.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 12361 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 1;
 

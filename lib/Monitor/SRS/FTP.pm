@@ -22,7 +22,7 @@ use IO::All::FTP; #this package is not used explicitly
                   #it's an ftp plugin for IO::All
 use List::Util qw(max);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15265 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 
 Readonly::Scalar my $FTP_LOGIN     => 'ftp:srpipe';
@@ -262,7 +262,6 @@ read sequencer via FTP.
 
 =head1 VERSION
 
-$Revision: 15265 $
 
 =head1 SYNOPSIS
 

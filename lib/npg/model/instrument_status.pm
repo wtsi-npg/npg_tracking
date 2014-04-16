@@ -26,8 +26,9 @@ use List::MoreUtils qw (any);
 
 use npg::model::instrument_status_annotation;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16319 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly::Scalar our $FOURTH_ARRAY_ELEMENT               => 3;
 Readonly::Scalar our $DEFAULT_INSTRUMENT_UPTIME_INTERVAL => 90;
 Readonly::Scalar our $HOURS_IN_DAY                       => 24;
@@ -850,7 +851,6 @@ npg::model::instrument_status
 
 =head1 VERSION
 
-$Revision: 16319 $
 
 =head1 SYNOPSIS
 

@@ -20,7 +20,7 @@ use npg::api::run_annotation;
 use npg::api::instrument;
 use st::api::lims;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15308 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(grep { $_ ne 'id_run' } fields());
 __PACKAGE__->hasmany([{annotation => 'run_annotation'}]);
@@ -341,7 +341,6 @@ npg::api::run
 
 =head1 VERSION
 
-$Revision: 15308 $
 
 =head1 SYNOPSIS
 

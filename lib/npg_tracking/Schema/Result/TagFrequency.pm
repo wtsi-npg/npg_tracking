@@ -157,7 +157,7 @@ __PACKAGE__->belongs_to(
 # Id:            $Id: TagFrequency.pm 10867 2010-09-13 17:21:28Z jo3 $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/TagFrequency.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 10867 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 1;
 

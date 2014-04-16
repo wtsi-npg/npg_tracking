@@ -15,7 +15,8 @@ use Carp;
 
 use npg::api::util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/smx; $r; };
+use Readonly;
+our $VERSION = '0';
 
 sub live_url { return q{http://psd-support.internal.sanger.ac.uk:6600}; }
 
@@ -205,7 +206,6 @@ st::api::base - a base class for st::api::*
 
 =head1 VERSION
 
-$Revision: 15277 $
 
 =head1 SYNOPSIS
 

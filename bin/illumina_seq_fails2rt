@@ -17,10 +17,12 @@ use List::MoreUtils qw/uniq/;
 use Carp;
 use File::Temp qw/ tempdir /;
 use DateTime;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16389 $ =~ /(\d+)/mxs; $r; };
 use npg::api::run;
 use npg_tracking::Schema;
 
+our $VERSION = '0';
+
+use Readonly;
 Readonly::Scalar my $EMAIL_DOMAIN => q(@sanger.ac.uk);
 Readonly::Scalar my $EMAIL_DELIM  => q(;);
 Readonly::Scalar my $LOOK_BACK_DAYS  => 60;
@@ -178,3 +180,4 @@ sub _studies2emails {
 
 1;
 
+=head1 VERSION

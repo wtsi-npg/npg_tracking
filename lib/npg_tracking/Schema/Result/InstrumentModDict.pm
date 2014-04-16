@@ -115,7 +115,7 @@ __PACKAGE__->has_many(
 # Id:            $Id: InstrumentModDict.pm 10867 2010-09-13 17:21:28Z jo3 $
 # $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/InstrumentModDict.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 10867 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 1;
 

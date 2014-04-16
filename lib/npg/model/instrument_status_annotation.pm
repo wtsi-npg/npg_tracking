@@ -16,7 +16,7 @@ use npg::model::annotation;
 use npg::model::instrument_status;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 9207 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -64,7 +64,6 @@ npg::model::instrument_status_annotation
 
 =head1 VERSION
 
-$LastChangedRevision: 9207 $
 
 =head1 SYNOPSIS
 

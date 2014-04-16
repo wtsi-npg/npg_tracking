@@ -15,7 +15,7 @@ use Carp;
 use npg::model::instrument;
 use npg::model::manufacturer;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14897 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a(q[manufacturer]);
@@ -157,7 +157,6 @@ npg::model::instrument_format
 
 =head1 VERSION
 
-$Revision: 14897 $
 
 =head1 SYNOPSIS
 

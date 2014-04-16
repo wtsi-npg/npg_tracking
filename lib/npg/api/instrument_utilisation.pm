@@ -18,7 +18,7 @@ use npg::api::instrument_status;
 use npg::api::run;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $SECONDS_IN_DAY     => 60*60*24;
 Readonly::Scalar our $PERCENTAGE         => 100;
@@ -758,7 +758,6 @@ npg::api::instrument_utilisation - An interface onto npg.instrument_utilisation
 
 =head1 VERSION
 
-$LastChangedRevision: 16269 $
 
 =head1 SYNOPSIS
 
