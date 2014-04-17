@@ -10,6 +10,8 @@ release 77.0
  - tests - remains of RSC keywords removed
  - the distribution test does not perform pod tests (separate tests available),
    checks that module version matches distribution version
+ - allow staging daemon to check progress by looking for .bcl.gz files (as
+   well as .bcl files)
 
 release 76.5
  - code action on Build only if install target specified

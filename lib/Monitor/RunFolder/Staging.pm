@@ -156,8 +156,8 @@ sub check_tiles {
 
         foreach my $cycle ( @cycles) {
             my $filetype = $cifs_present ? 'cif' : 'bcl';
-            my @tiles   = glob "$cycle/*.$filetype";
-            @tiles      = grep { m/ s_ \d+ _ \d+ [.] $filetype $ /msx } @tiles;
+            my @tiles   = glob "$cycle/*.$filetype" . q({,.gz});
+            @tiles      = grep { m/ s_ \d+ _ \d+ [.] $filetype (?: [.] gz )? $ /msx } @tiles;
             my $t_count = scalar @tiles;
 
             if ( $t_count != $expected_tiles ) {
