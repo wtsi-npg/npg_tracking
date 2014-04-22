@@ -15,11 +15,7 @@ __PACKAGE__->load_namespaces;
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Q1r19LhirPv0eU8pL62qKQ
 
 # Author:        david.jackson@sanger.ac.uk
-# Maintainer:    $Author: mg8 $
 # Created:       2010-04-08
-# Last Modified: $Date: 2013-01-07 11:04:50 +0000 (Mon, 07 Jan 2013) $
-# Id:            $Id: Schema.pm 16389 2013-01-07 11:04:50Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema.pm $
 
 BEGIN {
   our $VERSION ='0';
@@ -36,7 +32,6 @@ __END__
 npg_tracking::Schema
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

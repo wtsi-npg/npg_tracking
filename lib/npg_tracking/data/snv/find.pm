@@ -9,7 +9,6 @@ use warnings;
 use Moose::Role;
 use Carp;
 use Cwd 'abs_path';
-use Readonly;
 
 our $VERSION = '0';
 
@@ -60,7 +59,6 @@ npg_tracking::data::snv::find
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
   package MyPackage;
@@ -90,8 +88,6 @@ A Moose role for finding the location of VCF files.
 
 =item Carp
 
-=item Readonly
-
 =item File::Spec::Functions
 
 =item npg_tracking::data::reference::find
@@ -103,6 +99,8 @@ A Moose role for finding the location of VCF files.
 =head1 BUGS AND LIMITATIONS
 
 =head1 AUTHOR
+
+Jennifer Liddle
 
 =head1 LICENSE AND COPYRIGHT
 

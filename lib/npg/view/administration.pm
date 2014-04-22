@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: mg8 $
 # Created:       2008-04-24
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: administration.pm 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/administration.pm $
 #
 package npg::view::administration;
 use strict;
@@ -151,7 +147,6 @@ npg::view::administration
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -218,7 +213,7 @@ npg::view::administration
 
 =head1 AUTHOR
 
-$Author: Roger M Pettett$
+Roger M Pettett
 
 =head1 LICENSE AND COPYRIGHT
 

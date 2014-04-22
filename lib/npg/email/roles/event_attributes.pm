@@ -1,10 +1,6 @@
 #############
-# $Id: event_attributes.pm 16395 2013-01-07 14:04:51Z mg8 $
 # Created By: ajb
-# Last Maintained By: $Author: mg8 $
 # Created On: 2011-01-07
-# Last Changed On: $Date: 2013-01-07 14:04:51 +0000 (Mon, 07 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/email/roles/event_attributes.pm $
 
 package npg::email::roles::event_attributes;
 use strict;
@@ -12,7 +8,6 @@ use warnings;
 use Moose::Role;
 use Carp;
 use POSIX qw(strftime);
-use Readonly;
 
 our $VERSION = '0';
 
@@ -240,8 +235,6 @@ __END__
 
 =item Carp
 
-=item Readonly
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -250,7 +243,7 @@ __END__
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

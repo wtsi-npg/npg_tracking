@@ -1,10 +1,6 @@
 #########
 # Author:        Marina Gourtovaia
-# Maintainer:    $Author: mg8 $
 # Created:       20 December 2012
-# Last Modified: $Date: 2013-01-08 15:26:40 +0000 (Tue, 08 Jan 2013) $
-# Id:            $Id: types.pm 16411 2013-01-08 15:26:40Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/util/types.pm $
 #
 
 package npg_tracking::util::types;
@@ -62,7 +58,6 @@ npg_tracking::util::types
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -91,7 +86,7 @@ Custom types for npg tracking application.
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

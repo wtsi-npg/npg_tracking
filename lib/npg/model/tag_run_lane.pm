@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: gq1 $
 # Created:       2008-03-03
-# Last Modified: $Date: 2010-05-04 15:28:42 +0100 (Tue, 04 May 2010) $
-# Id:            $Id: tag_run_lane.pm 9207 2010-05-04 14:28:42Z gq1 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/tag_run_lane.pm $
 #
 package npg::model::tag_run_lane;
 use strict;
@@ -63,7 +59,6 @@ __END__
 npg::model::tag_run_lane
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

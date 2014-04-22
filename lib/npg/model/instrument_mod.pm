@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: dj3 $
 # Created:       2008-03
-# Last Modified: $Date: 2010-05-20 13:44:46 +0100 (Thu, 20 May 2010) $
-# Id:            $Id: instrument_mod.pm 9380 2010-05-20 12:44:46Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/instrument_mod.pm $
 #
 package npg::model::instrument_mod;
 use strict;
@@ -71,7 +67,6 @@ __END__
 npg::model::instrument_mod
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

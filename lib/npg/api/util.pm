@@ -1,7 +1,6 @@
 #########
 # Author:        rmp
 # Created:       2007-03-28
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/util.pm, r15277
 #
 package npg::api::util;
 
@@ -10,6 +9,7 @@ use warnings;
 use base qw(Class::Accessor);
 use Carp;
 use XML::LibXML;
+use Readonly;
 
 use npg::api::request;
 
@@ -110,7 +110,6 @@ __END__
 npg::api::util
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 

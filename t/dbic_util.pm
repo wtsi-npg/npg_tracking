@@ -1,4 +1,4 @@
-package t::dbic_util;    ## no critic (NamingConventions::Capitalization)
+package t::dbic_util;
 
 use Moose;
 use Readonly;
@@ -6,8 +6,6 @@ use Test::More;
 Readonly::Scalar my $DEFAULT_FIXTURE_PATH => 't/data/dbic_fixtures';
 
 with 'npg_testing::db';
-
-our $VERSION = '0';
 
 has fixture_path => (
     is      => 'ro',
@@ -34,8 +32,6 @@ __END__
 t::dbic_util - make a DBIC schema to run tests against.
 
 =head1 VERSION
-
-$Revision: 14928 $
 
 =head1 SYNOPSIS
 

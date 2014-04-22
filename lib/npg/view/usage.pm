@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: gq1 $
 # Created:       2008-04-21
-# Last Modified: $Date: 2010-05-04 15:28:42 +0100 (Tue, 04 May 2010) $
-# Id:            $Id: usage.pm 9207 2010-05-04 14:28:42Z gq1 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/usage.pm $
 #
 package npg::view::usage;
 use strict;
@@ -28,7 +24,6 @@ __END__
 npg::view::usage
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
@@ -56,7 +51,7 @@ npg_tracking::illumina::run::folder::location
 
 =head1 AUTHOR
 
-$Author: Roger M Pettett$
+Roger M Pettett
 
 =head1 LICENSE AND COPYRIGHT
 

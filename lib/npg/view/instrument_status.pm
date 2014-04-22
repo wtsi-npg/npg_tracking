@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-02-22 10:12:17 +0000 (Wed, 22 Feb 2012) $
-# Id:            $Id: instrument_status.pm 15220 2012-02-22 10:12:17Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/instrument_status.pm $
 #
 package npg::view::instrument_status;
 use base qw(npg::view);
@@ -99,7 +95,6 @@ __END__
 npg::view::instrument_status - view handling for instrument_statuses
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
