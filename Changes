@@ -1,5 +1,9 @@
 CHANGES
 
+ - unused templates removed
+ - samplesheets regenerated when the existing file is likely to originate
+   from an earlier or unknown run
+
 release 77.0
  - the build file and module - code improvements, POD and PBP for the module
  - scripts and modules:
