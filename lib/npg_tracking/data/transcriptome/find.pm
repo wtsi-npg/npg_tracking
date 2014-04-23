@@ -38,9 +38,16 @@ has '_version_dir' => ( isa => q{Maybe[Str]},
 
 sub _build__version_dir {
   my $self = shift;
-  my ($organism, $strain) = $self->_parse_reference_genome($self->lims->reference_genome);
+
+  my ($organism, $strain, $transcriptome_version) = $self->_parse_reference_genome($self->lims->reference_genome);
+
   if ($organism && $strain){
-    return($self->_organism_dir . "/$ENSEMBL_RELEASE_VERSION/$strain");
+      if ($transcriptome_version){
+          return($self->_organism_dir . "/$transcriptome_version/$strain/");
+      }
+     else { #use default
+          return($self->_organism_dir . "/$ENSEMBL_RELEASE_VERSION/$strain/");
+      }
   }
   return;
 }
