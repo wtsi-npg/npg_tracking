@@ -1,8 +1,10 @@
 CHANGES
 
  - unused templates removed
- - samplesheets regenerated when the existing file is likely to originate
-   from an earlier or unknown run
+ - samplesheet regenerated when the existing file does not come from the currently
+   pending run
+ - samplesheet daemon moved to a staging server where samplesheets are stored
+ 
 
 release 77.0
  - the build file and module - code improvements, POD and PBP for the module
