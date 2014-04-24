@@ -200,7 +200,7 @@
     </property>
     <property>
       <name>Reference Genome</name>
-      <value>Mus_musculus (GRCm38)</value>
+      <value>Mus_musculus (GRCm38 + ensembl_75_transcriptome)</value>
     </property>
   </properties>
   <assets>

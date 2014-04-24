@@ -13,7 +13,6 @@ with qw/ npg_tracking::data::reference::find /;
 
 our $VERSION = '0.0';
 
-Readonly::Scalar our $ENSEMBL_RELEASE_VERSION => q[default];
 
 has '_organism_dir' => ( isa => q{Maybe[Str]},
                          is => q{ro},
@@ -40,14 +39,11 @@ sub _build__version_dir {
   my $self = shift;
 
   my ($organism, $strain, $transcriptome_version) = $self->_parse_reference_genome($self->lims->reference_genome);
-
   if ($organism && $strain){
       if ($transcriptome_version){
           return($self->_organism_dir . "/$transcriptome_version/$strain/");
       }
-     else { #use default
-          return($self->_organism_dir . "/$ENSEMBL_RELEASE_VERSION/$strain/");
-      }
+      $self->messages->push('Not returning transcriptome directory as version not given ' . $self->lims->reference_genome);
   }
   return;
 }
@@ -86,7 +82,7 @@ sub _build_gtf_file {
   return $gtf_files[0];
 }
 
-#transcriptomes/Homo_sapiens/ensembl_release_75/1000Genomes_hs37d5/tophat2/
+#transcriptomes/Homo_sapiens/ensembl_75_transcriptome/1000Genomes_hs37d5/tophat2/
 has 'transcriptome_index_path' => ( isa => q{Maybe[Str]},
                                     is => q{ro},
                                     lazy_build => 1,
