@@ -23,7 +23,7 @@ our $VERSION = '0';
 
 sub git_tag {
   my $version;
-  my $gitver = q[./scripts/gitver];
+  my $gitver = qq[/software/npg/src/npg_tracking/scripts/gitver];
   if (!-e $gitver) {
     carp "$gitver script not found";
     $version = q[unknown];
