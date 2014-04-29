@@ -106,8 +106,6 @@ data/templates/manufacturer_list.tt2
 data/templates/manufacturer_read.tt2
 data/templates/method_not_used.tt2
 data/templates/run_add.tt2
-data/templates/run_add_flowcell_ajax.tt2
-data/templates/run_add_pair_ajax.tt2
 data/templates/run_annotation_add_ajax.tt2
 data/templates/run_annotation_add_input_form.tt2
 data/templates/run_annotation_create.tt2
@@ -1023,7 +1021,6 @@ t/data/rendered/run/list_stuck_runs.html
 t/data/rendered/run/recent/running/runs_4000_days.xml
 t/data/rendered/run/recent/running/runs_basic_days.xml
 t/data/rendered/run/runs_on_instrument.html
-t/data/rendered/run_add_pair_ajax.html
 t/data/rendered/run_annotation_add_ajax.html
 t/data/rendered/run_lane/1;update_tags
 t/data/rendered/run_list_basic.xml
