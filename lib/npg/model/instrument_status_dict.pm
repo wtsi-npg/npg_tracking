@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2013-01-15 10:27:57 +0000 (Tue, 15 Jan 2013) $
-# Id:            $Id: instrument_status_dict.pm 16477 2013-01-15 10:27:57Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/instrument_status_dict.pm $
 #
 package npg::model::instrument_status_dict;
 use strict;
@@ -13,8 +9,9 @@ use base qw(npg::model);
 use English qw(-no_match_vars);
 use Carp;
 use npg::model::instrument_status;
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16477 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Hash our %SHORT_DESCRIPTIONS => {
                   'down'             => 'down',
@@ -91,8 +88,6 @@ __END__
 npg::model::instrument_status_dict
 
 =head1 VERSION
-
-$LastChangedRevision: 16477 $
 
 =head1 SYNOPSIS
 

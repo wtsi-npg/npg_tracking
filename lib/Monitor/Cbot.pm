@@ -1,10 +1,6 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: dj3 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2012-08-22 14:32:42 +0100 (Wed, 22 Aug 2012) $
-# Id:            $Id: Cbot.pm 16017 2012-08-22 13:32:42Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/Cbot.pm $
 #
 
 package Monitor::Cbot;
@@ -16,8 +12,9 @@ use Carp;
 use LWP::UserAgent;
 use namespace::autoclean;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16017 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly::Scalar my $DOMAIN          => 'internal.sanger.ac.uk';
 Readonly::Scalar my $DEFAULT_TIMEOUT => 10;
 
@@ -106,8 +103,6 @@ __END__
 Monitor::Cbot - base class for cBot XML interrogation
 
 =head1 VERSION
-
-$Revision: 16017 $
 
 =head1 SYNOPSIS
 

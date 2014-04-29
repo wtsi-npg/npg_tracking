@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-02-22 10:12:17 +0000 (Wed, 22 Feb 2012) $
-# Id:            $Id: run_status.pm 15220 2012-02-22 10:12:17Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/run_status.pm $
 #
 package npg::view::run_status;
 use base qw(npg::view);
@@ -12,9 +8,8 @@ use strict;
 use warnings;
 use English qw(-no_match_vars);
 use Carp;
-use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15220 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub new {
   my ($class, @args) = @_;
@@ -92,8 +87,6 @@ npg::view::run_status - view handling for run_statuses
 
 =head1 VERSION
 
-$LastChangedRevision: 15220 $
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -129,8 +122,6 @@ $LastChangedRevision: 15220 $
 =item English
 
 =item Carp
-
-=item Readonly
 
 =back
 

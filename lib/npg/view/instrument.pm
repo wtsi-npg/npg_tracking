@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: instrument.pm 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/instrument.pm $
 #
 package npg::view::instrument;
 
@@ -29,7 +25,7 @@ use List::MoreUtils qw(any);
 use DateTime::Format::MySQL;
 use DateTime;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 ##no critic(ProhibitManyArgs ProhibitMagicNumbers)
 
 Readonly::Scalar our $PAGINATION_LEN   => 40;
@@ -658,8 +654,6 @@ __END__
 npg::view::instrument - view handling for instruments
 
 =head1 VERSION
-
-$Revision: 16269 $
 
 =head1 SYNOPSIS
 

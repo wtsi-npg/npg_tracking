@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: mg8 $
 # Created:       2008-08-07
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: image.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util/image/image.pm $
 #
 
 package npg::util::image::image;
@@ -14,11 +10,12 @@ use GD;
 use npg::util::image::colourmap;
 use base qw(Class::Accessor);
 use Carp;
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
-Readonly our $MAX_COLOUR_GRADIENTS_SCALE   => 255;
-Readonly our $MAX_COLOUR_GRADIENTS_HEATMAP => 250;
+Readonly::Scalar our $MAX_COLOUR_GRADIENTS_SCALE   => 255;
+Readonly::Scalar our $MAX_COLOUR_GRADIENTS_HEATMAP => 250;
 
 __PACKAGE__->mk_accessors(qw(cmap colours data_array gradient_array tiles_per_lane image_map_reference data_point_refs gantt_refs));
 
@@ -95,8 +92,6 @@ __END__
 npg::util::image::image
 
 =head1 VERSION
-
-$LastChangedRevision: 16549 $
 
 =head1 SYNOPSIS
 

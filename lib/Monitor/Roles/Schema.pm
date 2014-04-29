@@ -1,26 +1,13 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2013-01-07 11:04:50 +0000 (Mon, 07 Jan 2013) $
-# Id:            $Id: Schema.pm 16389 2013-01-07 11:04:50Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/Roles/Schema.pm $
 
 package Monitor::Roles::Schema;
 
 use Moose::Role;
 use npg_tracking::Schema;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16389 $ =~ /(\d+)/smx; $r; };
-#Readonly::Scalar my $DEFAULT_DEV => 'live';
-
-#has _dev => (
-#    reader     => 'dev',
-#    is         => 'ro',
-#    isa        => 'Str',
-#    default    => $ENV{dev} || $DEFAULT_DEV,
-#    documentation => 'The database to use - [live]/dev/test',
-#);
+our $VERSION = '0';
 
 has _schema => (
     reader     => 'schema',
@@ -31,7 +18,6 @@ has _schema => (
 
 sub _build__schema {
     my ($self) = @_;
-    #local $ENV{dev} = $self->dev();
     return npg_tracking::Schema->connect();
 }
 
@@ -46,8 +32,6 @@ __END__
 Monitor::Roles::Schema - provide the DBIx npg_tracking schema.
 
 =head1 VERSION
-
-$Revision: 16389 $
 
 =head1 SYNOPSIS
 

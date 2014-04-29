@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: model.pm 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model.pm $
 #
 package npg::model;
 use strict;
@@ -15,8 +11,9 @@ use English qw(-no_match_vars);
 use Carp;
 use Socket;
 use npg::model::cost_group;
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $NINETY_DAYS => 90;
 
@@ -167,8 +164,6 @@ __END__
 npg::model - a base class for the NPG family, derived from ClearPress::model
 
 =head1 VERSION
-
-$Revision: 16269 $
 
 =head1 SYNOPSIS
 

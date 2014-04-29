@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: mg8 $
 # Created:       2008-08-07
-# Last Modified: $Date: 2012-03-19 09:50:46 +0000 (Mon, 19 Mar 2012) $
-# Id:            $Id: scale.pm 15350 2012-03-19 09:50:46Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util/image/scale.pm $
 #
 package npg::util::image::scale;
 use strict;
@@ -14,34 +10,35 @@ use GD::Image;
 use base qw(npg::util::image::image);
 use Carp;
 use POSIX qw(floor ceil);
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15350 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
-Readonly our $VERTICAL_DEFAULTS => {
+Readonly::Scalar our $VERTICAL_DEFAULTS => {
                                     BAR_WIDTH    => 6,
                                     BAR_HEIGHT   => 255,
                                     IMAGE_WIDTH  => 100,
                                     IMAGE_HEIGHT => 260,
                                    };
 
-Readonly our $HORIZONTAL_DEFAULTS => {
+Readonly::Scalar our $HORIZONTAL_DEFAULTS => {
                                       BAR_WIDTH    => 255,
                                       BAR_HEIGHT   => 6,
                                       IMAGE_WIDTH  => 275,
                                       IMAGE_HEIGHT => 40,
                                      };
 
-Readonly our $DEFAULT_TEXT => {
+Readonly::Scalar our $DEFAULT_TEXT => {
                                 START => 0,
                                 END   => 'End',
                               };
 
-Readonly our $GDSMALL_FONT_PIXELS                            => 15;
-Readonly our $MULTIPLIER_FOR_HORIZONTAL_POSITION_OF_END_TEXT => 3;
-Readonly our $HALF_DIVISION                                  => 2;
-Readonly our $QUARTER_DIVISION                               => 4;
-Readonly our $THIRD_DIVISION                                 => 3;
-Readonly our $ALLOCATE_WHITE                                 => 255;
+Readonly::Scalar our $GDSMALL_FONT_PIXELS                            => 15;
+Readonly::Scalar our $MULTIPLIER_FOR_HORIZONTAL_POSITION_OF_END_TEXT => 3;
+Readonly::Scalar our $HALF_DIVISION                                  => 2;
+Readonly::Scalar our $QUARTER_DIVISION                               => 4;
+Readonly::Scalar our $THIRD_DIVISION                                 => 3;
+Readonly::Scalar our $ALLOCATE_WHITE                                 => 255;
 
 sub plot_scale {
   my ($self, $arg_refs) = @_;
@@ -310,8 +307,6 @@ __END__
 npg::util::image::scale
 
 =head1 VERSION
-
-$LastChangedRevision: 15350 $
 
 =head1 SYNOPSIS
 

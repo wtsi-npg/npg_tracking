@@ -1,10 +1,6 @@
 #############
-# $Id: long_info.pm 16549 2013-01-23 16:49:39Z mg8 $
 # Created By: ajb
-# Mast Maintained By: $Author: mg8 $
 # Created On: 2009-09-30
-# Last Changed On: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/illumina/run/long_info.pm $
 
 package npg_tracking::illumina::run::long_info;
 use Moose::Role;
@@ -12,11 +8,8 @@ use Moose::Role;
 use Moose::Util::TypeConstraints;
 use MooseX::AttributeHelpers;
 
-use strict;
-use warnings;
 use Carp;
 use English qw{-no_match_vars};
-
 use List::Util qw(first sum);
 use List::MoreUtils qw(pairwise);
 use IO::All;
@@ -24,15 +17,14 @@ use XML::LibXML;
 use Try::Tiny;
 
 requires qw{runfolder_path};
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+
+our $VERSION = '0';
 
 =head1 NAME
 
 npg_tracking::illumina::run::long_info
 
 =head1 VERSION
-
-$LastChangedRevision: 16549 $
 
 =head1 SYNOPSIS
 
@@ -753,7 +745,6 @@ __END__
 
 =item strict
 =item warnings
-=item Readonly
 =item Carp
 =item English qw{-no_match_vars}
 
@@ -769,7 +760,7 @@ __END__
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

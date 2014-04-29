@@ -1,21 +1,16 @@
 #############
-# $Id: short_info.pm 16549 2013-01-23 16:49:39Z mg8 $
 # Created By: ajb
-# Mast Maintained By: $Author: mg8 $
 # Created On: 2009-09-30
-# Last Changed On: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/illumina/run/short_info.pm $
 
 package npg_tracking::illumina::run::short_info;
 use Moose::Role;
 use Moose::Util::TypeConstraints;
 use File::Spec::Functions qw(splitdir);
-use strict;
-use warnings;
 use Carp;
 use English qw{-no_match_vars};
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $INSTRUMENT_PATTERN => '(IL|HS|MS)';
 Readonly::Scalar our $NAME_PATTERN => $INSTRUMENT_PATTERN.'(\d+_)0*(\d+)';
@@ -155,8 +150,6 @@ npg_tracking::illumina::run::short_info
 
 =head1 VERSION
 
-$LastChangedRevision: 16549 $
-
 =head1 SYNOPSIS
 
   package Mypackage;
@@ -237,7 +230,7 @@ returns the name of the instrument found
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

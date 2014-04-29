@@ -1,11 +1,7 @@
 #!/usr/bin/env perl
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-07-22
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: staging_area_monitor 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/bin/staging_area_monitor $
 
 package staging_area_monitor;
 
@@ -16,7 +12,7 @@ use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Carp;
 use English qw(-no_match_vars);
 use POSIX qw(strftime);
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/msx; $r; };
+use Readonly;
 use Monitor::Staging;
 use Monitor::RunFolder::Staging;
 use npg_tracking::Schema;
@@ -24,6 +20,7 @@ use npg_tracking::Schema;
 Readonly::Scalar my $SECONDS_PER_MINUTE => 60;
 Readonly::Scalar my $SLEEP_INTERVAL     => $SECONDS_PER_MINUTE * 15;
 
+our $VERSION = '0';
 
 local $OUTPUT_AUTOFLUSH = 1;
 
@@ -143,8 +140,6 @@ __END__
 staging_area_monitor - monitor incoming runs for problems and completion
 
 =head1 VERSION
-
-$Revision: 16549 $
 
 =head1 SYNOPSIS
 

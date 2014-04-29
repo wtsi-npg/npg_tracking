@@ -1,9 +1,5 @@
 # Author:        marina.gourtovaia@sanger.ac.uk
-# Maintainer:    $Author: mg8 $
 # Created:       15 March 2012
-# Last Modified: $Date: 2012-03-15 18:18:40 +0000 (Thu, 15 Mar 2012) $
-# Id:            $Id: sanger_ldap.pm 15341 2012-03-15 18:18:40Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/authentication/sanger_ldap.pm $
 
 package npg::authentication::sanger_ldap;
 
@@ -13,8 +9,9 @@ use Exporter qw( import );
 use Net::LDAP;
 use English qw(-no_match_vars);
 use Carp;
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15341 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 our @EXPORT_OK = qw(person_info);  # symbols to export on request
 
@@ -71,8 +68,6 @@ __END__
 
 =head1 VERSION
 
-$LastChangedRevision: 15341 $
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -115,11 +110,11 @@ Module to extract username from WTSI single sign-on cookie value
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2012 GRL, by MArina Gourtovaia (mg8@sanger.ac.uk)
+Copyright (C) 2012 GRL, by Marina Gourtovaia (mg8@sanger.ac.uk)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

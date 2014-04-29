@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-01-11 14:52:00 +0000 (Wed, 11 Jan 2012) $
-# Id:            $Id: instrument_format.pm 14897 2012-01-11 14:52:00Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/instrument_format.pm $
 #
 package npg::model::instrument_format;
 use strict;
@@ -15,7 +11,7 @@ use Carp;
 use npg::model::instrument;
 use npg::model::manufacturer;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14897 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a(q[manufacturer]);
@@ -156,8 +152,6 @@ __END__
 npg::model::instrument_format
 
 =head1 VERSION
-
-$Revision: 14897 $
 
 =head1 SYNOPSIS
 

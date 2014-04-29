@@ -1,10 +1,6 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       19/10/2010
-# Last Modified: $Date: 2013-01-07 11:04:50 +0000 (Mon, 07 Jan 2013) $
-# Id:            $Id: Staging.pm 16389 2013-01-07 11:04:50Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/RunFolder/Staging.pm $
 
 package Monitor::RunFolder::Staging;
 
@@ -18,8 +14,9 @@ use File::Find;
 use IO::All;
 use List::Util qw(max);
 use Perl6::Slurp;
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16389 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar my $MAXIMUM_CYCLE_LAG  =>  6;
 Readonly::Scalar my $MTIME_INDEX        =>  9;
@@ -159,8 +156,8 @@ sub check_tiles {
 
         foreach my $cycle ( @cycles) {
             my $filetype = $cifs_present ? 'cif' : 'bcl';
-            my @tiles   = glob "$cycle/*.$filetype";
-            @tiles      = grep { m/ s_ \d+ _ \d+ [.] $filetype $ /msx } @tiles;
+            my @tiles   = glob "$cycle/*.$filetype" . q({,.gz});
+            @tiles      = grep { m/ s_ \d+ _ \d+ [.] $filetype (?: [.] gz )? $ /msx } @tiles;
             my $t_count = scalar @tiles;
 
             if ( $t_count != $expected_tiles ) {
@@ -275,7 +272,6 @@ local staging
 
 =head1 VERSION
 
-$Revision: 16389 $
 
 =head1 SYNOPSIS
 

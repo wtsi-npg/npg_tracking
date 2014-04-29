@@ -1,10 +1,6 @@
 #############
-# $Id: run.pm 16411 2013-01-08 15:26:40Z mg8 $
 # Created By: ajb
-# Last Maintained By: $Author: mg8 $
 # Created On: 2011-01-06
-# Last Changed On: $Date: 2013-01-08 15:26:40 +0000 (Tue, 08 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/email/event/status_change/run.pm $
 
 package npg::email::event::status_change::run;
 use strict;
@@ -12,10 +8,12 @@ use warnings;
 use Moose;
 use Carp;
 use English qw{-no_match_vars};
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16411 $ =~ /(\d+)/mxs; $r; };
 use st::api::event;
+use Readonly;
 
 extends qw{npg::email::run};
+
+our $VERSION = '0';
 
 Readonly::Scalar my $TEMPLATE => 'run_status_change.tt2';
 
@@ -51,8 +49,6 @@ Readonly::Scalar my $FAMILIES => {
 npg::email::event::status_change::run
 
 =head1 VERSION
-
-$LastChangedRevision: 16411 $
 
 =head1 SYNOPSIS
 
@@ -242,7 +238,7 @@ __END__
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

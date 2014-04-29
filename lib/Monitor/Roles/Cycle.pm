@@ -1,19 +1,15 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: dj3 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2012-09-26 17:20:51 +0100 (Wed, 26 Sep 2012) $
-# Id:            $Id: Cycle.pm 16075 2012-09-26 16:20:51Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/Roles/Cycle.pm $
 
 package Monitor::Roles::Cycle;
 
 use Moose::Role;
-
 use Carp;
 use List::Util qw(max);
 use Perl6::Slurp;
 
+our $VERSION = '0';
 
 # The transfer of Events.log can lag far behind actual image transfer.
 sub get_latest_cycle {
@@ -117,7 +113,6 @@ local staging.
 
 =head1 VERSION
 
-$Revision: 16075 $
 
 =head1 SYNOPSIS
 

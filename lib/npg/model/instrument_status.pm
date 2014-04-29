@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-12-06 15:23:01 +0000 (Thu, 06 Dec 2012) $
-# Id:            $Id: instrument_status.pm 16319 2012-12-06 15:23:01Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/instrument_status.pm $
 #
 package npg::model::instrument_status;
 use strict;
@@ -26,8 +22,9 @@ use List::MoreUtils qw (any);
 
 use npg::model::instrument_status_annotation;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16319 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly::Scalar our $FOURTH_ARRAY_ELEMENT               => 3;
 Readonly::Scalar our $DEFAULT_INSTRUMENT_UPTIME_INTERVAL => 90;
 Readonly::Scalar our $HOURS_IN_DAY                       => 24;
@@ -849,8 +846,6 @@ __END__
 npg::model::instrument_status
 
 =head1 VERSION
-
-$Revision: 16319 $
 
 =head1 SYNOPSIS
 

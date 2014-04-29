@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-02-29 14:14:10 +0000 (Wed, 29 Feb 2012) $
-# Id:            $Id: run_lane_annotation.pm 15265 2012-02-29 14:14:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/run_lane_annotation.pm $
 #
 package npg::view::run_lane_annotation;
 use base qw(npg::view);
@@ -15,7 +11,7 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::run_lane_annotation;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15265 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub new {
   my ($class, @args) = @_;
@@ -136,8 +132,6 @@ __END__
 npg::view::run_lane_annotation - view handling for run_lane_annotationes
 
 =head1 VERSION
-
-$LastChangedRevision: 15265 $
 
 =head1 SYNOPSIS
 

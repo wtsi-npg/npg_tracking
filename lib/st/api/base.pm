@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-03-01 10:36:10 +0000 (Thu, 01 Mar 2012) $
-# Id:            $Id: base.pm 15277 2012-03-01 10:36:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/base.pm $
 #
 package st::api::base;
 
@@ -15,7 +11,7 @@ use Carp;
 
 use npg::api::util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub live_url { return q{http://psd-support.internal.sanger.ac.uk:6600}; }
 
@@ -204,8 +200,6 @@ __END__
 st::api::base - a base class for st::api::*
 
 =head1 VERSION
-
-$Revision: 15277 $
 
 =head1 SYNOPSIS
 

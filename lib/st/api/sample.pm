@@ -1,7 +1,6 @@
 #########
 # Author:        rmp
 # Created:       2007-03-28
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/st/api/sample.pm, r 16477
 
 package st::api::sample;
 
@@ -9,11 +8,10 @@ use base qw(st::api::base);
 use strict;
 use warnings;
 use Carp;
-use Data::Dumper;
 
 __PACKAGE__->mk_accessors(fields());
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16477 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub _parse_taxon_id {
     my ($self, $taxon_id) = @_;
@@ -112,8 +110,6 @@ __END__
 st::api::sample - an interface to sample lims
 
 =head1 VERSION
-
-$Revision: 16477 $
 
 =head1 SYNOPSIS
 

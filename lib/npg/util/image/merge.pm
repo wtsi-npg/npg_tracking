@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: mg8 $
 # Created:       2008-08-07
-# Last Modified: $Date: 2012-03-19 09:50:46 +0000 (Mon, 19 Mar 2012) $
-# Id:            $Id: merge.pm 15350 2012-03-19 09:50:46Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util/image/merge.pm $
 #
 package npg::util::image::merge;
 use strict;
@@ -16,37 +12,38 @@ use base qw(npg::util::image::image);
 use npg::util::image::graph;
 use Carp qw(carp croak cluck confess);
 use POSIX qw(floor ceil);
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15350 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
-Readonly our $GRAPH_HEIGHT_DEFAULT          => 200;
-Readonly our $GRAPH_WIDTH_DEFAULT           => 400;
-Readonly our $HEIGHT_OF_COLUMN_HEADINGS_TP  => 50;
-Readonly our $WIDTH_OF_ROW_HEADINGS_TP      => 60;
-Readonly our $RIGHT_MARGIN_TP               => 25;
-Readonly our $BOTTOM_MARGIN_TP              => 40;
-Readonly our $HEIGHT_OF_COLUMN_HEADINGS_TL  => 40;
-Readonly our $WIDTH_OF_ROW_HEADINGS_TL      => 80;
-Readonly our $RIGHT_MARGIN_TL               => 65;
-Readonly our $BOTTOM_MARGIN_TL              => 25;
-Readonly our $THIRD                         => 3;
-Readonly our $QUARTER                       => 4;
-Readonly our $EXTRA_FIVE_PIXELS             => 5;
-Readonly our $EXTRA_EIGHT_PIXELS            => 8;
-Readonly our $EXTRA_TEN_PIXELS              => 10;
-Readonly our $TILE_REF_ALL_ERROR_THUMBS     => 0;
-Readonly our $IMAGE_ALL_ERROR_THUMBS        => 1;
-Readonly our $Y_TEXT_POS_ALL_ERROR_THUMBS   => 2;
-Readonly our $Y_BORDER_POS_ALL_ERROR_THUMBS => 3;
-Readonly our $SPACE_TILE_REF_ALL_ERROR_THUMBS => 107;
-Readonly our $S_LESS_ONE_BORDER_TILE_REF_ALL_ERROR_THUMBS => 105;
-Readonly our $S_LESS_BOTH_BORDERS_TILE_REF_ALL_ERROR_THUMBS => 103;
-Readonly our $X_POS_IMAGE_TITLE_ALL_ERROR_THUMBS => 130;
-Readonly our $WHITE => 255;
-Readonly our $DEFAULT_TEXT_BOX_WIDTH => 150;
-Readonly our $DEFAULT_TEXT_BOX_HEIGHT => 25;
-Readonly our $TEXT_BOX_TEXT_POSITION_X_Y => 5;
-Readonly our $TEXT_BOX_POSITION => 3;
+Readonly::Scalar our $GRAPH_HEIGHT_DEFAULT          => 200;
+Readonly::Scalar our $GRAPH_WIDTH_DEFAULT           => 400;
+Readonly::Scalar our $HEIGHT_OF_COLUMN_HEADINGS_TP  => 50;
+Readonly::Scalar our $WIDTH_OF_ROW_HEADINGS_TP      => 60;
+Readonly::Scalar our $RIGHT_MARGIN_TP               => 25;
+Readonly::Scalar our $BOTTOM_MARGIN_TP              => 40;
+Readonly::Scalar our $HEIGHT_OF_COLUMN_HEADINGS_TL  => 40;
+Readonly::Scalar our $WIDTH_OF_ROW_HEADINGS_TL      => 80;
+Readonly::Scalar our $RIGHT_MARGIN_TL               => 65;
+Readonly::Scalar our $BOTTOM_MARGIN_TL              => 25;
+Readonly::Scalar our $THIRD                         => 3;
+Readonly::Scalar our $QUARTER                       => 4;
+Readonly::Scalar our $EXTRA_FIVE_PIXELS             => 5;
+Readonly::Scalar our $EXTRA_EIGHT_PIXELS            => 8;
+Readonly::Scalar our $EXTRA_TEN_PIXELS              => 10;
+Readonly::Scalar our $TILE_REF_ALL_ERROR_THUMBS     => 0;
+Readonly::Scalar our $IMAGE_ALL_ERROR_THUMBS        => 1;
+Readonly::Scalar our $Y_TEXT_POS_ALL_ERROR_THUMBS   => 2;
+Readonly::Scalar our $Y_BORDER_POS_ALL_ERROR_THUMBS => 3;
+Readonly::Scalar our $SPACE_TILE_REF_ALL_ERROR_THUMBS => 107;
+Readonly::Scalar our $S_LESS_ONE_BORDER_TILE_REF_ALL_ERROR_THUMBS => 105;
+Readonly::Scalar our $S_LESS_BOTH_BORDERS_TILE_REF_ALL_ERROR_THUMBS => 103;
+Readonly::Scalar our $X_POS_IMAGE_TITLE_ALL_ERROR_THUMBS => 130;
+Readonly::Scalar our $WHITE => 255;
+Readonly::Scalar our $DEFAULT_TEXT_BOX_WIDTH => 150;
+Readonly::Scalar our $DEFAULT_TEXT_BOX_HEIGHT => 25;
+Readonly::Scalar our $TEXT_BOX_TEXT_POSITION_X_Y => 5;
+Readonly::Scalar our $TEXT_BOX_POSITION => 3;
 
 
 sub allowed_formats {
@@ -655,8 +652,6 @@ __END__
 npg::util::image::merge
 
 =head1 VERSION
-
-$LastChangedRevision: 15350 $
 
 =head1 SYNOPSIS
 

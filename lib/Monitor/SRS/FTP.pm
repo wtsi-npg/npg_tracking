@@ -1,17 +1,10 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2012-02-29 14:14:10 +0000 (Wed, 29 Feb 2012) $
-# Id:            $Id: FTP.pm 15265 2012-02-29 14:14:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/SRS/FTP.pm $
-
 
 package Monitor::SRS::FTP;
 
-
 use Moose;
-
 use Monitor::RunFolder;
 extends 'Monitor::SRS';
 
@@ -21,9 +14,9 @@ use IO::All;
 use IO::All::FTP; #this package is not used explicitly
                   #it's an ftp plugin for IO::All
 use List::Util qw(max);
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15265 $ =~ /(\d+)/smx; $r; };
-
+our $VERSION = '0';
 
 Readonly::Scalar my $FTP_LOGIN     => 'ftp:srpipe';
 Readonly::Scalar my $FTP_PORT      => 21;
@@ -262,7 +255,6 @@ read sequencer via FTP.
 
 =head1 VERSION
 
-$Revision: 15265 $
 
 =head1 SYNOPSIS
 

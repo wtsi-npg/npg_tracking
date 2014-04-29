@@ -1,7 +1,7 @@
-package t::dbic_util;    ## no critic (NamingConventions::Capitalization)
+package t::dbic_util;
 
 use Moose;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/msx; $r; };
+use Readonly;
 use Test::More;
 Readonly::Scalar my $DEFAULT_FIXTURE_PATH => 't/data/dbic_fixtures';
 
@@ -32,8 +32,6 @@ __END__
 t::dbic_util - make a DBIC schema to run tests against.
 
 =head1 VERSION
-
-$Revision: 14928 $
 
 =head1 SYNOPSIS
 

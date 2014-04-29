@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: js10 $
 # Created:       2009-01-21
-# Last Modified: $Date: 2012-03-20 12:02:08 +0000 (Tue, 20 Mar 2012) $
-# Id:            $Id: instrument_utilisation.pm 15357 2012-03-20 12:02:08Z js10 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/instrument_utilisation.pm $
 #
 package npg::model::instrument_utilisation;
 use strict;
@@ -22,7 +18,7 @@ use npg::util::image::merge;
 use DateTime;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15357 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $PERCENTAGE    => 100;
 Readonly::Scalar our $DATE          => 0;
@@ -459,8 +455,6 @@ __END__
 npg::model::instrument_utilisation
 
 =head1 VERSION
-
-$Revision: 15357 $
 
 =head1 SYNOPSIS
 

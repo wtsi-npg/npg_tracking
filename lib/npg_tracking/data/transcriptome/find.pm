@@ -11,7 +11,7 @@ use Readonly;
 
 with qw/ npg_tracking::data::reference::find /;
 
-our $VERSION = '0.0';
+our $VERSION = '0';
 
 
 has '_organism_dir' => ( isa => q{Maybe[Str]},
@@ -134,12 +134,13 @@ __END__
 
 npg_tracking::data::transcriptome::find
 
+=head1 VERSION
+
 =head1 SYNOPSIS
 
   package MyPackage;
   use Moose;
   with qw{npg_tracking::data::transcriptome::find};
-
 
 =head1 DESCRIPTION
 
@@ -192,6 +193,8 @@ Documentation on GTF (GFF version2) format http://www.ensembl.org/info/website/u
 =head1 BUGS AND LIMITATIONS
 
 =head1 AUTHOR
+
+Jillian Durham
 
 =head1 LICENSE AND COPYRIGHT
 

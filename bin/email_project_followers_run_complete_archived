@@ -1,24 +1,21 @@
 #! /usr/bin/env perl
 
-# $Id: email_project_followers_run_complete_archived 16404 2013-01-07 23:47:10Z mg8 $
+#######
 # Created By: ajb
-# Last Maintained By: $Author: mg8 $
 # Created On: 2010-03-03
-# Last Changed On: $Date: 2013-01-07 23:47:10 +0000 (Mon, 07 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/bin/email_project_followers_run_complete_archived $
+#
 
 use strict;
 use warnings;
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16404 $ =~ /(\d+)/mxs; $r; };
-
 use npg::email;
 use npg::email::run::complete_archived;
 
+our $VERSION = '0';
+
 my $templates = "$Bin/../$npg::email::DEFAULT_TEMPLATE_LOCATION";
 npg::email::run::complete_archived->new(email_templates_location => $templates)->run();
-
 
 0;
 
@@ -29,8 +26,6 @@ __END__
 email_project_followers_run_complete_archived
 
 =head1 VERSION
-
-$LastChangedRevision: 16404 $
 
 =head1 SYNOPSIS
 
@@ -71,8 +66,6 @@ none
 
 =item warnings
 
-=item Readonly
-
 =item FindBin
 
 =item npg::email::run::complete_archived
@@ -85,7 +78,7 @@ none
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: mg8 $
 # Created:       2008-04-24
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: administration.pm 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/administration.pm $
 #
 package npg::view::administration;
 use strict;
@@ -21,7 +17,7 @@ use npg::model::entity_type;
 use npg::model::run_status_dict;
 use npg::model::user2usergroup;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16269 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub authorised {
   my $self = shift;
@@ -151,8 +147,6 @@ npg::view::administration
 
 =head1 VERSION
 
-$LastChangedRevision: 16269 $
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -219,7 +213,7 @@ $LastChangedRevision: 16269 $
 
 =head1 AUTHOR
 
-$Author: Roger M Pettett$
+Roger M Pettett
 
 =head1 LICENSE AND COPYRIGHT
 

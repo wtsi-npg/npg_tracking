@@ -1,10 +1,6 @@
 #########
 # Author:        gq1
-# Maintainer:    $Author: dj3 $
 # Created:       2010-06-09
-# Last Modified: $Date: 2010-06-18 09:27:18 +0100 (Fri, 18 Jun 2010) $
-# Id:            $Id: run_read.pm 9670 2010-06-18 08:27:18Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/run_read.pm $
 #
 package npg::model::run_read;
 use strict;
@@ -13,7 +9,7 @@ use base qw(npg::model);
 use English qw(-no_match_vars);
 use Carp;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 9670 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a([qw(run)]);
@@ -35,8 +31,6 @@ __END__
 npg::model::run_read
 
 =head1 VERSION
-
-$Revision: 9670 $
 
 =head1 SYNOPSIS
 
@@ -74,8 +68,6 @@ $Revision: 9670 $
 =item Carp
 
 =item npg::model::run
-
-=item Readonly
 
 =back
 

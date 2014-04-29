@@ -1,7 +1,3 @@
-#########
-# Author:        mg8
-#
-
 package npg_testing::intweb;
 
 use strict;
@@ -13,15 +9,13 @@ use LWP::UserAgent;
 use HTTP::Request::Common;
 use npg::api::util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 8316 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 =head1 NAME
 
 npg_testing::intweb
 
 =head1 VERSION
-
-$Revision: 7844 $
 
 =head1 SYNOPSIS
 
@@ -116,7 +110,7 @@ __END__
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: ajb $
 # Created:       2006-10-31
-# Last Modified: $Date: 2011-01-20 14:21:55 +0000 (Thu, 20 Jan 2011) $
-# Id:            $Id: instrument_annotation.pm 12395 2011-01-20 14:21:55Z ajb $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/instrument_annotation.pm $
 #
 package npg::model::instrument_annotation;
 use strict;
@@ -19,7 +15,7 @@ use npg::model::event;
 use npg::model::entity_type;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 12395 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $DEFAULT_INSTRUMENT_UPTIME_INTERVAL => 90;
 
@@ -190,8 +186,6 @@ __END__
 npg::model::instrument_annotation
 
 =head1 VERSION
-
-$LastChangedRevision: 12395 $
 
 =head1 SYNOPSIS
 

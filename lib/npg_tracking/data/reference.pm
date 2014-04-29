@@ -1,9 +1,5 @@
 # Author:        Marina Gourtovaia
-# Maintainer:    $Author: mg8 $
 # Created:       14 April 2009
-# Last Modified: $Date: 2010-01-13 15:07:25 +0000 (Wed, 13 Jan 2010) $
-# Id:            $Id: reference.pm 7844 2010-01-13 15:07:25Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-qc/branches/prerelease-21.0/lib/npg_qc/autoqc/align/reference.pm $
 #
 package npg_tracking::data::reference;
 
@@ -11,7 +7,7 @@ use strict;
 use warnings;
 use Moose;
 
-our $VERSION = do { my ($r) = q$Revision: 7844 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 with qw/
           npg_tracking::glossary::run
@@ -31,8 +27,6 @@ __END__
 npg_tracking::data::reference
 
 =head1 VERSION
-
-$Revision: 7844 $
 
 =head1 SYNOPSIS
 
@@ -79,7 +73,7 @@ Retrieves a path to a binary, aligner-specific reference sequence for a lane.
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

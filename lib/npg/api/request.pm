@@ -1,7 +1,6 @@
 #############
 # Created By: Marina Gourtovaia
 # Created On: 11 June 2010
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/request.pm, r16549
 
 package npg::api::request;
 
@@ -27,8 +26,6 @@ our $VERSION = '75.2';
 npg::api::request
 
 =head1 VERSION
-
-$Revision: 16549 $
 
 =head1 SYNOPSIS
 
@@ -439,7 +436,7 @@ __END__
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 

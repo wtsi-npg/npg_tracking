@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-03-27 13:38:46 +0100 (Tue, 27 Mar 2012) $
-# Id:            $Id: user2usergroup.pm 15395 2012-03-27 12:38:46Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/user2usergroup.pm $
 #
 package npg::model::user2usergroup;
 use strict;
@@ -15,7 +11,7 @@ use Carp;
 use npg::model::user;
 use npg::model::usergroup;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15395 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a([qw(user usergroup)]);
@@ -55,8 +51,6 @@ __END__
 npg::model::user2usergroup
 
 =head1 VERSION
-
-$LastChangedRevision: 15395 $
 
 =head1 SYNOPSIS
 

@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: gq1 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2010-05-04 15:28:42 +0100 (Tue, 04 May 2010) $
-# Id:            $Id: usergroup.pm 9207 2010-05-04 14:28:42Z gq1 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/usergroup.pm $
 #
 package npg::model::usergroup;
 use strict;
@@ -15,7 +11,7 @@ use Carp;
 use npg::model::user;
 use npg::model::event_type;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -93,8 +89,6 @@ __END__
 npg::model::usergroup - data model for user groups
 
 =head1 VERSION
-
-$Revision: 9207 $
 
 =head1 SYNOPSIS
 

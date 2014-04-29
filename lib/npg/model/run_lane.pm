@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-03-08 11:21:27 +0000 (Thu, 08 Mar 2012) $
-# Id:            $Id: run_lane.pm 15308 2012-03-08 11:21:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/run_lane.pm $
 #
 package npg::model::run_lane;
 use strict;
@@ -19,7 +15,7 @@ use npg::model::run_lane_annotation;
 use npg::model::annotation;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15308 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 Readonly::Scalar our $GOOD_CLUSTERS_PF        => 10_000;
 Readonly::Scalar our $GOOD_PERC_ERROR_RATE_PF => 1;
 Readonly::Scalar our $GOOD_PERC_CLUSTERS_PF   => 45;
@@ -202,8 +198,6 @@ __END__
 npg::model::run_lane
 
 =head1 VERSION
-
-$Revision: 15308 $
 
 =head1 SYNOPSIS
 

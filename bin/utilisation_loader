@@ -1,17 +1,15 @@
 #! /usr/bin/env perl
 #########
 # Author:        ajb
-# Maintainer:    $Author: mg8 $
 # Created:       2009-02-07
-# Last Modified: $Date: 2013-01-07 11:04:50 +0000 (Mon, 07 Jan 2013) $
-# Id:            $Id: utilisation_loader 16389 2013-01-07 11:04:50Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/bin/utilisation_loader $
 #
 use strict;
 use warnings;
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use npg::api::instrument_utilisation;
+
+our $VERSION = '0';
 
 my $instrument_utilisation = npg::api::instrument_utilisation->new();
 foreach my $method (qw/calculate_ga2_values calculate_hiseq_values calculate_miseq_values/) {
@@ -23,5 +21,4 @@ foreach my $method (qw/calculate_ga2_values calculate_hiseq_values calculate_mis
 }
 
 0;
-
 

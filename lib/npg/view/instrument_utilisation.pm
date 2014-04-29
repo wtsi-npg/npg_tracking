@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: js10 $
 # Created:       2009-02-05
-# Last Modified: $Date: 2012-03-20 12:02:08 +0000 (Tue, 20 Mar 2012) $
-# Id:            $Id: instrument_utilisation.pm 15357 2012-03-20 12:02:08Z js10 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/instrument_utilisation.pm $
 #
 package npg::view::instrument_utilisation;
 use base qw(npg::view);
@@ -16,7 +12,7 @@ use npg::util::image::graph;
 use Readonly;
 use Math::Round qw(round);
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15357 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $PLOTTER_WIDTH  => 1000;
 Readonly::Scalar our $PLOTTER_HEIGHT => 400;
@@ -133,8 +129,6 @@ __END__
 npg::view::instrument_utilisation - view handling for instrument_utilisation
 
 =head1 VERSION
-
-$LastChangedRevision: 15357 $
 
 =head1 SYNOPSIS
 

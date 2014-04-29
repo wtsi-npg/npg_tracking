@@ -1,12 +1,11 @@
 # Author:        Jillian Durham <jillian@sanger.ac.uk>
-# Maintainer:    Jillian Durham <jillian@sanger.ac.uk> 
 # Created:       19th March 2014
 #
 package npg_tracking::data::transcriptome;
 
 use Moose;
 
-our $VERSION = '0.0';
+our $VERSION = '0';
 
 with qw/
           npg_tracking::glossary::run
@@ -26,8 +25,6 @@ __END__
 npg_tracking::data::transcriptome
 
 =head1 VERSION
-
-$Revision$
 
 =head1 SYNOPSIS
 
@@ -63,7 +60,7 @@ A wrapper class for finding the location of transcriptome files.
 
 =head1 AUTHOR
 
-Author: Jillian Durham E<lt>jillian@sanger.ac.ukE<gt>
+Jillian Durham E<lt>jillian@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

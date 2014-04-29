@@ -1,10 +1,3 @@
-#########
-# Author:        mg8
-# Last Modified: $Date: 2010-02-19 13:52:39 +0000 (Fri, 19 Feb 2010) $ $Author: mg8 $
-# Id:            $Id: db.pm 8316 2010-02-19 13:52:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/useful_modules/branches/prerelease-18.0/lib/npg_testing/db.pm $
-#
-
 package npg_testing::html;
 
 use strict;
@@ -14,15 +7,13 @@ use English qw{-no_match_vars};
 use Exporter;
 use HTML::Tidy;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 8316 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 =head1 NAME
 
 npg_testing::html
 
 =head1 VERSION
-
-$Revision: 7844 $
 
 =head1 SYNOPSIS
 
@@ -95,7 +86,7 @@ __END__
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

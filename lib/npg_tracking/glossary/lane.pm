@@ -1,15 +1,12 @@
 #############
 # Created By: Marina Gourtovaia
-# Maintainer: $Author: mg8 $
 # Created On: 23 April 2010
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $Id: lane.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/glossary/lane.pm $
 
 package npg_tracking::glossary::lane;
 
 use Moose::Role;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+
+our $VERSION = '0';
 
 use npg_tracking::util::types;
 
@@ -33,8 +30,6 @@ npg_tracking::glossary::lane
 
 =head1 VERSION
 
-$LastChangedRevision: 16549 $
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -57,8 +52,6 @@ lane interface
 
 =item Moose::Role
 
-=item Readonly
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -67,7 +60,7 @@ lane interface
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 

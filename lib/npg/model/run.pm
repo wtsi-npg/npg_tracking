@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-11-26 09:53:48 +0000 (Mon, 26 Nov 2012) $
-# Id:            $Id: run.pm 16269 2012-11-26 09:53:48Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/run.pm $
 #
 package npg::model::run;
 use strict;
@@ -32,7 +28,9 @@ use DateTime::Format::Strptime;
 use npg::model::run_read;
 use JSON;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16269 $ =~ /(\d+)/smx; $r; };
+use Readonly;
+
+our $VERSION = '0';
 
 Readonly::Scalar our $DEFAULT_SUMMARY_DAYS => 14;
 Readonly::Scalar our $MAX_LANES => 8;
@@ -1177,8 +1175,6 @@ __END__
 npg::model::run
 
 =head1 VERSION
-
-$Revision: 16269 $
 
 =head1 SYNOPSIS
 

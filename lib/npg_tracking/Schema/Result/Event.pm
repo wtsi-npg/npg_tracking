@@ -186,14 +186,11 @@ __PACKAGE__->belongs_to(
 
 # Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-28 12:00:59
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Va2X3mrYQthvC7JygMXvSw
-# Author:        david.jackson@sanger.ac.uk
-# Maintainer:    $Author: ajb $
-# Created:       2010-04-08
-# Last Modified: $Date: 2011-01-18 15:07:26 +0000 (Tue, 18 Jan 2011) $
-# Id:            $Id: Event.pm 12361 2011-01-18 15:07:26Z ajb $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/Event.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 12361 $ =~ /(\d+)/mxs; $r; };
+# Author:        david.jackson@sanger.ac.uk
+# Created:       2010-04-08
+
+our $VERSION = '0';
 
 =head2 BUILD
 
@@ -239,11 +236,5 @@ sub entity_obj {
     return $obj;
 }
 
-
-1;
-
-
-
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;

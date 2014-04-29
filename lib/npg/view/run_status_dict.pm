@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: gq1 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2010-05-04 15:28:42 +0100 (Tue, 04 May 2010) $
-# Id:            $Id: run_status_dict.pm 9207 2010-05-04 14:28:42Z gq1 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/run_status_dict.pm $
 #
 package npg::view::run_status_dict;
 use base qw(npg::view);
@@ -13,7 +9,7 @@ use warnings;
 use Carp;
 use English qw(-no_match_vars);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub new {
   my ($class, @args) = @_;
@@ -75,8 +71,6 @@ __END__
 npg::view::run_status_dict - view handling for run_status_dicts
 
 =head1 VERSION
-
-$LastChangedRevision: 9207 $
 
 =head1 SYNOPSIS
 

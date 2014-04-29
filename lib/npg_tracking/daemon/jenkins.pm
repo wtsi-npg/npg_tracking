@@ -1,7 +1,6 @@
 ######### 
 # Author:        Marina Gourtovaia
 # Created:       14 December 2012
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/instrument_handling/trunk/lib/srpipe/runner/jenkins.pm, r17056
 #
 
 package npg_tracking::daemon::jenkins;
@@ -13,6 +12,8 @@ use English qw(-no_match_vars);
 use Readonly;
 
 extends 'npg_tracking::daemon';
+
+our $VERSION = '0';
 
 Readonly::Scalar our $PROXY_SERVER     => q[wwwcache.sanger.ac.uk];
 Readonly::Scalar our $PROXY_PORT       => 3128;
@@ -99,7 +100,7 @@ Metadata for a daemon that starts up jenkins integration server.
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
