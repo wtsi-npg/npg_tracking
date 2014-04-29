@@ -1,5 +1,7 @@
 CHANGES
 
+ - use git describe directly to avoid need for gitver script
+
 release 77.0
  - the build file and module - code improvements, POD and PBP for the module
  - scripts and modules:
