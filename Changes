@@ -1,4 +1,7 @@
-CHANGES
+  - transcriptome changed so that a default is not used if not supplied 
+  - transcriptome version directory changed so tests changed accordingly
+  - reference find changed to handle transcriptome version parsing
+
 
 release 77.0
  - the build file and module - code improvements, POD and PBP for the module
