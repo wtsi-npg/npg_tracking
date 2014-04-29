@@ -38,14 +38,18 @@ has '_version_dir' => ( isa => q{Maybe[Str]},
 sub _build__version_dir {
   my $self = shift;
 
-  my ($organism, $strain, $transcriptome_version) = $self->_parse_reference_genome($self->lims->reference_genome);
-  if ($organism && $strain){
+  my ($organism, $strain_tver) = $self->_parse_reference_genome($self->lims->reference_genome);
+  if ($organism && $strain_tver){
+      my (@a) = split/\s+\+\s+/smx,$strain_tver;
+      my $strain = $a[0];
+      my $transcriptome_version = $a[1] ?  $a[1] : undef;
+
       if ($transcriptome_version){
           return($self->_organism_dir . "/$transcriptome_version/$strain/");
       }
       $self->messages->push('Not returning transcriptome directory as version not given ' . $self->lims->reference_genome);
   }
-  return;
+ return;
 }
 
 has 'gtf_path'     => ( isa => q{Maybe[Str]},

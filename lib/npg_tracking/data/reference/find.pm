@@ -419,15 +419,12 @@ sub _parse_reference_genome {
   $reference_genome ||= $self->reference_genome;
   if ($reference_genome) {
      ##also allows for transcriptome version e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75)'
-     my @a = $reference_genome =~/ (\S+) \s+ [(] (\S+) (\s+ \+ \s+ \S+)? [)] /smx;
+     my @a = $reference_genome  =~/  (\S+) \s+ [(]  (?:(\S+ | \S+ \s+ \+ \s+ \S+)) [)]  /smx;
      if (scalar @a >= 2 && $a[0] && $a[1]) {
-        #remove preceeding '+' symbol and whitespace
-        if (defined $a[2] and length $a[2] != 0){ $a[2] =~ s/^\s+[+]\s+//smx }
-        else { pop @a }
         return @a;
         }
-    }
-    return;
+  }
+  return;
 }
 
 sub _preset_ref2ref_path {

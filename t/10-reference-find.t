@@ -2,7 +2,7 @@ package reference;
 
 use strict;
 use warnings;
-use Test::More tests => 44;
+use Test::More tests => 48;
 use Test::Exception;
 use File::Spec::Functions qw(catfile);
 use Cwd qw(cwd);
@@ -11,6 +11,7 @@ use Test::MockObject;
 
 my $central = catfile(cwd, q[t/data/repos]);
 my $repos = catfile(cwd, q[t/data/repos/references]);
+my $transcriptome_repos = catfile(cwd, q[t/data/repos1/transcriptomes]);
 my $bwa_human_ref = q[Human/NCBI36/all/bwa/someref.fa];
 
 use_ok('npg_tracking::data::reference::find');
@@ -159,6 +160,18 @@ use_ok('npg_tracking::data::reference::find');
   $lims->mock( 'reference_genome', sub { $no_align } );
   is($ruser->lims2ref($lims), q[], qq[no reference returned for '$no_align' option]);
   is($ruser->messages->pop, $no_align, 'correct message saved');
+}
+
+{
+  my $ruser = Moose::Meta::Class->create_anon_class(
+      roles => [qw/npg_tracking::data::transcriptome::find/])
+      ->new_object({ repository => $transcriptome_repos });
+  is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)])),'Homo_sapiens 1000Genomes_hs37d5 + ensembl_74_transcriptome','transcriptome ref genome parsing ok with correct format'); 
+  is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 ; ensembl_74_transcriptome)])),q[],'transcriptome ref genome parsing ok - returns empty with incorrect delimiter'); 
+  is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 ensembl_74_transcriptome)])),q[],'transcriptome ref genome parsing ok - returns empty with missing delimiter'); 
+  is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome])),q[],'transcriptome ref genome parsing ok - returns empty with missing bracket'); 
+
+
 }
 
 1;
