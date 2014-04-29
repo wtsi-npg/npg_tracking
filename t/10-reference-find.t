@@ -11,7 +11,7 @@ use Test::MockObject;
 
 my $central = catfile(cwd, q[t/data/repos]);
 my $repos = catfile(cwd, q[t/data/repos/references]);
-my $transcriptome_repos = catfile(cwd, q[t/data/repos1/transcriptomes]);
+my $transcriptome_repos = catfile(cwd, q[t/data/repos1]);
 my $bwa_human_ref = q[Human/NCBI36/all/bwa/someref.fa];
 
 use_ok('npg_tracking::data::reference::find');
