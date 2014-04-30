@@ -2,7 +2,7 @@ package reference;
 
 use strict;
 use warnings;
-use Test::More tests => 48;
+use Test::More tests => 49;
 use Test::Exception;
 use File::Spec::Functions qw(catfile);
 use Cwd qw(cwd);
@@ -166,12 +166,17 @@ use_ok('npg_tracking::data::reference::find');
   my $ruser = Moose::Meta::Class->create_anon_class(
       roles => [qw/npg_tracking::data::transcriptome::find/])
       ->new_object({ repository => $transcriptome_repos });
-  is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)])),'Homo_sapiens 1000Genomes_hs37d5 + ensembl_74_transcriptome','transcriptome ref genome parsing ok with correct format'); 
+  is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)])),'Homo_sapiens 1000Genomes_hs37d5 ensembl_74_transcriptome','transcriptome ref genome parsing ok with correct format'); 
   is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 ; ensembl_74_transcriptome)])),q[],'transcriptome ref genome parsing ok - returns empty with incorrect delimiter'); 
   is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 ensembl_74_transcriptome)])),q[],'transcriptome ref genome parsing ok - returns empty with missing delimiter'); 
   is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome])),q[],'transcriptome ref genome parsing ok - returns empty with missing bracket'); 
 
-
+  $ruser = Moose::Meta::Class->create_anon_class(
+          roles => [qw/npg_tracking::data::reference::find/])
+          ->new_object({ 'repository' => $transcriptome_repos, 'aligner' => 'fasta' });
+  my $lims = Test::MockObject->new();
+  $lims->mock( 'reference_genome', sub { q[Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)] } );
+  is ($ruser->lims2ref($lims), catfile($transcriptome_repos, q[references/Homo_sapiens/1000Genomes_hs37d5/all/fasta/hs37d5.fa]), 'find fasta genome reference even when transcriptome also given in key');
 }
 
 1;
