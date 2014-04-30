@@ -1,4 +1,7 @@
-CHANGES
+  - transcriptome changed so that a default is not used if not supplied 
+  - transcriptome version directory changed so tests changed accordingly
+  - reference find changed to handle transcriptome version parsing
+
 
  - unused templates removed
  - samplesheet regenerated when the existing file does not come from the currently
