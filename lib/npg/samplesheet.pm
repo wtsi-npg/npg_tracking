@@ -193,7 +193,7 @@ sub _build_study_names {
   my $studies = {};
   foreach my $l (@{$self->lims}) {
     foreach my $name ($l->study_names) {
-      $studies->{$name} = 1;
+      $studies->{_csv_compatible_value($name)} = 1;
     }
   }
   my @names = sort keys %{$studies};
