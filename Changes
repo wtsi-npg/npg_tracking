@@ -8,7 +8,9 @@
    pending run
  - samplesheet daemon moved to a staging server where samplesheets are stored
  - copyright for all modules and script belongs to GRL - the copyright
-    notice edited where it was incorrect 
+    notice edited where it was incorrect
+ - pass Illumina samplesheet study name field components through a filter to replace
+   commas
 
 release 77.0
  - the build file and module - code improvements, POD and PBP for the module
