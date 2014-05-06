@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 79;
+use Test::More tests => 78;
 use Test::Exception;
 use Test::Deep;
 use MIME::Lite;
@@ -193,19 +193,6 @@ my $util = t::util->new({fixtures  => 1,});
                              cgi_params     => {id_run_status_dict => 'all', id_instrument => 3, },
           });
   ok($util->test_rendered($str, 't/data/rendered/run/runs_on_instrument.html'), 'html list render run instrument 3 all statuses');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run;add_pair_ajax',
-           REQUEST_METHOD => 'GET',
-           username       => 'joe_loader',
-           util           => $util,
-           cgi_params     => {
-            batch_id => 42,
-                 },
-          });
-  ok($util->test_rendered($str, 't/data/rendered/run_add_pair_ajax.html'), 'add_pair_ajax');
 }
 
 {  
