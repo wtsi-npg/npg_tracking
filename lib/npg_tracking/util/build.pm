@@ -22,21 +22,10 @@ our $VERSION = '0';
 =cut
 
 sub git_tag {
-  my $version;
-  my $gitver = q[./scripts/gitver];
-  if (!-e $gitver) {
-    carp "$gitver script not found";
-    $version = q[unknown];
-  }
-  if (!-x $gitver) {
-    carp "$gitver script is not executable";
-    $version = q[unknown];
-  }
-  if (!$version) {
-    ##no critic (InputOutput::ProhibitBacktickOperators)
-    $version = `$gitver`;
-    $version =~ s/\s$//smxg;
-  }
+
+  ##no critic (InputOutput::ProhibitBacktickOperators)
+  my $version = `git describe --always --dirty`|| q[unknown];
+  $version =~ s/\s$//smxg;
   return $version;
 }
 

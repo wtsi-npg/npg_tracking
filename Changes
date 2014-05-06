@@ -1,8 +1,7 @@
-  - transcriptome changed so that a default is not used if not supplied 
-  - transcriptome version directory changed so tests changed accordingly
-  - reference find changed to handle transcriptome version parsing
-
-
+release 77.1
+ - transcriptome changed so that a default is not used if not supplied 
+ - transcriptome version directory changed so tests changed accordingly
+ - reference find changed to handle transcriptome version parsing
  - unused templates removed
  - samplesheet regenerated when the existing file does not come from the currently
    pending run
@@ -11,6 +10,7 @@
     notice edited where it was incorrect
  - pass Illumina samplesheet study name field components through a filter to replace
    commas
+ - use git describe directly to avoid need for gitver script
 
 release 77.0
  - the build file and module - code improvements, POD and PBP for the module

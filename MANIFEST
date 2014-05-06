@@ -409,7 +409,6 @@ lib/st/api/study.pm
 MANIFEST			This list of files
 README
 REDESIGN_PROPOSAL
-scripts/gitver
 scripts/upgrade_schema/upgrade_schema-10.0
 scripts/upgrade_schema/upgrade_schema-11.0
 scripts/upgrade_schema/upgrade_schema-12.0
