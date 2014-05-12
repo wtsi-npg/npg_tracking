@@ -1,3 +1,12 @@
+ - npg_tracking::illumina::run::folder and its tests updated; the following accessors removed:
+       data_path (unused from outside),
+       tag_qseqs_path (redundant),
+       score_path (redundant),
+       qseq_location_path (redundant);
+     unused analysis_path is retained for future use as a get method, deriving
+       paths from analysis_path removed;
+     tests specific for old illumina mashines (IL) removed.
+   
 release 77.1
  - transcriptome changed so that a default is not used if not supplied 
  - transcriptome version directory changed so tests changed accordingly
