@@ -3,7 +3,7 @@ use warnings;
 
 use English qw(-no_match_vars);
 
-use Test::More tests => 47;
+use Test::More tests => 50;
 use Test::LongString;
 use Test::Exception;
 use File::Slurp;
@@ -15,6 +15,42 @@ use_ok('npg::samplesheet');
 
 my $schema = t::dbic_util->new->test_schema();
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q(t/data/samplesheet);
+
+
+{
+  my $ss;
+  my $result = q();
+  lives_ok { $ss = npg::samplesheet->new(npg_tracking_schema=>$schema, id_run=>7826, output=>\$result); } 'sample sheet object for dual index';
+  my $expected_result = << 'RESULT_7826';
+[Header],,,,
+Investigator Name,nh4,,,
+Project Name,Mate Pair R&D,,,
+Experiment Name,7826,,,
+Date,2012-04-03T16:39:48,,,
+Workflow,LibraryQC,,,
+Chemistry,Amplicon,,,
+,,,,
+[Reads],,,,
+75,,,,
+8,,,,
+,,,,
+[Settings],,,,
+,,,,
+[Manifests],,,,
+,,,,
+[Data],,,,
+Sample_ID,Sample_Name,GenomeFolder,Index,Index2,
+4894529,Mouse_test_3kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Mus_musculus\NCBIm37\all\fasta\,ATCACGTT,ATAAAAAA,
+4894528,Tetse_3kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\PhiX\Illumina\all\fasta\,CGATGTTT,ATTTTTTT,
+4894527,PfIT_454_5kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,ACTTGATG,ATCCCCCC,
+4894525,PfIT_Sanger_5kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,GATCAGCG,ATGGGGGG,
+4894526,PfIT_SOLiD5500_5kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,TAGCTTGT,ATACACGT,
+RESULT_7826
+  $expected_result =~ s/\n/\r\n/smg;
+  lives_ok { $ss->process(); } ' sample sheet generated';
+  is_string($result, $expected_result, 'Dual indexes created');
+}
+
 
 {
   my $ss;

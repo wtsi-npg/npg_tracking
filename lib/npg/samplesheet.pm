@@ -42,6 +42,7 @@ Readonly::Scalar our $REP_ROOT => q(/nfs/sf45);
 Readonly::Scalar our $SAMPLESHEET_PATH => q(/nfs/sf49/ILorHSorMS_sf49/samplesheets/);
 Readonly::Scalar our $DEFAULT_FALLBACK_REFERENCE_SPECIES=> q(PhiX);
 Readonly::Scalar my  $MIN_COLUMN_NUM => 3;
+Readonly::Scalar my  $DUAL_INDEX_TAG_LENGTH => 16;
 
 with 'MooseX::Getopt';
 with 'npg_tracking::glossary::run';
@@ -72,6 +73,8 @@ sub _build_samplesheet_path {
 }
 
 has 'extend' => ( 'isa' => 'Bool', 'is' => 'ro',);
+
+has 'dual_index' => ( 'isa' => 'Bool', 'is' => 'rw');
 
 has 'repository' => ( 'isa' => 'Str', 'is' => 'ro', default => $REP_ROOT );
 
@@ -153,6 +156,21 @@ has _limsreflist => (
 sub _build__limsreflist {
   my $self = shift;
   my @lims;
+
+  # first pass just sets dual_index flag
+  $self->dual_index(0);
+  if ($self->_index_read) {
+    for my $l (@{$self->lims}) {
+      for my $tmpl ( $l->is_pool ? $l->children : ($l) ) {
+        if ($tmpl->tag_sequence && length($tmpl->tag_sequence) == $DUAL_INDEX_TAG_LENGTH) {
+          $self->dual_index(1);
+          last;
+        }
+      }
+      last if $self->dual_index;
+    }
+  }
+
   for my $l (@{$self->lims}) {
     for my $tmpl ( $l->is_pool ? $l->children : ($l) ) {
 
@@ -176,7 +194,13 @@ sub _build__limsreflist {
       push @row, $tmpl->sample_publishable_name;
       push @row, $ref;
       if($self->_index_read) {
-        push @row, $tmpl->tag_sequence || q[];
+        if ($tmpl->tag_sequence && length($tmpl->tag_sequence) == $DUAL_INDEX_TAG_LENGTH) {
+          push @row, substr $tmpl->tag_sequence, 0, $DUAL_INDEX_TAG_LENGTH/2;
+          push @row, substr $tmpl->tag_sequence, $DUAL_INDEX_TAG_LENGTH/2;
+        } else {
+          push @row, $tmpl->tag_sequence || q[];
+          if ($self->dual_index) { push @row, q[]; }
+        }
       }
       if ($self->extend) {
         push @row, map { _csv_compatible_value($tmpl->$_) } @{$self->_additional_columns};
@@ -290,7 +314,8 @@ Project Name[% separator _ project_name %][% separator.repeat(one_less_sep) %]
 Experiment Name[% separator _ run.id_run %][% separator.repeat(one_less_sep) %]
 Date[% separator _ pendingstatus.date %][% separator.repeat(one_less_sep) %]
 Workflow[% separator %]LibraryQC[% separator.repeat(one_less_sep) %]
-Chemistry[% separator %]Default[% separator.repeat(one_less_sep) %]
+Chemistry[% separator %][% IF has_dual_index %]Amplicon[% ELSE %]Default[% END -%]
+[% separator.repeat(one_less_sep) %]
 [% separator.repeat(num_sep) -%]
 
 [Reads][% separator.repeat(num_sep) %]
@@ -310,6 +335,7 @@ Chemistry[% separator %]Default[% separator.repeat(one_less_sep) %]
 [% 
    colnames = ['Sample_ID', 'Sample_Name', 'GenomeFolder'];
    IF has_index_read; colnames.push('Index') ;END;
+   IF has_dual_index; colnames.push('Index2'); END;
    IF has_multiple_lanes; colnames.unshift('Lane'); END;
    colnames.join(separator);
    separator;
@@ -346,6 +372,7 @@ sub process {
     separator          => $st::api::lims::samplesheet::SAMPLESHEET_RECORD_SEPARATOR,
     has_multiple_lanes => $ml,
     has_index_read     => $ir,
+    has_dual_index     => $self->dual_index,
     additional_columns => $ac,
     num_sep            => $nc,
     project_name       => join(q[ ], @{$self->study_names}) || 'unknown',
