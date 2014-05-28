@@ -89,8 +89,6 @@ __END__
 
  npg_tracking::util::build
 
-=head1 VERSION
-
 =head1 SYNOPSIS
  
  # in your Build.PL

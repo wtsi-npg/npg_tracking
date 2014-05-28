@@ -451,9 +451,6 @@ __END__
 
 npg_tracking::illumina::run::folder
 
-=head1 VERSION
-
-
 =head1 SYNOPSIS
 
   package MyPackage;
@@ -477,9 +474,9 @@ or because you have previously declared with npg_tracking::illumina::run::short_
 option. If you declare short_reference manually, then it must return a string where the last digits are
 the id_run.
 
-Failure to have provided a short_reference method WILL cause a run_time error if your class needs to obtain
+Failure to have provided a short_reference method WILL cause a run-time error if your class needs to obtain
 any paths where a path or subpath was not given in object construction (i.e. it wants to try to use id_run
-to glob for it). The error will be along the lines of:
+to glob for it).
 
 First, using this role will allow you to add a subpath to your constructor. This must be a directory
 below the run_folder directory, but expressing the full path.
@@ -497,7 +494,7 @@ selecting the first which has directories which should be present in a runfolder
 
   my $sPath = $oPackage->path();
 
-=head2 analysis_path - can be given in object constructor, and this will be used to work out other directory paths
+=head2 analysis_path
 
 =head2 intensity_path - ro accessor to the intensity level directory subpath
 
