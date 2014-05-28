@@ -8,7 +8,7 @@ use Moose::Role;
 use Moose::Meta::Class;
 use File::Spec::Functions qw(splitdir catfile catdir);
 use Carp qw(carp cluck croak confess);
-use Cwd;
+use Cwd qw/getcwd abs_path/;
 use Try::Tiny;
 use Readonly;
 
@@ -19,6 +19,8 @@ our $VERSION = '0';
 
 with 'npg_tracking::illumina::run::folder::location';
 
+##no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
+
 Readonly::Scalar my $DATA_DIR       => q{Data};
 Readonly::Scalar my $QC_DIR         => q{qc};
 Readonly::Scalar my $BASECALL_DIR   => q{BaseCalls};
@@ -28,23 +30,19 @@ Readonly::Array  my @RECALIBRATED_DIR_MATCH  => qw( PB_cal no_cal ) ;
 Readonly::Array  my @BUSTARD_DIR_MATCH       => ( q{Bustard}, $BASECALL_DIR,  q{_basecalls_} );
 Readonly::Array  my @INTENSITY_DIR_MATCH     => qw( Intensities );
 
-##############
-# public methods
-
 Readonly::Array our @ORDER_TO_ASSESS_SUBPATH_ASSIGNATION => qw(
       recalibrated_path basecall_path bustard_path intensity_path
       pb_cal_path qc_path archive_path runfolder_path
   );
 
 Readonly::Hash my %NPG_PATH  => (
-
+  q{analysis_path}     => 'Path to the top level custom analysis directory',
   q{reports_path}      => 'Path to the "reports" directory',
   q{intensity_path}    => 'Path to the "Intensities" directory',
   q{bustard_path}      => 'Path to the Bustard directory',
   q{basecall_path}     => 'Path to the "Basecalls" directory',
-  q{dif_files_path}    => 'Path to the dif files directory',
   q{recalibrated_path} => 'Path to the recalibrated qualities directory',
-  q{pb_cal_path}       => 'Path to the "PB_cal" or "no_cal" directory',
+  q{pb_cal_path}       => 'Path to the "PB_cal" directory',
   q{archive_path}      => 'Path to the directory with data ready for archiving',
   q{qc_path}           => 'Path directory with top level QC data',
 );
@@ -59,18 +57,53 @@ foreach my $path_attr ( keys %NPG_PATH ) {
   );
 }
 
-has q{bam_basecall_path}  => ( isa => q{Str}, is => q{ro}, predicate => 'has_bam_basecall_path',
-                                 documentation => 'Path to the "BAM Basecalls" directory',);
+has q{dif_files_path} => (
+  isa           => q{Str},
+  is            => q{ro},
+  predicate     => q{has_dif_files_path},
+  writer        => q{set_dif_files_path},
+  documentation => 'Path to the dif files directory',
+);
+sub _set_dif_files_path { #retained for compatibility with the pipeline
+  my ($self, $path) = @_;
+  $self->set_dif_files_path($path);
+  return;
+}
 
-has q{_analysis_path}     => ( isa => q{Str}, is => q{ro}, reader => 'analysis_path',
-                                 documentation => 'Path to the top level custom analysis directory',);
+has q{bam_basecall_path}  => (
+  isa           => q{Str},
+  is            => q{ro},
+  predicate     => 'has_bam_basecall_path',
+  writer        => 'set_bam_basecall_path',
+  documentation => 'Path to the "BAM Basecalls" directory',
+);
+sub _set_bam_basecall_path { #retained for compatibility with the pipeline
+  my ($self, $path) = @_;
+  $self->set_bam_basecall_path($path);
+  return;
+}
 
-has q{npg_tracking_schema} => ( isa => q{Maybe[npg_tracking::Schema]}, is => q{ro}, lazy_build => 1,
-                                 documentation => 'NPG tracking DBIC schema', );
+has q{npg_tracking_schema} => (
+  isa => q{Maybe[npg_tracking::Schema]},
+  is => q{ro},
+  lazy_build => 1,
+);
+sub _build_npg_tracking_schema {
+  my $schema;
+  try {
+    $schema = npg_tracking::Schema->connect();
+  } catch {
+    warn qq{WARNING: Unable to connect to NPG tracking DB for faster globs.\n};
+  };
+  return $schema;
+}
 
-#############
-# private methods
-has q{subpath} => ( isa => q{Str}, is => q{ro}, predicate => q{has_subpath}, writer => q{_set_subpath});
+has q{subpath} => (
+  isa       => q{Str},
+  is        => q{ro},
+  predicate => q{has_subpath},
+  writer    => q{_set_subpath},
+);
 
 sub _given_path {
   my ($self) = @_;
@@ -92,22 +125,38 @@ sub _given_path {
   return $subpath;
 }
 
-#############
-# builders
-
-sub _build_npg_tracking_schema {
-  my $schema;
-  try {
-    $schema = npg_tracking::Schema->connect();
-  } catch {
-    warn qq{Unable to connect to NPG tracking DB for faster globs.\n};
-  };
-  return $schema;
-}
-
 sub _build_analysis_path {
   my ($self) = @_;
+
+  if ($self->has_bam_basecall_path) {
+    return $self->bam_basecall_path;
+  }
+  if ($self->has_bustard_path) {
+    return $self->bustard_path;
+  }
+  if ($self->has_archive_path) {
+    return _infer_analysis_path($self->archive_path, 2);
+  }
+
+  if ($self->has_recalibrated_path || $self->recalibrated_path) {
+    return _infer_analysis_path($self->recalibrated_path, 1);
+  }
+
   return q{};
+}
+
+sub _infer_analysis_path {
+  my ($path, $distance) = @_;
+
+  my @path_components = splitdir( abs_path $path );
+  if (scalar @path_components <= $distance) {
+    croak qq[path $path is too short for distance $distance];
+  }
+  while ($distance > 0) {
+    pop @path_components;
+    $distance--;
+  }
+  return File::Spec->catdir( @path_components );
 }
 
 sub _build_intensity_path {
