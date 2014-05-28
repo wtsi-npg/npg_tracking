@@ -1,3 +1,7 @@
+CHANGES
+
+release 77.X
+ - if git version does not start with a digit, 0.0 is prepended
  - npg_tracking::illumina::run::folder and its tests updated; the following accessors removed:
        data_path (unused from outside),
        tag_qseqs_path (redundant),

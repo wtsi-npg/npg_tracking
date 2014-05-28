@@ -19,14 +19,14 @@ our $VERSION = '0';
 
 with 'npg_tracking::illumina::run::folder::location';
 
-Readonly::Scalar our $DATA_DIR       => q{Data};
-Readonly::Scalar our $QC_DIR         => q{qc};
-Readonly::Scalar our $BASECALL_DIR   => q{BaseCalls};
-Readonly::Scalar our $ARCHIVE_DIR    => q{archive};
-Readonly::Scalar our $SUMMARY_LINK   => q{Latest_Summary};
-Readonly::Array  our @RECALIBRATED_DIR_MATCH  => qw( PB_cal no_cal ) ;
-Readonly::Array  our @BUSTARD_DIR_MATCH       => ( q{Bustard}, $BASECALL_DIR,  q{_basecalls_} );
-Readonly::Array  our @INTENSITY_DIR_MATCH     => qw( Intensities );
+Readonly::Scalar my $DATA_DIR       => q{Data};
+Readonly::Scalar my $QC_DIR         => q{qc};
+Readonly::Scalar my $BASECALL_DIR   => q{BaseCalls};
+Readonly::Scalar my $ARCHIVE_DIR    => q{archive};
+Readonly::Scalar my $SUMMARY_LINK   => q{Latest_Summary};
+Readonly::Array  my @RECALIBRATED_DIR_MATCH  => qw( PB_cal no_cal ) ;
+Readonly::Array  my @BUSTARD_DIR_MATCH       => ( q{Bustard}, $BASECALL_DIR,  q{_basecalls_} );
+Readonly::Array  my @INTENSITY_DIR_MATCH     => qw( Intensities );
 
 ##############
 # public methods
@@ -36,29 +36,34 @@ Readonly::Array our @ORDER_TO_ASSESS_SUBPATH_ASSIGNATION => qw(
       pb_cal_path qc_path archive_path runfolder_path
   );
 
-has q{_analysis_path}     => ( isa => q{Str}, is => q{ro}, lazy_build => 1, reader => 'analysis_path',);
+Readonly::Hash my %NPG_PATH  => (
 
-has q{reports_path}       => ( isa => q{Str}, is => q{ro}, lazy_build => 1,
-                                 documentation => 'Path to the "reports" directory',);
-has q{intensity_path}     => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_intensity_path},
-                                 documentation => 'Path to the "Intensities" directory',);
-has q{bustard_path}       => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_bustard_path},
-                                 documentation => 'Path to the "Bustard" directory',);
-has q{basecall_path}      => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_basecall_path},
-                                 documentation => 'Path to the "Basecalls" directory',);
-has q{bam_basecall_path}  => ( isa => q{Str}, is => q{ro}, predicate => 'has_bam_basecall_path',  writer => q{_set_bam_basecall_path},
+  q{reports_path}      => 'Path to the "reports" directory',
+  q{intensity_path}    => 'Path to the "Intensities" directory',
+  q{bustard_path}      => 'Path to the Bustard directory',
+  q{basecall_path}     => 'Path to the "Basecalls" directory',
+  q{dif_files_path}    => 'Path to the dif files directory',
+  q{recalibrated_path} => 'Path to the recalibrated qualities directory',
+  q{pb_cal_path}       => 'Path to the "PB_cal" or "no_cal" directory',
+  q{archive_path}      => 'Path to the directory with data ready for archiving',
+  q{qc_path}           => 'Path directory with top level QC data',
+);
+
+foreach my $path_attr ( keys %NPG_PATH ) {
+  has $path_attr => (
+    isa           => q{Str},
+    is            => q{ro},
+    lazy_build    => 1,
+    writer        => q{_set_} . $path_attr,
+    documentation => $NPG_PATH{$path_attr},
+  );
+}
+
+has q{bam_basecall_path}  => ( isa => q{Str}, is => q{ro}, predicate => 'has_bam_basecall_path',
                                  documentation => 'Path to the "BAM Basecalls" directory',);
 
-has q{dif_files_path}      => ( isa => q{Str}, is => q{ro}, predicate => 'has_dif_files_path',  writer => q{_set_dif_files_path},
-                                 documentation => 'Path to the "dif files" directory',);
-has q{recalibrated_path}  => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_recalibrated_path},
-                                 documentation => 'Path to the recalibrated qualities directory',);
-has q{pb_cal_path}        => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_pb_cal_path},
-                                 documentation => 'Path to the PB_cal directory',);
-has q{archive_path}       => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_archive_path},
-                                 documentation => 'Path to the output ready for archiving directory',);
-has q{qc_path}            => ( isa => q{Str}, is => q{ro}, lazy_build => 1,
-                                 documentation => 'Path to the QC directory',);
+has q{_analysis_path}     => ( isa => q{Str}, is => q{ro}, reader => 'analysis_path',
+                                 documentation => 'Path to the top level custom analysis directory',);
 
 has q{npg_tracking_schema} => ( isa => q{Maybe[npg_tracking::Schema]}, is => q{ro}, lazy_build => 1,
                                  documentation => 'NPG tracking DBIC schema', );
@@ -552,7 +557,7 @@ Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 GRL by Andy Brown (ajb@sanger.ac.uk)
+Copyright (C) 2014 GRL by Andy Brown and Marina Gourtovaia
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
