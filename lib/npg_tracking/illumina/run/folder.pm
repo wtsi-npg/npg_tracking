@@ -8,7 +8,7 @@ use Moose::Role;
 use Moose::Meta::Class;
 use File::Spec::Functions qw(splitdir catfile catdir);
 use Carp qw(carp cluck croak confess);
-use Cwd;
+use Cwd qw/getcwd abs_path/;
 use Try::Tiny;
 use Readonly;
 
@@ -19,53 +19,91 @@ our $VERSION = '0';
 
 with 'npg_tracking::illumina::run::folder::location';
 
-Readonly::Scalar our $DATA_DIR       => q{Data};
-Readonly::Scalar our $QC_DIR         => q{qc};
-Readonly::Scalar our $BASECALL_DIR   => q{BaseCalls};
-Readonly::Scalar our $ARCHIVE_DIR    => q{archive};
-Readonly::Scalar our $SUMMARY_LINK   => q{Latest_Summary};
-Readonly::Array  our @RECALIBRATED_DIR_MATCH  => qw( PB_cal no_cal ) ;
-Readonly::Array  our @BUSTARD_DIR_MATCH       => ( q{Bustard}, $BASECALL_DIR,  q{_basecalls_} );
-Readonly::Array  our @INTENSITY_DIR_MATCH     => qw( Intensities );
+##no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 
-##############
-# public methods
+Readonly::Scalar my $DATA_DIR       => q{Data};
+Readonly::Scalar my $QC_DIR         => q{qc};
+Readonly::Scalar my $BASECALL_DIR   => q{BaseCalls};
+Readonly::Scalar my $ARCHIVE_DIR    => q{archive};
+Readonly::Scalar my $SUMMARY_LINK   => q{Latest_Summary};
+Readonly::Array  my @RECALIBRATED_DIR_MATCH  => qw( PB_cal no_cal ) ;
+Readonly::Array  my @BUSTARD_DIR_MATCH       => ( q{Bustard}, $BASECALL_DIR,  q{_basecalls_} );
+Readonly::Array  my @INTENSITY_DIR_MATCH     => qw( Intensities );
 
 Readonly::Array our @ORDER_TO_ASSESS_SUBPATH_ASSIGNATION => qw(
       recalibrated_path basecall_path bustard_path intensity_path
       pb_cal_path qc_path archive_path runfolder_path
   );
 
-has q{_analysis_path}     => ( isa => q{Str}, is => q{ro}, lazy_build => 1, reader => 'analysis_path',);
+Readonly::Hash my %NPG_PATH  => (
+  q{analysis_path}     => 'Path to the top level custom analysis directory',
+  q{reports_path}      => 'Path to the "reports" directory',
+  q{intensity_path}    => 'Path to the "Intensities" directory',
+  q{bustard_path}      => 'Path to the Bustard directory',
+  q{basecall_path}     => 'Path to the "Basecalls" directory',
+  q{recalibrated_path} => 'Path to the recalibrated qualities directory',
+  q{pb_cal_path}       => 'Path to the "PB_cal" directory',
+  q{archive_path}      => 'Path to the directory with data ready for archiving',
+  q{qc_path}           => 'Path directory with top level QC data',
+);
 
-has q{reports_path}       => ( isa => q{Str}, is => q{ro}, lazy_build => 1,
-                                 documentation => 'Path to the "reports" directory',);
-has q{intensity_path}     => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_intensity_path},
-                                 documentation => 'Path to the "Intensities" directory',);
-has q{bustard_path}       => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_bustard_path},
-                                 documentation => 'Path to the "Bustard" directory',);
-has q{basecall_path}      => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_basecall_path},
-                                 documentation => 'Path to the "Basecalls" directory',);
-has q{bam_basecall_path}  => ( isa => q{Str}, is => q{ro}, predicate => 'has_bam_basecall_path',  writer => q{_set_bam_basecall_path},
-                                 documentation => 'Path to the "BAM Basecalls" directory',);
+foreach my $path_attr ( keys %NPG_PATH ) {
+  has $path_attr => (
+    isa           => q{Str},
+    is            => q{ro},
+    lazy_build    => 1,
+    writer        => q{_set_} . $path_attr,
+    documentation => $NPG_PATH{$path_attr},
+  );
+}
 
-has q{dif_files_path}      => ( isa => q{Str}, is => q{ro}, predicate => 'has_dif_files_path',  writer => q{_set_dif_files_path},
-                                 documentation => 'Path to the "dif files" directory',);
-has q{recalibrated_path}  => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_recalibrated_path},
-                                 documentation => 'Path to the recalibrated qualities directory',);
-has q{pb_cal_path}        => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_pb_cal_path},
-                                 documentation => 'Path to the PB_cal directory',);
-has q{archive_path}       => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_archive_path},
-                                 documentation => 'Path to the output ready for archiving directory',);
-has q{qc_path}            => ( isa => q{Str}, is => q{ro}, lazy_build => 1,
-                                 documentation => 'Path to the QC directory',);
+has q{dif_files_path} => (
+  isa           => q{Str},
+  is            => q{ro},
+  predicate     => q{has_dif_files_path},
+  writer        => q{set_dif_files_path},
+  documentation => 'Path to the dif files directory',
+);
+sub _set_dif_files_path { #retained for compatibility with the pipeline
+  my ($self, $path) = @_;
+  $self->set_dif_files_path($path);
+  return;
+}
 
-has q{npg_tracking_schema} => ( isa => q{Maybe[npg_tracking::Schema]}, is => q{ro}, lazy_build => 1,
-                                 documentation => 'NPG tracking DBIC schema', );
+has q{bam_basecall_path}  => (
+  isa           => q{Str},
+  is            => q{ro},
+  predicate     => 'has_bam_basecall_path',
+  writer        => 'set_bam_basecall_path',
+  documentation => 'Path to the "BAM Basecalls" directory',
+);
+sub _set_bam_basecall_path { #retained for compatibility with the pipeline
+  my ($self, $path) = @_;
+  $self->set_bam_basecall_path($path);
+  return;
+}
 
-#############
-# private methods
-has q{subpath} => ( isa => q{Str}, is => q{ro}, predicate => q{has_subpath}, writer => q{_set_subpath});
+has q{npg_tracking_schema} => (
+  isa => q{Maybe[npg_tracking::Schema]},
+  is => q{ro},
+  lazy_build => 1,
+);
+sub _build_npg_tracking_schema {
+  my $schema;
+  try {
+    $schema = npg_tracking::Schema->connect();
+  } catch {
+    warn qq{WARNING: Unable to connect to NPG tracking DB for faster globs.\n};
+  };
+  return $schema;
+}
+
+has q{subpath} => (
+  isa       => q{Str},
+  is        => q{ro},
+  predicate => q{has_subpath},
+  writer    => q{_set_subpath},
+);
 
 sub _given_path {
   my ($self) = @_;
@@ -87,22 +125,38 @@ sub _given_path {
   return $subpath;
 }
 
-#############
-# builders
-
-sub _build_npg_tracking_schema {
-  my $schema;
-  try {
-    $schema = npg_tracking::Schema->connect();
-  } catch {
-    warn qq{Unable to connect to NPG tracking DB for faster globs.\n};
-  };
-  return $schema;
-}
-
 sub _build_analysis_path {
   my ($self) = @_;
+
+  if ($self->has_bam_basecall_path) {
+    return $self->bam_basecall_path;
+  }
+  if ($self->has_bustard_path) {
+    return $self->bustard_path;
+  }
+  if ($self->has_archive_path) {
+    return _infer_analysis_path($self->archive_path, 2);
+  }
+
+  if ($self->has_recalibrated_path || $self->recalibrated_path) {
+    return _infer_analysis_path($self->recalibrated_path, 1);
+  }
+
   return q{};
+}
+
+sub _infer_analysis_path {
+  my ($path, $distance) = @_;
+
+  my @path_components = splitdir( abs_path $path );
+  if (scalar @path_components <= $distance) {
+    croak qq[path $path is too short for distance $distance];
+  }
+  while ($distance > 0) {
+    pop @path_components;
+    $distance--;
+  }
+  return File::Spec->catdir( @path_components );
 }
 
 sub _build_intensity_path {
@@ -446,9 +500,6 @@ __END__
 
 npg_tracking::illumina::run::folder
 
-=head1 VERSION
-
-
 =head1 SYNOPSIS
 
   package MyPackage;
@@ -472,9 +523,9 @@ or because you have previously declared with npg_tracking::illumina::run::short_
 option. If you declare short_reference manually, then it must return a string where the last digits are
 the id_run.
 
-Failure to have provided a short_reference method WILL cause a run_time error if your class needs to obtain
+Failure to have provided a short_reference method WILL cause a run-time error if your class needs to obtain
 any paths where a path or subpath was not given in object construction (i.e. it wants to try to use id_run
-to glob for it). The error will be along the lines of:
+to glob for it).
 
 First, using this role will allow you to add a subpath to your constructor. This must be a directory
 below the run_folder directory, but expressing the full path.
@@ -492,7 +543,7 @@ selecting the first which has directories which should be present in a runfolder
 
   my $sPath = $oPackage->path();
 
-=head2 analysis_path - can be given in object constructor, and this will be used to work out other directory paths
+=head2 analysis_path
 
 =head2 intensity_path - ro accessor to the intensity level directory subpath
 
@@ -552,7 +603,7 @@ Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 GRL by Andy Brown (ajb@sanger.ac.uk)
+Copyright (C) 2014 GRL by Andy Brown and Marina Gourtovaia
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

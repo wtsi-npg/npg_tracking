@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Carp;
-use Test::More tests => 54;
+use Test::More tests => 61;
 use Test::Exception;
 use File::Temp qw(tempdir);
 use Cwd;
@@ -102,6 +102,7 @@ sub _create_staging_PB_cal {
   is($path_info->runfolder_path(), $runfolder_path, q{runfolder_path found});
   is($path_info->run_folder(), $run_folder, q{run_folder worked out from runfolder_path});
   is($path_info->bustard_path(), $bustard_subpath, q{found a recalibrated directory, so able to work out bustard_path});
+  is($path_info->analysis_path(), $bustard_subpath, q{found a recalibrated directory, so able to work out analysis_path});
   is($path_info->pb_cal_path(), $pb_cal_subpath, q{found a recalibrated directory, so able to work out bustard_path, and therefore pb_cal_path});
 }
 
@@ -196,6 +197,7 @@ sub _create_staging_PB_cal {
   _create_staging_PB_cal($bustard_subpath, $basecalls_subpath, $config_path);
   my $path_info = test::run::folder->new({ id_run => $id_run, run_folder => $run_folder, });
   is( $path_info->recalibrated_path(), qq{$bustard_subpath/PB_cal}, q{recalibrated_path points to PB_cal} );
+  is( $path_info->analysis_path(), $bustard_subpath, q{analysis path inferred} );
   is( $path_info->pb_cal_path(), $path_info->recalibrated_path() , q{pb_cal_path and recalibrated_path are the same} );
   $path_info = test::run::folder->new({ id_run => $id_run, run_folder => $run_folder, });
 
@@ -211,6 +213,7 @@ sub _create_staging_PB_cal {
     run_folder => $run_folder,
     recalibrated_path => qq{$bustard_subpath/Help},
   });
+  is( $path_info->analysis_path(), $bustard_subpath, q{analysis path inferred} );
   is( $path_info->bustard_path(), qq{$bustard_subpath},
     q{Help directory supplied as recalibrated_path, bustard worked out ok, so this is to be used} );
 }
@@ -240,6 +243,7 @@ qx{ln -s Data/Intensities/BAM_basecalls_20101016-172254/no_cal $hs_runfolder_dir
   lives_ok { $recalibrated_path = $o->recalibrated_path; } 'recalibrated_path from runfolder_path and summary link (no_cal)';
   cmp_ok( $recalibrated_path, 'eq', $hs_runfolder_dir . q(/Data/Intensities/BAM_basecalls_20101016-172254/no_cal), 'recalibrated_path from summary link (no_cal)' );
   cmp_ok( $o->bustard_path, 'eq', $hs_runfolder_dir . q(/Data/Intensities/BAM_basecalls_20101016-172254), 'bustard_path from summary link (no_cal)' );
+  cmp_ok( $o->analysis_path, 'eq', $hs_runfolder_dir . q(/Data/Intensities/BAM_basecalls_20101016-172254), 'analysis_path from summary link (no_cal)' );
   cmp_ok( $o->basecall_path, 'eq', $hs_runfolder_dir . q(/Data/Intensities/BaseCalls), 'basecall_path from summary link (no_cal)' );
   cmp_ok( $o->runfolder_path, 'eq', $hs_runfolder_dir, 'runfolder_path from summary link (no_cal)' );
 }
@@ -248,6 +252,8 @@ qx{ln -s Data/Intensities/BAM_basecalls_20101016-172254/no_cal $hs_runfolder_dir
   my $o = test::run::folder->new(
     archive_path => $hs_runfolder_dir . q(/Data/Intensities/BAM_basecalls_20101016-172254/no_cal/archive),
   );
+  cmp_ok( $o->analysis_path, 'eq',  $hs_runfolder_dir . q(/Data/Intensities/BAM_basecalls_20101016-172254),
+    'analysis_path directly from archiva_path');
   cmp_ok( $o->recalibrated_path, 'eq', $hs_runfolder_dir . q(/Data/Intensities/BAM_basecalls_20101016-172254/no_cal), 'recalibrated_path from archive_path' );
   cmp_ok( $o->bustard_path, 'eq', $hs_runfolder_dir . q(/Data/Intensities/BAM_basecalls_20101016-172254), 'bustard_path from archive_path' );
   cmp_ok( $o->basecall_path, 'eq', $hs_runfolder_dir . q(/Data/Intensities/BaseCalls), 'basecall_path from archive_path' );
@@ -255,10 +261,11 @@ qx{ln -s Data/Intensities/BAM_basecalls_20101016-172254/no_cal $hs_runfolder_dir
 }
 
 {
-  
   my $o = test::run::folder->new(
     archive_path => $hs_runfolder_dir . q(/Data/Intensities/Bustard1.8.1a2_01-10-2010_RTA.2/PB_cal/archive),
   );
+  cmp_ok( $o->analysis_path, 'eq',  $hs_runfolder_dir . q(/Data/Intensities/Bustard1.8.1a2_01-10-2010_RTA.2),
+    'analysis_path directly from archiva_path');
   cmp_ok($o->recalibrated_path, 'eq', $hs_runfolder_dir . q(/Data/Intensities/Bustard1.8.1a2_01-10-2010_RTA.2/PB_cal), 'recalibrated_path from archive_path' );
   cmp_ok($o->bustard_path, 'eq', $hs_runfolder_dir . q(/Data/Intensities/Bustard1.8.1a2_01-10-2010_RTA.2), 'bustard_path from archive_path' );
   cmp_ok($o->basecall_path, 'eq', $hs_runfolder_dir . q(/Data/Intensities/BaseCalls), 'basecall_path from archive_path' );
@@ -285,6 +292,7 @@ qx{rm $hs_runfolder_dir/Latest_Summary; ln -s Data/Intensities/Bustard1.8.1a2_01
     'basecall_path from  summary link' );
   cmp_ok($o->runfolder_path, 'eq', $hs_runfolder_dir,
     'runfolder_path from  summary link' );
+  cmp_ok($o->analysis_path, 'eq', $o->bustard_path, 'analysis_path from  summary link' );
 }
 
 {

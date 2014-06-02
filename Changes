@@ -1,11 +1,18 @@
+CHANGES
+
+release 77.2
+ - ensure module and package version starts with a digit
  - npg_tracking::illumina::run::folder and its tests updated; the following accessors removed:
        data_path (unused from outside),
        tag_qseqs_path (redundant),
        score_path (redundant),
        qseq_location_path (redundant);
-     unused analysis_path is retained for future use as a get method, deriving
+     tests specific for old illumina mashines (IL) removed;
+     unused analysis_path accessor reimplemented to point to the top-level custom analysis folder
        paths from analysis_path removed;
-     tests specific for old illumina mashines (IL) removed.
+     definitions of most paths placed together
+     public write accessors for bam_basecall and dif_files paths since they are used from the pipeline,
+       old private accessors retained for backwards compatibility
    
 release 77.1
  - transcriptome changed so that a default is not used if not supplied 

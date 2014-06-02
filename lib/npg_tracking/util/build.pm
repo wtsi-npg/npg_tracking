@@ -8,30 +8,28 @@ use strict;
 use warnings;
 use Carp;
 use English qw(-no_match_vars);
+use Try::Tiny;
+
 use base 'Module::Build';
 
 our $VERSION = '0';
 
 ##no critic (NamingConventions::Capitalization)
 
-=head2 git_tag
-
- Returns values for a version based on git tag.
- Relies on scripts/gitver script being present.
-
-=cut
-
 sub git_tag {
 
   ##no critic (InputOutput::ProhibitBacktickOperators)
   my $version = `git describe --always --dirty`|| q[unknown];
+  ##use critic
   $version =~ s/\s$//smxg;
+  try {
+    use warnings FATAL => qw(all);
+    my $i = int(substr $version, 0, 1);
+  } catch {
+    $version = '0.0-' . $version;
+  };
   return $version;
 }
-
-=head2 ACTION_code
-
-=cut
 
 sub ACTION_code {
   my $self = shift;
@@ -62,6 +60,7 @@ sub ACTION_code {
   }
 
   my $gitver = $self->git_tag();
+
   warn "Changing version of all modules and scripts to $gitver\n";
 
   foreach my $module (@modules) {
@@ -82,13 +81,13 @@ sub ACTION_code {
   }
   return;
 }
+
 1;
+__END__
 
 =head1 NAME 
 
  npg_tracking::util::build
-
-=head1 VERSION
 
 =head1 SYNOPSIS
  
@@ -98,11 +97,16 @@ sub ACTION_code {
 
 =head1 DESCRIPTION
 
- This module extends method of the Module::Build module. It uses gitver script
- provided in scripts in this package to get the git tag bases expression for
- the version and assigns this version to a $VERSION variable in all modules and scripts.
+ This module extends Module::Build. It uses git describe command
+ to get git tag as a base for the version. It extends the ACTION_code method of the
+ parent to assign the value returned by its git_tag method to a $VERSION variable
+ in all modules and scripts of the disctribution.
 
 =head1 SUBROUTINES/METHODS
+
+=head2 git_tag
+
+=head2 ACTION_code
 
 =head1 DIAGNOSTICS
 
@@ -119,6 +123,8 @@ sub ACTION_code {
 =item English
 
 =item base
+
+=item Try::Tiny
 
 =back
 
