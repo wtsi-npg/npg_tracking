@@ -22,12 +22,7 @@ sub git_tag {
   my $version = `git describe --always --dirty`|| q[unknown];
   ##use critic
   $version =~ s/\s$//smxg;
-  try {
-    use warnings FATAL => qw(all);
-    my $i = int(substr $version, 0, 1);
-  } catch {
-    $version = '0.0-' . $version;
-  };
+  $version=~s/\A(?![\d])/0.0-/smx;
   return $version;
 }
 
