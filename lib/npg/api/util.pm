@@ -62,11 +62,27 @@ sub useragent {
   return $self->{'useragent'};
 }
 
+sub login {
+  my ($self,$v) = @_;
+  if (defined $v) {
+    $self->{login} = $v;
+  }
+  return $self->{login} || q();
+}
+
+sub password {
+  my ($self, $v) = @_;
+  if (defined $v) { $self->{password} = $v; }
+  return $self->{password} || q();
+}
+
 sub request {
   my ($self, $content_type) = @_;
   my $h = {};
   $h->{max_retries} = $self->max_retries;
   $h->{retry_delay} = $self->retry_delay;
+  $h->{login} = $self->{login};
+  $h->{password} = $self->{password};
   if ($content_type) {
     $h->{content_type} = $content_type;
   }
@@ -135,6 +151,10 @@ May take optional base_uri, useragent and parser attributes, see respective meth
 =head2 max_retries
 
 =head2 retry_delay
+
+=head2 login
+
+=head2 password
 
 =head2 request - an instance of npg::api::request object
 
