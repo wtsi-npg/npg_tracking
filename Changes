@@ -1,5 +1,8 @@
 CHANGES
 
+release 77.1
+ - Use sensor.pm now uses npg::api::util
+
 release 77.0
  - the build file and module - code improvements, POD and PBP for the module
  - scripts and modules:
