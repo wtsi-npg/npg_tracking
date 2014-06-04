@@ -1,5 +1,11 @@
 CHANGES
 
+ - web app and database adjustments for HiSeqX
+ - callbacks for uptime graphs removed
+ - removed the uptimes table from the textual listing of intruments page -
+     made page loading very slow
+ - removed upgrade schema scripts and redesign proposal file from MANIFEST -
+
 release 77.2
  - ensure module and package version starts with a digit
  - npg_tracking::illumina::run::folder and its tests updated; the following accessors removed:

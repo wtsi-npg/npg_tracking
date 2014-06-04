@@ -62,30 +62,6 @@ sub list_up_down_xml {
   return 1;
 }
 
-sub list_graphical {
-  my ($self, @args) = @_;
-  $self->get_inst_format();
-  return 1;
-}
-sub list_gantt_chart_legend_png {
-  my ($self) = @_;
-  my $png;
-  return $png;
-}
-sub list_gantt_chart_png {
-  my ($self) = @_;
-  my $model = $self->model();
-  my $inst_format = $self->get_inst_format();
-  return $model->gantt_chart_png( q{}, $inst_format );
-}
-
-sub list_combined_utilisation_and_uptime_gantt_png {
-  my ($self) = @_;
-  my $model = $self->model();
-  my $inst_format = $self->get_inst_format();
-  return $model->combined_utilisation_and_uptime_gantt_png( $inst_format );
-}
-
 1;
 
 __END__
@@ -109,15 +85,6 @@ npg::view::instrument_status - view handling for instrument_statuses
 =head2 create - set up requestor's id_user
 
 =head2 list_up_down_xml - handling to return an XML of all the up and down statuses for an instrument
-
-=head2 list_graphical - handler for returning the list_graphical view
-
-=head2 list_gantt_chart_png - returns png image chart of all instruments up/down as gantt chart, with instrument annotations added as points
-
-=head2 list_gantt_chart_legend_png - handler to return a png legend for gantt chart
-
-=head2 combined_utilisation_and_uptime_gantt_png
-=head2 list_combined_utilisation_and_uptime_gantt_png - handler to return the combined utilisation and up/down gantt chart
 
 =head1 DIAGNOSTICS
 

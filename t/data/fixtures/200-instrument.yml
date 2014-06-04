@@ -168,3 +168,25 @@
   mirroring_host: ''
   staging_dir: ''
   latest_contact:
+- id_instrument: 91
+  name: HX1
+  id_instrument_format: 12
+  external_name: ''
+  serial: ''
+  iscurrent: 1
+  ipaddr: ''
+  instrument_comp: ''
+  mirroring_host: ''
+  staging_dir: ''
+  latest_contact:
+- id_instrument: 92
+  name: HX2
+  id_instrument_format: 12
+  external_name: ''
+  serial: ''
+  iscurrent: 1
+  ipaddr: ''
+  instrument_comp: ''
+  mirroring_host: ''
+  staging_dir: ''
+  latest_contact:

@@ -8,8 +8,8 @@ use DateTime;
 use_ok('npg::model::instrument_status');
 
 my $util = t::util->new({fixtures => 1});
-$util->dbh->do("update instrument set iscurrent=0 where id_instrument_format=11;")  or die 'Failed to delete MiSeq instruments from the test DB '.$util->dbh->errstr;
-diag 'To make this test work, MiSeq instruments are set as not current';
+$util->dbh->do("update instrument set iscurrent=0 where (id_instrument_format=11 or id_instrument_format=12);")  or die 'Failed to delete MiSeq instruments from the test DB '.$util->dbh->errstr;
+diag 'To make this test work, MiSeq and HiSeqX instruments are set as not current';
 
 my $model = npg::model::instrument_status->new({util => $util, id_instrument_status => 15});
 #############

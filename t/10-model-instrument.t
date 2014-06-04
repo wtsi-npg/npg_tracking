@@ -265,7 +265,7 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
 {
   my $model = npg::model::instrument->new({util => $util, id_instrument => 48,});
   ok(!$model->does_sequencing, 'instrument does not do sequencing');
-  ok(!$model->is_hiseq_instrument, 'is not hiseq instrument');
+  ok(!$model->is_two_slot_instrument, 'is not two slot instrument');
   ok($model->is_cbot_instrument, 'is cbot instrument');
   ok (!$model->is_idle, 'instrument is not idle');
   ok (!$model->status_to_change_to, 'no status to change to');
@@ -277,7 +277,7 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
 {
   my $model = npg::model::instrument->new({util => $util, id_instrument => 34,});
   ok($model->does_sequencing, 'instrument does sequencing');
-  ok(!$model->is_hiseq_instrument, 'is not hiseq instrument');
+  ok(!$model->is_two_slot_instrument, 'is not two slot instrument');
   is($model->fc_slots2current_runs, undef, 'does not have mapping of slots to current runs');
   is($model->fc_slots2blocking_runs, undef, 'does not have mapping of slots to blocking runs');
   ok ($model->is_idle, 'instrument is idle');
@@ -289,7 +289,7 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
 {
   my $model = npg::model::instrument->new({util => $util, id_instrument => 35,});
   ok($model->does_sequencing, 'instrument does sequencing');
-  ok($model->is_hiseq_instrument, 'is hiseq instrument');
+  ok($model->is_two_slot_instrument, 'is two_slot instrument');
   my $expected = {fc_slotA => [], fc_slotB => [],};
   cmp_deeply($model->fc_slots2current_runs, $expected, 'empty mapping of slots to current runs');
   cmp_deeply($model->fc_slots2blocking_runs, $expected, 'empty mapping of slots to blocking runs');
@@ -301,7 +301,7 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
 
 {
   my $model = npg::model::instrument->new({util => $util, id_instrument => 36,});
-  ok($model->is_hiseq_instrument, 'is hiseq instrument');
+  ok($model->is_two_slot_instrument, 'is two_slot instrument');
   my $run = $model->current_runs->[0];
   is ($run->id_run, 9951, 'first current run');
 
