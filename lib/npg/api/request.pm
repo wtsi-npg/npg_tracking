@@ -133,6 +133,27 @@ sub _build_useragent {
     return $ua;
 }
 
+=head2 login
+
+login for making a HTTP request
+
+=cut
+has 'login' => (isa => 'Maybe[Str]',
+                is => 'ro',
+                required => 0,
+               );
+
+=head2 password
+
+password to go with login above
+
+=cut
+has 'password' =>(isa => 'Maybe[Str]',
+                  is => 'ro',
+                  required => 0,
+                 );
+
+
 =head2 make
 
 Contacts a web service to perform a requested operation.
@@ -279,6 +300,9 @@ sub _from_web {
         $req->header('Accept' => $self->content_type);
     }
     $self->_personalise_request($req);
+    if ($self->login) {
+        $req->authorization_basic($self->login, $self->password);
+    }
 
     my $response = $self->_retry(sub {
              my $inner_response = $self->useragent()->request($req);

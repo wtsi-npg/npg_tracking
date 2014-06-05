@@ -14,6 +14,8 @@ use npg::util::mailer;
 use XML::Simple;
 use Data::Dumper;
 use LWP::UserAgent;
+use npg::api::request;
+
 with 'MooseX::Getopt';
 
 our $VERSION = '0';
@@ -83,23 +85,8 @@ sub main {
 =cut
 sub load_data {
   my ($self, $arg_refs) = @_;
-
-  # create a user agent object
-  my $ua = LWP::UserAgent->new();
-
-  # Create a request
-  my $req = HTTP::Request->new(POST => $self->url);
-  $req->authorization_basic($self->username, $self->password);
-
-  # Pass request to the user agent and get a response back
-  my $res = $ua->request($req);
-
-  # Check the outcome of the response
-  if (!$res->is_success) {
-    die $res->status_line, "\n";
-  }
-
-  $data = $res->content;
+  my $request = npg::api::request->new({content_type => 'text/xml', login => $self->username, password => $self->password});
+  $data = $request->make($self->url, 'GET');
   return $data;
 }
 

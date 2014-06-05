@@ -1,5 +1,7 @@
 CHANGES
 
+ - Use sensor.pm now uses npg::api::util
+
 release 77.2
  - ensure module and package version starts with a digit
  - npg_tracking::illumina::run::folder and its tests updated; the following accessors removed:
