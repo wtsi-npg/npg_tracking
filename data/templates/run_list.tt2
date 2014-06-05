@@ -14,7 +14,7 @@
 <div>
 <span class="medium_header">Instrument Types</span>
 &middot;&middot;<a href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% model.id_run_status_dict %]&id_instrument_format=all" [% IF !model.id_instrument_format || model.id_instrument_format == 'all' %]class="runs_active_selection"[% END; target %]>all</a>&middot;&middot;
- [% FOREACH ifs = model.instrument.instrument_format.instrument_formats; 
+ [% FOREACH ifs = model.instrument.instrument_format.instrument_formats_sorted;
       IF ifs.model != '1G' && ifs.is_used_sequencer_type -%]
         &middot;&middot;<a href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% model.id_run_status_dict %]&id_instrument_format=[% ifs.id_instrument_format %]&id_instrument=[% id_instrument %]" [% IF ifs.id_instrument_format == model.id_instrument_format %]class="runs_active_selection"[% END %]>[% ifs.is_used_sequencer_type %]</a>&middot;&middot;
       [%- END %]
