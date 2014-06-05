@@ -1,12 +1,10 @@
 bin/cbot_checker
 bin/email_project_followers_run_complete_archived
 bin/event_notifications
-bin/ga_II_checker
 bin/generate_samplesheet
-bin/hiseq_checker
+bin/seq_instr_checker
 bin/illumina_seq_fails2rt
 bin/InstrumentPoller
-bin/miseq_checker
 bin/npg_daemon_control
 bin/staging_area_monitor
 bin/update_sensors

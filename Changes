@@ -4,7 +4,10 @@ CHANGES
  - callbacks for uptime graphs removed
  - removed the uptimes table from the textual listing of intruments page -
      made page loading very slow
- - removed upgrade schema scripts and redesign proposal file from MANIFEST -
+ - removed upgrade schema scripts and redesign proposal file from MANIFEST
+ - merged instrument checker scripts for all existing sequencing instrument types
+ - removed instrument checker scripts for invividual seq instrument types
+ - all instrument checkers to use local libraries if available
 
 release 77.2
  - ensure module and package version starts with a digit
