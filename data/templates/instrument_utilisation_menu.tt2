@@ -2,7 +2,7 @@
            top_menu_index=1
 -%]
 [% IF model.instrument_model %][% SET instrument = model.instrument_model %][% ELSE %][% instrument = 'HiSeq' %][% END %]
-[% formats  = ['HiSeq', 'MiSeq'] -%]
+[% formats  = ['HiSeq', 'HiSeqX', 'MiSeq'] -%]
 [% labels    = ['text', 'bar', 'line', 'text', 'line'] -%]
 [% addresses = ['instrument_utilisation/', 'instrument_utilisation/graphical', 'instrument_utilisation/graphical/line', 'instrument_utilisation/text90', 'instrument_utilisation/graphical/line90'] -%]
 [% counts    = [0, 1, 2, 3, 4] -%]

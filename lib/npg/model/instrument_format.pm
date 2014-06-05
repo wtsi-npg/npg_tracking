@@ -108,13 +108,12 @@ sub instrument_count {
 
 sub is_used_sequencer_type {
   my ( $self ) = @_;
-
-  my $seq_type = $self->model() eq q{HiSeq} ? q{HiSeq}
-               : $self->model() eq q{HK}    ? q{GAII}
-               : $self->model() eq q{MiSeq} ? q{MiSeq}
-               : undef;
-
-  return $seq_type;
+  my $types = {'HiSeq'  => 'HiSeq',
+               'MiSeq'  => 'MiSeq',
+               'HiSeqX' => 'HiSeqX',
+               'HK'     => 'GAII',
+              };
+  return $types->{$self->model()};
 }
 
 sub _obtain_numerical_name_part {
