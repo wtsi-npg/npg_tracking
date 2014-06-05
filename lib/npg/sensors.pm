@@ -14,7 +14,7 @@ use npg::util::mailer;
 use XML::Simple;
 use Data::Dumper;
 use LWP::UserAgent;
-use npg::api::util;
+use npg::api::request;
 
 with 'MooseX::Getopt';
 
@@ -85,8 +85,8 @@ sub main {
 =cut
 sub load_data {
   my ($self, $arg_refs) = @_;
-  my $api = npg::api::util->new({login => $self->username, password => $self->password});
-  $data = $api->get($self->url);
+  my $request = npg::api::request->new({content_type => 'text/xml', login => $self->username, password => $self->password});
+  $data = $request->make($self->url, 'GET');
   return $data;
 }
 
