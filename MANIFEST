@@ -86,7 +86,6 @@ data/templates/instrument_status_annotation_create.tt2
 data/templates/instrument_status_create.tt2
 data/templates/instrument_status_create_xml.tt2
 data/templates/instrument_status_list.tt2
-data/templates/instrument_status_list_graphical.tt2
 data/templates/instrument_status_list_up_down_xml.tt2
 data/templates/instrument_status_menu.tt2
 data/templates/instrument_status_read_xml.tt2
