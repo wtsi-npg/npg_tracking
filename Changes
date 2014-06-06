@@ -1,6 +1,7 @@
 CHANGES
 
- - sensor.pm now uses npg::api::util
+ - sensor.pm now uses npg::api::request to allow for caching xml feeds when
+   retrieving sensor data
  - web app and database adjustments for HiSeqX
  - callbacks for uptime graphs removed
  - removed the uptimes table from the textual listing of intruments page -
