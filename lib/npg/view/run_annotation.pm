@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: ajb $
 # Created:       2007-03-28
-# Last Modified: $Date: 2011-07-07 14:23:08 +0100 (Thu, 07 Jul 2011) $
-# Id:            $Id: run_annotation.pm 13585 2011-07-07 13:23:08Z ajb $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/run_annotation.pm $
 #
 package npg::view::run_annotation;
 use base qw(npg::view::annotation);
@@ -15,7 +11,7 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::run_annotation;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 13585 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub authorised {
   my $self = shift;
@@ -59,8 +55,6 @@ __END__
 npg::view::run_annotation - view handling for run_annotations
 
 =head1 VERSION
-
-$LastChangedRevision: 13585 $
 
 =head1 SYNOPSIS
 

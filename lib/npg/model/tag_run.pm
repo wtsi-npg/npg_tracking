@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: gq1 $
 # Created:       2008-03-03
-# Last Modified: $Date: 2010-05-04 15:28:42 +0100 (Tue, 04 May 2010) $
-# Id:            $Id: tag_run.pm 9207 2010-05-04 14:28:42Z gq1 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/tag_run.pm $
 #
 package npg::model::tag_run;
 use strict;
@@ -13,7 +9,7 @@ use base qw(npg::model);
 use English qw(-no_match_vars);
 use Carp;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -61,8 +57,6 @@ __END__
 npg::model::tag_run
 
 =head1 VERSION
-
-$LastChangedRevision: 9207 $
 
 =head1 SYNOPSIS
 

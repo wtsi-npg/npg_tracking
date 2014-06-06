@@ -1,5 +1,4 @@
 # Author:        Jennifer Liddle <js10@sanger.ac.uk>
-# Maintainer:    Jennifer Liddle <js10@sanger.ac.uk>
 # Created:       25th February 2014
 #
 package npg_tracking::data::snv;
@@ -8,7 +7,7 @@ use strict;
 use warnings;
 use Moose;
 
-our $VERSION = do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 with qw/
           npg_tracking::glossary::run
@@ -28,8 +27,6 @@ __END__
 npg_tracking::data::snv
 
 =head1 VERSION
-
-$Revision: 16549 $
 
 =head1 SYNOPSIS
 
@@ -69,7 +66,7 @@ A wrapper class for finding the location of VCF files.
 
 =head1 AUTHOR
 
-Author: Jennifer Liddle E<lt>js10@sanger.ac.ukE<gt>
+Jennifer Liddle E<lt>js10@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

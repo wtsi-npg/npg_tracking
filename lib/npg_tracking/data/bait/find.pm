@@ -1,10 +1,6 @@
 #############
-# $Id: find.pm 16549 2013-01-23 16:49:39Z mg8 $
 # Created By: Jennifer Liddle (js10)
-# Last Maintained By: $Author: mg8 $
 # Created On: 2012-04-23
-# Last Changed On: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/data/bait/find.pm $
 
 package npg_tracking::data::bait::find;
 
@@ -13,10 +9,11 @@ use warnings;
 use Moose::Role;
 use Carp;
 use File::Spec::Functions qw(catdir);
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
+use Readonly;
 
 with qw/ npg_tracking::data::reference::find /;
+
+our $VERSION = '0';
 
 Readonly::Scalar my $STRAIN_ARRAY_INDEX => 1;
 
@@ -114,14 +111,11 @@ npg_tracking::data::bait::find
 
 =head1 VERSION
 
-$Revision: 16549 $
-
 =head1 SYNOPSIS
 
   package MyPackage;
   use Moose;
   with qw{npg_tracking::data::bait::find};
-
 
 =head1 DESCRIPTION
 
@@ -163,11 +157,11 @@ A Moose role for finding the location of bait and target intervals files.
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Jennifer Liddle
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2012 Jennifer Liddle (js10@sanger.ac.uk)
+Copyright (C) 2012 GRL by Jennifer Liddle (js10@sanger.ac.uk)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

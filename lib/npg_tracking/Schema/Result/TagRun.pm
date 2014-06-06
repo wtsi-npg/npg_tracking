@@ -195,19 +195,11 @@ __PACKAGE__->belongs_to(
 
 # Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:39
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:HrDTfnZT1SczQAqIdC662Q
+
 # Author:        david.jackson@sanger.ac.uk
-# Maintainer:    $Author: dj3 $
 # Created:       2010-04-08
-# Last Modified: $Date: 2010-11-08 15:02:27 +0000 (Mon, 08 Nov 2010) $
-# Id:            $Id: TagRun.pm 11663 2010-11-08 15:02:27Z dj3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/TagRun.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 11663 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
-1;
-
-
-
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;

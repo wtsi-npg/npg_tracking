@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-02-29 14:14:10 +0000 (Wed, 29 Feb 2012) $
-# Id:            $Id: run_lane.pm 15265 2012-02-29 14:14:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/run_lane.pm $
 #
 package npg::view::run_lane;
 use base qw(npg::view);
@@ -17,7 +13,8 @@ use npg::model::run_status;
 use npg::model::run_status_dict;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15265 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
+
 Readonly::Scalar our $GRAPH_HEIGHT => 200;
 Readonly::Scalar our $GRAPH_WIDTH  => 400;
 
@@ -214,8 +211,6 @@ __END__
 npg::view::run_lane - view handling for run_lanes
 
 =head1 VERSION
-
-$LastChangedRevision: 15265 $
 
 =head1 SYNOPSIS
 

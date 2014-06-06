@@ -18,6 +18,8 @@ use Module::Pluggable::Object;
 use File::Basename;
 use Readonly;
 
+our $VERSION = '0';
+
 Readonly::Scalar my $PRODUCTION_USER  => 'srpipe';
 Readonly::Scalar my $DAEMON_NAMESPACE => 'npg_tracking::daemon';
 

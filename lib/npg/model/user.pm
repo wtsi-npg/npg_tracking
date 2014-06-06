@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-03-27 13:38:46 +0100 (Tue, 27 Mar 2012) $
-# Id:            $Id: user.pm 15395 2012-03-27 12:38:46Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/user.pm $
 #
 package npg::model::user;
 use strict;
@@ -16,7 +12,7 @@ use English qw(-no_match_vars);
 use Carp;
 use Digest::SHA qw(sha256_hex);;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15395 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -140,8 +136,6 @@ __END__
 npg::model::user - data model for user
 
 =head1 VERSION
-
-$Revision: 15395 $
 
 =head1 SYNOPSIS
 

@@ -1,17 +1,13 @@
 #############
-# $Id: instrument.pm 14884 2012-01-09 12:26:19Z mg8 $
 # Created By: ajb
-# Last Maintained By: $Author: mg8 $
 # Created On: 2011-01-07
-# Last Changed On: $Date: 2012-01-09 12:26:19 +0000 (Mon, 09 Jan 2012) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/email/roles/instrument.pm $
 
 package npg::email::roles::instrument;
 use strict;
 use warnings;
 use Moose::Role;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14884 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 requires qw{schema_connection};
 
@@ -20,8 +16,6 @@ requires qw{schema_connection};
 npg::email::roles::instrument
 
 =head1 VERSION
-
-$LastChangedRevision: 14884 $
 
 =head1 SYNOPSIS
 
@@ -110,7 +104,7 @@ __END__
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

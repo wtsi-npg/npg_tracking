@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2008-01
-# Last Modified: $Date: 2012-01-11 14:52:00 +0000 (Wed, 11 Jan 2012) $
-# Id:            $Id: search.pm 14897 2012-01-11 14:52:00Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/search.pm $
 #
 package npg::view::search;
 use strict;
@@ -13,7 +9,7 @@ use base qw(npg::view);
 use npg::controller;
 use Carp;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14897 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub read { ## no critic (Subroutines::ProhibitBuiltinHomonyms)
   my ($self) = @_;
@@ -81,8 +77,6 @@ __END__
 npg::view::search
 
 =head1 VERSION
-
-$LastChangedRevision: 14897 $
 
 =head1 SYNOPSIS
 

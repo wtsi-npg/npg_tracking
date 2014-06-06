@@ -1,17 +1,15 @@
 #!/usr/bin/env perl
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2012-12-17 14:00:36 +0000 (Mon, 17 Dec 2012) $
-# Id:            $Id: cbot_checker 16335 2012-12-17 14:00:36Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/bin/cbot_checker $
+#
 
 package cbot_checker;
 
 use strict;
 use warnings;
-
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Carp;
 use DateTime;
 use DateTime::Format::Strptime;
@@ -22,8 +20,9 @@ use autodie qw(:all);
 use Monitor::Cbot;
 use Monitor::Cbot::InstrumentStatus;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16335 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly::Scalar my $PROXY   => q{http://wwwcache.sanger.ac.uk:3128/};
 Readonly::Scalar my $ERR_504 => q{504 Gateway Time-out};
 Readonly::Scalar my $ERR_500 => q{500 read timeout};
@@ -96,8 +95,6 @@ __END__
 cbot_checker - Monitor cBot XML reports and update the database accordingly.
 
 =head1 VERSION
-
-$Revision: 16335 $
 
 =head1 SYNOPSIS
 

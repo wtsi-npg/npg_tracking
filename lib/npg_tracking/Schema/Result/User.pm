@@ -266,14 +266,11 @@ __PACKAGE__->has_many(
 
 # Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:dNtuo6HajBsOL+Z00k9RlA
-# Author:        david.jackson@sanger.ac.uk
-# Maintainer:    $Author: mg8 $
-# Created:       2010-04-08
-# Last Modified: $Date: 2011-11-21 13:14:56 +0000 (Mon, 21 Nov 2011) $
-# Id:            $Id: User.pm 14647 2011-11-21 13:14:56Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/User.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14647 $ =~ /(\d+)/mxs; $r; };
+# Author:        david.jackson@sanger.ac.uk
+# Created:       2010-04-08
+
+our $VERSION = '0';
 
 =head2 usergroups
 
@@ -362,11 +359,5 @@ sub pipeline_id {
                 find( { username => 'pipeline' } )->id_user();
 }
 
-
-1;
-
-
-
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;

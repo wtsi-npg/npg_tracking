@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-02-22 10:12:17 +0000 (Wed, 22 Feb 2012) $
-# Id:            $Id: instrument_status.pm 15220 2012-02-22 10:12:17Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/instrument_status.pm $
 #
 package npg::view::instrument_status;
 use base qw(npg::view);
@@ -14,7 +10,7 @@ use Carp;
 use English qw{-no_match_vars};
 use npg::model::instrument_status;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15220 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub authorised {
   my $self   = shift;
@@ -66,30 +62,6 @@ sub list_up_down_xml {
   return 1;
 }
 
-sub list_graphical {
-  my ($self, @args) = @_;
-  $self->get_inst_format();
-  return 1;
-}
-sub list_gantt_chart_legend_png {
-  my ($self) = @_;
-  my $png;
-  return $png;
-}
-sub list_gantt_chart_png {
-  my ($self) = @_;
-  my $model = $self->model();
-  my $inst_format = $self->get_inst_format();
-  return $model->gantt_chart_png( q{}, $inst_format );
-}
-
-sub list_combined_utilisation_and_uptime_gantt_png {
-  my ($self) = @_;
-  my $model = $self->model();
-  my $inst_format = $self->get_inst_format();
-  return $model->combined_utilisation_and_uptime_gantt_png( $inst_format );
-}
-
 1;
 
 __END__
@@ -99,8 +71,6 @@ __END__
 npg::view::instrument_status - view handling for instrument_statuses
 
 =head1 VERSION
-
-$Revision: 15220 $
 
 =head1 SYNOPSIS
 
@@ -115,15 +85,6 @@ $Revision: 15220 $
 =head2 create - set up requestor's id_user
 
 =head2 list_up_down_xml - handling to return an XML of all the up and down statuses for an instrument
-
-=head2 list_graphical - handler for returning the list_graphical view
-
-=head2 list_gantt_chart_png - returns png image chart of all instruments up/down as gantt chart, with instrument annotations added as points
-
-=head2 list_gantt_chart_legend_png - handler to return a png legend for gantt chart
-
-=head2 combined_utilisation_and_uptime_gantt_png
-=head2 list_combined_utilisation_and_uptime_gantt_png - handler to return the combined utilisation and up/down gantt chart
 
 =head1 DIAGNOSTICS
 

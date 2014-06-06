@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2013-01-15 10:27:57 +0000 (Tue, 15 Jan 2013) $
-# Id:            $Id: instrument.pm 16477 2013-01-15 10:27:57Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/instrument.pm $
 #
 package npg::model::instrument;
 use strict;
@@ -25,8 +21,9 @@ use npg::model::designation;
 use DateTime;
 use List::MoreUtils qw/any/;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16477 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly::Scalar our $HISEQ_INSTR_MODEL => 'HiSeq';
 Readonly::Scalar our $MISEQ_INSTR_MODEL => 'MiSeq';
 Readonly::Scalar our $CBOT_INSTR_MODEL  => 'cBot';
@@ -372,9 +369,9 @@ sub does_sequencing {
   return ($self->instrument_format->model && $self->instrument_format->model ne $CBOT_INSTR_MODEL);
 }
 
-sub is_hiseq_instrument {
+sub is_two_slot_instrument {
   my $self = shift;
-  return ($self->instrument_format->model && $self->instrument_format->model eq $HISEQ_INSTR_MODEL);
+  return ($self->instrument_format->model && $self->instrument_format->model =~ /\A$HISEQ_INSTR_MODEL/smx);
 }
 
 sub is_cbot_instrument {
@@ -400,7 +397,7 @@ sub current_run_by_id {
 sub _fc_slots2runs {
   my ($self, $runs_type) = @_;
 
-  if (!$self->is_hiseq_instrument) { return; }
+  if (!$self->is_two_slot_instrument) { return; }
 
   if (!defined $runs_type) {
     croak q[runs type should be defined];
@@ -577,8 +574,6 @@ npg::model::instrument
 
 =head1 VERSION
 
-$Revision: 16477 $
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -709,7 +704,7 @@ Has a side-effect of updating an instrument's current instrument_status to 'wash
 
 =head2 does_sequencing - returns true is the instrument does sequencing, false otherwise
 
-=head2 is_hiseq_instrument - returns true if this instrument is HiSeq, false otherwise
+=head2 is_two_slot_instrument - returns true if this instrument has two slots, false otherwise
 
 =head2 is_miseq_instrument
 

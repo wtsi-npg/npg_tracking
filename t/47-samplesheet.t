@@ -1,8 +1,5 @@
 use strict;
 use warnings;
-
-use English qw(-no_match_vars);
-
 use Test::More tests => 47;
 use Test::LongString;
 use Test::Exception;
@@ -126,7 +123,7 @@ RESULT_6946
   my $expected_result = << 'RESULT_7825';
 [Header],,,,
 Investigator Name,nh4,,,
-Project Name,Mate Pair R&D,,,
+Project Name,Mate Pair R%26D,,,
 Experiment Name,7825,,,
 Date,2012-04-03T16:39:48,,,
 Workflow,LibraryQC,,,

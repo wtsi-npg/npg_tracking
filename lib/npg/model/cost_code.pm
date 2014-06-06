@@ -1,10 +1,6 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: ajb $
 # Created:       2011-08-15
-# Last Modified: $Date: 2011-08-19 10:50:30 +0100 (Fri, 19 Aug 2011) $
-# Id:            $Id: cost_code.pm 13963 2011-08-19 09:50:30Z ajb $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/cost_code.pm $
 #
 package npg::model::cost_code;
 use strict;
@@ -12,7 +8,7 @@ use warnings;
 use English qw(-no_match_vars);
 use Carp;
 use base qw(npg::model);
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 13963 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 use npg::model::cost_group;
 
@@ -65,8 +61,6 @@ npg::model::cost_code
 
 =head1 VERSION
 
-$LastChangedRevision: 13963 $
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -113,7 +107,7 @@ returns the name of the cost_group this cost code is for
 
 =head1 AUTHOR
 
-$Author: ajb $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

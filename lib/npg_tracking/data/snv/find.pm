@@ -10,7 +10,7 @@ use Moose::Role;
 use Carp;
 use Cwd 'abs_path';
 
-our $VERSION = '76.0';
+our $VERSION = '0';
 
 with qw/ npg_tracking::data::reference::find 
          npg_tracking::data::bait::find
@@ -59,8 +59,6 @@ npg_tracking::data::snv::find
 
 =head1 VERSION
 
-$Revision: 16549 $
-
 =head1 SYNOPSIS
 
   package MyPackage;
@@ -90,8 +88,6 @@ A Moose role for finding the location of VCF files.
 
 =item Carp
 
-=item Readonly
-
 =item File::Spec::Functions
 
 =item npg_tracking::data::reference::find
@@ -104,9 +100,11 @@ A Moose role for finding the location of VCF files.
 
 =head1 AUTHOR
 
+Jennifer Liddle
+
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2012 Jennifer Liddle (js10@sanger.ac.uk)
+Copyright (C) 2012 GRL by Jennifer Liddle (js10@sanger.ac.uk)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -1,10 +1,6 @@
 #########
 # Author:        Marina Gourtovaia
-# Maintainer:    $Author: mg8 $
 # Created:       June 2010
-# Last Modified: $Date: 2013-01-28 11:09:22 +0000 (Mon, 28 Jan 2013) $
-# Id:            $Id: list.pm 16566 2013-01-28 11:09:22Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/data/reference/list.pm $
 #
 
 package npg_tracking::data::reference::list;
@@ -20,15 +16,13 @@ use File::Spec::Functions qw(catfile splitdir catdir);
 use File::Basename;
 use Cwd qw(abs_path);
 
-our $VERSION    = do { my ($r) = q$Revision: 16566 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 =head1 NAME
 
 npg_tracking::data::reference::list
 
 =head1 VERSION
-
-$Revision: 16566 $
 
 =head1 SYNOPSIS
 
@@ -47,16 +41,17 @@ Interface (Moose role) for retrieving a information about a reference repository
 
 =cut
 
-Readonly::Scalar our $REP_ROOT         => q[/lustre/scratch110/srpipe/];
-Readonly::Scalar our $SNV_DIR          => q[population_snv];
-Readonly::Scalar our $REFERENCES_DIR   => q[references];
-Readonly::Scalar our $ADAPTERS_DIR     => q[adapters];
-Readonly::Scalar our $GENOTYPES_DIR    => q[genotypes];
-Readonly::Scalar our $BAITS_DIR        => q[baits];
-Readonly::Scalar our $TAG_SETS_DIR     => q[tag_sets];
-Readonly::Scalar our $TAXON_IDS_DIR    => q[taxon_ids];
-Readonly::Scalar our $BIN_DIR          => q[bin];
-Readonly::Scalar our $ORG_NAME_DELIM   => q[_];
+Readonly::Scalar our $REP_ROOT           => q[/lustre/scratch110/srpipe/];
+Readonly::Scalar our $SNV_DIR            => q[population_snv];
+Readonly::Scalar our $TRANSCRIPTOMES_DIR => q[transcriptomes];
+Readonly::Scalar our $REFERENCES_DIR     => q[references];
+Readonly::Scalar our $ADAPTERS_DIR       => q[adapters];
+Readonly::Scalar our $GENOTYPES_DIR      => q[genotypes];
+Readonly::Scalar our $BAITS_DIR          => q[baits];
+Readonly::Scalar our $TAG_SETS_DIR       => q[tag_sets];
+Readonly::Scalar our $TAXON_IDS_DIR      => q[taxon_ids];
+Readonly::Scalar our $BIN_DIR            => q[bin];
+Readonly::Scalar our $ORG_NAME_DELIM     => q[_];
 
 Readonly::Scalar our $LAST             => -1;
 Readonly::Scalar our $SECOND_FROM_END  => -2;
@@ -110,6 +105,21 @@ has 'snv_repository' => (isa       =>'NPG_TRACKING_REFERENCE_REPOSITORY',
 sub _build_snv_repository {
     my $self = shift;
     return catdir($self->repository, $SNV_DIR);
+}
+
+=head2 transcriptomes repository
+
+An absolute path to the transcriptomes repository
+
+=cut
+has 'transcriptome_repository' => (isa        =>'NPG_TRACKING_REFERENCE_REPOSITORY',
+                                   is         => 'ro',
+                                   required   => 0,
+                                   lazy_build => 1,
+     );
+sub _build_transcriptome_repository{
+    my $self = shift;
+    return catdir($self->repository, $TRANSCRIPTOMES_DIR);
 }
 
 =head2 repository name
@@ -599,7 +609,7 @@ __END__
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

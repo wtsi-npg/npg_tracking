@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: gq1 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2010-05-04 15:28:42 +0100 (Tue, 04 May 2010) $
-# Id:            $Id: user2usergroup.pm 9207 2010-05-04 14:28:42Z gq1 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/user2usergroup.pm $
 #
 package npg::view::user2usergroup;
 use strict;
@@ -14,7 +10,7 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::usergroup;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub authorised {
   my ($self, @args) = @_;
@@ -94,8 +90,6 @@ __END__
 npg::view::user2usergroup
 
 =head1 VERSION
-
-$LastChangedRevision: 9207 $
 
 =head1 SYNOPSIS
 

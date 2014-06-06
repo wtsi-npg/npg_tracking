@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: event.pm 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/event.pm $
 #
 package npg::model::event;
 use strict;
@@ -19,12 +15,11 @@ use npg::model::user;
 use npg::model::run;
 use npg::util;
 
-use Readonly;
-
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 my $MAIL_DOMAIN = npg::util::mail_domain();
 
+use Readonly;
 Readonly::Scalar our $LAST_INDEX => -1;
 Readonly::Scalar our $DESCRIPTION_LENGTH => 255;
 
@@ -112,8 +107,6 @@ __END__
 npg::model::event
 
 =head1 VERSION
-
-$Revision: 14928 $
 
 =head1 SYNOPSIS
 

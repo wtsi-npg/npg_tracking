@@ -1,0 +1,1241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE variable-set PUBLIC "-//NetBotz Inc//nbData 0.1/EN" "/nbData.dtd">
+<variable-set privset="nbPrivSet_sensornocamera" timestamp="1401783313910" time="2014-06-03 09:15:13" now="1401783313922">
+	<variable varid="nbLinkStatus_eth0" guid="BC3A8BD_nbLinkStatus_eth0" classpath="/nbSensor/nbStateSensor/nbBoolSensor/nbLinkStatusSnr" readonly="yes" val-transient="yes" persistent="yes">
+		<u32-val>1</u32-val>
+		<metadata slotid="nbEnum" isclassdef="yes">
+			<nls-string-list-val>
+				<nls-string-val raw="%{nbMsg|Down%}">Down</nls-string-val>
+				<nls-string-val raw="%{nbMsg|Up%}">Up</nls-string-val>
+			</nls-string-list-val>
+		</metadata>
+		<metadata slotid="nbDefault" isclassdef="yes">
+			<u32-val>1</u32-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="%{|Ethernet Link Status%}">Ethernet Link Status</nls-string-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbStateMatchThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored" isclassdef="yes">
+			<bool-val val="false"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbLocationData" isclassdef="yes">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_linkstatus</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_linkstatus</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio" isclassdef="yes">
+			<i32-val>200</i32-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_sensor</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.30</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbBaseEnclosure</varid-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime" isclassdef="yes">
+			<u32-val>28800</u32-val>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkPowerStatus_can0" guid="BC3A8BD_nbAlinkPowerStatus_can0" classpath="/nbSensor/nbStateSensor/nbBoolSensor/nbLinkStatusSnr/nbAlinkBusPowerSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<u32-val>0</u32-val>
+		<metadata slotid="nbEnum" isclassdef="yes">
+			<nls-string-list-val>
+				<nls-string-val raw="%{nbMsg|OK%}">OK</nls-string-val>
+				<nls-string-val raw="%{nbMsg|Overloaded%}">Overloaded</nls-string-val>
+			</nls-string-list-val>
+		</metadata>
+		<metadata slotid="nbDefault" isclassdef="yes">
+			<u32-val>1</u32-val>
+		</metadata>
+		<metadata slotid="nbLabel" isclassdef="yes">
+			<nls-string-val raw="%{|A-Link Bus Power%}">A-Link Bus Power</nls-string-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbStateMatchThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbLocationData" isclassdef="yes">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_alinkbuspower</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_alinkbuspower</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio" isclassdef="yes">
+			<i32-val>200</i32-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_sensor</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.30</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbBaseEnclosure</varid-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime" isclassdef="yes">
+			<u32-val>28800</u32-val>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_1_3_TEMP" guid="BC3A8BD_nbAlinkEnc_1_3_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>22.200000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp9">Temp9</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>30</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_1</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_2_1_TEMP" guid="BC3A8BD_nbAlinkEnc_2_1_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>20.700000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp15">Temp15</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_2</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>28800</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_1_4_TEMP" guid="BC3A8BD_nbAlinkEnc_1_4_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>23.300000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp10">Temp10</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>40</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_1</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_1_5_TEMP" guid="BC3A8BD_nbAlinkEnc_1_5_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>21.400000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp11">Temp11</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>50</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_1</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>28800</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_0_5_TEMP" guid="BC3A8BD_nbAlinkEnc_0_5_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>21.400000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp4">Temp4</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>50</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_0</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_0_4_TEMP" guid="BC3A8BD_nbAlinkEnc_0_4_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>22.600000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp5">Temp5</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>40</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_0</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_0_2_TEMP" guid="BC3A8BD_nbAlinkEnc_0_2_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>22.100000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp7">Temp7</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>20</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_0</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_1_6_TEMP" guid="BC3A8BD_nbAlinkEnc_1_6_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>21.600000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp12">Temp12</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>60</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_1</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>28800</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_1_2_TEMP" guid="BC3A8BD_nbAlinkEnc_1_2_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>22.100000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp2">Temp2</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>20</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_1</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_0_3_TEMP" guid="BC3A8BD_nbAlinkEnc_0_3_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>20.100000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp6">Temp6</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>30</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_0</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_0_1_TEMP" guid="BC3A8BD_nbAlinkEnc_0_1_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>21.700000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp8">Temp8</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_0</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_1_1_TEMP" guid="BC3A8BD_nbAlinkEnc_1_1_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>22.400000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp1">Temp1</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_1</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_2_2_TEMP" guid="BC3A8BD_nbAlinkEnc_2_2_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>21.600000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp13">Temp13</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>20</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_2</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>28800</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_0_6_TEMP" guid="BC3A8BD_nbAlinkEnc_0_6_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>22.700000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp3">Temp3</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>60</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_0</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+	<variable varid="nbAlinkEnc_2_3_TEMP" guid="BC3A8BD_nbAlinkEnc_2_3_TEMP" classpath="/nbSensor/nbNumSensor/nbTempSensor/nbAlinkTempSensor" readonly="yes" val-transient="yes" persistent="yes">
+		<double-val>21.700000</double-val>
+		<metadata slotid="nbValInc" isclassdef="yes">
+			<double-val>0.100000</double-val>
+		</metadata>
+		<metadata slotid="nbLabel">
+			<nls-string-val raw="Temp14">Temp14</nls-string-val>
+		</metadata>
+		<metadata slotid="nbMaxVal">
+			<double-val>45.000000</double-val>
+		</metadata>
+		<metadata slotid="nbMinVal">
+			<double-val>0.000000</double-val>
+		</metadata>
+		<metadata slotid="nbSugThreshCls" isclassdef="yes">
+			<varid-val>nbPlcyCls_nbRangeThresh</varid-val>
+		</metadata>
+		<metadata slotid="nbSensorMonitored">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbReportPrio" isclassdef="yes">
+			<i32-val>10</i32-val>
+		</metadata>
+		<metadata slotid="nbSensorPlugged">
+			<bool-val val="true"/>
+		</metadata>
+		<metadata slotid="nbLocationData">
+			<struct-val>
+			</struct-val>
+		</metadata>
+		<metadata slotid="nbUnitsID" isclassdef="yes">
+			<varid-val>nbUnits_DegC</varid-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDefDone">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSimpleThreshDef" isclassdef="yes">
+			<varid-list-val>
+				<varid-val>nbSimpleThreshPlcyBlkDef_temp</varid-val>
+			</varid-list-val>
+		</metadata>
+		<metadata slotid="nbSortPrio">
+			<i32-val>30</i32-val>
+		</metadata>
+		<metadata slotid="nbEncMenuIcons" isclassdef="yes">
+			<string-list-val>
+				<string-val>menu_link_temp_unplug.gif</string-val>
+				<string-val>menu_link_temp_error.gif</string-val>
+				<string-val>menu_link_temp.gif</string-val>
+			</string-list-val>
+		</metadata>
+		<metadata slotid="nbMaxHistoryTime" isclassdef="yes">
+			<u32-val>86400</u32-val>
+		</metadata>
+		<metadata slotid="nbAudioClipID" isclassdef="yes">
+			<varid-val>nbAudioClip_temperature</varid-val>
+		</metadata>
+		<metadata slotid="nbSNMPEnterpriseOID" isclassdef="yes">
+			<string-val>1.3.6.1.4.1.5528.100.10.2.1</string-val>
+		</metadata>
+		<metadata slotid="nbEncID">
+			<varid-val>nbAlinkEnc_2</varid-val>
+		</metadata>
+		<metadata slotid="nbPrintfFmt" isclassdef="yes">
+			<string-val>%.1f</string-val>
+		</metadata>
+		<metadata slotid="nbHistoryTime">
+			<u32-val>28800</u32-val>
+		</metadata>
+		<metadata slotid="nbSensorIsUnplugged">
+			<bool-val val="false"/>
+		</metadata>
+	</variable>
+</variable-set>

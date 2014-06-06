@@ -1,10 +1,6 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: Instrument.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/Instrument.pm $
 
 package Monitor::Instrument;
 
@@ -19,7 +15,7 @@ use POSIX qw(strftime);
 
 use npg_tracking::illumina::run::folder::validation;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 
 has ident => (
@@ -57,28 +53,16 @@ has _label => (
     lazy_build => 1,
 );
 
-foreach my $attr ( qw( is_gaii is_hiseq is_cbot is_miseq ) ) {
-    has q{_} . $attr => (
-        reader     => $attr,
-        is         => 'ro',
-        isa        => 'Bool',
-        lazy_build => 1,
-    );
-}
-
-
 sub _build__instr_id {
     my ($self) = @_;
     return ( $self->ident() =~ m/^ (\d+) $/msx ) ? ( $1 + 0 ) : undef;
 }
-
 
 #We only need this if instr_id cannot be set from the --ident argument
 sub _build__instr_name {
     my ($self) = @_;
     return ( $self->instr_id() ? undef : $self->ident() );
 }
-
 
 sub _build__db_entry {
     my ($self) = @_;
@@ -104,7 +88,6 @@ sub _build__db_entry {
     return ( $instrument_rs->count() == 1 ) ? $instrument_rs->next() : undef;
 }
 
-
 sub _build__label {
     my ($self) = @_;
 
@@ -112,38 +95,14 @@ sub _build__label {
             $self->db_entry->id_instrument();
 }
 
-
-sub _build__is_gaii {
-    my ($self) = @_;
-
-    return ( $self->db_entry->instrument_format->model() eq 'HK' );
+sub model {
+    my $self = shift;
+    return $self->db_entry->instrument_format->model();
 }
-
-
-sub _build__is_hiseq {
-    my ($self) = @_;
-
-    return ( $self->db_entry->instrument_format->model() eq 'HiSeq' );
-}
-
-
-sub _build__is_miseq {
-    my ($self) = @_;
-
-    return ( $self->db_entry->instrument_format->model() eq 'MiSeq' );
-}
-
-sub _build__is_cbot {
-    my ($self) = @_;
-
-    return ( $self->db_entry->instrument_format->model() eq 'cBot' );
-}
-
 
 sub mysql_time_stamp {
     return strftime( '%F %T', localtime );
 }
-
 
 no Moose;
 __PACKAGE__->meta->make_immutable();
@@ -155,22 +114,20 @@ __END__
 
 =head1 NAME
 
-Monitor::Instrument - base class for modules that interrogate instruments for run
-information.
+Monitor::Instrument
 
 =head1 VERSION
-
-$Revision: 16549 $
 
 =head1 SYNOPSIS
 
     C<<use Monitor::Instrument;
        my $obj = Monitor::Instrument->new_with_options();
-       warn $obj->is_gaii();>>
+       warn $obj->model();>>
 
 =head1 DESCRIPTION
 
-This is the superclass for npg_tracking's Monitor library.
+Base class for modules that interrogate instruments for run
+information.
 
 This class is written to support various scripts that monitor instruments. The
 scripts should be called with the argument --ident, and optionally, the
@@ -183,38 +140,17 @@ argument --dev
 
 Return a npg_tracking::Schema::Result::Instrument row for an instrument.
 
-=head2 is_gaii
-
-Return a boolean indicating if the instrument is a GA-II model.
-
-=head2 is_hiseq
-
-Return a boolean indicating if the instrument is a HiSeq model.
-
-=head2 is_miseq
-
-Return a boolean indicating if the instrument is a MiSeq model.
-
-=head2 is_cbot
-
-Return a boolean indicating if the instrument is a cBot model.
+=head2 model - instrument model
 
 =head2 mysql_time_stamp
 
 Return the current time in a format that can be inserted into a mysql table.
 
-
 =head1 CONFIGURATION AND ENVIRONMENT
-
-
 
 =head1 INCOMPATIBILITIES
 
-
-
 =head1 BUGS AND LIMITATIONS
-
-
 
 =head1 AUTHOR
 

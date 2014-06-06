@@ -1,5 +1,66 @@
 CHANGES
 
+ - sensor.pm now uses npg::api::request to allow for caching xml feeds when
+   retrieving sensor data
+ - web app and database adjustments for HiSeqX
+ - callbacks for uptime graphs removed
+ - removed the uptimes table from the textual listing of intruments page -
+     made page loading very slow
+ - removed upgrade schema scripts and redesign proposal file from MANIFEST
+ - merged instrument checker scripts for all existing sequencing instrument types
+ - removed instrument checker scripts for invividual seq instrument types
+ - all instrument checkers to use local libraries if available
+
+release 77.2
+ - ensure module and package version starts with a digit
+ - npg_tracking::illumina::run::folder and its tests updated; the following accessors removed:
+       data_path (unused from outside),
+       tag_qseqs_path (redundant),
+       score_path (redundant),
+       qseq_location_path (redundant);
+     tests specific for old illumina mashines (IL) removed;
+     unused analysis_path accessor reimplemented to point to the top-level custom analysis folder
+       paths from analysis_path removed;
+     definitions of most paths placed together
+     public write accessors for bam_basecall and dif_files paths since they are used from the pipeline,
+       old private accessors retained for backwards compatibility
+   
+release 77.1
+ - transcriptome changed so that a default is not used if not supplied 
+ - transcriptome version directory changed so tests changed accordingly
+ - reference find changed to handle transcriptome version parsing
+ - unused templates removed
+ - samplesheet regenerated when the existing file does not come from the currently
+   pending run
+ - samplesheet daemon moved to a staging server where samplesheets are stored
+ - copyright for all modules and script belongs to GRL - the copyright
+    notice edited where it was incorrect
+ - pass Illumina samplesheet study name field components through a filter to replace
+   commas
+ - use git describe directly to avoid need for gitver script
+
+release 77.0
+ - the build file and module - code improvements, POD and PBP for the module
+ - scripts and modules:
+     version variable added where needed,
+     RSC keywords removed,
+     superfluous empty lines, 'Readonly' module import and other features removed,
+     where needed, 'use Readonly' added
+ - tests - remains of RSC keywords removed
+ - the distribution test does not perform pod tests (separate tests available),
+   checks that module version matches distribution version
+ - allow staging daemon to check progress by looking for .bcl.gz files (as
+   well as .bcl files)
+
+release 76.5
+ - code action on Build only if install target specified
+ - global removal of [LastChanged]Version from POD; change VERSION svn declaration to ='0';
+ - added modules to handle locating of transcriptome files required by tophat2
+ - updated reference module with additions needed by transcriptome
+ - added new test for transcriptome
+ - updated reference test to check that transcriptome directory structure exists
+ - added files from a transcriptomics run for use in test
+
 release 76.4
  - replace uri_escape() by uri_escape_utf8()
  - some unused code removed

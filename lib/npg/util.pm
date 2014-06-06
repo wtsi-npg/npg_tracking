@@ -1,15 +1,15 @@
 #########
 # Author:        rmp
 # Created:       2006-10-31
-# copied from : svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/util.pm r16335
 #
 package npg::util;
 
 use strict;
 use warnings;
 use base qw(ClearPress::util Exporter);
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16335 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar my $MAIL_DOMAIN       => q(sanger.ac.uk);
 Readonly::Scalar my $DEFAULT_DATA_PATH => q(data);
@@ -67,8 +67,6 @@ __END__
 npg::util - A database handle and utility object
 
 =head1 VERSION
-
-$Revision: 16335 $
 
 =head1 SYNOPSIS
 

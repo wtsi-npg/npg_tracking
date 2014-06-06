@@ -1,10 +1,6 @@
 #########
 # Author:        jo3
-# Maintainer:    $Author: jo3 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2010-10-25 15:41:02 +0100 (Mon, 25 Oct 2010) $
-# Id:            $Id: RunList.pm 11472 2010-10-25 14:41:02Z jo3 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/Monitor/Cbot/RunList.pm $
 #
 
 package Monitor::Cbot::RunList;
@@ -14,7 +10,7 @@ extends 'Monitor::Cbot';
 
 use namespace::autoclean;
 use XML::LibXML;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 11472 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 
 has '_url' => (
@@ -66,7 +62,6 @@ Monitor::Cbot::RunList - methods and to retrieve and parse Cbot RunList.xml
 
 =head1 VERSION
 
-$Revision: 11472 $
 
 =head1 SYNOPSIS
     C<<use Monitor::Cbot::RunList;

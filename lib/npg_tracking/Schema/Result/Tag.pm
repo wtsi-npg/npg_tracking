@@ -142,14 +142,11 @@ __PACKAGE__->has_many(
 
 # Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:08gAge0C54WNuGJ3n4e29g
-# Author:        david.jackson@sanger.ac.uk
-# Maintainer:    $Author: gq1 $
-# Created:       2010-04-08
-# Last Modified: $Date: 2012-01-03 15:55:58 +0000 (Tue, 03 Jan 2012) $
-# Id:            $Id: Tag.pm 14844 2012-01-03 15:55:58Z gq1 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/Tag.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14844 $ =~ /(\d+)/mxs; $r; };
+# Author:        david.jackson@sanger.ac.uk
+# Created:       2010-04-08
+
+our $VERSION = '0';
 
 use Carp;
 
@@ -223,11 +220,5 @@ Related object: L<npg_tracking::Schema::Result::Run>
 
 __PACKAGE__->many_to_many('runs' => 'tag_runs', 'run');
 
-
-1;
-
-
-
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;

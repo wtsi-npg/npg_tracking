@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-11-09
-# Last Modified: $Date: 2012-03-27 13:38:46 +0100 (Tue, 27 Mar 2012) $
-# Id:            $Id: user.pm 15395 2012-03-27 12:38:46Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view/user.pm $
 #
 package npg::view::user;
 use strict;
@@ -14,7 +10,7 @@ use npg::model::usergroup;
 use Carp;
 use Digest::SHA qw(sha256_hex);;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15395 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub new {
   my ($class, @args) = @_;
@@ -120,8 +116,6 @@ npg::view::user
 
 =head1 VERSION
 
-$LastChangedRevision: 15395 $
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -145,7 +139,6 @@ update method to help when updating the rfid, since we need to sha64hex it
 =head2 list_rfid_check_ajax
 
 enable an ajax call to be made, which will check if the person checking in with their rfid is a loader
-
 
 =head1 DIAGNOSTICS
 

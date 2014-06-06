@@ -2,7 +2,7 @@
 layout: <span class="default_tiles">[% model.instrument_format.default_tiles %]</span>/<span class="default_columns">[% model.instrument_format.default_columns %]</span>
 <input type="hidden" id="instr_model" value=[% model.instrument_format.model%] />
 
-[%- IF model.is_hiseq_instrument;
+[%- IF model.is_two_slot_instrument;
      slots = model.fc_slots2blocking_runs;
      slot_names = slots.keys.sort;
      IF slots.keys.size;

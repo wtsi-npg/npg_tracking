@@ -1,88 +1,109 @@
 #############
-# $Id: folder.pm 16549 2013-01-23 16:49:39Z mg8 $
 # Created By: ajb
-# Last Maintained By: $Author: mg8 $
 # Created On: 2009-10-01
-# Last Changed On: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/illumina/run/folder.pm $
 
 package npg_tracking::illumina::run::folder;
 
-use strict;
-use warnings;
 use Moose::Role;
 use Moose::Meta::Class;
 use File::Spec::Functions qw(splitdir catfile catdir);
 use Carp qw(carp cluck croak confess);
-use Cwd;
-
+use Cwd qw/getcwd abs_path/;
 use Try::Tiny;
+use Readonly;
+
 use npg_tracking::Schema;
 use npg_tracking::glossary::lane;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 with 'npg_tracking::illumina::run::folder::location';
 
-Readonly::Scalar our $TAG_QSEQS     => q{tag_qseqs};
-Readonly::Scalar our $QC_DIR        => q{qc};
-Readonly::Scalar our $BASECALL_DIR  => q{BaseCalls};
-Readonly::Scalar our $BASECALL_MATCH => q{_basecalls_};
-Readonly::Scalar our $ARCHIVE_DIR   => q{archive};
-Readonly::Scalar our $SUMMARY_LINK  => q{Latest_Summary};
-Readonly::Array  our @RECALIBRATED_DIR_MATCH  => ( qw{GERALD PB_cal no_cal} );
-Readonly::Array  our @BUSTARD_DIR_MATCH       => ( q{Bustard}, $BASECALL_DIR, $BASECALL_MATCH );
-Readonly::Array  our @INTENSITY_DIR_MATCH     => ( qw{Intensities Firecrest} );
+##no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 
-##############
-# public methods
+Readonly::Scalar my $DATA_DIR       => q{Data};
+Readonly::Scalar my $QC_DIR         => q{qc};
+Readonly::Scalar my $BASECALL_DIR   => q{BaseCalls};
+Readonly::Scalar my $ARCHIVE_DIR    => q{archive};
+Readonly::Scalar my $SUMMARY_LINK   => q{Latest_Summary};
+Readonly::Array  my @RECALIBRATED_DIR_MATCH  => qw( PB_cal no_cal ) ;
+Readonly::Array  my @BUSTARD_DIR_MATCH       => ( q{Bustard}, $BASECALL_DIR,  q{_basecalls_} );
+Readonly::Array  my @INTENSITY_DIR_MATCH     => qw( Intensities );
 
-Readonly::Array our @ORDER_TO_ASSESS_SUBPATH_ASSIGNATION => (
-    qw{
+Readonly::Array our @ORDER_TO_ASSESS_SUBPATH_ASSIGNATION => qw(
       recalibrated_path basecall_path bustard_path intensity_path
-      data_path pb_cal_path qc_path archive_path tag_qseqs_path
-      runfolder_path
-    }
+      pb_cal_path qc_path archive_path runfolder_path
   );
 
-has q{analysis_path}      => ( isa => q{Str}, is => q{ro}, lazy_build => 1,
-                                 documentation => qq{Path to the analysis directory to be used, generally equivalent to recalibrated_path.\nIf not set on construction, will default to an empty string - you should request recalibrated_path}, );
+Readonly::Hash my %NPG_PATH  => (
+  q{analysis_path}     => 'Path to the top level custom analysis directory',
+  q{reports_path}      => 'Path to the "reports" directory',
+  q{intensity_path}    => 'Path to the "Intensities" directory',
+  q{bustard_path}      => 'Path to the Bustard directory',
+  q{basecall_path}     => 'Path to the "Basecalls" directory',
+  q{recalibrated_path} => 'Path to the recalibrated qualities directory',
+  q{pb_cal_path}       => 'Path to the "PB_cal" directory',
+  q{archive_path}      => 'Path to the directory with data ready for archiving',
+  q{qc_path}           => 'Path directory with top level QC data',
+);
 
-has q{data_path}          => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_data_path},
-                                 documentation => 'Path to the "Data" directory',);
-has q{reports_path}       => ( isa => q{Str}, is => q{ro}, lazy_build => 1,
-                                 documentation => 'Path to the "reports" directory',);
-has q{intensity_path}     => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_intensity_path},
-                                 documentation => 'Path to the "Intensities" directory',);
-has q{bustard_path}       => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_bustard_path},
-                                 documentation => 'Path to the "Bustard" directory',);
-has q{basecall_path}      => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_basecall_path},
-                                 documentation => 'Path to the "Basecalls" directory',);
-has q{bam_basecall_path}  => ( isa => q{Str}, is => q{ro}, predicate => 'has_bam_basecall_path',  writer => q{_set_bam_basecall_path},
-                                 documentation => 'Path to the "BAM Basecalls" directory',);
-has q{dif_files_path}      => ( isa => q{Str}, is => q{ro}, predicate => 'has_dif_files_path',  writer => q{_set_dif_files_path},
-                                 documentation => 'Path to the "dif files" directory',);
-has q{recalibrated_path}  => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_recalibrated_path},
-                                 documentation => 'Path to the recalibrated qualities directory (e.g. "GERALD")',);
-has q{pb_cal_path}        => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_pb_cal_path},
-                                 documentation => 'Path to the PB_cal directory',);
-has q{tag_qseqs_path}     => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_tag_qseqs_path},
-                                 documentation => 'Path to the tagged qseq directory',);
-has q{archive_path}       => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_archive_path},
-                                 documentation => 'Path to the output ready for archiving directory',);
-has q{qc_path}            => ( isa => q{Str}, is => q{ro}, lazy_build => 1,
-                                 documentation => 'Path to the QC directory',);
-has q{score_path}         => ( isa => q{Str}, is => q{ro}, lazy_build => 1,
-                                 documentation => 'Path to the directory containing score files',);
-has q{qseq_location_path} => ( isa => q{Str}, is => q{ro}, lazy_build => 1, writer => q{_set_qseq_location_path},
-                                 documentation => 'Path to the directory which may be containing calibrated qseq files',);
+foreach my $path_attr ( keys %NPG_PATH ) {
+  has $path_attr => (
+    isa           => q{Str},
+    is            => q{ro},
+    lazy_build    => 1,
+    writer        => q{_set_} . $path_attr,
+    documentation => $NPG_PATH{$path_attr},
+  );
+}
 
-has q{npg_tracking_schema} => ( isa => q{Maybe[npg_tracking::Schema]}, is => q{ro}, lazy_build => 1,
-                                 documentation => 'NPG tracking DBIC schema', );
+has q{dif_files_path} => (
+  isa           => q{Str},
+  is            => q{ro},
+  predicate     => q{has_dif_files_path},
+  writer        => q{set_dif_files_path},
+  documentation => 'Path to the dif files directory',
+);
+sub _set_dif_files_path { #retained for compatibility with the pipeline
+  my ($self, $path) = @_;
+  $self->set_dif_files_path($path);
+  return;
+}
 
-#############
-# private methods
-has q{subpath} => ( isa => q{Str}, is => q{ro}, predicate => q{has_subpath}, writer => q{_set_subpath});
+has q{bam_basecall_path}  => (
+  isa           => q{Str},
+  is            => q{ro},
+  predicate     => 'has_bam_basecall_path',
+  writer        => 'set_bam_basecall_path',
+  documentation => 'Path to the "BAM Basecalls" directory',
+);
+sub _set_bam_basecall_path { #retained for compatibility with the pipeline
+  my ($self, $path) = @_;
+  $self->set_bam_basecall_path($path);
+  return;
+}
+
+has q{npg_tracking_schema} => (
+  isa => q{Maybe[npg_tracking::Schema]},
+  is => q{ro},
+  lazy_build => 1,
+);
+sub _build_npg_tracking_schema {
+  my $schema;
+  try {
+    $schema = npg_tracking::Schema->connect();
+  } catch {
+    warn qq{WARNING: Unable to connect to NPG tracking DB for faster globs.\n};
+  };
+  return $schema;
+}
+
+has q{subpath} => (
+  isa       => q{Str},
+  is        => q{ro},
+  predicate => q{has_subpath},
+  writer    => q{_set_subpath},
+);
 
 sub _given_path {
   my ($self) = @_;
@@ -104,27 +125,38 @@ sub _given_path {
   return $subpath;
 }
 
-#############
-# builders
-
-sub _build_npg_tracking_schema {
-  my $schema;
-  try {
-    $schema = npg_tracking::Schema->connect();
-  } catch {
-    warn qq{Unable to connect to NPG tracking DB for faster globs.\n};
-  };
-  return $schema;
-}
-
 sub _build_analysis_path {
   my ($self) = @_;
+
+  if ($self->has_bam_basecall_path) {
+    return $self->bam_basecall_path;
+  }
+  if ($self->has_bustard_path) {
+    return $self->bustard_path;
+  }
+  if ($self->has_archive_path) {
+    return _infer_analysis_path($self->archive_path, 2);
+  }
+
+  if ($self->has_recalibrated_path || $self->recalibrated_path) {
+    return _infer_analysis_path($self->recalibrated_path, 1);
+  }
+
   return q{};
 }
 
-sub _build_data_path {
-  my ($self) = @_;
-  return $self->runfolder_path() . q{/Data};
+sub _infer_analysis_path {
+  my ($path, $distance) = @_;
+
+  my @path_components = splitdir( abs_path $path );
+  if (scalar @path_components <= $distance) {
+    croak qq[path $path is too short for distance $distance];
+  }
+  while ($distance > 0) {
+    pop @path_components;
+    $distance--;
+  }
+  return File::Spec->catdir( @path_components );
 }
 
 sub _build_intensity_path {
@@ -159,12 +191,7 @@ sub _build_pb_cal_path {
 
 sub _build_reports_path {
   my ($self) = @_;
-  return $self->data_path() . q{/reports};
-}
-
-sub _build_tag_qseqs_path {
-  my ($self) = @_;
-  return $self->recalibrated_path() . q{/} . $TAG_QSEQS;
+  return catdir($self->runfolder_path(), $DATA_DIR, q{reports});
 }
 
 sub _build_archive_path {
@@ -177,31 +204,10 @@ sub _build_qc_path {
   return $self->archive_path() . q{/} . $QC_DIR;
 }
 
-sub _build_score_path {
-  my ($self) = @_;
-  return $self->recalibrated_path() . q{/Stats/};
-}
-
-sub _build_qseq_location_path {
-  my ($self) = @_;
-  return $self->recalibrated_path() . q{/Temp/Custom};
-}
-
 sub _populate_directory_paths {
   my ($self) = @_;
-
-  # if recalibrated_path has been provided/populated, use this
-  if ( $self->has_recalibrated_path() ) {
-    return $self->_process_path($self->recalibrated_path());
-  }
-
-  # if an analysis_path has been provided, then use this
-  if ( $self->has_analysis_path() && $self->analysis_path() ) {
-    return $self->_process_path($self->analysis_path());
-  }
-
-  # else try to find the recalibrated analysis path
-  my $path = $self->_find_recalibrated_directory_path($self->runfolder_path());
+  my $path = $self->has_recalibrated_path() ? $self->recalibrated_path() :
+    $self->_find_recalibrated_directory_path($self->runfolder_path());
   return $self->_process_path($path);
 }
 
@@ -222,6 +228,7 @@ sub _process_path {
         last;
       }
     }
+
     if ( $populated_something ) {
       next;
     }
@@ -247,7 +254,6 @@ sub _process_path {
     if ( $populated_something ) {
       next;
     }
-
   }
 
   my $use_bustard_as_recalibrated;
@@ -263,14 +269,13 @@ sub _process_path {
       confess $self->id_run() . qq{: no intensity or bustard directory: $path};
   }
 
-  my $intensity_path     = $self->runfolder_path() . qq{/Data/$intensity_dir};
+  my $intensity_path     = catdir($self->runfolder_path(), $DATA_DIR, $intensity_dir);
   my $bustard_path       = qq{$intensity_path/$bustard_dir};
   my $basecall_path      = qq{$intensity_path/$BASECALL_DIR};
   my $recalibrated_path = $use_bustard_as_recalibrated ?  $bustard_path
                         :                                 qq{$bustard_path/$recalibrated_dir}
                         ;
 
-  if (!$self->has_data_path())         { $self->_set_data_path($self->runfolder_path() . q{/Data}); };
   if (!$self->has_intensity_path())    { $self->_set_intensity_path($intensity_path); };
   if (!$self->has_bustard_path())      { $self->_set_bustard_path($bustard_path); };
   if (!$self->has_basecall_path())     { $self->_set_basecall_path($basecall_path); };
@@ -278,7 +283,7 @@ sub _process_path {
   if (!$self->has_recalibrated_path()) { $self->_set_recalibrated_path($recalibrated_path); };
 
   if ($self->can(q{verbose}) && $self->verbose()) {
-    foreach my $dir (qw{data intensity bustard basecall recalibrated tag_qseqs pb_cal}) {
+    foreach my $dir (qw{intensity bustard basecall recalibrated pb_cal}) {
       my $subpath_dir = $dir . q{_path};
       carp qq{$dir : } . $self->$subpath_dir();
     }
@@ -287,25 +292,14 @@ sub _process_path {
   return 1;
 }
 
-
 sub _find_recalibrated_directory_path {
   my ( $self, $path ) = @_;
   my $recalibrated_path;
-
-  # have users declared analysis_path, try this
-  if ($self->has_analysis_path()) {
-    $recalibrated_path = $self->_recalibrated_path( $self->analysis_path() );
-  }
-
-  if ($recalibrated_path) {
-    return $recalibrated_path;
-  }
 
   # have users declared any subpaths, try this
   if ($self->_given_path()) {
     $recalibrated_path = $self->_recalibrated_path( $self->_given_path() );
   }
-
   if ($recalibrated_path) {
     return $recalibrated_path;
   }
@@ -323,8 +317,8 @@ sub _find_recalibrated_directory_path {
     return $recalibrated_path;
   }
 
-  if ( -l qq{$path/$SUMMARY_LINK}) {
-    $recalibrated_path = $self->_recalibrated_path( readlink qq{$path/$SUMMARY_LINK} );
+  if (-l qq{$path/$SUMMARY_LINK}) {
+     $recalibrated_path = $self->_recalibrated_path( readlink qq{$path/$SUMMARY_LINK} );
   }
 
   if ($recalibrated_path) {
@@ -349,7 +343,7 @@ sub _try_to_find_recalibrated_path_from_runfolder_path {
   foreach my $int_dir_name ( @INTENSITY_DIR_MATCH ) {
     foreach my $bustard_dir_name ( @BUSTARD_DIR_MATCH ) {
       foreach my $recal_dir_name ( @RECALIBRATED_DIR_MATCH ) {
-        my @temp_dirs = glob $rf_path . qq{/Data/*$int_dir_name*/$bustard_dir_name*/$recal_dir_name*};
+        my @temp_dirs = glob catdir($rf_path, $DATA_DIR, qq{*$int_dir_name*}, qq{$bustard_dir_name*}, qq{$recal_dir_name*});
         push @dirs, @temp_dirs;
       }
     }
@@ -374,7 +368,7 @@ sub _try_to_find_recalibrated_path_from_runfolder_path {
   @dirs = ();
   foreach my $int_dir_name ( @INTENSITY_DIR_MATCH ) {
     foreach my $bustard_dir_name ( @BUSTARD_DIR_MATCH ) {
-      push @dirs, glob $rf_path . qq{/Data/*$int_dir_name*/$bustard_dir_name*};
+      push @dirs, glob catdir($rf_path, $DATA_DIR, qq{*$int_dir_name*}, qq{$bustard_dir_name*});
     }
   }
 
@@ -382,7 +376,6 @@ sub _try_to_find_recalibrated_path_from_runfolder_path {
     my $dirs_string = join qq{\n}, @dirs;
     croak $self->id_run() . qq{: found multiple possible bustard level directories\n$dirs_string\n};
   }
-
 
   if (scalar@dirs == 1) {
     return $dirs[0];
@@ -398,16 +391,14 @@ sub _recalibrated_path {
   if ($dir !~ /\A\Q$rf_path\E/xms) {
     $dir = $rf_path . q{/} . $dir;
   }
-
   my @subpath = splitdir( $dir );
 
   # proceed through the path (from the end) and look for a directory which matches the $RECALIBRATED_DIR_MATCH string
   while (@subpath) {
     my $path = catdir(@subpath);
+    if ( -d $path # path of all remaining parts of the directory
+                                                                 ) {
 
-    if (
-       -d $path # path of all remaining parts of the directory
-       ) {
       foreach my $dir_name ( @RECALIBRATED_DIR_MATCH ) {
         if ( $path =~ m{/$dir_name[^/]*\z}xms ) {
           return $path
@@ -446,7 +437,7 @@ sub get_path_from_given_path {
           -d catdir($path, q{Config}) # does this directory have a Config Directory
             and
           (
-            -d catdir($path, q{Data}) # a runfolder is likely to have a Data directory
+            -d catdir($path, $DATA_DIR) # a runfolder is likely to have a Data directory
               or
             -d catdir($path, q{Images}) # but if it is not a RTA run, it might have an Images directory if analysis has not been performed
           )
@@ -509,10 +500,6 @@ __END__
 
 npg_tracking::illumina::run::folder
 
-=head1 VERSION
-
-$Revision: 16549 $
-
 =head1 SYNOPSIS
 
   package MyPackage;
@@ -522,10 +509,6 @@ $Revision: 16549 $
 
   my $oPackage = MyPackage->new({
     path => q{/string/to/a/run_folder},
-  });
-
-  my $oPackage = MyPackage->new({
-    subpath => q{/string/to/a/run_folder/dir/below/it},
   });
 
   my $oPackage = MyPackage->new({
@@ -540,9 +523,9 @@ or because you have previously declared with npg_tracking::illumina::run::short_
 option. If you declare short_reference manually, then it must return a string where the last digits are
 the id_run.
 
-Failure to have provided a short_reference method WILL cause a run_time error if your class needs to obtain
+Failure to have provided a short_reference method WILL cause a run-time error if your class needs to obtain
 any paths where a path or subpath was not given in object construction (i.e. it wants to try to use id_run
-to glob for it). The error will be along the lines of:
+to glob for it).
 
 First, using this role will allow you to add a subpath to your constructor. This must be a directory
 below the run_folder directory, but expressing the full path.
@@ -560,18 +543,17 @@ selecting the first which has directories which should be present in a runfolder
 
   my $sPath = $oPackage->path();
 
-=head2 analysis_path - can be given in object constructor, and this will be used to work out other directory paths
+=head2 analysis_path
 
-=head2 data_path - ro accessor to the Data directory subpath
 =head2 intensity_path - ro accessor to the intensity level directory subpath
-=head2 bustard_path - ro accessor to the Bustard level directory subpath
-=head2 basecall_path - ro accessor to the BaseCalls level directory subpath
-=head2 recalibrated_path - ro accessor to the recalibrated level directory subpath
-=head2 tag_qseqs_path - ro accessor to the tag_qseqs level directory subpath
-=head2 archive_path - ro accessor to the archive level directory subpath
-=head2 qc_subpath - ro accessor to the qc level directory subpath
 
-  my $sSubPath = $oPackage->xxx_path();
+=head2 bustard_path - ro accessor to the Bustard level directory subpath
+
+=head2 basecall_path - ro accessor to the BaseCalls level directory subpath
+
+=head2 recalibrated_path - ro accessor to the recalibrated level directory subpath
+
+=head2 archive_path - ro accessor to the archive level directory subpath
 
 =head2 lane_archive_path - returns a path to a location with split files for a lane
 
@@ -597,6 +579,8 @@ selecting the first which has directories which should be present in a runfolder
 
 =item Moose::Role
 
+=item Moose::Meta::Class
+
 =item Carp
 
 =item Readonly
@@ -604,6 +588,8 @@ selecting the first which has directories which should be present in a runfolder
 =item Cwd
 
 =item File::Spec::Functions
+
+=item Try::Tiny
 
 =back
 
@@ -613,11 +599,11 @@ selecting the first which has directories which should be present in a runfolder
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 Andy Brown (ajb@sanger.ac.uk)
+Copyright (C) 2014 GRL by Andy Brown and Marina Gourtovaia
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

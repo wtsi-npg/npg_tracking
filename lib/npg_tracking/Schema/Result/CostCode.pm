@@ -126,19 +126,10 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:41
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:l0VesAycNNOTsKY0+LLTPA
 
-
-# You can replace this text with custom content, and it will be preserved on regeneration
 # Author:        david.jackson@sanger.ac.uk
-# Maintainer:    $Author: srpipe $
 # Created:       2010-04-08
-# Last Modified: $Date: 2011-08-30 09:14:49 +0100 (Tue, 30 Aug 2011) $
-# Id:            $Id: CostCode.pm 14071 2011-08-30 08:14:49Z srpipe $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/CostCode.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14071 $ =~ /(\d+)/mxs; $r; };
-
-1;
-
+our $VERSION = '0';
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;

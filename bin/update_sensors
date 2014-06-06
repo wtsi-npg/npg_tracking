@@ -1,11 +1,7 @@
 #! /usr/bin/env perl
 #########
 # Author:        Jennifer Liddle (js10@sanger.ac.uk)
-# Maintainer:    $Author: mg8 $
 # Created:       2012-03-15
-# Last Modified: $Date: 2013-01-07 11:04:50 +0000 (Mon, 07 Jan 2013) $
-# Id:            $Id: update_sensors 16389 2013-01-07 11:04:50Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/bin/update_sensors $
 #
 use strict;
 use warnings;
@@ -13,8 +9,9 @@ use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use npg::sensors;
 
+our $VERSION = '0';
+
 npg::sensors->new_with_options()->main();
 
 0;
-
 

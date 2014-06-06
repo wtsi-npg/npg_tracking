@@ -1,10 +1,6 @@
 #########
 # Author:        gq1
-# Maintainer:    $Author: gq1 $
 # Created:       2010-04-27
-# Last Modified: $Date: 2010-05-04 15:28:42 +0100 (Tue, 04 May 2010) $
-# Id:            $Id: instrument_status_annotation.pm 9207 2010-05-04 14:28:42Z gq1 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/instrument_status_annotation.pm $
 #
 package npg::model::instrument_status_annotation;
 use strict;
@@ -16,7 +12,7 @@ use npg::model::annotation;
 use npg::model::instrument_status;
 use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 9207 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
@@ -63,8 +59,6 @@ __END__
 npg::model::instrument_status_annotation 
 
 =head1 VERSION
-
-$LastChangedRevision: 9207 $
 
 =head1 SYNOPSIS
 

@@ -1,10 +1,8 @@
-
 [% PROCESS instrument_status_menu.tt2 
            index=1
-%]
+-%]
 
 <table id="instruments" class="sortable zebra">
- <!--<caption>Instruments</caption>-->
  <thead>
   <tr>
    <th>Name</th>
@@ -34,29 +32,11 @@
 [% END %]
  </tbody>
 </table>
-<h3>Instrument Utilisation and Uptime</h3>
-<table id="all_instrument_uptime" class="sortable zebra" style="float: left;">
-  <caption>Individual Instrument Uptime</caption>
-  <thead>
-   <tr>
-    <th>Instrument</th>
-    <th>Over 90 days</th>
-    <th>Over 30 days</th>
-   </tr>
-  </thead>
-  <tbody>
-   [% FOREACH instrument = model.instruments %]<tr>
-    <td><span style="display:none">[% USE String(instrument.id_instrument); String.format('%04d') %]</span>[% instrument.name %]</td>
-    <td>[% SET value = instrument.current_instrument_status.instrument_percentage_uptimes.0 %][% IF value < 50 %]<font color="red">[% value %]</font>[% ELSE %][% value %][% END %]</td>
-    <td>[% SET value = instrument.current_instrument_status.instrument_percentage_uptimes.1 %][% IF value < 50 %]<font color="red">[% value %]</font>[% ELSE %][% value %][% END %]</td>
-   </tr> 
-  [% END %]</tbody>
-</table>
 <div style="clear:both"/>
 
 [%- BLOCK current_runs_info -%]
 [%- idle = 'idle'; -%]
-[%- IF instrument.is_hiseq_instrument;
+[%- IF instrument.is_two_slot_instrument;
        fc_map = instrument.fc_slots2current_runs;
        count = 0;
        comma_space = ', ';

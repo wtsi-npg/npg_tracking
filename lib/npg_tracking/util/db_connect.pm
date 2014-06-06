@@ -1,10 +1,6 @@
 #############
 # Created By: Marina Gourtovaia
-# Maintainer: $Author: mg8 $
 # Created On: 23 June 2010
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $Id: db_connect.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/util/db_connect.pm $
 
 package npg_tracking::util::db_connect;
 
@@ -12,13 +8,14 @@ use Moose::Role;
 use Carp;
 use File::Spec::Functions;
 use Config::Auto;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
-
+use Readonly;
 use npg_tracking::util::types;
 
-Readonly::Scalar my $NPG_CONF_DIR => q[.npg];
-
 requires qw/ connection storage /;
+
+our $VERSION = '0';
+
+Readonly::Scalar my $NPG_CONF_DIR => q[.npg];
 
 has '_config_file'  => (
     isa             => 'NpgTrackingReadableFile',
@@ -135,8 +132,6 @@ npg_tracking::util::db_connect
 
 =head1 VERSION
 
-$LastChangedRevision: 16549 $
-
 =head1 SYNOPSIS
 
 An example of a schema object consuming this role:
@@ -192,7 +187,7 @@ configuration file.
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 

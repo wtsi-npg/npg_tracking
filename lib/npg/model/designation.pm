@@ -1,17 +1,13 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: gq1 $
 # Created:       2009-01-20
-# Last Modified: $Date: 2010-05-04 15:28:42 +0100 (Tue, 04 May 2010) $
-# Id:            $Id: designation.pm 9207 2010-05-04 14:28:42Z gq1 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/designation.pm $
 #
 package npg::model::designation;
 use strict;
 use warnings;
 use base qw(npg::model);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 9207 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_all();
@@ -21,10 +17,6 @@ sub fields {
             description);
 }
 
-#
-# TODO: Write a method to retrieve all designation descriptions.
-#
-
 1;
 __END__
 
@@ -33,8 +25,6 @@ __END__
 npg::model::designation
 
 =head1 VERSION
-
-$LastChangedRevision: 9207 $
 
 =head1 SYNOPSIS
 

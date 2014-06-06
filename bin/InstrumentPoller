@@ -1,11 +1,7 @@
 #!/usr/bin/env perl
 #########
 # Author:        jo3
-# Maintainer:    $Author: mg8 $
 # Created:       2010-04-28
-# Last Modified: $Date: 2013-01-07 11:04:50 +0000 (Mon, 07 Jan 2013) $
-# Id:            $Id: InstrumentPoller 16389 2013-01-07 11:04:50Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/bin/InstrumentPoller $
 
 package InstrumentPoller;
 
@@ -18,16 +14,16 @@ use DateTime;
 use English qw(-no_match_vars);
 use File::Slurp;
 use autodie qw(:all);
+use Readonly;
 
 use npg_tracking::Schema;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16389 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar my $LOG_ROOT => "$Bin/../logs/";
 
 
 my $schema = npg_tracking::Schema->connect();
-
 
 #Fetch the list of instruments.
 my $query = { iscurrent => 1, };
@@ -66,7 +62,7 @@ while ( my $instr = $instrument_rs->next() ) {
     $log .= 'instrument_' . $name . '_monitor.log';
     if (!-e $log) { `touch $log`; }
 
-    my $command =  $model eq 'HK' ? 'ga_II_checker' : lc $model . '_checker';
+    my $command =  $model eq 'cBot' ? 'cbot_checker' : 'seq_instr_checker';
     $command = $EXECUTABLE_NAME  . q[ ] . join(q[/], $local_bin, $command);
     $command .= qq[ --ident $id];
     checker_fork( $command, $log );
@@ -102,8 +98,6 @@ __END__
 instrument_poller - Poll instruments to get data updates.
 
 =head1 VERSION
-
-$Revision: 16389 $
 
 =head1 SYNOPSIS
 

@@ -1,7 +1,10 @@
 #########
 # Author:        rmp
 # Created:       2007-03-28
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/util.pm, r15277
+#
+#
+# This module is now DEPRACATED. Do not use. Use npg::api::request directly instead.
+# js10 5th June 2014
 #
 package npg::api::util;
 
@@ -10,10 +13,11 @@ use warnings;
 use base qw(Class::Accessor);
 use Carp;
 use XML::LibXML;
+use Readonly;
 
 use npg::api::request;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15277 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $LIVE_BASE_URI => 'http://sfweb.internal.sanger.ac.uk:9000/perl/npg';
 Readonly::Scalar our $DEV_BASE_URI  => 'http://npg.dev.sanger.ac.uk/perl/npg';
@@ -110,8 +114,6 @@ __END__
 npg::api::util
 
 =head1 VERSION
-
-$LastChangedRevision: 15277 $
 
 =head1 SYNOPSIS
 

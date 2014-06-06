@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2013-01-15 10:27:57 +0000 (Tue, 15 Jan 2013) $
-# Id:            $Id: view.pm 16477 2013-01-15 10:27:57Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/view.pm $
 #
 package npg::view;
 

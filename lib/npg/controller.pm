@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-01-17 13:57:20 +0000 (Tue, 17 Jan 2012) $
-# Id:            $Id: controller.pm 14928 2012-01-17 13:57:20Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/controller.pm $
 #
 
 package npg::controller;
@@ -58,7 +54,7 @@ use npg::view::intensity;
 use npg::view::instrument_status_annotation;
 use npg::view::usage;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14928 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub session {
   my ($self, $util) = @_;
@@ -107,8 +103,6 @@ __END__
 npg::controller - NPG tracking controller
 
 =head1 VERSION
-
-$Revision: 14928 $
 
 =head1 SYNOPSIS
 
@@ -212,7 +206,6 @@ $Revision: 14928 $
 
 =item warnings
 
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -221,7 +214,7 @@ $Revision: 14928 $
 
 =head1 AUTHOR
 
-$Author: Roger M Pettett$
+Roger M Pettett
 
 =head1 LICENSE AND COPYRIGHT
 

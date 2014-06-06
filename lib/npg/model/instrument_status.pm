@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-12-06 15:23:01 +0000 (Thu, 06 Dec 2012) $
-# Id:            $Id: instrument_status.pm 16319 2012-12-06 15:23:01Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/instrument_status.pm $
 #
 package npg::model::instrument_status;
 use strict;
@@ -18,25 +14,20 @@ use npg::model::instrument_status_dict;
 use npg::model::instrument;
 use npg::model::event;
 use npg::model::instrument_annotation;
-use npg::model::instrument_utilisation;
-use npg::util::image::merge;
-use npg::util::image::image_map;
 use List::Util qw(sum reduce);
 use List::MoreUtils qw (any);
 
 use npg::model::instrument_status_annotation;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16319 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
+use Readonly;
 Readonly::Scalar our $FOURTH_ARRAY_ELEMENT               => 3;
 Readonly::Scalar our $DEFAULT_INSTRUMENT_UPTIME_INTERVAL => 90;
 Readonly::Scalar our $HOURS_IN_DAY                       => 24;
 Readonly::Scalar our $MINUTES_IN_HOUR                    => 60;
 Readonly::Scalar our $PERCENTAGE                         => 100;
 Readonly::Scalar our $DAYS_TO_SUBTRACT                   => 30;
-Readonly::Scalar our $DEFAULT_GANTT_WIDTH  => 1_000;
-Readonly::Scalar our $DEFAULT_GANTT_HEIGHT => 400;
-Readonly::Scalar our $DEFAULT_GANTT_Y_TICK => 9;
 
 
 __PACKAGE__->mk_accessors(fields());
@@ -422,120 +413,6 @@ sub _consider_down {
   return $status && ($status eq 'down' || $status eq 'down for repair') ? 1 : 0;
 }
 
-sub gantt_map {
-  my ($self, $chart_id, $url) = @_;
-  my $refs = $self->gantt_chart_png(1);
-  my $image_map = npg::util::image::image_map->new();
-  my $annotations = $refs->{data};
-  my $data = [];
-  my @temp;
-  foreach my $a (@{$refs->{ref_points}}) {
-    if (ref$a && ref$a eq 'ARRAY') {
-      foreach my $spot(@{$a}) {
-        if (ref$spot && ref$spot eq 'ARRAY') {
-          shift @{$spot};
-          push @temp, $spot;
-        }
-      }
-    }
-  }
-  foreach my $a (@{$annotations}) {
-    if (ref$a && ref$a eq 'ARRAY') {
-      foreach my $annotation (@{$a}) {
-        if ($annotation) {
-          my $box = shift @temp;
-          @{$box} = ($box->[0], $box->[3], $box->[1], $box->[2]); ## no critic (ProhibitMagicNumbers)
-          my ($key, @info) = split /:/xms, $annotation;
-          $annotation = join q{:}, @info;
-          push @{$box}, {$key => $annotation, url => qq{$ENV{SCRIPT_NAME}/instrument/$key}};
-          push @{$data}, $box;
-        }
-      }
-    }
-  }
-
-  foreach my $gantt_box (@{$refs->{gantt_boxes}}) {
-    push @{$data}, $gantt_box;
-  }
-
-  my $map = $image_map->render_map({
-    data => $data,
-    image_url => $ENV{SCRIPT_NAME}.$url,
-    id => $chart_id,
-  });
-
-  return $map;
-}
-
-sub gantt_chart_png {
-  my ($self, $ref_points, $instrument_model) = @_;
-  my $stripe_across_for_gantt = $self->stripe_across_for_gantt( $instrument_model );
-  my $dates_of_annotations = npg::model::instrument_annotation->new({util => $self->util()})->dates_of_annotations_over_default_uptime( $instrument_model );
-  my $merge = npg::util::image::merge->new();
-
-#use Test::More; diag explain $dates_of_annotations->{data};
-
-  my $arg_refs = {
-    format => 'gantt_chart_vertical',
-    x_label       => 'Instrument',
-    y_label       => 'Date',
-    y_tick_number => $DEFAULT_GANTT_Y_TICK,
-    y_max_value   => $stripe_across_for_gantt->{y_max_value},
-    y_min_value   => $stripe_across_for_gantt->{y_min_value},
-    x_axis        => $stripe_across_for_gantt->{instruments},
-    data_points   => $stripe_across_for_gantt->{data},
-    add_points    => $dates_of_annotations->{data},
-    height        => $DEFAULT_GANTT_HEIGHT,
-    width         => $DEFAULT_GANTT_WIDTH,
-    borderclrs    => [qw{lgray}],
-    y_number_format => $stripe_across_for_gantt->{code},
-    get_anno_refs => 1,
-  };
-  my $png;
-  eval { $png = $merge->merge_images($arg_refs); } or do { croak qq{Unable to create gantt_chart_png:\n\n}.$EVAL_ERROR; };
-  if ($ref_points) {
-    my $image_map = npg::util::image::image_map->new();
-    my $href = {ref_points => $merge->data_point_refs(), data => $dates_of_annotations->{annotations}};
-    $href->{gantt_boxes} = $image_map->process_instrument_gantt_values({additional_info => q{DOWN}, data_points => $merge->gantt_refs(), data_values => $stripe_across_for_gantt->{data}, convert => $stripe_across_for_gantt->{code}});
-    return $href;
-  }
-  return $png;
-}
-
-sub instrument_utilisation {
-  my ($self) = @_;
-  if (!$self->{instrument_utilisation}) {
-    $self->{instrument_utilisation} = npg::model::instrument_utilisation->new({util => $self->util});
-  }
-  return $self->{instrument_utilisation};
-}
-
-sub combined_utilisation_and_uptime_gantt_map {
-  my ($self, $chart_id, $url) = @_;
-  my $uptime_map = $self->gantt_map($chart_id, $url);
-  my $utilisation_map = $self->instrument_utilisation->gantt_map($chart_id, $url);
-  $uptime_map =~ s/\<\/map\>.*\z//gxms;
-  $utilisation_map =~ s/\<map[ ]name=".*?"\>//gxms;
-  return $uptime_map.$utilisation_map;
-}
-
-sub combined_utilisation_and_uptime_gantt_png {
-  my ($self, $instrument_model) = @_;
-  my $gantt_chart_png = $self->gantt_chart_png( q{}, $instrument_model );
-  my $utilisation_chart_png = $self->instrument_utilisation->gantt_run_timeline_png( q{}, $instrument_model );
-  my $merge = npg::util::image::merge->new();
-  my $arg_refs = {
-    format => q{overlay_all_images_exactly},
-    images => [$utilisation_chart_png,$gantt_chart_png],
-    white_is_transparent => 1,
-    all_white_is_transparent => 1,
-  };
-
-  my $png;
-  eval { $png = $merge->merge_images($arg_refs); } or do { croak qq{Unable to create combined_utilisation_and_uptime_gantt_png:\n\n}.$EVAL_ERROR; };
-  return $png;
-}
-
 sub convert_to_datetime_objects {
   my ( $self, $temp_hash ) = @_;
   my ( $year,$month,$day,$hour,$min,$sec ) = $temp_hash->{up} =~ /(\d{4})-(\d{2})-(\d{2})[ ](\d{2}):(\d{2}):(\d{2})/xms;
@@ -562,127 +439,6 @@ sub instrument_up_down {
     push @{$return}, $temp_hash;
   }
   return $return;
-}
-
-sub stripe_across_for_gantt {
-  my ( $self, $instrument_model ) = @_;
-
-  $instrument_model = $instrument_model || $self->{inst_format} || q{HK};
-
-  my $inst_up_down = $self->instrument_up_down();
-
-  my $instruments = [];
-
-  my $max_number_of_changes = 0;
-  $inst_up_down = $self->_order_by_inst_number($inst_up_down);
-  my $stripe = [];
-  my $stripe_index = 0;
-  my $dt = DateTime->now();
-  my $dt_less_ninety = DateTime->now()->subtract( days => $DEFAULT_INSTRUMENT_UPTIME_INTERVAL );
-
-  my $all_insts = $self->instruments();
-  my $stripe_indices = {};
-  foreach my $inst ( @{ $all_insts } ) {
-    if ( ! $inst->iscurrent()
-         ||
-         $inst->model() ne $instrument_model
-       ) {
-      next;
-    }
-    push @{$instruments}, $inst->name();
-    $stripe_indices->{$inst->id_instrument()} = $stripe_index;
-    $stripe_index++;
-  }
-
-  foreach my $i ( @{ $inst_up_down } ) {
-
-    my $inst_object = npg::model::instrument->new({
-      util => $self->util(), name => $i->{name},
-    });
-
-    if ( ! $inst_object->iscurrent()
-         ||
-         $inst_object->model() ne $instrument_model
-       ) {
-      next;
-    }
-
-    $i->{iscurrent} = $inst_object->iscurrent();
-
-    @{ $i->{statuses} } = reverse @{ $i->{statuses} };
-
-    if ($i->{statuses}->[0]->{description} eq 'down') {
-      unshift @{ $i->{statuses} }, { description => q{up}, date => $dt };
-    }
-    my @temp;
-    foreach my $s (@{$i->{statuses}}) {
-      if (!ref$s->{date}) {
-        my ($y,$m,$d) = $s->{date} =~ /(\d+)-(\d+)-(\d+)/xms;
-         $s->{date} = DateTime->new(year => $y, month => $m, day => $d);
-      }
-      if ( DateTime->compare( $s->{date}, $dt_less_ninety ) >= 0 ) {
-        push @temp, $s;
-      }
-    }
-
-    @{ $i->{statuses} } = @temp;
-    my $no_changes = scalar @{ $i->{statuses} };
-    if ( $no_changes > $max_number_of_changes ) {
-      $max_number_of_changes = $no_changes;
-    }
-    $i->{stripe_index} = $stripe_indices->{$inst_object->id_instrument()};
-  }
-
-  for my $count (1..$max_number_of_changes) {
-    push @{$stripe}, [];
-  }
-
-  my $date_ninety_days_ago = $dt_less_ninety->dmy();
-  my $date_now = $dt->dmy();
-
-  foreach my $i (@{$inst_up_down}) {
-
-    next if ( !$i->{iscurrent} );
-
-    my $stat_index = 0;
-
-    foreach my $array ( @{$stripe} ) {
-      my $date = $i->{statuses}->[$stat_index]->{date};
-      if ($date) {
-        $date = $dt_less_ninety->delta_days($date)->in_units(q{days});
-      }
-      $array->[$i->{stripe_index}] = $date || 0;
-      $stat_index++;
-    }
-
-  }
-  my $convert_to_date_code = $self->_convert_to_date_code();
-
-  return {instruments => $instruments, data => $stripe, y_max_value => $DEFAULT_INSTRUMENT_UPTIME_INTERVAL, y_min_value => 0, code => $convert_to_date_code};
-}
-
-sub _convert_to_date_code {
-  my ( $self ) = @_;
-  my $convert_to_date_code = sub {
-    my ( $i ) = @_;
-    return $self->dates_of_last_ninety_days()->[$i];
-  };
-  return $convert_to_date_code;
-}
-
-sub _order_by_inst_number {
-  my ($self, $inst_up_down) = @_;
-  my @inst_array;
-  foreach my $i (@{$inst_up_down}) {
-    my ($inst_number) = $i->{name} =~ /(\d+)/xms;
-    $inst_array[$inst_number] = $i;
-  }
-  my $return_array = [];
-  foreach my $i (@inst_array) {
-    next if (!$i);
-    push @{$return_array}, $i;
-  }
-  return $return_array;
 }
 
 sub uptime_for_all_instruments {
@@ -833,11 +589,9 @@ sub instrument_model {
 
 sub current_instrument_status {
   my ( $self ) = @_;
-
   if ( $self->instrument() ) {
     return $self->instrument()->current_instrument_status();
   }
-
   return $self;
 }
 
@@ -849,8 +603,6 @@ __END__
 npg::model::instrument_status
 
 =head1 VERSION
-
-$Revision: 16319 $
 
 =head1 SYNOPSIS
 
@@ -942,28 +694,6 @@ found in $self->{inst_format} or default HK
 
   my $aInstrumentUpDown = $oInstrumentStatus->instrument_up_down();
 
-=head2 gantt_map - returns html which will produce an image_map and the url of the image, which will have the annotations able to be hover/links and downtime blocks to hover the dates
-
-  my $sGanttMap = $oInstrumentStatus->gantt_map($map_id);
-
-=head2 gantt_chart_png - returns a png Image of the instrument uptime and annotations as a gantt chart style
-
-  my $GCpng = $oInstrumentStatus->gantt_chart_png();
-
-=head2 stripe_across_for_gantt - returns a data structure with the instrument up/down times sorted for inputting directly to creat a gantt style chart
-
-  my $hStripeAcrossForGantt = $oInstrumentStatus->stripe_across_for_gantt();
-
-=head2 instrument_utilisation - accessor to obtain an instrument_utilisation object
-
-=head2 combined_utilisation_and_uptime_gantt_map - returns html which will produce an image_map and the url of the image, which will have the annotations able to be hover/links and downtime blocks to hover the dates, and running blocks to hover the dates
-
-  my $sCombinedMap = $oInstrumentStatus->combined_utilisation_and_uptime_gantt_map($map_id, $url_of_image);
-
-=head2 combined_utilisation_and_uptime_gantt_png - returns a png image of a combined utilisation and uptime gantt style chart
-
-  my $CUAUGpng = $oInstrumentStatus->combined_utilisation_and_uptime_gantt_png();
-
 =head2 instruments
 
 short cut method to obtain an array of all instruments
@@ -1005,8 +735,6 @@ returns either the current instrument status object should we have an instrument
 =item npg::model::instrument
 
 =item npg::model::event
-
-=item npg::util::image::image_map
 
 =item List::Util
 

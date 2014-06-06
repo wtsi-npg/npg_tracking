@@ -1,17 +1,13 @@
 #############
 # Created By: Marina Gourtovaia
-# Maintainer: $Author: mg8 $
 # Created On: 23 April 2010
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $Id: run.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/glossary/run.pm $
 
 package npg_tracking::glossary::run;
 
 use Moose::Role;
 use npg_tracking::util::types;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 has 'id_run'    =>   (isa       => 'NpgTrackingRunId',
                       is        => 'ro',
@@ -26,8 +22,6 @@ __END__
 npg_tracking::glossary::run
 
 =head1 VERSION
-
-$LastChangedRevision: 16549 $
 
 =head1 SYNOPSIS
 
@@ -51,8 +45,6 @@ run interface
 
 =item  npg_tracking::util::types
 
-=item Readonly
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -61,7 +53,7 @@ run interface
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 

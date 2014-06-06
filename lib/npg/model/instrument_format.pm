@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2006-10-31
-# Last Modified: $Date: 2012-01-11 14:52:00 +0000 (Wed, 11 Jan 2012) $
-# Id:            $Id: instrument_format.pm 14897 2012-01-11 14:52:00Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/model/instrument_format.pm $
 #
 package npg::model::instrument_format;
 use strict;
@@ -15,7 +11,7 @@ use Carp;
 use npg::model::instrument;
 use npg::model::manufacturer;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14897 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a(q[manufacturer]);
@@ -58,9 +54,6 @@ sub init {
   return 1;
 }
 
-
-
-
 sub current_instrument_formats {
   my $self = shift;
 
@@ -74,6 +67,12 @@ sub current_instrument_formats {
   }
 
   return $self->{'current_instrument_formats'};
+}
+
+sub instrument_formats_sorted {
+  my $self = shift;
+  my @if = sort { $a->model cmp $b->model} @{$self->instrument_formats};
+  return \@if;
 }
 
 sub current_instruments {
@@ -112,13 +111,12 @@ sub instrument_count {
 
 sub is_used_sequencer_type {
   my ( $self ) = @_;
-
-  my $seq_type = $self->model() eq q{HiSeq} ? q{HiSeq}
-               : $self->model() eq q{HK}    ? q{GAII}
-               : $self->model() eq q{MiSeq} ? q{MiSeq}
-               : undef;
-
-  return $seq_type;
+  my $types = {'HiSeq'  => 'HiSeq',
+               'MiSeq'  => 'MiSeq',
+               'HiSeqX' => 'HiSeqX',
+               'HK'     => 'GAII',
+              };
+  return $types->{$self->model()};
 }
 
 sub _obtain_numerical_name_part {
@@ -156,8 +154,6 @@ __END__
 npg::model::instrument_format
 
 =head1 VERSION
-
-$Revision: 14897 $
 
 =head1 SYNOPSIS
 
@@ -209,6 +205,10 @@ This method returns the instrument type the format is commonly known as if this 
 Returns a hash ref containing keys of current formats (which have current instruments associated) each pointing to an arrayref of their current instruments
 
   my $hCurrentInstrumentsByFormat = $oInstrumentFormat->current_instruments_by_format();
+
+=head2 instrument_formats_sorted
+
+  returns instrument format objects array sorted by model name
 
 =head1 DIAGNOSTICS
 

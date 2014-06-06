@@ -1,26 +1,22 @@
 #############
-# $Id: event.pm 16411 2013-01-08 15:26:40Z mg8 $
 # Created By: ajb
-# Last Maintained By: $Author: mg8 $
 # Created On: 2011-01-06
-# Last Changed On: $Date: 2013-01-08 15:26:40 +0000 (Tue, 08 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/email/event.pm $
 
 package npg::email::event;
 use strict;
 use warnings;
 use Carp;
 use English qw{-no_match_vars};
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16411 $ =~ /(\d+)/mxs; $r; };
+use Readonly;
 use Module::PluginFinder;
+
+our $VERSION = '0';
 
 =head1 NAME
 
 npg::email::event
 
 =head1 VERSION
-
-$LastChangedRevision: 16411 $
 
 =head1 SYNOPSIS
 
@@ -61,7 +57,6 @@ This method will go off and run the notification methods required for the type o
 you have specified
 
 =cut
-
 
 sub new {
   my ( $class, $data ) = @_;
@@ -120,7 +115,7 @@ __END__
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

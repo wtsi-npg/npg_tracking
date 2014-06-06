@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-03-01 10:36:10 +0000 (Thu, 01 Mar 2012) $
-# Id:            $Id: instrument_status.pm 15277 2012-03-01 10:36:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/instrument_status.pm $
 #
 package npg::api::instrument_status;
 use strict;
@@ -13,9 +9,8 @@ use base qw(npg::api::base);
 use Carp;
 use English qw{-no_match_vars};
 use npg::api::instrument;
-use Readonly;
 
-Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15277 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields(), 'name');
 __PACKAGE__->hasa(qw(instrument));
@@ -59,8 +54,6 @@ __END__
 npg::api::instrument_status - An interface onto npg.instrument_status
 
 =head1 VERSION
-
-$LastChangedRevision: 15277 $
 
 =head1 SYNOPSIS
 

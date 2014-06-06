@@ -1,7 +1,6 @@
 #########
 # Author:        David K. Jackson
 # Created:       18 December 2009
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/instrument_handling/branches/prerelease-16.0/lib/srpipe/runner/analysis.pm, r15456
 #
 
 package npg_tracking::daemon::samplesheet;
@@ -9,11 +8,12 @@ package npg_tracking::daemon::samplesheet;
 use Moose;
 use Carp;
 use English qw(-no_match_vars);
-use Readonly;
+
+our $VERSION = '0';
 
 extends 'npg_tracking::daemon';
 
-override '_build_hosts' => sub { return ['sf2-farm-srv1']; };
+override '_build_hosts' => sub { return ['sf49-nfs']; };
 ##no critic (RequireInterpolationOfMetachars)
 override 'command'  => sub { return q[perl -e 'use strict; use warnings; use npg::samplesheet::auto;  use Log::Log4perl qw(:easy); BEGIN{ Log::Log4perl->easy_init({level=>$INFO,}); } npg::samplesheet::auto->new()->loop();']; };
 ##use critic
@@ -50,8 +50,6 @@ Class for a daemon that generates sample sheets.
 
 =item English
 
-=item Readonly
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -60,7 +58,7 @@ Class for a daemon that generates sample sheets.
 
 =head1 AUTHOR
 
-Author: David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
+David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

@@ -102,17 +102,13 @@ __PACKAGE__->has_many(
 
 # Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:43
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:YW44Rtc9qBN/G4r419nMIA
-# Author:        david.jackson@sanger.ac.uk
-# Maintainer:    $Author: mg8 $
-# Created:       2010-04-08
-# Last Modified: $Date: 2011-09-09 14:59:49 +0100 (Fri, 09 Sep 2011) $
-# Id:            $Id: RunLaneStatusDict.pm 14155 2011-09-09 13:59:49Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/Schema/Result/RunLaneStatusDict.pm $
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14155 $ =~ /(\d+)/mxs; $r; };
+# Author:        david.jackson@sanger.ac.uk
+# Created:       2010-04-08
+
+our $VERSION = '0';
 
 use Carp;
-
 
 =head2 check_row_validity
 
@@ -175,10 +171,6 @@ sub _insist_on_valid_row {
 
     return $row_object;
 }
-1;
 
-
-
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;
 1;

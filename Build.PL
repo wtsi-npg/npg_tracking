@@ -1,31 +1,14 @@
 use strict;
 use warnings;
-use Module::Build;
+use lib 'lib';
+use npg_tracking::util::build;
 
-my $class = Module::Build->subclass(code => <<'EOF');
+my $class = npg_tracking::util::build->subclass(code => <<'EOF');
 
-  sub git_tag {
-    my $version;
-    my $gitver = q[./scripts/gitver];
-    if (!-e $gitver) {
-      warn "$gitver script not found";
-      $version = q[unknown];
-    }
-    if (!-x $gitver) {
-      warn "$gitver script is not executable";
-      $version = q[unknown];
-    }
-    if (!$version) {
-      $version = `$gitver`;
-      $version =~ s/\s$//smxg;
-    }
-    return $version;
-  }
-
-  sub dir_files {
+ sub dir_files {
     my $dir = shift;
-    opendir(my $dh, $dir) || die "can't opendir $dir: $!";
-    my @files = map { "$dir/$_" } grep { /^\w+$/ && -f "$dir/$_" } readdir($dh);
+    opendir my $dh, $dir || die "can't opendir $dir: $!";
+    my @files = map { "$dir/$_" } grep { /^\w+$/ && -f "$dir/$_" } readdir $dh;
     closedir $dh;
     return @files;
   }
@@ -63,15 +46,6 @@ my $class = Module::Build->subclass(code => <<'EOF');
     return;
   }
 
-  sub cgi_version {
-    my $version;
-    eval {
-      require CGI;
-      $version = $CGI::VERSION;
-    };
-    return $version && ($version eq '3.43') ? $version : '3.52'; 
-  }
-
   sub ACTION_webinstall {
     my $self = shift;
     if (!$self->install_base()) {
@@ -85,32 +59,11 @@ my $class = Module::Build->subclass(code => <<'EOF');
     $self->add_build_element('cgi');
     $self->install_path('wtsi_local' => join q{/}, $self->install_base(), 'wtsi_local');
     $self->add_build_element('wtsilocal');
-    $self->depends_on("install");
+    $self->depends_on('install');
 
     return;
   }
 
-  sub ACTION_code {
-    my $self = shift;
-
-    $self->SUPER::ACTION_code;
-
-    my $view = q[blib/lib/npg/view.pm];
-    my $gitver = $self->git_tag();
-    if (-e $view) {
-      warn "Changing version of npg::view to $gitver\n";
-      my $backup = '.original';
-      local $^I = $backup;
-      local @ARGV = ($view);
-      while (<>) {
-        s/(\$VERSION\s*=\s*)('?\S+'?)\s*;/${1}'$gitver';/;
-        print;
-      }
-      unlink "$view$backup";
-    } else {
-      warn "File $view not found\n";
-    }
-  }
 EOF
 
 my $builder = $class->new(
@@ -123,8 +76,6 @@ my $builder = $class->new(
 
           'configure_requires' => {
                 'ExtUtils::CBuilder'              => 0,
-                'Readonly'                        => 0,
-                'Readonly::XS'                    => 0,
           },
 
           'build_requires' => {
@@ -146,13 +97,14 @@ my $builder = $class->new(
                 'Test::Trap'                      => '0.2.0',
                 'Test::Warn'                      => '0.11',
                 'DateTime::Format::SQLite'        => 0,
+                'IO::File'                        => 0,
           },
 
           'requires'    => {
                 'autodie'                         => '2.10',
                 'base'                            => '2.12',
                 'Carp'                            => '1.04',
-                'CGI'                             => $class->cgi_version(),
+                'CGI'                             => '3.52',
                 'Class::Accessor'                 => '0.31',
                 'Class::Std'                      => '0.0.8',
                 'ClearPress::controller'          => '300',
@@ -220,7 +172,7 @@ my $builder = $class->new(
                 'MIME::Base64'                    => 0,
                 'MIME::Lite'                      => '3.024',
                 'MIME::Parser'                    => '5.427',
-		'Module::PluginFinder'            => '0.04',
+                'Module::PluginFinder'            => '0.04',
                 'Moose'                           => '0.93',
                 'Moose::Meta::Class'              => 0,
                 'Moose::Role'                     => '0.93',
@@ -242,8 +194,7 @@ my $builder = $class->new(
                 'Scalar::Util'                    => 0,
                 'Socket'                          => 0,
                 'strict'                          => '1.03',
-                'SQL::Translator'                 =>
-                  ($^X =~ /^\/software\/perl-5\.8\.8/smx) ? '0.11004' : '0.11006',
+                'SQL::Translator'                 => '0.11006',
                 'Sys::Hostname'                   => '1.11',
                 'Template'                        => '2.19',
                 'Try::Tiny'                       => 0,
@@ -263,7 +214,7 @@ if ($builder->install_base()) {
   $builder->install_path('data' => join q{/}, $builder->install_base(), 'data');
   $builder->add_build_element('data');
 } else {
-  warn "WARNING: '--install_base' option is not given, 'data' element will not be installed\n\n";
+  warn qq[WARNING: '--install_base' option is not given, 'data' element will not be installed,\n];
 }
 
 $builder->create_build_script();

@@ -1,17 +1,13 @@
 #########
 # Author:        ajb
-# Maintainer:    $Author: mg8 $
 # Created:       2009-04-15
-# Last Modified: $Date: 2012-03-29 17:11:11 +0100 (Thu, 29 Mar 2012) $
-# Id:            $Id: decorator.pm 15402 2012-03-29 16:11:11Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/decorator.pm $
 #
 package npg::decorator;
 use strict;
 use warnings;
 use base qw(ClearPress::decorator);
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15402 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 sub username {
   my ($self, $username) = @_;
@@ -45,8 +41,6 @@ __END__
 npg::decorator - NPG tracking decorator
 
 =head1 VERSION
-
-$LastChangedRevision: 15402 $
 
 =head1 SYNOPSIS
 
@@ -84,7 +78,7 @@ $LastChangedRevision: 15402 $
 
 =head1 AUTHOR
 
-$Author: Andy Brown$
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

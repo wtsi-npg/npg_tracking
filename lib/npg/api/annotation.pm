@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-03-01 10:36:10 +0000 (Thu, 01 Mar 2012) $
-# Id:            $Id: annotation.pm 15277 2012-03-01 10:36:10Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/annotation.pm $
 #
 package npg::api::annotation;
 use strict;
@@ -14,7 +10,7 @@ use Carp;
 use English qw(-no_match_vars);
 use npg::api::user;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 15277 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 #########
 # we'll handle 'attachment' ourselves
@@ -115,8 +111,6 @@ __END__
 npg::api::annotation - Annotation base-class, an interface onto npg.annotation
 
 =head1 VERSION
-
-$LastChangedRevision: 15277 $
 
 =head1 SYNOPSIS
 

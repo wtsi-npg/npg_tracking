@@ -1,10 +1,3 @@
-#########
-# Author:        mg8
-# Last Modified: $Date: 2012-11-22 11:17:13 +0000 (Thu, 22 Nov 2012) $ $Author: mg8 $
-# Id:            $Id: db.pm 16261 2012-11-22 11:17:13Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_testing/db.pm $
-#
-
 package npg_testing::db;
 
 use strict;
@@ -17,8 +10,9 @@ use File::Spec::Functions qw(catfile);
 use Cwd;
 use Moose::Role;
 use Try::Tiny;
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16261 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 Readonly::Scalar our $FEATURE_EXTENSION => q[.yml];
 Readonly::Scalar our $TEMP_DIR => q{/tmp};
@@ -28,8 +22,6 @@ Readonly::Scalar our $TEMP_DIR => q{/tmp};
 npg_testing::db
 
 =head1 VERSION
-
-$Revision: 16261 $
 
 =head1 SYNOPSIS
 
@@ -250,7 +242,7 @@ __END__
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

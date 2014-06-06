@@ -1,10 +1,6 @@
 #############
-# $Id: email.pm 16411 2013-01-08 15:26:40Z mg8 $
 # Created By: ajb
-# Last Maintained By: $Author: mg8 $
 # Created On: 2010-02-10
-# Last Changed On: $Date: 2013-01-08 15:26:40 +0000 (Tue, 08 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/email.pm $
 
 package npg::email;
 use strict;
@@ -13,10 +9,11 @@ use Moose;
 use Carp;
 use English qw{-no_match_vars};
 use Template;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16411 $ =~ /(\d+)/mxs; $r; };
-
+use Readonly;
 use npg::util::mailer;
 use npg_tracking::Schema;
+
+our $VERSION = '0';
 
 Readonly::Scalar our $DEFAULT_RECIPIENT_HOST    => q{@}.q{sanger.ac.uk};
 Readonly::Scalar our $DEFAULT_FROM              => q{srpipe}.$DEFAULT_RECIPIENT_HOST;
@@ -27,8 +24,6 @@ Readonly::Scalar our $DEFAULT_TEMPLATE_LOCATION => q{data/npg_tracking_email/tem
 npg::email
 
 =head1 VERSION
-
-$LastChangedRevision: 16411 $
 
 =head1 SYNOPSIS
 
@@ -191,7 +186,7 @@ __END__
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

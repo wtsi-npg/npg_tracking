@@ -22,7 +22,7 @@
  <tr><th>Status changed by</th><td><a href="https://helix.wtgc.org/people?uid=[% status_changed_by %]">[% view.realname(status_changed_by) %]</a>&nbsp;[% current_status.date %]</td></tr>
  <tr><th>Status comment</th><td>[% current_status.comment %]&nbsp;</td></tr>
 [%- IF model.current_run;
-      IF model.is_hiseq_instrument;
+      IF model.is_two_slot_instrument;
         fc_map = model.fc_slots2current_runs;
         FOREACH fc_slot IN fc_map.keys.sort;
           IF fc_map.$fc_slot.size;

@@ -1,10 +1,6 @@
 #############
-# $Id: run.pm 16411 2013-01-08 15:26:40Z mg8 $
 # Created By: ajb
-# Last Maintained By: $Author: mg8 $
 # Created On: 2010-02-10
-# Last Changed On: $Date: 2013-01-08 15:26:40 +0000 (Tue, 08 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/email/run.pm $
 
 package npg::email::run;
 use strict;
@@ -12,8 +8,9 @@ use warnings;
 use Moose;
 use Carp;
 use English qw{-no_match_vars};
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16411 $ =~ /(\d+)/mxs; $r; };
+our $VERSION = '0';
 
 use st::api::lims;
 extends qw{npg::email};
@@ -23,8 +20,6 @@ extends qw{npg::email};
 npg::email::run
 
 =head1 VERSION
-
-$LastChangedRevision: 16411 $
 
 =head1 SYNOPSIS
 
@@ -200,7 +195,7 @@ __END__
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 

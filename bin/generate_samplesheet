@@ -8,6 +8,9 @@ use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use npg::samplesheet;
 
+our $VERSION = '0';
+
 npg::samplesheet->new_with_options()->process;
 
 1;
+

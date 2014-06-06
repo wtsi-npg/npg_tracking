@@ -1,10 +1,6 @@
 #############
-# $Id: status_change.pm 16395 2013-01-07 14:04:51Z mg8 $
 # Created By: jo3
-# Last Maintained By: $Author: mg8 $
 # Created On: 2010-02-10
-# Last Changed On: $Date: 2013-01-07 14:04:51 +0000 (Mon, 07 Jan 2013) $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/email/run/status_change.pm $
 
 package npg::email::run::status_change;
 use strict;
@@ -17,9 +13,9 @@ use English qw{-no_match_vars};
 use Moose::Util::TypeConstraints;
 use POSIX qw(strftime);
 use st::api::event;
+use Readonly;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16395 $ =~ /(\d+)/mxs; $r; };
-
+our $VERSION = '0';
 
 Readonly::Scalar my $TEMPLATE => 'run_status_change.tt2';
 
@@ -293,7 +289,6 @@ npg::email::run::status_change
 
 =head1 VERSION
 
-$Revision: 16395 $
 
 =head1 SYNOPSIS
 
@@ -358,7 +353,7 @@ posting from the main 'run' method.
 
 =head1 AUTHOR
 
-$Author: mg8 $
+John O'Brien
 
 =head1 LICENSE AND COPYRIGHT
 

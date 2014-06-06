@@ -1,9 +1,5 @@
 # Author:        Marina Gourtovaia
-# Maintainer:    $Author: mg8 $
 # Created:       14 April 2009
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# Id:            $Id: bait.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/data/bait.pm $
 #
 package npg_tracking::data::bait;
 
@@ -11,7 +7,7 @@ use strict;
 use warnings;
 use Moose;
 
-our $VERSION = do { my ($r) = q$Revision: 16549 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 with qw/
           npg_tracking::glossary::run
@@ -31,8 +27,6 @@ __END__
 npg_tracking::data::bait
 
 =head1 VERSION
-
-$Revision: 16549 $
 
 =head1 SYNOPSIS
 

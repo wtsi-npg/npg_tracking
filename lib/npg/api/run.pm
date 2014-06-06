@@ -1,10 +1,6 @@
 #########
 # Author:        rmp
-# Maintainer:    $Author: mg8 $
 # Created:       2007-03-28
-# Last Modified: $Date: 2012-03-08 11:21:27 +0000 (Thu, 08 Mar 2012) $
-# Id:            $Id: run.pm 15308 2012-03-08 11:21:27Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg/api/run.pm $
 #
 package npg::api::run;
 use strict;
@@ -20,7 +16,7 @@ use npg::api::run_annotation;
 use npg::api::instrument;
 use st::api::lims;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 15308 $ =~ /(\d+)/smx; $r; };
+our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(grep { $_ ne 'id_run' } fields());
 __PACKAGE__->hasmany([{annotation => 'run_annotation'}]);
@@ -340,8 +336,6 @@ __END__
 npg::api::run
 
 =head1 VERSION
-
-$Revision: 15308 $
 
 =head1 SYNOPSIS
 

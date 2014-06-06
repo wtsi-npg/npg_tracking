@@ -1,17 +1,14 @@
 #############
 # Created By: Marina Gourtovaia
-# Maintainer: $Author: mg8 $
 # Created On: 23 April 2010
-# Last Modified: $Date: 2013-01-23 16:49:39 +0000 (Wed, 23 Jan 2013) $
-# $Id: tag.pm 16549 2013-01-23 16:49:39Z mg8 $
-# $HeadURL: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/lib/npg_tracking/glossary/tag.pm $
 
 package npg_tracking::glossary::tag;
 
 use Moose::Role;
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 16549 $ =~ /(\d+)/mxs; $r; };
-
+use Readonly;
 use npg_tracking::util::types;
+
+our $VERSION = '0';
 
 Readonly::Scalar our $TAG_DELIM      => q[#];
 
@@ -37,8 +34,6 @@ __END__
 npg_tracking::glossary::tag
 
 =head1 VERSION
-
-$LastChangedRevision: 16549 $
 
 =head1 SYNOPSIS
 
@@ -72,7 +67,7 @@ tag interface
 
 =head1 AUTHOR
 
-$Author: mg8 $
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
