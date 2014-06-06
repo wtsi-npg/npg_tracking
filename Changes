@@ -1,5 +1,9 @@
 CHANGES
 
+ - dual index refinements: ensure max length of "Index" used by MiSeq is the split
+   dual indexs' size, and use custom default_expected_tag in preference to Index{,2}
+   when using samplesheet as source of LIMS info
+
 release 77.2
  - Samplesheet creation now supports dual indexes
 

@@ -197,12 +197,17 @@ sub _build__limsreflist {
       push @row, $tmpl->sample_publishable_name;
       push @row, $ref;
       if($self->_index_read) {
-        if ($tmpl->tag_sequence && length($tmpl->tag_sequence) == (2 * $self->dual_index_size())) {
-          push @row, substr $tmpl->tag_sequence, 0, $self->dual_index_size();
-          push @row, substr $tmpl->tag_sequence, $self->dual_index_size();
+        if ($self->dual_index_size) {
+          # always tructate first index to dual_index_size
+          my $ts = $tmpl->tag_sequence || q[];
+          push @row, substr $ts, 0, $self->dual_index_size();
+          # empty second index unless size is dual_index_size (typically to cope with phix spike)
+          push @row, ( length($ts) == (2 * $self->dual_index_size()) ?
+                        substr $ts, $self->dual_index_size() :
+                        q[]
+                     );
         } else {
           push @row, $tmpl->tag_sequence || q[];
-          if ($self->dual_index_size) { push @row, q[]; }
         }
       }
       if ($self->extend) {

@@ -136,12 +136,14 @@ sub _build_data {
         $row->{$data_columns[$i]} = $columns[$i];
       }
       my @lanes = split /\+/smx, $row->{'Lane'};
-      if ($row->{'Index'}) {
-        $row->{'default_tag_sequence'} = $row->{'Index'};
-        delete $row->{'Index'};
-        if ($row->{'Index2'}) {
-          $row->{'default_tag_sequence'} .= $row->{'Index2'};
-          delete $row->{'Index2'};
+      if(not exists $row->{'default_tag_sequence'}){ #use custom NPG column if provided
+        if ($row->{'Index'}) {
+          $row->{'default_tag_sequence'} = $row->{'Index'};
+          delete $row->{'Index'};
+          if ($row->{'Index2'}) {
+            $row->{'default_tag_sequence'} .= $row->{'Index2'};
+            delete $row->{'Index2'};
+          }
         }
       }
       my $index = $row->{'tag_index'};
