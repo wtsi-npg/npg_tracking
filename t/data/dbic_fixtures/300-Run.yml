@@ -287,3 +287,16 @@
   is_paired: 0
   priority: 1
   team: RAD
+- actual_cycle_count: 160
+  batch_id: 16538
+  expected_cycle_count: 160
+  flowcell_id: MS0009139-00300
+  folder_name: 120403_MS1_7826_A_MS0009139-00300
+  folder_path_glob: '/{export,nfs}/sf45/ILorHSorMS_sf45/*/'
+  id_instrument: 90
+  id_instrument_format: 11
+  id_run: 7826
+  id_run_pair: 0
+  is_paired: 0
+  priority: 1
+  team: RAD

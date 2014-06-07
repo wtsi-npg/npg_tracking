@@ -79,3 +79,19 @@
   id_run_read: 7370
   intervention: 0
   read_order: 3
+- expected_cycle_count: 75
+  id_run: 7826
+  id_run_read: 7371
+  intervention: 0
+  read_order: 1
+- expected_cycle_count: 8
+  id_run: 7826
+  id_run_read: 7372
+  intervention: 0
+  read_order: 2
+- expected_cycle_count: 75
+  id_run: 7826
+  id_run_read: 7373
+  intervention: 0
+  read_order: 3
+

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<batch>
+  <id>16537</id>
+  <status>released</status>
+  <lanes>
+    <lane position="1" priority="0" id="4895948">
+      <pool name="Mate pair imp test" request_id="4127174" id="4894530" qc_state="pass">
+        <sample sample_id="1392238" study_id="1980" library_type="Long range" project_id="919" library_name="Mouse_test_3kb 4894529" library_id="4894529">
+          <tag tag_id="265">
+            <index>1</index>
+            <expected_sequence>ATCACGTTATAAAAAA</expected_sequence>
+            <tag_group_id>7</tag_group_id>
+          </tag>
+          <insert_size from="2000" to="6000"/>
+        </sample>
+        <sample sample_id="1392237" study_id="1980" library_type="Long range" project_id="919" library_name="Tetse_3kb 4894528" library_id="4894528">
+          <tag tag_id="266">
+            <index>2</index>
+            <expected_sequence>CGATGTTTATTTTTTT</expected_sequence>
+            <tag_group_id>7</tag_group_id>
+          </tag>
+          <insert_size from="2000" to="6000"/>
+        </sample>
+        <sample sample_id="1392236" study_id="1980" library_type="Long range" project_id="919" library_name="PfIT_454_5kb 4894527" library_id="4894527">
+          <tag tag_id="272">
+            <index>8</index>
+            <expected_sequence>ACTTGATGATCCCCCC</expected_sequence>
+            <tag_group_id>7</tag_group_id>
+          </tag>
+          <insert_size from="2000" to="6000"/>
+        </sample>
+        <sample sample_id="1392234" study_id="1980" library_type="Long range" project_id="919" library_name="PfIT_Sanger_5kb 4894525" library_id="4894525">
+          <tag tag_id="273">
+            <index>9</index>
+            <expected_sequence>GATCAGCGATGGGGGG</expected_sequence>
+            <tag_group_id>7</tag_group_id>
+          </tag>
+          <insert_size from="2000" to="6000"/>
+        </sample>
+        <sample sample_id="1392235" study_id="1980" library_type="Long range" project_id="919" library_name="PfIT_SOLiD5500_5kb 4894526" library_id="4894526">
+          <tag tag_id="274">
+            <index>10</index>
+            <expected_sequence>TAGCTTGTATACACGT</expected_sequence>
+            <tag_group_id>7</tag_group_id>
+          </tag>
+          <insert_size from="2000" to="6000"/>
+        </sample>
+      </pool>
+    </lane>
+  </lanes>
+</batch>
