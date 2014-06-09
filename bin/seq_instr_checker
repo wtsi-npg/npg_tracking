@@ -7,6 +7,8 @@ package hiseq_checker;
 
 use strict;
 use warnings;
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Carp;
 use English qw(-no_match_vars);
 use Readonly;
@@ -18,17 +20,30 @@ use Monitor::RunFolder;
 
 our $VERSION = '0';
 
-Readonly::Array my @DISKS => qw( Runs_D Runs_E );
+Readonly::Array my @HiSeq_DISKS => qw( Runs_D Runs_E );
+Readonly::Array my @MiSeq_DISKS => qw( MiSeqAnalysis MiSeqTemp );
+
+Readonly::Hash my %DISKS => (
+                              'HiSeq'  => \@HiSeq_DISKS,
+                              'HiSeqX' => \@HiSeq_DISKS,
+                              'MiSeq'  => \@MiSeq_DISKS,
+                            );
+
 
 local $ENV{dev} = ( defined $ENV{dev} ? $ENV{dev} : 'live' );
 
+my $poll = Monitor::SRS::Local->new_with_options();
+my $model = $poll->model();
+if (!exists $DISKS{$model}) {
+    croak "Instrument model $model not known";
+}
+
 ###
-# Check the instrument. If ftp doesn't work, use local. For HiSeqs there are
-# two ftp top directories to check.
-my $poll;
+# Check the instrument. If ftp doesn't work, use local.
+#
 
 eval {
-        foreach my $disk (@DISKS) {
+        foreach my $disk ( @{$DISKS{$model}} ) {
             $poll = Monitor::SRS::FTP->new_with_options( top_dir => $disk );
             $poll->can_contact($disk);
             main();
@@ -37,16 +52,11 @@ eval {
      }
      or do {
         carp "Error in FTP poll: $EVAL_ERROR";
-        $poll = Monitor::SRS::Local->new_with_options();
         main();
      };
 
 
 sub main {
-
-    # It's clumsy that this is called twice for ftp polls.
-    croak $poll->label() . ' is not a HiSeq' if !$poll->is_hiseq();
-
 
     ##
     # Make a list of regular (not repeats, not tests) run folders.
@@ -111,17 +121,17 @@ __END__
 
 =head1 NAME
 
-hiseq_checker - Monitor HiSeq instruments for run information.
+instrument_checker - Monitor HiSeq, HiSeqX and MiSeq instruments for run information.
 
 =head1 VERSION
 
 =head1 SYNOPSIS
 
-    C<perl hiseq_checker --ident (int|string)>
+    C<perl instrument_checker --ident (int|string)>
 
 =head1 DESCRIPTION
 
-This script takes the database id of a HiSeq as a required argument and tries
+This script takes the database id of an instrument as a required argument and tries
 to update information in the database concerning the instrument itself and
 concerning its current run.
 
@@ -137,7 +147,7 @@ editing it with full paths to executables and with environmental variables.
 
 It should also work as a stand-alone.
 
-It uses the $dev environmental variable to decide which database to use, using
+It uses the dev environmental variable to decide which database to use, using
 the value to find a matching section in the config.ini file.
 
 =head1 INCOMPATIBILITIES

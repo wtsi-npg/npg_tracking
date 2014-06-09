@@ -62,7 +62,7 @@ while ( my $instr = $instrument_rs->next() ) {
     $log .= 'instrument_' . $name . '_monitor.log';
     if (!-e $log) { `touch $log`; }
 
-    my $command =  $model eq 'HK' ? 'ga_II_checker' : lc $model . '_checker';
+    my $command =  $model eq 'cBot' ? 'cbot_checker' : 'seq_instr_checker';
     $command = $EXECUTABLE_NAME  . q[ ] . join(q[/], $local_bin, $command);
     $command .= qq[ --ident $id];
     checker_fork( $command, $log );

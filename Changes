@@ -1,5 +1,18 @@
 CHANGES
 
+release 77.3
+ - samplesheet creation now supports dual indexes
+ - sensor.pm now uses npg::api::request to allow for caching xml feeds when
+   retrieving sensor data
+ - web app and database adjustments for HiSeqX
+ - callbacks for uptime graphs removed
+ - removed the uptimes table from the textual listing of intruments page -
+     made page loading very slow
+ - removed upgrade schema scripts and redesign proposal file from MANIFEST
+ - merged instrument checker scripts for all existing sequencing instrument types
+ - removed instrument checker scripts for invividual seq instrument types
+ - all instrument checkers to use local libraries if available
+
 release 77.2
  - ensure module and package version starts with a digit
  - npg_tracking::illumina::run::folder and its tests updated; the following accessors removed:

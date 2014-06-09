@@ -26,8 +26,8 @@ my $util = t::util->new({fixtures => 1});
         });
   my $cifs = $if->current_instrument_formats();
   isa_ok($cifs, 'ARRAY');
-  is((scalar @{$cifs}), 6, 'unprimed cache cif');
-  is((scalar @{$if->current_instrument_formats()}), 6, 'primed cache cif');
+  is((scalar @{$cifs}), 7, 'unprimed cache cif');
+  is((scalar @{$if->current_instrument_formats()}), 7, 'primed cache cif');
 }
 
 {

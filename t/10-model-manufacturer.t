@@ -55,7 +55,7 @@ my $util = t::util->new({fixtures=>1});
           });
   my $ci = $m->current_instruments();
   isa_ok($ci, 'ARRAY');
-  is((scalar @{$ci}), 17, 'current instrument size');
+  is((scalar @{$ci}), 19, 'current instrument size');
 }
 
 {
@@ -63,7 +63,7 @@ my $util = t::util->new({fixtures=>1});
            util => $util,
            id_manufacturer => 10,
           });
-  is($m->instrument_count(), 18, 'instrument count');
+  is($m->instrument_count(), 20, 'instrument count');
 }
 
 {
@@ -83,7 +83,7 @@ my $util = t::util->new({fixtures=>1});
           });
   my $is = $m->instrument_formats();
   isa_ok($is, 'ARRAY');
-  is((scalar @{$is}), 5, 'instrument_formats');
+  is((scalar @{$is}), 6, 'instrument_formats');
 }
 
 {
