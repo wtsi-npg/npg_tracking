@@ -1,5 +1,7 @@
 CHANGES
 
+release 77.3
+ - samplesheet creation now supports dual indexes
  - sensor.pm now uses npg::api::request to allow for caching xml feeds when
    retrieving sensor data
  - web app and database adjustments for HiSeqX
