@@ -1,5 +1,8 @@
 CHANGES
 
+release 77.4
+ - changed list of top level directories for HiSeqX 
+
 release 77.3
  - samplesheet creation now supports dual indexes
  - sensor.pm now uses npg::api::request to allow for caching xml feeds when
