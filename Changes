@@ -1,5 +1,8 @@
 CHANGES
 
+release 77.5
+ - added new version value for HiSeqX RunInfo.xml
+
 release 77.4
  - changed list of top level directories for HiSeqX 
 
