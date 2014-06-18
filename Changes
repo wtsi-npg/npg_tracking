@@ -1,5 +1,9 @@
 CHANGES
 
+release 77.6
+ - added code to generate HiSeqX runfolder names
+ - updated list of directories to search for cycle sub-directories
+
 release 77.5
  - added new version value for HiSeqX RunInfo.xml
 
