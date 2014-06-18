@@ -199,7 +199,7 @@ sub run_folder {
   $day   = sprintf '%02d', $day;
   my $runfolder = $year.$month.$day.q{_}.$self->name();
   my $model = $self->instrument_format->model;
-  if ($model eq 'HiSeq'){
+  if ($model eq 'HiSeq' || $model eq 'HiSeqX'){
     if ($self->hiseq_slot()) { $runfolder .= q(_) . $self->hiseq_slot(); }
     if ($self->flowcell_id()) { $runfolder .= q(_) . $self->flowcell_id(); }
   }elsif($model eq 'MiSeq'){
