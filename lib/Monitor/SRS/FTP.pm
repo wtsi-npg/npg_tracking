@@ -110,22 +110,6 @@ sub get_latest_cycle {
     croak 'Run folder address required as argument' if !$run_path;
 
 
-    my $events_latest = 0;
-    my $log_file = "$run_path/Events.log";
-    my $log_text = q{};
-    eval { $log_text < io($log_file); 1 } or do {};
-
-    foreach ( reverse split m/={35,}/msx, $log_text ) {
-
-        # This is a recognised bug in Perl::Critic
-        ## no critic (RegularExpressions::ProhibitCaptureWithoutTest)
-        next if $_ !~ m/ ^ Cycle[ ]Number \s+ = [ ] (\d+) \s* $ /msx;
-        $events_latest = $1;
-        last;
-        ## use critic
-    }
-
-
     my $status_latest = 0;
     my $status_file = "$run_path/Data/reports/StatusUpdate.xml";
     my $status_text = q{};
@@ -136,19 +120,19 @@ sub get_latest_cycle {
     }
 
 
-    my $image_ls   = io( qq{$run_path/Processed/L001} )->all();
-    my $process_ls = io( qq{$run_path/Images/L001} )->all();
+    my $process_ls   = io( qq{$run_path/Processed/L001} )->all();
     my $intensities_ls = io( qq{$run_path/Data/Intensities/L001} )->all();
+    my $basecalls_ls = io( qq{$run_path/Data/Intensities/BaseCalls/L001} )->all();
 
-    my @cycle_dirs = ( $self->all_dirs($image_ls),
-                       $self->all_dirs($process_ls),
-                       $self->all_dirs($intensities_ls)
+    my @cycle_dirs = ( $self->all_dirs($process_ls),
+                       $self->all_dirs($intensities_ls),
+                       $self->all_dirs($basecalls_ls)
     );
 
     my $dirs_latest = max( 0, map { m{\bC(\d+)[.]1}msx } @cycle_dirs );
 
 
-    my $latest_cycle = max( $events_latest, $status_latest, $dirs_latest );
+    my $latest_cycle = max( $status_latest, $dirs_latest );
 
     $latest_cycle
         ? $self->update_latest_contact()
