@@ -168,10 +168,7 @@ sub is_run_completed {
     }
 
     my $rta = "RTAComplete";
-
-    return ( $root_list =~ m/\b$rta [.]txt\b/msx ) ? 1
-         :                                                        0
-         ;
+    return ( $root_list =~ m/\b$rta [.]txt\b/msx ) ? 1 : 0;
 }
 
 
