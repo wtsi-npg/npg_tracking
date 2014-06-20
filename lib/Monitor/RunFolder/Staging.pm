@@ -21,12 +21,12 @@ our $VERSION = '0';
 Readonly::Scalar my $MAXIMUM_CYCLE_LAG  =>  6;
 Readonly::Scalar my $MTIME_INDEX        =>  9;
 Readonly::Scalar my $SECONDS_PER_MINUTE => 60;
-Readonly::Scalar my $NETCOPY_COMPLETE   => 10 * $SECONDS_PER_MINUTE;
+Readonly::Scalar my $RTA_COMPLETE   => 10 * $SECONDS_PER_MINUTE;
 
-has 'netcopy_complete_wait' => (isa          => 'Int',
-                                is           => 'ro',
-                                default      => $NETCOPY_COMPLETE,
-                               );
+has 'rta_complete_wait' => (isa          => 'Int',
+                            is           => 'ro',
+                            default      => $RTA_COMPLETE,
+                           );
 
 
 sub cycle_lag {
@@ -74,9 +74,9 @@ sub mirroring_complete {
         or do { carp $EVAL_ERROR; return 0; };
 
 
-    my $netcopy = 'Basecalling_Netcopy_complete_Read'.scalar $self->read_cycle_counts;
+    my $rta = 'RTAComplete';
 
-    my @markers = map {q().$_} grep { $_ =~ m/ $netcopy /msx } @file_list;
+    my @markers = map {q().$_} grep { $_ =~ m/ $rta /msx } @file_list;
 
     my $mtime = ( scalar @markers )
                 ? ( stat $markers[0] )[$MTIME_INDEX]
@@ -89,7 +89,7 @@ sub mirroring_complete {
         qr{Copying[ ]logs[ ]to[ ]network[ ]run[ ]folder\s* \Z }msx;
 
 
-    return ( $last_modified > $self->netcopy_complete_wait ) ? 1
+    return ( $last_modified > $self->rta_complete_wait ) ? 1
          : ( $events_log =~ $events_regex )       ? 1
          :                                          0;
 }
@@ -126,6 +126,11 @@ sub check_tiles {
     my @lanes   = glob "$path/Data/Intensities/L*";
     @lanes      = grep { m/ L \d+ $ /msx } @lanes;
     my $l_count = scalar @lanes;
+    if ( !$l_count ){
+        @lanes   = glob "$path/Data/Intensities/BaseCalls/L*";
+        @lanes      = grep { m/ L \d+ $ /msx } @lanes;
+        $l_count = scalar @lanes;
+    }
 
     if ( $l_count != $expected_lanes ) {
         carp "Missing lane(s) - [$expected_lanes $l_count]";
