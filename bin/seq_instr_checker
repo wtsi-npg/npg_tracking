@@ -21,11 +21,12 @@ use Monitor::RunFolder;
 our $VERSION = '0';
 
 Readonly::Array my @HiSeq_DISKS => qw( Runs_D Runs_E );
+Readonly::Array my @HiSeqX_DISKS => qw( HiSeqTemp );
 Readonly::Array my @MiSeq_DISKS => qw( MiSeqAnalysis MiSeqTemp );
 
 Readonly::Hash my %DISKS => (
                               'HiSeq'  => \@HiSeq_DISKS,
-                              'HiSeqX' => \@HiSeq_DISKS,
+                              'HiSeqX' => \@HiSeqX_DISKS,
                               'MiSeq'  => \@MiSeq_DISKS,
                             );
 

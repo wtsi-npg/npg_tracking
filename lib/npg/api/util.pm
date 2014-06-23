@@ -2,6 +2,10 @@
 # Author:        rmp
 # Created:       2007-03-28
 #
+#
+# This module is now DEPRACATED. Do not use. Use npg::api::request directly instead.
+# js10 5th June 2014
+#
 package npg::api::util;
 
 use strict;

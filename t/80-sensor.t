@@ -9,6 +9,8 @@ use Test::More tests => 6;
 use Test::Exception;
 use t::dbic_util;
 
+local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/npg_api';
+
 use_ok('npg::sensors');
 my $schema =  t::dbic_util->new->test_schema();
 

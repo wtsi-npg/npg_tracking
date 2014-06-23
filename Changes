@@ -1,5 +1,24 @@
 CHANGES
 
+releaes 77.7
+ - run in progress tracking:
+     look for lane sub-directories in the BaseCalls directory if none found in the Intensities directory;
+     check for existence of a RTAComplete.txt file rather that a ImageAnalysis_Netcopy_complete_Read#.txt file
+
+release 77.6
+ - added code to generate HiSeqX runfolder names
+ - updated list of directories to search for cycle sub-directories
+
+release 77.5
+ - added new version value for HiSeqX RunInfo.xml
+
+release 77.4
+ - changed list of top level directories for HiSeqX 
+
+release 77.3
+ - samplesheet creation now supports dual indexes
+ - sensor.pm now uses npg::api::request to allow for caching xml feeds when
+   retrieving sensor data
  - web app and database adjustments for HiSeqX
  - callbacks for uptime graphs removed
  - removed the uptimes table from the textual listing of intruments page -

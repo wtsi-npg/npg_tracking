@@ -641,9 +641,7 @@ t/data/gaii/Events.Update
 t/data/gaii/ftp/Find_Me
 t/data/gaii/ftp/Runs/100611_IL2_0022/Recipe_GA2-PEM_2x76Cycle_v7.7.xml
 t/data/gaii/ftp/Runs/100628_IL2_04929/Run.completed
-t/data/gaii/ftp/Runs/100914_HS3_05281_A_205MBABXX/Basecalling_Netcopy_complete_READ2.txt
 t/data/gaii/ftp/Runs/100914_HS3_05281_A_205MBABXX/Data/reports/StatusUpdate.xml
-t/data/gaii/ftp/Runs/100914_HS3_05281_A_205MBABXX/ImageAnalysis_Netcopy_complete_READ2.txt
 t/data/gaii/ftp/Runs/100914_HS3_05281_A_205MBABXX/RunInfo.xml
 t/data/gaii/staging/IL12/incoming/100721_IL12_05222/Config/TileLayout.xml
 t/data/gaii/staging/IL12/incoming/100721_IL12_05222/Events.log
@@ -782,12 +780,7 @@ t/data/gaii/staging/IL5/incoming/100708_IL3_04999/Events.log
 t/data/gaii/staging/IL5/incoming/100708_IL3_04999/Recipe_Sanger_GA2-PEM2X_2x76Cycle_v8.3.xml
 t/data/gaii/staging/IL5/incoming/not_a_dir
 t/data/gaii/staging/IL999/incoming/100622_IL3_01234/Recipe_GA2-PEM_2x76Cycle_v7.7.xml
-t/data/gaii/staging/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/Basecalling_Netcopy_complete_READ2.txt
 t/data/gaii/staging/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/Data/reports/StatusUpdate.xml
-t/data/gaii/staging/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/ImageAnalysis_Netcopy_complete_READ2.txt
-t/data/gaii/staging/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/R_mx_unInfo.xml
-t/data/gaii/staging/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/R_s_unInfo.xml
-t/data/gaii/staging/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/R_smx_unInfo.xml
 t/data/gaii/staging/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/RunInfo.xml
 t/data/hiseq/ftp/Runs_E/100914_HS3_05281_A_205MBABXX/Basecalling_Netcopy_complete_Read2.txt
 t/data/hiseq/ftp/Runs_E/100914_HS3_05281_A_205MBABXX/Data/reports/StatusUpdate.xml
