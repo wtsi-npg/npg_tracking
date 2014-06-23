@@ -1,5 +1,7 @@
 language: perl
 perl:
   - "5.16"
+before_install:
+  - sudo apt-get install libgd
 before_script:
   - mysql -e 'create database npgt;'
