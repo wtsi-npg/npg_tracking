@@ -1,8 +1,5 @@
 language: perl
 perl:
   - "5.16"
-install:
-  - perl Build.PL
-  - yes | perl Build installdeps
 before_script:
   - mysql -e 'create database npgt;'
