@@ -2,7 +2,9 @@ language: perl
 perl:
   - "5.16"
 before_install:
-  - sudo apt-get install libgd-gd2-perl
-  - sudo apt-get install libgd-text-perl
+  - sudo apt-get install libgd2-xpm-dev
+  - cpanm --quiet --notest Alien::Tidyp
 before_script:
   - mysql -e 'create database npgt;'
+env:
+  - TEST_AUTHOR=1 TZ=Europe/London
