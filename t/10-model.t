@@ -28,6 +28,7 @@ use_ok('npg::model');
   my $hostname = hostname;
   my($addr)=inet_ntoa((gethostbyname(hostname))[4]);
   is($util->dbh->do("update instrument set instrument_comp='$hostname' where id_instrument=3"), 1, 'one row in test db updated');
+  diag "***** HOST NAME $hostname ADDRESS $addr  *****";
 
   is( $model->location_is_instrument(), undef, q{undef returned with no headers set} );
   $ENV{HTTP_X_FORWARDED_FOR} = qq{$addr, 127.0.0.2};
