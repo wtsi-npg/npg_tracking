@@ -38,7 +38,7 @@ use_ok('npg::model');
   my $saved_host = $rows->[0] || q[];
   SKIP: {
     skip "$hostname might be too long for the db field, retrieved $saved_host",
-      3 unless $hostname eq $saved_host;
+      4 unless $hostname eq $saved_host;
 
     is( $model->location_is_instrument(), undef, q{undef returned with no headers set} );
     $ENV{HTTP_X_FORWARDED_FOR} = qq{$addr, 127.0.0.2};
