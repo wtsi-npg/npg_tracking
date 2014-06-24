@@ -1,6 +1,13 @@
 CHANGES
 
- - ensure samplesheet testing works without WTSI filessystem
+ - ensure samplesheet testing works without WTSI filesystem
+ - instrument location tests skipped if host name is too long
+     (TODO - increase db field size)
+ - travis ci configuration file added
+ - mysql db test configuration - password removed so that this configuration
+     can be used on travis ci
+ - implicit dependency on DBD::mysql driver made explicit to ensure all
+     dependencies are built on travis ci server
 
 releaes 77.7
  - run in progress tracking:
