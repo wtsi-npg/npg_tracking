@@ -1,5 +1,7 @@
 CHANGES
 
+ - ensure samplesheet testing works without WTSI filessystem
+
 releaes 77.7
  - run in progress tracking:
      look for lane sub-directories in the BaseCalls directory if none found in the Intensities directory;
