@@ -186,7 +186,7 @@ cmp_deeply( $reports->[2],
 
 lives_ok { $test[0]->run() } 'Main method executes without error';
 
-my $updated_time = $test[0]->event_row->notification_sent();
+my $updated_time = $schema->resultset('Event')->find(23)->notification_sent();
 my $lag = DateTime->now()->subtract_datetime($updated_time)->delta_seconds();
 ok( abs($lag) < 10, 'notification_sent field has been updated recently' );
 
