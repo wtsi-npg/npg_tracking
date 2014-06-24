@@ -282,7 +282,8 @@ sub _build__runinfo_store {
       $self->_set_values_at_end_of_read($rc);
     }
 
-  }elsif($formatversion == 2){
+  ## no critic (ValuesAndExpressions::ProhibitMagicNumbers)
+  }elsif($formatversion == 2 || $formatversion == 3){
     my $fcl_el = $doc->getElementsByTagName('FlowcellLayout')->[0];
     $self->_set_lane_count($fcl_el->getAttribute('LaneCount'));
     my $ncol = $fcl_el->getAttribute('SurfaceCount') * $fcl_el->getAttribute('SwathCount');
@@ -764,7 +765,7 @@ Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2009 Andy Brown (ajb@sanger.ac.uk)
+Copyright (C) 2009 GRL by Andy Brown (ajb@sanger.ac.uk)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -415,7 +415,7 @@ sub read_png { ## no critic (Subroutines::ProhibitExcessComplexity)
   return $self->read_key_png() if $model->id_instrument() eq 'key';
 
   my $inst_model = $model->instrument_format->model();
-  my $is_hs = $model->is_hiseq_instrument;
+  my $is2slot = $model->is_two_slot_instrument;
   my $is_ms = $model->is_miseq_instrument;
 
   my $ins_status_obj = $model->current_instrument_status;
@@ -426,7 +426,7 @@ sub read_png { ## no critic (Subroutines::ProhibitExcessComplexity)
   my $current_run;
   my $run_status;
 
-  if ( !$is_hs ) {
+  if ( !$is2slot ) {
     $current_run = $model->current_run();
     $run_status  = $self->_run_status4image($current_run);
     if($current_run && $current_run->is_paired_read() && ! $is_ms ) {
@@ -440,7 +440,7 @@ sub read_png { ## no critic (Subroutines::ProhibitExcessComplexity)
                 : GD::Image->new($IMAGE_DIMENSIONS,$IMAGE_DIMENSIONS);
   $src->colorAllocate(@{$COLOUR_WHITE});
 
-  my $width  = $is_hs ? 2*$IMAGE_DIMENSIONS+2 : $IMAGE_DIMENSIONS;
+  my $width  = $is2slot ? 2*$IMAGE_DIMENSIONS+2 : $IMAGE_DIMENSIONS;
   my $height = $IMAGE_DIMENSIONS;
   my $im     = GD::Image->new($width, $height);
   my $colours = $self->_allocate_colours($im);
@@ -486,9 +486,9 @@ sub read_png { ## no critic (Subroutines::ProhibitExcessComplexity)
   }
 
    # display instrument model name
-   my $instr_annot_x = $is_hs ? 45 : $is_ms ? -10 : 0;
+   my $instr_annot_x = $is2slot ? 45 : $is_ms ? -10 : 0;
    $instr_annot_x += $INS_NAME_VALUE_ONE;
-   my $instr_annot_y = $is_hs ? -7 : $is_ms ? -7 : 0;
+   my $instr_annot_y = $is2slot ? -7 : $is_ms ? -7 : 0;
    $instr_annot_y += $INS_NAME_VALUE_TWO;
    $im->string($font, $instr_annot_x, $instr_annot_y, $model->name(),
      $model->is_cbot_instrument ? $colours->{'blue'} : $colours->{'black'});
@@ -499,7 +499,7 @@ sub read_png { ## no critic (Subroutines::ProhibitExcessComplexity)
 
   # display run-related info
   my $complete;
-   if (!$is_hs) {
+   if (!$is2slot) {
      $complete = $model->percent_complete(); # Short-hand for cBots
      $self->_run2image($im, $colours, $font, $current_run, $run_status, $ins_status, $complete);
      $self->_progress_bar_image($im, $colours, $font, $current_run, $run_status, $complete);

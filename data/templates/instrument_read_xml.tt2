@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <instrument id_instrument="[% model.id_instrument %]" name="[% model.name %]" id_instrument_format="[% model.id_instrument_format %]" model="[% model.instrument_format.model %]" external_name="[% model.external_name %]" serial="[% model.serial %]" iscurrent="[% model.iscurrent %]">
 [% IF model.current_run %]<current_runs>
-[% IF model.is_hiseq_instrument;
+[% IF model.is_two_slot_instrument;
      map = model.fc_slots2current_runs;
      FOREACH slot IN map.keys.sort;
        IF map.$slot.size;

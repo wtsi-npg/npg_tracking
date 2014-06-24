@@ -161,7 +161,7 @@ Jennifer Liddle
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2012 Jennifer Liddle (js10@sanger.ac.uk)
+Copyright (C) 2012 GRL by Jennifer Liddle (js10@sanger.ac.uk)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

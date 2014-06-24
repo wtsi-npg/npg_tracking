@@ -1,8 +1,0 @@
-<!--begin $Id: run_add_pair_ajax.tt2 6769 2009-10-15 14:42:56Z gq1 $-->
-<label for="id_run_pair">Paired Run</label>
-<select id="id_run_pair" name="id_run_pair">
- <option value="no">No (one runfolder)</option>
- <option value="yes">Yes - First Run</option>
-[% FOREACH run = model.runs_on_batch %]<option value="[% run.id_run %]">Second run of [% run.name %]</option>[% END %]
-</select>
-<!--end $Id: run_add_pair_ajax.tt2 6769 2009-10-15 14:42:56Z gq1 $-->

@@ -13,7 +13,7 @@ our $VERSION = '0';
 
 extends 'npg_tracking::daemon';
 
-override '_build_hosts' => sub { return ['sf2-farm-srv1']; };
+override '_build_hosts' => sub { return ['sf49-nfs']; };
 ##no critic (RequireInterpolationOfMetachars)
 override 'command'  => sub { return q[perl -e 'use strict; use warnings; use npg::samplesheet::auto;  use Log::Log4perl qw(:easy); BEGIN{ Log::Log4perl->easy_init({level=>$INFO,}); } npg::samplesheet::auto->new()->loop();']; };
 ##use critic

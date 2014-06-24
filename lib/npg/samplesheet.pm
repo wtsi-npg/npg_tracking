@@ -16,6 +16,7 @@ use npg_tracking::Schema;
 use st::api::lims;
 use st::api::lims::samplesheet;
 use npg_tracking::data::reference;
+use Cwd qw(abs_path);
 
 our $VERSION = '0';
 
@@ -177,16 +178,18 @@ sub _build__limsreflist {
   for my $l (@{$self->lims}) {
     for my $tmpl ( $l->is_pool ? $l->children : ($l) ) {
 
-      my @refs = @{npg_tracking::data::reference->new(
+      my $dataref = npg_tracking::data::reference->new(
               ($self->repository ? ('repository' => $self->repository) : ()),
               aligner => q(fasta),
               lims=>$tmpl, position=>$tmpl->position, id_run=>$self->run->id_run
-      )->refs ||[]};
+      );
+      my @refs = @{$dataref->refs ||[]};
       my $ref = shift @refs;
       $ref ||= $self->fallback_reference();
       $ref=~s{(/fasta/).*$}{$1}smgx;
       $ref=~s{(/references)}{}smgx;
-      $ref=~s{^/nfs/sf(\d+)}{C:\\Illumina\\MiSeq Reporter\\Genomes\\WTSI_references}smgx;
+      my$repository= abs_path $dataref->repository();
+      $ref=~s{^$repository}{C:\\Illumina\\MiSeq Reporter\\Genomes\\WTSI_references}smgx;
       $ref=~s{/}{\\}smgx;
 
       my @row = ();
@@ -225,7 +228,7 @@ sub _build_study_names {
   my $studies = {};
   foreach my $l (@{$self->lims}) {
     foreach my $name ($l->study_names) {
-      $studies->{$name} = 1;
+      $studies->{_csv_compatible_value($name)} = 1;
     }
   }
   my @names = sort keys %{$studies};

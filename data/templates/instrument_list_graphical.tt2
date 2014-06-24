@@ -3,7 +3,7 @@
            index=0
 %]
 
-[%- reqd_order_of_inst_type = ['MiSeq','HiSeq','GA-II','cBot'] -%]
+[%- reqd_order_of_inst_type = ['MiSeq','HiSeqX','HiSeq','cBot'] -%]
 <ul class="instrument_by_type">
 [% FOREACH ins IN reqd_order_of_inst_type ; instruments = model.instruments.0.instrument_format.current_instruments_by_format.$ins -%]
 [% NEXT IF ! instruments.0 -%]
@@ -15,7 +15,7 @@
 	    [% status = instrument.current_run.current_run_status.run_status_dict.description;
                runs = [];
                IF status;
-                 IF instrument.is_hiseq_instrument;
+                 IF instrument.is_two_slot_instrument;
                    map = instrument.fc_slots2current_runs;
                    FOREACH slot IN map.keys.sort;
                      IF map.$slot.size;
@@ -49,7 +49,7 @@
       count = count + 1;
     END;
     coords = [0,0,110,80];
-    IF instrument.is_hiseq_instrument;
+    IF instrument.is_two_slot_instrument;
       shift = 55;
       coords.0 = coords.0 + shift;
       coords.2 = coords.2 + shift;
