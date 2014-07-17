@@ -165,6 +165,7 @@ my $builder = $class->new(
                 'JSON'                            => '2.12',
                 'lib'                             => '0.5565',
                 'Lingua::EN::Inflect'             => 0,
+                'Linux::Inotify2'                 => 0,
                 'List::MoreUtils'                 => '0.22',
                 'List::Util'                      => '1.21',
                 'Log::Log4perl'                   => 0,
