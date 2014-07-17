@@ -6,6 +6,7 @@ bin/seq_instr_checker
 bin/illumina_seq_fails2rt
 bin/InstrumentPoller
 bin/npg_daemon_control
+bin/npg_status_watcher
 bin/staging_area_monitor
 bin/update_sensors
 bin/utilisation_loader
@@ -346,6 +347,7 @@ lib/npg_tracking/illumina/run/folder/location.pm
 lib/npg_tracking/illumina/run/folder/validation.pm
 lib/npg_tracking/illumina/run/long_info.pm
 lib/npg_tracking/illumina/run/short_info.pm
+lib/npg_tracking/monitor/status.pm
 lib/npg_tracking/Schema.pm
 lib/npg_tracking/Schema/Result/Annotation.pm
 lib/npg_tracking/Schema/Result/CostCode.pm
@@ -532,6 +534,7 @@ t/34-monitor-srs-ftp.t
 t/34-monitor-srs-local.t
 t/34-monitor-srs.t
 t/34-monitor-staging.t
+t/36-npg_tracking-monitor-status.t
 t/40-st-base.t
 t/40-st-batch.t
 t/40-st-event.t
