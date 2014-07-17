@@ -16,11 +16,6 @@ has 'dir'        =>   (isa             => 'NpgTrackingDirectory',
                        required        => 1,
                       );
 
-has 'link'       =>   (isa             => 'Str',
-                       is              => 'ro',
-                       required        => 1,
-                      );
-
 has '_notifier'  =>   (isa             => 'Linux::Inotify2',
                        is              => 'ro',
                        required        => 0,
