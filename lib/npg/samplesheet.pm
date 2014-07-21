@@ -16,6 +16,7 @@ use npg_tracking::Schema;
 use st::api::lims;
 use st::api::lims::samplesheet;
 use npg_tracking::data::reference;
+use Cwd qw(abs_path);
 
 our $VERSION = '0';
 
@@ -177,16 +178,18 @@ sub _build__limsreflist {
   for my $l (@{$self->lims}) {
     for my $tmpl ( $l->is_pool ? $l->children : ($l) ) {
 
-      my @refs = @{npg_tracking::data::reference->new(
+      my $dataref = npg_tracking::data::reference->new(
               ($self->repository ? ('repository' => $self->repository) : ()),
               aligner => q(fasta),
               lims=>$tmpl, position=>$tmpl->position, id_run=>$self->run->id_run
-      )->refs ||[]};
+      );
+      my @refs = @{$dataref->refs ||[]};
       my $ref = shift @refs;
       $ref ||= $self->fallback_reference();
       $ref=~s{(/fasta/).*$}{$1}smgx;
       $ref=~s{(/references)}{}smgx;
-      $ref=~s{^/nfs/sf(\d+)}{C:\\Illumina\\MiSeq Reporter\\Genomes\\WTSI_references}smgx;
+      my$repository= abs_path $dataref->repository();
+      $ref=~s{^$repository}{C:\\Illumina\\MiSeq Reporter\\Genomes\\WTSI_references}smgx;
       $ref=~s{/}{\\}smgx;
 
       my @row = ();
@@ -197,12 +200,17 @@ sub _build__limsreflist {
       push @row, $tmpl->sample_publishable_name;
       push @row, $ref;
       if($self->_index_read) {
-        if ($tmpl->tag_sequence && length($tmpl->tag_sequence) == (2 * $self->dual_index_size())) {
-          push @row, substr $tmpl->tag_sequence, 0, $self->dual_index_size();
-          push @row, substr $tmpl->tag_sequence, $self->dual_index_size();
+        if ($self->dual_index_size) {
+          # always tructate first index to dual_index_size
+          my $ts = $tmpl->tag_sequence || q[];
+          push @row, substr $ts, 0, $self->dual_index_size();
+          # empty second index unless size is dual_index_size (typically to cope with phix spike)
+          push @row, ( length($ts) == (2 * $self->dual_index_size()) ?
+                        substr $ts, $self->dual_index_size() :
+                        q[]
+                     );
         } else {
           push @row, $tmpl->tag_sequence || q[];
-          if ($self->dual_index_size) { push @row, q[]; }
         }
       }
       if ($self->extend) {
