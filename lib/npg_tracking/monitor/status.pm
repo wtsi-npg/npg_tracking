@@ -11,17 +11,22 @@ use npg_tracking::util::types;
 
 our $VERSION = '0';
 
-has 'dir'        =>   (isa             => 'NpgTrackingDirectory',
+has 'transit' =>  (isa             => 'NpgTrackingDirectory',
+                   is              => 'ro',
+                   required        => 1,
+);
+
+has 'destination' =>  (isa             => 'Maybe[NpgTrackingDirectory]',
                        is              => 'ro',
-                       required        => 1,
-                      );
+                       required        => 0,
+);
 
 has '_notifier'  =>   (isa             => 'Linux::Inotify2',
                        is              => 'ro',
                        required        => 0,
                        init_arg        => undef,
                        lazy_build      => 1,
-                      );
+);
 sub _build__notifier {
   my $inotify = Linux::Inotify2->new()
     or croak "unable to create new inotify object: $ERRNO";
@@ -70,11 +75,10 @@ sub _runfolder_watch_cancel {
   return;
 }
 
-
 sub _watch_setup {
   my $self = shift;
 
-  my $watch = $self->_notifier->watch($self->dir, IN_ISDIR | IN_UNMOUNT | IN_IGNORED | IN_MOVED_TO | IN_DELETE, sub {
+  my $watch = $self->_notifier->watch($self->transit, IN_ISDIR | IN_UNMOUNT | IN_IGNORED | IN_MOVED_TO | IN_DELETE, sub {
       my $e = shift;
       my $name = $e->fullname;
       if ($e->IN_IGNORED) {
@@ -94,9 +98,9 @@ sub _watch_setup {
 
   if (!$watch) {
     my $err = $ERRNO;
-    $self->_error($self->dir, $err);
+    $self->_error($self->transit, $err);
   }
-  $self->_watch_obj->{$self->dir} = $watch;
+  $self->_watch_obj->{$self->transit} = $watch;
   return $watch;
 }
 
