@@ -21,14 +21,14 @@ with 'npg_tracking::illumina::run::folder::location';
 
 ##no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 
-Readonly::Scalar my $DATA_DIR       => q{Data};
-Readonly::Scalar my $QC_DIR         => q{qc};
-Readonly::Scalar my $BASECALL_DIR   => q{BaseCalls};
-Readonly::Scalar my $ARCHIVE_DIR    => q{archive};
-Readonly::Scalar my $SUMMARY_LINK   => q{Latest_Summary};
-Readonly::Array  my @RECALIBRATED_DIR_MATCH  => qw( PB_cal no_cal ) ;
-Readonly::Array  my @BUSTARD_DIR_MATCH       => ( q{Bustard}, $BASECALL_DIR,  q{_basecalls_} );
-Readonly::Array  my @INTENSITY_DIR_MATCH     => qw( Intensities );
+Readonly::Scalar my  $DATA_DIR       => q{Data};
+Readonly::Scalar my  $QC_DIR         => q{qc};
+Readonly::Scalar my  $BASECALL_DIR   => q{BaseCalls};
+Readonly::Scalar my  $ARCHIVE_DIR    => q{archive};
+Readonly::Scalar our $SUMMARY_LINK   => q{Latest_Summary};
+Readonly::Array  my  @RECALIBRATED_DIR_MATCH  => qw( PB_cal no_cal ) ;
+Readonly::Array  my  @BUSTARD_DIR_MATCH       => ( q{Bustard}, $BASECALL_DIR,  q{_basecalls_} );
+Readonly::Array  my  @INTENSITY_DIR_MATCH     => qw( Intensities );
 
 Readonly::Array our @ORDER_TO_ASSESS_SUBPATH_ASSIGNATION => qw(
       recalibrated_path basecall_path bustard_path intensity_path

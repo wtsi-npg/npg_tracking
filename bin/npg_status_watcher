@@ -9,23 +9,53 @@ use strict;
 use warnings;
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
-use File::Temp qw/ tempdir /;
+use Carp;
+use Try::Tiny;
+use Readonly;
+
 use npg_tracking::monitor::status;
 
 our $VERSION = '0';
 
-my $dir = tempdir(UNLINK => 1);
-warn "Directory $dir\n";
+Readonly::Scalar my $TOP_LEVEL => q[/export];
 
-my $monitor = npg_tracking::monitor::status->new(dir => $dir);
+if (!-d $TOP_LEVEL) {
+  croak "$TOP_LEVEL directory does not exist, exiting"; 
+}
+
+my $pattern = "${TOP_LEVEL}/sf*";
+my @dirs = glob $pattern;
+if (!@dirs) {
+  croak "Cannot find $pattern";
+}
+
+if (scalar @dirs > 1) {
+  croak "Too many directories with pattern $pattern";
+}
+
+my $dir = $dirs[0];
+my $transit     = "$dir/analysis";
+my $destination = "$dir/outgoing";
+warn "Discovered $dir, starting monitoring $transit and $destination\n";
+
+my $monitor = npg_tracking::monitor::status->new(
+                transit     => $transit,
+                destination => $destination
+                                                );
 $SIG{'INT'} = 'interrupt_handler';
-$monitor->watch(); #this method never returns
+try {
+  $monitor->watch(); # This method never returns.
+} catch {
+  carp "Error in status watch : $_\n\n Cancelling watch...";
+  $monitor->_all_watch_cancel;
+  exit 1;
+};
 
 exit 0;
 
 sub interrupt_handler {
   warn "Handling interrupt sygnal\n";
-  $monitor->DEMOLISH;
+  try { $monitor->_all_watch_cancel };
   exit 0;
 }
 
@@ -60,7 +90,9 @@ npg_status_watcher
 
 =item lib
 
-=item File::Temp
+=item Carp
+
+=item Try::Tiny
 
 =item npg_tracking::monitor::status
 
