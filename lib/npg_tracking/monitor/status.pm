@@ -14,7 +14,7 @@ use File::Spec::Functions;
 
 use npg_tracking::util::types;
 use npg_tracking::illumina::run::folder;
-use npg_pipeline::status;
+use npg_tracking::status;
 
 our $VERSION = '0';
 
@@ -182,7 +182,7 @@ sub _set_status {
 
   my $status;
   try {
-    $status = npg_pipeline::status->thaw(read_file($path));
+    $status = npg_tracking::status->thaw(read_file($path));
   } catch {
     _log("Error instantiating object from $path: $_");
     return 0;

@@ -7,6 +7,7 @@ bin/illumina_seq_fails2rt
 bin/InstrumentPoller
 bin/npg_daemon_control
 bin/npg_status_watcher
+bin/npg_status2file
 bin/staging_area_monitor
 bin/update_sensors
 bin/utilisation_loader
@@ -393,6 +394,7 @@ lib/npg_tracking/Schema/Result/TagRunLane.pm
 lib/npg_tracking/Schema/Result/User.pm
 lib/npg_tracking/Schema/Result/User2usergroup.pm
 lib/npg_tracking/Schema/Result/Usergroup.pm
+lib/npg_tracking/status.pm
 lib/npg_tracking/util/build.pm
 lib/npg_tracking/util/db_connect.pm
 lib/npg_tracking/util/messages.pm
@@ -459,6 +461,7 @@ t/10-model-usergroup.t
 t/10-model.t
 t/10-npg_testing-db.t
 t/10-npg_testing-html.t
+t/10-npg_tracking-status.t
 t/10-npg_tracking-util-db_connect.t
 t/10-npg_tracking-util-messages.t
 t/10-reference-find.t
@@ -562,6 +565,7 @@ t/60-util-image_map.t
 t/60-util-image_merge.t
 t/60-util-image_scale.t
 t/60-util-mailer.t
+t/70-bin-npg_status2file.t
 t/80-email-instrument_annotation.t
 t/80-email-instrument_status_change.t
 t/80-email-run.t
