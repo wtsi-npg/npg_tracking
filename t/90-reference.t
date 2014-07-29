@@ -11,7 +11,7 @@ use_ok('npg_tracking::data::bait');
 use npg_tracking::data::reference::list;
 
 my $REP_ROOT=$npg_tracking::data::reference::list::REP_ROOT;
-my $PHIX_ROOT=$REP_ROOT . q{references/PhiX/Sanger-SNPs/}; 
+my $PHIX_ROOT=$REP_ROOT . q{references/PhiX/Sanger-SNPs/all/bwa/}; 
 
 {
 SKIP: {
@@ -34,7 +34,7 @@ SKIP: {
 
   $r = npg_tracking::data::reference->new(id_run => 4415,position=>4);
   is(join(q[ ], @{$r->refs}), 
-     $PHIX_ROOT . q[all/bwa/phix_unsnipped_short_no_N.fa],
+     $PHIX_ROOT . q[phix_unsnipped_short_no_N.fa],
      'reference for run 4415 lane 4');
 
   $r = npg_tracking::data::reference->new(id_run => 4710,position=>3);
@@ -49,7 +49,7 @@ SKIP: {
   is (scalar @{$r->refs}, 0, 'no refs for run 5082 lane 6');
   $r = npg_tracking::data::reference->new(id_run => 5082,position=>4);
   is(join(q[ ], @{$r->refs}), 
-     $PHIX_ROOT . q[all/bwa/phix_unsnipped_short_no_N.fa],
+     $PHIX_ROOT . q[phix_unsnipped_short_no_N.fa],
      'reference for run 4415 lane 4');
 
  
@@ -68,12 +68,12 @@ SKIP: {
   $r = npg_tracking::data::reference->new(id_run => 5970,position=>1, tag_index=>168);
   throws_ok {$r->refs} qr/No plexes defined for lane 1 in batch 9659/, 'error if using tag_index 168 in the contex of not-pool library';
   $r = npg_tracking::data::reference->new(id_run => 5970,position=>1, for_spike => 1);
-  is ($r->refs->[0], $PHIX_ROOT . 'all/bwa/phix_unsnipped_short_no_N.fa', 'spiked phix ref');
+  is ($r->refs->[0], $PHIX_ROOT . 'phix_unsnipped_short_no_N.fa', 'spiked phix ref');
   $r = npg_tracking::data::reference->new(id_run => 5970,position=>6, tag_index=>168);
-  is ($r->refs->[0], $PHIX_ROOT . 'all/bwa/phix_unsnipped_short_no_N.fa', 'spiked phix ref');
+  is ($r->refs->[0], $PHIX_ROOT . 'phix_unsnipped_short_no_N.fa', 'spiked phix ref');
 
   $r = npg_tracking::data::reference->new(id_run => 5970,position=>4);
-  is ($r->refs->[0], $PHIX_ROOT . 'all/bwa/phix_unsnipped_short_no_N.fa', 'control phix ref');
+  is ($r->refs->[0], $PHIX_ROOT . 'phix_unsnipped_short_no_N.fa', 'control phix ref');
 
   $r = npg_tracking::data::reference->new(id_run => 6009,position=>1);
   is ($r->refs->[0], $REP_ROOT . 'references/Homo_sapiens/1000Genomes/all/bwa/human_g1k_v37.fasta', 'lane ref from the correct study');
