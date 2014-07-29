@@ -8,7 +8,7 @@ package npg_tracking::status;
 use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Storage;
-use POSIX qw{strftime};
+use DateTime;
 
 use npg_tracking::util::types;
 
@@ -39,7 +39,7 @@ has q{timestamp} => (
                    isa      => q{Str},
                    is       => 'ro',
                    required => 0,
-                   default  => sub { return strftime timestamp_format(), localtime time; },
+                   default  => sub { DateTime->now()->strftime(timestamp_format()) },
                    documentation => q{timestamp of the status change},
 );
 
