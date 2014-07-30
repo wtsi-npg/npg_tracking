@@ -20,7 +20,7 @@ use npg::api::request;
 our $VERSION = '0';
 
 Readonly::Scalar our $LIVE_BASE_URI => 'http://sfweb.internal.sanger.ac.uk:9000/perl/npg';
-Readonly::Scalar our $DEV_BASE_URI  => 'http://npg.dev.sanger.ac.uk/perl/npg';
+Readonly::Scalar our $DEV_BASE_URI  => 'http://sf2-farm-srv1.internal.sanger.ac.uk:9010/perl/npg';
 
 Readonly::Scalar our $MAX_RETRIES      => 3;
 Readonly::Scalar our $RETRY_DELAY      => 5;
