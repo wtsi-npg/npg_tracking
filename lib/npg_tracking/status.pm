@@ -9,6 +9,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Storage;
 use DateTime;
+use JSON::Any;
 
 use npg_tracking::util::types;
 

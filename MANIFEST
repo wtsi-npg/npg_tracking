@@ -647,6 +647,9 @@ t/data/gaii/ftp/Runs/100611_IL2_0022/Recipe_GA2-PEM_2x76Cycle_v7.7.xml
 t/data/gaii/ftp/Runs/100628_IL2_04929/Run.completed
 t/data/gaii/ftp/Runs/100914_HS3_05281_A_205MBABXX/Data/reports/StatusUpdate.xml
 t/data/gaii/ftp/Runs/100914_HS3_05281_A_205MBABXX/RunInfo.xml
+t/data/gaii/ftp/Runs/100914_HS3_05281_A_205MBABXX/Basecalling_Netcopy_complete_READ2.txt
+t/data/gaii/ftp/Runs/100914_HS3_05281_A_205MBABXX/ImageAnalysis_Netcopy_complete_READ2.txt
+t/data/gaii/staging/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/RTAComplete.txt
 t/data/gaii/staging/IL12/incoming/100721_IL12_05222/Config/TileLayout.xml
 t/data/gaii/staging/IL12/incoming/100721_IL12_05222/Events.log
 t/data/gaii/staging/IL12/incoming/100721_IL12_05222/Recipe_GA2-PEM_2x76Cycle_v7.7.xml
@@ -829,6 +832,7 @@ t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming/120110_M00119_0068_AMS0002022-
 t/data/long_info/npg/run/4655.xml
 t/data/long_info/Recipe_GA2-PEM_MP_2x76Cycle+8_v7.7.xml
 t/data/long_info/TileLayout.xml
+t/data/npg_api/ext/xml.xml
 t/data/npg_api/npg/instrument.xml
 t/data/npg_api/npg/instrument/1.xml
 t/data/npg_api/npg/instrument/12.xml
@@ -1054,8 +1058,20 @@ t/data/repos1/npg/run/7754.xml
 t/data/repos1/population_snv/Homo_sapiens/default/Standard/1000Genomes_hs37d5/Human_all_exon_50MB-1000Genomes_hs37d5.vcf.gz
 t/data/repos1/population_snv/Homo_sapiens/default/Human_all_exon_50MB/1000Genomes_hs37d5/Human_all_exon_50MB-1000Genomes_hs37d5.vcf.gz
 t/data/repos1/references/Homo_sapiens/1000Genomes_hs37d5/all/fasta/hs37d5.fa
+t/data/repos1/references/Homo_sapiens/1000Genomes/all/fasta/human_g1k_v37.fasta
+t/data/repos1/references/Homo_sapiens/CGP_GRCh37.NCBI.allchr_MT/all/fasta/Homo_sapiens.GRCh37.NCBI.allchr_MT.fa
+t/data/repos1/references/Homo_sapiens/GRCh37_53/all/fasta/Homo_sapiens.GRCh37.dna.all.fa
+t/data/repos1/references/Homo_sapiens/NCBI36/1000Genomes
 t/data/repos1/references/Homo_sapiens/NCBI36/all/bwa/ncbi36.fa.amb
 t/data/repos1/references/Homo_sapiens/NCBI36/all/fasta/ncbi36.fa
+t/data/repos1/references/Bordetella_pertussis/ST24/all/fasta/bpst24_May2010-1.fa
+t/data/repos1/references/Haemonchus_contortus/V1_21June13/all/fasta/haemonchus_V1.fa
+t/data/repos1/references/Mus_musculus/GRCm38/all/fasta/Mus_musculus.GRCm38.68.dna.toplevel.fa
+t/data/repos1/references/Mus_musculus/NCBIm37/all/fasta/mm_ref_NCBI37_1.fasta
+t/data/repos1/references/PhiX/Illumina/all/fasta/phix-illumina.fa
+t/data/repos1/references/Plasmodium_falciparum/3D7/all/fasta/MAL.version2.1.4.fasta
+t/data/repos1/references/Salmonella_pullorum/449_87/all/fasta/Salmonella_pullorum_449_87.fasta
+t/data/repos1/references/Strongyloides_ratti/20100601/all/fasta/S_ratti_010610.fa
 t/data/repos1/st/batches/16442.xml
 t/data/repos1/st/batches/16467.xml
 t/data/repos1/st/batches/25539.xml
@@ -1079,6 +1095,7 @@ t/data/samplesheet/8pools_extended.csv
 t/data/samplesheet/miseq_default.csv
 t/data/samplesheet/miseq_extended.csv
 t/data/samplesheet/multilane.csv
+t/data/samplesheet/st/batches/16538.xml
 t/data/samplesheet/st/batches/13994.xml
 t/data/samplesheet/st/batches/14505.xml
 t/data/samplesheet/st/batches/16537.xml

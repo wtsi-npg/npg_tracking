@@ -4,7 +4,7 @@ release 77.8
 
  - wrapper object for the status and a script to write status to a file
  - dual index refinements: ensure max length of "Index" used by MiSeq is the split
- - dual indexs' size, and use custom default_expected_tag in preference to Index{,2}
+ - dual indexes' size, and use custom default_expected_tag in preference to Index{,2}
    when using samplesheet as source of LIMS info
  - ensure samplesheet testing works without WTSI filesystem
  - instrument location tests skipped if host name is too long
