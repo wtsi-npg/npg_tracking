@@ -24,7 +24,7 @@ use_ok('st::api::event');
   is($ev->entity_name(), 'event', 'entity_name returns event');
   is($ev->live(), 'http://psd-support.internal.sanger.ac.uk:6600/events',
     'live url returned');
-  is($ev->dev(), 'http://psd-dev.internal.sanger.ac.uk:6800/events',
+  is($ev->dev(), 'http://dev.psd.sanger.ac.uk:6610/events',
     'dev url returned');
   is($ev->fields(), 'key', 'last of fields is key');
 
