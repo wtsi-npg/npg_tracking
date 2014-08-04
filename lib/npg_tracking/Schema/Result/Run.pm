@@ -355,6 +355,16 @@ Readonly::Hash my %STATUS_PROPAGATE_AUTO => (
   'manual qc complete' => 'archival pending',
 );
 
+=head2 tags
+
+Type: many_to_many
+
+Related object: L<npg_tracking::Schema::Result::Tag>
+
+=cut
+
+__PACKAGE__->many_to_many('tags' => 'tag_runs', 'tag');
+
 =head2 BUILD
 
 Post-constructor: try to ensure instrument format is set for run.
@@ -823,16 +833,78 @@ sub reverse_read {
     return $self->runs_read->find({read_order=>2+$self->is_tag_set(q(multiplex))});
 }
 
-
-=head2 tags
-
-Type: many_to_many
-
-Related object: L<npg_tracking::Schema::Result::Tag>
-
-=cut
-
-__PACKAGE__->many_to_many('tags' => 'tag_runs', 'tag');
-
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+Result class definition in DBIx binding for npg tracking database.
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 SUBROUTINES/METHODS
+
+=head1 DEPENDENCIES
+
+=over
+
+=item strict
+
+=item warnings
+
+=item Moose
+
+=item MooseX::NonMoose
+
+=item MooseX::MarkAsMethods
+
+=item DBIx::Class::Core
+
+=item DBIx::Class::InflateColumn::DateTime
+
+=item Carp
+
+=item Try::Tiny
+
+=item Readonly
+
+=item npg_tracking::Schema::Retriever
+
+=item npg_tracking::Schema::Time
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2014 Genome Research Limited
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+=cut
