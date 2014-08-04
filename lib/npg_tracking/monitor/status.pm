@@ -24,6 +24,7 @@ Readonly::Scalar my $STATUS_DIR_NAME  => q[status];
 
 my $LATEST_SUMMARY_LINK_NAME;
 {
+  ##no critic (TestingAndDebugging::ProhibitNoWarnings)
   no warnings qw(once);
   $LATEST_SUMMARY_LINK_NAME =
      $npg_tracking::illumina::run::folder::LATEST_SUMMARY;
@@ -74,7 +75,7 @@ sub _build__stock_runfolders {
 
   my @folders = ();
   foreach my $top (@top_level) {
-    opendir(my $dh, $top) || croak "Can't opendir $top: $!";
+    opendir(my $dh, $top) || croak "Can't opendir $top: $ERRNO";
     while(readdir $dh) {
       my $dir = "$top/$_";
       if ( -d $dir ) {
@@ -88,8 +89,9 @@ sub _build__stock_runfolders {
 
 sub _error {
   my ($self, $path, $error) = @_;
-  $self->_cancel_watch();
+  $self->cancel_watch();
   my $m;
+  ##no critic (ControlStructures::ProhibitCascadingIfElse)
   if      ($error == EBADF) {
     $m = q[The given file descriptor is not valid.];
   } elsif ($ERRNO == EINVAL) {
@@ -104,6 +106,7 @@ sub _error {
     $m = q[];
   }
   croak "Error when trying to set watch on $path: '$error' $m";
+  ##no critic (policy ControlStructures::ProhibitUnreachableCode)
   return;
 }
 
@@ -151,7 +154,7 @@ sub _runfolder_prop {
     _log("Failed to get $runfolder_prop_name from $runfolder_path: $_");
     return;
   };
-  
+
   if (!$prop) {
     _log("Failed to get $runfolder_prop_name from $runfolder_path");
     return;
@@ -192,7 +195,7 @@ sub _read_status {
     if ($id_run != $status->id_run) {
       my $message = sprintf 'id-run %i from runfolder %s does not match id_run %i from json file %s',
                       $id_run, $runfolder_path, $status->id_run, $path;
-      _log("$message; setting status from $path aborted");  
+      _log("$message; setting status from $path aborted");
       return;
     }
     return $status;
@@ -244,9 +247,9 @@ sub _update_status {
         next;
       }
       my $args = {};
-      $args->{'id_run'}       = $status_obj->id_run;
+      $args->{'id_run'}       = $status->id_run;
       $args->{'position'}     = $pos;
-      $args->{'description'}  = $status_obj->status;
+      $args->{'description'}  = $status->status;
       $args->{'time'}         = $date;
       try {
         $run_lanes{$pos}->update_run_lane_status($args);
@@ -295,7 +298,7 @@ sub _runfolder_watch_cancel {
 
 sub _run_status_watch_cancel {
   my ($self, $path) = @_;
- 
+
   foreach my $runfolder_name (keys %{$self->_watch_obj}) {
     my $test_watch = $self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY};
     if ($test_watch && $test_watch->name eq $path) {
@@ -412,7 +415,7 @@ sub _run_status_watch_setup {
   return;
 }
 
-sub _all_watch_cancel {
+sub cancel_watch {
   my $self = shift;
 
   #stop registering new runfolders events;
@@ -445,7 +448,10 @@ sub watch {
   $self->_stock_watch_setup;
 
   my $child = fork;
-  croak "fork failed: $ERRNO" unless defined $child;
+  if (!defined $child) {
+    croak "Fork failed: $ERRNO";
+  }
+
   if ($child) {
     while (1) {
       my $received = $self->_notifier->poll(); # This call blocks,
@@ -485,6 +491,10 @@ npg_tracking::monitor::status
  use cancel_watch method to cancel all current
  watches andrelease system resources associated
  with them.
+
+=head2 cancel_watch
+
+ Stops watch on all objects.
 
 =head1 DIAGNOSTICS
 

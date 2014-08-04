@@ -20,7 +20,7 @@ my $status = q{analysis in progress};
   is($rls->_timestamp_format, '%d/%m/%Y %H:%M:%S', 'timestamp format correct');
   like( $rls->timestamp, qr{\d\d\/\d\d\/\d\d\d\d\ \d\d:\d\d:\d\d}, 'timestamp generated');
   my $time_obj;
-  lives_ok { $time_obj = $rls->timestamp2obj } 'no error converting time from string to an object';
+  lives_ok { $time_obj = $rls->timestamp_obj } 'no error converting time from string to an object';
   isa_ok( $time_obj, q{DateTime});
 
   $rls = npg_tracking::status->new(
@@ -29,7 +29,7 @@ my $status = q{analysis in progress};
       status => $status,
       timestamp => q{2014/05/7 13:42:10}
   );
-  throws_ok { $rls->timestamp2obj } qr/Your datetime does not match your pattern/,
+  throws_ok { $rls->timestamp_obj } qr/Your datetime does not match your pattern/,
     'error converting wrongly formatted time string';
 }
 
@@ -47,7 +47,7 @@ my $status = q{analysis in progress};
   } q{object for eight lanes created ok};
 
   my $time_obj;
-  lives_ok { $time_obj = $rls->timestamp2obj } 'no error converting time from string to an object';
+  lives_ok { $time_obj = $rls->timestamp_obj } 'no error converting time from string to an object';
   isa_ok( $time_obj, q{DateTime});
 
   my $filename = q{analysis-in-progress_5_6_7.json};

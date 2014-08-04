@@ -47,7 +47,7 @@ try {
   $monitor->watch(); # This method never returns.
 } catch {
   carp "Error in status watch : $_\n\n Cancelling watch...";
-  $monitor->_all_watch_cancel;
+  $monitor->cancel_watch;
   exit 1;
 };
 

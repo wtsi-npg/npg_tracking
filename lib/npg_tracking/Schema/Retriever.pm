@@ -100,7 +100,7 @@ npg_tracking::Schema::Retriever
 
  Returns the id of the user whose username is returned by pipeline_user_name()
 
-=head get_status_dict_row
+=head2 get_status_dict_row
 
  Returns a database row corresponding to a status given as an argument.
  The resultset name to use shoudl be given as the first argument. Valid

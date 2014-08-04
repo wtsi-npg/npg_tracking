@@ -36,7 +36,7 @@ my $cb = sub {
   ok(exists $m->_watch_obj->{$dir}, 'watch object is cached');
   is(ref $m->_watch_obj->{$dir}, q[Linux::Inotify2::Watch], 'correct object type');
   is($m->_watch_obj->{$dir}->name, $dir, 'watch object name'); 
-  warning_like {$m->_all_watch_cancel} qr/canceling watch for $dir/, 'watch cancelled';
+  warning_like {$m->cancel_watch} qr/canceling watch for $dir/, 'watch cancelled';
   ok(!exists $m->_watch_obj->{$dir}, 'watch object is not cached');
 }
 
@@ -72,7 +72,7 @@ my $cb = sub {
   }
   wait;
 
-  warnings_like { $m->_all_watch_cancel }
+  warnings_like { $m->cancel_watch }
     [qr/canceling watch for $dir/],
     'watch cancell reported';
   is(scalar keys %{$m->_watch_obj}, 0, 'watch hash empty');
@@ -91,7 +91,7 @@ my $cb = sub {
      [qr/test callback: $new_dir deleted/],
      'deletion reported when polling after the event';
   is($count, 1, 'polled one event');
-  warnings_like { $m->_all_watch_cancel }
+  warnings_like { $m->cancel_watch }
     [qr/canceling watch for $dir/], 'watch cancell reported';
 
   my $new_dir1 = "$dir/test1";
@@ -110,7 +110,7 @@ my $cb = sub {
      ],
      'two deletions reported when polling after two events in the order the events happened';
   is($count, 2, 'polled two event');
-  warnings_like { $m->_all_watch_cancel }
+  warnings_like { $m->cancel_watch }
     [qr/canceling watch for $dir/], 'watch cancell reported'; 
 }
 

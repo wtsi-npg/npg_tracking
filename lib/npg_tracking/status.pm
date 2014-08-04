@@ -72,12 +72,13 @@ sub timestamp_obj {
 
 sub to_string {
   my $self = shift;
-  return sprintf('Object %s status:"%s", id_run:%i, lanes:"", date:"" ',
+  ##no critic (CodeLayout::ProhibitParensWithBuiltins)
+  return sprintf('Object %s status:"%s", id_run:"%i", lanes:"%s", date:"%s"',
               __PACKAGE__,
               $self->status,
               $self->id_run,
-              @{$self->lanes} ? join(q[ ], @{$self->lanes}) : 'none',
-              $self->has_timestamp ? $self->timestamp : 'none';
+              @{$self->lanes} ? join(q[ ], @{$self->lanes}) : q[none],
+              $self->has_timestamp ? $self->timestamp : q[none]
          );
 }
 
@@ -108,17 +109,34 @@ Kate Taylor
 
 =head1 SUBROUTINES/METHODS
 
-=head2 id_run - run identifier
+=head2 id_run
 
-=head2 lanes - an optional array of lane numbers
+ Run identifier, required attribute.
 
-=head2 status - status to save
+=head2 lanes
 
-=head2 filename - suggested filename for serializing this object
+ An optional array of lane numbers attribute
 
-=head2 timestamp - timestamp
+=head2 status
 
-=head2 timestamp_format - format string for timestamp
+ String representing the status to save, a required attribute.
+
+=head2 filename
+
+ Suggested filename for serializing this object
+
+=head2 timestamp
+
+ String timestamp representation, an optional attribute.
+
+=head2 timestamp_obj
+
+ DateTime object timestamp representation
+
+=head2 to_string
+
+ String representation of teh object that does not trigger
+ Moose lazy builders.
 
 =head1 DIAGNOSTICS
 
