@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 38;
+use Test::More tests => 35;
 use Test::Deep;
 use Test::Exception::LessClever;
 use DateTime;
@@ -40,32 +40,16 @@ is( $row->position(), 7, q{position is correct} );
 
 my $row2;
 throws_ok {
-  $row2 = $row->update_run_lane_status( {} );
-} qr{No[ ]description[ ]provided}, q{update a run_lane status - fail no description};
-throws_ok {
   $row2 = $row->update_run_lane_status( {
     description => q{analysis complete},
   } );
-} qr{No[ ]lane[ ]information[ ]provided}, q{update a run_lane status - fail no run lane info};
-throws_ok {
-  $row2 = $row->update_run_lane_status( {
-    description => q{analysis complete},
-    id_run_lane => 1,
-  } );
-} qr{no[ ]user[ ]provided}, q{update a run_lane status - fail no user - has id_run_lane};
+} qr{Lane not found}, q{update a run_lane status - fail no run lane info};
 throws_ok {
   $row2 = $row->update_run_lane_status( {
     description => q{analysis complete},
     id_run => 1,
   } );
-} qr{No[ ]lane[ ]information[ ]provided}, q{update a run_lane status - fail no run lane info - has id_run};
-throws_ok {
-  $row2 = $row->update_run_lane_status( {
-    description => q{analysis complete},
-    id_run => 1,
-    position => 7,
-  } );
-} qr{no[ ]user[ ]provided}, q{update a run_lane status - fail no user - has id_run and position};
+} qr{Lane not found}, q{update a run_lane status - fail no run lane info - has id_run};
 
 lives_ok {
   $row2 = $row->update_run_lane_status( {
@@ -96,7 +80,8 @@ lives_ok {
   })->first();
 } q{obtain updated result set ok};
 is( $retrieved_row->iscurrent(), 0, q{updated row noncurrent} );
-isnt( $schema->resultset( q{Run} )->find(1)->current_run_status_description(), q{qc review pending}, q{run has not had it's status updated to 'qc review pending'} );
+isnt( $schema->resultset( q{Run} )->find(1)->current_run_status_description(),
+  q{qc review pending}, q{run has not had its status updated to 'qc review pending'} );
 lives_ok {
   $row2 = $row->update_run_lane_status( {
     description => q{analysis complete},
@@ -105,7 +90,8 @@ lives_ok {
     username => q{joe_annotator},
   } );
 } q{update a run_lane status - success};
-is( $schema->resultset( q{Run} )->find(1)->current_run_status_description(), q{qc review pending}, q{run has had it's status updated to 'qc review pending'} );
+is( $schema->resultset( q{Run} )->find(1)->current_run_status_description(),
+  q{qc review pending}, q{run has had its status updated to 'qc review pending'} );
 
 lives_ok {
   $row2 = $row->update_run_lane_status( {
@@ -117,7 +103,8 @@ lives_ok {
 } q{update a run_lane status as analysis in progress - success};
 cmp_ok( $schema->resultset( q{RunLane} )->find({id_run => 1, position => 7})->related_resultset(q(run_lane_statuses))->count, q(==), 3, 'check run lane 7 statuses');
 cmp_ok( $schema->resultset( q{RunLane} )->find({id_run => 1, position => 7})->related_resultset(q(run_lane_statuses))->search({iscurrent => 1})->count, q(==), 1, 'check run lane 7 current statuses');
-is( $schema->resultset( q{Run} )->find(1)->current_run_status_description(), q{qc review pending}, q{run has not had it's status updated} );
+is( $schema->resultset( q{Run} )->find(1)->current_run_status_description(),
+  q{qc review pending}, q{run has not had its status updated} );
 
 lives_ok {
   $row2 = $row->update_run_lane_status( {
@@ -127,7 +114,7 @@ lives_ok {
     username => q{joe_annotator},
   } );
 } q{update a run_lane status as manual qc complete - success};
-isnt( $schema->resultset( q{Run} )->find(1)->current_run_status_description(), q{archival pending}, q{run has not had it's status updated to 'archival pending'} );
+isnt( $schema->resultset( q{Run} )->find(1)->current_run_status_description(), q{archival pending}, q{run has not had its status updated to 'archival pending'} );
 lives_ok {
   $row2 = $row->update_run_lane_status( {
     description => q{manual qc complete},
@@ -138,5 +125,6 @@ lives_ok {
 } q{update a run_lane status as manual qc complete - success};
 cmp_ok( $schema->resultset( q{RunLane} )->find({id_run => 1, position => 7})->related_resultset(q(run_lane_statuses))->count, q(==), 4, 'check run lane 7 statuses');
 cmp_ok( $schema->resultset( q{RunLane} )->find({id_run => 1, position => 7})->related_resultset(q(run_lane_statuses))->search({iscurrent => 1})->count, q(==), 1, 'check run lane 7 current statuses');
-is( $schema->resultset( q{Run} )->find(1)->current_run_status_description(), q{archival pending}, q{run has had it's status updated to 'archival pending'} );
+is( $schema->resultset( q{Run} )->find(1)->current_run_status_description(),
+  q{archival pending}, q{run has had its status updated to 'archival pending'} );
 1;

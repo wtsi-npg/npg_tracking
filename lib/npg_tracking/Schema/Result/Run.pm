@@ -338,8 +338,22 @@ __PACKAGE__->has_many(
 our $VERSION = '0';
 
 use Carp;
-use DateTime;
-use DateTime::TimeZone;
+use Try::Tiny;
+use Readonly;
+
+with qw/
+         npg_tracking::Schema::Retriever
+         npg_tracking::Schema::Time
+       /;
+
+Readonly::Hash my %STATUS_CHANGE_AUTO    => (
+  'analysis complete'  => 'qc review pending',
+);
+
+Readonly::Hash my %STATUS_PROPAGATE_AUTO => (
+  'analysis complete'  => 'analysis complete',
+  'manual qc complete' => 'archival pending',
+);
 
 =head2 BUILD
 
@@ -350,7 +364,7 @@ Post-constructor: try to ensure instrument format is set for run.
 sub BUILD {
     my $self = shift;
     if ($self->id_instrument and not $self->id_instrument_format){
-      $self->id_instrument_format($self->instrument->id_instrument_format);
+        $self->id_instrument_format($self->instrument->id_instrument_format);
     }
 }
 
@@ -366,20 +380,6 @@ sub _event_type_rs {
 
     return $self->result_source->schema->resultset('EventType')->new( {} );
 }
-
-
-=head2 _rsd_rs
-
-Create a dbic RunStatusDict result set as shorthand and to access the row
-validation methods in that class.
-
-=cut
-
-sub _rsd_rs { my ($self) = @_;
-
-  return $self->result_source->schema->resultset('RunStatusDict')->new( {} );
-}
-
 
 =head2 _tag_rs
 
@@ -405,7 +405,7 @@ methods in that class.
 sub _user_rs {
     my ($self) = @_;
 
-     return $self->result_source->schema->resultset('User')->new( {} );
+    return $self->result_source->schema->resultset('User')->new( {} );
 }
 
 
@@ -443,64 +443,126 @@ sub current_run_status {
 
 =head2 update_run_status
 
-Changes the status of a run. Creates a new current run status for this
-run, all the previous statuses are marked as not current.
+Creates a new run status for this run and, if appropriate, marks this status
+as current and all the previous statuses as not current.
 
-Also a new event row is created.
+For a new current status a new event row is created and, if appropriate,
+instrument status changed. In some cases, the run status is automatically
+advanced one step further.
 
-Two arguments are required a run status and a user in that order. In both
-cases the primary key can be supplied, or the (case-insensitive) description
+The (case-insensitive) description of the status is required
 or username fields respectively.
 
-    $run_result_object->update_run_status( 4, 'jo3' );
-    $run_result_object->update_run_status( 'ArcHIVal pEnding, 5 );
+    $run_row->update_run_status('some status');
+
+An optional username can be supplied. If omitted, the pipeline user is
+assumed
+
+    $run_row->update_run_status( 'ArcHIVal pEnding', 'sloppy' );
+
+An optional third argument, a DateTime object, can be supplied. If omitted,
+current local time is used.
 
 =cut
 
 sub update_run_status {
-    my ( $self, $status_identifier, $user_identifier ) = @_;
+    my ( $self, $description, $user_identifier, $date ) = @_;
 
-    my $rsd_row = $self->_rsd_rs->_insist_on_valid_row($status_identifier);
+    my $use_pipeline_user = 1;
+    my $user_id = $self->get_user_id($user_identifier, $use_pipeline_user);
+    my $rsd_row = $self->get_status_dict_row('RunStatusDict', $description);
     my $rsd_id =  $rsd_row->id_run_status_dict();
+    my $schema = $self->result_source->schema;
 
-    my $user_id =
-        $self->_user_rs->_insist_on_valid_row($user_identifier)->id_user();
+    my $transaction = sub {
 
-    # Do nothing if the run_status is already set and current.
-     my $current_run_status =
-         $self->result_source->schema->resultset('RunStatus')->search(
+        # Do nothing if the run_status is already set and current.
+        my $current_status_rs = $schema->resultset('RunStatus')->search(
              {
                  id_run             => $self->id_run(),
-                 id_run_status_dict => $rsd_id,
                  iscurrent          => 1,
              },
-     );
-
-     if ($current_run_status->count() != 1) {
-        # Make sure only one status is current.
-        my $old_status_rs = $self->result_source->schema->resultset('RunStatus')->
-            search( { id_run     => $self->id_run(),
-                  iscurrent  => 1, 
-                });
-        $old_status_rs->update( { iscurrent => 0 } );
-
-        my $new_run_status =
-            $self->result_source->schema->resultset('RunStatus')->create(
-            {
-                id_run             => $self->id_run(),
-                date               => DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local])),
-                id_run_status_dict => $rsd_id,
-                id_user            => $user_id,
-                iscurrent          => 1,
-            },
+             {order_by  =>  { -desc => 'date'},},
         );
-        $new_run_status->update();
+        my $current_status_row = $current_status_rs->next;
 
-        $self->run_status_event( $user_id, $new_run_status->id_run_status() );
+        if ($current_status_row && $current_status_row->description eq $description) {
+            return;
+        }
+
+        # If current status is later that the new one, do not make the new one current
+        my $make_new_current = 1;
+        $date ||= $self->get_time_now();
+        if ($current_status_row &&
+            $self->get_difference_seconds($current_status_row->date, $date) > 0 ) {
+            $make_new_current = 0;
+        }
+      
+        if ($make_new_current) {
+            $current_status_rs->update_all( {iscurrent => 0} );
+        }
+
+        my $new_run_status = $self->related_resultset( q{run_statuses} )->create( {
+                id_run_status_dict => $rsd_id,
+                date               => $date,
+                iscurrent          => $make_new_current,
+                id_user            => $user_id,
+        } );
+        
+        if ( $make_new_current ) {
+            $self->run_status_event( $user_id, $new_run_status->id_run_status() );
+            $self->instrument->autochange_status_if_needed($description, $user_identifier);
+        }
+        return $make_new_current;
+    };
+
+    try {
+        my $make_new_current = $schema->txn_do( $transaction );
+        if ($make_new_current) {
+            my $auto = $STATUS_CHANGE_AUTO{$description};
+            if ($auto) {
+                $self->update_run_status($auto);
+            }
+        } 
+    } catch {
+        my $err = $_;
+        if ($err =~ /Rollback failed/sxm) {
+            croak $err;
+        }
+        carp 'Status update transaction failed; changes rolled back';
+        return;
+    };
+    return;
+}
+
+=head2 propagate_status_from_lanes
+
+Checks whether the surrent status of the lanes should trigger the run
+status update, performs teh update if appropriate.
+
+This method should be called within a transaction.  
+
+=cut
+
+sub propagate_status_from_lanes {
+    my $self = shift;
+
+    my %statuses = ();
+    foreach my $run_lane ($self->run_lanes()->all()) {
+      my $current = $run_lane->current_run_lane_status;
+      if (!$current) {
+        return; # One of lanes does not have current status
+      }
+      $statuses{$current->description} = 1;
+    }
+    if (scalar(keys %statuses) == 1) {
+        my ($description, $value)  = each %statuses;
+        my $auto = $STATUS_PROPAGATE_AUTO{$description};
+        if ( $auto ) {
+            $self->update_run_status($auto);
+        }
     }
 
-    $self->instrument->autochange_status_if_needed(
-      $rsd_row->description, $user_identifier);
     return;
 }
 
@@ -526,7 +588,7 @@ sub run_status_event {
 
     croak 'No matching event type found' if !defined $id_event_type;
 
-    ( defined $when ) || ( $when =  DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local])));
+    ( defined $when ) || ( $when = $self->get_time_now());
 
 
     my $insert = $self->result_source->schema->resultset('Event')->create(
@@ -623,7 +685,7 @@ sub _set_mutually_exclusive_tags {
             id_run  => $self->id_run(),
             id_tag  => $is_tag_id,
             id_user => $user_id,
-            date    => DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local])),
+            date    => $self->get_time_now(),
         }
     );
 
@@ -665,7 +727,7 @@ sub set_tag {
         {
             id_run  => $self->id_run(),
             id_tag  => $tag_id,
-            date    => DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local])),
+            date    => $self->get_time_now(),
             id_user => $user_id,
         },
         { key => 'u_idrun_idtag' }

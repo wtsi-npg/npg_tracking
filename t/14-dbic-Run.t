@@ -1,14 +1,10 @@
 use strict;
 use warnings;
-
-use POSIX qw(strftime);
-use English qw(-no_match_vars);
-
-use Test::More tests => 88;
+use Test::More tests => 87;
 use Test::Deep;
 use Test::Exception::LessClever;
-use Test::MockModule;
 use Test::Warn;
+use POSIX qw(strftime);
 
 use t::dbic_util;
 
@@ -17,13 +13,6 @@ use_ok('npg_tracking::Schema::Result::Run');
 
 my $schema = t::dbic_util->new->test_schema();
 my $test;
-
-
-#
-# Basic set up.
-#
-
-
 my $test_run_id = 1;
 
 lives_ok {
@@ -37,15 +26,11 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
 
 {
     my $event_type_rs = $test->_event_type_rs();
-    my $rsd_rs        = $test->_rsd_rs();
     my $tag_rs        = $test->_tag_rs();
     my $user_rs       = $test->_user_rs();
 
     isa_ok( $event_type_rs, 'npg_tracking::Schema::Result::EventType',
             'Event type result set' );
-
-    isa_ok( $rsd_rs, 'npg_tracking::Schema::Result::RunStatusDict',
-            'Run status dict result set' );
 
     isa_ok( $tag_rs, 'npg_tracking::Schema::Result::Tag',
             'Tag result set' );
@@ -261,7 +246,7 @@ my $test_date = $paired_tag_rs->first->date();
                 $one_of_two_active->update_run_status( 'run cancelled',
                                                        'pipeline' )
              }
-             '  Run cancelled on a HiSeq with another active run';
+             ' Run cancelled on a HiSeq with another active run';
 
     is( $one_of_two_active->instrument->current_instrument_status(),
         'planned repair', '  Instrument status is not changed' );

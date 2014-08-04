@@ -9,6 +9,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Storage;
 use DateTime;
+use DateTime::Format::Strptime;
 
 use npg_tracking::util::types;
 
@@ -39,7 +40,7 @@ has q{timestamp} => (
                    isa      => q{Str},
                    is       => 'ro',
                    required => 0,
-                   default  => sub { DateTime->now()->strftime(timestamp_format()) },
+                   default  => sub { DateTime->now()->strftime(_timestamp_format()) },
                    documentation => q{timestamp of the status change},
 );
 
@@ -56,8 +57,27 @@ sub filename {
   return $filename;
 }
 
-sub timestamp_format {
-  return '%Y/%m/%d %H:%M:%S';
+sub _timestamp_format {
+  return '%d/%m/%Y %H:%M:%S';
+}
+
+sub timestamp_obj {
+  my $self = shift;
+  return DateTime::Format::Strptime->new(
+    pattern => _timestamp_format(),
+    on_error => 'croak',
+  )->parse_datetime($self->timestamp);
+}
+
+sub to_string {
+  my $self = shift;
+  return sprintf('Object %s status:"%s", id_run:%i, lanes:"", date:"" ',
+              __PACKAGE__,
+              $self->status,
+              $self->id_run,
+              @{$self->lanes} ? join(q[ ], @{$self->lanes}) : 'none',
+              $self->has_timestamp ? $self->timestamp : 'none';
+         );
 }
 
 no Moose;

@@ -185,10 +185,6 @@ __PACKAGE__->belongs_to(
 
 our $VERSION = '0';
 
-use Carp;
-use DateTime;
-use DateTime::TimeZone;
-
 =head2 description
 
 Helper method returns the description for this run status
@@ -198,113 +194,6 @@ Helper method returns the description for this run status
 sub description {
   my ( $self ) = @_;
   return $self->run_status_dict->description();
-}
-
-=head2 update_run_status
-
-Takes a hashref of arguments, and updates the current run status to requested status.
-Returns the current run status dbix object
-
-  my $oCRS = $onpg_tracking::Schema::Result::RunStatus->update_run_status({
-    description => $sRunStatusDescription,
-    id_user => $iIdUser,
-    id_run  => $iIdRun,
-  });
-
-If you have a run status with the correct id_run and/or id_user that you want to save, then these can be left out respectively
-
-=cut
-
-sub update_run_status {
-  my ( $self, $args ) = @_;
-
-  my $description = $args->{description};
-  croak q{No description provided} if ! defined $description;
-  my $id_user     = $args->{id_user} || $self->id_user();
-  my $username    = $args->{username};
-  my $id_run      = $args->{id_run}  || $self->id_run();
-  my $schema      = $self->result_source->schema();
-
-  my $run = $self->id_run && $self->id_run() == $id_run ? $self->run()
-          :                                               $schema->resultset( q{Run} )->search({id_run => $id_run})->first()
-          ;
-
-  # username overrides id_user
-  if ( $username ) {
-    $id_user = $schema->resultset( q{User} )->search({
-      username => $username,
-    })->first->id_user();
-  }
-
-  # do not update the run status if the current run status is already at this description
-  if ( $run->current_run_status_description() eq $description ) {
-    my $crs;
-    foreach my $rs ( $run->run_statuses() ) {
-      if ( $rs->iscurrent() ) {
-        $crs = $rs;
-        last;
-      }
-    }
-    return $crs;
-  }
-
-  my $update_transaction = sub {
-    foreach my $rs ( $run->run_statuses() ) {
-      $rs->iscurrent( 0 );
-      $rs->update();
-    }
-    my $desc_row = $schema->resultset( q{RunStatusDict} )->search({
-      description => $description,
-    })->first();
-
-    my $new_row = $schema->resultset( q{RunStatus} )->create( {
-      id_run => $id_run,
-      id_run_status_dict => $desc_row->id_run_status_dict(),
-      iscurrent => 1,
-      id_user => $id_user,
-      date => DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local])),
-    } );
-    $new_row->_event_update();
-
-    return $new_row;
-    
-  };
-
-  my $new_status = $schema->txn_do( $update_transaction );
-
-  return $new_status;
-}
-
-sub _event_update {
-  my ( $self ) = @_;
-
-  my $schema = $self->result_source->schema();
-  my $id_event_type = $schema->resultset( q{EventType} )->search(
-    {
-      'me.description' => q{status change},
-      'entity_type.description' => q{run_status},
-    },
-    {
-      'join' => q{entity_type},
-    },
-  )->first->id_event_type();
-
-  my $run_name = $self->run->instrument->name() . q{_} . $self->id_run();
-
-  my $description = $self->description() . q{ for run } . $run_name . qq{\nhttp://npg.sanger.ac.uk/perl/npg/run/$run_name\nStatus History:\n};
-  foreach my $rs ( reverse $self->run->run_statuses() ) {
-    $description .= q{ [} . $rs->date->ymd() . q{ } . $rs->date->hms() . q{] } . $rs->description() . qq{\n};
-  }
-
-  my $event = $schema->resultset( q{Event} )->create({
-    id_event_type => $id_event_type,
-    description => $description,
-    entity_id => $self->id_run_status(),
-    id_user => $self->id_user(),
-    date => DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local])),
-  });
-
-  return $event;
 }
 
 __PACKAGE__->meta->make_immutable;

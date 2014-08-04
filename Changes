@@ -1,7 +1,11 @@
 CHANGES
 
-release 77.8
+release 77.9
+ - DBIx run and run-lane status update refactoring to accommodate passing
+     status date and make setting these two status types symmetrical
+ - initial code for monitoring status files
 
+release 77.8
  - wrapper object for the status and a script to write status to a file
  - dual index refinements: ensure max length of "Index" used by MiSeq is the split
  - dual indexs' size, and use custom default_expected_tag in preference to Index{,2}

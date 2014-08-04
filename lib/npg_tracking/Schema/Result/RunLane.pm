@@ -221,6 +221,12 @@ __PACKAGE__->has_many(
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
 
+use Carp;
+with qw/
+        npg_tracking::Schema::Retriever
+        npg_tracking::Schema::Time
+       /;
+
 our $VERSION = '0';
 
 =head2 current_run_lane_status
@@ -232,6 +238,67 @@ Returns the current_run_lane_status dbix object
 sub current_run_lane_status {
   my ( $self ) = @_;
   return $self->run_lane_statuses()->search({iscurrent => 1})->first(); #not nice - would like this defined by a relationship
+}
+=head2 update_status
+
+Logs the status and, if appropriate, marks this status current for the lane.
+Status description must be provided.
+
+  $obj->update_status($description, $username, $date);
+
+For some statuses, can trigger an update of run status.
+
+=cut
+
+sub update_status {
+  my ( $self, $description, $username, $date ) = @_;
+
+  $date ||=  $self->get_time_now();
+  if ( ref $date ne 'DateTime' ) {
+    croak '"time" argument should be a DateTime object';
+  }
+
+  my $use_pipeline_user = 1;
+  my $id_user  = $self->get_user_id($username, $use_pipeline_user);
+  my $desc_row = $self->get_status_dict_row('RunLaneStatusDict', $description);
+
+  my $update_transaction = sub {
+
+    my $lane_statuses =  $self->related_resultset( q{run_lane_statuses} );
+
+    my $make_new_current = 1;
+    my $current = $lane_statuses->search(
+           {iscurrent => 1},
+           {order_by  =>  { -desc => 'date'},},)->next; # get latest
+    if ( $current ) {
+      if ( $current->run_lane_status_dict->description eq $description) {
+        return; # This status is already current
+      }
+      # If current status is later that the new one, do not make the new one current
+      if ( $self->get_difference_seconds($current->date,$date) > 0 ) {
+        $make_new_current = 0;
+      }
+    }
+
+    if ( $current && $make_new_current ) {
+      $lane_statuses->update_all( {iscurrent => 0} );
+    }
+
+    my $new_row = $self->related_resultset( q{run_lane_statuses} )->create( {
+          run_lane_status_dict => $desc_row,
+          date                 => $date,
+          iscurrent            => $make_new_current,
+          id_user              => $id_user,
+    } );
+
+    if ($make_new_current) {
+      $self->run->propagate_status_from_lanes();
+    }
+
+    return $new_row;
+  };
+  
+  return $self->result_source->schema->txn_do( $update_transaction );
 }
 
 __PACKAGE__->meta->make_immutable;

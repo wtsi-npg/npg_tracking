@@ -168,7 +168,7 @@ sub _runfolder_prop {
   return;
 }
 
-sub _set_status {
+sub _read_status {
   my ($self, $path, $runfolder_path) = @_;
 
   if (!$path) {
@@ -177,7 +177,7 @@ sub _set_status {
   my $id_run = _runfolder_prop($runfolder_path, 'id_run');
   if (!$id_run) {
     _log("Failed to get id_run from $runfolder_path: $_; seting status from $path aborted");
-    return 0;
+    return;
   }
 
   my $status;
@@ -185,7 +185,7 @@ sub _set_status {
     $status = npg_tracking::status->thaw(read_file($path));
   } catch {
     _log("Error instantiating object from $path: $_");
-    return 0;
+    return;
   };
 
   if ($status) {
@@ -193,14 +193,70 @@ sub _set_status {
       my $message = sprintf 'id-run %i from runfolder %s does not match id_run %i from json file %s',
                       $id_run, $runfolder_path, $status->id_run, $path;
       _log("$message; setting status from $path aborted");  
-      return 0;
+      return;
     }
-    # actually set status  #TODO
-    return 1;
+    return $status;
   } else {
     _log("Instantiating object from $path failed; undefined object returned");
   }
-  return 0;
+  return;
+}
+
+sub _update_status {
+  my ($self, $status) = @_;
+  if (!$status) {
+    return;
+  }
+
+  _log("\nAttempting to save " . $status->to_string . "\n");
+
+  my $run_row = $self->schema->resultset('Run')->find($status->id_run);
+  if ($run_row) {
+    _log(sprintf
+      'Run id %i does not exist, cannot save status "%s", cannot do the update',
+      $status->id_run, $status->status
+    );
+    return;
+  }
+
+  my $date;
+  try {
+    $date = $status->timestamp_obj;
+  } catch {
+    _log('Error parsing date string: ' .$_ . ', cannot do the update');
+    return;
+  };
+
+  if ( !@{$status->lanes} ) {
+    try {
+      my $user = undef;
+      $run_row->update_run_status($status->status, $user, $date);
+    } catch {
+     _log("Error saving run status: $_");
+    };
+  } else {
+
+    my %run_lanes = map { $_->position => $_} $run_row->run_lanes->all();
+    foreach my $pos (sort { $a <=> $b} @{$status->lanes}) {
+      if (!exists $run_lanes{$pos}) {
+        _log(sprintf 'Lane %i does not exists in run %i, cannot do the update for this lane',
+          $pos, $status->id_run);
+        next;
+      }
+      my $args = {};
+      $args->{'id_run'}       = $status_obj->id_run;
+      $args->{'position'}     = $pos;
+      $args->{'description'}  = $status_obj->status;
+      $args->{'time'}         = $date;
+      try {
+        $run_lanes{$pos}->update_run_lane_status($args);
+      } catch {
+       _log("Error saving run_lane status for lane $pos: $_");
+      };
+    }
+  }
+
+  return;
 }
 
 sub _stock_status_check {
@@ -213,7 +269,7 @@ sub _stock_status_check {
       _log("Checking status files in $status_path");
       my @files = glob qq("${status_path}/*.json");
       foreach my $file (@files) {
-        $self->_set_status($file, $runfolder_path);
+        $self->_update_status($self->_read_status($file, $runfolder_path));
       }
     }
   }
@@ -343,7 +399,7 @@ sub _run_status_watch_setup {
       if ($e->IN_IGNORED) {
         $self->_run_status_watch_cancel($name);
       } elsif ($e->IN_CLOSE_WRITE) {
-        $self->_set_status($name, $runfolder_path);
+        $self->_update_status($self->_read_status($name, $runfolder_path));
       }
   });
 

@@ -394,6 +394,8 @@ lib/npg_tracking/Schema/Result/TagRunLane.pm
 lib/npg_tracking/Schema/Result/User.pm
 lib/npg_tracking/Schema/Result/User2usergroup.pm
 lib/npg_tracking/Schema/Result/Usergroup.pm
+lib/npg_tracking/Schema/Retriever.pm
+lib/npg_tracking/Schema/Time.pm
 lib/npg_tracking/status.pm
 lib/npg_tracking/util/build.pm
 lib/npg_tracking/util/db_connect.pm
