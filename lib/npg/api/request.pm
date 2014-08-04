@@ -208,10 +208,13 @@ sub make {
 sub _create_path {
   my ( $self, $url ) = @_;
 
-  my ($stpath)  = $url =~ m{\Ahttps?://psd\-[^/]+(.*?)\z}xms; # sequencescape path
+  my ($stpath)  = $url =~ m{\Ahttps?://(?:dev\.)?
+                            psd.*
+                            \.sanger\.ac\.uk?(?::\d+)
+                            (.*?)\z}xms; # sequencescape path
   ##no critic(ProhibitComplexRegexes)
   my ($npgpath) = $url =~ m{\Ahttps?://
-                            (?:npg|sfweb)
+                            (?:npg|sfweb|sf2-farm-srv1)
                             (?:\.(?:dev|internal))?
                              \.sanger\.ac\.uk?(?::\d+)?
                              \/perl\/npg\/

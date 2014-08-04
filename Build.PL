@@ -166,6 +166,7 @@ my $builder = $class->new(
                 'IO::Scalar'                      => '2.110',
                 'IPC::System::Simple'             => 0,
                 'JSON'                            => '2.12',
+                'JSON::Any'                       => '0',
                 'lib'                             => '0.5565',
                 'Lingua::EN::Inflect'             => 0,
                 'Linux::Inotify2'                 => 0,

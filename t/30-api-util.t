@@ -24,19 +24,22 @@ use_ok('npg::api::util');
 
 {
    my $util = npg::api::util->new();
-   is ($util->base_uri(), 'http://sfweb.internal.sanger.ac.uk:9000/perl/npg' , 'live url if the dev env variable not set');
+   is ($util->base_uri(), 'http://sfweb.internal.sanger.ac.uk:9000/perl/npg',
+     'live url if the dev env variable not set');
 }
 
 {
    local $ENV{dev} = q[dev];
    my $util = npg::api::util->new();
-   is ($util->base_uri(), 'http://npg.dev.sanger.ac.uk/perl/npg' , 'dev url if the dev env variable is set to dev');
+   is ($util->base_uri(), 'http://sf2-farm-srv1.internal.sanger.ac.uk:9010/perl/npg',
+     'dev url if the dev env variable is set to dev');
 }
 
 {
    local $ENV{dev} = q[test];
    my $util = npg::api::util->new();
-   is ($util->base_uri(), 'http://sfweb.internal.sanger.ac.uk:9000/perl/npg' , 'live url if the dev env. variable is set to test');
+   is ($util->base_uri(), 'http://sfweb.internal.sanger.ac.uk:9000/perl/npg',
+     'live url if the dev env. variable is set to test');
 }
 
 1;

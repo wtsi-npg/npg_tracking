@@ -26,7 +26,7 @@ GetOptions('dir_out=s' => \$dir_out,
 if (!$dir_out) {
   croak '--dir_out option should be set';
 }
-if (!-d $dir_out || !-w $dir_out) {
+if ( !(-d $dir_out && -w $dir_out) ) {
   croak "--dir_out option $dir_out should be a writable directory";
 }
 
@@ -74,8 +74,8 @@ npg_status2file
 
 =head1 DESCRIPTION
 
- Given run identifier, an optional array of lanes, status and outpur directory
- creares a json file recording the input plus a timestamp
+ Given run identifier, an optional array of lanes, the status description
+ and output directory, creates a json file recording the input plus a timestamp.
 
 =head1 DIAGNOSTICS
 

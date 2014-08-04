@@ -10,6 +10,7 @@ use MooseX::StrictConstructor;
 use MooseX::Storage;
 use DateTime;
 use DateTime::Format::Strptime;
+use JSON::Any;
 
 use npg_tracking::util::types;
 
@@ -133,7 +134,11 @@ Kate Taylor
 
 =item MooseX::Storage
 
-=item POSIX
+=item DateTime
+
+=item DateTime::Format::Strptime
+
+=item JSON::Any
 
 =item npg_tracking::glossary::run
 
