@@ -480,6 +480,7 @@ t/14-dbic-EventType.t
 t/14-dbic-Instrument.t
 t/14-dbic-InstrumentStatusDict.t
 t/14-dbic-Run.t
+t/14-dbic-RunLane.t
 t/14-dbic-RunLaneStatus.t
 t/14-dbic-RunLaneStatusDict.t
 t/14-dbic-RunStatus.t
