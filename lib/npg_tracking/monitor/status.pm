@@ -15,6 +15,7 @@ use File::Spec::Functions;
 use npg_tracking::util::types;
 use npg_tracking::illumina::run::folder;
 use npg_tracking::status;
+use npg_tracking::Schema;
 
 our $VERSION = '0';
 
@@ -52,6 +53,16 @@ sub _build__notifier {
   # watch is blocking by default
   #$inotify->blocking(); #remove blocking
   return $inotify;
+}
+
+has '_schema' => ( reader     => 'schema',
+                  is         => 'ro',
+                  isa        => 'npg_tracking::Schema',
+                  lazy_build => 1,
+);
+
+sub _build__schema {
+  return npg_tracking::Schema->connect();
 }
 
 has '_watch_obj'  =>  (isa             => 'HashRef',
@@ -229,13 +240,13 @@ sub _update_status {
     _log('Error parsing date string: ' .$_ . ', cannot do the update');
     return;
   };
+  my $user = undef;
 
   if ( !@{$status->lanes} ) {
     try {
-      my $user = undef;
       $run_row->update_run_status($status->status, $user, $date);
     } catch {
-     _log("Error saving run status: $_");
+      _log("Error saving run status: $_");
     };
   } else {
 
@@ -246,15 +257,10 @@ sub _update_status {
           $pos, $status->id_run);
         next;
       }
-      my $args = {};
-      $args->{'id_run'}       = $status->id_run;
-      $args->{'position'}     = $pos;
-      $args->{'description'}  = $status->status;
-      $args->{'time'}         = $date;
       try {
-        $run_lanes{$pos}->update_run_lane_status($args);
+        $run_lanes{$pos}->update_status($status->status, $user, $date);
       } catch {
-       _log("Error saving run_lane status for lane $pos: $_");
+        _log("Error saving run_lane status for lane $pos: $_");
       };
     }
   }
