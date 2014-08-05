@@ -1,9 +1,10 @@
 use strict;
 use warnings;
-use Test::More tests => 87;
-use Test::Deep;
+use Test::More tests => 105;
 use Test::Exception::LessClever;
 use Test::Warn;
+use DateTime;
+use DateTime::Duration;
 use POSIX qw(strftime);
 
 use t::dbic_util;
@@ -50,24 +51,21 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
 
 # Status updates.
 {
-    lives_ok { $test->update_run_status( 'run complete', 'joe_loader' ) }
+    my $new;
+    lives_ok { $new = $test->update_run_status( 'run complete', 'joe_loader' ) }
              'Set a status that is already current';
-
+    is($new, undef, 'new row object is not returned');
 
     my $run_status_rs = $schema->resultset('RunStatus')->search(
-        {
-            id_run    => $test_run_id,
-            iscurrent => 1,
-        }
-    );
-
+        { id_run    => $test_run_id, iscurrent => 1,});
 
     my $test_date = $run_status_rs->first->date();
     is( $test_date->datetime, '2007-06-05T10:16:55', 'Not changed' );
 
     my $before = DateTime->now();
-    lives_ok { $test->update_run_status( 'run stopped early', 'joe_loader' ) }
+    lives_ok { $new = $test->update_run_status( 'run stopped early', 'joe_loader' ) }
              'Set a new status';
+     isa_ok ($new, q{npg_tracking::Schema::Result::RunStatus}, 'new row object returned');
 
     is( $run_status_rs->first->id_run_status_dict(), 22, 'New run status' );
     isnt( $run_status_rs->first->date(), $test_date,
@@ -75,6 +73,38 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
     cmp_ok( $run_status_rs->first->date(), '>=', $before, 'Current date' );
 
     is( $run_status_rs->count(), 1, 'Only one row has \'iscurrent\' set' );
+
+    my $same_date = $run_status_rs->first->date();
+    $new = $test->update_run_status( 'data discarded', 'joe_loader', $same_date );
+    isa_ok ($new, q{npg_tracking::Schema::Result::RunStatus}, 'new row object returned');
+    is($new->iscurrent, 1, 'new row is current');
+    is($new->date->datetime, $same_date->datetime, 'timestamp set as passed');
+    is($test->current_run_status->run_status_dict->description, 'data discarded',
+         'current status description as expected');
+
+    my $old_date = $same_date->subtract_duration(DateTime::Duration->new(seconds => 1));
+    $new = $test->update_run_status( 'run cancelled', 'joe_loader', $old_date );
+    isa_ok ($new, q{npg_tracking::Schema::Result::RunStatus}, 'new row object returned');
+    is($new->iscurrent, 0, 'new row is not current');
+    is($new->date->datetime, $old_date->datetime, 'timestamp set as passed');
+    is($test->current_run_status->run_status_dict->description, 'data discarded',
+         'current status description as before the update');
+    
+    sleep 1;
+    my $now = DateTime->now();
+    $new = $test->update_run_status( 'analysis pending', 'joe_loader', $now );
+    isa_ok ($new, q{npg_tracking::Schema::Result::RunStatus}, 'new row object returned');
+    is($new->iscurrent, 1, 'new row is current');
+    is($new->date->datetime, $now->datetime, 'timestamp set as passed');
+    is($test->current_run_status->run_status_dict->description, 'analysis pending',
+         'current status description as expected');
+    is($test->current_run_status->user->username, 'joe_loader',
+         'username as given');
+    $new = $test->update_run_status( 'analysis in progress');
+    isa_ok ($new, q{npg_tracking::Schema::Result::RunStatus}, 'new row object returned');
+    is($new->iscurrent, 1, 'new row is current');
+    is($test->current_run_status->user->username, 'pipeline',
+         'pipeline user is set for this status');
 }
 
 

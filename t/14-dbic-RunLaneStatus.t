@@ -1,14 +1,10 @@
 use strict;
 use warnings;
 use Test::More tests => 35;
-use Test::Deep;
 use Test::Exception::LessClever;
 use DateTime;
-use Readonly;
 
 use t::dbic_util;
-
-Readonly::Scalar my $ABSURD_ID => 100_000_000;
 
 use_ok( q{npg_tracking::Schema::Result::RunLaneStatus} );
 
