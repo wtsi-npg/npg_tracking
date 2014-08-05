@@ -496,6 +496,12 @@ npg_tracking::monitor::status
 
  Stops watch on all objects.
 
+=head2 EBADF (namespace pollution from Errno module)
+
+=head2 ENOMEM (namespace pollution from Errno module)
+
+=head2 ENOSPC (namespace pollution from Errno module)
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
