@@ -1,12 +1,18 @@
 package npg_tracking::Schema::Retriever;
 
 use Moose::Role;
+use DateTime;
+use DateTime::TimeZone;
 use Carp;
 use Readonly;
 
 our $VERSION = '0';
 
 Readonly::Scalar my $PIPELINE_USER_NAME => q[pipeline];
+
+sub get_time_now {
+  return DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local]));
+}
 
 sub get_user_row {
   my ($self, $username, $default2pipeline_user) = @_;
@@ -75,6 +81,12 @@ npg_tracking::Schema::Retriever
 
 =head1 SUBROUTINES/METHODS
 
+=head2 get_time_now
+
+ Returns a DateTime object for current time. Time is local.
+
+ my $new = $row->get_time_now();
+
 =head2 get_user_row
 
  Returns a table row representing a user. If the username is not given, but
@@ -119,6 +131,10 @@ npg_tracking::Schema::Retriever
 =over
 
 =item Moose::Role
+
+=item DateTime
+
+=item DateTime::TimeZone
 
 =item Carp
 

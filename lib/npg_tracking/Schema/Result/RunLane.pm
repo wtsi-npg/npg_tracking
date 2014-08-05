@@ -222,9 +222,9 @@ __PACKAGE__->has_many(
 # Created:       2010-04-08
 
 use Carp;
+use Try::Tiny;
 with qw/
         npg_tracking::Schema::Retriever
-        npg_tracking::Schema::Time
        /;
 
 our $VERSION = '0';
@@ -247,7 +247,10 @@ Status description must be provided.
 
   $obj->update_status($description, $username, $date);
 
-For some statuses, can trigger an update of run status.
+For some statuses, can trigger an auto update of run status.
+
+Returns undefined if the status has not been saved, otherwise returns the
+the new row, which can have iscurrent value set to either 1 or 0.
 
 =cut
 
@@ -256,50 +259,54 @@ sub update_status {
 
   $date ||=  $self->get_time_now();
   if ( ref $date ne 'DateTime' ) {
-    croak '"time" argument should be a DateTime object';
+    croak '"date" argument should be a DateTime object';
   }
 
   my $use_pipeline_user = 1;
   my $id_user  = $self->get_user_id($username, $use_pipeline_user);
   my $desc_row = $self->get_status_dict_row('RunLaneStatusDict', $description);
 
-  my $update_transaction = sub {
+  my $lane_statuses =  $self->related_resultset( q{run_lane_statuses} );
 
-    my $lane_statuses =  $self->related_resultset( q{run_lane_statuses} );
-
-    my $make_new_current = 1;
-    my $current = $lane_statuses->search(
+  my $make_new_current = 1;
+  my $current = $lane_statuses->search(
            {iscurrent => 1},
            {order_by  =>  { -desc => 'date'},},)->next; # get latest
-    if ( $current ) {
-      if ( $current->run_lane_status_dict->description eq $description) {
-        return; # This status is already current
-      }
-      # If current status is later that the new one, do not make the new one current
-      if ( $self->get_difference_seconds($current->date,$date) > 0 ) {
-        $make_new_current = 0;
-      }
+  if ( $current ) {
+    if ( $current->run_lane_status_dict->description eq $description) {
+      return; # This status is already current
     }
+    # If current status is later that the new one, do not make the new one current
+    if ( $current->date->subtract_datetime($date)->is_positive ) {
+      $make_new_current = 0;
+    }
+  }
 
+  # Use transaction in case iscurrent flag has to be reset
+  my $transaction = sub {
     if ( $current && $make_new_current ) {
       $lane_statuses->update_all( {iscurrent => 0} );
     }
 
-    my $new_row = $self->related_resultset( q{run_lane_statuses} )->create( {
+    return $self->related_resultset( q{run_lane_statuses} )->create( {
           run_lane_status_dict => $desc_row,
           date                 => $date,
           iscurrent            => $make_new_current,
           id_user              => $id_user,
     } );
-
-    if ($make_new_current) {
-      $self->run->propagate_status_from_lanes();
-    }
-
-    return $new_row;
   };
   
-  return $self->result_source->schema->txn_do( $update_transaction );
+  my $new_current = $self->result_source->schema->txn_do( $transaction );
+
+  if ($make_new_current) {
+    try {
+      $self->run->propagate_status_from_lanes();
+    } catch {
+      carp "Error propagating status up to the run: $_";
+    }
+  }
+
+  return $new_current;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -339,9 +346,9 @@ Result class definition in DBIx binding for npg tracking database.
 
 =item Carp
 
-=item npg_tracking::Schema::Retriever
+=item Try::Tiny
 
-=item npg_tracking::Schema::Time
+=item npg_tracking::Schema::Retriever
 
 =back
 

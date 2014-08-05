@@ -343,7 +343,6 @@ use Readonly;
 
 with qw/
          npg_tracking::Schema::Retriever
-         npg_tracking::Schema::Time
        /;
 
 Readonly::Hash my %STATUS_CHANGE_AUTO    => (
@@ -453,15 +452,15 @@ sub current_run_status {
 
 =head2 update_run_status
 
-Creates a new run status for this run and, if appropriate, marks this status
-as current and all the previous statuses as not current.
+If appropriate, creates a new run status for this run and,
+if appropriate, marks this status as current and all the
+previous statuses as not current.
 
 For a new current status a new event row is created and, if appropriate,
 instrument status changed. In some cases, the run status is automatically
 advanced one step further.
 
-The (case-insensitive) description of the status is required
-or username fields respectively.
+The description of the status is required.
 
     $run_row->update_run_status('some status');
 
@@ -473,95 +472,97 @@ assumed
 An optional third argument, a DateTime object, can be supplied. If omitted,
 current local time is used.
 
+    $run_row->update_run_status( 'ArcHIVal pEnding', 'sloppy', $date_obj );
+
+Returns undefined if the status has not been saved, otherwise returns the
+the new row, which can have iscurrent value set to either 1 or 0.
+
 =cut
 
 sub update_run_status {
     my ( $self, $description, $user_identifier, $date ) = @_;
 
+    $date ||= $self->get_time_now();
+    if ( ref $date ne 'DateTime' ) {
+        croak '"date" argument should be a DateTime object';
+    }
+
     my $use_pipeline_user = 1;
     my $user_id = $self->get_user_id($user_identifier, $use_pipeline_user);
     my $rsd_row = $self->get_status_dict_row('RunStatusDict', $description);
-    my $rsd_id =  $rsd_row->id_run_status_dict();
-    my $schema = $self->result_source->schema;
 
+    # Do nothing if the run_status is already set and current.
+    my $current_status_rs = $self->related_resultset( q{run_statuses} )->search(
+             { iscurrent   => 1,},
+             { order_by    => { -desc => 'date'},},
+    );
+    my $current_status_row = $current_status_rs->next;
+    if ($current_status_row && $current_status_row->description eq $description) {
+        return;
+    }
+
+    # If current status is later that the new one, do not make the new one current
+    my $make_new_current = 1;
+
+    if ($current_status_row &&
+          $current_status_row->date->subtract_datetime($date)->is_positive ) {
+        $make_new_current = 0;
+    }
+
+    # Use transaction in case iscurrent flag has to be reset
     my $transaction = sub {
-
-        # Do nothing if the run_status is already set and current.
-        my $current_status_rs = $schema->resultset('RunStatus')->search(
-             {
-                 id_run             => $self->id_run(),
-                 iscurrent          => 1,
-             },
-             {order_by  =>  { -desc => 'date'},},
-        );
-        my $current_status_row = $current_status_rs->next;
-
-        if ($current_status_row && $current_status_row->description eq $description) {
-            return;
-        }
-
-        # If current status is later that the new one, do not make the new one current
-        my $make_new_current = 1;
-        $date ||= $self->get_time_now();
-        if ($current_status_row &&
-            $self->get_difference_seconds($current_status_row->date, $date) > 0 ) {
-            $make_new_current = 0;
-        }
-      
-        if ($make_new_current) {
+        if ($current_status_row && $make_new_current) {
             $current_status_rs->update_all( {iscurrent => 0} );
         }
 
-        my $new_run_status = $self->related_resultset( q{run_statuses} )->create( {
-                id_run_status_dict => $rsd_id,
+        return $self->related_resultset( q{run_statuses} )->create( {
+                run_status_dict    => $rsd_row,
                 date               => $date,
                 iscurrent          => $make_new_current,
                 id_user            => $user_id,
         } );
-        
-        if ( $make_new_current ) {
-            $self->run_status_event( $user_id, $new_run_status->id_run_status() );
-            $self->instrument->autochange_status_if_needed($description, $user_identifier);
-        }
-        return $make_new_current;
     };
+    my $new_row = $self->result_source->schema->txn_do( $transaction );
 
-    try {
-        my $make_new_current = $schema->txn_do( $transaction );
-        if ($make_new_current) {
+    if ( $make_new_current ) {
+        try {
+            $self->run_status_event( $user_id, $new_row->id_run_status() );
+            $self->instrument->autochange_status_if_needed($description, $user_identifier);
             my $auto = $STATUS_CHANGE_AUTO{$description};
             if ($auto) {
-                $self->update_run_status($auto);
+                $new_row = $self->update_run_status($auto);
             }
-        } 
-    } catch {
-        my $err = $_;
-        if ($err =~ /Rollback failed/sxm) {
-            croak $err;
+        } catch {
+            carp "Error performing post run status change actions \
+                  (event, auto run and instrument status update) $_";
         }
-        carp 'Status update transaction failed; changes rolled back';
-        return;
-    };
-    return;
+    }
+
+    return $new_row;
 }
 
 =head2 propagate_status_from_lanes
 
-Checks whether the surrent status of the lanes should trigger the run
-status update, performs teh update if appropriate.
+Checks whether the current status of the lanes should trigger the run
+status update, triggers the update if appropriate. Returns true if
+the trigger has been activated, false otherwise.
 
-This method should be called within a transaction.  
+If correct behaviour with concurrent lane status updates is required,
+this method should not be called within the transaction that updates
+lane statuses since it needs visibility of current statuses of all
+lanes of the run. 
 
 =cut
 
 sub propagate_status_from_lanes {
     my $self = shift;
-
+   
+    my $propagated = 0;
     my %statuses = ();
     foreach my $run_lane ($self->run_lanes()->all()) {
       my $current = $run_lane->current_run_lane_status;
       if (!$current) {
-        return; # One of lanes does not have current status
+        return $propagated; # One of lanes does not have current status
       }
       $statuses{$current->description} = 1;
     }
@@ -570,10 +571,11 @@ sub propagate_status_from_lanes {
         my $auto = $STATUS_PROPAGATE_AUTO{$description};
         if ( $auto ) {
             $self->update_run_status($auto);
+            $propagated = 1;  
         }
     }
 
-    return;
+    return $propagated;
 }
 
 =head2 run_status_event
@@ -875,8 +877,6 @@ Result class definition in DBIx binding for npg tracking database.
 =item Readonly
 
 =item npg_tracking::Schema::Retriever
-
-=item npg_tracking::Schema::Time
 
 =back
 
