@@ -23,14 +23,6 @@ Readonly::Scalar my $STATUS_DIR_KEY   => q[status_dir];
 Readonly::Scalar my $RUNFOLDER_KEY    => q[top_level];
 Readonly::Scalar my $STATUS_DIR_NAME  => q[status];
 
-my $LATEST_SUMMARY_LINK_NAME;
-{
-  ##no critic (TestingAndDebugging::ProhibitNoWarnings)
-  no warnings qw(once);
-  $LATEST_SUMMARY_LINK_NAME =
-     $npg_tracking::illumina::run::folder::LATEST_SUMMARY;
-}
-
 has 'transit' =>  (isa             => 'NpgTrackingDirectory',
                    is              => 'ro',
                    required        => 1,
@@ -134,7 +126,11 @@ sub _path_is_latest_summary {
   if (!$path) {
     croak 'Path should be defined';
   }
-  return $path =~ /\/$LATEST_SUMMARY_LINK_NAME/smx;
+  ##no critic (TestingAndDebugging::ProhibitNoWarnings)
+  no warnings qw(once);
+  my $ls = $npg_tracking::illumina::run::folder::SUMMARY_LINK;
+  # Not checking here that the path is a soft link
+  return $path =~ /\/$ls\z/smx;
 }
 
 sub _runfolder_prop {
@@ -143,15 +139,13 @@ sub _runfolder_prop {
   if (!$runfolder_path) {
     croak 'Runfolder path should be defined';
   }
-
   if (!$runfolder_prop_name) {
     croak 'Required runfolder property name should be defined';
   }
 
   my ($runfolder, $top_path) = fileparse $runfolder_path;
   if (!$runfolder) {
-    _log("Failed to get runfolder name from $runfolder_path");
-    return;
+    croak "Failed to get runfolder name from $runfolder_path";
   }
 
   my $prop;
@@ -162,24 +156,17 @@ sub _runfolder_prop {
       {runfolder_path => $runfolder_path, run_folder => $runfolder}
     )->$runfolder_prop_name;
   } catch {
-    _log("Failed to get $runfolder_prop_name from $runfolder_path: $_");
-    return;
+    croak "Failed to get $runfolder_prop_name from $runfolder_path: $_";
   };
 
-  if (!$prop) {
-    _log("Failed to get $runfolder_prop_name from $runfolder_path");
-    return;
-  }
   if ($runfolder_prop_name ne $STATUS_DIR_KEY) {
     return $prop;
   }
   my $path = catdir($prop, $STATUS_DIR_NAME);
-  if (-d $path) {
-    return $path;
-  } else {
-    _log("Status directory $path does not exist");
+  if (!-d $path) {
+    croak "Status directory $path does not exist";
   }
-  return;
+  return $path;
 }
 
 sub _read_status {
@@ -188,10 +175,7 @@ sub _read_status {
   if (!$path) {
     croak 'Path should be defined';
   }
-  my $id_run = _runfolder_prop($runfolder_path, 'id_run');
-  if (!$id_run) {
-    croak "Failed to get id_run from $runfolder_path: $_";
-  }
+  my $id_run = $self->_runfolder_prop($runfolder_path, 'id_run');
 
   my $status;
   try {
@@ -224,7 +208,7 @@ sub _update_status4files {
     try {
       _log("\nReading status from $file");
       my $status = $self->_read_status($file, $runfolder_path);
-      _log("Attempting to save " . $status->to_string . "\n");
+      _log('Attempting to save ' . $status->to_string . "\n");
       $self-> _update_status($status);
     } catch {
       _log("Error saving status: $_\n");
@@ -266,8 +250,8 @@ sub _stock_status_check {
 
   foreach my $runfolder_path (@{$self->_stock_runfolders}) {
     _log("Checking status files in $runfolder_path");
-    my $status_path = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
-    if ($status_path) {
+    try {
+      my $status_path = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
       _log("Checking status files in $status_path");
       my @files = glob qq("${status_path}/*.json");
       if (@files) {
@@ -275,6 +259,8 @@ sub _stock_status_check {
       } else {
         _log("No status files found in $status_path");
       }
+    } catch {
+      _log("Failed to get status path from $runfolder_path: $_");
     }
   }
   return;
@@ -392,6 +378,7 @@ sub _run_status_watch_setup {
 
   my $runfolder_name = basename $summary_link;
   my ($filename, $runfolder_path) = fileparse $summary_link;
+  # We assume that if the summary link exists, the status dir also exists
   my $status_dir = $self->_status_path_from_runfolder_path($runfolder_path);
   if (!$status_dir) {
     return;

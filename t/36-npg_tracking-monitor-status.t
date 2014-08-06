@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 30;
+use Test::More tests => 33;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -133,6 +133,19 @@ my $schema = t::dbic_util->new->test_schema();
   $s = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7]);
   throws_ok {$m->_update_status($s)} qr/Status 'some status' does not exist in RunLaneStatusDict/,
     'error saving non-existing lane status';
+}
+
+{
+  my $m = npg_tracking::monitor::status->new(transit => $dir);
+  throws_ok {$m->_read_status('path', $dir)} qr/Failed to get id_run from $dir/,
+    'error getting id_run from runfolder_path';
+}
+
+{
+  ok(npg_tracking::monitor::status::_path_is_latest_summary('/some/path/Latest_Summary'),
+    'latest summary link identified correctly');
+  ok(!npg_tracking::monitor::status::_path_is_latest_summary('/some/path/Latest_Summary/other'),
+    'path is not latest summary');
 }
 
 1;
