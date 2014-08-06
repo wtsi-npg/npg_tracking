@@ -190,78 +190,71 @@ sub _read_status {
   }
   my $id_run = _runfolder_prop($runfolder_path, 'id_run');
   if (!$id_run) {
-    _log("Failed to get id_run from $runfolder_path: $_; seting status from $path aborted");
-    return;
+    croak "Failed to get id_run from $runfolder_path: $_";
   }
 
   my $status;
   try {
     $status = npg_tracking::status->thaw(read_file($path));
   } catch {
-    _log("Error instantiating object from $path: $_");
-    return;
+    croak "Error instantiating object from $path: $_";
   };
 
   if ($status) {
     if ($id_run != $status->id_run) {
-      my $message = sprintf 'id-run %i from runfolder %s does not match id_run %i from json file %s',
+      croak sprintf 'id-run %i from runfolder %s does not match id_run %i from json file %s',
                       $id_run, $runfolder_path, $status->id_run, $path;
-      _log("$message; setting status from $path aborted");
-      return;
     }
-    return $status;
-  } else {
-    _log("Instantiating object from $path failed; undefined object returned");
+  }
+
+  return $status;
+}
+
+sub _update_status4files {
+  my ($self, $files, $runfolder_path) = @_;
+
+  if (!defined $files) {
+    croak 'Expect a file array as the first argument';
+  }
+  if (!defined $runfolder_path) {
+    croak 'Expect runfolder path as the second argument';
+  }
+
+  foreach my $file ( @{$files} ) {
+    try {
+      _log("\nReading status from $file");
+      my $status = $self->_read_status($file, $runfolder_path);
+      _log("Attempting to save " . $status->to_string . "\n");
+      $self-> _update_status($status);
+    } catch {
+      _log("Error saving status: $_\n");
+    }
   }
   return;
 }
 
 sub _update_status {
   my ($self, $status) = @_;
-  if (!$status) {
-    return;
-  }
-
-  _log("\nAttempting to save " . $status->to_string . "\n");
 
   my $run_row = $self->schema->resultset('Run')->find($status->id_run);
-  if ($run_row) {
-    _log(sprintf
-      'Run id %i does not exist, cannot save status "%s", cannot do the update',
-      $status->id_run, $status->status
-    );
-    return;
+  if (!$run_row) {
+    croak sprintf 'Run id %i does not exist', $status->id_run;
   }
 
-  my $date;
-  try {
-    $date = $status->timestamp_obj;
-  } catch {
-    _log('Error parsing date string: ' .$_ . ', cannot do the update');
-    return;
-  };
+  my $date = $status->timestamp_obj;
   my $user = undef;
 
   if ( !@{$status->lanes} ) {
-    try {
-      $run_row->update_run_status($status->status, $user, $date);
-    } catch {
-      _log("Error saving run status: $_");
-    };
+    $run_row->update_run_status($status->status, $user, $date);
   } else {
-
     my %run_lanes = map { $_->position => $_} $run_row->run_lanes->all();
-    foreach my $pos (sort { $a <=> $b} @{$status->lanes}) {
+    foreach my $pos (@{$status->lanes}) {
       if (!exists $run_lanes{$pos}) {
-        _log(sprintf 'Lane %i does not exists in run %i, cannot do the update for this lane',
-          $pos, $status->id_run);
-        next;
+        croak sprintf 'Lane %i does not exist in run %i', $pos, $status->id_run;
       }
-      try {
-        $run_lanes{$pos}->update_status($status->status, $user, $date);
-      } catch {
-        _log("Error saving run_lane status for lane $pos: $_");
-      };
+    }
+    foreach my $pos (sort { $a <=> $b} @{$status->lanes}) {
+      $run_lanes{$pos}->update_status($status->status, $user, $date);
     }
   }
 
@@ -277,8 +270,10 @@ sub _stock_status_check {
     if ($status_path) {
       _log("Checking status files in $status_path");
       my @files = glob qq("${status_path}/*.json");
-      foreach my $file (@files) {
-        $self->_update_status($self->_read_status($file, $runfolder_path));
+      if (@files) {
+        $self->_update_status4files(\@files, $runfolder_path);
+      } else {
+        _log("No status files found in $status_path");
       }
     }
   }
@@ -408,7 +403,7 @@ sub _run_status_watch_setup {
       if ($e->IN_IGNORED) {
         $self->_run_status_watch_cancel($name);
       } elsif ($e->IN_CLOSE_WRITE) {
-        $self->_update_status($self->_read_status($name, $runfolder_path));
+        $self->_update_status4files([$name], $runfolder_path);
       }
   });
 

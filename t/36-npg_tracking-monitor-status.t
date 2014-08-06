@@ -1,10 +1,12 @@
 use strict;
 use warnings;
-use Test::More tests => 24;
+use Test::More tests => 30;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
+use t::dbic_util;
 
+use_ok( q{npg_tracking::status} );
 use_ok( q{npg_tracking::monitor::status} );
 
 my $m = npg_tracking::monitor::status->new(transit => q[t]);
@@ -12,7 +14,6 @@ isa_ok($m, q{npg_tracking::monitor::status});
 lives_ok { $m->_notifier } 'notifier object created';
 
 my $dir = tempdir(UNLINK => 1);
-#diag $dir;
 
 my $cb = sub {
       my $e = shift;
@@ -112,6 +113,26 @@ my $cb = sub {
   is($count, 2, 'polled two event');
   warnings_like { $m->cancel_watch }
     [qr/canceling watch for $dir/], 'watch cancell reported'; 
+}
+
+my $schema = t::dbic_util->new->test_schema();
+{
+  my $m = npg_tracking::monitor::status->new(transit => $dir, _schema => $schema);
+  my $s = npg_tracking::status->new(id_run => 9999, status => 'some status');
+  throws_ok {$m->_update_status($s)} qr/Run id 9999 does not exist/,
+    'error saving status for non-existing run';
+  $s = npg_tracking::status->new(id_run => 1, status => 'some status');
+  throws_ok {$m->_update_status($s)} qr/Status 'some status' does not exist in RunStatusDict /,
+    'error saving non-existing run status';
+  $s = npg_tracking::status->new(id_run => 1, status => 'some status', timestamp => 'some time');
+  throws_ok {$m->_update_status($s)} qr/Your datetime does not match your pattern/,
+    'error converting timestamp to an object';
+  $s = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7, 3]);
+  throws_ok {$m->_update_status($s)} qr/Lane 3 does not exist in run 1/,
+    'error saving status for a list of lanes that includes non-existing lane';
+  $s = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7]);
+  throws_ok {$m->_update_status($s)} qr/Status 'some status' does not exist in RunLaneStatusDict/,
+    'error saving non-existing lane status';
 }
 
 1;

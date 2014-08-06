@@ -59,7 +59,7 @@ sub get_status_dict_row {
   my $schema = $self->result_source->schema();
   my $row = $schema->resultset($resultset_name)->search({description => $description,})->next;
   if (!$row) {
-    croak "Status $description does not exist in $resultset_name";
+    croak "Status '$description' does not exist in $resultset_name";
   }
   return $row;
 }
