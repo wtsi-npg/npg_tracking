@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 33;
+use Test::More tests => 34;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -137,7 +137,11 @@ my $schema = t::dbic_util->new->test_schema();
 
 {
   my $m = npg_tracking::monitor::status->new(transit => $dir);
-  throws_ok {$m->_read_status('path', $dir)} qr/Failed to get id_run from $dir/,
+  throws_ok {$m->_read_status('path', $dir)}
+    qr/Error instantiating object from path: read_file 'path' - sysopen: No such file or directory/,
+    'error reading object';
+  my $path = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7])->to_file($dir); 
+  throws_ok {$m->_read_status($path, $dir)} qr/Failed to get id_run from $dir/,
     'error getting id_run from runfolder_path';
 }
 

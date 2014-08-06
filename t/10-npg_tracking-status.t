@@ -1,14 +1,18 @@
 use strict;
 use warnings;
-use Test::More tests => 33;
+use Test::More tests => 38;
 use Test::Deep;
 use Test::Exception;
+use File::Temp qw/ tempdir /;
+use Cwd;
 
 use_ok(q{npg_tracking::status});
 
 my $timestamp = q{10/07/2014 13:42:10};
 my $id_run = 1234;
 my $status = q{analysis in progress};
+my $dir = tempdir(UNLINK => 1);
+my $current = getcwd();
 
 { 
   my $rls = npg_tracking::status->new(
@@ -60,7 +64,14 @@ my $status = q{analysis in progress};
   is ($o->timestamp, $timestamp, 'timestamp correct');
   is ($o->status, $status, 'status correct');
   is ($o->id_run, $id_run, 'run id correct');
-  cmp_deeply($o->lanes, \@lanes, 'lanes array correct'); 
+  cmp_deeply($o->lanes, \@lanes, 'lanes array correct');
+
+  lives_ok { $o->to_file($dir) } 'serialization to a file';
+  $filename = join(q[/], $dir, $filename);
+  ok(-e $filename, 'file exists');
+  my $new;
+  lives_ok { $new = npg_tracking::status->from_file($filename)  } 'object read from  file';
+  isa_ok($new, q{npg_tracking::status});
 }
 
 {
@@ -111,7 +122,15 @@ my $status = q{analysis in progress};
   is ($o->timestamp, $timestamp, 'timestamp correct');
   is ($o->status, $status, 'status correct');
   is ($o->id_run, $id_run, 'run id correct');
-  cmp_deeply($o->lanes, [], 'lanes array is empty'); 
+  cmp_deeply($o->lanes, [], 'lanes array is empty');
+  chdir $dir;
+  my $path = $o->to_file();
+  ok(-e $path, 'file created in current directory');
+  chdir $current;
+}
+
+END {
+  eval {chdir $current};
 }
 
 1;

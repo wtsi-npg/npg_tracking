@@ -9,7 +9,6 @@ use Linux::Inotify2;
 use Errno qw(EINTR EIO :POSIX);
 use File::Basename;
 use Try::Tiny;
-use File::Slurp;
 use File::Spec::Functions;
 
 use npg_tracking::util::types;
@@ -175,20 +174,18 @@ sub _read_status {
   if (!$path) {
     croak 'Path should be defined';
   }
-  my $id_run = $self->_runfolder_prop($runfolder_path, 'id_run');
 
   my $status;
   try {
-    $status = npg_tracking::status->thaw(read_file($path));
+    $status = npg_tracking::status->from_file($path);
   } catch {
     croak "Error instantiating object from $path: $_";
   };
 
-  if ($status) {
-    if ($id_run != $status->id_run) {
-      croak sprintf 'id-run %i from runfolder %s does not match id_run %i from json file %s',
+  my $id_run = $self->_runfolder_prop($runfolder_path, 'id_run');
+  if ($id_run != $status->id_run) {
+    croak sprintf 'id-run %i from runfolder %s does not match id_run %i from json file %s',
                       $id_run, $runfolder_path, $status->id_run, $path;
-    }
   }
 
   return $status;
@@ -515,8 +512,6 @@ npg_tracking::monitor::status
 =item Errno
 
 =item Try::Tiny
-
-=item File::Slurp
 
 =item File::Spec::Functions
 

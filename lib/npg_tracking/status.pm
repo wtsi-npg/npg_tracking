@@ -11,6 +11,9 @@ use MooseX::Storage;
 use DateTime;
 use DateTime::Format::Strptime;
 use JSON::Any;
+use File::Spec;
+use File::Slurp;
+use Carp;
 
 use npg_tracking::util::types;
 
@@ -82,6 +85,20 @@ sub to_string {
          );
 }
 
+sub from_file {
+  my ($package_name, $path) = @_;
+  return $package_name->thaw(read_file($path));
+}
+
+sub to_file {
+  my ($self, $dir) = @_;
+  my $filename = $dir ? File::Spec->catfile($dir, $self->filename) : $self->filename;
+  open my ${fh}, q[>], $filename or croak "Cannot open $filename for writing";
+  print ${fh} $self->freeze() or croak "Cannot write to $filename";
+  close ${fh} or croak "Cannot close $filename";
+  return $filename;
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
@@ -135,8 +152,24 @@ Kate Taylor
 
 =head2 to_string
 
- String representation of teh object that does not trigger
+ String representation of tehe object that does not trigger
  Moose lazy builders.
+
+=head2 from_file
+
+ Reads a file given as an attribute into a string and tries to instantiate
+ an npg_tracking::status object from this string.
+
+ my $obj = npg_tracking::status->from_file($path);
+
+=head2 to_file
+
+ Writes serialized object ($self) to a file. The file is created in a directory
+ given as an attribute or, if not passed, in the current directory. Filename returned
+ by the filename() method of the object is used. Returns the path of teh file created.
+ 
+ my $path = $status_obj->to_file('mydir');
+ my $path = $status_obj->to_file();
 
 =head1 DIAGNOSTICS
 
@@ -157,6 +190,12 @@ Kate Taylor
 =item DateTime::Format::Strptime
 
 =item JSON::Any
+
+=item File::Spec
+
+=item File::Slurp
+
+=item Carp
 
 =item npg_tracking::glossary::run
 
