@@ -23,7 +23,7 @@ if (!-d $TOP_LEVEL) {
   croak "$TOP_LEVEL directory does not exist, exiting"; 
 }
 
-my $pattern = "${TOP_LEVEL}/sf*";
+my $pattern = "${TOP_LEVEL}/sf*/{IL,HS}*";
 my @dirs = glob $pattern;
 if (!@dirs) {
   croak "Cannot find $pattern";

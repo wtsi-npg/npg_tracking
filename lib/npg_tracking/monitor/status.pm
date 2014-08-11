@@ -79,6 +79,9 @@ sub _build__stock_runfolders {
   foreach my $top (@top_level) {
     opendir(my $dh, $top) || croak "Can't opendir $top: $ERRNO";
     while(readdir $dh) {
+      if ($_ eq q[.] || $_ eq q[..]) {
+        next;
+      }
       my $dir = "$top/$_";
       if ( -d $dir ) {
         push @folders, $dir;
@@ -341,7 +344,7 @@ sub _runfolder_watch_setup {
   # just in case...
   if (exists $self->_watch_obj->{$runfolder_name}->{$RUNFOLDER_KEY}) {
     _log("Already watching $dir");
-    next;
+    return;
   }
 
   my $watch = $self->_notifier->watch($dir,
