@@ -4,6 +4,8 @@ release 77.9
  - DBIx run and run-lane status update refactoring to accommodate passing
      status date and make setting these two status types symmetrical
  - initial code for monitoring status files
+ - bug fix in inferring recalibrated path from the runfolder path - previously
+     the code returned basecalls directory path before getting to the recalibrated path
 
 release 77.8
  - npg dev url is set to the url of the dev server that is actually used for API calls
