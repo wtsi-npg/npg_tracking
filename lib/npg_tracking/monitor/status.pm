@@ -13,6 +13,7 @@ use File::Spec::Functions;
 
 use npg_tracking::util::types;
 use npg_tracking::illumina::run::folder;
+use npg_tracking::illumina::run::short_info;
 use npg_tracking::status;
 use npg_tracking::Schema;
 
@@ -145,6 +146,7 @@ sub _runfolder_prop {
     croak 'Required runfolder property name should be defined';
   }
 
+  $runfolder_path =~ s/\/$//smx;
   my ($runfolder, $top_path) = fileparse $runfolder_path;
   if (!$runfolder) {
     croak "Failed to get runfolder name from $runfolder_path";
@@ -156,17 +158,23 @@ sub _runfolder_prop {
   my $prop;
   try {
     $prop = Moose::Meta::Class->create_anon_class(
-      roles => [qw/npg_tracking::illumina::run::folder/]
+      roles => [qw/npg_tracking::illumina::run::folder
+                   npg_tracking::illumina::run::short_info/]
     )->new_object(
       {runfolder_path => $runfolder_path, run_folder => $runfolder}
     )->$prop_name;
   } catch {
-    croak "Failed to get $runfolder_prop_name from $runfolder_path: $_";
+    croak "Failed to get $prop_name from $runfolder_path: $_";
   };
+
+  if (!$prop) {
+    croak "Failed to get $prop_name from $runfolder_path: undefined value returned";
+  }
 
   if ($runfolder_prop_name ne $STATUS_DIR_KEY) {
     return $prop;
   }
+
   my $path = catdir($prop, $STATUS_DIR_NAME);
   if (!-d $path) {
     croak "Status directory $path does not exist";
@@ -211,7 +219,7 @@ sub _update_status4files {
     try {
       _log("\nReading status from $file");
       my $status = $self->_read_status($file, $runfolder_path);
-      _log('Attempting to save ' . $status->to_string . "\n");
+      _log('Saving to database [' . $status->to_string . "]\n");
       $self-> _update_status($status);
     } catch {
       _log("Error saving status: $_\n");
@@ -252,10 +260,10 @@ sub _stock_status_check {
   my $self = shift;
 
   foreach my $runfolder_path (@{$self->_stock_runfolders}) {
-    _log("Checking status files in $runfolder_path");
+    _log("Looking for status directory in $runfolder_path");
     try {
       my $status_path = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
-      _log("Checking status files in $status_path");
+      _log("Looking for status files in $status_path");
       my @files = glob qq("${status_path}/*.json");
       if (@files) {
         $self->_update_status4files(\@files, $runfolder_path);
@@ -360,7 +368,7 @@ sub _runfolder_watch_setup {
         if (_path_is_latest_summary($name)) {
           $self->_run_status_watch_cancel($name);
         }
-      } elsif ($e->IN_CREATED) {
+      } elsif ($e->IN_CREATE) {
         if (_path_is_latest_summary($name)) {
           $self->_run_status_watch_setup($name);
         }
@@ -382,7 +390,7 @@ sub _run_status_watch_setup {
   my $runfolder_name = basename $summary_link;
   my ($filename, $runfolder_path) = fileparse $summary_link;
   # We assume that if the summary link exists, the status dir also exists
-  my $status_dir = $self->_status_path_from_runfolder_path($runfolder_path);
+  my $status_dir = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
   if (!$status_dir) {
     return;
   }

@@ -10,6 +10,7 @@ use MooseX::StrictConstructor;
 use MooseX::Storage;
 use DateTime;
 use DateTime::Format::Strptime;
+use DateTime::TimeZone;
 use JSON::Any;
 use File::Spec;
 use File::Slurp;
@@ -41,10 +42,13 @@ has q{status} => (
 );
 
 has q{timestamp} => (
-                   isa      => q{Str},
-                   is       => 'ro',
-                   required => 0,
-                   default  => sub { DateTime->now()->strftime(_timestamp_format()) },
+                   isa       => q{Str},
+                   is        => 'ro',
+                   required  => 0,
+                   predicate => 'has_timestamp',
+                   default   => sub { DateTime->now(
+                         time_zone => DateTime::TimeZone->new(name => q[local])
+                                                   )->strftime(_timestamp_format()) },
                    documentation => q{timestamp of the status change},
 );
 
@@ -68,7 +72,7 @@ sub _timestamp_format {
 sub timestamp_obj {
   my $self = shift;
   return DateTime::Format::Strptime->new(
-    pattern => _timestamp_format(),
+    pattern  => _timestamp_format(),
     on_error => 'croak',
   )->parse_datetime($self->timestamp);
 }
@@ -118,10 +122,10 @@ Kate Taylor
 
  Serializable to json object for run and lane statuses
 
- my $s = npg_pipeline::Status->new(id_run => 1, status => 'some status', dir_out => 'mydir');
+ my $s = npg_tracking::Status->new(id_run => 1, status => 'some status', dir_out => 'mydir');
  $s->freeze();
 
- $s = npg_pipeline::Status->new(id_run => 1, lanes => [1, 3], status => 'some status', dir_out => 'mydir');
+ $s = npg_tracking::Status->new(id_run => 1, lanes => [1, 3], status => 'some status', dir_out => 'mydir');
  $s->freeze();
 
 =head1 SUBROUTINES/METHODS
@@ -186,6 +190,8 @@ Kate Taylor
 =item MooseX::Storage
 
 =item DateTime
+
+=item DateTime::TimeZone
 
 =item DateTime::Format::Strptime
 
