@@ -150,13 +150,16 @@ sub _runfolder_prop {
     croak "Failed to get runfolder name from $runfolder_path";
   }
 
+  my $prop_name = $runfolder_prop_name eq $STATUS_DIR_KEY ?
+                    'analysis_path' : $runfolder_prop_name;
+
   my $prop;
   try {
     $prop = Moose::Meta::Class->create_anon_class(
       roles => [qw/npg_tracking::illumina::run::folder/]
     )->new_object(
       {runfolder_path => $runfolder_path, run_folder => $runfolder}
-    )->$runfolder_prop_name;
+    )->$prop_name;
   } catch {
     croak "Failed to get $runfolder_prop_name from $runfolder_path: $_";
   };
