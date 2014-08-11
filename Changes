@@ -1,7 +1,8 @@
 CHANGES
 
-release 77.8
+ - following psd dev url change, update regular expression in the reflector url filter
 
+release 77.8
  - npg dev url is set to the url of the dev server that is actually used for API calls
  - psd next release dev url replaced with training url, RT#412417
  - wrapper object for the status and a script to write status to a file
