@@ -402,7 +402,7 @@ sub _runfolder_watch_setup {
   my $sl = _runfolder_latest_summary_link($dir);
   if ($sl) {
     $self->_run_status_watch_setup($sl);
-  } 
+  }
 
   return;
 }
