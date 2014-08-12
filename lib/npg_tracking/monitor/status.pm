@@ -136,6 +136,17 @@ sub _path_is_latest_summary {
   return $path =~ /\/$ls\z/smx;
 }
 
+sub _runfolder_latest_summary_link {
+  my $path = shift;
+  if (!$path) {
+    croak 'Path should be defined';
+  }
+  ##no critic (TestingAndDebugging::ProhibitNoWarnings)
+  no warnings qw(once);
+  my $ls = catfile($path,  $npg_tracking::illumina::run::folder::SUMMARY_LINK);
+  return -l $ls ? $ls : undef;
+}
+
 sub _runfolder_prop {
   my ($self, $runfolder_path, $runfolder_prop_name) = @_;
 
@@ -259,8 +270,14 @@ sub _update_status {
 sub _stock_status_check {
   my $self = shift;
 
+  my $m = 'Processing backlog';
+  _log('Started ' . lc $m);
   foreach my $runfolder_path (@{$self->_stock_runfolders}) {
-    _log("Looking for status directory in $runfolder_path");
+    if (!_runfolder_latest_summary_link($runfolder_path)) {
+      _log("$m: runfolder $runfolder_path does not have the latest summary link, skipping.");
+      next;
+    }
+    _log("$m: looking for status directory in $runfolder_path");
     try {
       my $status_path = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
       _log("Looking for status files in $status_path");
@@ -268,12 +285,13 @@ sub _stock_status_check {
       if (@files) {
         $self->_update_status4files(\@files, $runfolder_path);
       } else {
-        _log("No status files found in $status_path");
+        _log("$m: no status files found in $status_path");
       }
     } catch {
-      _log("Failed to get status path from $runfolder_path: $_");
+      _log("$m: failed to get status path from $runfolder_path: $_");
     }
   }
+  _log('Finished ' . lc $m);
   return;
 }
 
@@ -352,7 +370,6 @@ sub _runfolder_watch_setup {
   _log("runforder $dir watch setup called");
 
   my $runfolder_name = basename $dir;
-  # just in case...
   if (exists $self->_watch_obj->{$runfolder_name}->{$RUNFOLDER_KEY}) {
     _log("Already watching $dir");
     return;
@@ -381,19 +398,39 @@ sub _runfolder_watch_setup {
   } else {
     $self->_watch_obj->{$runfolder_name}->{$RUNFOLDER_KEY} = $watch;
   }
+
+  my $sl = _runfolder_latest_summary_link($dir);
+  if ($sl) {
+    $self->_run_status_watch_setup($sl);
+  } 
+
   return;
 }
 
 sub _run_status_watch_setup {
   my ($self, $summary_link) = @_;
 
+  if (!$summary_link) {
+    croak 'Summary link path undefined';
+  }
+  _log("Setting watch for $summary_link");
+
   my $runfolder_name = basename $summary_link;
   my ($filename, $runfolder_path) = fileparse $summary_link;
-  # We assume that if the summary link exists, the status dir also exists
-  my $status_dir = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
-  if (!$status_dir) {
+
+  if (exists $self->_watch_obj->{$runfolder_name}->{$RUNFOLDER_KEY}) {
+    _log("Already watching status directory in $runfolder_name");
     return;
   }
+
+  my $status_dir;
+  try {
+    $status_dir = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
+  } catch {
+    _log("Failed to set watch for $summary_link: $_");
+    return;
+  };
+
   my $watch = $self->_notifier->watch( $status_dir,
     IN_IGNORED | IN_CLOSE_WRITE, sub {
       my $e = shift;
