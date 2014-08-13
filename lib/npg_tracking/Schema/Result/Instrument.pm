@@ -335,7 +335,7 @@ Readonly::Array  our @CURRENT_RUNS    => ('run pending', 'run in progress', 'run
 Readonly::Array  our @BLOCKING_RUNS   => ('run pending', 'run in progress', 'run on hold');
 
 Readonly::Hash my %STATUS_CHANGE_AUTO => {
-  'up' => 'wash required',
+  'up'                  => 'wash required',
   'wash performed'      => 'up',
   'planned maintenance' => 'down for repair',
   'planned repair'      => 'down for repair',

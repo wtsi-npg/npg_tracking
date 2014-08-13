@@ -5,7 +5,6 @@ use warnings;
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Carp;
-use File::Spec;
 use Getopt::Long;
 use Pod::Usage;
 
@@ -30,12 +29,10 @@ if ( !(-d $dir_out && -w $dir_out) ) {
   croak "--dir_out option $dir_out should be a writable directory";
 }
 
-my $so = npg_tracking::status->new(id_run => $id_run, status => $status, lanes => \@lanes);
-my $filename = File::Spec->catfile($dir_out, $so->filename);
-carp q(Saving status ') . $so->status . qq(' to $filename);
-open my ${fh}, q[>], $filename or croak "Cannot open $filename for writing";
-print ${fh} $so->freeze() or croak "Cannot write to $filename";
-close ${fh} or croak "Cannot close $filename";
+my $path = npg_tracking::status->new(
+   id_run => $id_run, status => $status, lanes => \@lanes)->to_file($dir_out);
+
+warn "Wrote status '$status' to $path\n";
 
 0;
 
@@ -90,8 +87,6 @@ npg_status2file
 =item warnings
 
 =item Carp
-
-=item File::Spec
 
 =item Getopt::Long
 
