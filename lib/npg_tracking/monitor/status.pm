@@ -525,7 +525,7 @@ npg_tracking::monitor::status
  Starts and perpetuates the watch.
  This method never returns. The caller should
  use cancel_watch method to cancel all current
- watches andrelease system resources associated
+ watches and release system resources associated
  with them.
 
 =head2 cancel_watch
