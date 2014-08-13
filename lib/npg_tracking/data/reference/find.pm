@@ -228,7 +228,7 @@ sub refs {
   } else {
 
     my $spiked_phix_index = $MINUS_ONE;
-    if ($self->lims->is_pool && !$self->tag_index && $self->lims->spiked_phix_tag_index) {
+    if ($self->lims->is_pool && !($self->can(q(tag_index)) && $self->tag_index) && $self->lims->spiked_phix_tag_index) {
       $spiked_phix_index = $self->lims->spiked_phix_tag_index;
     }
 
@@ -260,7 +260,7 @@ Returns false if no references found or multiple references found.
 sub single_ref_found {
 
   my $self = shift;
-  carp 'This method is depricated. Please use the refs method and evaluate the size of the returned array.';
+  carp 'This method is deprecated. Please use the refs method and evaluate the size of the returned array.';
 
   my @refs;
   eval {
