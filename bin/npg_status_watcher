@@ -54,8 +54,8 @@ try {
 exit 0;
 
 sub interrupt_handler {
-  warn "Handling interrupt sygnal\n";
-  try { $monitor->_all_watch_cancel };
+  warn "Handling interrupt signal\n";
+  try { $monitor->cancel_watch };
   exit 0;
 }
 
