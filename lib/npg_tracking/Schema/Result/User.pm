@@ -283,8 +283,8 @@ Related object: L<npg_tracking::Schema::Result::Usergroup>
 __PACKAGE__->many_to_many('usergroups' => 'user2usergroups', 'usergroup');
 __PACKAGE__->add_unique_constraint('username', ['username']);
 
-
 use Carp;
+with 'npg_tracking::Schema::Retriever';
 
 =head2 check_row_validity
 
@@ -344,19 +344,6 @@ sub _insist_on_valid_row {
     croak "Invalid identifier: $arg" if !defined $row_object;
 
     return $row_object;
-}
-
-
-=head2 pipeline_id
-
-Convenience method to return the database id field of the username 'pipeline'.
-
-=cut
-
-sub pipeline_id {
-    my ($self) = @_;
-    return $self->result_source->schema->resultset('User')->
-                find( { username => 'pipeline' } )->id_user();
 }
 
 __PACKAGE__->meta->make_immutable;

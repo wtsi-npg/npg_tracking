@@ -221,6 +221,12 @@ __PACKAGE__->has_many(
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
 
+use Carp;
+use Try::Tiny;
+with qw/
+        npg_tracking::Schema::Retriever
+       /;
+
 our $VERSION = '0';
 
 =head2 current_run_lane_status
@@ -234,5 +240,144 @@ sub current_run_lane_status {
   return $self->run_lane_statuses()->search({iscurrent => 1})->first(); #not nice - would like this defined by a relationship
 }
 
+=head2 update_status
+
+Logs the status and, if appropriate, marks this status current for the lane.
+Status description must be provided.
+
+  $obj->update_status($description, $username, $date);
+
+For some statuses, can trigger an auto update of run status.
+
+Returns undefined if the status has not been saved, otherwise returns the
+the new row, which can have iscurrent value set to either 1 or 0.
+
+=cut
+
+sub update_status {
+  my ( $self, $description, $username, $date ) = @_;
+
+  $date ||=  $self->get_time_now();
+  if ( ref $date ne 'DateTime' ) {
+    croak '"date" argument should be a DateTime object';
+  }
+
+  my $use_pipeline_user = 1;
+  my $id_user  = $self->get_user_id($username, $use_pipeline_user);
+  my $desc_row = $self->get_status_dict_row('RunLaneStatusDict', $description);
+
+  my $lane_statuses =  $self->related_resultset( q{run_lane_statuses} );
+
+  my $make_new_current = 1;
+  my $current = $lane_statuses->search(
+           {iscurrent => 1},
+           {order_by  =>  { -desc => 'date'},},)->next; # get latest
+  if ( $current ) {
+    if ( $current->run_lane_status_dict->description eq $description) {
+      return; # This status is already current
+    }
+    # If current status is later that the new one, do not make the new one current
+    if ( $current->date->subtract_datetime($date)->is_positive ) {
+      $make_new_current = 0;
+    }
+  }
+
+  # Use transaction in case iscurrent flag has to be reset
+  my $transaction = sub {
+    if ( $current && $make_new_current ) {
+      $lane_statuses->update_all( {iscurrent => 0} );
+    }
+
+    return $self->related_resultset( q{run_lane_statuses} )->create( {
+          run_lane_status_dict => $desc_row,
+          date                 => $date,
+          iscurrent            => $make_new_current,
+          id_user              => $id_user,
+    } );
+  };
+  
+  my $new_current = $self->result_source->schema->txn_do( $transaction );
+
+  if ($make_new_current) {
+    try {
+      $self->run->propagate_status_from_lanes();
+    } catch {
+      carp "Error propagating status up to the run: $_";
+    }
+  }
+
+  return $new_current;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+Result class definition in DBIx binding for npg tracking database.
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 SUBROUTINES/METHODS
+
+=head1 DEPENDENCIES
+
+=over
+
+=item strict
+
+=item warnings
+
+=item Moose
+
+=item MooseX::NonMoose
+
+=item MooseX::MarkAsMethods
+
+=item DBIx::Class::Core
+
+=item DBIx::Class::InflateColumn::DateTime
+
+=item Carp
+
+=item Try::Tiny
+
+=item npg_tracking::Schema::Retriever
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2014 Genome Research Limited
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+=cut
+

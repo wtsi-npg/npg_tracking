@@ -1,7 +1,14 @@
 CHANGES
 
-release 77.8
+release 77.9
+ - DBIx run and run-lane status update refactoring to accommodate passing
+     status date and make setting these two status types symmetrical
+ - initial code for monitoring status files
+ - bug fix in inferring recalibrated path from the runfolder path - previously
+     the code returned basecalls directory path before getting to the recalibrated path
+ - following psd dev url change, update regular expression in the reflector url filter
 
+release 77.8
  - npg dev url is set to the url of the dev server that is actually used for API calls
  - psd next release dev url replaced with training url, RT#412417
  - wrapper object for the status and a script to write status to a file

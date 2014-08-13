@@ -20,7 +20,8 @@ eval {
     if (!$requested_url) {
         croak q[url parameter is missing in the request];
     }
-    if( ! ($u->scheme eq 'http' and $u->host =~/\Apsd-[a-z]+\.internal\.sanger\.ac\.uk\z/smix)) {
+    if( ! ($u->scheme eq 'http' and $u->host =~
+      /\A(?:dev\.)?psd(?:-[a-z]+\.internal)?\.sanger\.ac\.uk\z/smix)) {
         croak qq[Cannot proxy to $requested_url];
     }
     1;

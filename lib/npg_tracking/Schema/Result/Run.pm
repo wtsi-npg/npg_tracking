@@ -338,8 +338,31 @@ __PACKAGE__->has_many(
 our $VERSION = '0';
 
 use Carp;
-use DateTime;
-use DateTime::TimeZone;
+use Try::Tiny;
+use Readonly;
+
+with qw/
+         npg_tracking::Schema::Retriever
+       /;
+
+Readonly::Hash my %STATUS_CHANGE_AUTO    => (
+  'analysis complete'  => 'qc review pending',
+);
+
+Readonly::Hash my %STATUS_PROPAGATE_AUTO => (
+  'analysis complete'  => 'analysis complete',
+  'manual qc complete' => 'archival pending',
+);
+
+=head2 tags
+
+Type: many_to_many
+
+Related object: L<npg_tracking::Schema::Result::Tag>
+
+=cut
+
+__PACKAGE__->many_to_many('tags' => 'tag_runs', 'tag');
 
 =head2 BUILD
 
@@ -350,7 +373,7 @@ Post-constructor: try to ensure instrument format is set for run.
 sub BUILD {
     my $self = shift;
     if ($self->id_instrument and not $self->id_instrument_format){
-      $self->id_instrument_format($self->instrument->id_instrument_format);
+        $self->id_instrument_format($self->instrument->id_instrument_format);
     }
 }
 
@@ -366,20 +389,6 @@ sub _event_type_rs {
 
     return $self->result_source->schema->resultset('EventType')->new( {} );
 }
-
-
-=head2 _rsd_rs
-
-Create a dbic RunStatusDict result set as shorthand and to access the row
-validation methods in that class.
-
-=cut
-
-sub _rsd_rs { my ($self) = @_;
-
-  return $self->result_source->schema->resultset('RunStatusDict')->new( {} );
-}
-
 
 =head2 _tag_rs
 
@@ -405,7 +414,7 @@ methods in that class.
 sub _user_rs {
     my ($self) = @_;
 
-     return $self->result_source->schema->resultset('User')->new( {} );
+    return $self->result_source->schema->resultset('User')->new( {} );
 }
 
 
@@ -443,65 +452,130 @@ sub current_run_status {
 
 =head2 update_run_status
 
-Changes the status of a run. Creates a new current run status for this
-run, all the previous statuses are marked as not current.
+If appropriate, creates a new run status for this run and,
+if appropriate, marks this status as current and all the
+previous statuses as not current.
 
-Also a new event row is created.
+For a new current status a new event row is created and, if appropriate,
+instrument status changed. In some cases, the run status is automatically
+advanced one step further.
 
-Two arguments are required a run status and a user in that order. In both
-cases the primary key can be supplied, or the (case-insensitive) description
-or username fields respectively.
+The description of the status is required.
 
-    $run_result_object->update_run_status( 4, 'jo3' );
-    $run_result_object->update_run_status( 'ArcHIVal pEnding, 5 );
+    $run_row->update_run_status('some status');
+
+An optional username can be supplied. If omitted, the pipeline user is
+assumed
+
+    $run_row->update_run_status( 'ArcHIVal pEnding', 'sloppy' );
+
+An optional third argument, a DateTime object, can be supplied. If omitted,
+current local time is used.
+
+    $run_row->update_run_status( 'ArcHIVal pEnding', 'sloppy', $date_obj );
+
+Returns undefined if the status has not been saved, otherwise returns the
+the new row, which can have iscurrent value set to either 1 or 0.
 
 =cut
 
 sub update_run_status {
-    my ( $self, $status_identifier, $user_identifier ) = @_;
+    my ( $self, $description, $user_identifier, $date ) = @_;
 
-    my $rsd_row = $self->_rsd_rs->_insist_on_valid_row($status_identifier);
-    my $rsd_id =  $rsd_row->id_run_status_dict();
-
-    my $user_id =
-        $self->_user_rs->_insist_on_valid_row($user_identifier)->id_user();
-
-    # Do nothing if the run_status is already set and current.
-     my $current_run_status =
-         $self->result_source->schema->resultset('RunStatus')->search(
-             {
-                 id_run             => $self->id_run(),
-                 id_run_status_dict => $rsd_id,
-                 iscurrent          => 1,
-             },
-     );
-
-     if ($current_run_status->count() != 1) {
-        # Make sure only one status is current.
-        my $old_status_rs = $self->result_source->schema->resultset('RunStatus')->
-            search( { id_run     => $self->id_run(),
-                  iscurrent  => 1, 
-                });
-        $old_status_rs->update( { iscurrent => 0 } );
-
-        my $new_run_status =
-            $self->result_source->schema->resultset('RunStatus')->create(
-            {
-                id_run             => $self->id_run(),
-                date               => DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local])),
-                id_run_status_dict => $rsd_id,
-                id_user            => $user_id,
-                iscurrent          => 1,
-            },
-        );
-        $new_run_status->update();
-
-        $self->run_status_event( $user_id, $new_run_status->id_run_status() );
+    $date ||= $self->get_time_now();
+    if ( ref $date ne 'DateTime' ) {
+        croak '"date" argument should be a DateTime object';
     }
 
-    $self->instrument->autochange_status_if_needed(
-      $rsd_row->description, $user_identifier);
-    return;
+    my $use_pipeline_user = 1;
+    my $user_id = $self->get_user_id($user_identifier, $use_pipeline_user);
+    my $rsd_row = $self->get_status_dict_row('RunStatusDict', $description);
+
+    # Do nothing if the run_status is already set and current.
+    my $current_status_rs = $self->related_resultset( q{run_statuses} )->search(
+             { iscurrent   => 1,},
+             { order_by    => { -desc => 'date'},},
+    );
+    my $current_status_row = $current_status_rs->next;
+    if ($current_status_row && $current_status_row->description eq $description) {
+        return;
+    }
+
+    # If current status is later that the new one, do not make the new one current
+    my $make_new_current = 1;
+
+    if ($current_status_row &&
+          $current_status_row->date->subtract_datetime($date)->is_positive ) {
+        $make_new_current = 0;
+    }
+
+    # Use transaction in case iscurrent flag has to be reset
+    my $transaction = sub {
+        if ($current_status_row && $make_new_current) {
+            $current_status_rs->update_all( {iscurrent => 0} );
+        }
+
+        return $self->related_resultset( q{run_statuses} )->create( {
+                run_status_dict    => $rsd_row,
+                date               => $date,
+                iscurrent          => $make_new_current,
+                id_user            => $user_id,
+        } );
+    };
+    my $new_row = $self->result_source->schema->txn_do( $transaction );
+
+    if ( $make_new_current ) {
+        try {
+            $self->run_status_event( $user_id, $new_row->id_run_status() );
+            $self->instrument->autochange_status_if_needed($description, $user_identifier);
+            my $auto = $STATUS_CHANGE_AUTO{$description};
+            if ($auto) {
+                $new_row = $self->update_run_status($auto);
+            }
+        } catch {
+            carp "Error performing post run status change actions \
+                  (event, auto run and instrument status update) $_";
+        }
+    }
+
+    return $new_row;
+}
+
+=head2 propagate_status_from_lanes
+
+Checks whether the current status of the lanes should trigger the run
+status update, triggers the update if appropriate. Returns true if
+the trigger has been activated, false otherwise.
+
+If correct behaviour with concurrent lane status updates is required,
+this method should not be called within the transaction that updates
+lane statuses since it needs visibility of current statuses of all
+lanes of the run. 
+
+=cut
+
+sub propagate_status_from_lanes {
+    my $self = shift;
+   
+    my $propagated = 0;
+    my %statuses = ();
+    foreach my $run_lane ($self->run_lanes()->all()) {
+      my $current = $run_lane->current_run_lane_status;
+      if (!$current) {
+        return $propagated; # One of lanes does not have current status
+      }
+      $statuses{$current->description} = 1;
+    }
+    if (scalar(keys %statuses) == 1) {
+        my ($description, $value)  = each %statuses;
+        my $auto = $STATUS_PROPAGATE_AUTO{$description};
+        if ( $auto ) {
+            $self->update_run_status($auto);
+            $propagated = 1;  
+        }
+    }
+
+    return $propagated;
 }
 
 =head2 run_status_event
@@ -526,7 +600,7 @@ sub run_status_event {
 
     croak 'No matching event type found' if !defined $id_event_type;
 
-    ( defined $when ) || ( $when =  DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local])));
+    ( defined $when ) || ( $when = $self->get_time_now());
 
 
     my $insert = $self->result_source->schema->resultset('Event')->create(
@@ -623,7 +697,7 @@ sub _set_mutually_exclusive_tags {
             id_run  => $self->id_run(),
             id_tag  => $is_tag_id,
             id_user => $user_id,
-            date    => DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local])),
+            date    => $self->get_time_now(),
         }
     );
 
@@ -665,7 +739,7 @@ sub set_tag {
         {
             id_run  => $self->id_run(),
             id_tag  => $tag_id,
-            date    => DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local])),
+            date    => $self->get_time_now(),
             id_user => $user_id,
         },
         { key => 'u_idrun_idtag' }
@@ -761,16 +835,76 @@ sub reverse_read {
     return $self->runs_read->find({read_order=>2+$self->is_tag_set(q(multiplex))});
 }
 
-
-=head2 tags
-
-Type: many_to_many
-
-Related object: L<npg_tracking::Schema::Result::Tag>
-
-=cut
-
-__PACKAGE__->many_to_many('tags' => 'tag_runs', 'tag');
-
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+Result class definition in DBIx binding for npg tracking database.
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 SUBROUTINES/METHODS
+
+=head1 DEPENDENCIES
+
+=over
+
+=item strict
+
+=item warnings
+
+=item Moose
+
+=item MooseX::NonMoose
+
+=item MooseX::MarkAsMethods
+
+=item DBIx::Class::Core
+
+=item DBIx::Class::InflateColumn::DateTime
+
+=item Carp
+
+=item Try::Tiny
+
+=item Readonly
+
+=item npg_tracking::Schema::Retriever
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2014 Genome Research Limited
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+=cut

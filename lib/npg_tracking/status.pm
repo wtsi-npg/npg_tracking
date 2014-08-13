@@ -9,7 +9,12 @@ use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Storage;
 use DateTime;
+use DateTime::Format::Strptime;
+use DateTime::TimeZone;
 use JSON::Any;
+use File::Spec;
+use File::Slurp;
+use Carp;
 
 use npg_tracking::util::types;
 
@@ -37,10 +42,13 @@ has q{status} => (
 );
 
 has q{timestamp} => (
-                   isa      => q{Str},
-                   is       => 'ro',
-                   required => 0,
-                   default  => sub { DateTime->now()->strftime(timestamp_format()) },
+                   isa       => q{Str},
+                   is        => 'ro',
+                   required  => 0,
+                   predicate => 'has_timestamp',
+                   default   => sub { DateTime->now(
+                         time_zone => DateTime::TimeZone->new(name => q[local])
+                                                   )->strftime(_timestamp_format()) },
                    documentation => q{timestamp of the status change},
 );
 
@@ -57,8 +65,42 @@ sub filename {
   return $filename;
 }
 
-sub timestamp_format {
-  return '%Y/%m/%d %H:%M:%S';
+sub _timestamp_format {
+  return '%d/%m/%Y %H:%M:%S';
+}
+
+sub timestamp_obj {
+  my $self = shift;
+  return DateTime::Format::Strptime->new(
+    pattern  => _timestamp_format(),
+    on_error => 'croak',
+  )->parse_datetime($self->timestamp);
+}
+
+sub to_string {
+  my $self = shift;
+  ##no critic (CodeLayout::ProhibitParensWithBuiltins)
+  return sprintf('Object %s status:"%s", id_run:"%i", lanes:"%s", date:"%s"',
+              __PACKAGE__,
+              $self->status,
+              $self->id_run,
+              @{$self->lanes} ? join(q[ ], @{$self->lanes}) : q[none],
+              $self->has_timestamp ? $self->timestamp : q[none]
+         );
+}
+
+sub from_file {
+  my ($package_name, $path) = @_;
+  return $package_name->thaw(read_file($path));
+}
+
+sub to_file {
+  my ($self, $dir) = @_;
+  my $filename = $dir ? File::Spec->catfile($dir, $self->filename) : $self->filename;
+  open my ${fh}, q[>], $filename or croak "Cannot open $filename for writing";
+  print ${fh} $self->freeze() or croak "Cannot write to $filename";
+  close ${fh} or croak "Cannot close $filename";
+  return $filename;
 }
 
 no Moose;
@@ -80,25 +122,58 @@ Kate Taylor
 
  Serializable to json object for run and lane statuses
 
- my $s = npg_pipeline::Status->new(id_run => 1, status => 'some status', dir_out => 'mydir');
+ my $s = npg_tracking::Status->new(id_run => 1, status => 'some status', dir_out => 'mydir');
  $s->freeze();
 
- $s = npg_pipeline::Status->new(id_run => 1, lanes => [1, 3], status => 'some status', dir_out => 'mydir');
+ $s = npg_tracking::Status->new(id_run => 1, lanes => [1, 3], status => 'some status', dir_out => 'mydir');
  $s->freeze();
 
 =head1 SUBROUTINES/METHODS
 
-=head2 id_run - run identifier
+=head2 id_run
 
-=head2 lanes - an optional array of lane numbers
+ Run identifier, required attribute.
 
-=head2 status - status to save
+=head2 lanes
 
-=head2 filename - suggested filename for serializing this object
+ An optional array of lane numbers attribute
 
-=head2 timestamp - timestamp
+=head2 status
 
-=head2 timestamp_format - format string for timestamp
+ String representing the status to save, a required attribute.
+
+=head2 filename
+
+ Suggested filename for serializing this object
+
+=head2 timestamp
+
+ String timestamp representation, an optional attribute.
+
+=head2 timestamp_obj
+
+ DateTime object timestamp representation
+
+=head2 to_string
+
+ String representation of tehe object that does not trigger
+ Moose lazy builders.
+
+=head2 from_file
+
+ Reads a file given as an attribute into a string and tries to instantiate
+ an npg_tracking::status object from this string.
+
+ my $obj = npg_tracking::status->from_file($path);
+
+=head2 to_file
+
+ Writes serialized object ($self) to a file. The file is created in a directory
+ given as an attribute or, if not passed, in the current directory. Filename returned
+ by the filename() method of the object is used. Returns the path of teh file created.
+ 
+ my $path = $status_obj->to_file('mydir');
+ my $path = $status_obj->to_file();
 
 =head1 DIAGNOSTICS
 
@@ -114,7 +189,19 @@ Kate Taylor
 
 =item MooseX::Storage
 
-=item POSIX
+=item DateTime
+
+=item DateTime::TimeZone
+
+=item DateTime::Format::Strptime
+
+=item JSON::Any
+
+=item File::Spec
+
+=item File::Slurp
+
+=item Carp
 
 =item npg_tracking::glossary::run
 
