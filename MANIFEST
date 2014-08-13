@@ -1066,7 +1066,6 @@ t/data/repos1/references/Homo_sapiens/1000Genomes_hs37d5/all/fasta/hs37d5.fa
 t/data/repos1/references/Homo_sapiens/1000Genomes/all/fasta/human_g1k_v37.fasta
 t/data/repos1/references/Homo_sapiens/CGP_GRCh37.NCBI.allchr_MT/all/fasta/Homo_sapiens.GRCh37.NCBI.allchr_MT.fa
 t/data/repos1/references/Homo_sapiens/GRCh37_53/all/fasta/Homo_sapiens.GRCh37.dna.all.fa
-t/data/repos1/references/Homo_sapiens/NCBI36/1000Genomes
 t/data/repos1/references/Homo_sapiens/NCBI36/all/bwa/ncbi36.fa.amb
 t/data/repos1/references/Homo_sapiens/NCBI36/all/fasta/ncbi36.fa
 t/data/repos1/references/Bordetella_pertussis/ST24/all/fasta/bpst24_May2010-1.fa
