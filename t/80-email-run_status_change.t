@@ -17,8 +17,6 @@ diag "\n***To avoid sending messages to live and dev sites, in this test LWP::Us
 use t::dbic_util;
 use t::util;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 16411 $ =~ /(\d+)/msx; $r; };
-
 sub post_nowhere {
   diag "Posting nowhere...\n";
   return HTTP::Response->new(200);
@@ -187,8 +185,8 @@ cmp_deeply( $reports->[2],
 lives_ok { $test[0]->run() } 'Main method executes without error';
 
 my $updated_time = $schema->resultset('Event')->find(23)->notification_sent();
-my $lag = DateTime->now()->subtract_datetime($updated_time)->delta_seconds();
-ok( abs($lag) < 10, 'notification_sent field has been updated recently' );
+my $lag = DateTime->now()->subtract_datetime($updated_time)->seconds();
+ok( $lag < 10, 'notification_sent field has been updated recently' );
 
 {
     local $ENV{dev} = 'dev';
