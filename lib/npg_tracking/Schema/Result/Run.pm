@@ -454,8 +454,11 @@ The description of the status is required.
 
     $run_row->update_run_status('some status');
 
-if there exists a status with this description that has
-the same timestamp or is current and has an earlier timestamp
+If there exists a status with this description that has the same timestamp
+or is current and has an earlier timestamp, a new status is not created.
+
+The current status is switched to the new one if the new status is not older
+than the current one.
 
 For a new current status a new event row is created and, if appropriate,
 instrument status gets changed. In some cases, the run status is automatically

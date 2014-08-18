@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 111;
+use Test::More tests => 115;
 use Test::Exception::LessClever;
 use Test::Warn;
 use DateTime;
@@ -57,16 +57,23 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
         { id_run    => $test_run_id, iscurrent => 1,})->first;
 
     my $test_date = $run_status->date();
+    my $same_time = $test_date->clone();
     is( $test_date->datetime, '2007-06-05T10:16:55', 'current status date not changed' );
     is( $run_status->related_resultset('run_status_dict')->next->description,
       'run complete', 'current run status as expected');
 
-    my $older_date = $test_date->subtract_duration(DateTime::Duration->new(seconds => 1));
-    $new = $test->update_run_status( 'run complete', 'joe_loader', $older_date );
+    $test_date->subtract_duration(DateTime::Duration->new(seconds => 1));
+    $new = $test->update_run_status( 'run complete', 'joe_loader', $test_date );
     isa_ok( $new, q{npg_tracking::Schema::Result::RunStatus}, 'new row created');
     ok( !$new->iscurrent, 'new status is not marked as current');
-    is( $new->date, $older_date, 'new status has correct date');
-    $new->delete;
+    is( $new->date()->datetime, '2007-06-05T10:16:54', 'new status has correct older date');
+
+    $new = $test->update_run_status( 'analysis pending', 'joe_loader', $same_time);
+    isa_ok( $new, q{npg_tracking::Schema::Result::RunStatus}, 'new row created');
+    ok( $new->iscurrent, 'new status is marked as current');
+    is( $new->date()->datetime, '2007-06-05T10:16:55', 'new status has correct date');
+    is( $new->related_resultset('run_status_dict')->next->description,
+      'analysis pending', 'new current run status description');
 
     $run_status = $schema->resultset('RunStatus')->search(
         { id_run    => $test_run_id, iscurrent => 1,})->first;

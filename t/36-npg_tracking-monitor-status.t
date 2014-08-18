@@ -1,9 +1,12 @@
 use strict;
 use warnings;
-use Test::More tests => 34;
+use Test::More tests => 47;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
+use File::Path qw/ make_path /;
+use DateTime;
+use DateTime::Duration;
 use t::dbic_util;
 
 use_ok( q{npg_tracking::status} );
@@ -14,6 +17,69 @@ isa_ok($m, q{npg_tracking::monitor::status});
 lives_ok { $m->_notifier } 'notifier object created';
 
 my $dir = tempdir(UNLINK => 1);
+my $runfolder_name = '130213_MS2_9334_A_MS2004675-300V2';
+my $test_id_run = 9334;
+my @bam_basecall = ($runfolder_name, 'Data', 'Intensities', 'BAM_basecalls_20130214-155058');
+
+my $now = DateTime->now();
+
+sub _staging_dir_tree {
+  my $root = shift;
+  my $a = join(q[/], $root, 'analysis');
+  my $o = join(q[/], $root, 'outgoing');
+  mkdir $a;
+  mkdir $o;
+  return ($a, $o);
+}
+
+sub _runfolder {
+  my $root = shift;
+  my @dirs = @bam_basecall;
+  unshift @dirs, $root;
+  make_path join(q[/], @dirs);
+  pop @dirs;
+  push @dirs, 'BaseCalls';
+  make_path join(q[/], @dirs);
+}
+
+sub _create_status_dir{
+  my $root = shift;
+  my @dirs = @bam_basecall;
+  unshift @dirs, $root;
+  push @dirs, 'status';
+  make_path join(q[/], @dirs);
+}
+
+sub _create_latest_summary_link {
+  my $root = shift;
+  my @dirs = @bam_basecall;
+  unshift @dirs, $root;
+  my $target = join(q[/], @dirs);
+  my $link = join(q[/], $root, $runfolder_name, 'Latest_Summary');
+  symlink $target, $link;
+}
+
+sub _create_test_run {
+  my ($schema, $id_run) = @_;;
+  my $run = $schema->resultset('Run')->create({
+       id_run => $id_run,
+       id_instrument => 48,
+                                   });
+  foreach my $lane ((1 .. 8)) {
+    $schema->resultset('RunLate')->create({
+       id_run => $id_run,
+       position => $lane,
+                                       });
+  }
+  my $date = $now->subtract_duration(DateTime::Duration->new(seconds => 10));
+  $run->update_run_status('run pending', undef, $date);
+  $date = $now->subtract_duration(DateTime::Duration->new(seconds => 9));
+  $date = $now->subtract_duration(DateTime::Duration->new(seconds => 8));
+  $run->update_run_status('run complete', undef, $date);
+  $date = $now->subtract_duration(DateTime::Duration->new(seconds => 7));
+  $run->update_run_status('run mirrored', undef, $date);
+  $run->update_run_status('analysis in progress', undef, $date);
+}
 
 my $cb = sub {
       my $e = shift;
@@ -150,6 +216,33 @@ my $schema = t::dbic_util->new->test_schema();
     'latest summary link identified correctly');
   ok(!npg_tracking::monitor::status::_path_is_latest_summary('/some/path/Latest_Summary/other'),
     'path is not latest summary');
+}
+
+{
+  my ($a, $o) = _staging_dir_tree($dir);
+  my $m = npg_tracking::monitor::status->new(transit => $a, destination => $o, _schema => $schema);
+  lives_ok { $m->_transit_watch_setup() } 'transit dir watch set-up';
+  is(ref $m->_watch_obj->{$a}, 'Linux::Inotify2::Watch', 'watch object for the transit dir is cached');
+  is($m->_watch_obj->{$a}->name, $a, 'transit dir path is used as name');
+  lives_ok { $m->_stock_watch_setup() } 'existing runfolders watch set-up - no runfolders exist';
+  lives_ok { $m->_stock_status_check() } 'stock status check - no runfolders exist';
+  is (scalar keys %{$m->_watch_obj}, 1, 'one watch object');
+  rmdir $a;
+  throws_ok {$m->_notifier->poll()} qr/Events for $a have been lost/, 'error when transit directory is deleted';
+  is (scalar keys %{$m->_watch_obj}, 0, 'no watch objects');
+}
+
+{
+  my ($a, $o) = _staging_dir_tree($dir);
+  my $m = npg_tracking::monitor::status->new(transit => $a, destination => $o, _schema => $schema);
+  _runfolder($o);
+   lives_ok { $m->_transit_watch_setup() } 'transit dir watch set-up';
+  lives_ok { $m->_stock_watch_setup() } 'existing runfolders watch set-up - one runfolder exists';
+  is(ref $m->_watch_obj->{$runfolder_name}->{'top_level'}, 'Linux::Inotify2::Watch', 'watch object for the runfolder is cached');
+  lives_ok { $m->_stock_status_check() } 'stock status check - one runfolders exist, no status dir';
+  is (scalar keys %{$m->_watch_obj}, 2, 'two watch objects');
+  
+  $m->cancel_watch();
 }
 
 1;

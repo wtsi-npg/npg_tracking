@@ -334,9 +334,11 @@ sub _transit_watch_setup {
       my $e = shift;
       my $name = $e->fullname;
       if ($e->IN_IGNORED) {
+        $self->cancel_watch();
         croak "Events for $name have been lost";
       }
       if ($e->IN_UNMOUNT) {
+        $self->cancel_watch();
         croak "Filesystem unmounted for $name";
       }
       if ($e->IN_DELETE) {

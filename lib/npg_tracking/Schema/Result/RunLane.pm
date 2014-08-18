@@ -246,6 +246,12 @@ Status description must be provided.
 
   $obj->update_status($description, $username, $date);
 
+If there exists a status with this description that has the same timestamp
+or is current and has an earlier timestamp, a new status is not created.
+
+The current status is switched to the new status if the new status is not older
+than the current one.
+
 For some statuses, can trigger an auto update of run status.
 
 Returns undefined if the status has not been saved, otherwise returns the

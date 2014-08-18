@@ -90,7 +90,7 @@ sub status_is_duplicate {
 
 sub current_status_is_outdated {
   my ($self, $current_record, $new_status_date) = @_;
-  return ($current_record && $current_record->date > $new_status_date) ? 0 : 1;
+  return ($current_record && ($new_status_date < $current_record->date)) ? 0 : 1;
 }
 
 no Moose::Role;
