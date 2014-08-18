@@ -4,6 +4,7 @@ use Moose::Role;
 use DateTime;
 use DateTime::TimeZone;
 use Carp;
+use List::MoreUtils qw{any};
 use Readonly;
 
 our $VERSION = '0';
@@ -64,6 +65,34 @@ sub get_status_dict_row {
   return $row;
 }
 
+sub status_is_duplicate {
+  my ($self, $status_description, $status_date) = @_;
+
+  my $entity = ref $self;
+  ($entity) = $entity =~ /(\w+)$/smx;
+  if ($entity eq 'RunLane') {
+    $entity = 'Run_Lane';
+  }
+  $entity = lc $entity;
+  my @same_statuses = $self->related_resultset( $entity . q{_statuses} )->search(
+             { $entity . q{_status_dict.description} => $status_description,},
+             { prefetch                              => $entity . q{_status_dict},
+               order_by                              => { -desc => 'date'},},
+  )->all;
+
+  if (@same_statuses) {
+    if ( any { $_->date == $status_date || ($_->iscurrent && $_->date < $status_date)} @same_statuses ) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+sub current_status_is_outdated {
+  my ($self, $current_record, $new_status_date) = @_;
+  return ($current_record && $current_record->date > $new_status_date) ? 0 : 1;
+}
+
 no Moose::Role;
 1;
 __END__
@@ -86,6 +115,16 @@ npg_tracking::Schema::Retriever
  Returns a DateTime object for current time. Time is local.
 
  my $new = $row->get_time_now();
+
+=head2 compare_date
+
+ Compares the value in the date column of the first argument with the
+ date represented by the DateTime object in the second argument. Returns
+ zero if date timestamps are the same, 1 if the date in the database
+ record is older than the given date and -1 the given date is older than
+ the database date..
+
+ my $is_older = $self->compare_date($status_row, $some_date); 
 
 =head2 get_user_row
 
@@ -122,6 +161,17 @@ npg_tracking::Schema::Retriever
 
  my $srow = $row->get_status_dict_row(q[RunStatusDict], q[qc complete]);
 
+=head2 status_is_duplicate
+
+ Given a new status description and date, returns true if such a record
+ already exists, false otherwise.
+ 
+
+=head2 current_status_is_outdated
+
+ Given the current status row and a date for the new status record, returns true
+ if the current status has to be reset to a new record, false otherwise.
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -137,6 +187,8 @@ npg_tracking::Schema::Retriever
 =item DateTime::TimeZone
 
 =item Carp
+
+=item List::MoreUtils
 
 =item Readonly
 

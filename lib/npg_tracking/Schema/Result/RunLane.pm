@@ -218,7 +218,6 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:43
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:a/2jj/wekHtvD7+mU4hh5g
 
-# Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
 
 use Carp;
@@ -262,34 +261,27 @@ sub update_status {
     croak '"date" argument should be a DateTime object';
   }
 
+  if ($self->status_is_duplicate($description, $date)) {
+    return;
+  }
+
+  my $current_rs = $self->related_resultset( q{run_lane_statuses} )->search(
+           {iscurrent => 1},
+           {order_by  =>  { -desc => 'date'},},);
+  my $current = $current_rs->next;
+  my $make_new_current = $self->current_status_is_outdated($current, $date);
+
   my $use_pipeline_user = 1;
   my $id_user  = $self->get_user_id($username, $use_pipeline_user);
-  my $desc_row = $self->get_status_dict_row('RunLaneStatusDict', $description);
-
-  my $lane_statuses =  $self->related_resultset( q{run_lane_statuses} );
-
-  my $make_new_current = 1;
-  my $current = $lane_statuses->search(
-           {iscurrent => 1},
-           {order_by  =>  { -desc => 'date'},},)->next; # get latest
-  if ( $current ) {
-    if ( $current->run_lane_status_dict->description eq $description) {
-      return; # This status is already current
-    }
-    # If current status is later that the new one, do not make the new one current
-    if ( $current->date->subtract_datetime($date)->is_positive ) {
-      $make_new_current = 0;
-    }
-  }
 
   # Use transaction in case iscurrent flag has to be reset
   my $transaction = sub {
     if ( $current && $make_new_current ) {
-      $lane_statuses->update_all( {iscurrent => 0} );
+      $current_rs->update_all( {iscurrent => 0} );
     }
 
     return $self->related_resultset( q{run_lane_statuses} )->create( {
-          run_lane_status_dict => $desc_row,
+          run_lane_status_dict => $self->get_status_dict_row('RunLaneStatusDict', $description),
           date                 => $date,
           iscurrent            => $make_new_current,
           id_user              => $id_user,
@@ -358,7 +350,7 @@ Result class definition in DBIx binding for npg tracking database.
 
 =head1 AUTHOR
 
-Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

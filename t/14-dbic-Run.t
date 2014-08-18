@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 105;
+use Test::More tests => 111;
 use Test::Exception::LessClever;
 use Test::Warn;
 use DateTime;
@@ -40,33 +40,45 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
             'User result set' );
 }
 
-
-
 # Conventional tests for current_run_status method
 {
     is( $test->current_run_status_description(), 'run complete',
         'Current run status returned' );
 }
 
-
 # Status updates.
 {
     my $new;
     lives_ok { $new = $test->update_run_status( 'run complete', 'joe_loader' ) }
-             'Set a status that is already current';
+             'Set a status that is already current and older than the new one';
     is($new, undef, 'new row object is not returned');
 
-    my $run_status_rs = $schema->resultset('RunStatus')->search(
-        { id_run    => $test_run_id, iscurrent => 1,});
+    my $run_status = $schema->resultset('RunStatus')->search(
+        { id_run    => $test_run_id, iscurrent => 1,})->first;
 
-    my $test_date = $run_status_rs->first->date();
-    is( $test_date->datetime, '2007-06-05T10:16:55', 'Not changed' );
+    my $test_date = $run_status->date();
+    is( $test_date->datetime, '2007-06-05T10:16:55', 'current status date not changed' );
+    is( $run_status->related_resultset('run_status_dict')->next->description,
+      'run complete', 'current run status as expected');
+
+    my $older_date = $test_date->subtract_duration(DateTime::Duration->new(seconds => 1));
+    $new = $test->update_run_status( 'run complete', 'joe_loader', $older_date );
+    isa_ok( $new, q{npg_tracking::Schema::Result::RunStatus}, 'new row created');
+    ok( !$new->iscurrent, 'new status is not marked as current');
+    is( $new->date, $older_date, 'new status has correct date');
+    $new->delete;
+
+    $run_status = $schema->resultset('RunStatus')->search(
+        { id_run    => $test_run_id, iscurrent => 1,})->first;
+    is( $run_status->date()->datetime, '2007-06-05T10:16:55', 'current status date not changed' );
 
     my $before = DateTime->now();
     lives_ok { $new = $test->update_run_status( 'run stopped early', 'joe_loader' ) }
              'Set a new status';
-     isa_ok ($new, q{npg_tracking::Schema::Result::RunStatus}, 'new row object returned');
+    isa_ok ($new, q{npg_tracking::Schema::Result::RunStatus}, 'new row object returned');
 
+    my $run_status_rs = $schema->resultset('RunStatus')->search(
+        { id_run    => $test_run_id, iscurrent => 1,});
     is( $run_status_rs->first->id_run_status_dict(), 22, 'New run status' );
     isnt( $run_status_rs->first->date(), $test_date,
           'New entry is an update not a copy' );
@@ -105,6 +117,9 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
     is($new->iscurrent, 1, 'new row is current');
     is($test->current_run_status->user->username, 'pipeline',
          'pipeline user is set for this status');
+
+    $new = $test->update_run_status( 'analysis pending', 'joe_loader', $now );
+    ok(!$new, 'cannot create a duplicate (same description and timestamp)'); 
 }
 
 
@@ -272,82 +287,64 @@ my $test_date = $paired_tag_rs->first->date();
                     )} 'instrument updated to the planned repair'
     }
 
-    lives_ok { 
-                $one_of_two_active->update_run_status( 'run cancelled',
-                                                       'pipeline' )
-             }
-             ' Run cancelled on a HiSeq with another active run';
+    lives_ok { $one_of_two_active->update_run_status( 'run cancelled',
+                                                       'pipeline' )}
+             'Run cancelled on a HiSeq with another active run';
 
     is( $one_of_two_active->instrument->current_instrument_status(),
-        'planned repair', '  Instrument status is not changed' );
+        'planned repair', 'Instrument status is not changed' );
 
-
-    lives_ok { 
-                $active_one_of_two->update_run_status( 'run cancelled',
-                                                       'pipeline' )
-             }
-             '  Run cancelled on a HiSeq with no other active run';
+    lives_ok { $active_one_of_two->update_run_status( 'run cancelled',
+                                                       'pipeline' )}
+             'Run cancelled on a HiSeq with no other active run';
 
     is( $active_one_of_two->instrument->current_instrument_status(),
-        'down for repair', '  Instrument status is now \'down for repair\'' );
-
+        'down for repair', 'Instrument status is now \'down for repair\'' );
 
     lives_ok { $single->update_run_status( 'run cancelled', 'pipeline' ) }
-             '  Run cancelled on a GAII';
+             'Run cancelled on a GAII';
 
     is( $single->instrument->current_instrument_status(),
-        'down for repair', '  Instrument status is now \'down for repair\'' );
+        'down for repair', 'Instrument status is now \'down for repair\'' );
 
-
-    lives_ok {
-                $active_one_of_two->instrument->update_instrument_status(
+    lives_ok {  $active_one_of_two->instrument->update_instrument_status(
                                           'planned repair', 'pipeline' );
                 $single->instrument->update_instrument_status(
-                                          'planned repair', 'pipeline' );
-             }
+                                          'planned repair', 'pipeline' );}
              'Reset instrument statuses';
 
-    lives_ok { 
-                $one_of_two_active->update_run_status( 'run complete',
-                                                       'pipeline' )
-             }
-             '  Run complete on a HiSeq with another active run';
+    lives_ok { $one_of_two_active->update_run_status( 'run complete',
+                                                       'pipeline' )}
+             'Run complete on a HiSeq with another active run';
 
     is( $one_of_two_active->instrument->current_instrument_status(),
-        'planned repair', '  Instrument status is not changed' );
+        'planned repair', 'Instrument status is not changed' );
 
-
-    lives_ok { 
-                $active_one_of_two->update_run_status( 'run complete',
-                                                       'pipeline' )
-             }
-             '  Run complete on a HiSeq with no other active run';
+    lives_ok { $active_one_of_two->update_run_status( 'run complete',
+                                                       'pipeline' )}
+             'Run complete on a HiSeq with no other active run';
 
     is( $one_of_two_active->instrument->current_instrument_status(),
-        'planned repair', '  Instrument status is not changed' );
+        'planned repair', 'Instrument status is not changed' );
 
-    lives_ok { 
-                $active_one_of_two->update_run_status( 'run mirrored',
-                                                       'pipeline' )
-             }
-             '  Run mirrored on a HiSeq with no other active run';   
+    lives_ok { $active_one_of_two->update_run_status( 'run mirrored',
+                                                       'pipeline' )}
+             'Run mirrored on a HiSeq with no other active run';   
 
     is( $active_one_of_two->instrument->current_instrument_status(),
-        'down for repair', '  Instrument status is now \'down for repair\'' );
-
+        'down for repair', 'Instrument status is now \'down for repair\'' );
 
     lives_ok { $single->update_run_status( 'run complete', 'pipeline' ) }
-             '  Run complete on a GAII';
+             'Run complete on a GAII';
 
     is( $single->instrument->current_instrument_status(),
-        'planned repair', '  Instrument status has not changed' );
+        'planned repair', 'Instrument status has not changed' );
 
     lives_ok { $single->update_run_status( 'run mirrored', 'pipeline' ) }
-             '  Run complete on a GAII';
+             'Run complete on a GAII';
 
     is( $single->instrument->current_instrument_status(),
-        'down for repair', '  Instrument status is now \'down for service\'' );
-
+        'down for repair', 'Instrument status is now \'down for service\'' );
 
     lives_ok {
                 $active_one_of_two->instrument->update_instrument_status(
@@ -357,28 +354,21 @@ my $test_date = $paired_tag_rs->first->date();
              }
              'Reset instrument statuses';
 
-    lives_ok { 
-                $one_of_two_active->update_run_status( 'analysis pending',
-                                                       'pipeline' )
-             }
-             '  analysis pending on a HiSeq with another active run';
+    lives_ok { $one_of_two_active->update_run_status( 'analysis pending',
+                                                       'pipeline' )}
+             'analysis pending on a HiSeq with another active run';
 
     is( $one_of_two_active->instrument->current_instrument_status(),
-        'planned repair', '  Instrument status is not changed' );
+        'planned repair', 'Instrument status is not changed' );
 
-
-    lives_ok { 
-                $active_one_of_two->update_run_status( 'analysis pending',
-                                                       'pipeline' )
-             }
-             '  analysis pending on a HiSeq with no other active run';
+    lives_ok { $active_one_of_two->update_run_status( 'analysis pending',
+                                                       'pipeline' )}
+             'analysis pending on a HiSeq with no other active run';
 
     is( $active_one_of_two->instrument->current_instrument_status(),
-        'down for service', '  Instrument status changed to down for service' );
+        'down for service', 'Instrument status changed to down for service' );
 
-
-    lives_ok {
-               $one_of_two_active->instrument->update_instrument_status(
+    lives_ok { $one_of_two_active->instrument->update_instrument_status(
                                                            'up', 'pipeline' );
                $active_one_of_two->instrument->update_instrument_status(
                                                            'up', 'pipeline' );
@@ -387,39 +377,31 @@ my $test_date = $paired_tag_rs->first->date();
              }
              'Set status to "up"';
 
-
-    lives_ok { 
-                $active_one_of_two->update_run_status( 'run cancelled',
-                                                       'pipeline' )
-             }
-             '  Run cancelled on a HiSeq with no other active run';
+    lives_ok { $active_one_of_two->update_run_status( 'run cancelled',
+                                                       'pipeline' )}
+             'Run cancelled on a HiSeq with no other active run';
 
     is( $active_one_of_two->instrument->current_instrument_status(),
-        'wash required', '  Instrument status changed to wash required' );
-
+        'wash required', 'Instrument status changed to wash required' );
 
     lives_ok { $single->update_run_status( 'run cancelled', 'pipeline' ) }
-             '  Run cancelled on a GAII';
+             'Run cancelled on a GAII';
 
     is( $single->instrument->current_instrument_status(),
-        'wash required', '  Instrument status changed to wash required' );
+        'wash required', 'Instrument status changed to wash required' );
 
-
-    lives_ok { 
-                $active_one_of_two->update_run_status( 'run cancelled',
-                                                       'pipeline' )
-             }
-             '  Run cancelled on a HiSeq with no other active run';
+    lives_ok { $active_one_of_two->update_run_status( 'run cancelled',
+                                                       'pipeline' )}
+             'Run cancelled on a HiSeq with no other active run';
 
     is( $active_one_of_two->instrument->current_instrument_status(),
-        'wash required', '  Instrument status changed to wash required' );
-
+        'wash required', 'Instrument status changed to wash required' );
 
     lives_ok { $single->update_run_status( 'run cancelled', 'pipeline' ) }
-             '  Run cancelled on a GAII';
+             'Run cancelled on a GAII';
 
     is( $single->instrument->current_instrument_status(),
-        'wash required', '  Instrument status changed to wasg required' );
+        'wash required', 'Instrument status changed to wash required' );
 }
 
 { #check single read run

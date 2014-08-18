@@ -188,7 +188,6 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:38
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TkFv5J36/M51WwS1WQKs8Q
 
-# Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
 
 use Carp;
@@ -306,7 +305,7 @@ Result class definition in DBIx binding for npg tracking database.
 
 =head1 AUTHOR
 
-Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

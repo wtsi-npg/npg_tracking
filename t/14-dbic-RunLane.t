@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 38;
+use Test::More tests => 42;
 use Test::Exception;
 use DateTime;
 use DateTime::Duration;
@@ -91,6 +91,20 @@ is($run->current_run_status_description, 'run complete',
   }
   is($run->current_run_status_description, 'archival pending',
     'run status has changed');
+}
+
+{
+  my $current_row = $lanes[0]->current_run_lane_status;
+  my $current_date = $current_row->date;
+  my $current_status = $current_row->run_lane_status_dict->description;
+
+  my $older_date = $current_date->subtract_duration(DateTime::Duration->new(seconds => 1));
+  my $new_row = $lanes[0]->update_status($current_status, undef, $older_date);
+  isa_ok( $new_row, q{npg_tracking::Schema::Result::RunLaneStatus}, 'new row created'); 
+  ok(!$new_row->iscurrent, 'new row is not marked as current');
+  is($new_row->date, $older_date, 'new status has correct date');
+  $new_row = $lanes[0]->update_status($current_status, 'some user');
+  ok(!$new_row, 'duplicated row is not created');
 }
 
 1;
