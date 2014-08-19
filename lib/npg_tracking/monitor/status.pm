@@ -23,9 +23,9 @@ Readonly::Scalar my $STATUS_DIR_KEY   => q[status_dir];
 Readonly::Scalar my $RUNFOLDER_KEY    => q[top_level];
 Readonly::Scalar my $STATUS_DIR_NAME  => q[status];
 
-has 'transit' =>  (isa             => 'NpgTrackingDirectory',
-                   is              => 'ro',
-                   required        => 1,
+has 'transit'     =>  (isa             => 'NpgTrackingDirectory',
+                       is              => 'ro',
+                       required        => 1,
 );
 
 has 'destination' =>  (isa             => 'Maybe[NpgTrackingDirectory]',
@@ -33,18 +33,45 @@ has 'destination' =>  (isa             => 'Maybe[NpgTrackingDirectory]',
                        required        => 0,
 );
 
-has '_notifier'  =>   (isa             => 'Linux::Inotify2',
+has 'blocking'    =>  (isa             => 'Bool',
                        is              => 'ro',
                        required        => 0,
-                       init_arg        => undef,
-                       lazy_build      => 1,
+                       default         => 1,
+);
+
+has 'verbose'     =>  (isa             => 'Bool',
+                       is              => 'ro',
+                       required        => 0,
+                       default         => 1,
+);
+
+has '_notifier'   =>   (isa             => 'Linux::Inotify2',
+                        is              => 'ro',
+                        required        => 0,
+                        init_arg        => undef,
+                        lazy_build      => 1,
 );
 sub _build__notifier {
+  my $self = shift;
   my $inotify = Linux::Inotify2->new()
     or croak "unable to create new inotify object: $ERRNO";
-  # watch is blocking by default
-  #$inotify->blocking(); #remove blocking
+  # Watch is blocking by default
+  if (!$self->blocking) {
+    $inotify->blocking(); # Remove blocking
+  }
   return $inotify;
+}
+
+has '_latest_summary_name' => (
+                       isa             => 'Str',
+                       is              => 'ro',
+                       required        => 0,
+                       lazy_build      => 1,
+);
+sub _build__latest_summary_name {
+  ##no critic (TestingAndDebugging::ProhibitNoWarnings)
+  no warnings qw(once);
+  return $npg_tracking::illumina::run::folder::SUMMARY_LINK;
 }
 
 has '_schema' => ( reader     => 'schema',
@@ -117,51 +144,60 @@ sub _error {
 }
 
 sub _log {
-  my $m = shift;
-  if ($m) {
+  my ($self, $m) = @_;
+  if ($m && $self->verbose) {
     warn "$m\n";
   }
   return;
 }
 
 sub _path_is_latest_summary {
-  my $path = shift;
+  my ($self, $path) = @_;
   if (!$path) {
     croak 'Path should be defined';
   }
-  ##no critic (TestingAndDebugging::ProhibitNoWarnings)
-  no warnings qw(once);
-  my $ls = $npg_tracking::illumina::run::folder::SUMMARY_LINK;
+  my $ls = $self->_latest_summary_name;
   # Not checking here that the path is a soft link
+  # because the link might have been deleted by now
   return $path =~ /\/$ls\z/smx;
 }
 
 sub _runfolder_latest_summary_link {
-  my $path = shift;
+  my ($self, $path) = @_;
   if (!$path) {
     croak 'Path should be defined';
   }
-  ##no critic (TestingAndDebugging::ProhibitNoWarnings)
-  no warnings qw(once);
-  my $ls = catfile($path,  $npg_tracking::illumina::run::folder::SUMMARY_LINK);
+  my $ls = catfile($path,  $self->_latest_summary_name);
   return -l $ls ? $ls : undef;
 }
 
-sub _runfolder_prop {
-  my ($self, $runfolder_path, $runfolder_prop_name) = @_;
+sub _runfolder_name_and_path {
+  my $runfolder_path = shift;
+  $runfolder_path =~ s/\/$//smx;
+  my ($runfolder_name, $top_path) = fileparse $runfolder_path;
+  if (!$runfolder_name) {
+    croak "Failed to get runfolder name from $runfolder_path";
+  }
+  return ($runfolder_name, $runfolder_path);
+}
 
-  if (!$runfolder_path) {
+sub _runfolder_name_and_path_from_summary_link {
+  my $summary_link = shift;
+  my ($filename, $path) = fileparse $summary_link;
+  return _runfolder_name_and_path($path);
+}
+
+sub _runfolder_prop {
+  my ($self, $path, $runfolder_prop_name) = @_;
+
+  if (!$path) {
     croak 'Runfolder path should be defined';
   }
   if (!$runfolder_prop_name) {
     croak 'Required runfolder property name should be defined';
   }
 
-  $runfolder_path =~ s/\/$//smx;
-  my ($runfolder, $top_path) = fileparse $runfolder_path;
-  if (!$runfolder) {
-    croak "Failed to get runfolder name from $runfolder_path";
-  }
+  my ($runfolder, $runfolder_path) = _runfolder_name_and_path($path);
 
   my $prop_name = $runfolder_prop_name eq $STATUS_DIR_KEY ?
                     'analysis_path' : $runfolder_prop_name;
@@ -186,11 +222,11 @@ sub _runfolder_prop {
     return $prop;
   }
 
-  my $path = catdir($prop, $STATUS_DIR_NAME);
-  if (!-d $path) {
+  my $spath = catdir($prop, $STATUS_DIR_NAME);
+  if (!-d $spath) {
     croak "Status directory $path does not exist";
   }
-  return $path;
+  return $spath;
 }
 
 sub _read_status {
@@ -228,12 +264,12 @@ sub _update_status4files {
 
   foreach my $file ( @{$files} ) {
     try {
-      _log("\nReading status from $file");
+      $self->_log("\nReading status from $file");
       my $status = $self->_read_status($file, $runfolder_path);
-      _log('Saving to database [' . $status->to_string . "]\n");
+      $self->_log('Saving to database [' . $status->to_string . "]\n");
       $self-> _update_status($status);
     } catch {
-      _log("Error saving status: $_\n");
+      $self->_log("Error saving status: $_\n");
     }
   }
   return;
@@ -251,7 +287,11 @@ sub _update_status {
   my $user = undef;
 
   if ( !@{$status->lanes} ) {
-    $run_row->update_run_status($status->status, $user, $date);
+    if ($run_row->update_run_status($status->status, $user, $date)) {
+      $self->_log('Run status saved');
+    } else {
+      $self->_log('Run status not saved');
+    }
   } else {
     my %run_lanes = map { $_->position => $_} $run_row->run_lanes->all();
     foreach my $pos (@{$status->lanes}) {
@@ -260,7 +300,11 @@ sub _update_status {
       }
     }
     foreach my $pos (sort { $a <=> $b} @{$status->lanes}) {
-      $run_lanes{$pos}->update_status($status->status, $user, $date);
+      if ($run_lanes{$pos}->update_status($status->status, $user, $date)) {
+        $self->_log('Lane status saved');
+      } else {
+        $self->_log('Lane status not saved');
+      }
     }
   }
 
@@ -271,34 +315,34 @@ sub _stock_status_check {
   my $self = shift;
 
   my $m = 'Processing backlog';
-  _log('Started ' . lc $m);
+  $self->_log('Started ' . lc $m);
   foreach my $runfolder_path (@{$self->_stock_runfolders}) {
-    if (!_runfolder_latest_summary_link($runfolder_path)) {
-      _log("$m: runfolder $runfolder_path does not have the latest summary link, skipping.");
+    if (!$self->_runfolder_latest_summary_link($runfolder_path)) {
+      $self->_log("$m: runfolder $runfolder_path does not have the latest summary link, skipping.");
       next;
     }
-    _log("$m: looking for status directory in $runfolder_path");
+    $self->_log("$m: looking for status directory in $runfolder_path");
     try {
       my $status_path = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
-      _log("Looking for status files in $status_path");
+      $self->_log("Looking for status files in $status_path");
       my @files = glob qq("${status_path}/*.json");
       if (@files) {
         $self->_update_status4files(\@files, $runfolder_path);
       } else {
-        _log("$m: no status files found in $status_path");
+        $self->_log("$m: no status files found in $status_path");
       }
     } catch {
-      _log("$m: failed to get status path from $runfolder_path: $_");
+      $self->_log("$m: failed to get status path from $runfolder_path: $_");
     }
   }
-  _log('Finished ' . lc $m);
+  $self->_log('Finished ' . lc $m);
   return;
 }
 
 sub _runfolder_watch_cancel {
   my ($self, $dir) = @_;
 
-  _log("runforder $dir watch cancel called");
+  $self->_log("runforder $dir watch cancel called");
   my $name = basename($dir);
   if (exists $self->_watch_obj->{$name}) {
     foreach my $key (keys %{$self->_watch_obj->{$name}}) {
@@ -313,16 +357,20 @@ sub _runfolder_watch_cancel {
 }
 
 sub _run_status_watch_cancel {
-  my ($self, $path) = @_;
+  my ($self, $latest_summary_path) = @_;
 
-  foreach my $runfolder_name (keys %{$self->_watch_obj}) {
-    my $test_watch = $self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY};
-    if ($test_watch && $test_watch->name eq $path) {
-      $test_watch->cancel;
-      delete $self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY};
-      last;
-    }
+  if (!$self->_path_is_latest_summary($latest_summary_path)) {
+    croak "$latest_summary_path is not a latest summary path";
   }
+  my ($runfolder_name, $path) =
+    _runfolder_name_and_path_from_summary_link($latest_summary_path);
+
+  my $w = $self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY};
+  if ($w && (ref $w eq q[Linux::Inotify2::Watch])) {
+    $w->cancel;
+    delete $self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY};
+  }
+
   return;
 }
 
@@ -342,10 +390,10 @@ sub _transit_watch_setup {
         croak "Filesystem unmounted for $name";
       }
       if ($e->IN_DELETE) {
-        _log("$name deleted");
+        $self->_log("$name deleted");
         $self->_runfolder_watch_cancel($name);
       } elsif ($e->IN_MOVED_TO) {
-        _log("$name moved to the watched directory");
+        $self->_log("$name moved to the watched directory");
         $self->_runfolder_watch_setup($name);
       }
   });
@@ -369,11 +417,11 @@ sub _stock_watch_setup {
 
 sub _runfolder_watch_setup {
   my ($self, $dir) = @_;
-  _log("runforder $dir watch setup called");
+  $self->_log("runforder $dir watch setup called");
 
   my $runfolder_name = basename $dir;
   if (exists $self->_watch_obj->{$runfolder_name}->{$RUNFOLDER_KEY}) {
-    _log("Already watching $dir");
+    $self->_log("Already watching $dir");
     return;
   }
 
@@ -384,11 +432,11 @@ sub _runfolder_watch_setup {
       if ($e->IN_IGNORED) {
         $self->_runfolder_watch_cancel($name);
       } elsif ($e->IN_DELETE) {
-        if (_path_is_latest_summary($name)) {
+        if ($self->_path_is_latest_summary($name)) {
           $self->_run_status_watch_cancel($name);
         }
       } elsif ($e->IN_CREATE) {
-        if (_path_is_latest_summary($name)) {
+        if ($self->_path_is_latest_summary($name)) {
           $self->_run_status_watch_setup($name);
         }
       }
@@ -401,7 +449,7 @@ sub _runfolder_watch_setup {
     $self->_watch_obj->{$runfolder_name}->{$RUNFOLDER_KEY} = $watch;
   }
 
-  my $sl = _runfolder_latest_summary_link($dir);
+  my $sl = $self->_runfolder_latest_summary_link($dir);
   if ($sl) {
     $self->_run_status_watch_setup($sl);
   }
@@ -415,13 +463,13 @@ sub _run_status_watch_setup {
   if (!$summary_link) {
     croak 'Summary link path undefined';
   }
-  _log("Setting watch for $summary_link");
+  $self->_log("Setting watch for $summary_link");
 
-  my $runfolder_name = basename $summary_link;
-  my ($filename, $runfolder_path) = fileparse $summary_link;
+  my ($runfolder_name, $runfolder_path) =
+    _runfolder_name_and_path_from_summary_link($summary_link);
 
-  if (exists $self->_watch_obj->{$runfolder_name}->{$RUNFOLDER_KEY}) {
-    _log("Already watching status directory in $runfolder_name");
+  if (exists $self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY}) {
+    $self->_log("Already watching status directory in $runfolder_name");
     return;
   }
 
@@ -429,16 +477,19 @@ sub _run_status_watch_setup {
   try {
     $status_dir = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
   } catch {
-    _log("Failed to set watch for $summary_link: $_");
-    return;
+    $self->_log("Failed to get status directory for $summary_link: $_");
   };
+  if (!$status_dir) {
+    $self->_log("Failed to set watch for $summary_link");
+    return; # Unfortunatelly, return from the catch clause above does not work
+  }
 
   my $watch = $self->_notifier->watch( $status_dir,
     IN_IGNORED | IN_CLOSE_WRITE, sub {
       my $e = shift;
       my $name = $e->fullname;
       if ($e->IN_IGNORED) {
-        $self->_run_status_watch_cancel($name);
+        $self->_run_status_watch_cancel($summary_link);
       } elsif ($e->IN_CLOSE_WRITE) {
         $self->_update_status4files([$name], $runfolder_path);
       }
@@ -450,6 +501,7 @@ sub _run_status_watch_setup {
   } else {
     $self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY} = $watch;
   }
+
   return;
 }
 
@@ -459,7 +511,7 @@ sub cancel_watch {
   #stop registering new runfolders events;
   my $transit_watch = $self->_watch_obj->{$self->transit};
   if ($transit_watch && ref $transit_watch eq q[Linux::Inotify2::Watch]) {
-    _log('canceling watch for ' . $transit_watch->name);
+    $self->_log('canceling watch for ' . $transit_watch->name);
     $transit_watch->cancel;
   }
   delete $self->_watch_obj->{$self->transit};
@@ -468,7 +520,7 @@ sub cancel_watch {
     foreach my $key (keys %{$self->_watch_obj->{$runfolder}}) {
       my $w = $self->_watch_obj->{$runfolder}->{$key};
       if ($w && (ref $w eq q[Linux::Inotify2::Watch])) {
-        _log('canceling watch for ' . $w->name);
+        $self->_log('canceling watch for ' . $w->name);
         $w->cancel;
         delete $self->_watch_obj->{$runfolder}->{$key};
       }
@@ -495,7 +547,7 @@ sub watch {
       my $received = $self->_notifier->poll(); # This call blocks,
                                                # unless non-blocking mode is
                                                # set on $self->_notifier.
-      _log("Event count $received");
+      $self->_log("Event count $received");
     }
   } else {
     $self->_stock_status_check;

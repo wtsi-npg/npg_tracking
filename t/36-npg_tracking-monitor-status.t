@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 47;
+use Test::More tests => 78;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -37,9 +37,12 @@ sub _runfolder {
   my @dirs = @bam_basecall;
   unshift @dirs, $root;
   make_path join(q[/], @dirs);
+  my @original = @dirs;
   pop @dirs;
   push @dirs, 'BaseCalls';
   make_path join(q[/], @dirs);
+  push @original, 'no_cal';
+  make_path join(q[/], @original);
 }
 
 sub _create_status_dir{
@@ -47,7 +50,9 @@ sub _create_status_dir{
   my @dirs = @bam_basecall;
   unshift @dirs, $root;
   push @dirs, 'status';
-  make_path join(q[/], @dirs);
+  my $status_dir = join(q[/], @dirs);
+  make_path $status_dir;
+  return $status_dir;
 }
 
 sub _create_latest_summary_link {
@@ -57,28 +62,29 @@ sub _create_latest_summary_link {
   my $target = join(q[/], @dirs);
   my $link = join(q[/], $root, $runfolder_name, 'Latest_Summary');
   symlink $target, $link;
+  return $link;
 }
 
 sub _create_test_run {
   my ($schema, $id_run) = @_;;
   my $run = $schema->resultset('Run')->create({
-       id_run => $id_run,
+       id_run        => $id_run,
        id_instrument => 48,
+       team          => 'A',
                                    });
   foreach my $lane ((1 .. 8)) {
-    $schema->resultset('RunLate')->create({
+    $schema->resultset('RunLane')->create({
        id_run => $id_run,
        position => $lane,
                                        });
   }
-  my $date = $now->subtract_duration(DateTime::Duration->new(seconds => 10));
-  $run->update_run_status('run pending', undef, $date);
-  $date = $now->subtract_duration(DateTime::Duration->new(seconds => 9));
-  $date = $now->subtract_duration(DateTime::Duration->new(seconds => 8));
-  $run->update_run_status('run complete', undef, $date);
-  $date = $now->subtract_duration(DateTime::Duration->new(seconds => 7));
-  $run->update_run_status('run mirrored', undef, $date);
-  $run->update_run_status('analysis in progress', undef, $date);
+  $now->subtract_duration(DateTime::Duration->new(seconds => 10));
+  $run->update_run_status('run pending', undef, $now);
+  $now->add_duration(DateTime::Duration->new(seconds => 1));
+  $run->update_run_status('run complete', undef, $now);
+  $now->add_duration(DateTime::Duration->new(seconds => 1));
+  $run->update_run_status('run mirrored', undef, $now);
+  $run->update_run_status('analysis pending', undef, $now);
 }
 
 my $cb = sub {
@@ -211,16 +217,20 @@ my $schema = t::dbic_util->new->test_schema();
     'error getting id_run from runfolder_path';
 }
 
-{
-  ok(npg_tracking::monitor::status::_path_is_latest_summary('/some/path/Latest_Summary'),
+{ 
+  my $m = npg_tracking::monitor::status->new(transit => $dir);
+  ok($m->_path_is_latest_summary('/some/path/Latest_Summary'),
     'latest summary link identified correctly');
-  ok(!npg_tracking::monitor::status::_path_is_latest_summary('/some/path/Latest_Summary/other'),
+  ok(!$m->_path_is_latest_summary('/some/path/Latest_Summary/other'),
     'path is not latest summary');
 }
 
 {
   my ($a, $o) = _staging_dir_tree($dir);
-  my $m = npg_tracking::monitor::status->new(transit => $a, destination => $o, _schema => $schema);
+  my $m = npg_tracking::monitor::status->new(transit     => $a,
+                                             destination => $o,
+                                             _schema     => $schema,
+                                             verbose     => 0);
   lives_ok { $m->_transit_watch_setup() } 'transit dir watch set-up';
   is(ref $m->_watch_obj->{$a}, 'Linux::Inotify2::Watch', 'watch object for the transit dir is cached');
   is($m->_watch_obj->{$a}->name, $a, 'transit dir path is used as name');
@@ -234,15 +244,147 @@ my $schema = t::dbic_util->new->test_schema();
 
 {
   my ($a, $o) = _staging_dir_tree($dir);
-  my $m = npg_tracking::monitor::status->new(transit => $a, destination => $o, _schema => $schema);
+  my $m = npg_tracking::monitor::status->new(transit     => $a,
+                                             destination => $o,
+                                             blocking    => 0,
+                                             _schema     => $schema,
+                                             verbose     => 0,);
   _runfolder($o);
-   lives_ok { $m->_transit_watch_setup() } 'transit dir watch set-up';
-  lives_ok { $m->_stock_watch_setup() } 'existing runfolders watch set-up - one runfolder exists';
-  is(ref $m->_watch_obj->{$runfolder_name}->{'top_level'}, 'Linux::Inotify2::Watch', 'watch object for the runfolder is cached');
-  lives_ok { $m->_stock_status_check() } 'stock status check - one runfolders exist, no status dir';
-  is (scalar keys %{$m->_watch_obj}, 2, 'two watch objects');
+  lives_ok { $m->_transit_watch_setup() } 'transit dir watch set-up';
+  lives_ok { $m->_stock_watch_setup() }
+    'existing runfolders watch set-up - one runfolder exists';
+  is(ref $m->_watch_obj->{$runfolder_name}->{'top_level'}, 'Linux::Inotify2::Watch',
+    'watch object for the runfolder is cached');
+  lives_ok { $m->_stock_status_check() }
+    'stock status check - one runfolders exist, no status dir';
+
+  my $link = _create_latest_summary_link($o);
+  is( $m->_notifier->poll(), 1, 'creating latest summary link registered');
+  unlink $link;
+  is( $m->_notifier->poll(), 1, 'deleting latest summary link registered');
+
+  my $status_dir = _create_status_dir($o);
+  $link = _create_latest_summary_link($o);
+  is( $m->_notifier->poll(), 1, 'creating latest summary link registered');
+  is( ref $m->_watch_obj->{$runfolder_name}->{'status_dir'},
+     'Linux::Inotify2::Watch', 'watch object for the status directory is cached');
+
+  rmdir $status_dir;
+  is( $m->_notifier->poll(), 1, 'deleting status directory registered');
+  ok( !exists $m->_watch_obj->{$runfolder_name}->{'status_dir'},
+    'watch for the deleted status directory removed');
   
+  unlink $link;
+  is($m->_notifier->poll(), 1, 'deleting latest summary link registered');
+
+  _create_status_dir($o);
+  _create_latest_summary_link($o);
+  is( $m->_notifier->poll(), 1, 'creating latest summary link registered');
+  is( ref $m->_watch_obj->{$runfolder_name}->{'status_dir'}, 'Linux::Inotify2::Watch',
+    'watch object for the status directory is cached');
+  unlink $link;
+  is( $m->_notifier->poll(), 1, 'deleting latest summary link registered');
+  ok( !exists $m->_watch_obj->{$runfolder_name}->{'status_dir'},
+    'watch for status directory removed as the latest summary link deleted');
+
+  my $new_path = join(q[/], $a, $runfolder_name);
+  my $old_path = join(q[/], $o, $runfolder_name);
+
+  rename $old_path, $new_path;
+  ok (-e $new_path, 'runfolder has been moved');
+  is( $m->_notifier->poll(), 1, 'registered moving runfolder to the transit directory');
+  _create_latest_summary_link($a);
+  is( $m->_notifier->poll(), 1, 'new location: creating latest summary link registered');
+
+  rename $new_path, $old_path;
+  ok (-e $old_path, 'runfolder has been moved');
+  is( $m->_notifier->poll(), 0, 'moving runfolder from the transit directory is not registered');
+  unlink $link;
+  is($m->_notifier->poll(), 1, 'new location: deleting latest summary link registered');
+
   $m->cancel_watch();
+}
+
+{
+  _create_test_run($schema, 9334);
+  my $tdir = tempdir(UNLINK => 1);
+
+  _runfolder($tdir);
+  my $link = _create_latest_summary_link($tdir);
+  my $status_dir = _create_status_dir($tdir);
+
+  my ($a, $o) = _staging_dir_tree($tdir);
+  my $m = npg_tracking::monitor::status->new(transit     => $a,
+                                             destination => $o,
+                                             blocking    => 0,
+                                             _schema     => $schema,
+                                             verbose     => 0,);
+  lives_ok { $m->_transit_watch_setup() } 'transit dir watch set-up';
+
+  my $old_path = join q[/], $tdir, $runfolder_name;
+  my $new_path = join q[/], $a, $runfolder_name;
+  rename $old_path, $new_path;
+
+  is( $m->_notifier->poll(), 1, 'runfolder move to transit detected');
+  is(ref $m->_watch_obj->{$runfolder_name}->{'top_level'}, 'Linux::Inotify2::Watch',
+    'watch object for the runfolder is cached');
+  is( ref $m->_watch_obj->{$runfolder_name}->{'status_dir'}, 'Linux::Inotify2::Watch',
+    'watch object for the status directory is cached');
+
+  my $run = $schema->resultset('Run')->find($test_id_run);
+  is($run->current_run_status_description, 'analysis pending', 'current run status');
+
+  $status_dir =~ s/$tdir/$a/smx;
+  my $status = 'analysis in progress';
+  npg_tracking::status->new(
+      id_run => $test_id_run,
+      status => $status,
+  )->to_file($status_dir);
+
+  is( $m->_notifier->poll(), 1, 'new run status file creation registered');
+
+  is($run->current_run_status_description, $status,
+    'current run status set to the new status from file');
+
+  lives_ok { $m->_stock_watch_setup() } 'existing runfolders watch set-up';
+
+  lives_ok { $m->_stock_status_check() } 'stock status check';
+  my @rows = $schema->resultset('RunStatus')->search(
+     { 'id_run'                      => $test_id_run,
+       'run_status_dict.description' => $status,
+     },
+     {prefetch => 'run_status_dict',},
+  )->all;
+  is( scalar @rows, 1, 'duplicate run statuses are not created');
+
+  my $lane_status = 'analysis complete';
+  my @lanes = (1 .. 8);
+  npg_tracking::status->new(
+      id_run => $test_id_run,
+      lanes  => \@lanes,
+      status => $lane_status,
+  )->to_file($status_dir);
+
+  is( $m->_notifier->poll(), 1, 'new lane status file creation registered');
+  @rows = $schema->resultset('RunLaneStatus')->search(
+     { 'run_lane.id_run'                           => $test_id_run,
+       'run_lane_status_dict.description' => $lane_status,
+       'iscurrent'                        => 1,
+     },
+     {prefetch => ['run_lane', 'run_lane_status_dict'],,},
+  )->all;
+  is( scalar @rows, 8, 'eight current lane statuses are created');
+
+  lives_ok { $m->_stock_status_check() } 'stock status check';
+  @rows = $schema->resultset('RunLaneStatus')->search(
+     { 'run_lane.id_run'                  => $test_id_run,
+       'run_lane_status_dict.description' => $lane_status,
+     },
+     {prefetch => ['run_lane', 'run_lane_status_dict'],},
+  )->all;
+  is( scalar @rows, 8, 'duplicate lane statuses are not created');
+  is($run->current_run_status_description, $status,
+    'current run status has not changed'); 
 }
 
 1;

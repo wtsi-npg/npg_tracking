@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 115;
+use Test::More tests => 116;
 use Test::Exception::LessClever;
 use Test::Warn;
 use DateTime;
@@ -68,16 +68,19 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
     ok( !$new->iscurrent, 'new status is not marked as current');
     is( $new->date()->datetime, '2007-06-05T10:16:54', 'new status has correct older date');
 
+    $new = $test->update_run_status( 'run complete', 'joe_loader');
+    ok(!$new, 'status is not updated'); 
+    $run_status = $schema->resultset('RunStatus')->search(
+        { id_run    => $test_run_id, iscurrent => 1,})->first;
+    is( $run_status->date()->datetime, '2007-06-05T10:16:55',
+      'current status date not changed' );
+
     $new = $test->update_run_status( 'analysis pending', 'joe_loader', $same_time);
     isa_ok( $new, q{npg_tracking::Schema::Result::RunStatus}, 'new row created');
     ok( $new->iscurrent, 'new status is marked as current');
     is( $new->date()->datetime, '2007-06-05T10:16:55', 'new status has correct date');
     is( $new->related_resultset('run_status_dict')->next->description,
       'analysis pending', 'new current run status description');
-
-    $run_status = $schema->resultset('RunStatus')->search(
-        { id_run    => $test_run_id, iscurrent => 1,})->first;
-    is( $run_status->date()->datetime, '2007-06-05T10:16:55', 'current status date not changed' );
 
     my $before = DateTime->now();
     lives_ok { $new = $test->update_run_status( 'run stopped early', 'joe_loader' ) }
