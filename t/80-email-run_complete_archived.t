@@ -1,4 +1,4 @@
-#use strict;
+use strict;
 use warnings;
 use English qw{-no_match_vars};
 use Test::More tests => 16;
@@ -6,7 +6,6 @@ use Test::Exception;
 use t::dbic_util;
 use t::util;
 use DateTime;
-use Data::Dumper;
 use Perl6::Slurp;
 
 $ENV{DEV} = q{test};
@@ -67,9 +66,7 @@ my $hash_projects_followers = {
 
 # to ensure that we can test the email outputs, override the study_lane_followers
 # method to just deal with returning the correct hash for said emails
-my $sub = sub { return $hash_projects_followers; };
-*{'npg::email::run::complete_archived::study_lane_followers'} = $sub;
-
+*npg::email::run::complete_archived::study_lane_followers = sub { return $hash_projects_followers; };
 {
   my $object;
   lives_ok { $object = npg::email::run::complete_archived->new({

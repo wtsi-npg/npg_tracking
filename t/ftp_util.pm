@@ -4,7 +4,6 @@ use strict;
 use warnings;
 
 use Carp;
-use Data::Dumper;
 use English qw(-no_match_vars);
 use File::chdir;
 use File::Temp qw(tempfile);

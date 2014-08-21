@@ -6,22 +6,19 @@ use Test::Warn;
 use File::Temp qw/ tempdir /;
 use File::Path qw/ make_path /;
 use DateTime;
+use DateTime::TimeZone;
 use DateTime::Duration;
 use t::dbic_util;
 
 use_ok( q{npg_tracking::status} );
 use_ok( q{npg_tracking::monitor::status} );
 
-my $m = npg_tracking::monitor::status->new(transit => q[t]);
-isa_ok($m, q{npg_tracking::monitor::status});
-lives_ok { $m->_notifier } 'notifier object created';
-
 my $dir = tempdir(UNLINK => 1);
 my $runfolder_name = '130213_MS2_9334_A_MS2004675-300V2';
 my $test_id_run = 9334;
 my @bam_basecall = ($runfolder_name, 'Data', 'Intensities', 'BAM_basecalls_20130214-155058');
 
-my $now = DateTime->now();
+my $now = DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local]));
 
 sub _staging_dir_tree {
   my $root = shift;
@@ -105,6 +102,7 @@ my $cb = sub {
 
 {
   my $m = npg_tracking::monitor::status->new(transit => $dir);
+  isa_ok($m, q{npg_tracking::monitor::status});
   lives_ok {$m->_transit_watch_setup} 'watch is set up on an empty directory';
   ok(exists $m->_watch_obj->{$dir}, 'watch object is cached');
   is(ref $m->_watch_obj->{$dir}, q[Linux::Inotify2::Watch], 'correct object type');
@@ -187,7 +185,7 @@ my $cb = sub {
     [qr/canceling watch for $dir/], 'watch cancell reported'; 
 }
 
-my $schema = t::dbic_util->new->test_schema();
+my $schema = t::dbic_util->new()->test_schema();
 {
   my $m = npg_tracking::monitor::status->new(transit => $dir, _schema => $schema);
   my $s = npg_tracking::status->new(id_run => 9999, status => 'some status');
@@ -209,9 +207,9 @@ my $schema = t::dbic_util->new->test_schema();
 
 {
   my $m = npg_tracking::monitor::status->new(transit => $dir);
-  #throws_ok {$m->_read_status('path', $dir)}
-  #  qr/Error instantiating object from path: read_file 'path' - sysopen: No such file or directory/,
-  #  'error reading object';
+  throws_ok {$m->_read_status('path', $dir)}
+    qr/Error instantiating object from path: read_file 'path' - sysopen: No such file or directory/,
+    'error reading object';
   my $path = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7])->to_file($dir); 
   throws_ok {$m->_read_status($path, $dir)} qr/Failed to get id_run from $dir/,
     'error getting id_run from runfolder_path';
