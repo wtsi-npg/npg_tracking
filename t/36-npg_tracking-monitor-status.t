@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 65;
+use Test::More tests => 77;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -113,43 +113,46 @@ my $cb = sub {
   ok(!exists $m->_watch_obj->{$dir}, 'watch object is not cached');
 }
 
-#{
-  #my $m = npg_tracking::monitor::status->new(transit => $dir);
-  #lives_ok {$m->_transit_watch_setup} 'watch is set up on an empty directory';
-  #my $watch = $m->_watch_obj->{$dir};
-  #$watch->cb($cb); # Plug in a simplified test callback 
-  #my $new_dir = "$dir/test";
-  #mkdir $new_dir;
-  #my $pid = fork();
-  #if ($pid) {
-  #  warnings_like { $m->_notifier->poll() } 
-  #   [qr/test callback: $new_dir deleted/],
-  #   'deletion reported';
-  #} else {
-  #  rmdir $new_dir;
-  #  exit;
-  #}
-  #wait;
+{
+  my $m = npg_tracking::monitor::status->new(transit => $dir);
+  lives_ok {$m->_transit_watch_setup} 'watch is set up on an empty directory';
+  my $watch = $m->_watch_obj->{$dir};
+  $watch->cb($cb); # Plug in a simplified test callback
+  SKIP: {
+    skip 'Travis: inotify does not detect deletion from /tmp', 1 unless !$ENV{'TRAVIS'};
+    my $new_dir = "$dir/test";
+    mkdir $new_dir;
+    my $pid = fork();
+    if ($pid) {
+      warnings_like { $m->_notifier->poll() } 
+        [qr/test callback: $new_dir deleted/],
+        'deletion reported';
+    } else {
+      rmdir $new_dir;
+      exit;
+    }
+    wait;
+  };
 
-  #mkdir "$dir/test1";
-  #mkdir "$dir/test1/test2";  
+  mkdir "$dir/test1";
+  mkdir "$dir/test1/test2";  
  
-  #$pid = fork();
-  #if ($pid) {
-  #  warnings_like { $m->_notifier->poll() } 
-  #   [qr/test callback: $dir\/test2 moved to the watched directory/],
-  #   'move reported';
-  #} else {
-  #  `mv $dir/test1/test2 $dir`;
-  #  exit 0;
-  #}
-  #wait;
+  my $pid = fork();
+  if ($pid) {
+    warnings_like { $m->_notifier->poll() } 
+     [qr/test callback: $dir\/test2 moved to the watched directory/],
+     'move reported';
+  } else {
+    `mv $dir/test1/test2 $dir`;
+    exit 0;
+  }
+  wait;
 
-  #warnings_like { $m->cancel_watch }
-  #  [qr/canceling watch for $dir/],
-  #  'watch cancell reported';
-  #is(scalar keys %{$m->_watch_obj}, 0, 'watch hash empty');
-#}
+  warnings_like { $m->cancel_watch }
+    [qr/canceling watch for $dir/],
+    'watch cancell reported';
+  is(scalar keys %{$m->_watch_obj}, 0, 'watch hash empty');
+}
 
 {
   my $m = npg_tracking::monitor::status->new(transit => $dir, blocking => 0);
@@ -190,54 +193,54 @@ my $cb = sub {
 {
   my $m = npg_tracking::monitor::status->new(transit => $dir, blocking=> 0,  _schema => $schema);
   my $s = npg_tracking::status->new(id_run => 9999, status => 'some status');
-#  throws_ok {$m->_update_status($s)} qr/Run id 9999 does not exist/,
-#    'error saving status for non-existing run';
+  throws_ok {$m->_update_status($s)} qr/Run id 9999 does not exist/,
+    'error saving status for non-existing run';
   $s = npg_tracking::status->new(id_run => 1, status => 'some status');
-#  throws_ok {$m->_update_status($s)} qr/Status 'some status' does not exist in RunStatusDict /,
-#    'error saving non-existing run status';
+  throws_ok {$m->_update_status($s)} qr/Status 'some status' does not exist in RunStatusDict /,
+    'error saving non-existing run status';
   $s = npg_tracking::status->new(id_run => 1, status => 'some status', timestamp => 'some time');
-#  throws_ok {$m->_update_status($s)} qr/Your datetime does not match your pattern/,
-#    'error converting timestamp to an object';
+  throws_ok {$m->_update_status($s)} qr/Your datetime does not match your pattern/,
+    'error converting timestamp to an object';
   $s = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7, 3]);
-#  throws_ok {$m->_update_status($s)} qr/Lane 3 does not exist in run 1/,
-#    'error saving status for a list of lanes that includes non-existing lane';
+  throws_ok {$m->_update_status($s)} qr/Lane 3 does not exist in run 1/,
+    'error saving status for a list of lanes that includes non-existing lane';
   $s = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7]);
-#  throws_ok {$m->_update_status($s)} qr/Status 'some status' does not exist in RunLaneStatusDict/,
-#    'error saving non-existing lane status';
+  throws_ok {$m->_update_status($s)} qr/Status 'some status' does not exist in RunLaneStatusDict/,
+    'error saving non-existing lane status';
 
-#  throws_ok {$m->_read_status('path', $dir)}
-#    qr/Error instantiating object from path: read_file 'path' - sysopen: No such file or directory/,
-#    'error reading object';
+  throws_ok {$m->_read_status('path', $dir)}
+    qr/Error instantiating object from path: read_file 'path' - sysopen: No such file or directory/,
+    'error reading object';
   my $path = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7])->to_file($dir); 
-#  throws_ok {$m->_read_status($path, $dir)} qr/Failed to get id_run from $dir/,
-#    'error getting id_run from runfolder_path';
-diag 1;
+  throws_ok {$m->_read_status($path, $dir)} qr/Failed to get id_run from $dir/,
+    'error getting id_run from runfolder_path';
+  
   ok($m->_path_is_latest_summary('/some/path/Latest_Summary'),
     'latest summary link identified correctly');
-diag 2;  
-ok(!$m->_path_is_latest_summary('/some/path/Latest_Summary/other'),
+  ok(!$m->_path_is_latest_summary('/some/path/Latest_Summary/other'),
     'path is not latest summary');
-diag 3;
 }
 
-{ diag 4;
+{
   my ($a, $o) = _staging_dir_tree($dir);
   my $m = npg_tracking::monitor::status->new(transit     => $a,
                                              destination => $o,
                                              blocking    => 0,
                                              _schema     => $schema,
                                              verbose     => 0);
-  diag 5;
   lives_ok { $m->_transit_watch_setup() } 'transit dir watch set-up';
-  diag 6;
   is(ref $m->_watch_obj->{$a}, 'Linux::Inotify2::Watch', 'watch object for the transit dir is cached');
   is($m->_watch_obj->{$a}->name, $a, 'transit dir path is used as name');
   lives_ok { $m->_stock_watch_setup() } 'existing runfolders watch set-up - no runfolders exist';
   lives_ok { $m->_stock_status_check() } 'stock status check - no runfolders exist';
   is (scalar keys %{$m->_watch_obj}, 1, 'one watch object');
+  
   rmdir $a;
-  throws_ok {$m->_notifier->poll()} qr/Events for $a have been lost/, 'error when transit directory is deleted';
-  is (scalar keys %{$m->_watch_obj}, 0, 'no watch objects');
+  SKIP: {
+    skip 'Travis: inotify does not detect deletion from /tmp', 6 unless !$ENV{'TRAVIS'};
+    throws_ok {$m->_notifier->poll()} qr/Events for $a have been lost/, 'error when transit directory is deleted';
+    is (scalar keys %{$m->_watch_obj}, 0, 'no watch objects');
+  };
 }
 
 {
@@ -266,12 +269,15 @@ diag 3;
   is( $m->_notifier->poll(), 1, 'creating latest summary link registered');
   is( ref $m->_watch_obj->{$runfolder_name}->{'status_dir'},
      'Linux::Inotify2::Watch', 'watch object for the status directory is cached');
-
-  rmdir $status_dir;
-  is( $m->_notifier->poll(), 1, 'deleting status directory registered');
-  ok( !exists $m->_watch_obj->{$runfolder_name}->{'status_dir'},
-    'watch for the deleted status directory removed');
   
+  rmdir $status_dir;
+  SKIP: {
+    skip 'Travis: inotify does not detect deletion from /tmp', 2 unless !$ENV{'TRAVIS'};
+    is( $m->_notifier->poll(), 1, 'deleting status directory registered');
+    ok( !exists $m->_watch_obj->{$runfolder_name}->{'status_dir'},
+      'watch for the deleted status directory removed');
+  };
+
   unlink $link;
   is($m->_notifier->poll(), 1, 'deleting latest summary link registered');
 
