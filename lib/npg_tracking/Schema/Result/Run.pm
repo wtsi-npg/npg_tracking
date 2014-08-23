@@ -519,14 +519,14 @@ sub update_run_status {
     if ( $make_new_current ) {
         try {
             $self->run_status_event( $user_id, $new_row->id_run_status() );
-            $self->instrument->autochange_status_if_needed($description, $user_identifier);
+            $self->instrument->autochange_status_if_needed($description, $user_id);
             my $auto = $STATUS_CHANGE_AUTO{$description};
             if ($auto) {
                 $new_row = $self->update_run_status($auto);
             }
         } catch {
             carp "Error performing post run status change actions \
-                  (event, auto run and instrument status update) $_";
+                  (event, auto run and instrument status update): $_";
         }
     }
 
