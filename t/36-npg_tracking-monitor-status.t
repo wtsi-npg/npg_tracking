@@ -237,7 +237,7 @@ my $cb = sub {
   
   rmdir $a;
   SKIP: {
-    skip 'Travis: inotify does not detect deletion from /tmp', 6 unless !$ENV{'TRAVIS'};
+    skip 'Travis: inotify does not detect deletion from /tmp', 2 unless !$ENV{'TRAVIS'};
     throws_ok {$m->_notifier->poll()} qr/Events for $a have been lost/, 'error when transit directory is deleted';
     is (scalar keys %{$m->_watch_obj}, 0, 'no watch objects');
   };
