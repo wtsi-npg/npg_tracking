@@ -220,13 +220,16 @@ ok(!$m->_path_is_latest_summary('/some/path/Latest_Summary/other'),
 diag 3;
 }
 
-{
+{ diag 4;
   my ($a, $o) = _staging_dir_tree($dir);
   my $m = npg_tracking::monitor::status->new(transit     => $a,
                                              destination => $o,
+                                             blocking    => 0,
                                              _schema     => $schema,
                                              verbose     => 0);
+  diag 5;
   lives_ok { $m->_transit_watch_setup() } 'transit dir watch set-up';
+  diag 6;
   is(ref $m->_watch_obj->{$a}, 'Linux::Inotify2::Watch', 'watch object for the transit dir is cached');
   is($m->_watch_obj->{$a}->name, $a, 'transit dir path is used as name');
   lives_ok { $m->_stock_watch_setup() } 'existing runfolders watch set-up - no runfolders exist';
