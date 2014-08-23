@@ -20,6 +20,8 @@ my @bam_basecall = ($runfolder_name, 'Data', 'Intensities', 'BAM_basecalls_20130
 
 my $now = DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local]));
 
+my $schema = t::dbic_util->new()->test_schema();
+
 sub _staging_dir_tree {
   my $root = shift;
   my $a = join(q[/], $root, 'analysis');
@@ -101,7 +103,7 @@ my $cb = sub {
 };
 
 {
-  my $m = npg_tracking::monitor::status->new(transit => $dir);
+  my $m = npg_tracking::monitor::status->new(transit => $dir, blocking => 0);
   isa_ok($m, q{npg_tracking::monitor::status});
   lives_ok {$m->_transit_watch_setup} 'watch is set up on an empty directory';
   ok(exists $m->_watch_obj->{$dir}, 'watch object is cached');
@@ -150,7 +152,7 @@ my $cb = sub {
 #}
 
 {
-  my $m = npg_tracking::monitor::status->new(transit => $dir);
+  my $m = npg_tracking::monitor::status->new(transit => $dir, blocking => 0);
   my $new_dir = "$dir/test";
   mkdir $new_dir;
   lives_ok {$m->_transit_watch_setup} 'watch is set up on a directory with a subdirectory';
@@ -169,7 +171,7 @@ my $cb = sub {
   mkdir $new_dir1;
   mkdir $new_dir; 
 
-  $m = npg_tracking::monitor::status->new(transit => $dir);
+  $m = npg_tracking::monitor::status->new(transit => $dir, blocking => 0);
   lives_ok {$m->_transit_watch_setup} 'watch is set up on a directory with a subdirectory';
   $m->_watch_obj->{$dir}->cb($cb); # Plug in a simplified test callback
   rmdir $new_dir1;
@@ -185,9 +187,8 @@ my $cb = sub {
     [qr/canceling watch for $dir/], 'watch cancell reported'; 
 }
 
-my $schema = t::dbic_util->new()->test_schema();
 {
-  my $m = npg_tracking::monitor::status->new(transit => $dir, _schema => $schema);
+  my $m = npg_tracking::monitor::status->new(transit => $dir, blocking=> 0,  _schema => $schema);
   my $s = npg_tracking::status->new(id_run => 9999, status => 'some status');
   throws_ok {$m->_update_status($s)} qr/Run id 9999 does not exist/,
     'error saving status for non-existing run';
@@ -203,20 +204,14 @@ my $schema = t::dbic_util->new()->test_schema();
   $s = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7]);
   throws_ok {$m->_update_status($s)} qr/Status 'some status' does not exist in RunLaneStatusDict/,
     'error saving non-existing lane status';
-}
 
-{
-  my $m = npg_tracking::monitor::status->new(transit => $dir);
   throws_ok {$m->_read_status('path', $dir)}
     qr/Error instantiating object from path: read_file 'path' - sysopen: No such file or directory/,
     'error reading object';
   my $path = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7])->to_file($dir); 
   throws_ok {$m->_read_status($path, $dir)} qr/Failed to get id_run from $dir/,
     'error getting id_run from runfolder_path';
-}
 
-{ 
-  my $m = npg_tracking::monitor::status->new(transit => $dir);
   ok($m->_path_is_latest_summary('/some/path/Latest_Summary'),
     'latest summary link identified correctly');
   ok(!$m->_path_is_latest_summary('/some/path/Latest_Summary/other'),
