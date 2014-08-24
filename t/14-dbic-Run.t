@@ -3,7 +3,6 @@ use warnings;
 use Test::More tests => 108;
 use Test::Exception;
 use Test::Warn;
-use DateTime;
 use DateTime::Duration;
 use POSIX qw(strftime);
 
@@ -81,7 +80,7 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
     is( $new->related_resultset('run_status_dict')->next->description,
       'analysis pending', 'new current run status description');
 
-    my $before = DateTime->now();
+    my $before = $test->get_time_now();
     lives_ok { $new = $test->update_run_status( 'run stopped early', 'joe_loader' ) }
              'Set a new status';
     isa_ok ($new, q{npg_tracking::Schema::Result::RunStatus}, 'new row object returned');
@@ -112,7 +111,7 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
          'current status description as before the update');
     
     sleep 1;
-    my $now = DateTime->now();
+    my $now = $test->get_time_now();
     $new = $test->update_run_status( 'analysis pending', 'joe_loader', $now );
     isa_ok ($new, q{npg_tracking::Schema::Result::RunStatus}, 'new row object returned');
     is($new->iscurrent, 1, 'new row is current');
@@ -288,7 +287,7 @@ my $test_date = $paired_tag_rs->first->date();
     foreach my $run (($one_of_two_active, $active_one_of_two, $single)) {
       $run->instrument->update_instrument_status('planned repair','pipeline');
     }
-
+    
     lives_ok { $one_of_two_active->update_run_status('run cancelled')}
              'Run cancelled on a HiSeq with another active run';
     is( $one_of_two_active->instrument->current_instrument_status(),
@@ -344,14 +343,16 @@ my $test_date = $paired_tag_rs->first->date();
     $active_one_of_two->instrument->update_instrument_status('up','pipeline');
     $single->instrument->update_instrument_status('up','pipeline');
 
-    my $new = $active_one_of_two->update_run_status('run cancelled');
+    my $date = $active_one_of_two->get_time_now();
+    $date->add_duration(DateTime::Duration->new(seconds => 1));
+    my $new = $active_one_of_two->update_run_status('run cancelled',undef,$date);
     ok( $new->iscurrent, 'new status is current');
     is( $new->related_resultset('run_status_dict')->next->description,
       'run cancelled', 'new current run status is "run cancelled"');
     is( $active_one_of_two->instrument->current_instrument_status(),
         'wash required', 'Instrument status changed to wash required' );
 
-    $new = $single->update_run_status('run cancelled');
+    $new = $single->update_run_status('run cancelled','pipeline',$date);
     ok( $new->iscurrent, 'new status is current');
     is( $new->related_resultset('run_status_dict')->next->description,
       'run cancelled', 'new current run status is "run cancelled"');
