@@ -4,6 +4,7 @@ CHANGES
      allow to create a record for a status that is already current if the date
      of the new record is earlier that the current status date
  - status monitor bug fixes
+ - daemon for status monitor watcher
 
 release 77.9
  - DBIx run and run-lane status update refactoring to accommodate passing

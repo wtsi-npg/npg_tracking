@@ -1,4 +1,4 @@
-package npg_tracking::daemon::staging;
+package npg_tracking::daemon::status;
 
 use Moose;
 use Readonly;
@@ -7,13 +7,9 @@ extends 'npg_tracking::daemon::staging_local';
 
 our $VERSION = '0';
 
-Readonly::Scalar our $SCRIPT_NAME => q[staging_area_monitor];
+Readonly::Scalar our $SCRIPT_NAME => q[npg_status_watcher];
 
-override 'command'      => sub {
-  my ($self, $host) = @_;
-  my $sfarea = $self->host_name2path($host);
-  return join q[ ], $SCRIPT_NAME, $sfarea;
-};
+override 'command'      => sub { return $SCRIPT_NAME; };
 
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };
 
@@ -24,13 +20,13 @@ __END__
 
 =head1 NAME
 
-npg_tracking::daemon::staging
+npg_tracking::daemon::status
 
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
 
-  Staging area daemon definition.
+  Staging area status watch daemon definition.
 
 =head1 SUBROUTINES/METHODS
 
