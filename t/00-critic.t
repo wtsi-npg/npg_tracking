@@ -22,15 +22,16 @@ if($EVAL_ERROR) {
   Test::Perl::Critic->import(
            -severity => 1,
            -exclude => ['tidy',
-                              'ValuesAndExpressions::ProhibitImplicitNewlines',
-                              'Documentation::PodSpelling',
-                              'RegularExpressions::ProhibitEscapedMetacharacters',
-                              'RegularExpressions::ProhibitEnumeratedClasses',
-                              'Documentation::RequirePodAtEnd',
-                              'Modules::RequireVersionVar',
-                              'Miscellanea::RequireRcsKeywords',
-                              'ValuesAndExpressions::RequireConstantVersion'
-                             ],
+                        'ValuesAndExpressions::ProhibitImplicitNewlines',
+                        'Documentation::PodSpelling',
+                        'RegularExpressions::ProhibitEscapedMetacharacters',
+                        'RegularExpressions::ProhibitEnumeratedClasses',
+                        'Documentation::RequirePodAtEnd',
+                        'Modules::RequireVersionVar',
+                        'Miscellanea::RequireRcsKeywords',
+                        'ValuesAndExpressions::RequireConstantVersion',
+                        'BuiltinFunctions::ProhibitUselessTopic'
+                       ],
                  -verbose => "%m at %f line %l, policy %p\n",
                  -profile => 't/perlcriticrc',
           );

@@ -1,8 +1,9 @@
 use strict;
 use warnings;
-use Test::More tests => 77;
+use Test::More tests => 71;
 use Test::Exception;
 use Test::Warn;
+use Test::Trap qw/ :stderr(tempfile) /;
 use File::Temp qw/ tempdir /;
 use File::Path qw/ make_path /;
 use DateTime;
@@ -87,19 +88,15 @@ sub _create_test_run {
 }
 
 my $cb = sub {
-      my $e = shift;
-      my $name = $e->fullname;
-      if ($e->IN_IGNORED) {
-        die "test callback: events for $name have been lost";
-      }
-      if ($e->IN_UNMOUNT) {
-        die "test callback: filesystem unmounted for $name";
-      }
-      if ($e->IN_DELETE) {
-        warn("test callback: $name deleted");
-      } elsif ($e->IN_MOVED_TO) {
-        warn("test callback: $name moved to the watched directory");
-      }
+  my $e = shift;
+  my $name = $e->fullname;
+  if ($e->IN_IGNORED) {
+    warn "test callback: events for $name have been lost";
+  } elsif ($e->IN_DELETE) {
+    warn "test callback: $name deleted\n";
+  } elsif ($e->IN_MOVED_TO) {
+    warn "test callback: $name moved to the watched directory\n";
+  }
 };
 
 {
@@ -109,17 +106,17 @@ my $cb = sub {
   ok(exists $m->_watch_obj->{$dir}, 'watch object is cached');
   is(ref $m->_watch_obj->{$dir}, q[Linux::Inotify2::Watch], 'correct object type');
   is($m->_watch_obj->{$dir}->name, $dir, 'watch object name'); 
-  warning_like {$m->cancel_watch} qr/canceling watch for $dir/, 'watch cancelled';
+  warning_like {$m->cancel_watch} qr/Canceling watch for $dir/, 'watch cancelled';
   ok(!exists $m->_watch_obj->{$dir}, 'watch object is not cached');
 }
 
 {
-  my $m = npg_tracking::monitor::status->new(transit => $dir);
-  lives_ok {$m->_transit_watch_setup} 'watch is set up on an empty directory';
-  my $watch = $m->_watch_obj->{$dir};
-  $watch->cb($cb); # Plug in a simplified test callback
   SKIP: {
-    skip 'Travis: inotify does not detect deletion from /tmp', 1 unless !$ENV{'TRAVIS'};
+    skip 'Travis: inotify does not detect deletion from /tmp', 2 unless !$ENV{'TRAVIS'};
+    my $m = npg_tracking::monitor::status->new(transit => $dir);
+    lives_ok {$m->_transit_watch_setup} 'watch is set up on an empty directory';
+    my $watch = $m->_watch_obj->{$dir};
+    $watch->cb($cb); # Plug in a simplified test callback
     my $new_dir = "$dir/test";
     mkdir $new_dir;
     my $pid = fork();
@@ -129,28 +126,33 @@ my $cb = sub {
         'deletion reported';
     } else {
       rmdir $new_dir;
-      exit;
+      trap { $m->cancel_watch; };
+      exit 0;
     }
     wait;
+    trap { $m->cancel_watch; };
   };
 
+  my $m = npg_tracking::monitor::status->new(transit => $dir);
+  $m->_transit_watch_setup();
+  my $watch = $m->_watch_obj->{$dir};
+  $watch->cb($cb); # Plug in a simplified test callback
   mkdir "$dir/test1";
-  mkdir "$dir/test1/test2";  
- 
+  mkdir "$dir/test1/test2";
   my $pid = fork();
-  if ($pid) {
+  if ($pid) {  
     warnings_like { $m->_notifier->poll() } 
      [qr/test callback: $dir\/test2 moved to the watched directory/],
      'move reported';
   } else {
     `mv $dir/test1/test2 $dir`;
+    trap { $m->cancel_watch; };
     exit 0;
   }
   wait;
 
   warnings_like { $m->cancel_watch }
-    [qr/canceling watch for $dir/],
-    'watch cancell reported';
+    [qr/Canceling watch for $dir/], 'watch cancell reported';
   is(scalar keys %{$m->_watch_obj}, 0, 'watch hash empty');
 }
 
@@ -168,7 +170,7 @@ my $cb = sub {
      'deletion reported when polling after the event';
   is($count, 1, 'polled one event');
   warnings_like { $m->cancel_watch }
-    [qr/canceling watch for $dir/], 'watch cancell reported';
+    [qr/Canceling watch for $dir/], 'watch cancell reported';
 
   my $new_dir1 = "$dir/test1";
   mkdir $new_dir1;
@@ -187,7 +189,7 @@ my $cb = sub {
      'two deletions reported when polling after two events in the order the events happened';
   is($count, 2, 'polled two event');
   warnings_like { $m->cancel_watch }
-    [qr/canceling watch for $dir/], 'watch cancell reported'; 
+    [qr/Canceling watch for $dir/], 'watch cancell reported'; 
 }
 
 {
@@ -269,27 +271,17 @@ my $cb = sub {
   is( $m->_notifier->poll(), 1, 'creating latest summary link registered');
   is( ref $m->_watch_obj->{$runfolder_name}->{'status_dir'},
      'Linux::Inotify2::Watch', 'watch object for the status directory is cached');
-  
+  my $old = $m->_watch_obj->{$runfolder_name}->{'status_dir'};  
   rmdir $status_dir;
-  SKIP: {
-    skip 'Travis: inotify does not detect deletion from /tmp', 2 unless !$ENV{'TRAVIS'};
-    is( $m->_notifier->poll(), 1, 'deleting status directory registered');
-    ok( !exists $m->_watch_obj->{$runfolder_name}->{'status_dir'},
-      'watch for the deleted status directory removed');
-  };
-
   unlink $link;
-  is($m->_notifier->poll(), 1, 'deleting latest summary link registered');
 
   _create_status_dir($o);
   _create_latest_summary_link($o);
-  is( $m->_notifier->poll(), 1, 'creating latest summary link registered');
+  $m->_notifier->poll();
   is( ref $m->_watch_obj->{$runfolder_name}->{'status_dir'}, 'Linux::Inotify2::Watch',
     'watch object for the status directory is cached');
-  unlink $link;
-  is( $m->_notifier->poll(), 1, 'deleting latest summary link registered');
-  ok( !exists $m->_watch_obj->{$runfolder_name}->{'status_dir'},
-    'watch for status directory removed as the latest summary link deleted');
+  ok( $old != $m->_watch_obj->{$runfolder_name}->{'status_dir'},
+     'different watch object is cashed');
 
   my $new_path = join(q[/], $a, $runfolder_name);
   my $old_path = join(q[/], $o, $runfolder_name);
@@ -297,14 +289,10 @@ my $cb = sub {
   rename $old_path, $new_path;
   ok (-e $new_path, 'runfolder has been moved');
   is( $m->_notifier->poll(), 1, 'registered moving runfolder to the transit directory');
-  _create_latest_summary_link($a);
-  is( $m->_notifier->poll(), 1, 'new location: creating latest summary link registered');
 
   rename $new_path, $old_path;
   ok (-e $old_path, 'runfolder has been moved');
   is( $m->_notifier->poll(), 0, 'moving runfolder from the transit directory is not registered');
-  unlink $link;
-  is($m->_notifier->poll(), 1, 'new location: deleting latest summary link registered');
 
   $m->cancel_watch();
 }
@@ -312,7 +300,6 @@ my $cb = sub {
 {
   _create_test_run($schema, 9334);
   my $tdir = tempdir(UNLINK => 1);
-
   _runfolder($tdir);
   my $link = _create_latest_summary_link($tdir);
   my $status_dir = _create_status_dir($tdir);
@@ -388,7 +375,9 @@ my $cb = sub {
   )->all;
   is( scalar @rows, 8, 'duplicate lane statuses are not created');
   is($run->current_run_status_description, $status,
-    'current run status has not changed'); 
+    'current run status has not changed');
+
+  is( $m->_notifier->poll(), 0, 'no further events');
 }
 
 1;

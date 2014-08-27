@@ -229,6 +229,28 @@ sub _runfolder_prop {
   return $spath;
 }
 
+sub _update_status4files {
+  my ($self, $files, $runfolder_path) = @_;
+
+  if (!defined $files) {
+    croak 'Expect a file array as the first argument';
+  }
+  if (!defined $runfolder_path) {
+    croak 'Expect runfolder path as the second argument';
+  }
+
+  foreach my $file ( @{$files} ) {
+    try {
+      $self->_log("\nReading status from $file");
+      my $status = $self->_read_status($file, $runfolder_path);
+      $self->_update_status($status);
+    } catch {
+      $self->_log("Error saving status: $_\n");
+    }
+  }
+  return;
+}
+
 sub _read_status {
   my ($self, $path, $runfolder_path) = @_;
 
@@ -250,29 +272,6 @@ sub _read_status {
   }
 
   return $status;
-}
-
-sub _update_status4files {
-  my ($self, $files, $runfolder_path) = @_;
-
-  if (!defined $files) {
-    croak 'Expect a file array as the first argument';
-  }
-  if (!defined $runfolder_path) {
-    croak 'Expect runfolder path as the second argument';
-  }
-
-  foreach my $file ( @{$files} ) {
-    try {
-      $self->_log("\nReading status from $file");
-      my $status = $self->_read_status($file, $runfolder_path);
-      $self->_log('Saving to database [' . $status->to_string . "]\n");
-      $self-> _update_status($status);
-    } catch {
-      $self->_log("Error saving status: $_\n");
-    }
-  }
-  return;
 }
 
 sub _update_status {
@@ -342,7 +341,7 @@ sub _stock_status_check {
 sub _runfolder_watch_cancel {
   my ($self, $dir) = @_;
 
-  $self->_log("runforder $dir watch cancel called");
+  $self->_log("Runfolder $dir watch cancel called");
   my $name = basename($dir);
   if (exists $self->_watch_obj->{$name}) {
     foreach my $key (keys %{$self->_watch_obj->{$name}}) {
@@ -353,24 +352,6 @@ sub _runfolder_watch_cancel {
     }
     delete $self->_watch_obj->{$name};
   }
-  return;
-}
-
-sub _run_status_watch_cancel {
-  my ($self, $latest_summary_path) = @_;
-
-  if (!$self->_path_is_latest_summary($latest_summary_path)) {
-    croak "$latest_summary_path is not a latest summary path";
-  }
-  my ($runfolder_name, $path) =
-    _runfolder_name_and_path_from_summary_link($latest_summary_path);
-
-  my $w = $self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY};
-  if ($w && (ref $w eq q[Linux::Inotify2::Watch])) {
-    $w->cancel;
-    delete $self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY};
-  }
-
   return;
 }
 
@@ -417,7 +398,7 @@ sub _stock_watch_setup {
 
 sub _runfolder_watch_setup {
   my ($self, $dir) = @_;
-  $self->_log("runforder $dir watch setup called");
+  $self->_log("Runfolder $dir watch setup called");
 
   my $runfolder_name = basename $dir;
   if (exists $self->_watch_obj->{$runfolder_name}->{$RUNFOLDER_KEY}) {
@@ -431,13 +412,9 @@ sub _runfolder_watch_setup {
       my $name = $e->fullname;
       if ($e->IN_IGNORED) {
         $self->_runfolder_watch_cancel($name);
-      } elsif ($e->IN_DELETE) {
-        if ($self->_path_is_latest_summary($name)) {
-          $self->_run_status_watch_cancel($name);
-        }
       } elsif ($e->IN_CREATE) {
         if ($self->_path_is_latest_summary($name)) {
-          $self->_run_status_watch_setup($name);
+          $self->_run_status_watch_setup($name, 1);
         }
       }
   });
@@ -458,7 +435,7 @@ sub _runfolder_watch_setup {
 }
 
 sub _run_status_watch_setup {
-  my ($self, $summary_link) = @_;
+  my ($self, $summary_link, $cancel_existing) = @_;
 
   if (!$summary_link) {
     croak 'Summary link path undefined';
@@ -468,30 +445,34 @@ sub _run_status_watch_setup {
   my ($runfolder_name, $runfolder_path) =
     _runfolder_name_and_path_from_summary_link($summary_link);
 
-  if (exists $self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY}) {
-    $self->_log("Already watching status directory in $runfolder_name");
-    return;
-  }
-
   my $status_dir;
+  my $error = q[];
   try {
     $status_dir = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
   } catch {
-    $self->_log("Failed to get status directory for $summary_link: $_");
+    $error = $_;
   };
   if (!$status_dir) {
-    $self->_log("Failed to set watch for $summary_link");
-    return; # Unfortunatelly, return from the catch clause above does not work
+    # Unfortunatelly, return from the catch clause above does not work
+    $self->_log("Failed to set watch for $summary_link: $error");
+    return;
+  }
+
+  if (exists $self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY}) {
+    if ($cancel_existing) {
+      $self->_cancel($self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY});
+      delete $self->_watch_obj->{$runfolder_name}->{$STATUS_DIR_KEY};
+    } else {
+      $self->_log("Already watching status directory in $runfolder_name");
+      return;
+    }
   }
 
   my $watch = $self->_notifier->watch( $status_dir,
-    IN_IGNORED | IN_CLOSE_WRITE, sub {
+    IN_CLOSE_WRITE, sub {
       my $e = shift;
-      my $name = $e->fullname;
-      if ($e->IN_IGNORED) {
-        $self->_run_status_watch_cancel($summary_link);
-      } elsif ($e->IN_CLOSE_WRITE) {
-        $self->_update_status4files([$name], $runfolder_path);
+      if ($e->IN_CLOSE_WRITE) {
+        $self->_update_status4files([$e->fullname], $runfolder_path);
       }
   });
 
@@ -505,25 +486,25 @@ sub _run_status_watch_setup {
   return;
 }
 
+sub _cancel {
+  my ($self, $watch) = @_;
+  if ($watch && ref $watch eq q[Linux::Inotify2::Watch]) {
+    $self->_log('Canceling watch for ' . $watch->name);
+    $watch->cancel;
+  }
+  return;
+}
+
 sub cancel_watch {
   my $self = shift;
 
-  #stop registering new runfolders events;
-  my $transit_watch = $self->_watch_obj->{$self->transit};
-  if ($transit_watch && ref $transit_watch eq q[Linux::Inotify2::Watch]) {
-    $self->_log('canceling watch for ' . $transit_watch->name);
-    $transit_watch->cancel;
-  }
+  $self->_cancel($self->_watch_obj->{$self->transit});
   delete $self->_watch_obj->{$self->transit};
 
   foreach my $runfolder (keys %{$self->_watch_obj}) {
     foreach my $key (keys %{$self->_watch_obj->{$runfolder}}) {
-      my $w = $self->_watch_obj->{$runfolder}->{$key};
-      if ($w && (ref $w eq q[Linux::Inotify2::Watch])) {
-        $self->_log('canceling watch for ' . $w->name);
-        $w->cancel;
-        delete $self->_watch_obj->{$runfolder}->{$key};
-      }
+      $self->_cancel($self->_watch_obj->{$runfolder}->{$key});
+      delete $self->_watch_obj->{$runfolder}->{$key};
     }
     delete $self->_watch_obj->{$runfolder};
   }
@@ -536,26 +517,18 @@ sub watch {
 
   $self->_transit_watch_setup;
   $self->_stock_watch_setup;
+  $self->_stock_status_check;
 
-  my $child = fork;
-  if (!defined $child) {
-    croak "Fork failed: $ERRNO";
+  while (1) {
+    # This call blocks unless non-blocking mode is set.
+    my $received = $self->_notifier->poll();
   }
+  return;
+}
 
-  if ($child) {
-    while (1) {
-      my $received = $self->_notifier->poll(); # This call blocks,
-                                               # unless non-blocking mode is
-                                               # set on $self->_notifier.
-      $self->_log("Event count $received");
-    }
-  } else {
-    $self->_stock_status_check;
-    exit 0; # Might close parent filehandles on some Unix systems,
-            # but not on Linux.
-  }
-  wait or croak "Child error: $CHILD_ERROR >> 8";
-
+sub DEMOLISH {
+  my $self = shift;
+  $self->cancel_watch();
   return;
 }
 
@@ -584,7 +557,11 @@ npg_tracking::monitor::status
 
 =head2 cancel_watch
 
- Stops watch on all objects.
+ Stops watch on all objects and remove watch objects.
+
+=head2 DEMOLISH
+
+ A Moose hook for object destruction; calls cancel_watch().
 
 =head2 EBADF (namespace pollution from Errno module)
 

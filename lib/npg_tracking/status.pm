@@ -97,9 +97,7 @@ sub from_file {
 sub to_file {
   my ($self, $dir) = @_;
   my $filename = $dir ? File::Spec->catfile($dir, $self->filename) : $self->filename;
-  open my ${fh}, q[>], $filename or croak "Cannot open $filename for writing";
-  print ${fh} $self->freeze() or croak "Cannot write to $filename";
-  close ${fh} or croak "Cannot close $filename";
+  write_file($filename, $self->freeze());
   return $filename;
 }
 
