@@ -1,7 +1,3 @@
-#########
-# Author:        rmp
-#
-
 use strict;
 use warnings;
 use Test::More;
@@ -30,7 +26,8 @@ if($EVAL_ERROR) {
                         'Modules::RequireVersionVar',
                         'Miscellanea::RequireRcsKeywords',
                         'ValuesAndExpressions::RequireConstantVersion',
-                        'BuiltinFunctions::ProhibitUselessTopic'
+                        'BuiltinFunctions::ProhibitUselessTopic',
+                        'RegularExpressions::ProhibitUselessTopic'
                        ],
                  -verbose => "%m at %f line %l, policy %p\n",
                  -profile => 't/perlcriticrc',
