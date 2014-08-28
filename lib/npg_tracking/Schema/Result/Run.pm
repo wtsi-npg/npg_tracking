@@ -363,6 +363,23 @@ Related object: L<npg_tracking::Schema::Result::Tag>
 
 __PACKAGE__->many_to_many('tags' => 'tag_runs', 'tag');
 
+=head2 statuses
+
+Type: has_many
+
+Related object: L<npg_tracking::Schema::Result::RunStatus>
+
+The same as run_statuses.
+
+=cut
+
+__PACKAGE__->has_many(
+  "statuses",
+  "npg_tracking::Schema::Result::RunStatus",
+  { "foreign.id_run" => "self.id_run" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 BUILD
 
 Post-constructor: try to ensure instrument format is set for run.

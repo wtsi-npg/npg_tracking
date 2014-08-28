@@ -68,15 +68,21 @@ sub get_status_dict_row {
 sub status_is_duplicate {
   my ($self, $status_description, $status_date) = @_;
 
-  my $entity = ref $self;
-  ($entity) = $entity =~ /(\w+)$/smx;
-  if ($entity eq 'RunLane') {
-    $entity = 'Run_Lane';
+  my $statuses_rel_name    = 'statuses';
+  my $status_dict_rel_name = 'status_dict';
+
+  my $class = ref $self;
+  if (!$self->can($statuses_rel_name)) {
+    croak qq['$statuses_rel_name' relationship should be defined for $class];
   }
-  $entity = lc $entity;
-  my @same_statuses = $self->related_resultset( $entity . q{_statuses} )->search(
-             { $entity . q{_status_dict.description} => $status_description,},
-             { prefetch                              => $entity . q{_status_dict},
+  $class .= 'Status';
+  if (!$class->can($status_dict_rel_name)) {
+    croak qq['$status_dict_rel_name' relationship should be defined for $class];
+  }
+
+  my @same_statuses = $self->related_resultset( $statuses_rel_name )->search(
+             { $status_dict_rel_name.q{.description} => $status_description,},
+             { prefetch                              => $status_dict_rel_name,
                order_by                              => { -desc => 'date'},},
   )->all;
 
@@ -105,8 +111,9 @@ npg_tracking::Schema::Retriever
 
 =head1 DESCRIPTION
 
- A Moose role containing helper functions for retrieving
- single rows from dictionaries and other basic tables.
+ A Moose role containing (1) helper functions for retrieving
+ single rows from dictionaries and other basic tables,
+ (2) providing common methods for dealing with statuses.
 
 =head1 SUBROUTINES/METHODS
 

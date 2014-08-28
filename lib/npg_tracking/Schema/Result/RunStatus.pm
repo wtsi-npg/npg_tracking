@@ -184,6 +184,23 @@ __PACKAGE__->belongs_to(
 
 our $VERSION = '0';
 
+=head2 status_dict
+
+Type: belongs_to
+
+Related object: L<npg_tracking::Schema::Result::RunStatusDict>
+
+The same as run_status_dict.
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "status_dict",
+  "npg_tracking::Schema::Result::RunStatusDict",
+  { id_run_status_dict => "id_run_status_dict" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+);
+
 =head2 description
 
 Helper method returns the description for this run status

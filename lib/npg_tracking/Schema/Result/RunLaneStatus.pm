@@ -194,17 +194,26 @@ use Carp;
 
 our $VERSION = '0';
 
+=head2 status_dict
+
+Type: belongs_to
+
+Related object: L<npg_tracking::Schema::Result::RunLaneStatusDict>
+
+The same as run_lane_status_dict
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "status_dict",
+  "npg_tracking::Schema::Result::RunLaneStatusDict",
+  { id_run_lane_status_dict => "id_run_lane_status_dict" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+);
+
 =head2 description
 
 returns the status description directly as a helper method, rather than forcing you to go through the run_lane_status_dict manually
-
-=head2 id_run
-
-returns the id_run this lane is on directly, rather than forcing you through the run_lane manually
-
-=head2 position
-
-returns the position of this lane is directly, rather than forcing you through the run_lane manually
 
 =cut
 
@@ -213,10 +222,22 @@ sub description {
   return $self->run_lane_status_dict()->description();
 }
 
+=head2 id_run
+
+returns the id_run this lane is on directly, rather than forcing you through the run_lane manually
+
+=cut
+
 sub id_run {
   my ( $self ) = @_;
   return $self->run_lane()->id_run();
 }
+
+=head2 position
+
+returns the position of this lane is directly, rather than forcing you through the run_lane manually
+
+=cut
 
 sub position {
   my ( $self ) = @_;

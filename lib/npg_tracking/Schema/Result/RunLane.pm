@@ -228,6 +228,22 @@ with qw/
 
 our $VERSION = '0';
 
+=head2 statuses
+
+Type: has_many
+
+Related object: L<npg_tracking::Schema::Result::RunLaneStatus>
+
+=cut
+
+__PACKAGE__->has_many(
+  "statuses",
+  "npg_tracking::Schema::Result::RunLaneStatus",
+  { "foreign.id_run_lane" => "self.id_run_lane" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
+
 =head2 current_run_lane_status
 
 Returns the current_run_lane_status dbix object
