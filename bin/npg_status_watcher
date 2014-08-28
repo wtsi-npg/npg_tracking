@@ -12,6 +12,7 @@ use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Carp;
 use Try::Tiny;
 use Readonly;
+use English qw(-no_match_vars);
 
 use npg_tracking::monitor::status;
 
@@ -24,13 +25,13 @@ if (!-d $TOP_LEVEL) {
 }
 
 my $pattern = "${TOP_LEVEL}/sf*/{IL,HS}*";
-my @dirs = glob $pattern;
+my @dirs = grep { -d $_ } glob $pattern;
 if (!@dirs) {
   croak "Cannot find $pattern";
 }
 
 if (scalar @dirs > 1) {
-  croak "Too many directories with pattern $pattern";
+  croak "Too many directories with pattern $pattern:\n" . join qq[\n], @dirs;
 }
 
 my $dir = $dirs[0];
@@ -42,7 +43,10 @@ my $monitor = npg_tracking::monitor::status->new(
                 transit     => $transit,
                 destination => $destination
                                                 );
-$SIG{'INT'} = 'interrupt_handler';
+
+$SIG{'INT'}  = 'interrupt_handler';
+$SIG{'TERM'} = 'interrupt_handler';
+
 try {
   $monitor->watch(); # This method never returns.
 } catch {
@@ -54,7 +58,7 @@ try {
 exit 0;
 
 sub interrupt_handler {
-  warn "Handling interrupt signal\n";
+  warn "Handling signal '$OS_ERROR'\n";
   try { $monitor->cancel_watch };
   exit 0;
 }
@@ -68,15 +72,31 @@ npg_status_watcher
 
 =head1 USAGE
 
+  npg_status_watcher
+
 =head1 DESCRIPTION
+
+  Utility for discovering in real time files containing the description of
+  analysis pipeline statuses and saving the statuses to the database. On
+  start, finds all existing status files and saves them to the database.
+  
+  It's the responsibility of the database ORM layer to maintain the integrity
+  of the status tables, for example, ensuring that duplicate statuses are
+  not created.
 
 =head1 REQUIRED ARGUMENTS
 
+  None
+
 =head1 OPTIONS
+
+  None
 
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION
+
+  Based on Linux inotify http://inotify.aiken.cz/.
 
 =head1 DEPENDENCIES
 
@@ -93,6 +113,8 @@ npg_status_watcher
 =item Carp
 
 =item Try::Tiny
+
+=item English
 
 =item npg_tracking::monitor::status
 

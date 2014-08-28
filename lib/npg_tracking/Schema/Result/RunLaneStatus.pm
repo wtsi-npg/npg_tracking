@@ -188,24 +188,32 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:38
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TkFv5J36/M51WwS1WQKs8Q
 
-# Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
 
 use Carp;
 
 our $VERSION = '0';
 
+=head2 status_dict
+
+Type: belongs_to
+
+Related object: L<npg_tracking::Schema::Result::RunLaneStatusDict>
+
+The same as run_lane_status_dict
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "status_dict",
+  "npg_tracking::Schema::Result::RunLaneStatusDict",
+  { id_run_lane_status_dict => "id_run_lane_status_dict" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+);
+
 =head2 description
 
 returns the status description directly as a helper method, rather than forcing you to go through the run_lane_status_dict manually
-
-=head2 id_run
-
-returns the id_run this lane is on directly, rather than forcing you through the run_lane manually
-
-=head2 position
-
-returns the position of this lane is directly, rather than forcing you through the run_lane manually
 
 =cut
 
@@ -214,10 +222,22 @@ sub description {
   return $self->run_lane_status_dict()->description();
 }
 
+=head2 id_run
+
+returns the id_run this lane is on directly, rather than forcing you through the run_lane manually
+
+=cut
+
 sub id_run {
   my ( $self ) = @_;
   return $self->run_lane()->id_run();
 }
+
+=head2 position
+
+returns the position of this lane is directly, rather than forcing you through the run_lane manually
+
+=cut
 
 sub position {
   my ( $self ) = @_;
@@ -306,7 +326,7 @@ Result class definition in DBIx binding for npg tracking database.
 
 =head1 AUTHOR
 
-Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

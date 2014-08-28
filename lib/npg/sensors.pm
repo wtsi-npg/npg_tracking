@@ -3,8 +3,7 @@
 # Created On: 2012-03-13
 
 package npg::sensors;
-use strict;
-use warnings;
+
 use Moose;
 use Carp;
 use English qw{-no_match_vars};
@@ -12,7 +11,6 @@ use Readonly;
 use npg_tracking::Schema;
 use npg::util::mailer;
 use XML::Simple;
-use Data::Dumper;
 use LWP::UserAgent;
 use npg::api::request;
 

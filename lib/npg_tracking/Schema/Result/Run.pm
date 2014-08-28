@@ -332,7 +332,6 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-28 12:00:59
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:30KwQYdLD+H3KvJKLf9OxQ
 
-# Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
 
 our $VERSION = '0';
@@ -363,6 +362,23 @@ Related object: L<npg_tracking::Schema::Result::Tag>
 =cut
 
 __PACKAGE__->many_to_many('tags' => 'tag_runs', 'tag');
+
+=head2 statuses
+
+Type: has_many
+
+Related object: L<npg_tracking::Schema::Result::RunStatus>
+
+The same as run_statuses.
+
+=cut
+
+__PACKAGE__->has_many(
+  "statuses",
+  "npg_tracking::Schema::Result::RunStatus",
+  { "foreign.id_run" => "self.id_run" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
 
 =head2 BUILD
 
@@ -403,7 +419,6 @@ sub _tag_rs {
     return $self->result_source->schema->resultset('Tag')->new( {} );
 }
 
-
 =head2 _user_rs
 
 Create a dbic User result set as shorthand and to access the row validation
@@ -416,7 +431,6 @@ sub _user_rs {
 
     return $self->result_source->schema->resultset('User')->new( {} );
 }
-
 
 =head2 current_run_status_description
 
@@ -448,21 +462,24 @@ sub current_run_status {
   return $self->run_statuses()->search({iscurrent => 1})->first(); #not nice - would like this defined by a relationship
 }
 
-
-
 =head2 update_run_status
 
-If appropriate, creates a new run status for this run and,
-if appropriate, marks this status as current and all the
-previous statuses as not current.
-
-For a new current status a new event row is created and, if appropriate,
-instrument status changed. In some cases, the run status is automatically
-advanced one step further.
+Creates a new run status for this run and, if appropriate, marks this
+status as current and all the previous statuses as not current.
 
 The description of the status is required.
 
     $run_row->update_run_status('some status');
+
+If there exists a status with this description that has the same timestamp
+or is current and has an earlier timestamp, a new status is not created.
+
+The current status is switched to the new one if the new status is not older
+than the current one.
+
+For a new current status a new event row is created and, if appropriate,
+instrument status gets changed. In some cases, the run status is automatically
+advanced one step further.
 
 An optional username can be supplied. If omitted, the pipeline user is
 assumed
@@ -487,36 +504,28 @@ sub update_run_status {
         croak '"date" argument should be a DateTime object';
     }
 
+    if ($self->status_is_duplicate($description, $date)) {
+      return;
+    }
+
+    my $current_status_rs = $self->related_resultset( q{run_statuses} )->search(
+              { iscurrent => 1,},
+              { order_by => { -desc => 'date'},},
+    );
+
+    my $current_status_row = $current_status_rs->next;
+    my $make_new_current = $self->current_status_is_outdated($current_status_row, $date);
+
     my $use_pipeline_user = 1;
     my $user_id = $self->get_user_id($user_identifier, $use_pipeline_user);
-    my $rsd_row = $self->get_status_dict_row('RunStatusDict', $description);
-
-    # Do nothing if the run_status is already set and current.
-    my $current_status_rs = $self->related_resultset( q{run_statuses} )->search(
-             { iscurrent   => 1,},
-             { order_by    => { -desc => 'date'},},
-    );
-    my $current_status_row = $current_status_rs->next;
-    if ($current_status_row && $current_status_row->description eq $description) {
-        return;
-    }
-
-    # If current status is later that the new one, do not make the new one current
-    my $make_new_current = 1;
-
-    if ($current_status_row &&
-          $current_status_row->date->subtract_datetime($date)->is_positive ) {
-        $make_new_current = 0;
-    }
 
     # Use transaction in case iscurrent flag has to be reset
     my $transaction = sub {
-        if ($current_status_row && $make_new_current) {
+        if ($current_status_row && $make_new_current) {                               
             $current_status_rs->update_all( {iscurrent => 0} );
         }
-
         return $self->related_resultset( q{run_statuses} )->create( {
-                run_status_dict    => $rsd_row,
+                run_status_dict    => $self->get_status_dict_row('RunStatusDict', $description),
                 date               => $date,
                 iscurrent          => $make_new_current,
                 id_user            => $user_id,
@@ -527,14 +536,14 @@ sub update_run_status {
     if ( $make_new_current ) {
         try {
             $self->run_status_event( $user_id, $new_row->id_run_status() );
-            $self->instrument->autochange_status_if_needed($description, $user_identifier);
+            $self->instrument->autochange_status_if_needed($description, $user_id);
             my $auto = $STATUS_CHANGE_AUTO{$description};
             if ($auto) {
                 $new_row = $self->update_run_status($auto);
             }
         } catch {
             carp "Error performing post run status change actions \
-                  (event, auto run and instrument status update) $_";
+                  (event, auto run and instrument status update): $_";
         }
     }
 
@@ -653,7 +662,6 @@ sub _map_opposed_tags {
     return;
 }
 
-
 =head2 _set_mutually_exclusive_tags
 
 Some tags are paired and mutually exclusive (paired_end/single_end,
@@ -705,7 +713,6 @@ sub _set_mutually_exclusive_tags {
     return;
 }
 
-
 =head2 set_tag
 
 General method for setting/creating TagRun rows.
@@ -748,7 +755,6 @@ sub set_tag {
     return;
 }
 
-
 =head2 unset_tag
 
 General method for unsetting TagRun rows. It won't complain if the tag was
@@ -786,7 +792,6 @@ sub unset_tag {
     return $record->delete();
 }
 
-
 =head2 is_tag_set
 
 Test whether a suppled tag (db id or text) is set for the run. Returns 0 if
@@ -811,7 +816,6 @@ sub is_tag_set {
         )->count();
 }
 
-
 =head2 forward_read
 
 Get RunRead corresponding to the forward read.
@@ -822,7 +826,6 @@ sub forward_read {
     my ($self) = @_;
     return $self->runs_read->find({read_order=>1});
 }
-
 
 =head2 reverse_read
 
@@ -886,7 +889,7 @@ Result class definition in DBIx binding for npg tracking database.
 
 =head1 AUTHOR
 
-Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

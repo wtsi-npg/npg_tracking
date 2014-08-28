@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use IPC::Open2;
 use Perl6::Slurp;
-use Test::More tests => 59;
+use Test::More tests => 77;
 
 my $command = 'bin/npg_daemon_control 2>&1';
  # or with handle autovivification
@@ -20,7 +20,7 @@ like (shift(@lines), qr/--dry-run/, 'dry-run option present');
 pop @lines;
 like (pop @lines, qr/--host/, 'host option present');
 
-foreach my $app (qw/jenkins samplesheet staging/) {
+foreach my $app (qw/jenkins samplesheet staging status/) {
   foreach my $action (qw/ping stop start/) {
     my $option = q{--} . $action . q{_} . $app;
     my @found = grep { /$option/ } @lines;
