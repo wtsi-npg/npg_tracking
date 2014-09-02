@@ -8,8 +8,6 @@ use Test::More tests => 6;
 use t::util;
 use npg::model::usergroup;
 
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$LastChangedRevision: 14928 $ =~ /(\d+)/mx; $r; };
-
 use_ok('npg::view::usergroup');
 
 my $util = t::util->new({fixtures=>1});

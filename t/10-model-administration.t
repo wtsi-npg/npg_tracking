@@ -1,10 +1,7 @@
 use strict;
 use warnings;
 use t::util;
-
 use Test::More tests => 4;
-
-use Readonly; Readonly::Scalar our $VERSION => do { my ($r) = q$Revision: 14928 $ =~ /(\d+)/mx; $r; };
 
 use_ok('npg::model::administration');
 my $util  = t::util->new({fixtures => 1});
