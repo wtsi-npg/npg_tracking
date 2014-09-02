@@ -446,8 +446,7 @@ sub _helper_over_pool_for_build_methods {
       }
     }
   }
-  if (!$cuh) { $cuh = 0; }
-  return $cuh;
+  return $cuh ? 1 : 0;
 }
 
 =head2 contains_nonconsented_human
