@@ -1,5 +1,6 @@
 CHANGES
 
+release 80.0
  - DBIx run and run-lane status update: ensure duplicate records are not created
      allow to create a record for a status that is already current if the date
      of the new record is earlier that the current status date
