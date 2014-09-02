@@ -86,14 +86,14 @@ Readonly::Hash   my  %METHODS           => {
                            email_addresses_of_managers
                            email_addresses_of_followers
                            email_addresses_of_owners
-                           alignments_in_bam
+                           study_alignments_in_bam
                            study_accession_number
                            study_title
                            study_description
                            study_reference_genome
                            study_contains_nonconsented_xahuman
                            study_contains_nonconsented_human
-                           separate_y_chromosome_data
+                           study_separate_y_chromosome_data
                       /],
 
     'project'      => [qw/ project_id
@@ -433,6 +433,23 @@ sub _build_reference_genome {
   return $rg;
 }
 
+sub _helper_over_pool_for_build_methods {
+  my ($self,$method) = @_;
+
+  my $cuh = 0;
+  if ($self->position) {
+    my @lims =  ($self->is_pool && !$self->tag_index) ? $self->children : ($self);
+    foreach my $l (@lims) {
+      $cuh = $l->$method;
+      if ($cuh) {
+        return 1;
+      }
+    }
+  }
+  if (!$cuh) { $cuh = 0; }
+  return $cuh;
+}
+
 =head2 contains_nonconsented_human
 
 Read-only accessor, not possible to set from the constructor.
@@ -452,17 +469,7 @@ has 'contains_nonconsented_human' => (isa             => 'Bool',
                                      );
 sub _build_contains_nonconsented_human {
   my $self = shift;
-
-  my $cuh = 0;
-  if ($self->position) {
-    my @lims =  ($self->is_pool && !$self->tag_index) ? $self->children : ($self);
-    foreach my $l (@lims) {
-      $cuh = $l->study_contains_nonconsented_human;
-      if ($cuh) { last; }
-    }
-  }
-  if (!$cuh) { $cuh = 0; }
-  return $cuh;
+  return $self->_helper_over_pool_for_build_methods('study_contains_nonconsented_human');
 }
 
 =head2 contains_nonconsented_xahuman
@@ -483,19 +490,49 @@ has 'contains_nonconsented_xahuman' => (isa             => 'Bool',
                                        );
 sub _build_contains_nonconsented_xahuman {
   my $self = shift;
+  return $self->_helper_over_pool_for_build_methods('study_contains_nonconsented_xahuman');
+}
 
-  my $cuh = 0;
-  if ($self->position) {
-    my @lims =  ($self->is_pool && !$self->tag_index) ? $self->children : ($self);
-    foreach my $l (@lims) {
-      $cuh = $l->study_contains_nonconsented_xahuman;
-      if ($cuh) {
-        return 1;
-      }
-    }
-  }
-  if (!$cuh) { $cuh = 0; }
-  return $cuh;
+=head2 alignments_in_bam
+
+Read-only accessor, not possible to set from the constructor.
+For a library, control on non-zero plex returns the value of the
+contains_nonconsented_xahuman on the relevant study object. For a pool
+or a zero plex returns 1 if any of the studies in the pool
+has study_alignments_in_bam
+
+On a batch level or if no associated study found, returns 0.
+
+=cut
+has 'alignments_in_bam' =>             (isa             => 'Bool',
+                                        is              => 'ro',
+                                        init_arg        => undef,
+                                        lazy_build      => 1,
+                                       );
+sub _build_alignments_in_bam {
+  my $self = shift;
+  return $self->_helper_over_pool_for_build_methods('study_alignments_in_bam');
+}
+
+=head2 separate_y_chromosome_data
+
+Read-only accessor, not possible to set from the constructor.
+For a library, control on non-zero plex returns the value of the
+contains_nonconsented_xahuman on the relevant study object. For a pool
+or a zero plex returns 1 if any of the studies in the pool
+has study_separate_y_chromosome_data
+
+On a batch level or if no associated study found, returns 0.
+
+=cut
+has 'separate_y_chromosome_data' =>    (isa             => 'Bool',
+                                        is              => 'ro',
+                                        init_arg        => undef,
+                                        lazy_build      => 1,
+                                       );
+sub _build_separate_y_chromosome_data {
+  my $self = shift;
+  return $self->_helper_over_pool_for_build_methods('study_separate_y_chromosome_data');
 }
 
 has '_cached_children'              => (isa             => 'ArrayRef',

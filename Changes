@@ -5,6 +5,9 @@ CHANGES
      of the new record is earlier that the current status date
  - status monitor bug fixes
  - daemon for status monitor watcher
+ - propagate child/plex library level study data "alignment_in_bam" and 
+   "separate_y_chromosome" to parent lane level as is done with 
+   "contains_nonconsented_human" data
 
 release 77.9
  - DBIx run and run-lane status update refactoring to accommodate passing
