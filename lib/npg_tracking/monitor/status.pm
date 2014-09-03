@@ -324,7 +324,7 @@ sub _stock_status_check {
     try {
       my $status_path = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
       $self->_log("Looking for status files in $status_path");
-      my @files = glob qq("${status_path}/*.json");
+      my @files = glob "${status_path}/*.json";
       if (@files) {
         $self->_update_status4files(\@files, $runfolder_path);
       } else {
