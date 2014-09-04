@@ -121,7 +121,7 @@ my $cb = sub {
     mkdir $new_dir;
     my $pid = fork();
     if ($pid) {
-      warnings_like { $m->_notifier->poll() } 
+      warnings_exist { $m->_notifier->poll() } 
         [qr/test callback: $new_dir deleted/],
         'deletion reported';
     } else {
