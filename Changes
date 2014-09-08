@@ -1,5 +1,8 @@
 CHANGES
 
+release 80.2
+ - cope with old path being reported for a directory when it is moved
+
 release 80.1
  - glob expression fix for running on Ubuntu lucid with perl 5.14.2
 
