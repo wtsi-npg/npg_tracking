@@ -251,6 +251,19 @@ sub _update_status4files {
   return;
 }
 
+sub _path_in_destination {
+  my ($self, $path) = @_;
+  if ($self->destination && !-e $path) {
+    my $transit = $self->transit;
+    my $destination = $self->destination;
+    $path =~ s/^$transit/$destination/smx;
+    if (-e $path) {
+      return $path;
+    }
+  }
+  return;
+}
+
 sub _read_status {
   my ($self, $path, $runfolder_path) = @_;
 
@@ -262,7 +275,20 @@ sub _read_status {
   try {
     $status = npg_tracking::status->from_file($path);
   } catch {
-    croak "Error instantiating object from $path: $_";
+    my $error = $_;
+    my $new_path = $self->_path_in_destination($path);
+    if ($new_path) {
+      try {
+        $status = npg_tracking::status->from_file($new_path);
+        $error = q[];
+      } catch {
+        $error = $_;
+        $path = $new_path;
+      };
+    }
+    if ($error) {
+      croak "Error instantiating object from $path: $error";
+    }
   };
 
   my $id_run = $self->_runfolder_prop($runfolder_path, 'id_run');

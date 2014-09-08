@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 71;
+use Test::More tests => 76;
 use Test::Exception;
 use Test::Warn;
 use Test::Trap qw/ :stderr(tempfile) /;
@@ -350,7 +350,7 @@ my $cb = sub {
 
   my $lane_status = 'analysis complete';
   my @lanes = (1 .. 8);
-  npg_tracking::status->new(
+  my $status_file_path = npg_tracking::status->new(
       id_run => $test_id_run,
       lanes  => \@lanes,
       status => $lane_status,
@@ -358,7 +358,7 @@ my $cb = sub {
 
   is( $m->_notifier->poll(), 1, 'new lane status file creation registered');
   @rows = $schema->resultset('RunLaneStatus')->search(
-     { 'run_lane.id_run'                           => $test_id_run,
+     { 'run_lane.id_run'                  => $test_id_run,
        'run_lane_status_dict.description' => $lane_status,
        'iscurrent'                        => 1,
      },
@@ -378,6 +378,28 @@ my $cb = sub {
     'current run status has not changed');
 
   is( $m->_notifier->poll(), 0, 'no further events');
+
+  my $opath = join q[/], $o, $runfolder_name;
+  rename $new_path, $opath;
+  
+  lives_ok { $m->_read_status($status_file_path, $opath) } 'processing transit path when file is in destination'; 
+  my $moved = $status_file_path;
+  $moved =~ s/$a/$o/smx;
+  my $af = "$a/test.json";
+  rename $moved, $af;
+  ok(!$m->_path_in_destination($af), 'file in transit - path in destination undefined');
+  my $of = "$o/test.json";
+  rename $af, $of;
+  is($m->_path_in_destination($af), $of, 'file in destination - path in destination undefined');
+  unlink $of;
+  ok(!$m->_path_in_destination($af), 'file does not exist in either directory - path in destination undefined');
+
+  open my $fh, '>', $moved;
+  print $fh 'not json' or die "failed to print to $moved";
+  close $fh or die "failed to close $moved";
+  throws_ok { $m->_read_status($status_file_path, $opath) }
+     qr/Error instantiating object from $moved/,
+    'processing transit path (invalid json) when file is in destination'; 
 }
 
 1;
