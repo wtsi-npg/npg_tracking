@@ -1,5 +1,11 @@
 CHANGES
 
+release 80.2
+ - cope with old path being reported for a directory when it is moved
+
+release 80.1
+ - glob expression fix for running on Ubuntu lucid with perl 5.14.2
+
 release 80.0
  - DBIx run and run-lane status update: ensure duplicate records are not created
      allow to create a record for a status that is already current if the date
