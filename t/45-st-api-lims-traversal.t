@@ -96,7 +96,7 @@ foreach my $pa (['test', 'using mocked data', q[t/data/test45]],
 
 
     my $lims7 = st::api::lims->new(batch_id => 16249, position => 1);
-    is($lims7->bait_name, undef, 'bait name undefined for a pool');
+    is($lims7->bait_name, 'Human all exon 50MB', 'bait name when common for whole pool');
     $lims7 = st::api::lims->new(batch_id => 16249, position => 1, tag_index => 2);
     is($lims7->bait_name, 'Human all exon 50MB', 'bait name for a plex');
     $lims7 = st::api::lims->new(batch_id => 16249, position => 1, tag_index => 168);

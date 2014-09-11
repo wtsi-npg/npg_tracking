@@ -170,7 +170,17 @@ sub _driver_package_name {
 }
 
 for my$m ( @DELEGATED_METHODS ){
-  __PACKAGE__->meta->add_method($m, sub{my$d=shift->driver; if( $d->can($m) ){ return $d->$m(@_) } return; });
+  __PACKAGE__->meta->add_method($m, sub{
+    my$l=shift;
+    my$d=$l->driver;
+    my$r= $d->can($m) ? $d->$m(@_) : undef;
+    if( defined $r and length $r){ #if method exists and it returns a defined and non-empty result
+      return $d->$m(@_);
+    }elsif($l->is_pool){ # else try any children
+      return $l->_single_attribute($m,0); # 0 to ignore spike
+    }
+    return;
+  });
 }
 
 =head2 inline_index_end
@@ -687,6 +697,7 @@ sub _list_of_attributes {
   my @objects = ();
   if ($self->is_pool) {
     foreach my $tlims ($self->children) {
+      last if ($attr_name eq 'spiked_phix_tag_index'); #avoid recursion
       if (!$with_spiked_control && $self->spiked_phix_tag_index && $self->spiked_phix_tag_index == $tlims->tag_index) {
         next;
       }
@@ -697,6 +708,13 @@ sub _list_of_attributes {
   }
   my @l = sort {$a cmp $b} uniq grep {$_} map {$_->$attr_name} @objects;
   return @l;
+}
+
+sub _single_attribute {
+  my ($self, $attr_name, $with_spiked_control) = @_;
+  my @a = $self->_list_of_attributes($attr_name, $with_spiked_control);
+  if(1==@a) { return $a[0];}
+  return;
 }
 
 =head2 library_names
