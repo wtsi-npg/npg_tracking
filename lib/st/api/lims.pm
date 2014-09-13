@@ -296,6 +296,20 @@ sub _build_batch_id {
   return;
 }
 
+=head2 is_phix_spike
+
+If plex library and is the spiked phiX.
+
+=cut
+
+sub is_phix_spike {
+  my $self = shift;
+  if(my $ti = $self->tag_index and my $spti = $self->spiked_phix_tag_index) {
+     return $ti == $spti;
+  }
+  return;
+}
+
 =head2 tag_sequence
 
 Read-only string accessor, not possible to set from the constructor.
@@ -311,7 +325,7 @@ sub _build_tag_sequence {
   my $self = shift;
   my $seq;
   if ($self->tag_index) {
-    if (!$self->spiked_phix_tag_index || $self->tag_index != $self->spiked_phix_tag_index) {
+    if (!$self->is_phix_spike) {
       if ($self->sample_description) {
         $seq = _tag_sequence_from_sample_description($self->sample_description);
       }
@@ -698,7 +712,7 @@ sub _list_of_attributes {
   if ($self->is_pool) {
     foreach my $tlims ($self->children) {
       last if ($attr_name eq 'spiked_phix_tag_index'); #avoid recursion
-      if (!$with_spiked_control && $self->spiked_phix_tag_index && $self->spiked_phix_tag_index == $tlims->tag_index) {
+      if (!$with_spiked_control && $tlims->is_phix_spike) {
         next;
       }
       push @objects, $tlims;
