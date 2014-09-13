@@ -708,19 +708,11 @@ sub _list_of_attributes {
 
   if (!defined $with_spiked_control) { $with_spiked_control = 1; }
 
-  my @objects = ();
-  if ($self->is_pool) {
-    foreach my $tlims ($self->children) {
-      last if ($attr_name eq 'spiked_phix_tag_index'); #avoid recursion
-      if (!$with_spiked_control && $tlims->is_phix_spike) {
-        next;
-      }
-      push @objects, $tlims;
-    }
-  } else {
-    push @objects, $self;
-  }
-  my @l = sort {$a cmp $b} uniq grep {$_} map {$_->$attr_name} @objects;
+  my @l = sort {$a cmp $b} uniq grep {$_} map {$_->$attr_name} $self->is_pool ?
+    $attr_name ne 'spiked_phix_tag_index' ?
+      grep { $with_spiked_control || ! $_->is_phix_spike } $self->children :
+      () :
+    ($self);
   return @l;
 }
 
