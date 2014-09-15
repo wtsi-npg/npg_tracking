@@ -11,7 +11,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use MooseX::Aliases;
 use Readonly;
-use List::MoreUtils qw/none/;
+use List::MoreUtils qw/none uniq/;
 
 use npg_tracking::util::types;
 
@@ -170,7 +170,17 @@ sub _driver_package_name {
 }
 
 for my$m ( @DELEGATED_METHODS ){
-  __PACKAGE__->meta->add_method($m, sub{my$d=shift->driver; if( $d->can($m) ){ return $d->$m(@_) } return; });
+  __PACKAGE__->meta->add_method($m, sub{
+    my$l=shift;
+    my$d=$l->driver;
+    my$r= $d->can($m) ? $d->$m(@_) : undef;
+    if( defined $r and length $r){ #if method exists and it returns a defined and non-empty result
+      return $d->$m(@_);
+    }elsif($l->is_pool){ # else try any children
+      return $l->_single_attribute($m,0); # 0 to ignore spike
+    }
+    return;
+  });
 }
 
 =head2 inline_index_end
@@ -286,6 +296,20 @@ sub _build_batch_id {
   return;
 }
 
+=head2 is_phix_spike
+
+If plex library and is the spiked phiX.
+
+=cut
+
+sub is_phix_spike {
+  my $self = shift;
+  if(my $ti = $self->tag_index and my $spti = $self->spiked_phix_tag_index) {
+     return $ti == $spti;
+  }
+  return;
+}
+
 =head2 tag_sequence
 
 Read-only string accessor, not possible to set from the constructor.
@@ -301,7 +325,7 @@ sub _build_tag_sequence {
   my $self = shift;
   my $seq;
   if ($self->tag_index) {
-    if (!$self->spiked_phix_tag_index || $self->tag_index != $self->spiked_phix_tag_index) {
+    if (!$self->is_phix_spike) {
       if ($self->sample_description) {
         $seq = _tag_sequence_from_sample_description($self->sample_description);
       }
@@ -433,7 +457,7 @@ sub _build_reference_genome {
   return $rg;
 }
 
-sub _helper_over_pool_for_build_methods {
+sub _helper_over_pool_for_boolean_build_methods {
   my ($self,$method) = @_;
 
   my $cuh = 0;
@@ -468,7 +492,7 @@ has 'contains_nonconsented_human' => (isa             => 'Bool',
                                      );
 sub _build_contains_nonconsented_human {
   my $self = shift;
-  return $self->_helper_over_pool_for_build_methods('study_contains_nonconsented_human');
+  return $self->_helper_over_pool_for_boolean_build_methods('study_contains_nonconsented_human');
 }
 
 =head2 contains_nonconsented_xahuman
@@ -489,7 +513,7 @@ has 'contains_nonconsented_xahuman' => (isa             => 'Bool',
                                        );
 sub _build_contains_nonconsented_xahuman {
   my $self = shift;
-  return $self->_helper_over_pool_for_build_methods('study_contains_nonconsented_xahuman');
+  return $self->_helper_over_pool_for_boolean_build_methods('study_contains_nonconsented_xahuman');
 }
 
 =head2 alignments_in_bam
@@ -510,7 +534,7 @@ has 'alignments_in_bam' =>             (isa             => 'Bool',
                                        );
 sub _build_alignments_in_bam {
   my $self = shift;
-  return $self->_helper_over_pool_for_build_methods('study_alignments_in_bam');
+  return $self->_helper_over_pool_for_boolean_build_methods('study_alignments_in_bam');
 }
 
 =head2 separate_y_chromosome_data
@@ -531,7 +555,7 @@ has 'separate_y_chromosome_data' =>    (isa             => 'Bool',
                                        );
 sub _build_separate_y_chromosome_data {
   my $self = shift;
-  return $self->_helper_over_pool_for_build_methods('study_separate_y_chromosome_data');
+  return $self->_helper_over_pool_for_boolean_build_methods('study_separate_y_chromosome_data');
 }
 
 has '_cached_children'              => (isa             => 'ArrayRef',
@@ -672,35 +696,32 @@ sub _list_of_properties {
   if ($prop !~ /^name|id$/smx) {
     croak qq[Invalid property $prop in ] . ( caller 0 )[$PROC_NAME_INDEX]
   }
+  my $attr_name = join q[_], $object_type, $prop;
+
+  return $self->_list_of_attributes($attr_name, $with_spiked_control);
+}
+
+sub _list_of_attributes {
+  my ($self, $attr_name, $with_spiked_control) = @_;
 
   if (!defined $self->position) { my @l = (); return @l; }
 
   if (!defined $with_spiked_control) { $with_spiked_control = 1; }
-  my $attr_name = join q[_], $object_type, $prop;
 
-  my @objects = ();
-  if ($self->is_pool) {
-    foreach my $tlims ($self->children) {
-      if (!$with_spiked_control && $self->spiked_phix_tag_index && $self->spiked_phix_tag_index == $tlims->tag_index) {
-        next;
-      }
-      push @objects, $tlims;
-    }
-  } else {
-    push @objects, $self;
-  }
-
-  my $names_hash = {};
-  foreach my $object (@objects) {
-    if ($object->$attr_name) {
-      $names_hash->{$object->$attr_name} = 1;
-    }
-  }
-
-  my @l = sort keys %{$names_hash};
+  my @l = sort {$a cmp $b} uniq grep {$_} map {$_->$attr_name} $self->is_pool ?
+    $attr_name ne 'spiked_phix_tag_index' ? # avoid unintended recursion
+      grep { $with_spiked_control || ! $_->is_phix_spike } $self->children :
+      () :
+    ($self);
   return @l;
 }
 
+sub _single_attribute {
+  my ($self, $attr_name, $with_spiked_control) = @_;
+  my @a = $self->_list_of_attributes($attr_name, $with_spiked_control);
+  if(1==@a) { return $a[0];}
+  return;
+}
 
 =head2 library_names
 
@@ -837,28 +858,7 @@ A list of library types, excluding spiked phix library
 =cut
 sub library_types {
   my ($self) = @_;
-  if (!defined $self->position) { my @l = (); return @l; }
-
-  my @objects = ();
-  if ($self->is_pool) {
-    foreach my $tlims ($self->children) {
-      if ($self->spiked_phix_tag_index && $self->spiked_phix_tag_index == $tlims->tag_index) {
-        next;
-      }
-      push @objects, $tlims;
-    }
-  } else {
-    @objects = ($self);
-  }
-  my $lt_hash = {};
-  foreach my $o (@objects) {
-    my $ltype = _derived_library_type($o);
-    if ($ltype) {
-      $lt_hash->{$ltype} = 1;
-    }
-  }
-  my @t = sort keys %{$lt_hash};
-  return @t;
+  return $self->_list_of_attributes('_derived_library_type',0);
 }
 
 =head2 driver_method_list
