@@ -1,5 +1,8 @@
 CHANGES
 
+ - report sample_name, library_id etc at pool level if non-spike children
+   give same value (to better cope with single plex pools)
+
 release 80.2
  - cope with old path being reported for a directory when it is moved
 
