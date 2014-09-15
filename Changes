@@ -1,5 +1,6 @@
 CHANGES
 
+release 80.3
  - report sample_name, library_id etc at pool level if non-spike children
    give same value (to better cope with single plex pools)
 
