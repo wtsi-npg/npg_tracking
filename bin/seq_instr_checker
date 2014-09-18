@@ -53,6 +53,7 @@ eval {
      }
      or do {
         carp "Error in FTP poll: $EVAL_ERROR";
+        $poll = Monitor::SRS::Local->new_with_options();
         main();
      };
 
