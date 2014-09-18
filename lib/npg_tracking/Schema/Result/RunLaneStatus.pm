@@ -188,26 +188,32 @@ __PACKAGE__->belongs_to(
 # Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:38
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TkFv5J36/M51WwS1WQKs8Q
 
-# Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
+
+use Carp;
 
 our $VERSION = '0';
 
-use Carp;
-use DateTime;
-use DateTime::TimeZone;
+=head2 status_dict
+
+Type: belongs_to
+
+Related object: L<npg_tracking::Schema::Result::RunLaneStatusDict>
+
+The same as run_lane_status_dict
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "status_dict",
+  "npg_tracking::Schema::Result::RunLaneStatusDict",
+  { id_run_lane_status_dict => "id_run_lane_status_dict" },
+  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+);
 
 =head2 description
 
 returns the status description directly as a helper method, rather than forcing you to go through the run_lane_status_dict manually
-
-=head2 id_run
-
-returns the id_run this lane is on directly, rather than forcing you through the run_lane manually
-
-=head2 position
-
-returns the position of this lane is directly, rather than forcing you through the run_lane manually
 
 =cut
 
@@ -216,10 +222,22 @@ sub description {
   return $self->run_lane_status_dict()->description();
 }
 
+=head2 id_run
+
+returns the id_run this lane is on directly, rather than forcing you through the run_lane manually
+
+=cut
+
 sub id_run {
   my ( $self ) = @_;
   return $self->run_lane()->id_run();
 }
+
+=head2 position
+
+returns the position of this lane is directly, rather than forcing you through the run_lane manually
+
+=cut
 
 sub position {
   my ( $self ) = @_;
@@ -250,119 +268,83 @@ A description must be provided
 
 sub update_run_lane_status {
   my ( $self, $args ) = @_;
+  my $id_run      = $args->{'id_run'};
+  my $position    = $args->{'position'};
+  my $id_run_lane = $args->{'id_run_lane'};
 
-  my $id_run = $args->{id_run};
-  my $position = $args->{position};
-  my $description = $args->{description};
-  my $id_run_lane = $args->{id_run_lane};
-  my $id_user = $args->{id_user};
-  my $username = $args->{username};
-
-  my $schema = $self->result_source->schema();
-
-  if ( ! $description ) {
-    croak q{No description provided};
+  my $query = $id_run_lane ? {id_run_lane => $id_run_lane,} :
+                             {id_run => $id_run, position => $position,};
+  my $run_lane_row = $self->result_source->schema->resultset( q{RunLane} )->find($query);
+  if ( !$run_lane_row)  {
+    croak qq{Lane not found};
   }
-  if ( ! $id_run_lane && ! ( $id_run && $position ) ) {
-    croak q{No lane information provided};
-  }
-
-  if ( ! ( $id_user || $username ) ) {
-    croak q{no user provided}
-  }
-
-  my $run_lane_row;
-  if ( ! $id_run_lane ) {
-    $run_lane_row = $schema->resultset( q{RunLane} )->find({
-      id_run => $id_run,
-      position => $position,
-    });
-    $id_run_lane = $run_lane_row->id_run_lane();
-    croak qq{no row exists for run lane id_run: $id_run, position: $position} if ! $id_run_lane;
-  } else {
-    $run_lane_row = $schema->resultset( q{RunLane} )->find({
-      id_run_lane => $id_run_lane,
-    });
-  }
-
-  if ( ! $id_user ) {
-    $id_user = $schema->resultset( q{User} )->find({
-      username => $username,
-    })->id_user();
-    croak qq{no row exists for user $username} if ! $id_user;
-  }
-
-  my $update_transaction = sub {
-    $run_lane_row->related_resultset( q{run_lane_statuses} )->update_all({iscurrent=>0});
-    my $desc_row = $schema->resultset( q{RunLaneStatusDict} )->find({
-      description => $description,
-    });
-    my $new_row = $run_lane_row->related_resultset( q{run_lane_statuses} )->create( {
-      run_lane_status_dict => $desc_row,
-      iscurrent => 1,
-      id_user => $id_user,
-      date => DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local])),
-    } );
-
-    $new_row->_update_run_status();
-
-    return $new_row;
-  };
-  
-  my $new_status = $schema->txn_do( $update_transaction );
-
-  return $new_status;
-}
-
-sub _update_run_status {
-  my ( $self ) = @_;
-
-  my $description = $self->description();
-
-  if ( $description ne q{analysis complete}
-         &&
-       $description ne q{manual qc complete} ) {  return 1; }     
-
-  my $schema = $self->result_source->schema();
-  my $run    = $self->run_lane->run();
-  my $id_run_lane_status_dict = $self->id_run_lane_status_dict();
-
-  my $lane_count = scalar $run->run_lanes();
-  my $updated_to_same_status_count = 0;
-  foreach my $lane ( $run->run_lanes() ) {
-    if ( my$crls = $lane->current_run_lane_status ) {
-      if ( $crls->description() eq $description ) {
-        $updated_to_same_status_count++;
-      }
-    }
-  }
-
-  if ( $updated_to_same_status_count == $lane_count ) {
-    my $first_run_status = $run->run_statuses()->first();
-
-    if ( $description eq q{analysis complete} ) {
-      my $row = $first_run_status->update_run_status({
-        description => q{analysis complete},
-        id_user => $self->id_user(),
-      });
-      $first_run_status->update_run_status({
-        description => q{qc review pending},
-        id_user => $self->id_user(),
-      });
-    } else {
-      $first_run_status->update_run_status({
-        description => q{archival pending},
-        id_user => $self->id_user(),
-      });
-    }
-
-    carp q{All updated};
-  } else {
-    carp $lane_count - $updated_to_same_status_count . q{ lanes not yet updated to this status};
-  }
-
-  return 1;
+  return $run_lane_row->update_status($args->{'description'}, $args->{'username'});
 }
 
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+Result class definition in DBIx binding for npg tracking database.
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 SUBROUTINES/METHODS
+
+=head1 DEPENDENCIES
+
+=over
+
+=item strict
+
+=item warnings
+
+=item Moose
+
+=item MooseX::NonMoose
+
+=item MooseX::MarkAsMethods
+
+=item DBIx::Class::Core
+
+=item DBIx::Class::InflateColumn::DateTime
+
+=item Carp
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2014 Genome Research Limited
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+=cut

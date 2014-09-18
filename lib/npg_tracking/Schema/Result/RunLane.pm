@@ -218,10 +218,31 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:43
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:a/2jj/wekHtvD7+mU4hh5g
 
-# Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
 
+use Carp;
+use Try::Tiny;
+with qw/
+        npg_tracking::Schema::Retriever
+       /;
+
 our $VERSION = '0';
+
+=head2 statuses
+
+Type: has_many
+
+Related object: L<npg_tracking::Schema::Result::RunLaneStatus>
+
+=cut
+
+__PACKAGE__->has_many(
+  "statuses",
+  "npg_tracking::Schema::Result::RunLaneStatus",
+  { "foreign.id_run_lane" => "self.id_run_lane" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 
 =head2 current_run_lane_status
 
@@ -234,5 +255,143 @@ sub current_run_lane_status {
   return $self->run_lane_statuses()->search({iscurrent => 1})->first(); #not nice - would like this defined by a relationship
 }
 
+=head2 update_status
+
+Logs the status and, if appropriate, marks this status current for the lane.
+Status description must be provided.
+
+  $obj->update_status($description, $username, $date);
+
+If there exists a status with this description that has the same timestamp
+or is current and has an earlier timestamp, a new status is not created.
+
+The current status is switched to the new status if the new status is not older
+than the current one.
+
+For some statuses, can trigger an auto update of run status.
+
+Returns undefined if the status has not been saved, otherwise returns the
+the new row, which can have iscurrent value set to either 1 or 0.
+
+=cut
+
+sub update_status {
+  my ( $self, $description, $username, $date ) = @_;
+
+  $date ||=  $self->get_time_now();
+  if ( ref $date ne 'DateTime' ) {
+    croak '"date" argument should be a DateTime object';
+  }
+
+  if ($self->status_is_duplicate($description, $date)) {
+    return;
+  }
+
+  my $current_rs = $self->related_resultset( q{run_lane_statuses} )->search(
+           {iscurrent => 1},
+           {order_by  =>  { -desc => 'date'},},);
+  my $current = $current_rs->next;
+  my $make_new_current = $self->current_status_is_outdated($current, $date);
+
+  my $use_pipeline_user = 1;
+  my $id_user  = $self->get_user_id($username, $use_pipeline_user);
+
+  # Use transaction in case iscurrent flag has to be reset
+  my $transaction = sub {
+    if ( $current && $make_new_current ) {
+      $current_rs->update_all( {iscurrent => 0} );
+    }
+
+    return $self->related_resultset( q{run_lane_statuses} )->create( {
+          run_lane_status_dict => $self->get_status_dict_row('RunLaneStatusDict', $description),
+          date                 => $date,
+          iscurrent            => $make_new_current,
+          id_user              => $id_user,
+    } );
+  };
+  
+  my $new_current = $self->result_source->schema->txn_do( $transaction );
+
+  if ($make_new_current) {
+    try {
+      $self->run->propagate_status_from_lanes();
+    } catch {
+      carp "Error propagating status up to the run: $_";
+    }
+  }
+
+  return $new_current;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+Result class definition in DBIx binding for npg tracking database.
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 SUBROUTINES/METHODS
+
+=head1 DEPENDENCIES
+
+=over
+
+=item strict
+
+=item warnings
+
+=item Moose
+
+=item MooseX::NonMoose
+
+=item MooseX::MarkAsMethods
+
+=item DBIx::Class::Core
+
+=item DBIx::Class::InflateColumn::DateTime
+
+=item Carp
+
+=item Try::Tiny
+
+=item npg_tracking::Schema::Retriever
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2014 Genome Research Limited
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+=cut
+

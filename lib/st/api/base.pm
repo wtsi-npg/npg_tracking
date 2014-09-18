@@ -14,8 +14,7 @@ use npg::api::util;
 our $VERSION = '0';
 
 sub live_url { return q{http://psd-support.internal.sanger.ac.uk:6600}; }
-
-sub dev_url  { return q{http://psd-dev.internal.sanger.ac.uk:6800}; }
+sub dev_url  { return q{http://dev.psd.sanger.ac.uk:6610}; }
 
 sub new {
   my ($class, $ref) = @_;

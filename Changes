@@ -1,7 +1,39 @@
 CHANGES
 
+release 80.3
+ - report sample_name, library_id etc at pool level if non-spike children
+   give same value (to better cope with single plex pools)
+
+release 80.2
+ - cope with old path being reported for a directory when it is moved
+
+release 80.1
+ - glob expression fix for running on Ubuntu lucid with perl 5.14.2
+
+release 80.0
+ - DBIx run and run-lane status update: ensure duplicate records are not created
+     allow to create a record for a status that is already current if the date
+     of the new record is earlier that the current status date
+ - status monitor bug fixes
+ - daemon for status monitor watcher
+ - propagate child/plex library level study data "alignment_in_bam" and 
+   "separate_y_chromosome" to parent lane level as is done with 
+   "contains_nonconsented_human" data
+
+release 77.9
+ - DBIx run and run-lane status update refactoring to accommodate passing
+     status date and make setting these two status types symmetrical
+ - initial code for monitoring status files
+ - bug fix in inferring recalibrated path from the runfolder path - previously
+     the code returned basecalls directory path before getting to the recalibrated path
+ - following psd dev url change, update regular expression in the reflector url filter
+
+release 77.8
+ - npg dev url is set to the url of the dev server that is actually used for API calls
+ - psd next release dev url replaced with training url, RT#412417
+ - wrapper object for the status and a script to write status to a file
  - dual index refinements: ensure max length of "Index" used by MiSeq is the split
-   dual indexs' size, and use custom default_expected_tag in preference to Index{,2}
+ - dual indexes' size, and use custom default_expected_tag in preference to Index{,2}
    when using samplesheet as source of LIMS info
  - ensure samplesheet testing works without WTSI filesystem
  - instrument location tests skipped if host name is too long
@@ -12,7 +44,7 @@ CHANGES
  - implicit dependency on DBD::mysql driver made explicit to ensure all
      dependencies are built on travis ci server
 
-releaes 77.7
+release 77.7
  - run in progress tracking:
      look for lane sub-directories in the BaseCalls directory if none found in the Intensities directory;
      check for existence of a RTAComplete.txt file rather that a ImageAnalysis_Netcopy_complete_Read#.txt file
