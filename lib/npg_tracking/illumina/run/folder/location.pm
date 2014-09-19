@@ -14,7 +14,7 @@ use Readonly;
 
 our $VERSION = '0';
 
-Readonly::Array our @STAGING_AREAS_INDEXES => 18 .. 55;
+Readonly::Array our @STAGING_AREAS_INDEXES => 18 .. 32, 34 .. 55;
 Readonly::Array our @STAGING_AREAS => map { "/nfs/sf$_" } @STAGING_AREAS_INDEXES;
 
 Readonly::Scalar our $HOST_GLOB_PATTERN => q[/nfs/sf{].join(q(,), @STAGING_AREAS_INDEXES).q[}];
