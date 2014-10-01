@@ -45,37 +45,6 @@ npg::api::run_annotation - An interface onto npg.run_annotation + annotation
     'util'          => $oUtil,
   });
 
-  my $oRunAnnotation = npg::api::run_annotation->new({
-    'id_run'  => $iIdRun,
-    'comment' => $sComment,
-   #'id_user', 'date' and 'id_annotation' are omitted for creation.
-  });
-  $oRunAnnotation->create();
-
-  #########
-  # to attach files by filehandle
-  #
-  open my $fh, q(<), q(/path/to/gerald_output.pdf);
-  my $oRunAnnotation = npg::api::run_annotation->new({
-    'id_run'          => $iIdRun,
-    'comment'         => $sComment,
-    'attachment_name' => 'gerald_output.pdf',
-    'attachment'      => $fh,
-  });
-  $oRunAnnotation->create();
-  close $fh;
-
-  #########
-  # to attach files by blob
-  #
-  my $oRunAnnotation = npg::api::run_annotation->new({
-    'id_run'          => $iIdRun,
-    'comment'         => $sComment,
-    'attachment_name' => 'gerald_output.pdf',
-    'attachment'      => $sLargeFileBlob,
-  });
-  $oRunAnnotation->create();
-
 =head2 fields - accessors for this table/class
 
   my @aFields = $oPkg->fields();

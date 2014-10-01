@@ -101,11 +101,6 @@ sub post {
   return  $self->request('text/xml')->make($uri, q[POST], $args);
 }
 
-sub post_non_xml {
-  my ($self, $uri, $args) = @_;
-  return  $self->request()->make($uri, q[POST], $args);
-}
-
 1;
 __END__
 

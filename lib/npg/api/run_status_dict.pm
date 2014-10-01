@@ -69,11 +69,6 @@ npg::api::run_status_dict - an interface onto npg.run_status_dict
     'util'               => $oUtil,
   });
 
-  my $oRunStatusDict = npg::api::run_status_dict->new({
-    'description'        => $sDescription,
-  });
-  $oRunStatusDict->create();
-
 =head2 fields - accessors for this table/class
 
   my @aFields = $oPkg->fields();

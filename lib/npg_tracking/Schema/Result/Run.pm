@@ -344,10 +344,6 @@ with qw/
          npg_tracking::Schema::Retriever
        /;
 
-Readonly::Hash my %STATUS_CHANGE_AUTO    => (
-  'analysis complete'  => 'qc review pending',
-);
-
 Readonly::Hash my %STATUS_PROPAGATE_AUTO => (
   'analysis complete'  => 'analysis complete',
   'manual qc complete' => 'archival pending',
@@ -537,13 +533,9 @@ sub update_run_status {
         try {
             $self->run_status_event( $user_id, $new_row->id_run_status() );
             $self->instrument->autochange_status_if_needed($description, $user_id);
-            my $auto = $STATUS_CHANGE_AUTO{$description};
-            if ($auto) {
-                $new_row = $self->update_run_status($auto);
-            }
         } catch {
             carp "Error performing post run status change actions \
-                  (event, auto run and instrument status update): $_";
+                  (event and instrument status update): $_";
         }
     }
 

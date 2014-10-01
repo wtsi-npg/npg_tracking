@@ -70,16 +70,6 @@ sub attachment {
   return $self->{'attachment'};
 }
 
-sub create {
-  my ($self, @args) = @_;
-  eval {
-    $self->check_user($self->username());
-  } or do {
-    croak $self->username() . ' does not have permission to create an annotation. Please email seq-help if you feel that you should be able to do this';
-  };
-  return $self->SUPER::create(@args);
-}
-
 sub check_user {
     my ( $self, $username ) = @_;
 
@@ -129,13 +119,6 @@ npg::api::annotation - Annotation base-class, an interface onto npg.annotation
     'util'          => $oUtil,
   });
 
-  my $oAnnotation = npg::api::annotation->new({
-    'id_run'  => $iIdRun,
-    'comment' => $sComment,
-   #'id_user', 'date' and 'id_annotation' are omitted for creation.
-  });
-  $oAnnotation->create();
-
 =head2 init - additional handling to deal with 'attachment' filehandles
 
   $oAnnotation->init();
@@ -179,8 +162,6 @@ npg::api::annotation - Annotation base-class, an interface onto npg.annotation
 
   my $sComment = $oAnnotation->comment();
   $oAnnotation->comment($sComment);
-
-=head2 create - wrapper for check_user, croak if user has no permission to annotate.
 
 =head2 check_user - check that a valid user name has been supplied and their user group
 

@@ -1,5 +1,14 @@
 CHANGES
 
+release 80.5
+ - remove redundant status update method from DBIx run_lane table binding
+ - remove unused methods from npg::api::xx objects
+ - remove auto-change of run statuses RT#420151
+
+release 80.4
+ - list of staging areas updated
+ - reset monitor to use local disk if FTP to instrument fails
+
 release 80.3
  - report sample_name, library_id etc at pool level if non-spike children
    give same value (to better cope with single plex pools)

@@ -256,48 +256,6 @@ sub create {
   return 1;
 }
 
-sub update {
-  my $self       = shift;
-  my $util       = $self->util();
-  my ($obj_type) = (ref $self) =~ /([^:]+)$/smx;
-  my $obj_pk     = $self->primary_key();
-  my $obj_pk_val = $self->$obj_pk();
-
-  if(!$obj_pk_val) {
-    croak qq(Cannot update a $obj_type without an existing $obj_pk);
-  }
-
-  my $obj_uri = sprintf '%s/%s/%d', $util->base_uri(), $obj_type, $obj_pk_val;
-
-  my $large_fields = { map { $_ => undef } $self->large_fields() };
-  my @small_fields = grep { !exists $large_fields->{$_} } $self->fields();
-  my $payload      = ['Content_Type' => 'form-data',
-                      'Content'      => [
-                                          'pipeline' => 1,
-                                          (map  { $_ => $self->{$_} || q() }
-                                          grep { exists $self->{$_} }
-                                          @small_fields),
-                                          (map { $_ => [
-                                                         undef,
-                                                         $_,
-                                                         'Content_Type'   => 'binary/octet-stream',
-                                                         'Content_Length' => length ($self->{$_}||q()),
-                                                         'Content'        => $self->{$_}||q(),
-                                                       ]
-                                               } grep { exists $self->{$_} }
-                                          keys %{$large_fields}),
-                                        ],
-                     ];
-  $self->{read_dom} = $util->parser->parse_string($util->post($obj_uri, $payload));
-  my $root = $self->{read_dom}->getDocumentElement();
-
-  for my $field ($self->fields()) {
-    $self->{$field} = $root->getAttribute($field);
-  }
-
-  return 1;
-}
-
 1;
 __END__
 
@@ -391,14 +349,6 @@ Fetches XML over HTTP based on self->util->base_uri().
   This creates an HTTP POST request with a multipart/form-data flavour
   and pushes object member data, for a new entity, up to the
   create_xml aspects of the service.
-
-=head2 update - default handling object update
-
-  my $oDOM = $oDerived->update();
-
-  This creates an HTTP POST request with a multipart/form-data flavour
-  and pushes object member data, for an existing entity ,up to the
-  update_xml aspects of the service.
 
 =head2 retry - method retries connecting to ST before croaking with an error
 
