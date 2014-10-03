@@ -1,5 +1,10 @@
 CHANGES
 
+ - status monitor enhancements (RT#420193):
+     cope with runfolder move from outgoing to analysis
+     on detecting LatestSummary creation, check for existing status files
+       in the status folder
+
 release 80.3
  - report sample_name, library_id etc at pool level if non-spike children
    give same value (to better cope with single plex pools)
