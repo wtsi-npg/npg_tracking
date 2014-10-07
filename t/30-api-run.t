@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 49;
+use Test::More tests => 47;
 use Test::Exception;
 use t::useragent;
 use npg::api::util;
@@ -147,36 +147,6 @@ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[];
     { id_run => 95, start => '2007-06-05 10:04:23', end => '2007-06-05 11:16:55', id_instrument => 4},
   ];
   is_deeply($runs, $test_deeply, 'returned data structure is correct');
-}
-
-{
-  my $ua   = t::useragent->new({
-    is_success => 1,
-    mock => {
-    $base_url.q{/run/2888;update_tags} => q{Run 2888 tagged},
-    $base_url.q{/run/2888} => q{t/data/npg_api/npg/run/2888.xml},
-            },
-            });
-  my $run  = npg::api::run->new({
-         util   => npg::api::util->new({useragent => $ua,}),
-         id_run => 2888,
-        });
-  lives_ok { $run->add_tags('rta', 'paired_read', 'staging'); } 'no croak when adding new tags rta, paired_read and staging';
-}
-
-{
-  my $ua   = t::useragent->new({
-    is_success => 1,
-    mock => { 
-    $base_url.q{/run/2888;update_tags} => q{Run 2888 tagged},
-    $base_url.q{/run/2888} => q{t/data/npg_api/npg/run/2888.xml}, 
-            },
-            });
-  my $run  = npg::api::run->new({
-         util   => npg::api::util->new({useragent => $ua,}),
-         id_run => 2888,
-        });
-  lives_ok { $run->remove_tags('staging'); } 'no croak when removing rta and staging';
 }
 
 1;

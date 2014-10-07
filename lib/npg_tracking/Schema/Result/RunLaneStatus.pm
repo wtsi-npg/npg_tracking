@@ -190,8 +190,6 @@ __PACKAGE__->belongs_to(
 
 # Created:       2010-04-08
 
-use Carp;
-
 our $VERSION = '0';
 
 =head2 status_dict
@@ -242,43 +240,6 @@ returns the position of this lane is directly, rather than forcing you through t
 sub position {
   my ( $self ) = @_;
   return $self->run_lane()->position();
-}
-
-=head2 update_run_lane_status
-
-Takes a hashref of arguments, and updates the current run_lane_status to the selected status, and non_currents all other statuses for this lane
-
-  $onpg_tracking::Schema::Result::RunLaneStatus=HASH...->update_run_lane_status({
-    id_run => 1,
-    position => 7,
-    username => 'joe_annotator',
-    description => 'analysis complete',
-  });
-  $onpg_tracking::Schema::Result::RunLaneStatus=HASH...->update_run_lane_status({
-    id_run_lane => 1,
-    id_user => 5,
-    description => 'analysis complete',
-  });
-
-Either id_run & position or id_run_lane can be given, but one must be
-Either username or id_user can be given, but one must be
-A description must be provided
-
-=cut
-
-sub update_run_lane_status {
-  my ( $self, $args ) = @_;
-  my $id_run      = $args->{'id_run'};
-  my $position    = $args->{'position'};
-  my $id_run_lane = $args->{'id_run_lane'};
-
-  my $query = $id_run_lane ? {id_run_lane => $id_run_lane,} :
-                             {id_run => $id_run, position => $position,};
-  my $run_lane_row = $self->result_source->schema->resultset( q{RunLane} )->find($query);
-  if ( !$run_lane_row)  {
-    croak qq{Lane not found};
-  }
-  return $run_lane_row->update_status($args->{'description'}, $args->{'username'});
 }
 
 __PACKAGE__->meta->make_immutable;

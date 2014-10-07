@@ -42,13 +42,6 @@ npg::api::designation - Designation base-class, an interface onto npg.designatio
     'util'          => $oUtil,
   });
 
-  my $oDesignation = npg::api::designation->new({
-    'id_run'  => $iIdRun,
-    'comment' => $sComment,
-   #'id_user', 'date' and 'id_designation' are omitted for creation.
-  });
-  $oDesignation->create();
-
 =head2 init - additional handling to deal with 'attachment' filehandles
 
   $oDesignation->init();
