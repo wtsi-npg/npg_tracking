@@ -4,6 +4,10 @@ release 80.5
  - remove redundant status update method from DBIx run_lane table binding
  - remove unused methods from npg::api::xx objects
  - remove auto-change of run statuses RT#420151
+ - status monitor enhancements RT#420193:
+     cope with runfolder move from outgoing to analysis
+     on detecting LatestSummary creation, check for existing status files
+       in the status folder
 
 release 80.4
  - list of staging areas updated
