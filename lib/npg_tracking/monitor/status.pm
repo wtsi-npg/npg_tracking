@@ -251,12 +251,16 @@ sub _update_status4files {
   return;
 }
 
-sub _path_in_destination {
+sub _find_path {
   my ($self, $path) = @_;
   if ($self->destination && !-e $path) {
     my $transit = $self->transit;
     my $destination = $self->destination;
-    $path =~ s/^$transit/$destination/smx;
+    if ($path =~ /$transit/smx) {
+      $path =~ s/^$transit/$destination/smx;
+    } else {
+      $path =~ s/^$destination/$transit/smx;
+    }
     if (-e $path) {
       return $path;
     }
@@ -276,17 +280,14 @@ sub _read_status {
     $status = npg_tracking::status->from_file($path);
   } catch {
     my $error = $_;
-    my $new_path = $self->_path_in_destination($path);
+    my $new_path = $self->_find_path($path);
     if ($new_path) {
       try {
         $status = npg_tracking::status->from_file($new_path);
-        $error = q[];
       } catch {
-        $error = $_;
-        $path = $new_path;
+        croak "Error instantiating object from $new_path: $error";
       };
-    }
-    if ($error) {
+    } else {
       croak "Error instantiating object from $path: $error";
     }
   };
@@ -347,20 +348,28 @@ sub _stock_status_check {
       next;
     }
     $self->_log("$m: looking for status directory in $runfolder_path");
-    try {
-      my $status_path = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
-      $self->_log("Looking for status files in $status_path");
-      my @files = glob "${status_path}/*.json";
-      if (@files) {
-        $self->_update_status4files(\@files, $runfolder_path);
-      } else {
-        $self->_log("$m: no status files found in $status_path");
-      }
-    } catch {
-      $self->_log("$m: failed to get status path from $runfolder_path: $_");
-    }
+    $self->_runfolder_status_check($runfolder_path);
   }
   $self->_log('Finished ' . lc $m);
+  return;
+}
+
+sub _runfolder_status_check {
+  my ($self, $runfolder_path) = @_;
+
+  my $m = 'Processing backlog';
+  try {
+    my $status_path = $self->_runfolder_prop($runfolder_path, $STATUS_DIR_KEY);
+    $self->_log("Looking for status files in $status_path");
+    my @files = glob "${status_path}/*.json";
+    if (@files) {
+      $self->_update_status4files(\@files, $runfolder_path);
+    } else {
+      $self->_log("$m: no status files found in $status_path");
+    }
+  } catch {
+    $self->_log("$m: failed to get existing status files from $runfolder_path: $_");
+  };
   return;
 }
 
@@ -441,6 +450,7 @@ sub _runfolder_watch_setup {
       } elsif ($e->IN_CREATE) {
         if ($self->_path_is_latest_summary($name)) {
           $self->_run_status_watch_setup($name, 1);
+          $self->_runfolder_status_check($dir);
         }
       }
   });

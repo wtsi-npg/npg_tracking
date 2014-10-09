@@ -68,7 +68,7 @@ is($run->current_run_status_description, 'run complete',
   is($new->user->username, 'pipeline', 'status assigned to the pipeline user');
   is($new->date->datetime, $now->datetime, 'timestamp as given');
   is($new->iscurrent, 1, 'new status is marked as current');
-  is($run->current_run_status_description, 'qc review pending',
+  is($run->current_run_status_description, 'analysis complete',
     'run status has changed');
  
   $new = $lanes[3]->update_status('analysis complete');

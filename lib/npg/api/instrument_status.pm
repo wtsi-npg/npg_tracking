@@ -72,14 +72,6 @@ npg::api::instrument_status - An interface onto npg.instrument_status
     'util'          => $oUtil,
   });
 
-
-  my $oInstrumentStatus = npg::api::instrument_status->new({
-    'id_instrument'             => $iIdInstrument,
-    'id_instrument_status_dict' => $iIdInstrumentStatus,
-   #'date', 'id_user' and 'iscurrent' are omitted for creation as the web application sets them
-  });
-  $oInstrumentStatus->create();
-
 =head2 fields - accessors for this table/class
 
   my @aFields = $oPkg->fields();

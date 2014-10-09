@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 76;
+use Test::More tests => 88;
 use Test::Exception;
 use Test::Warn;
 use Test::Trap qw/ :stderr(tempfile) /;
@@ -298,7 +298,7 @@ my $cb = sub {
 }
 
 {
-  _create_test_run($schema, 9334);
+  _create_test_run($schema, $test_id_run);
   my $tdir = tempdir(UNLINK => 1);
   _runfolder($tdir);
   my $link = _create_latest_summary_link($tdir);
@@ -387,12 +387,13 @@ my $cb = sub {
   $moved =~ s/$a/$o/smx;
   my $af = "$a/test.json";
   rename $moved, $af;
-  ok(!$m->_path_in_destination($af), 'file in transit - path in destination undefined');
+  my $given = $af;
   my $of = "$o/test.json";
+  is($m->_find_path($of), $af, 'give file in destination - find in transit');
   rename $af, $of;
-  is($m->_path_in_destination($af), $of, 'file in destination - path in destination undefined');
+  is($m->_find_path($af), $of, 'file in transit - find in destination');
   unlink $of;
-  ok(!$m->_path_in_destination($af), 'file does not exist in either directory - path in destination undefined');
+  ok(!$m->_find_path($af), 'file does not exist in either directory - path not found');
 
   open my $fh, '>', $moved;
   print $fh 'not json' or die "failed to print to $moved";
@@ -400,6 +401,85 @@ my $cb = sub {
   throws_ok { $m->_read_status($status_file_path, $opath) }
      qr/Error instantiating object from $moved/,
     'processing transit path (invalid json) when file is in destination'; 
+}
+
+{
+  my $tdir = tempdir(UNLINK => 1);
+  _runfolder($tdir);
+  my $status_dir = _create_status_dir($tdir);
+
+  my ($a, $o) = _staging_dir_tree($tdir);
+  my $m = npg_tracking::monitor::status->new(transit     => $a,
+                                             blocking    => 0,
+                                             _schema     => $schema,
+                                             verbose     => 0,);
+  lives_ok { $m->_transit_watch_setup() } 'transit dir watch set-up';
+
+  my $old_path = join q[/], $tdir, $runfolder_name;
+  my $new_path = join q[/], $a, $runfolder_name;
+  rename $old_path, $new_path;
+
+  is( $m->_notifier->poll(), 1, 'runfolder move to transit detected');
+  is( ref $m->_watch_obj->{$runfolder_name}->{'top_level'}, 'Linux::Inotify2::Watch',
+    'watch object for the runfolder is cached');
+  ok( !exists $m->_watch_obj->{$runfolder_name}->{'status_dir'},
+    'no summary link - watch object for the status directory has not been created yet');
+  
+  my $format = npg_tracking::status->_timestamp_format();
+  my $date = DateTime->now(time_zone => DateTime::TimeZone->new(name => q[local]));
+  $date->add_duration(DateTime::Duration->new(seconds => 10));
+  $status_dir =~ s/$tdir/$a/xms;
+  my $status1 = 'archival pending';
+  npg_tracking::status->new(
+      id_run => $test_id_run,
+      status => $status1,
+      timestamp => $date->strftime($format),
+  )->to_file($status_dir);
+
+  $date->add_duration(DateTime::Duration->new(seconds => 1));
+  my $status2 = 'archival in progress';
+  npg_tracking::status->new(
+      id_run => $test_id_run,
+      status => $status2,
+      timestamp => $date->strftime($format),
+  )->to_file($status_dir);
+
+  my $count = $schema->resultset('RunStatus')->search(
+     { 'id_run' => $test_id_run,})->count();
+
+  my $link = _create_latest_summary_link($a);
+  is( $m->_notifier->poll(), 1, 'summary link creation detected');
+  is( ref $m->_watch_obj->{$runfolder_name}->{'status_dir'}, 'Linux::Inotify2::Watch',
+    'watch object for the status directory is cached');
+
+  my @rows = $schema->resultset('RunStatus')->search(
+     { 'id_run'                      => $test_id_run,},
+     {prefetch => 'run_status_dict',
+      order_by => { -desc => 'date'},},
+  )->all();
+  ok (scalar @rows == $count + 2, 'two new run statuses added');
+  my $run_status_obj = shift @rows;
+  is ($run_status_obj->run_status_dict->description, $status2, 'status from the latest status file saved');
+  $run_status_obj = shift @rows;
+  is ($run_status_obj->run_status_dict->description, $status1, 'status from the next to latest status file saved');
+
+  $date->add_duration(DateTime::Duration->new(seconds => 1));
+  $status2 = 'qc complete';
+  npg_tracking::status->new(
+      id_run => $test_id_run,
+      status => $status2,
+      timestamp => $date->strftime($format),
+  )->to_file($status_dir);
+
+  is( $m->_notifier->poll(), 1, 'file creation detected');
+  @rows = $schema->resultset('RunStatus')->search(
+     { 'id_run'                      => $test_id_run,},
+     {prefetch => 'run_status_dict',
+      order_by => { -desc => 'date'},},
+  )->all();
+  ok (scalar @rows == $count + 3, 'a new run statuses added');
+  $run_status_obj = shift @rows;
+  is ($run_status_obj->run_status_dict->description, $status2, 'status from the latest status file saved');
 }
 
 1;

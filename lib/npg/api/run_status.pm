@@ -45,14 +45,6 @@ npg::api::run_status - An interface onto npg.run_status
     'util'          => $oUtil,
   });
 
-
-  my $oRunStatus = npg::api::run_status->new({
-    'id_run'             => $iIdRun,
-    'id_run_status_dict' => $iIdRunStatus,
-   #'date', 'id_user' and 'iscurrent' are omitted for creation as the web application sets them
-  });
-  $oRunStatus->create();
-
 =head2 fields - accessors for this table/class
 
   my @aFields = $oPkg->fields();

@@ -266,68 +266,6 @@ sub lims {
   return $self->{'lims'};
 }
 
-sub add_tags {
-  my ($self, @new_tags) = @_;
-  my $util       = $self->util();
-  my $id_run     = $self->id_run();
-  my @old_tags   = @{$self->tags()};
-
-  if(!$id_run) {
-    croak q(Cannot add a tag without an existing run id);
-  }
-
-  my $obj_uri = $util->base_uri().qq{/run/$id_run;update_tags};
-  my $payload = ['Content_Type' => 'form-data',
-                 'Content'      => [
-                                      'pipeline'        => 1,
-                                      'tags'            => "@new_tags @old_tags",
-                                      'tagged_already'  => "@old_tags",
-                                   ],
-                ];
-  my $content = $util->post_non_xml($obj_uri, $payload);
-  if($content =~ /Run[ ]$id_run[ ]tagged/smx) {
-    carp qq{Run $id_run tagged with @new_tags.};
-  }
-  return 1;
-}
-
-sub remove_tags {
-  my ($self, @tags_to_remove) = @_;
-  my $util       = $self->util();
-  my $id_run     = $self->id_run();
-  my @old_tags   = @{$self->tags()};
-
-  my (@new_tags, %tags_to_remove_hash);
-
-  foreach my $tag (@tags_to_remove){
-    $tags_to_remove_hash{$tag}++;
-  }
-
-  foreach my $tag (@old_tags){
-    if(!$tags_to_remove_hash{$tag}){
-      push @new_tags, $tag;
-    }
-  }
-
-  if(!$id_run) {
-    croak q(Cannot add a tag without an existing run id);
-  }
-
-  my $obj_uri = $util->base_uri().qq{/run/$id_run;update_tags};
-  my $payload = ['Content_Type' => 'form-data',
-                 'Content'      => [
-                                      'pipeline'        => 1,
-                                      'tags'            => "@new_tags",
-                                      'tagged_already'  => "@old_tags",
-                                   ],
-                ];
-  my $content = $util->post_non_xml($obj_uri, $payload);
-  if($content =~ /Run[ ]$id_run[ ]tagged/smx) {
-    carp qq{Run $id_run tags removed: @tags_to_remove.};
-  }
-  return 1;
-}
-
 1;
 __END__
 
@@ -354,16 +292,6 @@ npg::api::run
     'util'   => $oUtil,
   });
 
-  my $oRun = npg::api::run->new({
-    'id_batch'             => $iIdSampleBatch,
-    'id_instrument'        => $iIdInstrument,
-    'priority'             => $iPriority,
-    'actual_cycle_count'   => $iActualCycleCount,
-    'expected_cycle_count' => $iExpectedCycleCount,
-    'id_run_pair'          => $iIdRunPair,
-  });
-  $oRun->create();
-
 =head2 init - handling for initialization by run name in id_run
 
 =head2 is_paired - deprecated accessor method, please use is_paired_run instead
@@ -385,10 +313,6 @@ npg::api::run
   my $bHasTag = $oRun->has_tag($tag);
 
 =head2 tags - return all the associated tags with this run as an arrayref
-
-=head2 add_tags - given a list of tags, add them to the run by http post if the id_run is available
-
-=head2 remove_tags - given a list of tags, remove them from this run by http post
 
 =head2 fields - accessors for this table/class
 
