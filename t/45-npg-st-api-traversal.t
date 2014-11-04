@@ -5,8 +5,6 @@ use Test::Deep;
 use Test::Exception;
 use npg_testing::intweb qw(npg_is_accessible);
 
-local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/test45];
-
 {
 use_ok('npg::api::run');
 
@@ -20,7 +18,7 @@ foreach my $pa (['test', 'using mocked data'],
     local $ENV{dev}=$pa->[0] unless $pa->[0] eq 'test';
 
     if ($pa->[0] eq q[dev]) {
-        $do_test = npg_is_accessible(q[http://sf2-farm-srv1.internal.sanger.ac.uk:9010]);
+        $do_test = npg_is_accessible(q[http://sf2-farm-srv2.internal.sanger.ac.uk:9010]);
     } elsif ($pa->[0] eq q[live]) {
         $do_test = npg_is_accessible();
     }
