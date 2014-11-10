@@ -1,5 +1,9 @@
 CHANGES
 
+release 80.6
+ - change host for development tracking server
+ - when building the package, change version in existing directories only
+
 release 80.5
  - remove redundant status update method from DBIx run_lane table binding
  - remove unused methods from npg::api::xx objects
