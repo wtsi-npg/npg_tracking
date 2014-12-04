@@ -36,8 +36,9 @@ my $illumina_strp = DateTime::Format::Strptime->
 
 
 my $poll = Monitor::Cbot::InstrumentStatus->new_with_options();
+my $model = $poll->model();
 
-croak $poll->label() . ' is not a cBot' if !$poll->is_cbot();
+croak $poll->label() . ' is not a cBot' if $model ne 'cBot';
 
 
 # Get the instrument status - this is the InstrumentStatus.xml served by the
