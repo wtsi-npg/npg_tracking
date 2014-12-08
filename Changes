@@ -1,5 +1,7 @@
 CHANGES
 
+ - Reenable and clean up cBot monitoring
+
 release 80.6
  - change host for development tracking server
  - when building the package, change version in existing directories only

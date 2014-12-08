@@ -18,7 +18,7 @@
   name: cBot1
   iscurrent: 1
   ipaddr:
-  instrument_comp:
+  instrument_comp: cBot1.internal.sanger.ac.uk
   mirroring_host:
   staging_dir:
   latest_contact: '2010-05-11 13:34:04'

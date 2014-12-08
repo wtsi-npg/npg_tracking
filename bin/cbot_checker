@@ -23,11 +23,8 @@ use Monitor::Cbot::InstrumentStatus;
 our $VERSION = '0';
 
 use Readonly;
-Readonly::Scalar my $PROXY   => q{http://wwwcache.sanger.ac.uk:3128/};
 Readonly::Scalar my $ERR_504 => q{504 Gateway Time-out};
 Readonly::Scalar my $ERR_500 => q{500 read timeout};
-
-local $ENV{http_proxy} = $PROXY;
 
 my $mysql_strp    = DateTime::Format::Strptime->new( pattern => '%F %T', );
 my $illumina_strp = DateTime::Format::Strptime->
@@ -127,8 +124,7 @@ Convert the time stamp format used in the cbot XML to MySQL format.
 
 Depends on the presence of the npg tracking system.
 
-The environmental variable HTTP_PROXY must be set or the script will fall back
-to a hard-coded default.
+The environmental variable HTTP_PROXY must be set to allow access to WTSI cBots
 
 =head1 INCOMPATIBILITIES
 
