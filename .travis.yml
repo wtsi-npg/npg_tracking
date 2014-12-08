@@ -3,6 +3,7 @@ perl:
   - "5.16"
 before_install:
   - sudo apt-get install libgd2-xpm-dev
+  - cpanm --self-upgrade
   - cpanm --quiet --notest Alien::Tidyp
 before_script:
   - mysql -e 'create database npgt;'
