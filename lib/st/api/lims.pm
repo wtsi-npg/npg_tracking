@@ -176,6 +176,8 @@ for my$m ( @DELEGATED_METHODS ){
     my$r= $d->can($m) ? $d->$m(@_) : undef;
     if( defined $r and length $r){ #if method exists and it returns a defined and non-empty result
       return $d->$m(@_);
+    }elsif($m eq q(is_pool)){ # avoid obvious recursion
+      return scalar $l->children;
     }elsif($l->is_pool){ # else try any children
       return $l->_single_attribute($m,0); # 0 to ignore spike
     }
