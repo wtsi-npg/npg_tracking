@@ -1,6 +1,7 @@
 CHANGES
 
  - Reenable and clean up cBot monitoring
+ - try to avoid recursion in st::api::lims
 
 release 80.6
  - change host for development tracking server
