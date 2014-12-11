@@ -148,7 +148,7 @@ sub _build_driver {
       $ref->{$attr} = $self->$attr;
     }
   }
-  
+
   if ($self->has_batch_id) {
     $ref->{'batch_id'} = $self->batch_id;
   }
@@ -866,6 +866,25 @@ A sorted list of methods that should be implemented by a driver
 =cut
 sub driver_method_list {
   return @DELEGATED_METHODS;
+}
+
+=head2 driver_method_list_short
+
+A sorted list of methods that should be implemented by a driver
+
+=cut
+sub driver_method_list_short {
+  my @remove = @_;
+  my @methods = @DELEGATED_METHODS;
+  if (@remove) {
+    if ($remove[0] eq __PACKAGE__ || ref $remove[0] eq __PACKAGE__) {
+      shift @remove;
+    }
+    if (@remove) {
+      @methods = grep { my $delegated = $_; none {$_ eq $delegated} @remove } @DELEGATED_METHODS;
+    }
+  }
+  return @methods;
 }
 
 =head2 method_list
