@@ -47,8 +47,8 @@ Readonly::Scalar my  $INLINE_INDEX_END  => 10;
 Readonly::Hash   my  %METHODS           => {
 
     'general'    =>   [qw/ spiked_phix_tag_index
-                           is_control
                            is_pool
+                           is_control
                            bait_name
                            default_tag_sequence
                            required_insert_size_range
@@ -917,7 +917,7 @@ sub to_string {
   my $d = ref $self->driver;
   ($d)= $d=~/::(\w+?)\z/smx;
   my $s = __PACKAGE__ . q[ object, driver - ] . $d;
-  foreach my $attr (sort qw(id_run batch_id position tag_index)) {
+  foreach my $attr (sort qw(id_run batch_id flowcell_barcode flowcell_id position tag_index)) {
     my $value=$self->$attr;
     if (defined $value){
       $s .= q[, ] . join q[ ], $attr, $value;
