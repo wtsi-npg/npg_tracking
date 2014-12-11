@@ -171,7 +171,7 @@ for my$m ( @DELEGATED_METHODS ){
     my$d=$l->driver;
     my$r= $d->can($m) ? $d->$m(@_) : undef;
     if( defined $r and length $r){ #if method exists and it returns a defined and non-empty result
-      return $d->$m(@_);
+      return $d->$m(@_); # call again here in case it returns different info in list context
     }elsif($m eq q(is_pool)){ # avoid obvious recursion
       return scalar $l->children;
     }elsif($l->is_pool){ # else try any children
