@@ -31,7 +31,7 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
   my $test_data_dir = $pa->[1];
   diag($pa->[0], ", $driver driver");
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = $test_data_dir;
-  my $lfield = $driver eq 'xml' ? 'batch_id' : 'flowcell_id';
+  my $lfield = $driver eq 'xml' ? 'batch_id' : 'id_flowcell_lims';
 
   if ($driver eq 'xml' && !$test_data_dir) {
     $do_test = npg_is_accessible();

@@ -143,7 +143,7 @@ sub _build_driver {
   eval "require $d_package" or croak "Error loading package $d_package: " . $EVAL_ERROR;
   ##use critic
   my $ref = {};
-  foreach my $attr (qw/tag_index position id_run path flowcell_id flowcell_barcode/) {
+  foreach my $attr (qw/tag_index position id_run path id_flowcell_lims flowcell_barcode/) {
     if (defined $self->$attr) {
       $ref->{$attr} = $self->$attr;
     }
@@ -917,7 +917,7 @@ sub to_string {
   my $d = ref $self->driver;
   ($d)= $d=~/::(\w+?)\z/smx;
   my $s = __PACKAGE__ . q[ object, driver - ] . $d;
-  foreach my $attr (sort qw(id_run batch_id flowcell_barcode flowcell_id position tag_index)) {
+  foreach my $attr (sort qw(id_run batch_id flowcell_barcode id_flowcell_lims position tag_index)) {
     my $value=$self->$attr;
     if (defined $value){
       $s .= q[, ] . join q[ ], $attr, $value;

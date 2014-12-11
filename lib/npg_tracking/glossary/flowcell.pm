@@ -1,7 +1,6 @@
 package npg_tracking::glossary::flowcell;
 
 use Moose::Role;
-use npg_tracking::util::types;
 
 our $VERSION = '0';
 
@@ -30,13 +29,13 @@ has 'flowcell_barcode' =>  ( isa       => 'Maybe[Str]',
                              required  => 0,
 );
 
-=head2 flowcell_id
+=head2 id_flowcell_lims
 
 LIMs specific flowcell id
 
 =cut
 
-has 'flowcell_id'      =>  ( isa       => 'Maybe[NpgTrackingPositiveInt]',
+has 'id_flowcell_lims' =>  ( isa       => 'Maybe[Str]',
                              is        => 'ro',
                              required  => 0,
 );
@@ -54,8 +53,6 @@ __END__
 =over
 
 =item Moose::Role
-
-=item npg_tracking::util::types
 
 =back
 
