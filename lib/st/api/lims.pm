@@ -1,8 +1,3 @@
-#######
-# Author:        Marina Gourtovaia
-# Created:       July 2013
-#
-
 package st::api::lims;
 
 use Carp;
@@ -18,6 +13,7 @@ use npg_tracking::util::types;
 with qw/  npg_tracking::glossary::run
           npg_tracking::glossary::lane
           npg_tracking::glossary::tag
+          npg_tracking::glossary::flowcell
        /;
 
 our $VERSION = '0';
@@ -101,12 +97,11 @@ Readonly::Hash   my  %METHODS           => {
                            project_cost_code
                       /],
 
-    'request'      => [qw/ request_id
-                      /],
+    'request'      => [qw/ request_id /],
 };
 
-Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml samplesheet/;
-Readonly::Array our @DELEGATED_METHODS => sort map { @{$_} } values %METHODS;
+Readonly::Array my @IMPLEMENTED_DRIVERS => qw/xml samplesheet ml_warehouse/;
+Readonly::Array my @DELEGATED_METHODS   => sort map { @{$_} } values %METHODS;
 
 =head2 driver_type
 
@@ -148,13 +143,14 @@ sub _build_driver {
   eval "require $d_package" or croak "Error loading package $d_package: " . $EVAL_ERROR;
   ##use critic
   my $ref = {};
-  foreach my $attr (qw/tag_index position id_run path/) {
+  foreach my $attr (qw/tag_index position id_run path flowcell_id flowcell_barcode/) {
     if (defined $self->$attr) {
       $ref->{$attr} = $self->$attr;
     }
-    if ($self->has_batch_id) {
-      $ref->{'batch_id'} = $self->batch_id;
-    }
+  }
+  
+  if ($self->has_batch_id) {
+    $ref->{'batch_id'} = $self->batch_id;
   }
   return $d_package->new($ref);
 }

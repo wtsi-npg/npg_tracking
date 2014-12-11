@@ -358,7 +358,7 @@ sub children {
 }
 
 my @attrs = __PACKAGE__->meta->get_attribute_list;
-for my $m (grep { my $delegated = $_; none {$_ eq $delegated} @attrs } @st::api::lims::DELEGATED_METHODS ) {
+for my $m (grep { my $delegated = $_; none {$_ eq $delegated} @attrs } st::api::lims->driver_method_list() ) {
 
   __PACKAGE__->meta->add_method( $m, sub {
         my $self=shift;

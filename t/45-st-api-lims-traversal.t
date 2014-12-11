@@ -1,9 +1,9 @@
 use strict;
 use warnings;
-use Test::More tests => 106; #remember to change the skip number below as well!
+use Test::More tests => 103; #remember to change the skip number below as well!
 use Test::Deep;
 use Test::Exception;
-use English qw(-no_match_vars);
+use Try::Tiny;
 
 use npg_testing::intweb qw(npg_is_accessible);
 use st::api::lims;
@@ -19,36 +19,46 @@ sub _positions {
   return sort @positions;
 }
 
-my $do_test = 1;
-
 use_ok('st::api::lims');
 
-foreach my $pa (['test', 'using mocked data', q[t/data/test45]],
-                ['live', 'using live', q[]], # Put in test TODO perhaps?
-                ['dev',  'using dev', q[]],
-    ) {
-    diag($pa->[1]);
-    my $env = $pa->[0];
-    if ($env eq q[test]) { $env = q[live]; }
-    local $ENV{dev}=$env;
-    local $ENV{NPG_WEBSERVICE_CACHE_DIR} = $pa->[2];
+foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
+                 ['using live',        q[],              'xml'],
+                 ['using live',        q[],              'ml_warehouse']))
+{
+  my $do_test = 1;
+  my $reason = q[];
+  my $driver        = $pa->[2];
+  my $test_data_dir = $pa->[1];
+  diag($pa->[0], ", $driver driver");
+  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = $test_data_dir;
+  my $lfield = $driver eq 'xml' ? 'batch_id' : 'flowcell_id';
 
-    if ($pa->[0] eq q[dev]) {
-        $do_test = npg_is_accessible(q[http://npg.dev.sanger.ac.uk/perl/npg]);
-    } elsif ($pa->[0] eq q[live]) {
-        $do_test = npg_is_accessible();
-    }
+  if ($driver eq 'xml' && !$test_data_dir) {
+    $do_test = npg_is_accessible();
+    $reason = 'Live test, but sanger intweb is not accessible';
+  } elsif ($driver eq 'ml_warehouse') {
+    my $package = 'st::api::lims::ml_warehouse';
+    eval "require $package" or $do_test = 0;
+    if (!$do_test) {
+      $reason = "$package is not deployed or cannot be loaded";
+    } else {
+      try {
+        $package->new()->mlwh_schema();
+      } catch {
+        $reason = "Failed to connect to ml_warehouse";
+        diag "$reason $_";
+        $do_test = 0;
+      };
+    } 
+  }
 
   SKIP: {
 
     if (!$do_test) {
-     skip 'Live test, but sanger intweb is not accessible',  35;
+      skip $reason, 34;
     }
-       {
-    diag q[Tests for run 3905];
-    my $lims = st::api::lims->new(id_run => 3905);
-    cmp_ok($lims->batch_id(),  q(==), 4775, 'run batch_id');
-    $lims = st::api::lims->new(batch_id => 4775);
+
+    my $lims = st::api::lims->new($lfield => 4775, driver_type => $driver);
     isa_ok($lims, 'st::api::lims', 'lims isa');
     my @alims = $lims->associated_lims;
     is(scalar @alims, 8, '8 associated lims objects');
@@ -56,12 +66,18 @@ foreach my $pa (['test', 'using mocked data', q[t/data/test45]],
     is(scalar @positions, 8, '8 lanes in a batch');
     is(join(q[ ],@positions), '1 2 3 4 5 6 7 8', 'all positions'); 
 
-    my $lims1 = st::api::lims->new(batch_id => 4775, position => 1);
+    my $lims1 = st::api::lims->new($lfield => 4775, position => 1, driver_type => $driver);
     is($lims1->is_control, 0, 'first st lane has no control');
     is($lims1->is_pool, 0, 'first st lane has no pool');
     is(scalar $lims1->associated_lims, 0, 'no associated lims for a lane');
-
-    cmp_ok($lims1->library_id, q(==), 57440, 'lib id from first st lane');
+    if ($driver eq 'xml') {
+      cmp_ok($lims1->library_id, q(==), 57440, 'lib id from first st lane');
+    } else {
+      TODO: {
+        local $TODO = 'ml warehouse data problem';
+        cmp_ok($lims1->library_id, q(eq), 57440, 'lib id from first st lane');
+      }
+    }
     cmp_ok($lims1->library_name, q(eq), 'PD3918a 1', 'lib name from first st lane');
 
     my $insert_size;
@@ -72,18 +88,25 @@ foreach my $pa (['test', 'using mocked data', q[t/data/test45]],
 
     ok(!$lims1->sample_consent_withdrawn(), 'sample consent not withdrawn');
     
-    my $lims4 = st::api::lims->new(batch_id => 4775, position => 4);
+    my $lims4 = st::api::lims->new($lfield => 4775, position => 4, driver_type => $driver);
     is($lims4->is_control, 1, 'first st lane has control');
     is($lims4->is_pool, 0, 'first st lane has no pool');
     cmp_ok($lims4->library_id, q(==), 79577, 'control id from fourth st lane');
-    cmp_ok($lims4->library_name, q(eq), 'phiX CT1462-2 1', 'control name from fourth st lane');
+    if ($driver eq 'xml') {
+      cmp_ok($lims4->library_name, q(eq), 'phiX CT1462-2 1', 'control name from fourth st lane');
+    } else {
+      cmp_ok($lims4->library_name, q(==), 79577, 'control library id from fourth st lane');
+    }
     cmp_ok($lims4->sample_id, q(==), 9836, 'sample id from fourth st lane');
     ok(!$lims4->study_id, 'study id from fourth st lane undef');
     ok(!$lims4->project_id, 'project id from fourth st lane undef');
-    cmp_ok($lims4->request_id, q(==), 43779, 'request id from fourth st lane');
+    my $request_id = $lims4->request_id;
+    $request_id ||= 0;
+    my $expected_request_id = $driver eq 'xml' ? 43779 : 0;
+    cmp_ok($request_id, q(==), $expected_request_id, 'request id from fourth st lane');
     is_deeply($lims4->required_insert_size, {}, 'no insert size for control lane');
 
-    my $lims6 = st::api::lims->new(batch_id => 4775, position => 6);
+    my $lims6 = st::api::lims->new($lfield => 4775, position => 6, driver_type => $driver);
     is($lims6->study_id, 333, 'study id');
     cmp_ok($lims6->study_name, q(eq), q(CLL whole genome), 'study name');
 
@@ -94,18 +117,15 @@ foreach my $pa (['test', 'using mocked data', q[t/data/test45]],
 
     is($lims6->alignments_in_bam, 1,'do bam alignments');
 
-
-    my $lims7 = st::api::lims->new(batch_id => 16249, position => 1);
+    my $lims7 = st::api::lims->new($lfield => 16249, position => 1, driver_type => $driver);
     is($lims7->bait_name, 'Human all exon 50MB', 'bait name when common for whole pool');
-    $lims7 = st::api::lims->new(batch_id => 16249, position => 1, tag_index => 2);
+    $lims7 = st::api::lims->new($lfield => 16249, position => 1, tag_index => 2, driver_type => $driver);
     is($lims7->bait_name, 'Human all exon 50MB', 'bait name for a plex');
-    $lims7 = st::api::lims->new(batch_id => 16249, position => 1, tag_index => 168);
+    $lims7 = st::api::lims->new($lfield => 16249, position => 1, tag_index => 168, driver_type => $driver);
     is($lims7->bait_name, undef, 'bait name undefined for spiked phix plex');
     
-    my $lims8 = st::api::lims->new(batch_id =>15728, position=>2, tag_index=>3);    
+    my $lims8 = st::api::lims->new($lfield =>15728, position=>2, tag_index=>3, driver_type => $driver);    
     ok( $lims8->sample_consent_withdrawn(), 'sample 1299723 consent withdrawn' );
-    
-   }
 
   }; # end of SKIP
 }

@@ -341,6 +341,7 @@ lib/npg_tracking/data/reference/info.pm
 lib/npg_tracking/data/reference/list.pm
 lib/npg_tracking/data/transcriptome.pm
 lib/npg_tracking/data/transcriptome/find.pm
+lib/npg_tracking/glossary/flowcell.pm
 lib/npg_tracking/glossary/lane.pm
 lib/npg_tracking/glossary/run.pm
 lib/npg_tracking/glossary/tag.pm
