@@ -1,8 +1,3 @@
-#########
-# Author:        Marina Gourtovaia mg8@sanger.ac.uk
-# Created:       4 September 2013
-#
-
 package st::api::lims::samplesheet;
 
 use Moose;
@@ -10,7 +5,6 @@ use MooseX::StrictConstructor;
 use Carp;
 use File::Slurp;
 use Readonly;
-use List::MoreUtils qw/none/;
 use Clone qw(clone);
 use URI::Escape qw(uri_unescape);
 
@@ -439,8 +433,6 @@ __END__
 
 =item File::Slurp
 
-=item List::MoreUtils
-
 =item Readonly
 
 =item Clone
@@ -457,7 +449,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013 GRL, by Marina Gourtovaia
+Copyright (C) 2014 Genome Research Ltd.
 
 This file is part of NPG.
 
