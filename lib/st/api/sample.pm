@@ -93,7 +93,7 @@ sub strain {
 sub reference_genome {
     my $self = shift;
     $self->parse();
-    return ($self->get(q[Sample reference genome])||[])->[0] || $self->get(q[Reference Genome])->[0];
+    return ($self->get(q[Sample reference genome])||[])->[0] || ($self->get(q[Reference Genome])||[])->[0];
 }
 
 sub contains_nonconsented_human {
