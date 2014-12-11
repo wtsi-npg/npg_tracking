@@ -3,35 +3,16 @@ package st::api::lims::ml_warehouse;
 use Moose;
 use MooseX::StrictConstructor;
 use Carp;
-use Readonly;
 
 use st::api::lims;
 use WTSI::DNAP::Warehouse::Schema;
-
+use WTSI::DNAP::Warehouse::Schema::Result::IseqFlowcell;
 with qw/  
           npg_tracking::glossary::lane
           npg_tracking::glossary::tag
-          npg_tracking::glossary::flowcell
-       /;
+          npg_tracking::glossary::flowcell /;
 
 our $VERSION = '0';
-
-has 'iseq_flowcell' =>   ( isa             => 'DBIx::Class::ResultSet',
-                           is              => 'ro',
-                           init_arg        => undef,
-                           lazy_build      => 1,
-);
-sub _build_iseq_flowcell {
-  my $self = shift;
-  return $self->mlwh_schema->resultset('IseqFlowcell');
-}
-
-#######
-# This role requires iseq_flowcell, which is implemented as
-# an attribute rather than as a method in this class, hence,
-# according to Moose documentation, the need to consule the
-#role after the attribute was defined
-with qw/ WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell /;
 
 =head1 NAME
 
@@ -47,14 +28,43 @@ in WTSI::DNAP::Warehouse::Schema.
 
 =head1 SUBROUTINES/METHODS
 
-=cut
+=head2 flowcell_barcode
+
+=head2 id_flowcell_lims
 
 =head2 position
 
 Position, optional attribute.
 
 =cut
-has '+position' =>        ( required        => 0,);
+has '+position' =>       ( required        => 0, );
+
+=head2 tag_index
+
+Tag index, optional attribute
+
+=head2 iseq_flowcell
+
+DBIx result set for the iseq_flowcell table
+
+=cut
+has 'iseq_flowcell' =>   ( isa             => 'DBIx::Class::ResultSet',
+                           is              => 'ro',
+                           init_arg        => undef,
+                           lazy_build      => 1,
+);
+sub _build_iseq_flowcell {
+  my $self = shift;
+  return $self->mlwh_schema->resultset('IseqFlowcell');
+}
+
+#######
+# This role requires iseq_flowcell, which is implemented as
+# an attribute rather than as a method in this class, hence,
+# according to Moose documentation, the need to consule the
+#role after the attribute was defined.
+
+with qw/ WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell /;
 
 =head2 mlwh_schema
 
@@ -90,7 +100,7 @@ sub _build__lchildren {
     }
 
     if ($self->position) {
-      if ($self->_is_pool) {
+      if ($self->is_pool) {
         $init->{'query_resultset'} = $self->query_resultset;
         $init->{'position'}        = $self->position;
         my %hashed_rs = map { $_->tag_index => 1} $self->query_resultset->all;
@@ -113,6 +123,7 @@ sub _build__lchildren {
   if (@children) {
     $self->free_query_resultset();
   }
+
   return \@children;
 }
 
@@ -124,12 +135,12 @@ sub children {
   return @{$self->_lchildren};
 }
 
-has '_is_pool' =>         (isa             => 'Bool',
+has 'is_pool' =>         ( isa             => 'Bool',
                            is              => 'ro',
                            init_arg        => undef,
                            lazy_build      => 1,
-                          );
-sub _build__is_pool {
+);
+sub _build_is_pool {
   my $self = shift;
   if ( $self->position && !$self->tag_index ) {
     return $self->query_resultset->search( {entity_type =>
@@ -144,11 +155,11 @@ sub _build__is_pool {
  Defined for a lane and all tags, including tag zero
 
 =cut
-has 'spiked_phix_tag_index' =>  (isa             => 'Maybe[NpgTrackingTagIndex]',
+has 'spiked_phix_tag_index' => ( isa             => 'Maybe[NpgTrackingTagIndex]',
                                  is              => 'ro',
                                  init_arg        => undef,
                                  lazy_build      => 1,
-                                );
+);
 sub _build_spiked_phix_tag_index {
   my $self = shift;
 
@@ -170,16 +181,23 @@ sub _build_spiked_phix_tag_index {
   return $tag_index;
 }
 
-has '_dbix_row' =>  (isa             => 'Maybe[WTSI::DNAP::Warehouse::Schema::Result::IseqFlowcell]',
+sub _to_delegate {
+  my $package = 'WTSI::DNAP::Warehouse::Schema::Result::IseqFlowcell';
+  my @l = grep {$package->can($_)} st::api::lims->driver_method_list_short(__PACKAGE__->meta->get_attribute_list);
+  return \@l;
+}
+
+has '_dbix_row' => ( isa             => 'WTSI::DNAP::Warehouse::Schema::Result::IseqFlowcell',
                      is              => 'ro',
                      init_arg        => undef,
                      lazy_build      => 1,
+                     handles         => _to_delegate(),
 );
 sub _build__dbix_row {
   my $self = shift;
 
   if ($self->position) {
-    if (!$self->_is_pool) {
+    if (!$self->is_pool) {
       my $rs;
       if ($self->tag_index) {
         $rs = $self->query_resultset->search({tag_index => $self->tag_index});
@@ -199,15 +217,7 @@ sub _build__dbix_row {
       return $rs->next;
     }
   }
-  return;
-}
-
-foreach my $method ( st::api::lims->driver_method_list(__PACKAGE__->meta->get_attribute_list) ) {
-   __PACKAGE__->meta->add_method( $method, sub {
-      my $self = shift;
-      return ($self->_dbix_row && $self->_dbix_row->can($method)) ? $self->_dbix_row->$method : undef;
-    }
-  )
+  return WTSI::DNAP::Warehouse::Schema::Result::IseqFlowcell->new();
 }
 
 =head2 to_string
