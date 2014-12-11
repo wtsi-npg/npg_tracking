@@ -148,7 +148,7 @@ sub _build_driver {
       $ref->{$attr} = $self->$attr;
     }
   }
-  
+
   if ($self->has_batch_id) {
     $ref->{'batch_id'} = $self->batch_id;
   }
