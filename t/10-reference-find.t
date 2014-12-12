@@ -8,11 +8,40 @@ use File::Spec::Functions qw(catfile);
 use Cwd qw(cwd);
 use Moose::Meta::Class;
 use Test::MockObject;
+use File::Find;
+use File::Spec qw(splitpath);
+use File::Path qw(make_path);
+use File::Copy;
+use File::Temp qw(tempdir);
 
-my $central = catfile(cwd, q[t/data/repos]);
-my $repos = catfile(cwd, q[t/data/repos/references]);
-my $transcriptome_repos = catfile(cwd, q[t/data/repos1]);
+my $current_dir = cwd();
+my $central = catfile($current_dir, q[t/data/repos]);
+my $repos = catfile($current_dir, q[t/data/repos/references]);
+my $transcriptome_repos = catfile($current_dir, q[t/data/repos1]);
 my $bwa_human_ref = q[Human/NCBI36/all/bwa/someref.fa];
+
+my $new = tempdir(UNLINK => 1);
+
+sub _copy_ref_rep {
+  my $n = $File::Find::name;
+  if (-d $n || -l $n) {
+    return;
+  }
+  my ($volume,$directories,$file_name) = File::Spec->splitpath($n);
+  $directories =~ s/$central//smx;
+  $directories = $new . $directories;
+  make_path $directories;
+  copy $n, $directories;
+}
+
+find({'wanted' => \&_copy_ref_rep, 'follow' => 0, 'no_chdir' => 1}, $central);
+$central = $new;
+$repos = "$central/references";
+chdir "$repos/Streptococcus_pneumoniae";
+symlink 'ATCC_700669', 'default';
+chdir '../Human';
+symlink 'NCBI36', 'default';
+chdir $current_dir;
 
 use_ok('npg_tracking::data::reference::find');
 
@@ -24,36 +53,44 @@ use_ok('npg_tracking::data::reference::find');
                        });
   throws_ok { $ruser->_get_reference_path() } qr/Organism\ should\ be\ defined/, 
            'croak on organism not defined';
-  throws_ok { $ruser->_get_reference_path(q[PhiX]) } qr/Binary bwa reference for PhiX, some-strain, all does not exist/, 'error message when strain is not available';
+  throws_ok { $ruser->_get_reference_path(q[PhiX]) } 
+    qr/Binary bwa reference for PhiX, some-strain, all does not exist/, 'error message when strain is not available';
 
   $ruser = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::find/])
           ->new_object({ repository => $central,
                          aligner => q[some],
                        });
-  throws_ok { $ruser->_get_reference_path(q[PhiX]) } qr/Binary some reference for PhiX, default, all does not exist/, 'error message when aligner does not exist';
-  throws_ok { $ruser->_get_reference_path(q[PhiX], q[my_strain]) } qr/Binary some reference for PhiX, my_strain, all does not exist/, 'error message when aligner does not exist';
+  throws_ok { $ruser->_get_reference_path(q[PhiX]) } 
+    qr/Binary some reference for PhiX, default, all does not exist/, 'error message when aligner does not exist';
+  throws_ok { $ruser->_get_reference_path(q[PhiX], q[my_strain]) } 
+    qr/Binary some reference for PhiX, my_strain, all does not exist/, 'error message when aligner does not exist';
 
   $ruser = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::find/])
           ->new_object({ repository => $central,
                          subset => q[chr3]
                        });
-  throws_ok { $ruser->_get_reference_path(q[PhiX]) } qr/Binary bwa reference for PhiX, default, chr3 does not exist/, 'error message for non-existing subset';
-  throws_ok { $ruser->_get_reference_path(q[human]) } qr/Binary\ bwa\ reference/, 'error message when the directory structure for the binary ref is missing';
+  throws_ok { $ruser->_get_reference_path(q[PhiX]) } 
+    qr/Binary bwa reference for PhiX, default, chr3 does not exist/, 'error message for non-existing subset';
+  throws_ok { $ruser->_get_reference_path(q[human]) } 
+    qr/Binary\ bwa\ reference/, 'error message when the directory structure for the binary ref is missing';
 
   $ruser = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::find/])
           ->new_object({ repository => $central,});
   is ($ruser->_get_reference_path(q[Human]), catfile($repos, q[Human/default/all/bwa/someref.fa]), 
            'correct reference path'); 
-  throws_ok { $ruser->_get_reference_path(q[Human], q[no_ref_strain]) } qr/Reference file with .fa or .fasta or .fna extension not found in/, 'error message when no genome ref is found in the fasta directory';
-  is ($ruser->_get_reference_path(q[Human], q[fna_strain]), catfile($repos, q[Human/fna_strain/all/bwa/someref.fna]), 'genome reference with .fna extension is found');
+  throws_ok { $ruser->_get_reference_path(q[Human], q[no_ref_strain]) } 
+    qr/Reference file with .fa or .fasta or .fna extension not found in/, 'error message when no genome ref is found in the fasta directory';
+  is ($ruser->_get_reference_path(q[Human], q[fna_strain]), catfile($repos, q[Human/fna_strain/all/bwa/someref.fna]), 
+    'genome reference with .fna extension is found');
 
   $ruser = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::find/])
           ->new_object({ repository => $central, aligner => 'fasta'});
-  is ($ruser->_get_reference_path(q[Human], q[fna_strain]), catfile($repos, q[Human/fna_strain/all/fasta/someref.fna]), 'genome reference with .fna extension is found');
+  is ($ruser->_get_reference_path(q[Human], q[fna_strain]), catfile($repos, q[Human/fna_strain/all/fasta/someref.fna]),
+    'genome reference with .fna extension is found');
 }
 
 {

@@ -4,11 +4,37 @@ use strict;
 use warnings;
 use Test::More tests => 43;
 use Test::Exception;
-use File::Spec::Functions qw(catfile);
+use File::Spec::Functions qw(splitpath catfile);
 use Cwd qw(cwd);
+use File::Path qw(make_path);
+use File::Copy;
+use File::Temp qw(tempdir);
+use File::Find;
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/repos];
-my $repos = catfile(cwd, q[t/data/repos]);
+my $current_dir = cwd();
+my $repos = catfile($current_dir, q[t/data/repos]);
+my $new = tempdir(UNLINK => 1);
+
+sub _copy_ref_rep {
+  my $n = $File::Find::name;
+  if (-d $n || -l $n) {
+    return;
+  }
+  my ($volume,$directories,$file_name) = File::Spec->splitpath($n);
+  $directories =~ s/$repos//smx;
+  $directories = $new . $directories;
+  make_path $directories;
+  copy $n, $directories;
+}
+
+find({'wanted' => \&_copy_ref_rep, 'follow' => 0, 'no_chdir' => 1}, $repos);
+$repos = $new;
+chdir "$repos/references/Streptococcus_pneumoniae";
+symlink 'ATCC_700669', 'default';
+chdir '../Human';
+symlink 'NCBI36', 'default';
+chdir $current_dir;
 
 use_ok('npg_tracking::data::reference::info');
 use_ok('npg_tracking::data::reference::list');
@@ -51,10 +77,8 @@ use_ok('npg_tracking::data::reference');
 
 {
   my $ruser = npg_tracking::data::reference->new(position => 8, id_run => 1937, repository => $repos);
-  is( pop @{$ruser->refs}, catfile(cwd, 't/data/repos/references/PhiX/default/all/bwa/phix-illumina.fa'), 'phix reference for lane 8');
+  is( pop @{$ruser->refs}, catfile($repos, 'references/PhiX/default/all/bwa/phix-illumina.fa'), 'phix reference for lane 8');
   is( $ruser->messages->count, 0, 'no messages');
-
-
   $ruser = npg_tracking::data::reference->new(position => 4, id_run => 1937, repository => $repos);
   is( pop @{$ruser->refs}, catfile($repos, 'references/PhiX/default/all/bwa/phix-illumina.fa'), 'phix reference for lane 4');
   is( $ruser->messages->count, 0, 'no messages' );

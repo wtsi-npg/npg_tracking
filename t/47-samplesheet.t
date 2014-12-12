@@ -4,6 +4,8 @@ use Test::More tests => 50;
 use Test::LongString;
 use Test::Exception;
 use File::Slurp;
+use File::Temp qw/tempdir/;
+use File::Path qw/make_path/;
 
 use t::dbic_util;
 local $ENV{dev} = q(wibble); # ensure we're not going live anywhere
@@ -13,11 +15,47 @@ use_ok('npg::samplesheet');
 my $schema = t::dbic_util->new->test_schema();
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q(t/data/samplesheet);
 
+my $dir = tempdir( CLEANUP => 1 );
+my @refs = ();
+
+foreach my $r (qw(PhiX/Illumina
+                  Homo_sapiens/NCBI36
+                  Mus_musculus/NCBIm37
+                  Strongyloides_ratti/20100601
+                  Salmonella_pullorum/449_87
+                  Homo_sapiens/1000Genomes
+                  Haemonchus_contortus/V1_21June13
+                  Plasmodium_falciparum/3D7
+                  Bordetella_pertussis/ST24
+                  Mus_musculus/GRCm38
+                  Homo_sapiens/GRCh37_53
+                  Homo_sapiens/CGP_GRCh37.NCBI.allchr_MT)) {
+
+  my $path = "$dir/references/$r/all/fasta";
+  make_path $path;
+  push @refs, $path;
+}
+
+use Cwd;
+my $current = getcwd();
+make_path "$dir/references/taxon_ids";
+chdir "$dir/references/taxon_ids";
+symlink "../Homo_sapiens", "9606";
+chdir $current;
+symlink "$dir/references/Homo_sapiens/NCBI36", "$dir/references/Homo_sapiens/default";
+symlink "$dir/references/PhiX/Illumina", "$dir/references/PhiX/default";
+
+foreach my $r (@refs) {
+  my $file = "$r/some.fa";
+  open my $fh, '>', $file or die "Cannot write to $file";
+  print $fh 'some ref';
+  close $fh;
+}
 
 {
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), npg_tracking_schema=>$schema, id_run=>7826, output=>\$result); } 'sample sheet object for dual index';
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7826, output=>\$result); } 'sample sheet object for dual index';
   my $expected_result = << 'RESULT_7826';
 [Header],,,,
 Investigator Name,nh4,,,
@@ -52,7 +90,7 @@ RESULT_7826
 {
   my $ss;
   my $result = q();
-  dies_ok { $ss = npg::samplesheet->new( repository=>q(t/data/repos1), output=>\$result)->process; } 'sample sheet process fails when no run object nor id_run given';
+  dies_ok { $ss = npg::samplesheet->new( repository=>$dir, output=>\$result)->process; } 'sample sheet process fails when no run object nor id_run given';
 }
 
 my $expected_result_7007 = << 'RESULT_7007';
@@ -80,7 +118,7 @@ $expected_result_7007 =~ s/\n/\r\n/smg;
 {
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), npg_tracking_schema=>$schema, id_run=>7007, output=>\$result); } 'sample sheet object for unplexed paired run';
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7007, output=>\$result); } 'sample sheet object for unplexed paired run';
   lives_ok { $ss->process(); } ' sample sheet generated';
   is_string($result, $expected_result_7007);
 }
@@ -88,7 +126,7 @@ $expected_result_7007 =~ s/\n/\r\n/smg;
   my $run = $schema->resultset(q(Run))->find(7007);
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), run=>$run, output=>\$result); } 'sample sheet object from run object - no id_run given';
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, run=>$run, output=>\$result); } 'sample sheet object from run object - no id_run given';
   lives_ok { $ss->process(); } ' sample sheet generated';
   is_string($result, $expected_result_7007);
 }
@@ -96,12 +134,12 @@ $expected_result_7007 =~ s/\n/\r\n/smg;
 
 {
   my $ss;
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), npg_tracking_schema=>$schema, id_run=>7007); } 'sample sheet object - no output provided';
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7007); } 'sample sheet object - no output provided';
   cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/MS0001309-300.csv', 'default output location (with zeroes trimmed appropriately)');
 }
 {
   my $ss;
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), npg_tracking_schema=>$schema, id_run=>7007); } 'sample sheet object - no output provided';
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7007); } 'sample sheet object - no output provided';
   my $orig_flowcell_id = $ss->run->flowcell_id;
   $ss->run->flowcell_id(q(MS2000132-500V2));
   cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/MS2000132-500V2.csv', 'default output location copes with V2 MiSeq cartirdges/reagent kits');
@@ -110,7 +148,7 @@ $expected_result_7007 =~ s/\n/\r\n/smg;
 {
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), npg_tracking_schema=>$schema, id_run=>6946, output=>\$result); } 'sample sheet object for plexed paired run';
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, output=>\$result); } 'sample sheet object for plexed paired run';
   my $expected_result = << 'RESULT_6946';
 [Header],,,,
 Investigator Name,mq1,,,
@@ -149,13 +187,13 @@ RESULT_6946
 }
 {
   my $ss;
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), npg_tracking_schema=>$schema, id_run=>6946); } 'sample sheet object - no output provided';
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946); } 'sample sheet object - no output provided';
   cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/000000000-A0616.csv', 'default output location')
 }
 {
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), npg_tracking_schema=>$schema, id_run=>7825, output=>\$result); } 'sample sheet object for plexed paired run';
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7825, output=>\$result); } 'sample sheet object for plexed paired run';
   my $expected_result = << 'RESULT_7825';
 [Header],,,,
 Investigator Name,nh4,,,
@@ -210,7 +248,7 @@ RESULT_7825
 {
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), npg_tracking_schema=>$schema, extend => 1, id_run=>7007, output=>\$result); } 'extended sample sheet object for unplexed paired run';
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, extend => 1, id_run=>7007, output=>\$result); } 'extended sample sheet object for unplexed paired run';
   lives_ok { $ss->process(); } ' sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/7007_extended.csv'));
 }
@@ -218,7 +256,7 @@ RESULT_7825
 {
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); } 'extended sample sheet object for plexed paired run';
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); } 'extended sample sheet object for plexed paired run';
   lives_ok { $ss->process(); } ' sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/6946_extended.csv'));
 }
@@ -230,7 +268,7 @@ RESULT_7825
 
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for unplexed paired 8 lane run with a control lane';
   lives_ok { $ss->process(); } 'sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/1control7libs_extended.csv'));
@@ -243,7 +281,7 @@ RESULT_7825
 
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for plexed paired 8 lane run';
   lives_ok { $ss->process(); } 'sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/8pools_extended.csv'));
@@ -257,7 +295,7 @@ RESULT_7825
 
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>q(t/data/repos1), npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for plexed paired run with both pool and library lanes';
   lives_ok { $ss->process(); } 'sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/4pool4libs_extended.csv'));
