@@ -256,8 +256,6 @@ __END__
 
 =item Carp
 
-=item Readonly
-
 =item npg_tracking::glossary::lane
 
 =item npg_tracking::glossary::tag
