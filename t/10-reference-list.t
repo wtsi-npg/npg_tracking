@@ -36,6 +36,7 @@ symlink "$new/Human_herpesvirus_4/EB1", "$new/Human_herpesvirus_4/default";
 symlink "$new/NPD_Chimera/010302", "$new/NPD_Chimera/default";
 symlink "$new/PhiX/Sanger", "$new/PhiX/default";
 
+
 chdir $new;
 symlink "Homo_sapiens", "Human";
 symlink "Human_herpesvirus_4", "Epstein-Barr_virus";
@@ -77,7 +78,7 @@ SKIP: {
   my $lister = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::list/])
           ->new_object(repository => $repos,);
-  throws_ok { $lister->repository_contents} qr/No default strain link for Clostridium_difficile/, 'repository listing error for no default';
+  throws_ok { $lister->repository_contents} qr/No default strain link for/, 'repository listing error for no default';
 }
 
 {
