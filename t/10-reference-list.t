@@ -8,9 +8,43 @@ use File::Spec::Functions qw(catfile);
 use Cwd qw(cwd);
 use Moose::Meta::Class;
 use File::Temp qw/ tempdir /;
+use File::Find;
+use File::Spec qw/ splitpath /;
+use File::Path qw/make_path/;
+use File::Copy;
 
+my $current_dir = cwd();
+my $current = $current_dir . '/t/data/repos2/references2';
+my $root = tempdir(UNLINK => 1);
+my $new = $root . '/references';
+sub _copy_ref_rep {
+  my $n = $File::Find::name;
+  if (-d $n || -l $n) {
+    return;
+  }
+  my ($volume,$directories,$file_name) = File::Spec->splitpath($n);
+  $directories =~ s/$current//smx;
+  $directories = $new . $directories;
+  make_path $directories;
+  copy $n, $directories;
+}
+find({'wanted' => \&_copy_ref_rep, 'follow' => 0, 'no_chdir' => 1}, $current);
+
+make_path "$new/taxon_ids";
+
+symlink "NCBI36", "$new/Homo_sapiens/default";
+symlink "EB1", "$new/Human_herpesvirus_4/default";
+symlink "010302", "$new/NPD_Chimera/default";
+symlink "Sanger", "$new/PhiX/default";
+
+
+symlink "Homo_sapiens", "$new/Human";
+symlink "Human_herpesvirus_4", "$new/Epstein-Barr_virus";
+symlink "Homo_sapiens", "$new/Other";
+symlink "../Homo_sapiens", "$new/taxon_ids/1002";
+symlink "../Homo_sapiens/NCBI36", "$new/taxon_ids/1003";
+symlink "../PhiX", "$new/taxon_ids/1007";
 use_ok('npg_tracking::data::reference::list');
-use npg_tracking::data::reference::list;
 
 {
   throws_ok { Moose::Meta::Class->create_anon_class(
@@ -38,18 +72,10 @@ SKIP: {
 };
 
 {
-  my $repos = catfile(cwd, q[t/data/repos]);
+  my $repos = $new;
   my $lister = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::list/])
-          ->new_object(repository => $repos,);
-  throws_ok { $lister->repository_contents} qr/No default strain link for Clostridium_difficile/, 'repository listing error for no default';
-}
-
-{
-  my $repos = catfile(cwd, q[t/data/repos2/references2]);
-  my $lister = Moose::Meta::Class->create_anon_class(
-          roles => [qw/npg_tracking::data::reference::list/])
-          ->new_object(repository=>q[t/data/repos], ref_repository => $repos,);
+          ->new_object(repository=>$root);
   lives_ok { $lister->repository_contents} 'repository listing lives';
   my $full_report;
   lives_ok { $full_report = $lister->report } 'reporting lives';
@@ -80,10 +106,10 @@ SKIP: {
 }
 
 {
-  my $repos = catfile(cwd, q[t/data/repos2/references2]);
+  my $repos = $new;
   my $lister = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::list/])
-          ->new_object(ref_repository => $repos, all_species => 0, repository=>q[t/data/repos],);
+          ->new_object(all_species => 0, repository=>$root,);
   lives_ok { $lister->repository_contents} 'repository listing lives';
 
   my @expexted_full = ('Species:Strain,Is Default?,Taxon Ids,Synonyms',
@@ -107,6 +133,15 @@ SKIP: {
   my $file =  catfile(tempdir( CLEANUP => 1 ), q[test]);
   lives_ok {$lister->report($file)} 'report with writing to file lives';
   ok((-e $file), 'file created');
+}
+
+{
+  unlink "$new/Human_herpesvirus_4/default";
+  my $lister = Moose::Meta::Class->create_anon_class(
+          roles => [qw/npg_tracking::data::reference::list/])
+          ->new_object(repository => $root,);
+  throws_ok { $lister->repository_contents} qr/No default strain link for Human_herpesvirus_4/,
+    'repository listing error for no default';
 }
 
 {
