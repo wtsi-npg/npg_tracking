@@ -37,11 +37,8 @@ sub _copy_ref_rep {
 find({'wanted' => \&_copy_ref_rep, 'follow' => 0, 'no_chdir' => 1}, $central);
 $central = $new;
 $repos = "$central/references";
-chdir "$repos/Streptococcus_pneumoniae";
-symlink 'ATCC_700669', 'default';
-chdir '../Human';
-symlink 'NCBI36', 'default';
-chdir $current_dir;
+symlink 'ATCC_700669', "$repos/Streptococcus_pneumoniae/default";
+symlink 'NCBI36', "$repos/Human/default";
 
 use_ok('npg_tracking::data::reference::find');
 

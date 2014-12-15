@@ -32,21 +32,18 @@ find({'wanted' => \&_copy_ref_rep, 'follow' => 0, 'no_chdir' => 1}, $current);
 
 make_path "$new/taxon_ids";
 
-symlink "$new/Homo_sapiens/NCBI36", "$new/Homo_sapiens/default";
-symlink "$new/Human_herpesvirus_4/EB1", "$new/Human_herpesvirus_4/default";
-symlink "$new/NPD_Chimera/010302", "$new/NPD_Chimera/default";
-symlink "$new/PhiX/Sanger", "$new/PhiX/default";
+symlink "NCBI36", "$new/Homo_sapiens/default";
+symlink "EB1", "$new/Human_herpesvirus_4/default";
+symlink "010302", "$new/NPD_Chimera/default";
+symlink "Sanger", "$new/PhiX/default";
 
 
-chdir $new;
-symlink "Homo_sapiens", "Human";
-symlink "Human_herpesvirus_4", "Epstein-Barr_virus";
-symlink "Homo_sapiens", "Other";
-chdir 'taxon_ids';
-symlink "../Homo_sapiens", "1002";
-symlink "../Homo_sapiens/NCBI36", "1003";
-symlink "../PhiX", "1007";
-chdir $current_dir;
+symlink "Homo_sapiens", "$new/Human";
+symlink "Human_herpesvirus_4", "$new/Epstein-Barr_virus";
+symlink "Homo_sapiens", "$new/Other";
+symlink "../Homo_sapiens", "$new/taxon_ids/1002";
+symlink "../Homo_sapiens/NCBI36", "$new/taxon_ids/1003";
+symlink "../PhiX", "$new/taxon_ids/1007";
 use_ok('npg_tracking::data::reference::list');
 
 {

@@ -36,14 +36,10 @@ foreach my $r (qw(PhiX/Illumina
   push @refs, $path;
 }
 
-use Cwd;
-my $current = getcwd();
 make_path "$dir/references/taxon_ids";
-chdir "$dir/references/taxon_ids";
-symlink "../Homo_sapiens", "9606";
-chdir $current;
-symlink "$dir/references/Homo_sapiens/NCBI36", "$dir/references/Homo_sapiens/default";
-symlink "$dir/references/PhiX/Illumina", "$dir/references/PhiX/default";
+symlink "../Homo_sapiens", "$dir/references/taxon_ids/9606";
+symlink "NCBI36", "$dir/references/Homo_sapiens/default";
+symlink "Illumina", "$dir/references/PhiX/default";
 
 foreach my $r (@refs) {
   my $file = "$r/some.fa";
