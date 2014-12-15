@@ -1,11 +1,10 @@
 CHANGES
 
+release 80.6
  - reenable and clean up cBot monitoring
  - try to avoid recursion in st::api::lims
  - cope with no reference genome info in XML
  - provisions for ml_warehouse driver
-
-release 80.6
  - change host for development tracking server
  - when building the package, change version in existing directories only
 
