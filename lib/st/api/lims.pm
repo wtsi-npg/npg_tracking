@@ -1,8 +1,3 @@
-#######
-# Author:        Marina Gourtovaia
-# Created:       July 2013
-#
-
 package st::api::lims;
 
 use Carp;
@@ -18,6 +13,7 @@ use npg_tracking::util::types;
 with qw/  npg_tracking::glossary::run
           npg_tracking::glossary::lane
           npg_tracking::glossary::tag
+          npg_tracking::glossary::flowcell
        /;
 
 our $VERSION = '0';
@@ -51,8 +47,8 @@ Readonly::Scalar my  $INLINE_INDEX_END  => 10;
 Readonly::Hash   my  %METHODS           => {
 
     'general'    =>   [qw/ spiked_phix_tag_index
-                           is_control
                            is_pool
+                           is_control
                            bait_name
                            default_tag_sequence
                            required_insert_size_range
@@ -101,12 +97,11 @@ Readonly::Hash   my  %METHODS           => {
                            project_cost_code
                       /],
 
-    'request'      => [qw/ request_id
-                      /],
+    'request'      => [qw/ request_id /],
 };
 
-Readonly::Array  my @IMPLEMENTED_DRIVERS => qw/xml samplesheet/;
-Readonly::Array our @DELEGATED_METHODS => sort map { @{$_} } values %METHODS;
+Readonly::Array my @IMPLEMENTED_DRIVERS => qw/xml samplesheet ml_warehouse/;
+Readonly::Array my @DELEGATED_METHODS   => sort map { @{$_} } values %METHODS;
 
 =head2 driver_type
 
@@ -148,13 +143,14 @@ sub _build_driver {
   eval "require $d_package" or croak "Error loading package $d_package: " . $EVAL_ERROR;
   ##use critic
   my $ref = {};
-  foreach my $attr (qw/tag_index position id_run path/) {
+  foreach my $attr (qw/tag_index position id_run path id_flowcell_lims flowcell_barcode/) {
     if (defined $self->$attr) {
       $ref->{$attr} = $self->$attr;
     }
-    if ($self->has_batch_id) {
-      $ref->{'batch_id'} = $self->batch_id;
-    }
+  }
+
+  if ($self->has_batch_id) {
+    $ref->{'batch_id'} = $self->batch_id;
   }
   return $d_package->new($ref);
 }
@@ -872,6 +868,25 @@ sub driver_method_list {
   return @DELEGATED_METHODS;
 }
 
+=head2 driver_method_list_short
+
+A sorted list of methods that should be implemented by a driver
+
+=cut
+sub driver_method_list_short {
+  my @remove = @_;
+  my @methods = @DELEGATED_METHODS;
+  if (@remove) {
+    if ($remove[0] eq __PACKAGE__ || ref $remove[0] eq __PACKAGE__) {
+      shift @remove;
+    }
+    if (@remove) {
+      @methods = grep { my $delegated = $_; none {$_ eq $delegated} @remove } @DELEGATED_METHODS;
+    }
+  }
+  return @methods;
+}
+
 =head2 method_list
 
 A sorted list of public accessors (methods and attributes)
@@ -902,7 +917,7 @@ sub to_string {
   my $d = ref $self->driver;
   ($d)= $d=~/::(\w+?)\z/smx;
   my $s = __PACKAGE__ . q[ object, driver - ] . $d;
-  foreach my $attr (sort qw(id_run batch_id position tag_index)) {
+  foreach my $attr (sort qw(id_run batch_id flowcell_barcode id_flowcell_lims position tag_index)) {
     my $value=$self->$attr;
     if (defined $value){
       $s .= q[, ] . join q[ ], $attr, $value;
@@ -959,7 +974,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013 GRL, by Marina Gourtovaia
+Copyright (C) 2014 Genome Research Ltd
 
 This file is part of NPG.
 
