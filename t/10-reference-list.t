@@ -15,7 +15,8 @@ use File::Copy;
 
 my $current_dir = cwd();
 my $current = $current_dir . '/t/data/repos2/references2';
-my $new = tempdir(UNLINK => 1);
+my $root = tempdir(UNLINK => 1);
+my $new = $root . '/references';
 sub _copy_ref_rep {
   my $n = $File::Find::name;
   if (-d $n || -l $n) {
@@ -74,18 +75,10 @@ SKIP: {
 };
 
 {
-  my $repos = catfile(cwd, q[t/data/repos]);
-  my $lister = Moose::Meta::Class->create_anon_class(
-          roles => [qw/npg_tracking::data::reference::list/])
-          ->new_object(repository => $repos,);
-  throws_ok { $lister->repository_contents} qr/No default strain link for/, 'repository listing error for no default';
-}
-
-{
   my $repos = $new;
   my $lister = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::list/])
-          ->new_object(repository=>q[t/data/repos], ref_repository => $repos,);
+          ->new_object(repository=>$root);
   lives_ok { $lister->repository_contents} 'repository listing lives';
   my $full_report;
   lives_ok { $full_report = $lister->report } 'reporting lives';
@@ -119,7 +112,7 @@ SKIP: {
   my $repos = $new;
   my $lister = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::list/])
-          ->new_object(ref_repository => $repos, all_species => 0, repository=>q[t/data/repos],);
+          ->new_object(all_species => 0, repository=>$root,);
   lives_ok { $lister->repository_contents} 'repository listing lives';
 
   my @expexted_full = ('Species:Strain,Is Default?,Taxon Ids,Synonyms',
@@ -143,6 +136,15 @@ SKIP: {
   my $file =  catfile(tempdir( CLEANUP => 1 ), q[test]);
   lives_ok {$lister->report($file)} 'report with writing to file lives';
   ok((-e $file), 'file created');
+}
+
+{
+  unlink "$new/Human_herpesvirus_4/default";
+  my $lister = Moose::Meta::Class->create_anon_class(
+          roles => [qw/npg_tracking::data::reference::list/])
+          ->new_object(repository => $root,);
+  throws_ok { $lister->repository_contents} qr/No default strain link for Human_herpesvirus_4/,
+    'repository listing error for no default';
 }
 
 {
