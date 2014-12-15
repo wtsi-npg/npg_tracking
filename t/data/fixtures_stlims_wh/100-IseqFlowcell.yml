@@ -1,0 +1,7426 @@
+---
+- bait_name: ~
+  cost_code: S0277
+  entity_id_lims: 21582
+  entity_type: library
+  external_release: 1
+  flowcell_barcode: '42UMBAAXX '
+  forward_read_length: 108
+  id_flowcell_lims: 4775
+  id_iseq_flowcell_tmp: 10691
+  id_lims: SQSCP
+  id_pool_lims: PD3918a 1
+  id_sample_tmp: 6323
+  id_study_tmp: 307
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:22:55
+  manual_qc: 0
+  num_target_components: 1
+  pipeline_id_lims: No PCR
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:08:32
+  requested_insert_size_from: 300
+  requested_insert_size_to: 400
+  reverse_read_length: 108
+  tag_index: ~
+  tag_sequence: ~
+  tag_set_id_lims: ~
+  tag_set_name: ~
+- bait_name: ~
+  cost_code: S0277
+  entity_id_lims: 21592
+  entity_type: library
+  external_release: 1
+  flowcell_barcode: '42UMBAAXX '
+  forward_read_length: 108
+  id_flowcell_lims: 4775
+  id_iseq_flowcell_tmp: 10692
+  id_lims: SQSCP
+  id_pool_lims: PD3918a 1
+  id_sample_tmp: 6323
+  id_study_tmp: 307
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:22:55
+  manual_qc: 0
+  num_target_components: 1
+  pipeline_id_lims: No PCR
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:08:32
+  requested_insert_size_from: 300
+  requested_insert_size_to: 400
+  reverse_read_length: 108
+  tag_index: ~
+  tag_sequence: ~
+  tag_set_id_lims: ~
+  tag_set_name: ~
+- bait_name: ~
+  cost_code: S0277
+  entity_id_lims: 21595
+  entity_type: library
+  external_release: 1
+  flowcell_barcode: '42UMBAAXX '
+  forward_read_length: 108
+  id_flowcell_lims: 4775
+  id_iseq_flowcell_tmp: 10693
+  id_lims: SQSCP
+  id_pool_lims: PD3918a 1
+  id_sample_tmp: 6323
+  id_study_tmp: 307
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:22:55
+  manual_qc: 0
+  num_target_components: 1
+  pipeline_id_lims: No PCR
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:08:32
+  requested_insert_size_from: 300
+  requested_insert_size_to: 400
+  reverse_read_length: 108
+  tag_index: ~
+  tag_sequence: ~
+  tag_set_id_lims: ~
+  tag_set_name: ~
+- bait_name: ~
+  cost_code: S0277
+  entity_id_lims: 21596
+  entity_type: library
+  external_release: 1
+  flowcell_barcode: '42UMBAAXX '
+  forward_read_length: 108
+  id_flowcell_lims: 4775
+  id_iseq_flowcell_tmp: 10694
+  id_lims: SQSCP
+  id_pool_lims: PD3918a 1
+  id_sample_tmp: 6323
+  id_study_tmp: 307
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:22:55
+  manual_qc: 0
+  num_target_components: 1
+  pipeline_id_lims: No PCR
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:08:32
+  requested_insert_size_from: 300
+  requested_insert_size_to: 400
+  reverse_read_length: 108
+  tag_index: ~
+  tag_sequence: ~
+  tag_set_id_lims: ~
+  tag_set_name: ~
+- bait_name: ~
+  cost_code: S0277
+  entity_id_lims: 21602
+  entity_type: library
+  external_release: 1
+  flowcell_barcode: '42UMBAAXX '
+  forward_read_length: 108
+  id_flowcell_lims: 4775
+  id_iseq_flowcell_tmp: 10695
+  id_lims: SQSCP
+  id_pool_lims: PD3918a 1
+  id_sample_tmp: 6323
+  id_study_tmp: 307
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:22:55
+  manual_qc: 0
+  num_target_components: 1
+  pipeline_id_lims: No PCR
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:08:32
+  requested_insert_size_from: 300
+  requested_insert_size_to: 400
+  reverse_read_length: 108
+  tag_index: ~
+  tag_sequence: ~
+  tag_set_id_lims: ~
+  tag_set_name: ~
+- bait_name: ~
+  cost_code: S0277
+  entity_id_lims: 21603
+  entity_type: library
+  external_release: 1
+  flowcell_barcode: '42UMBAAXX '
+  forward_read_length: 108
+  id_flowcell_lims: 4775
+  id_iseq_flowcell_tmp: 10696
+  id_lims: SQSCP
+  id_pool_lims: PD3918a 1
+  id_sample_tmp: 6323
+  id_study_tmp: 307
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:22:55
+  manual_qc: 0
+  num_target_components: 1
+  pipeline_id_lims: No PCR
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:08:32
+  requested_insert_size_from: 300
+  requested_insert_size_to: 400
+  reverse_read_length: 108
+  tag_index: ~
+  tag_sequence: ~
+  tag_set_id_lims: ~
+  tag_set_name: ~
+- bait_name: ~
+  cost_code: S0277
+  entity_id_lims: 21604
+  entity_type: library
+  external_release: 1
+  flowcell_barcode: '42UMBAAXX '
+  forward_read_length: 108
+  id_flowcell_lims: 4775
+  id_iseq_flowcell_tmp: 10697
+  id_lims: SQSCP
+  id_pool_lims: PD3918a 1
+  id_sample_tmp: 6323
+  id_study_tmp: 307
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:22:55
+  manual_qc: 0
+  num_target_components: 1
+  pipeline_id_lims: No PCR
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:08:32
+  requested_insert_size_from: 300
+  requested_insert_size_to: 400
+  reverse_read_length: 108
+  tag_index: ~
+  tag_sequence: ~
+  tag_set_id_lims: ~
+  tag_set_name: ~
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 3314798
+  entity_type: library_control
+  external_release: 0
+  flowcell_barcode: '42UMBAAXX '
+  forward_read_length: 108
+  id_flowcell_lims: 4775
+  id_iseq_flowcell_tmp: 10698
+  id_lims: SQSCP
+  id_pool_lims: 79577
+  id_sample_tmp: 8662
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:22:55
+  manual_qc: 0
+  num_target_components: 1
+  pipeline_id_lims: ~
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:08:32
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 108
+  tag_index: ~
+  tag_sequence: ~
+  tag_set_id_lims: ~
+  tag_set_name: ~
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4349377
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120227
+  id_lims: SQSCP
+  id_pool_lims: 4226446
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330290
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120228
+  id_lims: SQSCP
+  id_pool_lims: 4226446
+  id_sample_tmp: 1278330
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330291
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120229
+  id_lims: SQSCP
+  id_pool_lims: 4226446
+  id_sample_tmp: 1278336
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330292
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120230
+  id_lims: SQSCP
+  id_pool_lims: 4226446
+  id_sample_tmp: 1278337
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330293
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120231
+  id_lims: SQSCP
+  id_pool_lims: 4226446
+  id_sample_tmp: 1278338
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330294
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120232
+  id_lims: SQSCP
+  id_pool_lims: 4226446
+  id_sample_tmp: 1278342
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330295
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120233
+  id_lims: SQSCP
+  id_pool_lims: 4226446
+  id_sample_tmp: 1278343
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330296
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120234
+  id_lims: SQSCP
+  id_pool_lims: 4226446
+  id_sample_tmp: 1278344
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330297
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120235
+  id_lims: SQSCP
+  id_pool_lims: 4226446
+  id_sample_tmp: 1278355
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4349377
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120236
+  id_lims: SQSCP
+  id_pool_lims: 4226447
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330298
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120237
+  id_lims: SQSCP
+  id_pool_lims: 4226447
+  id_sample_tmp: 1278360
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330299
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120238
+  id_lims: SQSCP
+  id_pool_lims: 4226447
+  id_sample_tmp: 1278365
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330300
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120239
+  id_lims: SQSCP
+  id_pool_lims: 4226447
+  id_sample_tmp: 1278366
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330301
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120240
+  id_lims: SQSCP
+  id_pool_lims: 4226447
+  id_sample_tmp: 1278369
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330302
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120241
+  id_lims: SQSCP
+  id_pool_lims: 4226447
+  id_sample_tmp: 1278370
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330303
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120242
+  id_lims: SQSCP
+  id_pool_lims: 4226447
+  id_sample_tmp: 1278371
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330304
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120243
+  id_lims: SQSCP
+  id_pool_lims: 4226447
+  id_sample_tmp: 1280919
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330305
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120244
+  id_lims: SQSCP
+  id_pool_lims: 4226447
+  id_sample_tmp: 1280920
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4349377
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120245
+  id_lims: SQSCP
+  id_pool_lims: 4226448
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330306
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120246
+  id_lims: SQSCP
+  id_pool_lims: 4226448
+  id_sample_tmp: 1280921
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330307
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120247
+  id_lims: SQSCP
+  id_pool_lims: 4226448
+  id_sample_tmp: 1280923
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:49:50
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330308
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120248
+  id_lims: SQSCP
+  id_pool_lims: 4226448
+  id_sample_tmp: 1280929
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330309
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120249
+  id_lims: SQSCP
+  id_pool_lims: 4226448
+  id_sample_tmp: 1280930
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330310
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120250
+  id_lims: SQSCP
+  id_pool_lims: 4226448
+  id_sample_tmp: 1280931
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330311
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120251
+  id_lims: SQSCP
+  id_pool_lims: 4226448
+  id_sample_tmp: 1280932
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330312
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120252
+  id_lims: SQSCP
+  id_pool_lims: 4226448
+  id_sample_tmp: 1280933
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330313
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120253
+  id_lims: SQSCP
+  id_pool_lims: 4226448
+  id_sample_tmp: 1280934
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4349377
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120254
+  id_lims: SQSCP
+  id_pool_lims: 4226449
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330314
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120255
+  id_lims: SQSCP
+  id_pool_lims: 4226449
+  id_sample_tmp: 1280936
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330315
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120256
+  id_lims: SQSCP
+  id_pool_lims: 4226449
+  id_sample_tmp: 1280939
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330316
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120257
+  id_lims: SQSCP
+  id_pool_lims: 4226449
+  id_sample_tmp: 1280944
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330317
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120258
+  id_lims: SQSCP
+  id_pool_lims: 4226449
+  id_sample_tmp: 1280951
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330318
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120259
+  id_lims: SQSCP
+  id_pool_lims: 4226449
+  id_sample_tmp: 1280953
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330319
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120260
+  id_lims: SQSCP
+  id_pool_lims: 4226449
+  id_sample_tmp: 1280954
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330320
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120261
+  id_lims: SQSCP
+  id_pool_lims: 4226449
+  id_sample_tmp: 1280959
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330321
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120262
+  id_lims: SQSCP
+  id_pool_lims: 4226449
+  id_sample_tmp: 1280962
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4349377
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120263
+  id_lims: SQSCP
+  id_pool_lims: 4226450
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330322
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120264
+  id_lims: SQSCP
+  id_pool_lims: 4226450
+  id_sample_tmp: 1281037
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330323
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120265
+  id_lims: SQSCP
+  id_pool_lims: 4226450
+  id_sample_tmp: 1281111
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330324
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120266
+  id_lims: SQSCP
+  id_pool_lims: 4226450
+  id_sample_tmp: 1281112
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330325
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120267
+  id_lims: SQSCP
+  id_pool_lims: 4226450
+  id_sample_tmp: 1281113
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330326
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120268
+  id_lims: SQSCP
+  id_pool_lims: 4226450
+  id_sample_tmp: 1281114
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330327
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120269
+  id_lims: SQSCP
+  id_pool_lims: 4226450
+  id_sample_tmp: 1281115
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330328
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120270
+  id_lims: SQSCP
+  id_pool_lims: 4226450
+  id_sample_tmp: 1281116
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330329
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120271
+  id_lims: SQSCP
+  id_pool_lims: 4226450
+  id_sample_tmp: 1281117
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4349377
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120272
+  id_lims: SQSCP
+  id_pool_lims: 4226451
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330330
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120273
+  id_lims: SQSCP
+  id_pool_lims: 4226451
+  id_sample_tmp: 1281118
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330331
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120274
+  id_lims: SQSCP
+  id_pool_lims: 4226451
+  id_sample_tmp: 1281119
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330332
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120275
+  id_lims: SQSCP
+  id_pool_lims: 4226451
+  id_sample_tmp: 1281124
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330333
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120276
+  id_lims: SQSCP
+  id_pool_lims: 4226451
+  id_sample_tmp: 1281129
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330334
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120277
+  id_lims: SQSCP
+  id_pool_lims: 4226451
+  id_sample_tmp: 1281130
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330335
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120278
+  id_lims: SQSCP
+  id_pool_lims: 4226451
+  id_sample_tmp: 1281131
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330336
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120279
+  id_lims: SQSCP
+  id_pool_lims: 4226451
+  id_sample_tmp: 1281132
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330337
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120280
+  id_lims: SQSCP
+  id_pool_lims: 4226451
+  id_sample_tmp: 1281134
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4349377
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120281
+  id_lims: SQSCP
+  id_pool_lims: 4226452
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330338
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120282
+  id_lims: SQSCP
+  id_pool_lims: 4226452
+  id_sample_tmp: 1281137
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330339
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120283
+  id_lims: SQSCP
+  id_pool_lims: 4226452
+  id_sample_tmp: 1281139
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330340
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120284
+  id_lims: SQSCP
+  id_pool_lims: 4226452
+  id_sample_tmp: 1281140
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330341
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120285
+  id_lims: SQSCP
+  id_pool_lims: 4226452
+  id_sample_tmp: 1281143
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330342
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120286
+  id_lims: SQSCP
+  id_pool_lims: 4226452
+  id_sample_tmp: 1281150
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330343
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120287
+  id_lims: SQSCP
+  id_pool_lims: 4226452
+  id_sample_tmp: 1281151
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330344
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120288
+  id_lims: SQSCP
+  id_pool_lims: 4226452
+  id_sample_tmp: 1281154
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330345
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120289
+  id_lims: SQSCP
+  id_pool_lims: 4226452
+  id_sample_tmp: 1281155
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4349377
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120290
+  id_lims: SQSCP
+  id_pool_lims: 4226453
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330346
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120291
+  id_lims: SQSCP
+  id_pool_lims: 4226453
+  id_sample_tmp: 1281156
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330347
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120292
+  id_lims: SQSCP
+  id_pool_lims: 4226453
+  id_sample_tmp: 1281158
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330348
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120293
+  id_lims: SQSCP
+  id_pool_lims: 4226453
+  id_sample_tmp: 1281207
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330349
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120294
+  id_lims: SQSCP
+  id_pool_lims: 4226453
+  id_sample_tmp: 1281209
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330350
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120295
+  id_lims: SQSCP
+  id_pool_lims: 4226453
+  id_sample_tmp: 1281210
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330351
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120296
+  id_lims: SQSCP
+  id_pool_lims: 4226453
+  id_sample_tmp: 1281215
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330352
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120297
+  id_lims: SQSCP
+  id_pool_lims: 4226453
+  id_sample_tmp: 1281217
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: DDD custom library
+  cost_code: S0802
+  entity_id_lims: 4330353
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: C0D33ACXX
+  forward_read_length: 75
+  id_flowcell_lims: 15728
+  id_iseq_flowcell_tmp: 120298
+  id_lims: SQSCP
+  id_pool_lims: 4226453
+  id_sample_tmp: 1281218
+  id_study_tmp: 1838
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:50:36
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:49:51
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4451957
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130880
+  id_lims: SQSCP
+  id_pool_lims: 4453278
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:52:33
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632043
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130881
+  id_lims: SQSCP
+  id_pool_lims: 4453278
+  id_sample_tmp: 1090774
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:52:33
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632044
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130882
+  id_lims: SQSCP
+  id_pool_lims: 4453278
+  id_sample_tmp: 1090776
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632045
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130883
+  id_lims: SQSCP
+  id_pool_lims: 4453278
+  id_sample_tmp: 1090778
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632046
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130884
+  id_lims: SQSCP
+  id_pool_lims: 4453278
+  id_sample_tmp: 1090780
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632047
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130885
+  id_lims: SQSCP
+  id_pool_lims: 4453278
+  id_sample_tmp: 1090782
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632048
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130886
+  id_lims: SQSCP
+  id_pool_lims: 4453278
+  id_sample_tmp: 1090784
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632049
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130887
+  id_lims: SQSCP
+  id_pool_lims: 4453278
+  id_sample_tmp: 1090786
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632050
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130888
+  id_lims: SQSCP
+  id_pool_lims: 4453278
+  id_sample_tmp: 1090772
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4451957
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130889
+  id_lims: SQSCP
+  id_pool_lims: 4453285
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 7
+  pipeline_id_lims: ~
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632051
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130890
+  id_lims: SQSCP
+  id_pool_lims: 4453285
+  id_sample_tmp: 1090790
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 7
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632052
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130891
+  id_lims: SQSCP
+  id_pool_lims: 4453285
+  id_sample_tmp: 1090792
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 7
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632053
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130892
+  id_lims: SQSCP
+  id_pool_lims: 4453285
+  id_sample_tmp: 1090794
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 7
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632054
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130893
+  id_lims: SQSCP
+  id_pool_lims: 4453285
+  id_sample_tmp: 1090796
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 7
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632055
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130894
+  id_lims: SQSCP
+  id_pool_lims: 4453285
+  id_sample_tmp: 1090798
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 7
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632056
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130895
+  id_lims: SQSCP
+  id_pool_lims: 4453285
+  id_sample_tmp: 1090788
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 7
+  pipeline_id_lims: Agilent Pulldown
+  position: 2
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4451957
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130896
+  id_lims: SQSCP
+  id_pool_lims: 4453294
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632057
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130897
+  id_lims: SQSCP
+  id_pool_lims: 4453294
+  id_sample_tmp: 1090808
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632058
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130898
+  id_lims: SQSCP
+  id_pool_lims: 4453294
+  id_sample_tmp: 1090810
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632059
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130899
+  id_lims: SQSCP
+  id_pool_lims: 4453294
+  id_sample_tmp: 1090812
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632060
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130900
+  id_lims: SQSCP
+  id_pool_lims: 4453294
+  id_sample_tmp: 1090814
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632061
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130901
+  id_lims: SQSCP
+  id_pool_lims: 4453294
+  id_sample_tmp: 1090800
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632062
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130902
+  id_lims: SQSCP
+  id_pool_lims: 4453294
+  id_sample_tmp: 1090802
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632063
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130903
+  id_lims: SQSCP
+  id_pool_lims: 4453294
+  id_sample_tmp: 1090804
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632064
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130904
+  id_lims: SQSCP
+  id_pool_lims: 4453294
+  id_sample_tmp: 1090806
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 3
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4451957
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130905
+  id_lims: SQSCP
+  id_pool_lims: 4453303
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632065
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130906
+  id_lims: SQSCP
+  id_pool_lims: 4453303
+  id_sample_tmp: 1090824
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632066
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130907
+  id_lims: SQSCP
+  id_pool_lims: 4453303
+  id_sample_tmp: 1090826
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632067
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130908
+  id_lims: SQSCP
+  id_pool_lims: 4453303
+  id_sample_tmp: 1090828
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632068
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130909
+  id_lims: SQSCP
+  id_pool_lims: 4453303
+  id_sample_tmp: 1090830
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632069
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130910
+  id_lims: SQSCP
+  id_pool_lims: 4453303
+  id_sample_tmp: 1090816
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632070
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130911
+  id_lims: SQSCP
+  id_pool_lims: 4453303
+  id_sample_tmp: 1090818
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632071
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130912
+  id_lims: SQSCP
+  id_pool_lims: 4453303
+  id_sample_tmp: 1090820
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632072
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130913
+  id_lims: SQSCP
+  id_pool_lims: 4453303
+  id_sample_tmp: 1090822
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 4
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4451957
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130914
+  id_lims: SQSCP
+  id_pool_lims: 4453312
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632073
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130915
+  id_lims: SQSCP
+  id_pool_lims: 4453312
+  id_sample_tmp: 1090840
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632074
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130916
+  id_lims: SQSCP
+  id_pool_lims: 4453312
+  id_sample_tmp: 1090842
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632075
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130917
+  id_lims: SQSCP
+  id_pool_lims: 4453312
+  id_sample_tmp: 1297197
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632076
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130918
+  id_lims: SQSCP
+  id_pool_lims: 4453312
+  id_sample_tmp: 1297199
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632077
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130919
+  id_lims: SQSCP
+  id_pool_lims: 4453312
+  id_sample_tmp: 1090832
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632078
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130920
+  id_lims: SQSCP
+  id_pool_lims: 4453312
+  id_sample_tmp: 1090834
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632079
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130921
+  id_lims: SQSCP
+  id_pool_lims: 4453312
+  id_sample_tmp: 1090836
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632080
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130922
+  id_lims: SQSCP
+  id_pool_lims: 4453312
+  id_sample_tmp: 1090838
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 5
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4451957
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130923
+  id_lims: SQSCP
+  id_pool_lims: 4453321
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: ~
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632081
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130924
+  id_lims: SQSCP
+  id_pool_lims: 4453321
+  id_sample_tmp: 1297207
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632082
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130925
+  id_lims: SQSCP
+  id_pool_lims: 4453321
+  id_sample_tmp: 1297209
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632083
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130926
+  id_lims: SQSCP
+  id_pool_lims: 4453321
+  id_sample_tmp: 1297212
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632084
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130927
+  id_lims: SQSCP
+  id_pool_lims: 4453321
+  id_sample_tmp: 1297213
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632085
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130928
+  id_lims: SQSCP
+  id_pool_lims: 4453321
+  id_sample_tmp: 1297201
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632086
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130929
+  id_lims: SQSCP
+  id_pool_lims: 4453321
+  id_sample_tmp: 1297203
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632087
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130930
+  id_lims: SQSCP
+  id_pool_lims: 4453321
+  id_sample_tmp: 1297205
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 6
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4451957
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130931
+  id_lims: SQSCP
+  id_pool_lims: 4453330
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: ~
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632088
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130932
+  id_lims: SQSCP
+  id_pool_lims: 4453330
+  id_sample_tmp: 1297224
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 1
+  tag_sequence: ATCACG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632089
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130933
+  id_lims: SQSCP
+  id_pool_lims: 4453330
+  id_sample_tmp: 1297226
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632090
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130934
+  id_lims: SQSCP
+  id_pool_lims: 4453330
+  id_sample_tmp: 1297228
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632091
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130935
+  id_lims: SQSCP
+  id_pool_lims: 4453330
+  id_sample_tmp: 1297231
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632092
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130936
+  id_lims: SQSCP
+  id_pool_lims: 4453330
+  id_sample_tmp: 1297232
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632093
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130937
+  id_lims: SQSCP
+  id_pool_lims: 4453330
+  id_sample_tmp: 1297218
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632094
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130938
+  id_lims: SQSCP
+  id_pool_lims: 4453330
+  id_sample_tmp: 1297220
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632095
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130939
+  id_lims: SQSCP
+  id_pool_lims: 4453330
+  id_sample_tmp: 1297222
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 9
+  pipeline_id_lims: Agilent Pulldown
+  position: 7
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: ~
+  entity_id_lims: 4451957
+  entity_type: library_indexed_spike
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130940
+  id_lims: SQSCP
+  id_pool_lims: 4453339
+  id_sample_tmp: 1234191
+  id_study_tmp: ~
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: ~
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  reverse_read_length: 75
+  tag_index: 168
+  tag_sequence: ACAACGCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632096
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130941
+  id_lims: SQSCP
+  id_pool_lims: 4453339
+  id_sample_tmp: 1297245
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 2
+  tag_sequence: CGATGT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632097
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130942
+  id_lims: SQSCP
+  id_pool_lims: 4453339
+  id_sample_tmp: 1297247
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 3
+  tag_sequence: TTAGGC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632098
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130943
+  id_lims: SQSCP
+  id_pool_lims: 4453339
+  id_sample_tmp: 1297248
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 4
+  tag_sequence: TGACCA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632099
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130944
+  id_lims: SQSCP
+  id_pool_lims: 4453339
+  id_sample_tmp: 1297249
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 5
+  tag_sequence: ACAGTG
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632100
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130945
+  id_lims: SQSCP
+  id_pool_lims: 4453339
+  id_sample_tmp: 1297233
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 6
+  tag_sequence: GCCAAT
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632101
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130946
+  id_lims: SQSCP
+  id_pool_lims: 4453339
+  id_sample_tmp: 1297234
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 7
+  tag_sequence: CAGATC
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: Human all exon 50MB
+  cost_code: S0782
+  entity_id_lims: 4632102
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: D0KTYACXX
+  forward_read_length: 75
+  id_flowcell_lims: 16249
+  id_iseq_flowcell_tmp: 130947
+  id_lims: SQSCP
+  id_pool_lims: 4453339
+  id_sample_tmp: 1297235
+  id_study_tmp: 1651
+  is_r_and_d: 0
+  is_spiked: 1
+  last_updated: 2013-05-08 14:54:58
+  manual_qc: 0
+  num_target_components: 8
+  pipeline_id_lims: Agilent Pulldown
+  position: 8
+  priority: 0
+  recorded_at: 2014-11-19 17:52:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 400
+  reverse_read_length: 75
+  tag_index: 8
+  tag_sequence: ACTTGA
+  tag_set_id_lims: 3
+  tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 3748918
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: ~
+  forward_read_length: 150
+  id_flowcell_lims: 13994
+  id_iseq_flowcell_tmp: 365169
+  id_lims: SQSCP
+  id_pool_lims: 3789290
+  id_sample_tmp: 1268554
+  id_study_tmp: 673
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:45:58
+  manual_qc: ~
+  num_target_components: 12
+  pipeline_id_lims: Standard
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:40:30
+  requested_insert_size_from: 200
+  requested_insert_size_to: 700
+  reverse_read_length: 150
+  tag_index: 1
+  tag_sequence: ATCACGTT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 3748919
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: ~
+  forward_read_length: 150
+  id_flowcell_lims: 13994
+  id_iseq_flowcell_tmp: 365170
+  id_lims: SQSCP
+  id_pool_lims: 3789290
+  id_sample_tmp: 1268555
+  id_study_tmp: 673
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:45:58
+  manual_qc: ~
+  num_target_components: 12
+  pipeline_id_lims: Standard
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:40:30
+  requested_insert_size_from: 200
+  requested_insert_size_to: 700
+  reverse_read_length: 150
+  tag_index: 2
+  tag_sequence: CGATGTTT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 3748920
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: ~
+  forward_read_length: 150
+  id_flowcell_lims: 13994
+  id_iseq_flowcell_tmp: 365171
+  id_lims: SQSCP
+  id_pool_lims: 3789290
+  id_sample_tmp: 1268556
+  id_study_tmp: 673
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:45:58
+  manual_qc: ~
+  num_target_components: 12
+  pipeline_id_lims: Standard
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:40:30
+  requested_insert_size_from: 200
+  requested_insert_size_to: 700
+  reverse_read_length: 150
+  tag_index: 3
+  tag_sequence: TTAGGCAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 3748921
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: ~
+  forward_read_length: 150
+  id_flowcell_lims: 13994
+  id_iseq_flowcell_tmp: 365172
+  id_lims: SQSCP
+  id_pool_lims: 3789290
+  id_sample_tmp: 1268557
+  id_study_tmp: 673
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:45:58
+  manual_qc: ~
+  num_target_components: 12
+  pipeline_id_lims: Standard
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:40:30
+  requested_insert_size_from: 200
+  requested_insert_size_to: 700
+  reverse_read_length: 150
+  tag_index: 4
+  tag_sequence: TGACCACT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 3748922
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: ~
+  forward_read_length: 150
+  id_flowcell_lims: 13994
+  id_iseq_flowcell_tmp: 365173
+  id_lims: SQSCP
+  id_pool_lims: 3789290
+  id_sample_tmp: 1268558
+  id_study_tmp: 673
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:45:58
+  manual_qc: ~
+  num_target_components: 12
+  pipeline_id_lims: Standard
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:40:30
+  requested_insert_size_from: 200
+  requested_insert_size_to: 700
+  reverse_read_length: 150
+  tag_index: 5
+  tag_sequence: ACAGTGGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 3748923
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: ~
+  forward_read_length: 150
+  id_flowcell_lims: 13994
+  id_iseq_flowcell_tmp: 365174
+  id_lims: SQSCP
+  id_pool_lims: 3789290
+  id_sample_tmp: 1268559
+  id_study_tmp: 673
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:45:58
+  manual_qc: ~
+  num_target_components: 12
+  pipeline_id_lims: Standard
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:40:30
+  requested_insert_size_from: 200
+  requested_insert_size_to: 700
+  reverse_read_length: 150
+  tag_index: 6
+  tag_sequence: GCCAATGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 3748924
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: ~
+  forward_read_length: 150
+  id_flowcell_lims: 13994
+  id_iseq_flowcell_tmp: 365175
+  id_lims: SQSCP
+  id_pool_lims: 3789290
+  id_sample_tmp: 1268560
+  id_study_tmp: 673
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:45:58
+  manual_qc: ~
+  num_target_components: 12
+  pipeline_id_lims: Standard
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:40:30
+  requested_insert_size_from: 200
+  requested_insert_size_to: 700
+  reverse_read_length: 150
+  tag_index: 7
+  tag_sequence: CAGATCTG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 3748925
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: ~
+  forward_read_length: 150
+  id_flowcell_lims: 13994
+  id_iseq_flowcell_tmp: 365176
+  id_lims: SQSCP
+  id_pool_lims: 3789290
+  id_sample_tmp: 1268561
+  id_study_tmp: 673
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:45:58
+  manual_qc: ~
+  num_target_components: 12
+  pipeline_id_lims: Standard
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:40:30
+  requested_insert_size_from: 200
+  requested_insert_size_to: 700
+  reverse_read_length: 150
+  tag_index: 8
+  tag_sequence: ACTTGATG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 3748926
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: ~
+  forward_read_length: 150
+  id_flowcell_lims: 13994
+  id_iseq_flowcell_tmp: 365177
+  id_lims: SQSCP
+  id_pool_lims: 3789290
+  id_sample_tmp: 1268562
+  id_study_tmp: 673
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:45:58
+  manual_qc: ~
+  num_target_components: 12
+  pipeline_id_lims: Standard
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:40:30
+  requested_insert_size_from: 200
+  requested_insert_size_to: 700
+  reverse_read_length: 150
+  tag_index: 9
+  tag_sequence: GATCAGCG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 3748927
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: ~
+  forward_read_length: 150
+  id_flowcell_lims: 13994
+  id_iseq_flowcell_tmp: 365178
+  id_lims: SQSCP
+  id_pool_lims: 3789290
+  id_sample_tmp: 1268563
+  id_study_tmp: 673
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:45:58
+  manual_qc: ~
+  num_target_components: 12
+  pipeline_id_lims: Standard
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:40:30
+  requested_insert_size_from: 200
+  requested_insert_size_to: 700
+  reverse_read_length: 150
+  tag_index: 10
+  tag_sequence: TAGCTTGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 3748928
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: ~
+  forward_read_length: 150
+  id_flowcell_lims: 13994
+  id_iseq_flowcell_tmp: 365179
+  id_lims: SQSCP
+  id_pool_lims: 3789290
+  id_sample_tmp: 1268564
+  id_study_tmp: 673
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:45:58
+  manual_qc: ~
+  num_target_components: 12
+  pipeline_id_lims: Standard
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:40:30
+  requested_insert_size_from: 200
+  requested_insert_size_to: 700
+  reverse_read_length: 150
+  tag_index: 11
+  tag_sequence: GGCTACAG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 3748929
+  entity_type: library_indexed
+  external_release: 1
+  flowcell_barcode: ~
+  forward_read_length: 150
+  id_flowcell_lims: 13994
+  id_iseq_flowcell_tmp: 365180
+  id_lims: SQSCP
+  id_pool_lims: 3789290
+  id_sample_tmp: 1268565
+  id_study_tmp: 673
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-05-08 14:45:58
+  manual_qc: ~
+  num_target_components: 12
+  pipeline_id_lims: Standard
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:40:30
+  requested_insert_size_from: 200
+  requested_insert_size_to: 700
+  reverse_read_length: 150
+  tag_index: 12
+  tag_sequence: CTTGTACT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015825
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375612
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627542
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 1
+  tag_sequence: ATCACGTT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015826
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375613
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627543
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 2
+  tag_sequence: CGATGTTT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015827
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375614
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627544
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 3
+  tag_sequence: TTAGGCAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015828
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375615
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627545
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 4
+  tag_sequence: TGACCACT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015829
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375616
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627546
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 5
+  tag_sequence: ACAGTGGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015830
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375617
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627547
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 6
+  tag_sequence: GCCAATGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015831
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375618
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627548
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 7
+  tag_sequence: CAGATCTG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015832
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375619
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627549
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 8
+  tag_sequence: ACTTGATG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015833
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375620
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627550
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 9
+  tag_sequence: GATCAGCG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015834
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375621
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627551
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 10
+  tag_sequence: TAGCTTGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015835
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375622
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627552
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 11
+  tag_sequence: GGCTACAG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015836
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375623
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627553
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 12
+  tag_sequence: CTTGTACT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015837
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375624
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627554
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 13
+  tag_sequence: TGGTTGTT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015838
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375625
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627555
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:36
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 14
+  tag_sequence: TCTCGGTT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015839
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375626
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627556
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 15
+  tag_sequence: TAAGCGTT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015840
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375627
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627557
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 16
+  tag_sequence: TCCGTCTT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015841
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375628
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627558
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 17
+  tag_sequence: TGTACCTT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015842
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375629
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627559
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 18
+  tag_sequence: TTCTGTGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015843
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375630
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627560
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 19
+  tag_sequence: TCTGCTGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015844
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375631
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627561
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 20
+  tag_sequence: TTGGAGGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015845
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375632
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627562
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 21
+  tag_sequence: TCGAGCGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015846
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375633
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627563
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 22
+  tag_sequence: TGATACGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015847
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375634
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627564
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 23
+  tag_sequence: TGCATAGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015848
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375635
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627565
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 24
+  tag_sequence: TTGACTCT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015849
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375636
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627566
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 25
+  tag_sequence: TGCGATCT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015850
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375637
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627567
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 26
+  tag_sequence: TTCCTGCT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015851
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375638
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627568
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 27
+  tag_sequence: TAGTGACT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015852
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375639
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627569
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 28
+  tag_sequence: TACAGGAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015853
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375640
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627570
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 29
+  tag_sequence: TCCTCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015854
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375641
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627571
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 30
+  tag_sequence: TGTGGTTG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015855
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375642
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627572
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 31
+  tag_sequence: TAGTCTTG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015856
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375643
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627573
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 32
+  tag_sequence: TTCCATTG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015857
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375644
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627574
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 33
+  tag_sequence: TCGAAGTG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015858
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375645
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627575
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 34
+  tag_sequence: TAACGCTG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015859
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375646
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627576
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 35
+  tag_sequence: TTGGTATG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015860
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375647
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627577
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 36
+  tag_sequence: TGAACTGG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015861
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375648
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627578
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 37
+  tag_sequence: TACTTCGG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015862
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375649
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627579
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 38
+  tag_sequence: TCTCACGG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015863
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375650
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627580
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 39
+  tag_sequence: TCAGGAGG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015864
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375651
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627581
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 40
+  tag_sequence: TAAGTTCG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015865
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375652
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627582
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 41
+  tag_sequence: TCCAGTCG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015866
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375653
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627583
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 42
+  tag_sequence: TGTATGCG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015867
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375654
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627584
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 43
+  tag_sequence: TCATTGAG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015868
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375655
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627585
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 44
+  tag_sequence: TGGCTCAG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015869
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375656
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627586
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 45
+  tag_sequence: TATGCCAG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015870
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375657
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627587
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 46
+  tag_sequence: TCAGATTC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015871
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375658
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627588
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 47
+  tag_sequence: TACTAGTC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015872
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375659
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627589
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 48
+  tag_sequence: TTCAGCTC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015873
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375660
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627590
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 49
+  tag_sequence: TGTCTATC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015874
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375661
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627591
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 50
+  tag_sequence: TATGTGGC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015875
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375662
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627592
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 51
+  tag_sequence: TTACTCGC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015876
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375663
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627593
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 52
+  tag_sequence: TCGTTAGC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015877
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375664
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627594
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 53
+  tag_sequence: TACCGAGC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015878
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375665
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627595
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 54
+  tag_sequence: TGTTCTCC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015879
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375666
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627596
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 55
+  tag_sequence: TTCGCACC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015880
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375667
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627597
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 56
+  tag_sequence: TTGCGTAC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015881
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375668
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627598
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 57
+  tag_sequence: TCTACGAC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015882
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375669
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627599
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 58
+  tag_sequence: TGACAGAC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015883
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375670
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627600
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 59
+  tag_sequence: TAGAACAC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015884
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375671
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627601
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 60
+  tag_sequence: TCATCCTA
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015885
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375672
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627602
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 61
+  tag_sequence: TGCTGATA
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015886
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375673
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627603
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 62
+  tag_sequence: TAGACGGA
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015887
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375674
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627604
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 63
+  tag_sequence: TGTGAAGA
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015888
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375675
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627605
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 64
+  tag_sequence: TCTCTTCA
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015889
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375676
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627606
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 65
+  tag_sequence: TTGTTCCA
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015890
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375677
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627607
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 66
+  tag_sequence: TGAAGCCA
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015891
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375678
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627608
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 67
+  tag_sequence: TACCACCA
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015892
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375679
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627609
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 68
+  tag_sequence: TGCGTGAA
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015893
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375680
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627610
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 69
+  tag_sequence: GGTGAGTT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015894
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375681
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627611
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 70
+  tag_sequence: GATCTCTT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015895
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375682
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627612
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 71
+  tag_sequence: GTGTCCTT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015896
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375683
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627613
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 72
+  tag_sequence: GACGGATT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015897
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375684
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627614
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 73
+  tag_sequence: GCAACATT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015898
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375685
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627615
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 74
+  tag_sequence: GGTCGTGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015899
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375686
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627616
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 75
+  tag_sequence: GAATCTGT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015900
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375687
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627617
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 76
+  tag_sequence: GTACATCT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015901
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375688
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627618
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 77
+  tag_sequence: GAGGTGCT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015902
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375689
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627619
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 78
+  tag_sequence: GCATGGCT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015903
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375690
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627620
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 79
+  tag_sequence: GTTAGCCT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015904
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375691
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627621
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 80
+  tag_sequence: GTCGCTAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015905
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375692
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627622
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 81
+  tag_sequence: GGAATGAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015906
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375693
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627623
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 82
+  tag_sequence: GAGCCAAT
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015907
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375694
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627624
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 83
+  tag_sequence: GCTCCTTG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015908
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375695
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627625
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 84
+  tag_sequence: GTAAGGTG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015909
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375696
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627626
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 85
+  tag_sequence: GAGGATGG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015910
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375697
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627627
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 86
+  tag_sequence: GTTGTCGG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015911
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375698
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627628
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 87
+  tag_sequence: GGATTAGG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015912
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375699
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627629
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 88
+  tag_sequence: GATAGAGG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015913
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375700
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627630
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 89
+  tag_sequence: GTGTGTCG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015914
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375701
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627631
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 90
+  tag_sequence: GCAATCCG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015915
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375702
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627632
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 91
+  tag_sequence: GACCTTAG
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015916
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375703
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627633
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 92
+  tag_sequence: GCCTGTTC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015917
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375704
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627634
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 93
+  tag_sequence: GCACTGTC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015918
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375705
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627635
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 94
+  tag_sequence: GCTAACTC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015919
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375706
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627636
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 95
+  tag_sequence: GATTCATC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+- bait_name: ~
+  cost_code: S0696
+  entity_id_lims: 8015920
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: ~
+  forward_read_length: 130
+  id_flowcell_lims: 22043
+  id_iseq_flowcell_tmp: 375707
+  id_lims: SQSCP
+  id_pool_lims: 7583507
+  id_sample_tmp: 1627637
+  id_study_tmp: 2044
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2013-07-09 13:55:12
+  manual_qc: ~
+  num_target_components: 96
+  pipeline_id_lims: Pre-quality controlled
+  position: 1
+  priority: 0
+  recorded_at: 2014-11-20 10:56:37
+  requested_insert_size_from: 100
+  requested_insert_size_to: 700
+  reverse_read_length: 130
+  tag_index: 96
+  tag_sequence: GTCTTGGC
+  tag_set_id_lims: 6
+  tag_set_name: 'Sanger_168tags - 10 mer tags'
+
