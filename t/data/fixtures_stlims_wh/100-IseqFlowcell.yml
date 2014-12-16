@@ -4,7 +4,7 @@
   entity_id_lims: 21582
   entity_type: library
   external_release: 1
-  flowcell_barcode: '42UMBAAXX '
+  flowcell_barcode: 42UMBAAXX
   forward_read_length: 108
   id_flowcell_lims: 4775
   id_iseq_flowcell_tmp: 10691
@@ -33,7 +33,7 @@
   entity_id_lims: 21592
   entity_type: library
   external_release: 1
-  flowcell_barcode: '42UMBAAXX '
+  flowcell_barcode: '42UMBAAXX'
   forward_read_length: 108
   id_flowcell_lims: 4775
   id_iseq_flowcell_tmp: 10692
@@ -62,7 +62,7 @@
   entity_id_lims: 21595
   entity_type: library
   external_release: 1
-  flowcell_barcode: '42UMBAAXX '
+  flowcell_barcode: '42UMBAAXX'
   forward_read_length: 108
   id_flowcell_lims: 4775
   id_iseq_flowcell_tmp: 10693
@@ -207,7 +207,7 @@
   entity_id_lims: 3314798
   entity_type: library_control
   external_release: 0
-  flowcell_barcode: '42UMBAAXX '
+  flowcell_barcode: '42UMBAAXX'
   forward_read_length: 108
   id_flowcell_lims: 4775
   id_iseq_flowcell_tmp: 10698
@@ -236,7 +236,7 @@
   entity_id_lims: 4349377
   entity_type: library_indexed_spike
   external_release: 1
-  flowcell_barcode: C0D33ACXX
+  flowcell_barcode: 'C0D33ACXX'
   forward_read_length: 75
   id_flowcell_lims: 15728
   id_iseq_flowcell_tmp: 120227
