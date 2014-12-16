@@ -79,6 +79,26 @@ sub _build_mlwh_schema {
   return WTSI::DNAP::Warehouse::Schema->connect();
 }
 
+=head2 query_resultset
+
+Inherited from WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell.
+Modified to raise error when no records for the LIMs object are
+retrieved.
+
+=cut
+around 'query_resultset' => sub {
+  my ($orig, $self) = @_;
+  my $original = $self->$orig();
+  my $rs = $original;
+  if ($self->tag_index) {
+    $rs = $rs->search({tag_index => $self->tag_index});
+  }
+  if ($rs->count == 0) {
+    croak 'No record retrieved for ' . $self->to_string;
+  }
+  return $original;
+};
+
 has '_lchildren' =>      ( isa             => 'ArrayRef',
                            is              => 'ro',
                            init_arg        => undef,
@@ -104,14 +124,14 @@ sub _build__lchildren {
         $init->{'query_resultset'} = $self->query_resultset;
         $init->{'position'}        = $self->position;
         my %hashed_rs = map { $_->tag_index => 1} $self->query_resultset->all;
-        foreach my $tag_index (keys %hashed_rs) {
+        foreach my $tag_index (sort keys %hashed_rs) {
           $init->{'tag_index'} = $tag_index;
           push @children, __PACKAGE__->new($init);
 	}
       }
     } else {
       my %hashed_rs = map { $_->position => 1} $self->query_resultset->all;
-      my @positions = keys %hashed_rs;
+      my @positions = sort keys %hashed_rs;
       foreach my $position (@positions) {
         $init->{'query_resultset'} = $self->query_resultset->search({position => $position});
         $init->{'position'}        = $position;
@@ -187,7 +207,7 @@ sub _to_delegate {
   return \@l;
 }
 
-has '_dbix_row' => ( isa             => 'WTSI::DNAP::Warehouse::Schema::Result::IseqFlowcell',
+has '_dbix_row' => ( isa             => 'Maybe[WTSI::DNAP::Warehouse::Schema::Result::IseqFlowcell]',
                      is              => 'ro',
                      init_arg        => undef,
                      lazy_build      => 1,
@@ -217,7 +237,14 @@ sub _build__dbix_row {
       return $rs->next;
     }
   }
-  return WTSI::DNAP::Warehouse::Schema::Result::IseqFlowcell->new();
+  return;
+}
+
+foreach my $method (_to_delegate()) {
+  around $method => sub {
+    my ($orig, $self) = @_;
+    return $self->_dbix_row ? $self->$orig() : undef;
+  };
 }
 
 =head2 to_string

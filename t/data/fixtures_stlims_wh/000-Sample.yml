@@ -954,7 +954,7 @@
   taxon_id: 9606
   uuid_sample_lims: 46117ca0-6f77-11e4-a268-68b59977951c
 - accession_number: ~
-  consent_withdrawn: 0
+  consent_withdrawn: 1
   control: ~
   created: 2011-11-09 14:52:12
   deleted_at: ~
@@ -2510,6 +2510,7 @@
   id_lims: SQSCP
   id_sample_lims: 1650304
   id_sample_tmp: 1627542
+  name: first
   last_updated: 2013-06-19 07:41:47
   organism: Anopheles_gambiae (PEST)
   recorded_at: 2014-11-19 02:27:29
@@ -4225,6 +4226,7 @@
   recorded_at: 2014-11-19 02:27:32
   reference_genome: Anopheles_gambiae (PEST)
   replicate: ~
+  name: second
   sample_visibility: Hold
   strain: PEST
   taxon_id: 7165

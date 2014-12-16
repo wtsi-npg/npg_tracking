@@ -1,0 +1,212 @@
+---
+- email: sunny@sanger.ac.uk
+  id_study_tmp: 307
+  id_study_users_tmp: 1200
+  last_updated: 2013-05-22 15:55:22
+  login: sunny
+  name: Sunny Sun
+  role: owner
+- email: sunny@sanger.ac.uk
+  id_study_tmp: 307
+  id_study_users_tmp: 1201
+  last_updated: 2013-05-22 15:55:22
+  login: sunny
+  name: sunny
+  role: manager
+- email: rainy@sanger.ac.uk
+  id_study_tmp: 307
+  id_study_users_tmp: 1202
+  last_updated: 2013-05-22 15:55:22
+  login: rainy
+  name: Rainy Rain
+  role: follower
+- email: clowdy@sanger.ac.uk
+  id_study_tmp: 307
+  id_study_users_tmp: 1203
+  last_updated: 2013-05-22 15:55:22
+  login: clowdy
+  name: Clowdy Clowd
+  role: follower
+- email: stormy@sanger.ac.uk
+  id_study_tmp: 307
+  id_study_users_tmp: 1204
+  last_updated: 2013-05-22 15:55:22
+  login: stormy
+  name: Stormy Storm
+  role: follower
+- email: snowy@sanger.ac.uk
+  id_study_tmp: 307
+  id_study_users_tmp: 1205
+  last_updated: 2013-05-22 15:55:22
+  login: snowy
+  name: Snowy Snow
+  role: data_access_contact
+- email: 1@sanger.ac.uk
+  id_study_tmp: 673
+  id_study_users_tmp: 2600
+  last_updated: 2012-11-26 14:15:35
+  login: 1
+  name: One Ten
+  role: manager
+- email: 2@sanger.ac.uk
+  id_study_tmp: 673
+  id_study_users_tmp: 2601
+  last_updated: 2012-11-26 14:15:35
+  login: 2
+  name: Two Twenty
+  role: manager
+- email: 1@sanger.ac.uk
+  id_study_tmp: 673
+  id_study_users_tmp: 2602
+  last_updated: 2012-11-26 14:15:35
+  login: 1
+  name: One One
+  role: owner
+- email: 3@sanger.ac.uk
+  id_study_tmp: 1651
+  id_study_users_tmp: 4702
+  last_updated: 2013-04-05 11:19:51
+  login: 3
+  name: Three Thirty
+  role: manager
+- email: 5@sanger.ac.uk
+  id_study_tmp: 1651
+  id_study_users_tmp: 4703
+  last_updated: 2013-04-05 11:19:51
+  login: 5
+  name: Five Fifty
+  role: manager
+- email: 2@sanger.ac.uk
+  id_study_tmp: 1651
+  id_study_users_tmp: 4704
+  last_updated: 2013-04-05 11:19:51
+  login: 2
+  name: Two Twenty
+  role: owner
+- email: 5@sanger.ac.uk
+  id_study_tmp: 1651
+  id_study_users_tmp: 4705
+  last_updated: 2013-04-05 11:19:51
+  login: 5
+  name: Five Fifty
+  role: owner
+- email: 4@sanger.ac.uk
+  id_study_tmp: 1651
+  id_study_users_tmp: 4706
+  last_updated: 2013-04-05 11:19:51
+  login: 4
+  name: Four Forty
+  role: follower
+- email: 6@sanger.ac.uk
+  id_study_tmp: 1651
+  id_study_users_tmp: 4707
+  last_updated: 2013-04-05 11:19:51
+  login: 6
+  name: Six Sixty
+  role: follower
+- email: 2@sanger.ac.uk
+  id_study_tmp: 1651
+  id_study_users_tmp: 4708
+  last_updated: 2013-04-05 11:19:51
+  login: 2
+  name: Two Twenty
+  role: data_access_contact
+- email: 5@sanger.ac.uk
+  id_study_tmp: 1651
+  id_study_users_tmp: 4709
+  last_updated: 2013-04-05 11:19:51
+  login: 5
+  name: Five Fifty
+  role: data_access_contact
+- email: 7@sanger.ac.uk
+  id_study_tmp: 1838
+  id_study_users_tmp: 5445
+  last_updated: 2013-11-28 08:49:32
+  login: 7
+  name: Seven Seventy
+  role: manager
+- email: 4@sanger.ac.uk
+  id_study_tmp: 1838
+  id_study_users_tmp: 5446
+  last_updated: 2013-11-28 08:49:32
+  login: 4
+  name: Four Forty
+  role: manager
+- email: 7@sanger.ac.uk
+  id_study_tmp: 1838
+  id_study_users_tmp: 5447
+  last_updated: 2013-11-28 08:49:32
+  login: 7
+  name: Seven Seventy
+  role: owner
+- email: 8@sanger.ac.uk
+  id_study_tmp: 1838
+  id_study_users_tmp: 5448
+  last_updated: 2013-11-28 08:49:32
+  login: 8
+  name: Eight Eighty
+  role: follower
+- email: 9@sanger.ac.uk
+  id_study_tmp: 1838
+  id_study_users_tmp: 5449
+  last_updated: 2013-11-28 08:49:32
+  login: 9
+  name: Nine Ninety
+  role: follower
+- email: 10@sanger.ac.uk
+  id_study_tmp: 1838
+  id_study_users_tmp: 5450
+  last_updated: 2013-11-28 08:49:32
+  login: ten
+  name: Ten Twenty
+  role: follower
+- email: mercury-sequencescape@hgi-mercury.internal.sanger.ac.uk
+  id_study_tmp: 1838
+  id_study_users_tmp: 5451
+  last_updated: 2013-11-28 08:49:32
+  login: mercury
+  name: Mercury Human Genetics Informatics Pipelines
+  role: follower
+- email: 11@sanger.ac.uk
+  id_study_tmp: 1838
+  id_study_users_tmp: 5452
+  last_updated: 2013-11-28 08:49:32
+  login: 11
+  name: Eleven Hundred
+  role: follower
+- email: 1@sanger.ac.uk
+  id_study_tmp: 2044
+  id_study_users_tmp: 6192
+  last_updated: 2014-02-27 14:31:34
+  login: 1
+  name: One Ten
+  role: manager
+- email: 1@sanger.ac.uk
+  id_study_tmp: 2044
+  id_study_users_tmp: 6193
+  last_updated: 2014-02-27 14:31:34
+  login: 1
+  name: One Ten
+  role: owner
+- email: 12@sanger.ac.uk
+  id_study_tmp: 2044
+  id_study_users_tmp: 6194
+  last_updated: 2014-02-27 14:31:34
+  login: 12
+  name: Twelve Thousand
+  role: follower
+- email: 13@sanger.ac.uk
+  id_study_tmp: 2044
+  id_study_users_tmp: 6195
+  last_updated: 2014-02-27 14:31:34
+  login: 13
+  name: Thirteen TwentyFive
+  role: follower
+- email: 14@sanger.ac.uk
+  id_study_tmp: 2044
+  id_study_users_tmp: 6196
+  last_updated: 2014-02-27 14:31:34
+  login: 14
+  name: Fourteen Thirtyfive
+  role: follower
+
