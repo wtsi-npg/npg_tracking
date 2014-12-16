@@ -31,7 +31,7 @@ use_ok('npg::api::util');
 {
    local $ENV{dev} = q[dev];
    my $util = npg::api::util->new();
-   is ($util->base_uri(), 'http://sf2-farm-srv1.internal.sanger.ac.uk:9010/perl/npg',
+   is ($util->base_uri(), 'http://sf2-farm-srv2.internal.sanger.ac.uk:9010/perl/npg',
      'dev url if the dev env variable is set to dev');
 }
 

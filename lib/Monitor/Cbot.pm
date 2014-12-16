@@ -15,14 +15,7 @@ use namespace::autoclean;
 our $VERSION = '0';
 
 use Readonly;
-Readonly::Scalar my $DOMAIN          => 'internal.sanger.ac.uk';
 Readonly::Scalar my $DEFAULT_TIMEOUT => 10;
-
-has _domain => (
-    reader     => 'domain',
-    is         => 'ro',
-    default    => $DOMAIN,
-);
 
 has _host_name => (
     reader     => 'host_name',
@@ -39,7 +32,8 @@ has _user_agent => (
 sub _build__host_name {
     my ($self) = @_;
 
-    my $name = $self->db_entry->name() . q{.} . $self->domain();
+    my $name = $self->db_entry->instrument_comp();
+    $name ||= $self->db_entry->name();
 
     return $name;
 }

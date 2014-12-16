@@ -1,13 +1,20 @@
 use strict;
 use warnings;
-use Test::More tests => 391;
+use Test::More tests => 400;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
 
+my $num_delegated_methods = 40;
+
 use_ok('st::api::lims');
 is(st::api::lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
     'correct name of the cached samplesheet env var');
+is(scalar st::api::lims->driver_method_list(), $num_delegated_methods, 'driver method list lenght');
+is(scalar st::api::lims::driver_method_list_short(), $num_delegated_methods, 'short driver method list lenght');
+is(scalar st::api::lims->driver_method_list_short(), $num_delegated_methods, 'short driver method list lenght');
+is(scalar st::api::lims::driver_method_list_short(qw/sample_name/), $num_delegated_methods-1, 'one method removed from the list');
+is(scalar st::api::lims->driver_method_list_short(qw/sample_name study_name/), $num_delegated_methods-2, 'two methods removed from the list');
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 
@@ -19,6 +26,8 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   my $lims = st::api::lims->new(id_run => 6551);
   is($lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
     'correct name of the cached samplesheet env var');
+  is(scalar $lims->driver_method_list_short(), $num_delegated_methods, 'short driver method list lenght from an object');
+  is(scalar $lims->driver_method_list_short(qw/sample_name other_name/), $num_delegated_methods-1, 'one method removed from the list');
   is($lims->lane_id(), undef, q{lane_id undef for id_run 6551, not a lane} );
   is($lims->batch_id, 12141, 'batch id is 12141');
   is($lims->is_control, 0, 'not control');
