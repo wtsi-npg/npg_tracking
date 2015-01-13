@@ -2,8 +2,6 @@ CHANGES
 
 =======
 release 80.7
- - Reenable and clean up cBot monitoring
- - try to avoid recursion in st::api::lims
  - change reference repository host
 
 release 80.6
