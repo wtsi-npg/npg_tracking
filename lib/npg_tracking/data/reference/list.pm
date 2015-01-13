@@ -52,6 +52,7 @@ Readonly::Scalar our $THIRD_FROM_END   => -3;
 
 Readonly::Scalar our $REPORT_DELIM       => q[,];
 Readonly::Scalar our $REPORT_LIST_DELIM  => q[;];
+
 Readonly::Scalar our $NO_ALIGNMENT_OPTION  => q[Not suitable for alignment];
 
 subtype 'NPG_TRACKING_REFERENCE_REPOSITORY'
@@ -89,10 +90,10 @@ sub _build_ref_repository {
 An absolute path to the snv repository.
 
 =cut
-has 'snv_repository' => (isa       =>'NPG_TRACKING_REFERENCE_REPOSITORY',
-                         is        => 'ro',
-                         required  => 0,
-                         lazy_build   => 1,
+has 'snv_repository' => (isa        => 'NPG_TRACKING_REFERENCE_REPOSITORY',
+                         is         => 'ro',
+                         required   => 0,
+                         lazy_build => 1,
 );
 sub _build_snv_repository {
     my $self = shift;
@@ -117,10 +118,10 @@ sub _build_transcriptome_repository{
 =head2 repository name
 
 =cut
-has '_ref_repository_name' => (isa       =>'Str',
-                               is        => 'ro',
-                               required  => 0,
-                               lazy_build   => 1,
+has '_ref_repository_name' => (isa        => 'Str',
+                               is         => 'ro',
+                               required   => 0,
+                               lazy_build => 1,
 );
 sub _build__ref_repository_name {
     my $self = shift;
@@ -159,10 +160,10 @@ sub _build_tag_sets_repository {
 An absolute path to the adapter repository.
 
 =cut
-has 'adapter_repository' => (isa       =>'NPG_TRACKING_REFERENCE_REPOSITORY',
-                             is        => 'ro',
-                             required  => 0,
-                             lazy_build   => 1,
+has 'adapter_repository' => (isa        => 'NPG_TRACKING_REFERENCE_REPOSITORY',
+                             is         => 'ro',
+                             required   => 0,
+                             lazy_build => 1,
 );
 sub _build_adapter_repository {
     my $self = shift;
