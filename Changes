@@ -1,6 +1,9 @@
 CHANGES
 
-=======
+release 80.8
+ - fix memory leak in the samplesheet driver for st::api::lims -
+   pass data hash by reference
+
 release 80.7
  - change reference repository host
 
