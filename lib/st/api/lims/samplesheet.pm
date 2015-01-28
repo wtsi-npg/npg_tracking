@@ -5,7 +5,6 @@ use MooseX::StrictConstructor;
 use Carp;
 use File::Slurp;
 use Readonly;
-use Clone qw(clone);
 use URI::Escape qw(uri_unescape);
 
 use npg_tracking::util::types;
@@ -330,7 +329,7 @@ sub _build__sschildren {
 
     foreach my $attr_value (sort {$a <=> $b} keys %{$h}) {
       $init->{$child_attr_name} = $attr_value;
-      $init->{'data'}           = clone($self->data);
+      $init->{'data'}           = $self->data;
       push @children, __PACKAGE__->new($init);
     }
   }
@@ -435,8 +434,6 @@ __END__
 
 =item Readonly
 
-=item Clone
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -449,7 +446,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 Genome Research Ltd.
+Copyright (C) 2015 Genome Research Ltd.
 
 This file is part of NPG.
 
