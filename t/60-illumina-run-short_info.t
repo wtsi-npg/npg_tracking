@@ -238,7 +238,7 @@ my $run_folder = q{123456_IL2_1234};
 
 {
     my $short_info = test::short_info->new({
-      run_folder =>q{120113_MS1_7362_A_MS0002061-00300},
+      run_folder =>q{120113_MS1_7362_A_MS0002061-003V2},
     });
 
     my $name;
@@ -247,9 +247,9 @@ my $run_folder = q{123456_IL2_1234};
       $name = $short_info->name();
       $flowcell_id= $short_info->flowcell_id();
     } q{MiSeq runfolder - kit id in place of flowcell};
-    is($short_info->run_folder, q(120113_MS1_7362_A_MS0002061-00300), q(run folder okay));
+    is($short_info->run_folder, q(120113_MS1_7362_A_MS0002061-003V2), q(run folder okay));
     is($name, q(MS1_7362), q(name okay));
-    is($flowcell_id, q(MS0002061-00300), q(flowcell_id (kit id) okay));
+    is($flowcell_id, q(MS0002061-003V2), q(flowcell_id (kit id) okay));
 }
 
 1;
