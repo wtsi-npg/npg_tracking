@@ -14,7 +14,7 @@ our $VERSION = '0';
 
 Readonly::Scalar our $INSTRUMENT_PATTERN => '(IL|HS|HX|MS)';
 Readonly::Scalar our $NAME_PATTERN => $INSTRUMENT_PATTERN.'(\d+_)0*(\d+)';
-Readonly::Scalar our $LONG_FOLDER_NAME_SUFFIX_PATTERN => '_(A|B)_?([0-9A-Z]{9}(?:-\d{5})?)';
+Readonly::Scalar our $LONG_FOLDER_NAME_SUFFIX_PATTERN => '_(A|B)_?([0-9A-Z]{9}(?:-\d{3}V\d)?)';
 
 # requires q{_build_run_folder}; Functionality not working in Moose
 

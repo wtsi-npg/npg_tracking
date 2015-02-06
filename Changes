@@ -1,5 +1,10 @@
 CHANGES
 
+ - do not try to infer phix reference from library/sample name
+ - correct regular expression for modern MiSeq reagent kits - previously
+   part of the id starting from teh dash was not returned by the flowcel_id accessor
+   in the short_info role
+
 release 80.8
  - fix memory leak in the samplesheet driver for st::api::lims -
    pass data hash by reference
