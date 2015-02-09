@@ -196,6 +196,10 @@ sub _build__limsreflist {
       if ($self->_multiple_lanes) {
         push @row, $tmpl->position;
       }
+      my $library_id = $tmpl->library_id;
+      if (!$library_id) {
+        croak 'One of library ids indefined for lane ' . $tmpl->position;
+      }
       push @row, $tmpl->library_id;
       push @row, $tmpl->sample_publishable_name;
       push @row, $ref;
