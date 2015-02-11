@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 98;
+use Test::More tests => 110;
 use Test::Exception;
 use Test::Deep;
 use Moose::Meta::Class;
@@ -100,8 +100,9 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   ok (!$lims1->is_control, 'first lane is not control');
   ok (!$lims1->is_pool, 'first lane is not a pool');
   ok (!$lims1->children, 'children list is empty');
-  cmp_ok($lims1->library_id, q(eq), 'PD3918a 1', 'lib id');
-  cmp_ok($lims1->library_name, q(eq), 'PD3918a 1', 'lib name');
+  is ($lims1->lane_id, 21582, 'lane id');
+  cmp_ok($lims1->library_id, q(eq), '999999', 'lib id');
+  cmp_ok($lims1->library_name, q(eq), '999999', 'lib name');
   ok(!$lims1->sample_consent_withdrawn(), 'sample consent not withdrawn');
 
   my $insert_size;
@@ -118,6 +119,7 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   is ($lims4->is_control, 1, 'is control');
   is ($lims4->is_pool, 0, 'not pool');
   ok (!$lims4->children, 'children list is empty');
+  is ($lims4->lane_id, 3314798, 'lane id');
   is ($lims4->library_id, 79577, 'control id from fourth lane');
   is ($lims4->library_name, 79577, 'control name from fourth lane');
   is ($lims4->sample_id, 9836, 'sample id from fourth lane');
@@ -128,6 +130,8 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => '4775',
                                  position         => 6);
+  is ($lims6->library_id, 556677, 'new library id returned');
+  is ($lims6->library_name, 556677, 'library name is based on the new library id');  
   is ($lims6->study_id, 333, 'study id');
   cmp_ok ($lims6->study_name, q(eq), q(CLL whole genome), 'study name');
 
@@ -226,6 +230,7 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   is (scalar @plexes, 96, '96 plexes returned');
   is ($plexes[0]->position, 1, 'position of the first plex is 1');
   is ($plexes[0]->tag_index, 1, 'tag_index of the first plex is 1');
+  is ($plexes[0]->lane_id, 8015825, 'lane id');
   is ($plexes[0]->library_id, 7583507, 'library_id of the first plex');
   is ($plexes[0]->sample_name, 'first', 'sample_name of the first plex');
   is ($plexes[0]->sample_id, 1650304, 'sample_id of the first plex');
@@ -241,8 +246,16 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   is ($plexes[95]->position, 1, 'position of the last plex is 1');
   is ($plexes[95]->tag_index, 96, 'tag_index of the last plex is 96');
   is ($plexes[95]->default_tag_sequence, 'GTCTTGGC', 'tag sequence of the last plex');
-  is ($plexes[95]->library_id, 7583507, 'library_id of the last plex');
+  ok (!defined $plexes[95]->library_id, 'library_id of the last plex undefined');
+  ok (!defined $plexes[95]->library_name, 'library_name of the last plex undefined');
   is ($plexes[95]->sample_name, 'second', 'sample_name of the last plex');
+
+  ok (!defined $plexes[95]->study_id, 'study id undefined');
+  ok (!defined $plexes[95]->study_name, 'study name undefined');
+  cmp_bag ($plexes[95]->email_addresses,[],'no study - no email addresses');
+  cmp_bag ($plexes[95]->email_addresses_of_managers,[],'no study - no email addresses');
+  is_deeply ($plexes[95]->email_addresses_of_followers,[],'no study - no email addresses');
+  is_deeply ($plexes[95]->email_addresses_of_owners,[],'no study - no email addresses');
 }
 
 1;
