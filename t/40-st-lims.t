@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 400;
+use Test::More tests => 404;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -10,6 +10,13 @@ my $num_delegated_methods = 40;
 use_ok('st::api::lims');
 is(st::api::lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
     'correct name of the cached samplesheet env var');
+
+for my $type (qw/xml samplesheet warehouse mlwarehouse/) {
+  my $method = $type . '_driver_name';
+  my $expected = $type eq 'mlwarehouse' ? 'ml_warehouse' : $type;
+  is(st::api::lims->$method, $expected, "driver name for $type");
+}
+
 is(scalar st::api::lims->driver_method_list(), $num_delegated_methods, 'driver method list lenght');
 is(scalar st::api::lims::driver_method_list_short(), $num_delegated_methods, 'short driver method list lenght');
 is(scalar st::api::lims->driver_method_list_short(), $num_delegated_methods, 'short driver method list lenght');

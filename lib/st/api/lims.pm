@@ -100,8 +100,32 @@ Readonly::Hash   my  %METHODS           => {
     'request'      => [qw/ request_id /],
 };
 
-Readonly::Array my @IMPLEMENTED_DRIVERS => qw/xml samplesheet ml_warehouse/;
+Readonly::Array my @IMPLEMENTED_DRIVERS => qw/xml samplesheet warehouse ml_warehouse/;
 Readonly::Array my @DELEGATED_METHODS   => sort map { @{$_} } values %METHODS;
+
+=head2 xml_driver_name
+
+=head2 samplesheet_driver_name
+
+=head2 warehouse_driver_name
+
+=head2 mlwarehouse_driver_name
+
+=cut
+
+sub xml_driver_name {
+  return $IMPLEMENTED_DRIVERS[0];
+}
+sub samplesheet_driver_name {
+  return $IMPLEMENTED_DRIVERS[1];
+}
+sub warehouse_driver_name {
+  return $IMPLEMENTED_DRIVERS[2];
+}
+sub mlwarehouse_driver_name {
+  ##no critic (ValuesAndExpressions::ProhibitMagicNumbers)
+  return $IMPLEMENTED_DRIVERS[3];
+}
 
 =head2 driver_type
 
@@ -121,9 +145,9 @@ sub _build_driver_type {
       $self->_set_path($cached_path);
       $self->clear_batch_id();
     }
-    return $IMPLEMENTED_DRIVERS[1];
+    return $self->samplesheet_driver_name;
   }
-  return $IMPLEMENTED_DRIVERS[0];
+  return $self->xml_driver_name;
 }
 
 =head2 driver
