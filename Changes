@@ -1,5 +1,7 @@
 CHANGES
 
+ - public methods for lims driver names
+
 release 80.9
  - do not try to infer phix reference from library/sample name
  - correct regular expression for modern MiSeq reagent kits - previously
