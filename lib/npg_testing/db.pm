@@ -149,11 +149,7 @@ sub create_test_db {
     ##use critic
 
     if (!defined $tmpdbfilename) {
-       $tmpdbfilename = tempdir(
-         DIR => $TEMP_DIR,
-         CLEANUP => 1,
-       ) . q{/test.db};
-       carp $tmpdbfilename;
+       $tmpdbfilename = q(:memory:);
     }
 
     my $tmpschema = $schema_package->connect('dbi:SQLite:'.$tmpdbfilename);
