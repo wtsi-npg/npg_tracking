@@ -16,6 +16,12 @@ our $VERSION = '0';
 sub live_url { return q{http://psd-support.internal.sanger.ac.uk:6600}; }
 sub dev_url  { return q{http://dev.psd.sanger.ac.uk:6610}; }
 
+sub lims_url {
+  my $live = q{live};
+  my $domain = $ENV{'dev'} || $live;
+  return $domain eq $live ? live_url() : dev_url();
+}
+
 sub new {
   my ($class, $ref) = @_;
   $ref ||= {};
@@ -185,10 +191,8 @@ sub read {    ## no critic (ProhibitBuiltinHomonyms)
 
 sub service {
   my ($self) = @_;
-  if($ENV{dev}) {
-    $self->{service} = $ENV{dev};
-  }
-  return (!$self->{service} || $self->{service} eq 'live') ? $self->live():$self->dev();
+  my $path = $self->can(q{path}) ? $self->path() : q{};
+  return join q[/], $self->lims_url, $path;
 }
 
 1;
@@ -244,6 +248,11 @@ st::api::base - a base class for st::api::*
 =head2 dev_url - common part of URL for all dev st services
 
   my $CommonDevURLPart = $oDerived->dev_url();
+
+=head2 lims_url - common part of URL for all LIMs services,
+  transparently handles live/dev environment dependency
+
+  my $CommonURLPart = $oDerived->lims_url();
 
 =head2 service - current service URL
 

@@ -11,15 +11,8 @@ __PACKAGE__->mk_accessors(fields());
 
 our $VERSION = '0';
 
-
-sub live {
-    my $self = shift;
-    return $self->live_url()  . q{/batches};
-}
-
-sub dev {
-    my $self = shift;
-    return $self->dev_url()   . q{/batches};
+sub path {
+  return q{batches};
 }
 
 sub fields { return qw(id); }
@@ -46,13 +39,7 @@ st::api::batch - an interface to Sample Tracking batches
   my @aFields = $oBatch->fields();
   my @aFields = <pkg>->fields();
 
-=head2 dev - development service URL
-
-  my $sDevURL = $oBatch->dev();
-
-=head2 live - live service URL
-
-  my $sLiveURL = $oBatch->live();
+=head2 path - object type specific path of object uri
 
 =head1 DIAGNOSTICS
 
