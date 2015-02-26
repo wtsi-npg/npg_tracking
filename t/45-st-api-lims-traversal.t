@@ -70,15 +70,9 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
     is($lims1->is_control, 0, 'first st lane has no control');
     is($lims1->is_pool, 0, 'first st lane has no pool');
     is(scalar $lims1->associated_lims, 0, 'no associated lims for a lane');
-    if ($driver eq 'xml') {
-      cmp_ok($lims1->library_id, q(==), 57440, 'lib id from first st lane');
-    } else {
-      TODO: {
-        local $TODO = 'ml warehouse data problem';
-        cmp_ok($lims1->library_id, q(eq), 57440, 'lib id from first st lane');
-      }
-    }
-    cmp_ok($lims1->library_name, q(eq), 'PD3918a 1', 'lib name from first st lane');
+    cmp_ok($lims1->library_id, q(==), 57440, 'lib id from first st lane');
+    my $expected_name = $driver eq 'xml' ? 'PD3918a 1' : '57440';
+    cmp_ok($lims1->library_name, q(eq), $expected_name, 'lib name from first st lane');
 
     my $insert_size;
     lives_ok {$insert_size = $lims1->required_insert_size} 'insert size for the first lane';
