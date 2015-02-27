@@ -15,14 +15,8 @@ __PACKAGE__->mk_accessors(fields());
 
 our $VERSION = '0';
 
-sub live {
-    my $self = shift;
-    return $self->live_url()  . q{/events};
-}
-
-sub dev {
-    my $self = shift;
-    return $self->dev_url()   . q{/events};
+sub path {
+    return q{events};
 }
 
 sub fields {
@@ -95,13 +89,7 @@ st::api::event - an interface to Sample Tracking events
   my @aFields = $oEvent->fields();
   my @aFields = st::api::event->fields();
 
-=head2 dev - development service URL
-
-  my $sDevURL = $oEvents->dev();
-
-=head2 live - live service URL
-
-  my $sLiveURL = $oEvents->live();
+=head2 path - object type specific path of object uri
 
 =head2 create - post event data to sample tracking
 

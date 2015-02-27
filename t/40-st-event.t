@@ -22,10 +22,15 @@ use_ok('st::api::event');
 
   isa_ok($ev, 'st::api::event');
   is($ev->entity_name(), 'event', 'entity_name returns event');
-  is($ev->live(), 'http://psd-support.internal.sanger.ac.uk:6600/events',
+
+  is($ev->service(), 'http://psd-support.internal.sanger.ac.uk:6600/events',
     'live url returned');
-  is($ev->dev(), 'http://dev.psd.sanger.ac.uk:6610/events',
-    'dev url returned');
+  {
+    local $ENV{'dev'} = 'some';
+    is($ev->service(), 'http://dev.psd.sanger.ac.uk:6610/events',
+      'dev url returned');
+  }
+
   is($ev->fields(), 'key', 'last of fields is key');
 
   my $XML = q[<?xml version='1.0'?><event><message>Run 10 : %s</message><eventful_id>11</eventful_id><eventful_type>Item</eventful_type><family>%s</family><identifier>10</identifier><key>%s</key><location>4</location></event>];
