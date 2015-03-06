@@ -17,7 +17,7 @@ use File::Path;
 use File::Spec::Functions qw(catfile);
 use Readonly;
 
-our $VERSION = '75.2';
+our $VERSION = '0';
 
 ## no critic (RequirePodAtEnd RequireCheckingReturnValueOfEval)
 
