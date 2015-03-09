@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 400;
+use Test::More tests => 404;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -15,6 +15,12 @@ is(scalar st::api::lims::driver_method_list_short(), $num_delegated_methods, 'sh
 is(scalar st::api::lims->driver_method_list_short(), $num_delegated_methods, 'short driver method list lenght');
 is(scalar st::api::lims::driver_method_list_short(qw/sample_name/), $num_delegated_methods-1, 'one method removed from the list');
 is(scalar st::api::lims->driver_method_list_short(qw/sample_name study_name/), $num_delegated_methods-2, 'two methods removed from the list');
+
+my $value = 'some other';
+is(st::api::lims->_trim_value($value), $value, 'nothing trimmed trimmed');
+is(st::api::lims->_trim_value("  $value"), $value, 'leading space trimmed');
+is(st::api::lims->_trim_value("  $value  "), $value, 'space trimmed');
+is(st::api::lims->_trim_value("  "), undef, 'white space string trimmed to undef');
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 

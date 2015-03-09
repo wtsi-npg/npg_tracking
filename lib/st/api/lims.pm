@@ -448,11 +448,20 @@ has 'reference_genome' => (isa             => 'Maybe[Str]',
                           );
 sub _build_reference_genome {
   my $self = shift;
-  my $rg = $self->sample_reference_genome;
+  my $rg = $self->_trim_value($self->sample_reference_genome);
   if (!$rg ) {
-    $rg = $self->study_reference_genome;
+    $rg = $self->_trim_value($self->study_reference_genome);
   }
   return $rg;
+}
+
+sub _trim_value {
+  my ($self, $value) = @_;
+  if ($value) {
+    $value =~ s/^\s+|\s+$//gxms;
+  }
+  $value ||= undef;
+  return $value;
 }
 
 sub _helper_over_pool_for_boolean_build_methods {
