@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 103; #remember to change the skip number below as well!
+use Test::More tests => 109; #remember to change the skip number below as well!
 use Test::Deep;
 use Test::Exception;
 use Try::Tiny;
@@ -55,7 +55,7 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
   SKIP: {
 
     if (!$do_test) {
-      skip $reason, 34;
+      skip $reason, 36;
     }
 
     my $lims = st::api::lims->new($lfield => 4775, driver_type => $driver);
@@ -70,15 +70,9 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
     is($lims1->is_control, 0, 'first st lane has no control');
     is($lims1->is_pool, 0, 'first st lane has no pool');
     is(scalar $lims1->associated_lims, 0, 'no associated lims for a lane');
-    if ($driver eq 'xml') {
-      cmp_ok($lims1->library_id, q(==), 57440, 'lib id from first st lane');
-    } else {
-      TODO: {
-        local $TODO = 'ml warehouse data problem';
-        cmp_ok($lims1->library_id, q(eq), 57440, 'lib id from first st lane');
-      }
-    }
-    cmp_ok($lims1->library_name, q(eq), 'PD3918a 1', 'lib name from first st lane');
+    cmp_ok($lims1->library_id, q(==), 57440, 'lib id from first st lane');
+    my $expected_name = $driver eq 'xml' ? 'PD3918a 1' : '57440';
+    cmp_ok($lims1->library_name, q(eq), $expected_name, 'lib name from first st lane');
 
     my $insert_size;
     lives_ok {$insert_size = $lims1->required_insert_size} 'insert size for the first lane';
@@ -118,12 +112,17 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
     is($lims6->alignments_in_bam, 1,'do bam alignments');
 
     my $lims7 = st::api::lims->new($lfield => 16249, position => 1, driver_type => $driver);
+    is($lims7->reference_genome, 'Homo_sapiens (1000Genomes)',
+      'reference genome when common for whole pool');
     is($lims7->bait_name, 'Human all exon 50MB', 'bait name when common for whole pool');
     $lims7 = st::api::lims->new($lfield => 16249, position => 1, tag_index => 2, driver_type => $driver);
     is($lims7->bait_name, 'Human all exon 50MB', 'bait name for a plex');
     $lims7 = st::api::lims->new($lfield => 16249, position => 1, tag_index => 168, driver_type => $driver);
     is($lims7->bait_name, undef, 'bait name undefined for spiked phix plex');
-    
+
+    $lims7 = st::api::lims->new($lfield => 16249, position => 1, tag_index => 0, driver_type => $driver);
+    is($lims7->reference_genome, 'Homo_sapiens (1000Genomes)',
+      'tag zero reference genome when common for whole pool');
     my $lims8 = st::api::lims->new($lfield =>15728, position=>2, tag_index=>3, driver_type => $driver);    
     ok( $lims8->sample_consent_withdrawn(), 'sample 1299723 consent withdrawn' );
 

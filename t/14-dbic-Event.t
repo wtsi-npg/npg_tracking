@@ -14,7 +14,7 @@ use_ok('npg_tracking::Schema::Result::Event');
 
 
 my $schema = t::dbic_util->new->test_schema();
-my $dsn    = $schema->storage->_connect_info->[0];
+my $dbh    = $schema->storage->dbh();
 
 
 my $test;
@@ -37,7 +37,6 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Event', 'Correct class' );
 my $new_row_id = $test->id();
 
 
-my $dbh = DBI->connect($dsn);
 my $sql = 'SELECT notification_sent'
         . ' FROM event'
         . " WHERE id_event = $new_row_id";

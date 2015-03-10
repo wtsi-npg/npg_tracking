@@ -13,14 +13,8 @@ __PACKAGE__->mk_accessors(fields());
 
 our $VERSION = '0';
 
-sub live {
-    my $self = shift;
-    return $self->live_url()  . q{/studies};
-}
-
-sub dev {
-    my $self = shift;
-    return $self->dev_url()   . q{/studies};
+sub path {
+  return q{studies};
 }
 
 sub fields { return qw( id name ); }
@@ -164,13 +158,7 @@ st::api::study - an interface to Sample Tracking studies
   my @aFields = $oStudy->fields();
   my @aFields = <pkg>->fields();
 
-=head2 dev - development service URL
-
-  my $sDevURL = $oStudy->dev();
-
-=head2 live - live service URL
-
-  my $sLiveURL = $oStudy->live();
+=head2 path - object type specific path of object uri
 
 =head2 separate_y_chromosome_data - Does the study have associated samples in which there is Y human DNA data is not been consented for public release.
 

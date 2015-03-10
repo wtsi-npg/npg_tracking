@@ -1,5 +1,10 @@
 CHANGES
 
+release 80.10
+ - default to in-memory option for SQLite in tests
+ - added a method to transparently return live or dev LIMs base URL
+ - reference genome values - trim white space
+
 release 80.9
  - do not try to infer phix reference from library/sample name
  - correct regular expression for modern MiSeq reagent kits - previously
