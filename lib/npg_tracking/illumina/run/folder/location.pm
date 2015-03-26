@@ -11,13 +11,19 @@ use Carp qw(croak);
 use Cwd;
 use File::Spec::Functions;
 use Readonly;
+use Config::Auto;
 
 our $VERSION = '0';
 
-Readonly::Array our @STAGING_AREAS_INDEXES => 18 .. 32, 34 .. 47, 49 .. 55;
-Readonly::Array our @STAGING_AREAS => map { "/nfs/sf$_" } @STAGING_AREAS_INDEXES;
+# TODO:  our -> my
+my ($config_prefix_path) = __FILE__ =~ m{\A(.*)lib/(?:perl.*?/)?npg_tracking/illumina/run/folder/location[.]pm\Z}smx;
+my $config = Config::Auto::parse(q(npg_tracking_staging), path=>[$ENV{'HOME'}.q(/.npg), $config_prefix_path.qw(data)]);
 
-Readonly::Scalar our $HOST_GLOB_PATTERN => q[/nfs/sf{].join(q(,), @STAGING_AREAS_INDEXES).q[}];
+Readonly::Array our @STAGING_AREAS_INDEXES => @{$config->{'staging_areas_indexes'}||[]};
+Readonly::Scalar our $STAGING_AREAS_PREFIX => $config->{'staging_areas_prefix'} || q();
+Readonly::Array our @STAGING_AREAS => map { $STAGING_AREAS_PREFIX . $_ } @STAGING_AREAS_INDEXES;
+
+Readonly::Scalar our $HOST_GLOB_PATTERN => $STAGING_AREAS_PREFIX . q[{].join(q(,), @STAGING_AREAS_INDEXES).q[}];
 Readonly::Scalar our $DIR_GLOB_PATTERN  => q[{IL,HS}*/*/]; #'/staging/IL*/*/'; #
 Readonly::Scalar our $FOLDER_PATH_PREFIX_GLOB_PATTERN
     => "$HOST_GLOB_PATTERN/$DIR_GLOB_PATTERN";

@@ -15,6 +15,7 @@ my $class = npg_tracking::util::build->subclass(code => <<'EOF');
 
   sub process_data_files {
     my $self = shift;
+     $self->copy_if_modified('from' => 'data/npg_tracking_staging', 'to_dir' => 'blib');
     `find data/npg_tracking_email/templates -type f | cpio -pdv --quiet blib`;
     if ($self->invoked_action() eq q[webinstall]) {
       `find data/templates -type f | cpio -pdv --quiet blib`;

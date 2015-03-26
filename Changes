@@ -1,5 +1,7 @@
 CHANGES
 
+ - move config of staging areas into a config file
+
 release 80.11
  - removed staging area sf48
 
