@@ -12,12 +12,13 @@ use Cwd;
 use File::Spec::Functions;
 use Readonly;
 use Config::Auto;
+use List::Util qw(first);
 
 our $VERSION = '0';
 
-# TODO:  our -> my
 my ($config_prefix_path) = __FILE__ =~ m{\A(.*)lib/(?:perl.*?/)?npg_tracking/illumina/run/folder/location[.]pm\Z}smx;
-my $config = Config::Auto::parse(q(npg_tracking), path=>[$ENV{'HOME'}.q(/.npg), $config_prefix_path.qw(data)]);
+my ($config) = map{ Config::Auto::parse($_) } first { -s $_} map { $_.q(/npg_tracking)} $ENV{'HOME'}.q(/.npg), $config_prefix_path.qw(data);
+$config||={};
 $config=$config->{'staging_areas'}||{};
 
 Readonly::Array our @STAGING_AREAS_INDEXES => @{$config->{'indexes'}||[q()]};
