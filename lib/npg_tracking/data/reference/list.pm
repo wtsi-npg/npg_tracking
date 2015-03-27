@@ -34,7 +34,7 @@ Interface (Moose role) for retrieving information about a reference repository.
 
 =cut
 
-Readonly::Scalar our $REP_ROOT           => q[/lustre/scratch109/srpipe/];
+Readonly::Scalar our $REP_ROOT           => $ENV{'NPG_REPOSITORY_ROOT'} || q[/lustre/scratch109/srpipe/];
 Readonly::Scalar our $SNV_DIR            => q[population_snv];
 Readonly::Scalar our $TRANSCRIPTOMES_DIR => q[transcriptomes];
 Readonly::Scalar our $REFERENCES_DIR     => q[references];
