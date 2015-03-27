@@ -17,10 +17,11 @@ our $VERSION = '0';
 
 # TODO:  our -> my
 my ($config_prefix_path) = __FILE__ =~ m{\A(.*)lib/(?:perl.*?/)?npg_tracking/illumina/run/folder/location[.]pm\Z}smx;
-my $config = Config::Auto::parse(q(npg_tracking_staging), path=>[$ENV{'HOME'}.q(/.npg), $config_prefix_path.qw(data)]);
+my $config = Config::Auto::parse(q(npg_tracking), path=>[$ENV{'HOME'}.q(/.npg), $config_prefix_path.qw(data)]);
+$config=$config->{'staging_areas'}||{};
 
-Readonly::Array our @STAGING_AREAS_INDEXES => @{$config->{'staging_areas_indexes'}||[]};
-Readonly::Scalar our $STAGING_AREAS_PREFIX => $config->{'staging_areas_prefix'} || q();
+Readonly::Array our @STAGING_AREAS_INDEXES => @{$config->{'indexes'}||[q()]};
+Readonly::Scalar our $STAGING_AREAS_PREFIX => $config->{'prefix'} || q();
 Readonly::Array our @STAGING_AREAS => map { $STAGING_AREAS_PREFIX . $_ } @STAGING_AREAS_INDEXES;
 
 Readonly::Scalar our $HOST_GLOB_PATTERN => $STAGING_AREAS_PREFIX . q[{].join(q(,), @STAGING_AREAS_INDEXES).q[}];
