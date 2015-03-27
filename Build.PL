@@ -15,7 +15,7 @@ my $class = npg_tracking::util::build->subclass(code => <<'EOF');
 
   sub process_data_files {
     my $self = shift;
-     $self->copy_if_modified('from' => 'data/npg_tracking', 'to_dir' => 'blib');
+    $self->copy_if_modified('from' => 'data/npg_tracking', 'to_dir' => 'blib');
     `find data/npg_tracking_email/templates -type f | cpio -pdv --quiet blib`;
     if ($self->invoked_action() eq q[webinstall]) {
       `find data/templates -type f | cpio -pdv --quiet blib`;
@@ -217,12 +217,8 @@ my $builder = $class->new(
             'dist'         => { COMPRESS => 'gzip', SUFFIX => 'gz', },
          );
 
-if ($builder->install_base()) {
-  $builder->install_path('data' => join q{/}, $builder->install_base(), 'data');
-  $builder->add_build_element('data');
-} else {
-  warn qq[WARNING: '--install_base' option is not given, 'data' element will not be installed,\n];
-}
+$builder->install_path('data' => join q{/}, $builder->install_base(), 'data');
+$builder->add_build_element('data');
 
 $builder->create_build_script();
 
