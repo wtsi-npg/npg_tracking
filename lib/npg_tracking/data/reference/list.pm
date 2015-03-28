@@ -8,6 +8,8 @@ use Readonly;
 use File::Spec::Functions qw(catfile splitdir catdir);
 use File::Basename;
 use Cwd qw(abs_path);
+use Config::Auto;
+use List::Util qw(first);
 
 our $VERSION = '0';
 
@@ -34,7 +36,12 @@ Interface (Moose role) for retrieving information about a reference repository.
 
 =cut
 
-Readonly::Scalar our $REP_ROOT           => $ENV{'NPG_REPOSITORY_ROOT'} || q[/lustre/scratch109/srpipe/];
+my ($config_prefix_path) = __FILE__ =~ m{\A(.*)lib/(?:perl.*?/)?npg_tracking/data/reference/list[.]pm\Z}smx;
+my ($config) = map{ Config::Auto::parse($_) } first { -s $_} map { $_.q(/npg_tracking)} $ENV{'HOME'}.q(/.npg), $config_prefix_path.q(data);
+$config||={};
+$config=$config->{'repository'}||{};
+
+Readonly::Scalar our $REP_ROOT           => $ENV{'NPG_REPOSITORY_ROOT'} || $config->{'root'} || q();
 Readonly::Scalar our $SNV_DIR            => q[population_snv];
 Readonly::Scalar our $TRANSCRIPTOMES_DIR => q[transcriptomes];
 Readonly::Scalar our $REFERENCES_DIR     => q[references];

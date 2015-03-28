@@ -1,7 +1,7 @@
 CHANGES
 
- - Allow environment variable NPG_REPOSITORY_ROOT to set repository root
- - move config of staging areas into a config file
+ - allow environment variable NPG_REPOSITORY_ROOT to set repository root
+ - move config of staging areas and repository into a config file
 
 release 80.11
  - removed staging area sf48
