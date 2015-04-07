@@ -394,13 +394,6 @@ sub lims2ref {
         if (!$ref_path) {
           $self->messages->push(qq[no reference for taxon id $taxon_id]);
         }
-      } else {
-        foreach my $name (($lims->library_name, $lims->sample_name)) {
-          if ($name && $name =~ /phix/ismx ) {
-            $ref_path = $self->_get_reference_path($PHIX);
-            last;
-          }
-        }
       }
     }
   }

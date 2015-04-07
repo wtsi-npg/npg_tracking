@@ -15,14 +15,8 @@ __PACKAGE__->mk_accessors(fields());
 
 our $VERSION = '0';
 
-sub live {
-    my $self = shift;
-    return $self->live_url()  . q{/projects};
-}
-
-sub dev {
-    my $self = shift;
-    return $self->dev_url()   . q{/projects};
+sub path {
+    return q{projects};
 }
 
 sub fields { return qw( id name ); }
@@ -55,13 +49,7 @@ st::api::project - an interface to a project
   my @aFields = $oProject->fields();
   my @aFields = <pkg>->fields();
 
-=head2 dev - development service URL
-
-  my $sDevURL = $oProject->dev();
-
-=head2 live - live service URL
-
-  my $sLiveURL = $oProject->live();
+=head2 path - object type specific path of object uri
 
 =head2 project_cost_code
 
