@@ -173,21 +173,6 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 manual_qc_statuses
-
-Type: has_many
-
-Related object: L<npg_tracking::Schema::Result::ManualQcStatus>
-
-=cut
-
-__PACKAGE__->has_many(
-  "manual_qc_statuses",
-  "npg_tracking::Schema::Result::ManualQcStatus",
-  { "foreign.id_user" => "self.id_user" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
 =head2 run_lane_statuses
 
 Type: has_many
@@ -264,8 +249,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:dNtuo6HajBsOL+Z00k9RlA
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-04-09 18:30:04
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:2THWOsZDGFrmdSXNn2Pq6w
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
