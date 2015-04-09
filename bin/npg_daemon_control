@@ -16,6 +16,7 @@ use English qw(-no_match_vars);
 use Getopt::Long;
 use Module::Pluggable::Object;
 use File::Basename;
+use Sys::Hostname;
 use Readonly;
 
 our $VERSION = '0';
@@ -65,15 +66,28 @@ if (defined $request && $request) {
   my $runner_package = $DAEMON_NAMESPACE . q[::] . join q[_], @temp;
   Class::MOP::load_class($runner_package);
   
-  my $h = exists $opts->{'host'} ? {hosts => $opts->{'host'},} : {};
+  my $h = {};
+  my $local_host = 0;
+  if (exists $opts->{'host'}) {
+    my $hosts = $opts->{'host'};
+    if (scalar @{$hosts} == 1 && $hosts->[0] eq 'local') {
+      $local_host = 1;
+      $hosts->[0] = hostname;
+    }
+    $h = {'hosts' => $hosts,};
+  }
   my $runner = $runner_package->new($h);
 
   print "\n" or carp $OS_ERROR;
   foreach my $host (@{$runner->hosts}) {
     my $cmd = $runner->$action($host);
     my $human_readable_cmd = $cmd;
-    $cmd =~ s/'/'"'"'/smxg;
-    $cmd = qq[ssh -x $host 'bash -l -c \"$cmd\" ' 2>&1];
+    if ($local_host) {
+      $cmd = $cmd . q[ 2>&1];
+    } else {
+      $cmd =~ s/'/'"'"'/smxg;
+      $cmd = qq[ssh -x $host 'bash -l -c \"$cmd\" ' 2>&1];
+    }
     print "$host " or carp $OS_ERROR;
     if (!$opts->{'dry-run'}) {
       open my $fh, q(-|), $cmd or croak $OS_ERROR;
