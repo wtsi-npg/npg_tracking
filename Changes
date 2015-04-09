@@ -1,5 +1,7 @@
 CHANGES
 
+ - remove vestigial code for dealing with manual qc state
+
 release 80.11
  - removed staging area sf48
 

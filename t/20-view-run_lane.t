@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 8;
 use t::request;
 use t::util;
 use npg::model::run_lane;
@@ -81,37 +81,9 @@ my $util = t::util->new({
            REQUEST_METHOD => 'POST',
            username       => 'joe_admin',
            util           => $util,
-           cgi_params     => {
-            good_bad => 1,
-                 },
           });
 
   like($str, qr{<run_lane\ id_run_lane="16".*/run_lane>}smix);
 }
 
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run_lane/16.xml',
-           REQUEST_METHOD => 'POST',
-           username       => 'joe_admin',
-           util           => $util,
-           cgi_params     => {
-            good_bad => q[0],
-                 },
-          });
-
-  like($str, qr{<run_lane\ id_run_lane="16".*/run_lane>}smix);
-}
-{
-  my $run_lane = npg::model::run_lane->new({
-                                            util        => $util,
-                                            id_run_lane => 31136,
-                                           });
-  my $view = npg::view::run_lane->new({
-                                       model  => $run_lane,
-                                       aspect => 'read',
-                                       util   => $util,
-                                      });
-  isa_ok($view, 'npg::view::run_lane');
-}
-
+1;
