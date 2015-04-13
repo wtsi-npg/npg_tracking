@@ -4,6 +4,7 @@ release 81.0
  - remove vestigial code for dealing with manual qc state
  - remove good_bad column in run_lane table
  - remove manual_qc_status table
+ - npg daemon 'local' host option avoids ssh
 
 release 80.11
  - removed staging area sf48
