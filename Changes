@@ -1,5 +1,7 @@
 CHANGES
 
+ - npg daemon 'local' host option avoids ssh
+
 release 80.11
  - removed staging area sf48
 
