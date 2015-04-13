@@ -14,7 +14,9 @@ our $VERSION = '0';
 Readonly::Scalar our $NPG_CONF_DIR => q[.npg];
 my ($config_prefix_path) = __FILE__ =~ m{\A(.*)lib/(?:perl.*?/)?npg_tracking/util/config[.]pm\Z}smx;
 if (not defined $config_prefix_path) { $config_prefix_path=q(); }
-my ($config) = map{ Config::Auto::parse($_) } grep { -e $_} map { $_.q(/npg_tracking)} $ENV{'HOME'}.q(/).$NPG_CONF_DIR, $config_prefix_path.q(data);
+## no critic (Variables::ProhibitPackageVars)
+local $Config::Auto::Untaint = 1; #We trust the config file
+my ($config) = map{ Config::Auto::parse($_) } grep { -e $_} map { $_.q(/npg_tracking)} ($ENV{'HOME'} ? ($ENV{'HOME'}.q(/).$NPG_CONF_DIR) : ()), $config_prefix_path.q(data);
 Readonly::Hash our %CONFIG => %{ $config || {}};
 
 sub get_config { return \%CONFIG; }
