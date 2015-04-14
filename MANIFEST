@@ -121,8 +121,6 @@ data/templates/run_lane_list_tag.tt2
 data/templates/run_lane_read.tt2
 data/templates/run_lane_read_xml.tt2
 data/templates/run_lane_row_xml.tt2
-data/templates/run_lane_update_all_good_bad.tt2
-data/templates/run_lane_update_good_bad.tt2
 data/templates/run_lane_update_tags.tt2
 data/templates/run_lane_update_xml.tt2
 data/templates/run_list.tt2
@@ -149,7 +147,6 @@ data/templates/run_status_list_xml.tt2
 data/templates/run_status_read_xml.tt2
 data/templates/run_status_table.tt2
 data/templates/run_update.tt2
-data/templates/run_update_good_bad.tt2
 data/templates/run_update_statuses.tt2
 data/templates/run_update_tags.tt2
 data/templates/run_update_xml.tt2
@@ -374,7 +371,6 @@ lib/npg_tracking/Schema/Result/InstrumentStatusAnnotation.pm
 lib/npg_tracking/Schema/Result/InstrumentStatusDict.pm
 lib/npg_tracking/Schema/Result/InstrumentUtilisation.pm
 lib/npg_tracking/Schema/Result/MailRunProjectFollower.pm
-lib/npg_tracking/Schema/Result/ManualQcStatus.pm
 lib/npg_tracking/Schema/Result/Manufacturer.pm
 lib/npg_tracking/Schema/Result/Run.pm
 lib/npg_tracking/Schema/Result/RunAnnotation.pm

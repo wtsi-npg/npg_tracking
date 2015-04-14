@@ -86,7 +86,7 @@ my $util = t::util->new({'mock'=>$mock});
     q(SELECT LAST_INSERT_ID():) => [[200]],
     q(SELECT id_run_status, id_run, date, id_run_status_dict, id_user, iscurrent FROM run_status WHERE id_run_status=?:200) => [{}],
     q(SELECT rs.id_run_status AS id_run_status, rs.id_run AS id_run, rs.date AS date, rs.id_run_status_dict AS id_run_status_dict, rs.id_user AS id_user, rs.iscurrent AS iscurrent, rsd.description AS description FROM run_status rs, run_status_dict rsd WHERE rs.id_run = ? AND rs.id_run_status_dict = rsd.id_run_status_dict ORDER BY date DESC:NULL) => [{}],
-    q(SELECT id_run_lane, id_run, tile_count, tracks, id_project, position, good_bad FROM run_lane WHERE id_run = ? ORDER BY position:NULL) => [{}],
+    q(SELECT id_run_lane, id_run, tile_count, tracks, id_project, position FROM run_lane WHERE id_run = ? ORDER BY position:NULL) => [{}],
     q(SELECT ets.description AS service FROM ext_service ets, event_type_service evts WHERE evts.id_event_type = ? AND ets.id_ext_service = evts.id_ext_service:1) => [{}],
     q(SELECT u.id_usergroup, u.groupname, u.is_public, u.description FROM usergroup u, event_type_subscriber ets WHERE ets.id_event_type = ? AND ets.id_usergroup = u.id_usergroup:1) => [{}],
     q(SELECT id_user FROM user2usergroup uug WHERE uug.id_usergroup = ?:NULL) => [{id_user => 3}],
