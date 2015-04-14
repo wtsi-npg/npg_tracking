@@ -4,8 +4,12 @@ use Test::More tests => 24;
 use Test::Exception;
 use Test::MockObject::Extends;
 use Moose::Meta::Class;
+use Cwd;
+
+local $ENV{'HOME'};
 
 BEGIN {
+  $ENV{'HOME'}=getcwd().'/t';
   use_ok( q{npg_tracking::illumina::run::folder::location} );
 }
 
