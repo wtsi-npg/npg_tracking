@@ -4,8 +4,8 @@
   accession_number: EGAS00001000014
   aligned: 1
   array_express_accession_number: ~
-  contains_human_dna: Yes
-  contaminated_human_dna: No
+  contains_human_dna: 1
+  contaminated_human_dna: 0
   created: 2009-06-24 16:43:05
   data_access_group: ~
   data_release_delay_period: ~
@@ -38,8 +38,8 @@
   accession_number: ~
   aligned: 1
   array_express_accession_number: ~
-  contains_human_dna: No
-  contaminated_human_dna: No
+  contains_human_dna: 0
+  contaminated_human_dna: 0
   created: 2010-10-07 15:11:00
   data_access_group: ~
   data_release_delay_period: ~
@@ -72,8 +72,8 @@
   accession_number: EGAS00001000123
   aligned: 1
   array_express_accession_number: ~
-  contains_human_dna: Yes
-  contaminated_human_dna: No
+  contains_human_dna: 1
+  contaminated_human_dna: 0
   created: 2010-11-18 11:24:33
   data_access_group: ~
   data_release_delay_period: ~
@@ -106,8 +106,8 @@
   accession_number: ~
   aligned: 1
   array_express_accession_number: ~
-  contains_human_dna: Yes
-  contaminated_human_dna: No
+  contains_human_dna: 1
+  contaminated_human_dna: 0
   created: 2011-06-15 12:45:05
   data_access_group: ddd
   data_release_delay_period: ~
@@ -140,8 +140,8 @@
   accession_number: ~
   aligned: 1
   array_express_accession_number: ~
-  contains_human_dna: No
-  contaminated_human_dna: No
+  contains_human_dna: 0
+  contaminated_human_dna: 0
   created: 2012-01-04 08:54:44
   data_access_group: ~
   data_release_delay_period: ~
