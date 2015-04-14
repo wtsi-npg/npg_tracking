@@ -8,7 +8,7 @@ use Readonly;
 use File::Spec::Functions qw(catfile splitdir catdir);
 use File::Basename;
 use Cwd qw(abs_path);
-use Config::Auto;
+
 use npg_tracking::util::config qw(get_config);
 
 our $VERSION = '0';

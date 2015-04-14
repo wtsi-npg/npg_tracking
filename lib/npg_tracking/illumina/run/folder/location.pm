@@ -4,14 +4,12 @@
 
 package npg_tracking::illumina::run::folder::location;
 
-use strict;
-use warnings;
 use Moose::Role;
 use Carp qw(croak);
 use Cwd;
 use File::Spec::Functions;
 use Readonly;
-use Config::Auto;
+
 use npg_tracking::util::config qw(get_config);
 
 our $VERSION = '0';

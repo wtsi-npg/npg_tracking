@@ -8,7 +8,7 @@ use warnings;
 use Config::Auto;
 use Readonly;
 use Exporter qw(import);
-our @EXPORT_OK = qw(get_config);
+our @EXPORT_OK = qw(get_config npg_conf_dir_name);
 
 our $VERSION = '0';
 Readonly::Scalar our $NPG_CONF_DIR => q[.npg];
@@ -20,6 +20,8 @@ my ($config) = map{ Config::Auto::parse($_) } grep { -e $_} map { $_.q(/npg_trac
 Readonly::Hash our %CONFIG => %{ $config || {}};
 
 sub get_config { return \%CONFIG; }
+
+sub npg_conf_dir_name { return $NPG_CONF_DIR; }
 
 1;
 __END__
@@ -43,6 +45,11 @@ Obtain config details from config files for npg_tracking.
   use npg_tracking::util::config;
   my %config = get_config();
 
+=head2 npg_conf_dir_name
+
+ use npg_tracking::util::config;
+ my $dir_name = npg_conf_dir_name();
+ 
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
