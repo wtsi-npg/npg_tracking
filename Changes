@@ -1,5 +1,6 @@
 CHANGES
 
+ - remove default config file
  - allow environment variable NPG_REPOSITORY_ROOT to set repository root
  - move config of staging areas and repository into a config file
  - npg daemon 'local' host option avoids ssh
