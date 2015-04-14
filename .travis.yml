@@ -5,6 +5,6 @@ before_install:
   - sudo apt-get install libgd2-xpm-dev
   - cpanm --quiet --notest Alien::Tidyp
 before_script:
-  - mysql -e 'create database npgt;'
+  - mysql -uroot  -Dnpgt -hlocalhost -P3306 -e 'create database npgt;'
 env:
   - TEST_AUTHOR=1 TZ=Europe/London
