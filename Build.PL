@@ -64,6 +64,15 @@ my $class = npg_tracking::util::build->subclass(code => <<'EOF');
     return;
   }
 
+  sub ACTION_install {
+    my $self = shift;
+    $self->SUPER::ACTION_install;
+    my$config_path = $self->install_path->{'data'}.'/npg_tracking';
+    if(not -e $config_path) {
+      warn "WARNING: There is no existing config file installed at $config_path so it is likely stuff will NOT work\n";
+    }
+  }
+
 EOF
 
 my $builder = $class->new(
@@ -216,7 +225,7 @@ my $builder = $class->new(
             'dist'         => { COMPRESS => 'gzip', SUFFIX => 'gz', },
          );
 
-$builder->install_path('data' => join q{/}, $builder->install_base(), 'data');
+$builder->install_path('data' => join q{/}, $builder->install_base() || (), 'data');
 $builder->add_build_element('data');
 
 $builder->create_build_script();
