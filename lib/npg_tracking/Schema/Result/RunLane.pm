@@ -76,11 +76,6 @@ Double=2
   extra: {unsigned => 1}
   is_nullable: 1
 
-=head2 good_bad
-
-  data_type: 'tinyint'
-  is_nullable: 1
-
 =cut
 
 __PACKAGE__->add_columns(
@@ -120,8 +115,6 @@ __PACKAGE__->add_columns(
     extra => { unsigned => 1 },
     is_nullable => 1,
   },
-  "good_bad",
-  { data_type => "tinyint", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -215,8 +208,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:43
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:a/2jj/wekHtvD7+mU4hh5g
+# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-04-09 18:30:04
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:sx8IuqL2QoP14bT5pPCLHw
 
 # Created:       2010-04-08
 

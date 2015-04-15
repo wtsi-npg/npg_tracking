@@ -1,0 +1,3 @@
+drop table manual_qc_status;
+alter table run_lane drop column good_bad;
+

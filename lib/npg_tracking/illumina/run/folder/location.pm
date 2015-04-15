@@ -4,20 +4,23 @@
 
 package npg_tracking::illumina::run::folder::location;
 
-use strict;
-use warnings;
 use Moose::Role;
 use Carp qw(croak);
 use Cwd;
 use File::Spec::Functions;
 use Readonly;
 
+use npg_tracking::util::config qw(get_config);
+
 our $VERSION = '0';
 
-Readonly::Array our @STAGING_AREAS_INDEXES => 18 .. 32, 34 .. 47, 49 .. 55;
-Readonly::Array our @STAGING_AREAS => map { "/nfs/sf$_" } @STAGING_AREAS_INDEXES;
+my $config=get_config()->{'staging_areas'}||{};
 
-Readonly::Scalar our $HOST_GLOB_PATTERN => q[/nfs/sf{].join(q(,), @STAGING_AREAS_INDEXES).q[}];
+Readonly::Array our @STAGING_AREAS_INDEXES => @{$config->{'indexes'}||[q()]};
+Readonly::Scalar our $STAGING_AREAS_PREFIX => $config->{'prefix'} || q();
+Readonly::Array our @STAGING_AREAS => map { $STAGING_AREAS_PREFIX . $_ } @STAGING_AREAS_INDEXES;
+
+Readonly::Scalar our $HOST_GLOB_PATTERN => $STAGING_AREAS_PREFIX . q[{].join(q(,), @STAGING_AREAS_INDEXES).q[}];
 Readonly::Scalar our $DIR_GLOB_PATTERN  => q[{IL,HS}*/*/]; #'/staging/IL*/*/'; #
 Readonly::Scalar our $FOLDER_PATH_PREFIX_GLOB_PATTERN
     => "$HOST_GLOB_PATTERN/$DIR_GLOB_PATTERN";
