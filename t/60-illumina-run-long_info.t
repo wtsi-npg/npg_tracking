@@ -7,16 +7,19 @@ use File::Temp qw(tempdir);
 use Cwd;
 use Carp;
 
+local $ENV{'HOME'};
 BEGIN {
+  $ENV{'HOME'} = getcwd() . '/t';
   use_ok(q{npg_tracking::illumina::run::long_info});
-}
 
-package test::long_info;
-use Moose;
-with qw{npg_tracking::illumina::run::short_info npg_tracking::illumina::run::folder};
-with qw{npg_tracking::illumina::run::long_info};
-no Moose;
-1;
+  # package creation within BEGIN block to ensure after HOME is reset
+  package test::long_info;
+  use Moose;
+  with qw{npg_tracking::illumina::run::short_info npg_tracking::illumina::run::folder};
+  with qw{npg_tracking::illumina::run::long_info};
+  no Moose;
+  1;
+}
 
 package main;
 

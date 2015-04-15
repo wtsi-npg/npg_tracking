@@ -3,6 +3,9 @@ use warnings;
 use IPC::Open2;
 use Perl6::Slurp;
 use Test::More tests => 77;
+use Cwd;
+
+local $ENV{'HOME'}=getcwd().'/t';
 
 my $command = 'bin/npg_daemon_control 2>&1';
  # or with handle autovivification

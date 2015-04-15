@@ -13,20 +13,8 @@ use npg::model::tag;
 use npg::model::tag_run_lane;
 use npg::model::run_lane_annotation;
 use npg::model::annotation;
-use Readonly;
 
 our $VERSION = '0';
-Readonly::Scalar our $GOOD_CLUSTERS_PF        => 10_000;
-Readonly::Scalar our $GOOD_PERC_ERROR_RATE_PF => 1;
-Readonly::Scalar our $GOOD_PERC_CLUSTERS_PF   => 45;
-Readonly::Scalar our $LOWEST_PERC_DIFFERENCE  => 0.925;
-Readonly::Scalar our $HIGHEST_PERC_DIFFERENCE => 1.075;
-
-Readonly::Scalar our $IS_GOOD_PASS   => 1;
-Readonly::Scalar our $IS_GOOD_FAIL   => 0;
-Readonly::Scalar our $IS_GOOD_UNSURE => 2;
-
-Readonly::Scalar our $MEGABASES      => 1_000_000;
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a([qw(run)]);
@@ -272,8 +260,6 @@ enable object to be obtained from database if id_run and position supplied
 =item npg::model::run_lane_annotation
 
 =item npg::model::annotation
-
-=item Readonly
 
 =back
 

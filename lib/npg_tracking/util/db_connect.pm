@@ -8,14 +8,12 @@ use Moose::Role;
 use Carp;
 use File::Spec::Functions;
 use Config::Auto;
-use Readonly;
 use npg_tracking::util::types;
+use npg_tracking::util::config qw/ npg_conf_dir_name /;
 
 requires qw/ connection storage /;
 
 our $VERSION = '0';
-
-Readonly::Scalar my $NPG_CONF_DIR => q[.npg];
 
 has '_config_file'  => (
     isa             => 'NpgTrackingReadableFile',
@@ -26,7 +24,8 @@ has '_config_file'  => (
 sub _build__config_file {
     my $self = shift;
     my $home = $ENV{'HOME'};
-    my $path = $home ? catdir($home, $NPG_CONF_DIR) : $NPG_CONF_DIR;
+    my $dir_name = npg_conf_dir_name();
+    my $path = $home ? catdir($home, $dir_name) : $dir_name;
     my $config_file_name = ref $self;
     $config_file_name =~ s/::/-/gsmx;
     return catfile ($path, $config_file_name);
@@ -168,8 +167,6 @@ configuration file.
 =over
 
 =item Moose::Role
-
-=item Readonly
 
 =item Carp
 

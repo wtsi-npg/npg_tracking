@@ -1,5 +1,15 @@
 CHANGES
 
+release 81.0
+ - remove default config file
+ - allow environment variable NPG_REPOSITORY_ROOT to set repository root
+ - move config of staging areas and repository into a config file
+ - remove vestigial code for dealing with manual qc state
+ - remove good_bad column in run_lane table
+ - remove manual_qc_status table
+ - npg daemon 'local' host option avoids ssh
+
+release 80.11
  - removed staging area sf48
 
 release 80.10
