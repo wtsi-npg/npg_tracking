@@ -1,5 +1,7 @@
 CHANGES
 
+ - optionally change group ownership of certain analysis directories
+
 release 81.0
  - remove default config file
  - allow environment variable NPG_REPOSITORY_ROOT to set repository root
