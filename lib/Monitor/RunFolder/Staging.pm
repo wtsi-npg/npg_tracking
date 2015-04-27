@@ -217,11 +217,8 @@ sub move_to_analysis {
 
     move( $self->runfolder_path(), $destination );
 
-    my $batch_id = $self->run_db_row->batch_id;
-    if($batch_id and not $batch_id=~/\A\d{13}\z/smx){
-      $self->run_db_row->
+    $self->run_db_row->
         update_run_status( 'analysis pending', $self->username() );
-    }
 
     return;
 }

@@ -1,5 +1,9 @@
 CHANGES
 
+ - no longer stop runs without batch id or with 13-digit entries in the
+   batch id field from moving from run mirrored to analysis pending (
+   allows automatic analysis of GCLP and QC runs reespectively).
+
 release 81.0
  - remove default config file
  - allow environment variable NPG_REPOSITORY_ROOT to set repository root
