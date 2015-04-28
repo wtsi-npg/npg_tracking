@@ -185,7 +185,7 @@ sub check_delay {
 
 sub delay {
   my ( $self, $exclude_missing_cycles ) = @_;
-  
+
   my $run_actual_cycles = $self->run_db_row()->actual_cycle_count();
 
   my $latest_cycle = $self->get_latest_cycle();

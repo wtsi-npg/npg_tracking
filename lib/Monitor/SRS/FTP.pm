@@ -149,10 +149,10 @@ sub is_run_completed {
 
     my $root_list;
 
-    eval { 
-      $root_list  = io($run_path)->all(); 
+    eval {
+      $root_list  = io($run_path)->all();
       $root_list .= "\n";
-      $root_list .= io("$run_path/Data")->all(); 
+      $root_list .= io("$run_path/Data")->all();
       1; }
         or do { carp $EVAL_ERROR; return 0; };
 
@@ -238,7 +238,7 @@ read sequencer via FTP.
 =head1 SYNOPSIS
 
     C<<use Monitor::SRS::FTP;
-       my $ftp_poll = Monitor::SRS::FTP->new_with_options();    
+       my $ftp_poll = Monitor::SRS::FTP->new_with_options();
        croak 'Host not reachable' unless $ftp_poll->can_contact();
 
        # Get a list of non-test, non-repeat run paths on the machine.
