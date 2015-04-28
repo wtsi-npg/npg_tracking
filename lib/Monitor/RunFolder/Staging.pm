@@ -11,10 +11,13 @@ use Carp;
 use English qw(-no_match_vars);
 use File::Copy;
 use File::Find;
+use File::Basename;
 use IO::All;
 use List::Util qw(max);
 use Perl6::Slurp;
 use Readonly;
+
+use npg_tracking::util::config qw(get_config);
 
 our $VERSION = '0';
 
@@ -217,6 +220,12 @@ sub move_to_analysis {
 
     move( $self->runfolder_path(), $destination );
 
+    my $config = get_config()->{staging_areas};
+    if ($config && $config->{analysis_group}) {
+        $self->_change_group($config->{analysis_group}, $destination);
+        $self->_change_group($config->{analysis_group}, $destination . '/Data/Intensities');
+    }
+
     $self->run_db_row->
         update_run_status( 'analysis pending', $self->username() );
 
@@ -259,6 +268,22 @@ sub update_folder {
     $run_db->update();
     return;
 }
+
+sub _change_group {
+    my ($self, $group, $directory) = @_;
+    my $temp = $directory . '.original';
+    move($directory, $temp) or croak "move error: $ERRNO";
+    mkdir $directory or croak "mkdir error: $ERRNO";
+    for my $file (glob "$temp/*") {
+        my $dest = $directory . q{/} . basename($file);
+        move($file, $dest) or croak "move($file, $dest)\nmove error: $ERRNO";
+    }
+    rmdir $temp or croak "rmdir error: $ERRNO";
+
+    my $gid = getgrnam($group);
+    chown -1, $gid, $directory;
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable();
