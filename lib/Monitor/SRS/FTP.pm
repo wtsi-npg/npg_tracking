@@ -326,7 +326,7 @@ of all subdirectories found there.
 
 John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
 
-=head1 LICENCE AND COPYRIGHT
+=head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2010 GRL, by John O'Brien
 
