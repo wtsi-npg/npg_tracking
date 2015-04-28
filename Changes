@@ -1,6 +1,10 @@
 CHANGES
 
- - optionally change group ownership of certain analysis directories
+ - no longer stop runs without batch id or with 13-digit entries in the
+   batch id field from moving from run mirrored to analysis pending (
+   allows automatic analysis of GCLP and QC runs reespectively).
+ - optionally change group ownership of certain analysis directories on
+   moving runfolder form incoming to analysis
 
 release 81.0
  - remove default config file

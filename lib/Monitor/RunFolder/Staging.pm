@@ -226,11 +226,8 @@ sub move_to_analysis {
         $self->_change_group($config->{analysis_group}, $destination . '/Data/Intensities');
     }
 
-    my $batch_id = $self->run_db_row->batch_id;
-    if($batch_id and not $batch_id=~/\A\d{13}\z/smx){
-      $self->run_db_row->
+    $self->run_db_row->
         update_run_status( 'analysis pending', $self->username() );
-    }
 
     return;
 }
@@ -373,6 +370,33 @@ Ensure DB has updated runfolder name and a suitable glob for quickly finding the
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item Carp
+
+=item English
+
+=item File::Copy
+
+=item File::Find
+
+=item File::Basename
+
+=item IO::All
+
+=item List::Util
+
+=item Perl6::Slurp
+
+=item Readonly
+
+=back
+
+
 
 =head1 INCOMPATIBILITIES
 
@@ -385,7 +409,7 @@ Please inform the author of any found.
 
 John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
 
-=head1 LICENCE AND COPYRIGHT
+=head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2010 GRL, by John O'Brien
 

@@ -149,10 +149,10 @@ sub is_run_completed {
 
     my $root_list;
 
-    eval { 
-      $root_list  = io($run_path)->all(); 
+    eval {
+      $root_list  = io($run_path)->all();
       $root_list .= "\n";
-      $root_list .= io("$run_path/Data")->all(); 
+      $root_list .= io("$run_path/Data")->all();
       1; }
         or do { carp $EVAL_ERROR; return 0; };
 
@@ -238,7 +238,7 @@ read sequencer via FTP.
 =head1 SYNOPSIS
 
     C<<use Monitor::SRS::FTP;
-       my $ftp_poll = Monitor::SRS::FTP->new_with_options();    
+       my $ftp_poll = Monitor::SRS::FTP->new_with_options();
        croak 'Host not reachable' unless $ftp_poll->can_contact();
 
        # Get a list of non-test, non-repeat run paths on the machine.
@@ -312,6 +312,25 @@ of all subdirectories found there.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item Carp
+
+=item English
+
+=item IO::All
+
+=item IO::All::FTP
+
+=item List::Util
+
+=item Readonly
+
+=back
 
 
 =head1 INCOMPATIBILITIES
@@ -326,7 +345,7 @@ of all subdirectories found there.
 
 John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
 
-=head1 LICENCE AND COPYRIGHT
+=head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2010 GRL, by John O'Brien
 
