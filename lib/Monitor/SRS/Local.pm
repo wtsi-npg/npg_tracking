@@ -160,7 +160,23 @@ path as its sole argument. Returns 1 if the flag is found, 0 otherwise.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
 
+=over
+
+=item Moose
+
+=item Carp
+
+=item English
+
+=item IO::All
+
+=item IPC::System::Simple
+
+=item autodie
+
+=back
 
 =head1 INCOMPATIBILITIES
 

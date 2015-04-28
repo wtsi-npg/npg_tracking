@@ -312,6 +312,25 @@ of all subdirectories found there.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item Carp
+
+=item English
+
+=item IO::All
+
+=item IO::All::FTP
+
+=item List::Util
+
+=item Readonly
+
+=back
 
 
 =head1 INCOMPATIBILITIES

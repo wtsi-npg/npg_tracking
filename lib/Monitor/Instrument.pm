@@ -148,6 +148,22 @@ Return the current time in a format that can be inserted into a mysql table.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item MooseX::Getopt
+
+=item Carp
+
+=item MooseX::StrictConstructor
+
+=item POSIX
+
+=back
+
 =head1 INCOMPATIBILITIES
 
 =head1 BUGS AND LIMITATIONS

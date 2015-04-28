@@ -87,6 +87,18 @@ Monitor::Cbot::RunList - methods and to retrieve and parse Cbot RunList.xml
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item namespace::autoclean
+
+=item XML::LibXML
+
+=back
+
 =head1 INCOMPATIBILITIES
 
 =head1 BUGS AND LIMITATIONS

@@ -273,6 +273,21 @@ The number of cycles that are delayed coming across from the instrument
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item Carp
+
+=item English
+
+=item Readonly
+
+=back
+
+
 
 =head1 INCOMPATIBILITIES
 

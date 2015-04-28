@@ -121,6 +121,22 @@ Return the contents of the file RunInfo.xml at the runfolder path.
 
 =head1 INCOMPATIBILITIES
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item Carp
+
+=item IO::All
+
+=item MooseX::StrictConstructor
+
+=item Perl6::Slurp
+
+=back
+
 
 
 =head1 BUGS AND LIMITATIONS

@@ -78,6 +78,19 @@ show it is an rta run folder.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item Carp
+
+=item MooseX::StrictConstructor
+
+=back
+
+
 
 =head1 INCOMPATIBILITIES
 

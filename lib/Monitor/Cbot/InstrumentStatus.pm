@@ -218,6 +218,18 @@ Extract the run state entry from the xml and return it.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item XML::LibXML
+
+=item namespace::autoclean
+
+=back
+
 =head1 INCOMPATIBILITIES
 
 =head1 BUGS AND LIMITATIONS

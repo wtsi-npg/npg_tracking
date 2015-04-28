@@ -370,6 +370,33 @@ Ensure DB has updated runfolder name and a suitable glob for quickly finding the
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item Carp
+
+=item English
+
+=item File::Copy
+
+=item File::Find
+
+=item File::Basename
+
+=item IO::All
+
+=item List::Util
+
+=item Perl6::Slurp
+
+=item Readonly
+
+=back
+
+
 
 =head1 INCOMPATIBILITIES
 

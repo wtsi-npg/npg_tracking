@@ -158,7 +158,19 @@ they match /staging_area/machine/incoming/run_folder
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
 
+=over
+
+=item Moose
+
+=item Carp
+
+=item English
+
+=item MooseX::StrictConstructor
+
+=back
 
 =head1 INCOMPATIBILITIES
 

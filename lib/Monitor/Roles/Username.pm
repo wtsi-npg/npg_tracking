@@ -48,6 +48,15 @@ added here.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose::Role
+
+=item Readonly
+
+=back
 
 =head1 INCOMPATIBILITIES
 

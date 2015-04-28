@@ -141,6 +141,21 @@ Goes through all the cycle directories present for lane 1, and then returns any 
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose::Role
+
+=item Carp
+
+=item List::Util
+
+=item Perl6::Slurp
+
+=back
+
+
 
 =head1 INCOMPATIBILITIES
 

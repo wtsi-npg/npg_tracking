@@ -239,6 +239,18 @@ Monitor::Cbot::RunInfo
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item namespace::autoclean
+
+=item XML::LibXML
+
+=back
+
 =head1 INCOMPATIBILITIES
 
 =head1 BUGS AND LIMITATIONS
