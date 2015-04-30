@@ -128,6 +128,23 @@ The environment variable HTTP_PROXY must be set.
 This class is written to support the script cbot_checker. The script should be
 called with the argument --ident, and optionally, the argument --dev
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item Carp
+
+=item LWP::UserAgent
+
+=item namespace::autoclean
+
+=item Readonly
+
+=back
+
+
 =head1 INCOMPATIBILITIES
 
 =head1 BUGS AND LIMITATIONS
@@ -139,7 +156,7 @@ any time.
 
 John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
 
-=head1 LICENCE AND COPYRIGHT
+=head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2010 GRL, by John O'Brien
 

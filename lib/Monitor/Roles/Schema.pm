@@ -50,6 +50,14 @@ Create a DBIx schema.
 Will decide whether to use live or dev on the basis of, in order, a 'dev'
 constructor attribute, $ENV{dev}, or the default value 'live';
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose::Role
+
+=back
+
 =head1 INCOMPATIBILITIES
 
 
@@ -60,7 +68,7 @@ constructor attribute, $ENV{dev}, or the default value 'live';
 
 John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
 
-=head1 LICENCE AND COPYRIGHT
+=head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2010 GRL, by John O'Brien
 
