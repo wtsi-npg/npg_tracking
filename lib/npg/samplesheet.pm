@@ -39,7 +39,6 @@ Class for creating a MiSeq samplesheet using NPG tracking info and Sequencescape
 
 =cut
 
-Readonly::Scalar our $REP_ROOT => q(/nfs/sf45);
 Readonly::Scalar our $SAMPLESHEET_PATH => q(/nfs/sf49/ILorHSorMS_sf49/samplesheets/);
 Readonly::Scalar our $DEFAULT_FALLBACK_REFERENCE_SPECIES=> q(PhiX);
 Readonly::Scalar my  $MIN_COLUMN_NUM => 3;
@@ -94,7 +93,7 @@ sub _build_dual_index_size {
   return 0;
 }
 
-has 'repository' => ( 'isa' => 'Str', 'is' => 'ro', default => $REP_ROOT );
+has 'repository' => ( 'isa' => 'Str', 'is' => 'ro' );
 
 has 'npg_tracking_schema' => (
   'isa' => 'npg_tracking::Schema',
