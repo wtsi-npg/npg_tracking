@@ -12,11 +12,12 @@ use English qw(-no_match_vars);
 use List::MoreUtils qw/any/;
 use URI::Escape qw(uri_escape_utf8);
 use Readonly;
+use Cwd qw(abs_path);
 use npg_tracking::Schema;
 use st::api::lims;
 use st::api::lims::samplesheet;
 use npg_tracking::data::reference;
-use Cwd qw(abs_path);
+use npg_tracking::util::config qw(get_config);
 
 our $VERSION = '0';
 
@@ -39,8 +40,10 @@ Class for creating a MiSeq samplesheet using NPG tracking info and Sequencescape
 
 =cut
 
-Readonly::Scalar our $REP_ROOT => q(/nfs/sf45);
-Readonly::Scalar our $SAMPLESHEET_PATH => q(/nfs/sf49/ILorHSorMS_sf49/samplesheets/);
+my$config=get_config()->{'staging_areas'}||{};
+Readonly::Scalar our $SAMPLESHEET_PATH => $config->{'samplesheets'}||q(samplesheets/);
+my$configr=get_config()->{'repository'}||{};
+Readonly::Scalar our $INSTRUMENT_REFERENCE_PREFIX => $configr->{'instrument_prefix'}||q(C:\Illumina\MiSeq Reporter\Genomes);
 Readonly::Scalar our $DEFAULT_FALLBACK_REFERENCE_SPECIES=> q(PhiX);
 Readonly::Scalar my  $MIN_COLUMN_NUM => 3;
 Readonly::Scalar my  $DUAL_INDEX_TAG_LENGTH => 16;
@@ -94,7 +97,7 @@ sub _build_dual_index_size {
   return 0;
 }
 
-has 'repository' => ( 'isa' => 'Str', 'is' => 'ro', default => $REP_ROOT );
+has 'repository' => ( 'isa' => 'Str', 'is' => 'ro' );
 
 has 'npg_tracking_schema' => (
   'isa' => 'npg_tracking::Schema',
@@ -189,7 +192,7 @@ sub _build__limsreflist {
       $ref=~s{(/fasta/).*$}{$1}smgx;
       $ref=~s{(/references)}{}smgx;
       my$repository= abs_path $dataref->repository();
-      $ref=~s{^$repository}{C:\\Illumina\\MiSeq Reporter\\Genomes\\WTSI_references}smgx;
+      $ref=~s{^$repository}{$INSTRUMENT_REFERENCE_PREFIX}smgx;
       $ref=~s{/}{\\}smgx;
 
       my @row = ();

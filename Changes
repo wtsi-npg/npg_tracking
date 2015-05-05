@@ -1,5 +1,6 @@
 CHANGES
 
+ - remove default repository root from npg::samplesheet
  - no longer stop runs without batch id or with 13-digit entries in the
    batch id field from moving from run mirrored to analysis pending (
    allows automatic analysis of GCLP and QC runs reespectively).
