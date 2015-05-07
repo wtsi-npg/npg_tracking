@@ -5,95 +5,18 @@
 package npg_tracking::util::db_connect;
 
 use Moose::Role;
-use Carp;
-use File::Spec::Functions;
-use Config::Auto;
-use npg_tracking::util::types;
-use npg_tracking::util::config qw/ npg_conf_dir_name /;
+with qw/npg_tracking::util::db_config/;
 
 requires qw/ connection storage /;
 
 our $VERSION = '0';
 
-has '_config_file'  => (
-    isa             => 'NpgTrackingReadableFile',
-    is              => 'ro',
-    required        => 0,
-    lazy_build      => 1,
-);
-sub _build__config_file {
-    my $self = shift;
-    my $home = $ENV{'HOME'};
-    my $dir_name = npg_conf_dir_name();
-    my $path = $home ? catdir($home, $dir_name) : $dir_name;
-    my $config_file_name = ref $self;
-    $config_file_name =~ s/::/-/gsmx;
-    return catfile ($path, $config_file_name);
-}
-
-
-has '_config_data' => (
-    is            => 'ro',
-    init_arg      => undef,
-    isa           => 'HashRef',
-    required      => 0,
-    lazy_build    => 1,
-);
-sub _build__config_data {
-    my $self = shift;
-    my $domain = $ENV{'dev'} || q[live];
-    my $config = Config::Auto::parse($self->_config_file);
-    if (defined $config->{$domain}) {
-        $config = $config->{$domain};
-    }
-    return $config;
-}
-
-sub _dsn {
-    my $self = shift;
-
-    if ($self->_config_data->{'dsn'}) {
-        return $self->_config_data->{'dsn'};
-    }
-    my $dbname = $self->_config_data->{'dbname'};
-    if (!$dbname) {
-        croak 'No database defined in ' . $self->_config_file
-    }
-    my $dbport = $self->_config_data->{'dbport'};
-    if(!$dbport) {
-        croak 'No port defined in ' . $self->_config_file;
-    }
-    my $dbhost = $self->_config_data->{'dbhost'};
-    if(!$dbhost) {
-        croak 'No host defined in ' . $self->_config_file;
-    }
-
-    return sprintf 'DBI:mysql:database=%s;host=%s;port=%d',
-              $dbname, $dbhost, $dbport;
-}
-
-sub _dbuser {
-    my $self = shift;
-    return $self->_config_data->{'dbuser'} || q[];
-}
-
-sub _dbpass {
-    my $self = shift;
-    return $self->_config_data->{'dbpass'} || q[];
-}
-
-sub _dbattr {
-    my $self = shift;
-    return $self->_config_data->{'dbattr'};
-}
-
 sub _no_connection_info {
     my @info = @_;
     if (!@info) {return 1;}
-    if (ref $info[0] eq q[HASH] && !$info[0]->{dsn}) {return 1;}
+    if (ref $info[0] eq q[HASH] && !$info[0]->{'dsn'}) {return 1;}
     return 0;
 }
-
 
 around 'connection' => sub {
 
@@ -102,15 +25,15 @@ around 'connection' => sub {
     my @info = @_;
 
     if ( _no_connection_info(@info) && !$self->storage) {
-        my $dsn = $self->_dsn();
-        my $user = $self->_dbuser();
-        my $pass = $self->_dbpass();
-        my $attr = $self->_dbattr();
+        my $dsn = $self->dsn();
+        my $user = $self->dbuser();
+        my $pass = $self->dbpass();
+        my $attr = $self->dbattr();
         if (@info && ref $info[0] eq q[HASH]) {
             # that is how Catalyst passes db configuration
-            $info[0]->{dsn} = $dsn;
-            $info[0]->{user} = $user;
-            $info[0]->{password} = $pass;
+            $info[0]->{'dsn'}      = $dsn;
+            $info[0]->{'user'}     = $user;
+            $info[0]->{'password'} = $pass;
             if ($attr and ref $attr eq q[HASH]) {
               %{$info[0]} = (%{$info[0]}, %{$attr});
             }
@@ -133,7 +56,7 @@ npg_tracking::util::db_connect
 
 =head1 SYNOPSIS
 
-An example of a schema object consuming this role:
+An example of a non-Moose schema object consuming this role:
 
   package npg_tracking::Schema;
   use base 'DBIx::Class::Schema';
@@ -147,6 +70,13 @@ An example of a schema object consuming this role:
   }
   with qw/npg_tracking::util::db_connect/;
 
+An example of a Moose schema object consuming this role:
+
+  package npg_tracking::Schema;
+  use Moose;
+  use MooseX::MarkAsMethods autoclean => 1;
+  extends 'DBIx::Class::Schema';
+  with qw/npg_tracking::util::db_connect/;
 
 =head1 DESCRIPTION
 
@@ -168,13 +98,7 @@ configuration file.
 
 =item Moose::Role
 
-=item Carp
-
-=item File::Spec::Functions;
-
-=item Config::Auto
-
-=item npg_tracking::util::types
+=item npg_tracking::util::db_config
 
 =back
 
@@ -188,7 +112,7 @@ Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013 GRL, by Marina Gourtovaia
+Copyright (C) 2015 GRL by Marina Gourtovaia
 
 This file is part of NPG.
 

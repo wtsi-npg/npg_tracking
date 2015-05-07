@@ -8,20 +8,20 @@ use warnings;
 use Config::Auto;
 use Readonly;
 use Exporter qw(import);
-our @EXPORT_OK = qw(get_config npg_conf_dir_name);
+use npg_tracking::util::config_constants qw/$NPG_CONF_DIR_NAME/;
+
+our @EXPORT_OK = qw(get_config);
 
 our $VERSION = '0';
-Readonly::Scalar our $NPG_CONF_DIR => q[.npg];
+
 my ($config_prefix_path) = __FILE__ =~ m{\A(.*)lib/(?:perl.*?/)?npg_tracking/util/config[.]pm\Z}smx;
 if (not defined $config_prefix_path) { $config_prefix_path=q(); }
 ## no critic (Variables::ProhibitPackageVars)
 local $Config::Auto::Untaint = 1; #We trust the config file
-my ($config) = map{ Config::Auto::parse($_) } grep { -e $_} map { $_.q(/npg_tracking)} ($ENV{'HOME'} ? ($ENV{'HOME'}.q(/).$NPG_CONF_DIR) : ()), $config_prefix_path.q(data);
+my ($config) = map{ Config::Auto::parse($_) } grep { -e $_} map { $_.q(/npg_tracking)} ($ENV{'HOME'} ? ($ENV{'HOME'}.q(/).$NPG_CONF_DIR_NAME) : ()), $config_prefix_path.q(data);
 Readonly::Hash our %CONFIG => %{ $config || {}};
 
 sub get_config { return \%CONFIG; }
-
-sub npg_conf_dir_name { return $NPG_CONF_DIR; }
 
 1;
 __END__
@@ -44,11 +44,6 @@ Obtain config details from config files for npg_tracking.
 
   use npg_tracking::util::config;
   my %config = get_config();
-
-=head2 npg_conf_dir_name
-
- use npg_tracking::util::config;
- my $dir_name = npg_conf_dir_name();
  
 =head1 DIAGNOSTICS
 
