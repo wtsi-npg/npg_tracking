@@ -1,5 +1,7 @@
 CHANGES
 
+ - extended samplesheet contains only the Data section, Illumina
+   on-instrument reference paths removed
  - factor out parsing database configuration files into a separate
    module
  - when using MySQL database in testing, do not use database configuration

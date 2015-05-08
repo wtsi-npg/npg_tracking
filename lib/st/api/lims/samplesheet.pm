@@ -181,8 +181,10 @@ sub _build_data {
   }
 
   if (!$self->id_run) {
-    my $en = $d->{$HEADER_SECTION}->{'Experiment Name'};
-    $self->_set_id_run($en);
+    my $en = _id_run_from_header($d);
+    if ($en) {
+      $self->_set_id_run($en);
+    }
     carp qq[id_run is set to Experiment Name, $en];
   }
 
@@ -192,28 +194,23 @@ sub _build_data {
 sub _validate_data { # this is a callback for Moose trigger
                      # $old_data might not be set
   my ( $self, $data, $old_data ) = @_;
-  if (!exists $data->{'Reads'} || !@{ $data->{'Reads'}}) {
-    croak 'Information about read lengths is not available';
-  }
-  #Are read lengths numbers?
 
-  foreach my $section (($DATA_SECTION, $HEADER_SECTION)) {
-    if (!exists $data->{$section}) {
-      croak "$section section is missing";
-    }
+  if (!exists $data->{$DATA_SECTION}) {
+    croak "$DATA_SECTION section is missing";
   }
 
-  my $id_run = $data->{$HEADER_SECTION}->{'Experiment Name'};
+  my $id_run = _id_run_from_header($data);
   if ($id_run && $self->id_run && $id_run != $self->id_run) {
     carp sprintf 'Supplied id_run %i does not match Experiment Name, %s',
                   $self->id_run, $id_run;
   }
 
-  #What are compulsory Data section? - check for them
-  #Do we have at least one lane? - should be numbers as well
-  #Do we have a mixture of indices and non-indexed in one lane?
-  #Are all indices numbers?
   return;
+}
+
+sub _id_run_from_header {
+  my $data = shift;
+  return $data->{$HEADER_SECTION}->{'Experiment Name'};
 }
 
 =head2 is_pool

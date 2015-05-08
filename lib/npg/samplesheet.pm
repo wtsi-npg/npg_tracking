@@ -54,7 +54,6 @@ has '+id_run' => (
   'lazy_build' => 1,
   'required' => 0,
 );
-
 sub _build_id_run {
   my ($self) = @_;
   if($self->has_run()){
@@ -145,7 +144,8 @@ has output => (
 sub _build_output {
   my ($self) = @_;
   my $reagent_kit = $self->run->flowcell_id();
-  $reagent_kit =~ s/(?<!\d)0*(\d+)-0*(\d+)(V\d+)?\s*\z/sprintf(q(%07d-%d%s),$1,$2,uc($3||''))/esmxg; #MiSeq looks for samplesheet name without padded zeroes in the reagent kit suffix....
+  #MiSeq looks for samplesheet name without padded zeroes in the reagent kit suffix....
+  $reagent_kit =~ s/(?<!\d)0*(\d+)-0*(\d+)(V\d+)?\s*\z/sprintf(q(%07d-%d%s),$1,$2,uc($3||''))/esmxg;
   return $self->samplesheet_path . $reagent_kit . q(.csv);
 }
 
@@ -181,19 +181,22 @@ sub _build__limsreflist {
   for my $l (@{$self->lims}) {
     for my $tmpl ( $l->is_pool ? $l->children : ($l) ) {
 
-      my $dataref = npg_tracking::data::reference->new(
+      my $ref = q[];
+      if (!$self->extend) {
+        my $dataref = npg_tracking::data::reference->new(
               ($self->repository ? ('repository' => $self->repository) : ()),
               aligner => q(fasta),
-              lims=>$tmpl, position=>$tmpl->position, id_run=>$self->run->id_run
-      );
-      my @refs = @{$dataref->refs ||[]};
-      my $ref = shift @refs;
-      $ref ||= $self->fallback_reference();
-      $ref=~s{(/fasta/).*$}{$1}smgx;
-      $ref=~s{(/references)}{}smgx;
-      my$repository= abs_path $dataref->repository();
-      $ref=~s{^$repository}{$INSTRUMENT_REFERENCE_PREFIX}smgx;
-      $ref=~s{/}{\\}smgx;
+              lims=>$tmpl, position=>$tmpl->position, id_run=>$self->id_run
+        );
+        my @refs = @{$dataref->refs ||[]};
+        $ref = shift @refs;
+        $ref ||= $self->fallback_reference();
+        $ref=~s{(/fasta/).*$}{$1}smgx;
+        $ref=~s{(/references)}{}smgx;
+        my$repository= abs_path $dataref->repository();
+        $ref=~s{^$repository}{$INSTRUMENT_REFERENCE_PREFIX}smgx;
+        $ref=~s{/}{\\}smgx;
+      }
 
       my @row = ();
       if ($self->_multiple_lanes) {
@@ -326,6 +329,7 @@ sub _build_template_text {
 
   my $tt = <<'END_OF_TEMPLATE';
 [% one_less_sep = num_sep; IF num_sep > 1; one_less_sep = num_sep - 1; END -%]
+[% IF with_header -%]
 [Header][% separator.repeat(num_sep) %]
 Investigator Name,[% pendingstatus.user.username %][% separator.repeat(one_less_sep) %]
 Project Name[% separator _ project_name %][% separator.repeat(one_less_sep) %]
@@ -347,8 +351,8 @@ Chemistry[% separator %][% IF has_dual_index_size %]Amplicon[% ELSE %]Default[% 
 [Settings][% separator.repeat(num_sep) %]
 [% separator.repeat(num_sep) %]
 [Manifests][% separator.repeat(num_sep) %]
-[% separator.repeat(num_sep) -%]
-
+[% separator.repeat(num_sep); %]
+[% END -%]
 [Data][% separator.repeat(num_sep) %]
 [% 
    colnames = ['Sample_ID', 'Sample_Name', 'GenomeFolder'];
@@ -377,24 +381,25 @@ sub process {
   my$tt=Template->new();
 
   my $template = $self->template_text;
-  my $ir = $self->_index_read;
-  my $ml = $self->_multiple_lanes;
-  my $ac = $self->_additional_columns;
-  my $nc = $self->_num_columns;
 
-  $tt->process(\$template,{
-    run                =>$self->run,
-    pendingstatus      =>
-      $self->run->run_statuses->search({q(run_status_dict.description)=>q(run pending)},{join=>q(run_status_dict)})->first,
-    limsa              => [$self->limsreflist],
-    separator          => $st::api::lims::samplesheet::SAMPLESHEET_RECORD_SEPARATOR,
-    has_multiple_lanes => $ml,
-    has_index_read     => $ir,
-    has_dual_index_size     => $self->dual_index_size,
-    additional_columns => $ac,
-    num_sep            => $nc,
-    project_name       => join(q[ ], @{$self->study_names}) || 'unknown',
-  }, $self->output, \%processargs) || croak $tt->error();
+  my $stash = {};
+  $stash->{'separator'} = $st::api::lims::samplesheet::SAMPLESHEET_RECORD_SEPARATOR;
+  $stash->{'with_header'}         = !$self->extend;
+  $stash->{'limsa'}               = [$self->limsreflist];
+  $stash->{'has_multiple_lanes'}  = $self->_multiple_lanes;
+  $stash->{'has_index_read'}      = $self->_index_read;
+  $stash->{'has_dual_index_size'} = $self->dual_index_size;
+  $stash->{'additional_columns'}  = $self->_additional_columns;
+  $stash->{'num_sep'}             = $self->_num_columns;
+  $stash->{'project_name'}        = join(q[ ], @{$self->study_names}) || 'unknown';
+  if (!$self->extend) {
+    $stash->{'run'}               = $self->run;
+    $stash->{'pendingstatus'}     =
+    $self->run->run_statuses->search({q(run_status_dict.description)=>q(run pending)},{join=>q(run_status_dict)})->first;
+  }
+
+  $tt->process(\$template, $stash, $self->output, \%processargs) || croak $tt->error();
+
   return;
 }
 
