@@ -23,6 +23,8 @@ BEGIN {
 
 with qw/npg_tracking::util::db_connect/;
 
+__PACKAGE__->meta->make_immutable(inline_constructor => 0);
+
 1;
 
 __END__
@@ -49,19 +51,15 @@ for the npg tracking database.
 
 Update with:
 
-  (export PATH=/software/perl-5.14.2/bin/:$PATH; export PERL5LIB=/software/solexa/npg_cpan/lib/perl5/; /software/solexa/npg_cpan/bin/dbicdump  -o naming=current  -o rel_name_map='sub {my%h=%{shift@_};my$name=$h{name}; $name=~s/^id_//; return $name; }' -o debug=0 -o dump_directory=./lib -o skip_load_external=1 -o use_moose=1 -o components='[qw(InflateColumn::DateTime)]' npg_tracking::Schema "dbi:mysql:host=XXXXX;port=XXXX;dbname=npgt" "npgro" "" )
+  (dbicdump  -o naming=current  -o rel_name_map='sub {my%h=%{shift@_};my$name=$h{name}; $name=~s/^id_//; return $name; }' -o debug=0 -o dump_directory=./lib -o skip_load_external=1 -o use_moose=1 -o components='[qw(InflateColumn::DateTime)]' npg_tracking::Schema "dbi:mysql:host=XXXXX;port=XXXX;dbname=npgt" "npgro" "" )
 
 =head1 DEPENDENCIES
 
 =over
 
-=item strict
-
-=item warnings
-
 =item Moose
 
-=item MooseX::NonMoose
+=item MooseX::MarkAsMethods
 
 =item DBIx::Class::Schema
 
@@ -79,7 +77,7 @@ David Jackson
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, David Jackson
+Copyright (C) 2015 GRL by David Jackson
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -96,10 +94,3 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
 
-
-
-
-
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
-__PACKAGE__->meta->make_immutable(inline_constructor => 0);
-1;

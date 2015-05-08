@@ -1,5 +1,10 @@
 CHANGES
 
+ - factor out parsing database configuration files into a separate
+   module
+ - when using MySQL database in testing, do not use database configuration
+   files implicitly from the user's home directory; force the caller to
+   supply the location of the file
  - remove default repository root from npg::samplesheet
  - no longer stop runs without batch id or with 13-digit entries in the
    batch id field from moving from run mirrored to analysis pending (
