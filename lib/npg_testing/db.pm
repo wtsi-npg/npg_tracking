@@ -1,16 +1,16 @@
 package npg_testing::db;
 
-use strict;
-use warnings;
+use Moose::Role;
 use Carp;
 use English qw{-no_match_vars};
 use YAML qw(LoadFile DumpFile);
 use File::Temp qw(tempdir);
 use File::Spec::Functions qw(catfile);
 use Cwd;
-use Moose::Role;
 use Try::Tiny;
 use Readonly;
+
+with qw/npg_tracking::util::db_config/;
 
 our $VERSION = '0';
 
@@ -30,9 +30,6 @@ npg_testing::db
 A Moose role for creating and loading a test sqlite database using an existing DBIx database binding
 
 =head1 SUBROUTINES/METHODS
-
-=cut
-
 
 =head2 rs_list2fixture
 
@@ -164,38 +161,65 @@ sub create_test_db {
 
 =head2 deploy_test_db
 
-Uses existing test database. Drops existing tables and
+Uses existing MySQL test database. Drops existing tables and
 creates new ones. The first argument is a DBIx Schema object
 full namespace, the second (optional) is the path to the
-directory where the fixtures are located.
+directory where the fixtures are located. Requires that
+the configuration file path is supplied by the caller and
+that the dev environment variable is set to test.
+
+Example creating and using a derived class:
+
+ package test_db_user;
+ use Moose;
+ with 'npg_testing::db';
+
+ package main;
+ use test_db_user;
+ local $ENV{'dev'} = 'test';
+ my $test_db_user = test_db_user->new(config_file => '/path/to/file');
+ my $dbix_schema = $test_db_user->deploy_test_db('npg_qc::Schema');
+ my $dbix_schema_with_loaded_fixtures =
+   $test_db_user->deploy_test_db('npg_qc::Schema', '/path/to/fixtures_dir/');
+
+Example creating and using an anonymous class:
+
+ use Moose::Meta::Class;
+ use npg_testing::db;
+ local $ENV{'dev'} = 'test';
+ my $test_db_user = Moose::Meta::Class->create_anon_class(
+         roles => [qw/npg_testing::db/])
+         ->new_object({ config_file => '/path/to/file',});
+ my $dbix_schema = $test_db_user->deploy_test_db('npg_qc::Schema');
 
 =cut
 sub deploy_test_db {
-    my ($schema_package, $fixtures_path) = @_;
+    my ($self, $schema_package, $fixtures_path) = @_;
 
-    if (!$ENV{dev} || $ENV{dev} ne 'test') {
-      ##no critic (RequireInterpolationOfMetachars)
-      croak '$ENV{dev} should be set to "test"';
-      ##use critic
+    if (!$ENV{'dev'} || $ENV{'dev'} ne 'test') {
+        croak 'dev environment variable should be set to "test"';
+    }
+    if (!$self->has_config_file) {
+        croak q[Configuration file path is not set];
     }
     if (!$schema_package) {
-      croak q[Schema package undefined in create_test_db];
+        croak q[Schema package undefined];
     }
 
     ##no critic (ProhibitStringyEval RequireCheckingReturnValueOfEval)
     eval "require $schema_package" or do { croak $EVAL_ERROR;} ;
     ##use critic
 
-    my $schema = $schema_package->connect();
+    my $schema = $schema_package->connect($self->dsn, $self->dbuser, $self->dbpass, $self->dbattr);
     $schema->deploy({add_drop_table => 1});
     if ($fixtures_path) {
-       load_fixtures($schema,  $fixtures_path);
+        load_fixtures($schema,  $fixtures_path);
     } else {
         carp q[Fixtures path undefined in create_test_db];
     }
+
     return $schema;
 }
-
 
 no Moose::Role;
 1;
@@ -209,10 +233,6 @@ __END__
 =head1 DEPENDENCIES
 
 =over
-
-=item warnings
-
-=item strict
 
 =item Moose::Role
 
@@ -230,6 +250,8 @@ __END__
 
 =item Try::Tiny
 
+=item npg_tracking::util::db_config
+
 =back
 
 =head1 INCOMPATIBILITIES
@@ -242,7 +264,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by Marina Gourtovaia
+Copyright (C) 2015 GRL by Marina Gourtovaia
 
 This file is part of NPG.
 
