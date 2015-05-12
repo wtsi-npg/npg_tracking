@@ -11,10 +11,13 @@ use Carp;
 use English qw(-no_match_vars);
 use File::Copy;
 use File::Find;
+use File::Basename;
 use IO::All;
 use List::Util qw(max);
 use Perl6::Slurp;
 use Readonly;
+
+use npg_tracking::util::config qw(get_config);
 
 our $VERSION = '0';
 
@@ -217,11 +220,14 @@ sub move_to_analysis {
 
     move( $self->runfolder_path(), $destination );
 
-    my $batch_id = $self->run_db_row->batch_id;
-    if($batch_id and not $batch_id=~/\A\d{13}\z/smx){
-      $self->run_db_row->
-        update_run_status( 'analysis pending', $self->username() );
+    my $config = get_config()->{staging_areas};
+    if ($config && $config->{analysis_group}) {
+        $self->_change_group($config->{analysis_group}, $destination);
+        $self->_change_group($config->{analysis_group}, $destination . '/Data/Intensities');
     }
+
+    $self->run_db_row->
+        update_run_status( 'analysis pending', $self->username() );
 
     return;
 }
@@ -262,6 +268,22 @@ sub update_folder {
     $run_db->update();
     return;
 }
+
+sub _change_group {
+    my ($self, $group, $directory) = @_;
+    my $temp = $directory . '.original';
+    move($directory, $temp) or croak "move error: $ERRNO";
+    mkdir $directory or croak "mkdir error: $ERRNO";
+    for my $file (glob "$temp/*") {
+        my $dest = $directory . q{/} . basename($file);
+        move($file, $dest) or croak "move($file, $dest)\nmove error: $ERRNO";
+    }
+    rmdir $temp or croak "rmdir error: $ERRNO";
+
+    my $gid = getgrnam($group);
+    chown -1, $gid, $directory;
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable();
@@ -348,6 +370,33 @@ Ensure DB has updated runfolder name and a suitable glob for quickly finding the
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item Carp
+
+=item English
+
+=item File::Copy
+
+=item File::Find
+
+=item File::Basename
+
+=item IO::All
+
+=item List::Util
+
+=item Perl6::Slurp
+
+=item Readonly
+
+=back
+
+
 
 =head1 INCOMPATIBILITIES
 
@@ -360,7 +409,7 @@ Please inform the author of any found.
 
 John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
 
-=head1 LICENCE AND COPYRIGHT
+=head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2010 GRL, by John O'Brien
 

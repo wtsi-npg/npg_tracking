@@ -1,50 +1,36 @@
-#########
-# Author:        jo3
-# Created:       2010-04-28
+package npg_tracking::util::config_constants;
 
-package Monitor::Roles::Username;
-
-use Moose::Role;
+use strict;
+use warnings;
 use Readonly;
+use Exporter qw(import);
+
+our @EXPORT_OK = qw/$NPG_CONF_DIR_NAME/;
 
 our $VERSION = '0';
 
-Readonly::Scalar my $USERNAME => 'pipeline';
-
-has _username => (
-    reader     => 'username',
-    is         => 'ro',
-    isa        => 'Str',
-    default    => $USERNAME,
-    documentation => 'The username to attach to database updates',
-);
-
+Readonly::Scalar our $NPG_CONF_DIR_NAME => q[.npg];
 
 1;
-
 __END__
-
 
 =head1 NAME
 
-Monitor::Roles::Username - username to use when writing run statuses etc to
-the npg tracking database.
+npg_tracking::util::config_constants
 
 =head1 VERSION
 
-
 =head1 SYNOPSIS
-
-    C<<use Moose;
-       with 'Monitor::Roles::Username';>>
 
 =head1 DESCRIPTION
 
-Right now all it does is return a username. Potentionally SSO stuff could be
-added here.
+Contains definitions for shared constant variables.
+
+Exports $NPG_CONF_DIR_NAME variable - the name of the directory for NPG configuration files.
 
 =head1 SUBROUTINES/METHODS
-
+ 
+=head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
@@ -52,27 +38,31 @@ added here.
 
 =over
 
-=item Moose::Role
+=item strict
+
+=item warnings
 
 =item Readonly
+
+=item Exporter
 
 =back
 
 =head1 INCOMPATIBILITIES
 
-
 =head1 BUGS AND LIMITATIONS
-
 
 =head1 AUTHOR
 
-John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by John O'Brien
+Copyright (C) 2015 GRL, by Marina Gourtovaia
 
-This program is free software: you can redistribute it and/or modify
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.

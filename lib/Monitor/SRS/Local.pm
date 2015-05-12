@@ -160,7 +160,23 @@ path as its sole argument. Returns 1 if the flag is found, 0 otherwise.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
 
+=over
+
+=item Moose
+
+=item Carp
+
+=item English
+
+=item IO::All
+
+=item IPC::System::Simple
+
+=item autodie
+
+=back
 
 =head1 INCOMPATIBILITIES
 
@@ -174,7 +190,7 @@ path as its sole argument. Returns 1 if the flag is found, 0 otherwise.
 
 John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
 
-=head1 LICENCE AND COPYRIGHT
+=head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2010 GRL, by John O'Brien
 

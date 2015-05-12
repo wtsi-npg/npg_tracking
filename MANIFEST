@@ -397,6 +397,8 @@ lib/npg_tracking/Schema/Retriever.pm
 lib/npg_tracking/status.pm
 lib/npg_tracking/util/build.pm
 lib/npg_tracking/util/config.pm
+lib/npg_tracking/util/config_constants.pm
+lib/npg_tracking/util/db_config.pm
 lib/npg_tracking/util/db_connect.pm
 lib/npg_tracking/util/messages.pm
 lib/npg_tracking/util/types.pm

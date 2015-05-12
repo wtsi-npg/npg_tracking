@@ -1,10 +1,12 @@
-#!/software/bin/env perl
+#!/usr/bin/env perl
 my $VAR1 = {
   'staging_areas' => {
     'indexes' => [18 .. 32, 34 .. 47, 49 .. 55],
-    'prefix' => '/nfs/sf'
+    'prefix' => '/nfs/sf',
+    'samplesheets' => '/nfs/sf49/ILorHSorMS_sf49/samplesheets/'
   },
   'repository' => {
-    'root' => '/lustre/scratch109/srpipe/'
+    'root' => '/lustre/scratch109/srpipe/',
+    'instrument_prefix' => 'C:\Illumina\MiSeq Reporter\Genomes\WTSI_references'
   }
 }

@@ -1,5 +1,20 @@
 CHANGES
 
+release 81.1
+ - extended samplesheet contains only the Data section, Illumina
+   on-instrument reference paths removed
+ - factor out parsing database configuration files into a separate
+   module
+ - when using MySQL database in testing, do not use database configuration
+   files implicitly from the user's home directory; force the caller to
+   supply the location of the file
+ - remove default repository root from npg::samplesheet
+ - no longer stop runs without batch id or with 13-digit entries in the
+   batch id field from moving from run mirrored to analysis pending (
+   allows automatic analysis of GCLP and QC runs reespectively).
+ - optionally change group ownership of certain analysis directories on
+   moving runfolder form incoming to analysis
+
 release 81.0
  - remove default config file
  - allow environment variable NPG_REPOSITORY_ROOT to set repository root

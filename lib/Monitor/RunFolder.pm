@@ -185,7 +185,7 @@ sub check_delay {
 
 sub delay {
   my ( $self, $exclude_missing_cycles ) = @_;
-  
+
   my $run_actual_cycles = $self->run_db_row()->actual_cycle_count();
 
   my $latest_cycle = $self->get_latest_cycle();
@@ -273,6 +273,21 @@ The number of cycles that are delayed coming across from the instrument
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item Carp
+
+=item English
+
+=item Readonly
+
+=back
+
+
 
 =head1 INCOMPATIBILITIES
 
@@ -285,7 +300,7 @@ Please inform the author of any found.
 
 John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
 
-=head1 LICENCE AND COPYRIGHT
+=head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2010 GRL, by John O'Brien
 

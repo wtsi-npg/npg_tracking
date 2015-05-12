@@ -158,7 +158,19 @@ they match /staging_area/machine/incoming/run_folder
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
 
+=over
+
+=item Moose
+
+=item Carp
+
+=item English
+
+=item MooseX::StrictConstructor
+
+=back
 
 =head1 INCOMPATIBILITIES
 
@@ -172,7 +184,7 @@ they match /staging_area/machine/incoming/run_folder
 
 John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
 
-=head1 LICENCE AND COPYRIGHT
+=head1 LICENSE AND COPYRIGHT
 
 Copyright (C) 2010 GRL, by John O'Brien
 
