@@ -8,10 +8,11 @@ use Moose::Role;
 use Moose::Meta::Class;
 use File::Spec::Functions qw(splitdir catfile catdir);
 use Carp qw(carp cluck croak confess);
-use Cwd qw/getcwd abs_path/;
+use Cwd qw/getcwd/;
 use Try::Tiny;
 use Readonly;
 
+use npg_tracking::util::abs_path qw/abs_path/;
 use npg_tracking::Schema;
 use npg_tracking::glossary::lane;
 

@@ -12,9 +12,8 @@ use Readonly;
 use Sys::Hostname;
 use POSIX qw(strftime);
 use FindBin qw($Bin);
-use Cwd qw/abs_path/;
 use Readonly;
-
+use npg_tracking::util::abs_path qw(abs_path);
 our $VERSION = '0';
 
 ## no critic (RequireInterpolationOfMetachars)
@@ -203,8 +202,6 @@ __END__
 =item POSIX
 
 =item FindBin
-
-=item Cwd
 
 =back
 
