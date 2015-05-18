@@ -395,6 +395,7 @@ lib/npg_tracking/Schema/Result/User2usergroup.pm
 lib/npg_tracking/Schema/Result/Usergroup.pm
 lib/npg_tracking/Schema/Retriever.pm
 lib/npg_tracking/status.pm
+lib/npg_tracking/util/abs_path.pm
 lib/npg_tracking/util/build.pm
 lib/npg_tracking/util/config.pm
 lib/npg_tracking/util/config_constants.pm

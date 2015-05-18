@@ -1,5 +1,9 @@
 CHANGES
 
+ - provide path substitution mechanism to cope with running code on a file
+   server where the abs_path may differ from the cannonical network path.
+
+release 81.1
  - extended samplesheet contains only the Data section, Illumina
    on-instrument reference paths removed
  - factor out parsing database configuration files into a separate
