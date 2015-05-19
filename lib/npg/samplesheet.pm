@@ -202,13 +202,19 @@ sub _build__limsreflist {
       if ($self->_multiple_lanes) {
         push @row, $tmpl->position;
       }
-      my $library_id = $tmpl->library_id;
-      if (!$library_id) {
-        croak 'One of library ids indefined for lane ' . $tmpl->position;
+
+      foreach my $attr (qw/library_id sample_publishable_name/) {
+        my $value = _csv_compatible_value($tmpl->$attr);
+        if (!$value) {
+          croak sprintf '%s is not available for position %i %s',
+            $attr, $tmpl->position,
+            defined $tmpl->tag_index ? 'tag index ' . $tmpl->tag_index : q[];
+        }
+        push @row, $value;
       }
-      push @row, $tmpl->library_id;
-      push @row, $tmpl->sample_publishable_name;
+
       push @row, $ref;
+
       if($self->_index_read) {
         if ($self->dual_index_size) {
           # always tructate first index to dual_index_size
