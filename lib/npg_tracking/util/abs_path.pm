@@ -19,10 +19,10 @@ if(not defined $replacement){ $replacement=q(); }
 sub abs_path {
   my @a = @_;
   my $path = Cwd::abs_path @a;
-  if(defined $pattern) {
+  if(defined $pattern and defined $path ) {
     $path =~ s{$pattern}{$replacement}smgx;
   }
-  return $path
+  return $path;
 }
 
 *network_abs_path = \&abs_path;
