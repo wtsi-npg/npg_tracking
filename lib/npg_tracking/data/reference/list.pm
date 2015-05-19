@@ -309,7 +309,7 @@ sub _build_repository_contents {
         if ($taxon_id !~ /^\d+$/smx) {
             croak qq[Wrong entry in the taxons directory: $taxon_id];
         }
-        my $path = catfile($self->ref_repository, $self->taxons_dir, $taxon_id);
+        my $path = catfile(abs_path($self->ref_repository), $self->taxons_dir, $taxon_id);
         my $target = abs_path($path);
         if ($path eq $target) {
             croak qq[Taxon link $path does not point anywhere];
@@ -318,11 +318,11 @@ sub _build_repository_contents {
         my $description = $self->taxonid2species($taxon_id);
         my $key = $description->{species} . q[:];
         if (!exists $description->{strain}) {
-            my $deafult_strain_path = catfile($self->ref_repository, $description->{species}, q[default]);
-            if (!-e $deafult_strain_path) {
+            my $default_strain_path = catfile($self->ref_repository, $description->{species}, q[default]);
+            if (!-e $default_strain_path) {
                 croak qq[Taxon id $taxon_id: no default strain link in ] .  catfile($self->ref_repository, $description->{species});
             }
-            my @default_strain_dirs = splitdir(abs_path($deafult_strain_path));
+            my @default_strain_dirs = splitdir(abs_path($default_strain_path));
             $key .= $default_strain_dirs[$LAST];
         } else {
             $key .= $description->{strain};

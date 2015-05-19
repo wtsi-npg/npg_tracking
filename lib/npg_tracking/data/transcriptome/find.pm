@@ -6,8 +6,9 @@ package npg_tracking::data::transcriptome::find;
 
 use Moose::Role;
 use Carp;
-use Cwd 'abs_path';
 use Readonly;
+
+use npg_tracking::util::abs_path qw(abs_path);
 
 with qw/ npg_tracking::data::reference::find /;
 
@@ -175,8 +176,6 @@ Documentation on GTF (GFF version2) format http://www.ensembl.org/info/website/u
 =item Moose::Role
 
 =item Carp
-
-=item Cwd
 
 =item Readonly
 

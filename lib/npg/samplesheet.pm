@@ -12,12 +12,12 @@ use English qw(-no_match_vars);
 use List::MoreUtils qw/any/;
 use URI::Escape qw(uri_escape_utf8);
 use Readonly;
-use Cwd qw(abs_path);
 use npg_tracking::Schema;
 use st::api::lims;
 use st::api::lims::samplesheet;
 use npg_tracking::data::reference;
 use npg_tracking::util::config qw(get_config);
+use npg_tracking::util::abs_path qw(abs_path);
 
 our $VERSION = '0';
 
