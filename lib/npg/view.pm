@@ -15,6 +15,7 @@ use npg::model::user;
 use npg::model::usergroup;
 use npg::authentication::sanger_sso qw/sanger_cookie_name sanger_username/;
 use npg::authentication::sanger_ldap qw/person_info/;
+use npg_tracking::util::config qw/get_config/;
 
 use base qw(ClearPress::view);
 
@@ -150,6 +151,20 @@ sub is_prod {
   return $db eq q[live] ? 1 : 0;
 }
 
+sub staging_urls {
+  my ($self, $staging_server) = @_;
+
+  my $default_key = 'default';
+  $staging_server ||= $default_key;
+  my $config = get_config();
+  $config = $config->{'staging_areas2webservers'} || {};
+  my $url = $config->{$staging_server} ||
+            $config->{$default_key} ||
+            {};
+
+  return $url;
+}
+
 1;
 
 
@@ -213,7 +228,11 @@ returns inst_format from cgi params, sanitised
 
 =head2 time_rendered  timestamp
 
-provides an authorisation check when an rfid has been provided
+=head2 staging_urls
+
+Returns a hash containing urls of a tracking and seqqc servers that
+potentially run on a different host where they can access run folders
+residing on staging areas.
 
 =head1 DIAGNOSTICS
 

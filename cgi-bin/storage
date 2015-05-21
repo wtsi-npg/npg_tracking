@@ -22,7 +22,7 @@ use GD;
 use English qw(-no_match_vars);
 use Carp;
 
-my ($partition) = ($ENV{PATH_INFO} || q()) =~ /((sf\d+))/smx;
+my ($partition) = ($ENV{PATH_INFO} || q()) =~ /([a-z0-9]+)/smx;
 
 local $ENV{'PATH'} = join q(:), qw(/bin /usr/bin);
 
