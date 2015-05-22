@@ -8,7 +8,8 @@ use strict;
 use warnings;
 use Moose::Role;
 use Carp;
-use Cwd 'abs_path';
+
+use npg_tracking::util::abs_path qw(abs_path);
 
 our $VERSION = '0';
 

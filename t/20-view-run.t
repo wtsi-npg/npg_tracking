@@ -1,14 +1,34 @@
 use strict;
 use warnings;
-use Test::More tests => 78;
+use Test::More tests => 83;
 use Test::Exception;
 use Test::Deep;
 use MIME::Lite;
 use CGI;
-use t::util;
-use t::request;
+use Cwd;
 
-use_ok('npg::view::run');
+BEGIN {
+  local $ENV{'HOME'}=getcwd().'/t';
+  use_ok('npg::view::run');
+};
+
+# We need to ensure that npg::view::run is the first npg
+# module loaded
+use_ok('t::util');
+use_ok('t::request');
+
+{
+  my $default_urls = {'npg_tracking' => 'http://some.san.ac.uk:678',
+                      'seqqc'        => 'http://some.san.ac.uk:999'};
+  my $gs01_urls = {'npg_tracking' => 'http://gso1.san.ac.uk:678',
+                   'seqqc'        => 'http://gso1.san.ac.uk:999'};
+  is_deeply(npg::view::run->staging_urls(),  $default_urls,
+    'no args, default urls returned');
+  is_deeply(npg::view::run->staging_urls('host'),  $default_urls,
+    'no match args, default urls returned');
+  is_deeply(npg::view::run->staging_urls('gs01'),  $gs01_urls,
+    'matching host args, correct host-specific urls returned');
+}
 
 my $util = t::util->new({fixtures  => 1,});
 
@@ -544,5 +564,6 @@ my $util = t::util->new({fixtures  => 1,});
   $cgi->param('days', 7);
   is($view->selected_days(), 7, '$view->selected_days() gives selected days if set as cgi param');
 }
+
 
 1;

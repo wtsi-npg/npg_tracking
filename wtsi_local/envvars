@@ -10,7 +10,7 @@ unset HOME
 
 export NPG_APACHE_HOST=`hostname`
 export APACHE_RUN_USER=${USER}
-export APACHE_RUN_GROUP=solexa
+export APACHE_RUN_GROUP=`id -ng ${USER}`
 export NPG_TRACKING_SERVER_PATH=$(dirname $(dirname $APACHE_CONFDIR))
 echo "Server path: ${NPG_TRACKING_SERVER_PATH}"
 export APACHE_RUN_DIR=${NPG_TRACKING_SERVER_PATH}

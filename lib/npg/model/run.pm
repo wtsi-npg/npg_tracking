@@ -32,9 +32,9 @@ use Readonly;
 
 our $VERSION = '0';
 
-Readonly::Scalar our $DEFAULT_SUMMARY_DAYS => 14;
-Readonly::Scalar our $MAX_LANES => 8;
+Readonly::Scalar our $DEFAULT_SUMMARY_DAYS        => 14;
 Readonly::Scalar our $SCS_VERSION_FIVE_DIGITS_RUN => 2.8;
+Readonly::Scalar my  $FOLDER_GLOB_INDEX           => 2;
 
 Readonly::Hash   our %TEAMS => ('5' => 'joint', '4' => 'RAD', '1' => 'A', '2' => 'B', '3' => 'C',);
 
@@ -1167,6 +1167,12 @@ sub is_dev {
   return ($self->team() && $self->team() eq 'RAD') ? 1 : 0;
 }
 
+sub staging_server_name {
+  my $self = shift;
+  my @components = split m{/}smx, $self->folder_path_glob;
+  return $components[$FOLDER_GLOB_INDEX];
+}
+
 1;
 __END__
 
@@ -1351,6 +1357,8 @@ the login of the person who verified the run, post v60, then flowcell, reagent1,
 =head2 is_dev method returns true if the run belongs to R&D team, false otherwise
 
 =head2 validate_team
+
+=head2 staging_server_name - from runfolder glob
 
 =head1 DIAGNOSTICS
 

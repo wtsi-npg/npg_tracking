@@ -3,16 +3,26 @@
 # Created:       2008-04-21
 #
 package npg::view::usage;
+
 use strict;
 use warnings;
+use Readonly;
 use base qw(npg::view);
 use npg_tracking::illumina::run::folder::location;
 
 our $VERSION = '0';
 
+Readonly::Scalar my $HOST_PREFIX_INDEX => 2;
+
 sub list {
   my ($self) = @_;
-  $self->{staging_area_indexes} = [@npg_tracking::illumina::run::folder::location::STAGING_AREAS_INDEXES];
+  $self->{'staging_area_indexes'} = [@npg_tracking::illumina::run::folder::location::STAGING_AREAS_INDEXES];
+  my $prefix = $npg_tracking::illumina::run::folder::location::STAGING_AREAS_PREFIX;
+  if ($prefix) {
+    my @components = split m{/}smx, $prefix;
+    $prefix =  $components[$HOST_PREFIX_INDEX];
+  }
+  $self->{'staging_area_prefix'} = $prefix || q[];
   return;
 }
 
@@ -42,6 +52,7 @@ npg::view::usage
 strict
 warnings
 base
+Readonly
 npg::view
 npg_tracking::illumina::run::folder::location
 
