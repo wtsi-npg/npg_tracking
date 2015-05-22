@@ -1,5 +1,9 @@
 CHANGES
 
+release 81.2
+ - web server configuration generalisation to allow for running on
+   different clusters
+ - cross-cluster staging links for both tracking and seqqc links
  - make sample name compalsory in samplesheet generation
  - provide path substitution mechanism to cope with running code on a file
    server where the abs_path may differ from the cannonical network path.
