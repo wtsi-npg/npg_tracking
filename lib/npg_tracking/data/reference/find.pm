@@ -11,9 +11,9 @@ use Moose::Role;
 use Carp;
 use English qw(-no_match_vars);
 use File::Spec::Functions qw(catfile);
-use Cwd qw(abs_path);
 use Readonly;
 
+use npg_tracking::util::abs_path qw(abs_path);
 use npg_tracking::data::reference::info;
 use npg_tracking::util::messages;
 use st::api::lims;
@@ -197,10 +197,9 @@ sub _build_lims {
 
 sub _abs_ref_path {
   my $path = shift;
-  (my $name) = $path =~ /\/([^\/]+)$/smx;
-  $path =~ s/$name$//smx;
-  ##no critic (CodeLayout::ProhibitParensWithBuiltins)
-  return join(q[/], abs_path($path), $name);
+  (my $name) = $path =~ /\/([^\/]+)\Z/smx;
+  $path =~ s/\Q$name\E\Z//smx;
+  return join q[/], abs_path($path), $name;
 }
 
 =head2 refs
@@ -459,7 +458,7 @@ __END__
 
 =item Readonly
 
-=item Cwd
+=item npg_tracking::util::abs_path
 
 =item npg_tracking::util::messages
 

@@ -1,9 +1,11 @@
 <p style="clear:left">
 Sequencing Farm:
 <ul class="inline">
-[% SET staging_url = view.util.config.val('application', 'staging_url') %]
-[% FOREACH si IN view.staging_area_indexes -%]
- <li><img src="[% staging_url %]/cgi-bin/storage/sf[% si %]" alt="SF[% si %]" /></li>
+[% prefix = view.staging_area_prefix -%]
+[% FOREACH si IN view.staging_area_indexes;
+   server = prefix _ si;
+   staging_url = view.staging_urls(server).npg_tracking; -%]
+ <li><img src="[% staging_url ? staging_url : '' %]/cgi-bin/storage/[% server %]" alt="[% prefix.upper %][% si %]" /></li>
 [% END -%]
 </ul>
 </p>
