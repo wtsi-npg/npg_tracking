@@ -7,9 +7,8 @@ use File::Temp qw(tempdir);
 use Cwd;
 use File::Spec::Functions qw(catfile);
 
-local $ENV{'HOME'};
 BEGIN {
-  $ENV{'HOME'}=getcwd().'/t';
+  local $ENV{'HOME'}=getcwd().'/t';
   use_ok(q{npg_tracking::illumina::run::folder});
 }
 
