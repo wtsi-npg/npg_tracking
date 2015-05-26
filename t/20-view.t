@@ -1,7 +1,9 @@
 use Test::More tests => 3;
 
-
-use_ok('npg::view');
+BEGIN {
+  local $ENV{'HOME'}=q(t/data); # no .npg dir in this location
+  use_ok('npg::view');
+}
 
 {
   is_deeply(npg::view->staging_urls(), {},

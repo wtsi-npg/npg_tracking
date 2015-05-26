@@ -14,5 +14,6 @@ my $VAR1 = {
   'repository' => {
     'root' => '/lustre/scratch109/srpipe/',
     'instrument_prefix' => 'C:\Illumina\MiSeq Reporter\Genomes\WTSI_references'
-  }
+  },
+  'mock' =>'mock entry to test that we are reading this file',
 }

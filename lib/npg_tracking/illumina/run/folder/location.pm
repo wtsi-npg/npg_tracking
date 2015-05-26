@@ -10,11 +10,11 @@ use Cwd;
 use File::Spec::Functions;
 use Readonly;
 
-use npg_tracking::util::config qw(get_config);
+use npg_tracking::util::config qw(get_config_staging_areas);
 
 our $VERSION = '0';
 
-my $config=get_config()->{'staging_areas'}||{};
+my $config=get_config_staging_areas();
 
 Readonly::Array our @STAGING_AREAS_INDEXES => @{$config->{'indexes'}||[q()]};
 Readonly::Scalar our $STAGING_AREAS_PREFIX => $config->{'prefix'} || q();
