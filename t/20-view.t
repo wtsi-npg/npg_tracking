@@ -1,5 +1,6 @@
 use Test::More tests => 3;
 
+local $ENV{'HOME'}=q(t/data);
 
 use_ok('npg::view');
 
