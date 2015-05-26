@@ -7,9 +7,8 @@ use File::Temp qw(tempdir);
 use Cwd;
 use Carp;
 
-local $ENV{'HOME'};
 BEGIN {
-  $ENV{'HOME'} = getcwd() . '/t';
+  local $ENV{'HOME'} = getcwd() . '/t';
   use_ok(q{npg_tracking::illumina::run::long_info});
 
   # package creation within BEGIN block to ensure after HOME is reset

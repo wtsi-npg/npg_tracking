@@ -16,7 +16,8 @@ use npg_tracking::Schema;
 use st::api::lims;
 use st::api::lims::samplesheet;
 use npg_tracking::data::reference;
-use npg_tracking::util::config qw(get_config);
+use npg_tracking::util::config qw(get_config_repository
+                                  get_config_staging_areas);
 use npg_tracking::util::abs_path qw(abs_path);
 
 our $VERSION = '0';
@@ -40,9 +41,9 @@ Class for creating a MiSeq samplesheet using NPG tracking info and Sequencescape
 
 =cut
 
-my$config=get_config()->{'staging_areas'}||{};
+my$config=get_config_staging_areas();
 Readonly::Scalar our $SAMPLESHEET_PATH => $config->{'samplesheets'}||q(samplesheets/);
-my$configr=get_config()->{'repository'}||{};
+my$configr=get_config_repository();
 Readonly::Scalar our $INSTRUMENT_REFERENCE_PREFIX => $configr->{'instrument_prefix'}||q(C:\Illumina\MiSeq Reporter\Genomes);
 Readonly::Scalar our $DEFAULT_FALLBACK_REFERENCE_SPECIES=> q(PhiX);
 Readonly::Scalar my  $MIN_COLUMN_NUM => 3;

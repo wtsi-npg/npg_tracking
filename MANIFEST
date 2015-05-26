@@ -467,6 +467,7 @@ t/10-npg_testing-db.t
 t/10-npg_testing-html.t
 t/10-npg_tracking-status.t
 t/10-npg_tracking-util-db_connect.t
+t/10-npg_tracking-util-config.t
 t/10-npg_tracking-util-messages.t
 t/10-reference-find.t
 t/10-reference-info.t
