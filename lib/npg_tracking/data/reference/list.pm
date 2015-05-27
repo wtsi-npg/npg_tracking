@@ -9,7 +9,7 @@ use File::Spec::Functions qw(catfile splitdir catdir);
 use File::Basename;
 use Cwd qw(abs_path);
 
-use npg_tracking::util::config qw(get_config);
+use npg_tracking::util::config qw(get_config_repository);
 
 our $VERSION = '0';
 
@@ -36,7 +36,7 @@ Interface (Moose role) for retrieving information about a reference repository.
 
 =cut
 
-my$config=get_config()->{'repository'}||{};
+my$config=get_config_repository();
 
 Readonly::Scalar our $REP_ROOT           => $ENV{'NPG_REPOSITORY_ROOT'} || $config->{'root'} || q();
 Readonly::Scalar our $SNV_DIR            => q[population_snv];

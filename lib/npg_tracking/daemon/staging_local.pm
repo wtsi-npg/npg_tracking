@@ -2,42 +2,61 @@ package npg_tracking::daemon::staging_local;
 
 use Moose;
 use Carp;
-use File::Spec::Functions;
-use npg_tracking::illumina::run::folder::location;
+use Readonly;
+use File::Spec::Functions qw/catdir splitdir/;
+use npg_tracking::util::config qw/get_config_staging_areas/;
 
 extends 'npg_tracking::daemon';
 
 our $VERSION = '0';
 
-has 'root_dir'  => (isa       => 'Str',
-                    is        => 'ro',
-                    required  => 0,
-                    default => q[/export],
+Readonly::Scalar my $HOST_NAME_SUFFIX  => q[-nfs];
+
+my $config  = get_config_staging_areas();
+
+has [ qw/_local_prefix _prefix/ ]   => (
+                    isa        => 'Str',
+                    is         => 'ro',
+                    required   => 0,
+                    lazy_build => 1,
                    );
+sub _build__local_prefix {
+  my $self = shift;
+  return $config->{'prefix'} ||
+         croak 'Failed to get path prefix';
+}
+sub _build__prefix {
+  my $self = shift;
+  my @components = splitdir $self->_local_prefix;
+  # Staging host name prefix is the last component
+  # of the local path, e.g. /nfs/sf ,
+  my $prefix = pop @components;
+  return $prefix || q[];
+}
 
 override '_build_hosts' => sub {
-  ##no critic (TestingAndDebugging::ProhibitNoWarnings)
-  no warnings 'once';
-  my @full_list = map { 'sf' . $_ . '-nfs' }
-      @npg_tracking::illumina::run::folder::location::STAGING_AREAS_INDEXES;
+  my $self = shift;
+  my $indexes = $config->{'indexes'} ||
+                croak 'Failed to get list of indexes for staging areas';
+  my @full_list = map { $self->_prefix . $_ . $HOST_NAME_SUFFIX } @{$indexes};
   return \@full_list;
 };
 
 override 'log_dir'      => sub {
   my ($self, $host) = @_;
-  return catdir  $self->host_name2path($host), $self->daemon_name . q[_logs];
+  return catdir  $self->host_name2path($host), q[log];
 };
 
 sub host_name2path {
   my ($self, $host) = @_;
   if (!$host) {
-    croak q{Need host name};
+    croak q[Need host name];
   }
-  (my $sfarea) = $host =~ /^sf(\d+)-nfs$/smx;
-  if (!$sfarea) {
-    croak qq{Host name $host does not follow expected pattern sfXX-nfs};
+  (my $area) = $host =~ /(\d+)/smx;
+  if (!$area) {
+    croak qq[Host name $host does not follow expected pattern];
   }
-  return catdir $self->root_dir, q{sf}.$sfarea;
+  return $self->_local_prefix . $area;
 }
 
 no Moose;
@@ -73,9 +92,11 @@ npg_tracking::daemon::staging_local
 
 =item Carp
 
+=item Readonly
+
 =item File::Spec::Functions
 
-=item npg_tracking::illumina::run::folder::location
+=item npg_tracking::util::config
 
 =back
 

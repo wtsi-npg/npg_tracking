@@ -6,10 +6,8 @@ use Test::MockObject::Extends;
 use Moose::Meta::Class;
 use Cwd;
 
-local $ENV{'HOME'};
-
 BEGIN {
-  $ENV{'HOME'}=getcwd().'/t';
+  local $ENV{'HOME'}=getcwd().'/t';
   use_ok( q{npg_tracking::illumina::run::folder::location} );
 }
 

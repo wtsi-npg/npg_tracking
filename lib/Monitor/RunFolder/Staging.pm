@@ -17,7 +17,7 @@ use List::Util qw(max);
 use Perl6::Slurp;
 use Readonly;
 
-use npg_tracking::util::config qw(get_config);
+use npg_tracking::util::config qw(get_config_staging_areas);
 
 our $VERSION = '0';
 
@@ -34,13 +34,6 @@ has 'rta_complete_wait' => (isa          => 'Int',
 
 sub cycle_lag {
     my ($self) = @_;
-
-#    my $path                 = $self->runfolder_path();
-#    my $staging_latest_cycle = $self->get_latest_cycle($path);
-#    my $db_latest_cycle      = $self->run_db_row->actual_cycle_count() || 0;
-
-#    my $cycle_lag = $db_latest_cycle - $staging_latest_cycle;
-
     return ( $self->delay() > $MAXIMUM_CYCLE_LAG ) ? 1 : 0;
 }
 
@@ -220,10 +213,10 @@ sub move_to_analysis {
 
     move( $self->runfolder_path(), $destination );
 
-    my $config = get_config()->{staging_areas};
-    if ($config && $config->{analysis_group}) {
-        $self->_change_group($config->{analysis_group}, $destination);
-        $self->_change_group($config->{analysis_group}, $destination . '/Data/Intensities');
+    my $group = get_config_staging_areas()->{'analysis_group'};
+    if ($group) {
+        $self->_change_group($group, $destination);
+        $self->_change_group($group, $destination . '/Data/Intensities');
     }
 
     $self->run_db_row->

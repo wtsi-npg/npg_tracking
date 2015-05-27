@@ -1,5 +1,11 @@
 CHANGES
 
+release 81.3
+ - accessor methods for frequently used configuration file entries 
+ - status monitor script and staging area daemon definition - allow for
+   farm-specific variations of path prefixes for staging areas
+ - staging area and status daemons use common log directory /nfs/{gs|sf}XX/log
+
 release 81.2
  - web server configuration generalisation to allow for running on
    different clusters
