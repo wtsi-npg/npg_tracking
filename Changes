@@ -1,5 +1,10 @@
 CHANGES
 
+release 84.4
+ - to avoid the need to create deep directory hierarchy containing www-live
+   for a live server, set dev env variable value for the Apache server
+   explicitly
+
 release 81.3
  - accessor methods for frequently used configuration file entries 
  - status monitor script and staging area daemon definition - allow for

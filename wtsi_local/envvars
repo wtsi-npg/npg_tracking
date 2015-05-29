@@ -16,7 +16,6 @@ echo "Server path: ${NPG_TRACKING_SERVER_PATH}"
 export APACHE_RUN_DIR=${NPG_TRACKING_SERVER_PATH}
 
 export dev='dev'
-if [[ "$NPG_TRACKING_SERVER_PATH" =~ "www-live" ]] ; then dev='live'; fi;
 echo "dev: ${dev}"
 
 export APACHE_LOG_DIR=${NPG_TRACKING_SERVER_PATH}/logs
