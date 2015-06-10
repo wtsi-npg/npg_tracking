@@ -1,5 +1,8 @@
 CHANGES
 
+ - staging monitor extension: move qc complete runfolders from analysis
+   to outgoing
+
 release 84.4
  - to avoid the need to create deep directory hierarchy containing www-live
    for a live server, set dev env variable value for the Apache server

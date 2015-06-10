@@ -1,17 +1,11 @@
-#########
-# Author:        jo3
-# Created:       2010-06-15
-#
 use strict;
 use warnings;
-
-use Carp;
 use English qw(-no_match_vars);
 use File::Copy;
 use File::Find;
 use File::Temp qw(tempdir);
-
-use Test::More tests => 47;
+use File::Path qw(make_path);
+use Test::More tests => 73;
 use Test::Exception::LessClever;
 use Test::Warn;
 use Test::Deep;
@@ -20,10 +14,7 @@ use autodie qw(:all);
 
 use t::dbic_util;
 
-use Readonly;
-
-Readonly::Scalar my $MOCK_STAGING => 't/data/gaii/staging';
-
+my $MOCK_STAGING = 't/data/gaii/staging';
 
 use_ok('Monitor::RunFolder::Staging');
 
@@ -79,7 +70,6 @@ my $schema = t::dbic_util->new->test_schema();
         '\'run complete\' status is valid' );
 }
 
-
 {
     my $mock_path = $MOCK_STAGING . '/IL5/incoming/100621_IL5_01204';
     my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
@@ -101,7 +91,6 @@ my $schema = t::dbic_util->new->test_schema();
 
     is( $test->mirroring_complete(), 1, 'Mirroring is complete' );
 }
-
 
 {
     my $tmpdir = tempdir( CLEANUP => 1 );
@@ -125,7 +114,6 @@ my $schema = t::dbic_util->new->test_schema();
     ok( $test->mirroring_complete(),
         'Mirroring is complete' );
 }
-
 
 {
     my $mock_path = $MOCK_STAGING . '/IL12/incoming/100721_IL12_05222';
@@ -161,7 +149,6 @@ my $schema = t::dbic_util->new->test_schema();
 
     lives_ok { $test->check_tiles() } 'All cif files present';
 }
-
 
 {
     my $mock_path = $MOCK_STAGING . '/IL5/incoming/100708_IL3_04999';
@@ -206,42 +193,43 @@ my $schema = t::dbic_util->new->test_schema();
 }
 
 {
-    my $mock_path = $MOCK_STAGING . '/IL3/skip_this_one/090810_IL12_3289';
-    my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+    my $test = Monitor::RunFolder::Staging->new(
+      runfolder_path => $MOCK_STAGING . '/IL3/skip_this_one/090810_IL12_3289',
+      _schema        => $schema);
+    throws_ok { $test->move_to_analysis() } qr/is\ not\ in\ incoming/msx,
+              'Runfolder should be in incoming';
 
-    throws_ok { $test->move_to_analysis() }
-              qr/$mock_path[ ]already[ ]exists/msx,
+    $test = Monitor::RunFolder::Staging->new(
+      runfolder_path => $MOCK_STAGING . '/IL3/incoming/incoming/090810_IL12_3289',
+      _schema        => $schema);
+    throws_ok { $test->move_to_analysis() } qr/contains\ multiple\ upstream\ incoming\ directories/msx,
+              'Runfolder path should not contain multiple incoming directories';
+
+    my $tmpdir = tempdir( CLEANUP => 1 );
+    $test = Monitor::RunFolder::Staging->new(
+      runfolder_path => $tmpdir . '/incoming/090810_IL12_3289',
+      _schema        => $schema);
+    make_path $tmpdir . '/analysis/090810_IL12_3289';
+    throws_ok { $test->move_to_analysis() } qr/already\ exists/msx,
               'Refuse to overwrite an existing directory';
+}
 
-    my $test_source = $MOCK_STAGING . '/IL12/incoming/100721_IL12_05222';
-    my $test_target = $MOCK_STAGING . '/IL12/analysis/100721_IL12_05222';
-
-    # If a test fails it may leave the test data files in a broken state.
-    ok(  -e $test_source, 'No corruption from previous test failures (1/3)' );
-    ok( !-e $test_target, 'No corruption from previous test failures (2/3)' );
+{
+    my $tmpdir = tempdir( CLEANUP => 1 );
+    my $test_source  = $tmpdir . '/IL12/incoming/100721_IL12_05222';
+    my $analysis_dir = $tmpdir . '/IL12/analysis';
+    my $test_target  = $analysis_dir . '/100721_IL12_05222';
+    make_path $test_source;
+    
+    ok( !-e $analysis_dir, 'analysis dir does not exist - test prerequisite');
+    $schema->resultset('Run')->find(5222)->update_run_status('qc complete');
+    my $test = Monitor::RunFolder::Staging->new( runfolder_path => $test_source,
+                                                 _schema        => $schema, );
 
     isnt( $test->current_run_status_description(), 'analysis pending',
-          'No corruption from previous test failures (3/3)' );
-
-    package Monitor::RunFolder::Staging;
-    use subs 'system';
-
-    package main;
-    my $fail = 1;
-    my @args;
-
-    *Monitor::RunFolder::Staging::system = sub {
-        @args = @_;
-        return $fail;
-    };
-
-
-    $test = Monitor::RunFolder::Staging->new( runfolder_path => $test_source,
-                                              _schema        => $schema, );
-
+      'run status is not analysis pending');
+    ok( !$test->is_in_analysis(), 'run folder is not in analysis');
     lives_ok { $test->move_to_analysis() } 'Move to analysis';
-
     ok( !-e $test_source, 'Run folder is gone from incoming' );
     ok(  -e $test_target, 'Run folder is present in analysis' );
 
@@ -250,7 +238,8 @@ my $schema = t::dbic_util->new->test_schema();
 
     # Put things back as they were.
     move( $test_target, $test_source );
-
+    make_path( $analysis_dir );
+    ok( -e $analysis_dir, 'analysis dir exists - test prerequisite');
     lives_ok { $test->move_to_analysis() } 
              'No error if analysis directory already exists...';
   
@@ -259,13 +248,66 @@ my $schema = t::dbic_util->new->test_schema();
 
     is( $test->current_run_status_description(), 'analysis pending',
           '   ...current run status unaffected' );
+   
+    $test_source = $test_target;
+    my $outgoing_dir = $tmpdir . '/IL12/outgoing';
+    $test_target = $outgoing_dir . '/100721_IL12_05222';
+    ok( !-e $outgoing_dir, 'outgoing dir does not exist - test prerequisite');
+    $test = Monitor::RunFolder::Staging->new( runfolder_path => $test_source,
+                                                 _schema     => $schema, );
+    my $m;
+    lives_ok { $m = $test->move_to_outgoing() } 'Move to outgoing lives';
+    ok( !-e $test_target, 'not in outgoing' );
+    is( $m, 'Run 5222 status analysis pending is not qc complete, not moving to outgoing',
+      'not moved since the run status does not fit');
+   
+    sleep 1; 
+    $test->run_db_row->update_run_status('qc complete');
 
-    move( $test_target, $test_source );
-    $test_target =~ s{/analysis/.+}{/analysis}msx;
+    $test = Monitor::RunFolder::Staging->new( runfolder_path => $tmpdir . '/IL12/incoming/100721_IL12_05222',
+                                                 _schema     => $schema, );
+    throws_ok { $test->move_to_outgoing() } qr/is\ not\ in\ analysis/msx,
+              'Runfolder should be in analysis';
 
-    rmdir $test_target;
+    $test = Monitor::RunFolder::Staging->new(
+      runfolder_path => $tmpdir . '/IL12/analysis/some/analysis/100721_IL12_05222',
+      _schema        => $schema);
+    throws_ok { $test->move_to_outgoing() } qr/contains\ multiple\ upstream\ analysis\ directories/msx,
+              'Runfolder path should not contain multiple upstream analysis directories';
+
+    $test = Monitor::RunFolder::Staging->new( runfolder_path => $test_source,
+                                                 _schema     => $schema, );
+    ok( $test->is_in_analysis(), 'run folder is in analysis');
+    lives_ok { $m = $test->move_to_outgoing() } 'Move to outgoing lives';
+    ok( -e $test_target, 'is in outgoing' );
+    is( $m, "Moved $test_source to $test_target", 'move is confirmed' );
+    ok( !-e $test_source, 'gone from analysis' );
+    throws_ok { $test->move_to_outgoing() } qr/already\ exists/msx,
+              'Refuse to overwrite an existing directory';
+
+    move( $test_target, $test_source ); # Put things back as they were.
+    make_path( $outgoing_dir );
+    ok( -e $outgoing_dir, 'outgoing directory exists' );
+    lives_ok { $m = $test->move_to_outgoing() } 'Move to outgoing lives';
+    ok( -e $test_target, 'is in outgoing' );
+    is( $m, "Moved $test_source to $test_target", 'move is confirmed' );
+    ok( !-e $test_source, 'gone from analysis' );
+
+    move( $test_target, $test_source ); # Put things back as they were.
+    my $flag = $tmpdir . '/IL12/analysis/100721_IL12_05222/npg_do_not_move';
+    mkdir $flag;
+    my $expected = $test_source . ' flagged not to be moved to outgoing';
+    lives_ok { $m = $test->move_to_outgoing() } 'Move to outgoing lives';
+    ok( !-e $test_target, 'not in outgoing' );
+    is( $m, $expected, 'not moved since the runfolder has a flag');
+
+    rmdir $flag;
+    $flag = $tmpdir . '/IL12/analysis/100721_IL12_05222/npgdonotmove';
+    mkdir $flag;
+    lives_ok { $m = $test->move_to_outgoing() } 'Move to outgoing lives';
+    ok( !-e $test_target, 'not in outgoing' );
+    is( $m, $expected, 'not moved since the runfolder has a flag');
 }
-
 
 {
     my $tmpdir = tempdir( CLEANUP => 1 );

@@ -1,7 +1,4 @@
 #!/usr/bin/env perl
-#########
-# Author:        jo3
-# Created:       2010-07-22
 
 package staging_area_monitor;
 
@@ -13,17 +10,27 @@ use Carp;
 use English qw(-no_match_vars);
 use POSIX qw(strftime);
 use Readonly;
+use Try::Tiny;
+
 use Monitor::Staging;
 use Monitor::RunFolder::Staging;
 use npg_tracking::Schema;
 
-Readonly::Scalar my $SECONDS_PER_MINUTE => 60;
-Readonly::Scalar my $SLEEP_INTERVAL     => $SECONDS_PER_MINUTE * 15;
-
 our $VERSION = '0';
+
+Readonly::Scalar my $SLEEP_INTERVAL => 60 * 15;
 
 local $OUTPUT_AUTOFLUSH = 1;
 
+sub _log {
+    my @ms = map { "\t$_\n" } @_;
+    print {*STDOUT}  @ms or carp $OS_ERROR;
+}
+
+sub _log_noindent {
+    my @ms = map { "$_\n\n" } @_;
+    print {*STDOUT} @ms or carp $OS_ERROR;
+}
 
 my %previous_size_of;
 
@@ -32,31 +39,48 @@ my @area_list = $monitor->validate_areas(@ARGV);
 
 croak 'No valid arguments' if scalar @area_list == 0;
 
-my $iteration = 0;
+# In production dev variable is not set
+my $dry_run = $ENV{'dev'}; 
+_log_noindent('*************** ' . ($dry_run ? 'DRY RUN' : 'LIVE RUN') .
+          ' ***************');
+
 while (1) {
     my %checked;
-
-    print {*STDOUT} strftime '%a %b %e %T %Y%n', localtime or carp $OS_ERROR;
+    _log_noindent(strftime '%a %b %e %T %Y%n', localtime);
 
     foreach my $area (@area_list) {
 
-        foreach my $run_path ( $monitor->find_live_incoming($area) ) {
-            print {*STDOUT} "\t$run_path" or carp $OS_ERROR;
+        foreach my $run_path ( $monitor->find_live($area) ) {
+            _log_noindent("Considering $run_path");
 
             my $folder = Monitor::RunFolder::Staging->
-                           new( runfolder_path => $run_path, );
+                           new( runfolder_path => $run_path );
+            my $run_status = $folder->current_run_status_description();
+            _log("Run status $run_status");
+
+            if ($folder->is_in_analysis) {
+                _log('Folder is in analysis');
+                if ($dry_run) {
+                    _log('DRY RUN - not calling move_to_outgoing');
+                } else {
+                    try {
+                        _log($folder->move_to_outgoing());
+                    } catch {
+                        _log("ERROR moving to outgoing: $_");
+                    };
+                }
+                next;
+            } else {
+                _log('Folder is not in analysis');
+            }
 
             # If we don't remember seeing it before set the staging tag, folder name and glob;
             if ( not defined $previous_size_of{$run_path} ) {
                 $folder->update_folder();
-                $folder->run_db_row->
-                    set_tag( $folder->username(), 'staging' );
+                $folder->run_db_row->set_tag( $folder->username(), 'staging' );
+                _log('Set staging tag');
                 $previous_size_of{$run_path} = 0;
             }
-
-            my $run_status = $folder->current_run_status_description();
-            print {*STDOUT} "\t$run_status\n" or carp $OS_ERROR;
-
 
             # Could delete the directory here. Leave it for now.
             next if $run_status eq 'data discarded';
@@ -67,12 +91,9 @@ while (1) {
             }
 
             if ( $run_status eq 'run in progress' ) {
-
                 $folder->cycle_lag($run_path) ? $folder->run_db_row->set_tag( $folder->username(), 'copying_problem' )
                                               : $folder->run_db_row->unset_tag( $folder->username(), 'copying_problem' );
-
                 $folder->fallback_update();
-
                 next;
             }
 
@@ -93,29 +114,29 @@ while (1) {
                 # Check that no file is 'in the future'.
                 if ( $latest_mod > time ) {
                     $previous_size_of{$run_path} = $total_size;
-
-                    print {*STDOUT} "\tNot done: 'future' file $latest_mod\n"
-                        or carp $OS_ERROR;
-
+                    _log("Not done: 'future' file $latest_mod");
                     next;
                 }
 
                 # Check that there's been no activity since last time.
                 if ( $total_size != $previous_size_of{$run_path} ) {
-
-                    printf {*STDOUT} "\tSizes not equal: %d %d\n",
-                        $previous_size_of{$run_path}, $total_size
-                        or carp $OS_ERROR;
-
+                    _log(sprintf 'Sizes not equal: %d %d',
+                        $previous_size_of{$run_path}, $total_size);
                     $previous_size_of{$run_path} = $total_size;
                     next;
                 }
 
-                if ($ENV{dev} && $ENV{dev} ne 'live') {
-                  next;
+                if ($dry_run) {
+                    _log('DRY RUN - not calling mark_as_mirrored and move_to_analysis');
+                } else { 
+                    $folder->mark_as_mirrored();
+                    _log('Folder marked as mirrored');
+                    try {
+                        _log($folder->move_to_analysis());
+                    } catch {
+                        _log("ERROR moving to analysis: $_");
+                    };
                 }
-                $folder->mark_as_mirrored();
-                $folder->move_to_analysis();
             }
         }
     }
@@ -162,6 +183,8 @@ Monitor one or more staging areas supplied as commandline arguments.
 
 The script runs an infinite loop so do not call it via a crontab.
 
+Actions for runs in the incoming directory:
+
 Check the number of cycles mirrored is not lagging behind the actual cycle
 count. Tag the run as 'copying_problem' if it is, remove the tag if it isn't.
 
@@ -171,15 +194,18 @@ present). When this is the case run some validation checks, set the status to
 'run mirrored', move the run folder to 'analysis', and set the status to
 'analysis pending'.
 
+Actions for runs in analysis directory:
+
+If the run status is 'qc complete, the run is moved to the outgoing directory.
+
 =head1 SUBROUTINES/METHODS
 
 None
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-Methods that the script calls read $ENV{dev} to decide whether to work with
-the 'live' or 'dev' databases. If it's 'dev' the script will carry out all the
-same functions but will not make any file-system changes.
+If dev environment variable is set, the script will carry out all the
+same functions but will not make any file-system changes
 
 =head1 INCOMPATIBILITIES
 
@@ -195,7 +221,7 @@ John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by John O'Brien
+Copyright (C) 2015 GRL, by John O'Brien
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

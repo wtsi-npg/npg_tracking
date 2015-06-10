@@ -61,11 +61,11 @@ lives_ok { $test = Monitor::Staging->new( _schema => $schema ) }
 
 
 {
-    throws_ok { $test->find_live_incoming() }
+    throws_ok { $test->find_live() }
               qr/Top[ ]level[ ]staging[ ]path[ ]required/msx,
               'Require path argument';
 
-    throws_ok { $test->find_live_incoming('/no/such/path') }
+    throws_ok { $test->find_live('/no/such/path') }
               qr/[ ]not[ ]a[ ]directory/msx, 'Require real path';
 
 
@@ -84,7 +84,7 @@ lives_ok { $test = Monitor::Staging->new( _schema => $schema ) }
     # can't rely on the same one being returned every time.
     
     my $MOCK_STAGING = 't/data/gaii/staging';
-    my @live_incoming = $test->find_live_incoming($MOCK_STAGING);
+    my @live_incoming = $test->find_live($MOCK_STAGING);
     cmp_bag(
         \@live_incoming,
         [
