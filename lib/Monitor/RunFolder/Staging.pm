@@ -183,6 +183,63 @@ sub mark_as_mirrored {
     return;
 }
 
+sub move_to_analysis {
+    my ($self) = @_;
+
+    my @ms;
+    my $rf = $self->runfolder_path();
+    my $destination = $self->_destination_path('incoming', 'analysis', 1);
+    my ($moved, $m) = $self->_move_folder($destination);
+    push @ms, $m;
+    if ($moved) {
+        my $group = get_config_staging_areas()->{'analysis_group'};
+        if ($group) {
+            $self->_change_group($group, $destination, $destination . "/$INTENSITIES_DIR_PATH");
+            push @ms, "Changed group to $group";
+        }
+        my $status = 'analysis pending';
+        $self->run_db_row->update_run_status($status, $self->username() );
+        push @ms, "Updated run status to $status";
+    }
+
+    return @ms;
+}
+
+sub is_in_analysis {
+    my ($self) = @_;
+    my $result = 1;
+    try {
+        $self->_destination_path('analysis', 'outgoing');
+    } catch {
+        if ($_ =~ 'is not in analysis') {
+            $result = 0;
+        }
+    };
+    return $result;
+}
+
+sub move_to_outgoing {
+    my ($self) = @_;
+
+    my $m;
+    my $rf = $self->runfolder_path();
+    if (any { -e join(q[/], $rf, $_) }  @NO_MOVE_NAMES) {
+        $m = "$rf flagged not to be moved to outgoing"
+    } else {
+        my $id = $self->run_db_row->id_run;
+        my $status = $self->current_run_status_description();
+        if ($status eq 'qc complete') {
+            my $destination = $self->_destination_path('analysis', 'outgoing', 1);
+            my $moved;
+            ($moved, $m) = $self->_move_folder($destination);
+        } else {
+            $m = "Run $id status $status is not qc complete, not moving to outgoing";
+        }
+    }
+
+    return $m;
+}
+
 sub _destination_path {
     my ($self, $src, $dest, $create_upstream_dest) = @_;
     if (!$src || !$dest) {
@@ -220,63 +277,6 @@ sub _move_folder {
     my $m = $result ? "Moved $rf to $destination"
                     : "Failed to move $rf to $destination: $error";
     return ($result, $m);
-}
-
-sub is_in_analysis {
-    my ($self) = @_;
-    my $result = 1;
-    try {
-        $self->_destination_path('analysis', 'outgoing');
-    } catch {
-        if ($_ =~ 'is not in analysis') {
-            $result = 0;
-        }
-    };
-    return $result;
-}
-
-sub move_to_analysis {
-    my ($self) = @_;
-
-    my @ms;
-    my $rf = $self->runfolder_path();
-    my $destination = $self->_destination_path('incoming', 'analysis', 1);
-    my ($moved, $m) = $self->_move_folder($destination);
-    push @ms, $m;
-    if ($moved) {
-        my $group = get_config_staging_areas()->{'analysis_group'};
-        if ($group) {
-            $self->_change_group($group, $destination, $destination . "/$INTENSITIES_DIR_PATH");
-            push @ms, "Changed group to $group";
-        }
-        my $status = 'analysis pending';
-        $self->run_db_row->update_run_status($status, $self->username() );
-        push @ms, "Updated run status to $status";
-    }
-    
-    return @ms;
-}
-
-sub move_to_outgoing {
-    my ($self) = @_;
-
-    my $m;
-    my $rf = $self->runfolder_path();
-    if (any { -e join(q[/], $rf, $_) }  @NO_MOVE_NAMES) {
-        $m = "$rf flagged not to be moved to outgoing"
-    } else {
-        my $id = $self->run_db_row->id_run;
-        my $status = $self->current_run_status_description();
-        if ($status eq 'qc complete') {
-            my $destination = $self->_destination_path('analysis', 'outgoing', 1);
-            my $moved;
-            ($moved, $m) = $self->_move_folder($destination);
-        } else {
-            $m = "Run $id status $status is not qc complete, not moving to outgoing";
-        }
-    }
-
-    return $m;
 }
 
 sub fallback_update {
