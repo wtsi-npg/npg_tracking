@@ -12,6 +12,7 @@ use Perl6::Slurp;
 use Readonly;
 use List::MoreUtils qw(any);
 use Try::Tiny;
+use Fcntl qw/S_ISGID/;
 
 use npg_tracking::util::config qw(get_config_staging_areas);
 
@@ -25,6 +26,7 @@ Readonly::Scalar my $SECONDS_PER_MINUTE   => 60;
 Readonly::Scalar my $RTA_COMPLETE         => 10 * $SECONDS_PER_MINUTE;
 Readonly::Scalar my $INTENSITIES_DIR_PATH => 'Data/Intensities';
 Readonly::Array  my @NO_MOVE_NAMES        => qw( npgdonotmove npg_do_not_move );
+Readonly::Scalar my $MODE_INDEX           => 2;
 
 has 'rta_complete_wait' => (isa          => 'Int',
                             is           => 'ro',
@@ -194,7 +196,8 @@ sub move_to_analysis {
     if ($moved) {
         my $group = get_config_staging_areas()->{'analysis_group'};
         if ($group) {
-            $self->_change_group($group, $destination, $destination . "/$INTENSITIES_DIR_PATH");
+            _change_group($group, $destination, 1);
+            _change_group($group, $destination . "/$INTENSITIES_DIR_PATH");
             push @ms, "Changed group to $group";
         }
         my $status = 'analysis pending';
@@ -315,20 +318,31 @@ sub update_folder {
 }
 
 sub _change_group {
-    my ($self, $group, @dirs) = @_;
-    foreach my $directory (@dirs) {
-        my $temp = $directory . '.original';
-        move($directory, $temp) or croak "move error: $ERRNO";
-        mkdir $directory or croak "mkdir error: $ERRNO";
-        for my $file (glob "$temp/*") {
-            my $dest = $directory . q{/} . basename($file);
-            move($file, $dest) or croak "move($file, $dest)\nmove error: $ERRNO";
-        }
-        rmdir $temp or croak "rmdir error: $ERRNO";
-
-        my $gid = getgrnam($group);
-        chown -1, $gid, $directory;
+    my ($group, $directory, $set_sgid) = @_;
+  
+    my $temp = $directory . '.original';
+    move($directory, $temp) or croak "move error: $ERRNO";
+    mkdir $directory or croak "mkdir error: $ERRNO";
+    for my $file (glob "$temp/*") {
+        my $dest = $directory . q{/} . basename($file);
+        move($file, $dest) or croak "move($file, $dest)\nmove error: $ERRNO";
     }
+    rmdir $temp or croak "rmdir error: $ERRNO";
+
+    my $gid = getgrnam($group);
+    chown -1, $gid, $directory;
+    # If needed, set group sticky bit
+    if ($set_sgid) {
+        _set_sgid($directory);
+    }
+
+    return;
+}
+
+sub _set_sgid {
+    my $directory = shift;
+    my $perms = (stat($directory))[$MODE_INDEX] | S_ISGID();
+    chmod $perms, $directory;
     return;
 }
 
@@ -450,6 +464,8 @@ Ensure DB has updated runfolder name and a suitable glob for quickly finding the
 =item Readonly
 
 =item Try::Tiny
+
+=item Fcntl
 
 =back
 

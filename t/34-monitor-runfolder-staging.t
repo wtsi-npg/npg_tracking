@@ -5,12 +5,13 @@ use File::Copy;
 use File::Find;
 use File::Temp qw(tempdir);
 use File::Path qw(make_path);
-use Test::More tests => 73;
+use Test::More tests => 77;
 use Test::Exception::LessClever;
 use Test::Warn;
 use Test::Deep;
 use IPC::System::Simple; #needed for Fatalised/autodying system()
 use autodie qw(:all);
+use Fcntl qw/S_ISGID/;
 
 use t::dbic_util;
 
@@ -335,6 +336,23 @@ my $schema = t::dbic_util->new->test_schema();
     is($test->_get_folder_path_glob, '/{export,nfs}/sf25/ILorHSany_sf25/*/', 'glob for /nfs/sf25 outgoing');
     $test = Monitor::RunFolder::Staging->new( runfolder_path => '/export/sf25/ILorHSany_sf25/incoming/110712_HS8_06541_B_B0A6DABXX');
     is($test->_get_folder_path_glob, '/{export,nfs}/sf25/ILorHSany_sf25/*/', 'glob for /export/sf25 incoming');
+}
+
+{
+    my $tmpdir = tempdir( CLEANUP => 1 );
+    my $r= (stat($tmpdir))[2] & S_ISGID();
+    is( $r, 0, 'initially the sticky bit is not set');
+    Monitor::RunFolder::Staging::_set_sgid($tmpdir);
+    $r= (stat($tmpdir))[2] & S_ISGID();
+    is( $r, 1024, 'now the sticky bit is set');
+
+    $tmpdir = tempdir( CLEANUP => 1 );
+    my ($user, $passwd, $uid, $gid ) = getpwuid $< ;
+    my $group = getgrgid $gid;
+    lives_ok { Monitor::RunFolder::Staging::_change_group($group, $tmpdir, 1) }
+       'changing group';
+    $r= (stat($tmpdir))[2] & S_ISGID();
+    is( $r, 1024, 'now the sticky bit is set');
 }
 
 1;
