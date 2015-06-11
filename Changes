@@ -1,7 +1,9 @@
 CHANGES
 
- - staging monitor extension: move qc complete runfolders from analysis
-   to outgoing
+release 84.5
+ - staging monitor extension:
+     move qc complete runfolders from analysis to outgoing
+     propagate group ownership inside the runfolder
 
 release 84.4
  - to avoid the need to create deep directory hierarchy containing www-live
