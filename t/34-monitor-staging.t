@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More tests => 11;
 use Test::Deep;
-use Test::Exception::LessClever;
+use Test::Exception;
 use Test::MockModule;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -10,14 +10,24 @@ use File::Path qw/ make_path /;
 
 use t::dbic_util;
 
-use_ok('Monitor::Staging');
+BEGIN {
+  local $ENV{'HOME'} = 't';
+  use_ok('Monitor::Staging');
+}
 
-my $schema = t::dbic_util->new->test_schema();
-my $test;
+my $schema = t::dbic_util->new->test_schema(fixture_path => q[t/data/dbic_fixtures]);
 
-lives_ok { $test = Monitor::Staging->new( _schema => $schema ) }
+{
+    my $test;
+    lives_ok { $test = Monitor::Staging->new( _schema => $schema ) }
          'Object creation ok';
+    throws_ok { $test->find_live() }
+              qr/Top[ ]level[ ]staging[ ]path[ ]required/msx,
+              'Require path argument';
 
+    throws_ok { $test->find_live('/no/such/path') }
+              qr/[ ]not[ ]a[ ]directory/msx, 'Require real path';
+}
 
 {
     my $tdir = tempdir( CLEANUP => 1 );
@@ -59,46 +69,24 @@ lives_ok { $test = Monitor::Staging->new( _schema => $schema ) }
     );
 }
 
-
 {
-    throws_ok { $test->find_live() }
-              qr/Top[ ]level[ ]staging[ ]path[ ]required/msx,
-              'Require path argument';
-
-    throws_ok { $test->find_live('/no/such/path') }
-              qr/[ ]not[ ]a[ ]directory/msx, 'Require real path';
-
-
-    # npg_tracking::illumina::run::folder::validation uses npg::api, so call anything
-    # matching a loose regex a pass.
-    my $folval = Test::MockModule->new('npg_tracking::illumina::run::folder::validation');
-    $folval->mock( 'check',
-                   sub {
-                    return ( $_[1] =~ m/\d{6}_(?:IL|HS)\d+_\d+/msx ) ? 1 : 0;
-                   }
-    );
-
-
-    # This test is vulnerable. The method returns the values of a hash. The
-    # test directory includes duplicate run folders for one run id, so we
-    # can't rely on the same one being returned every time.
-    
-    my $MOCK_STAGING = 't/data/gaii/staging';
-    my @live_incoming = $test->find_live($MOCK_STAGING);
-    cmp_bag(
-        \@live_incoming,
-        [
-          $MOCK_STAGING . '/IL5/incoming/100708_IL3_04998',
-          $MOCK_STAGING . '/IL4/incoming/101026_IL4_0095',
-          $MOCK_STAGING . '/IL5/incoming/100708_IL3_04999',
-          $MOCK_STAGING . '/IL999/incoming/100622_IL3_01234',
-          $MOCK_STAGING . '/IL12/incoming/100721_IL12_05222',
-          $MOCK_STAGING . '/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX',
-        ],
-        'The return list is correct'
-    );
-
+    my $run = $schema->resultset('Run')->search({id_run => 5222})->next;
+    $run or die 'need run 5222 in test db';
+    $run->update_run_status('run cancelled'),
+    my $test = Monitor::Staging->new( _schema => $schema );
+    my $root = tempdir( CLEANUP => 1 );
+    my @path = map { $root . $_ }
+               qw(/IL5/outgoing/100713_IL24_0433
+                  /IL12/analysis/100831_IL11_05222
+                  /IL5/incoming/100713_IL24_04998
+                  /IL4/incoming/071105_IL2_0095
+                  /IL5/analysis/100713_IL12_04999
+                  /IL999/incoming/080817_IL18_1234
+                  /ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX );
+    map { make_path $_} @path;
+    my @live_incoming = $test->find_live($root);
+    shift @path; shift @path;
+    is( join(q[ ],sort @live_incoming), join(q[ ],sort @path), 'runfolders found in incoming and analysis');
 }
-
 
 1;

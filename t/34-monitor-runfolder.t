@@ -1,18 +1,13 @@
 use strict;
 use warnings;
-
-use Carp;
 use English qw(-no_match_vars);
 use File::Copy;
-
 use Test::More tests => 26;
-use Test::Exception::LessClever;
+use Test::Exception;
+
 use t::dbic_util;
 
-use Readonly;
-
-Readonly::Scalar my $MOCK_STAGING => 't/data/gaii/staging';
-
+my $MOCK_STAGING = 't/data/gaii/staging';
 
 use_ok('Monitor::RunFolder');
 
@@ -110,9 +105,9 @@ lives_ok {
     $test = Monitor::RunFolder->new( runfolder_path => $mock_path,
                                      _schema        => $schema, );
 
-    move( "$mock_path/Data", "$mock_path/_Data" ) or croak "Error $OS_ERROR";
+    move( "$mock_path/Data", "$mock_path/_Data" ) or die "Error $OS_ERROR";
     lives_ok { $test->read_long_info(0) } 'Call read_long_info method without error';
-    move( "$mock_path/_Data", "$mock_path/Data" ) or croak "Error $OS_ERROR";
+    move( "$mock_path/_Data", "$mock_path/Data" ) or die "Error $OS_ERROR";
 
     is( $test->run_db_row->is_tag_set('single_read'), 1,
         '  \'single_read\' tag is set on this run' );
@@ -134,7 +129,6 @@ lives_ok {
         '  \'multiplex\' tag is set on that run' );
     is( $test->run_db_row->is_tag_set('rta'), 1,
         '  \'rta\' tag is set on that run' );
-
 }
 
 1;

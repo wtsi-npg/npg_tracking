@@ -15,9 +15,9 @@ use t::dbic_util;
 my $MOCK_STAGING = 't/data/gaii/staging';
 
 BEGIN {
-  $ENV{'HOME'} = 't'; # t/.npg/npg_tracking config file does not contain
-                      # analysis_group entry
-  use_ok('Monitor::RunFolder::Staging');
+    local $ENV{'HOME'} = 't'; # t/.npg/npg_tracking config file does not contain
+                              # analysis_group entry
+    use_ok('Monitor::RunFolder::Staging');
 }
 
 my $schema = t::dbic_util->new->test_schema();
