@@ -1,23 +1,24 @@
 use strict;
 use warnings;
-use English qw(-no_match_vars);
+use Test::More tests => 77;
+use Test::Exception;
+use Test::Warn;
+use Test::Deep;
 use File::Copy;
 use File::Find;
 use File::Temp qw(tempdir);
 use File::Path qw(make_path);
-use Test::More tests => 77;
-use Test::Exception::LessClever;
-use Test::Warn;
-use Test::Deep;
-use IPC::System::Simple; #needed for Fatalised/autodying system()
-use autodie qw(:all);
 use Fcntl qw/S_ISGID/;
 
 use t::dbic_util;
 
 my $MOCK_STAGING = 't/data/gaii/staging';
 
-use_ok('Monitor::RunFolder::Staging');
+BEGIN {
+  $ENV{'HOME'} = 't'; # t/.npg/npg_tracking config file does not contain
+                      # analysis_group entry
+  use_ok('Monitor::RunFolder::Staging');
+}
 
 my $schema = t::dbic_util->new->test_schema();
 
@@ -341,10 +342,10 @@ my $schema = t::dbic_util->new->test_schema();
 {
     my $tmpdir = tempdir( CLEANUP => 1 );
     my $r= (stat($tmpdir))[2] & S_ISGID();
-    is( $r, 0, 'initially the sticky bit is not set');
+    ok( !$r, 'initially the sticky bit is not set');
     Monitor::RunFolder::Staging::_set_sgid($tmpdir);
     $r= (stat($tmpdir))[2] & S_ISGID();
-    is( $r, 1024, 'now the sticky bit is set');
+    ok( $r, 'now the sticky bit is set');
 
     $tmpdir = tempdir( CLEANUP => 1 );
     my ($user, $passwd, $uid, $gid ) = getpwuid $< ;
@@ -352,7 +353,7 @@ my $schema = t::dbic_util->new->test_schema();
     lives_ok { Monitor::RunFolder::Staging::_change_group($group, $tmpdir, 1) }
        'changing group';
     $r= (stat($tmpdir))[2] & S_ISGID();
-    is( $r, 1024, 'now the sticky bit is set');
+    ok( $r, 'now the sticky bit is set');
 }
 
 1;
