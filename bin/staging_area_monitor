@@ -28,7 +28,7 @@ sub _log {
 }
 
 sub _log_noindent {
-    my @ms = map { "$_\n\n" } @_;
+    my @ms = map { "\n$_\n" } @_;
     print {*STDOUT} @ms or carp $OS_ERROR;
 }
 
@@ -59,7 +59,7 @@ while (1) {
             _log("Run status $run_status");
 
             if ($folder->is_in_analysis) {
-                _log('Folder is in analysis');
+                _log('Folder is in /analysis/');
                 if ($dry_run) {
                     _log('DRY RUN - not calling move_to_outgoing');
                 } else {
@@ -71,7 +71,7 @@ while (1) {
                 }
                 next;
             } else {
-                _log('Folder is not in analysis');
+                _log('Folder is in /incoming/');
             }
 
             # If we don't remember seeing it before set the staging tag, folder name and glob;
