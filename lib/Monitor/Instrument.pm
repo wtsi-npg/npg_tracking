@@ -13,8 +13,6 @@ use Carp;
 use MooseX::StrictConstructor;
 use POSIX qw(strftime);
 
-use npg_tracking::illumina::run::folder::validation;
-
 our $VERSION = '0';
 
 

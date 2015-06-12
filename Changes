@@ -4,6 +4,8 @@ release 84.5
  - staging monitor extension:
      move qc complete runfolders from analysis to outgoing
      propagate group ownership inside the runfolder
+ - perform runfolder name validation against the tracking db run record
+   rather than against xml feeds
 
 release 84.4
  - to avoid the need to create deep directory hierarchy containing www-live

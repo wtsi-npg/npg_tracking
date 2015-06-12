@@ -1,35 +1,41 @@
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 6;
 use Test::Exception;
+use Test::Warn;
 
-local $ENV{'NPG_WEBSERVICE_CACHE_DIR'} = q[t/data/long_info];
+use t::dbic_util;
+my $schema = t::dbic_util->new->test_schema(fixture_path => q[t/data/dbic_fixtures]);
 
-BEGIN {
-  use_ok(q{npg_tracking::illumina::run::folder::validation});
-}
+my $package = q{npg_tracking::illumina::run::folder::validation};
 
-my $validation;
-{
-  $validation = npg_tracking::illumina::run::folder::validation->new(
-                                                        run_folder => '100505_IL45_4655',
-                                                       );
-   ok(!$validation->check, 'Run folder 100505_IL45_4655 NOT match 100429_IL38_4655 from npg');
-}
+use_ok($package);
 
 {
-  $validation = npg_tracking::illumina::run::folder::validation->new(id_run    => 4655,
-                                                        run_folder => '100429_IL38_4655',
-                                                       );
-  ok($validation->check, 'Run folder 100505_IL45_4655 match 100429_IL38_4655 from npg');
-}
+  my $v = $package->new(
+    run_folder          => '100505_IL45_4655',
+    npg_tracking_schema => $schema
+  );
+  my $result;
+  warnings_like { $result = $v->check() }
+    [qr/Attribute \(tracking_run\) does not pass the type constraint/,
+     qr/does not match \'\'/],
+    'warning since the run is not in the db';
+  ok(!$result, 'not validated');
 
-{
-  $validation = npg_tracking::illumina::run::folder::validation->new(
-                                                        run_folder => '100429_IL38_4655',
-                                                        no_npg_check =>1,
-                                                       );
-  ok($validation->check, 'Run folder 100505_IL45_4655 not checked from npg');
+  $v = $package->new(
+     run_folder          => '110818_IL34_06699',
+     npg_tracking_schema => $schema
+  );
+  ok($v->check, 'validated');
+
+  $v = $package->new(
+     run_folder          => '110819_IL34_06699',
+     npg_tracking_schema => $schema
+  );
+  warning_like { $result = $v->check() } qr/does\ not\ match/,
+    'warning since the run is not in the db';
+  ok(!$result, 'not validated');
 }
 
 1;

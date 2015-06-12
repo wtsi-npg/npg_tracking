@@ -15,12 +15,10 @@ our $VERSION = '0';
 sub validate_run_folder {
     my ( $self, $folder_name ) = @_;
 
-    # Let 'npg_tracking::illumina::run::folder::validation->new' worry about missing args.
-
-    my $validation =
-        npg_tracking::illumina::run::folder::validation->new( run_folder => $folder_name );
-
-    return $validation->check();
+    return npg_tracking::illumina::run::folder::validation->new(
+        run_folder          => $folder_name,
+        npg_tracking_schema => $self->schema
+    )->check();
 }
 
 

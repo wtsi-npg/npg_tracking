@@ -1,9 +1,8 @@
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 12;
 use Test::Deep;
 use Test::Exception;
-use Test::MockModule;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
 use File::Path qw/ make_path /;
@@ -71,21 +70,27 @@ my $schema = t::dbic_util->new->test_schema(fixture_path => q[t/data/dbic_fixtur
 
 {
     my $run = $schema->resultset('Run')->search({id_run => 5222})->next;
-    $run or die 'need run 5222 in test db';
-    $run->update_run_status('run cancelled'),
+    $run->update_run_status('run cancelled');
+
     my $test = Monitor::Staging->new( _schema => $schema );
     my $root = tempdir( CLEANUP => 1 );
     my @path = map { $root . $_ }
                qw(/IL5/outgoing/100713_IL24_0433
-                  /IL12/analysis/100831_IL11_05222
-                  /IL5/incoming/100713_IL24_04998
-                  /IL4/incoming/071105_IL2_0095
-                  /IL5/analysis/100713_IL12_04999
-                  /IL999/incoming/080817_IL18_1234
-                  /ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX );
+                  /ILhome/analysis/150612_HS36_5222_A_C71G9ANXX
+                  /ILorHSany_sf33/incoming/110811_HS17_06670_A_C04C3ACXX
+                  /ILorHSorMS_sf45/incoming/120403_MS1_7826_A_MS0009139-00300
+                  /ILorHSorMS_sf45/incoming/120403_MS1_7825_A_MS0009139-00300
+                  /ILorHSany_sf44/analysis/110818_IL34_06699
+                  /HSorHSany_sf40/incoming/110810_HS23_06668_B_D080FACXX );
     map { make_path $_} @path;
-    my @live_incoming = $test->find_live($root);
-    shift @path; shift @path;
+    my @live_incoming;
+    warning_like { @live_incoming = $test->find_live($root)}
+        qr/\'110811_HS17_06670_A_C04C3ACXX\'[ ]does[ ]not[ ]match[ ]
+        \'110811_HS16_06670_A_C04C3ACXX\'/msx,
+        'warning about name mismatch';
+    shift @path; # not in analysis | incoming
+    shift @path; # run cancelled
+    shift @path; # runfolder name mismatch against the db
     is( join(q[ ],sort @live_incoming), join(q[ ],sort @path), 'runfolders found in incoming and analysis');
 }
 

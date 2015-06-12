@@ -77,14 +77,13 @@ sub find_live {
 
         next if !-d $run_dir;
 
-
         my $check = Monitor::RunFolder->new( runfolder_path => $run_dir );
         my $run_folder = $check->run_folder();
 
-        my $validate = npg_tracking::illumina::run::folder::validation->
-                            new( run_folder => $run_folder );
-
-        next if !$validate->check($run_folder);
+        my $validate = npg_tracking::illumina::run::folder::validation->new(
+             run_folder          => $run_folder,
+             npg_tracking_schema => $self->schema );
+        next if !$validate->check();
 
         $path_for{ $check->id_run() } = $run_dir;
     }
