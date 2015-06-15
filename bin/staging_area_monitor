@@ -54,7 +54,6 @@ while (1) {
 
             my $folder = Monitor::RunFolder::Staging->
                            new( runfolder_path => $run_path );
-p
             my $run_status = $folder->current_run_status_description();
             _log("Run status $run_status");
 
