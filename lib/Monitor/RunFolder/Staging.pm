@@ -331,7 +331,8 @@ sub _change_group {
 
     my $gid = getgrnam($group);
     chown -1, $gid, $directory;
-    # If needed, set group sticky bit
+    # If needed, add 's' to group permission so that
+    # a new dir/file has the same group as parent directory
     if ($set_sgid) {
         _set_sgid($directory);
     }
