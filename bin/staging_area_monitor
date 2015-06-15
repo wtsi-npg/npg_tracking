@@ -39,8 +39,7 @@ my @area_list = $monitor->validate_areas(@ARGV);
 
 croak 'No valid arguments' if scalar @area_list == 0;
 
-# In production dev variable is not set
-my $dry_run = $ENV{'dev'}; 
+my $dry_run = $ENV{'dev'} and ($ENV{'dev'} ne 'live'); 
 _log_noindent('*************** ' . ($dry_run ? 'DRY RUN' : 'LIVE RUN') .
           ' ***************');
 
@@ -55,6 +54,7 @@ while (1) {
 
             my $folder = Monitor::RunFolder::Staging->
                            new( runfolder_path => $run_path );
+p
             my $run_status = $folder->current_run_status_description();
             _log("Run status $run_status");
 
