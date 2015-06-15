@@ -33,20 +33,6 @@ has run_folder => (
     isa        => 'Str',
     lazy_build => 1,
 );
-
-has run_db_row => (
-    is         => 'ro',
-    isa        => 'Maybe[npg_tracking::Schema::Result::Run]',
-    lazy_build => 1,
-);
-
-has file_obj => (
-    is         => 'ro',
-    isa        => 'Monitor::SRS::File',
-    lazy_build => 1,
-);
-
-
 sub _build_run_folder {
     my ($self) = @_;
     my $path = $self->runfolder_path();
@@ -54,7 +40,11 @@ sub _build_run_folder {
     return substr $path, 1 + rindex( $path, q{/} );
 }
 
-
+has run_db_row => (
+    is         => 'ro',
+    isa        => 'Maybe[npg_tracking::Schema::Result::Run]',
+    lazy_build => 1,
+);
 sub _build_run_db_row {
     my ($self) = @_;
 
@@ -66,6 +56,11 @@ sub _build_run_db_row {
     return $run_rs;
 }
 
+has file_obj => (
+    is         => 'ro',
+    isa        => 'Monitor::SRS::File',
+    lazy_build => 1,
+);
 
 sub current_run_status_description {
     my ($self) = @_;
@@ -89,7 +84,6 @@ sub current_run_status {
     return $self->current_run_status_description();
 }
 
-
 sub _build_file_obj {
     my ($self) = @_;
 
@@ -100,7 +94,6 @@ sub _build_file_obj {
 
     return $file;
 }
-
 
 sub check_cycle_count {
     my ( $self, $latest_cycle, $run_complete ) = @_;
@@ -124,7 +117,6 @@ sub check_cycle_count {
 
     return;
 }
-
 
 sub read_long_info {
     my ( $self, $run_is_rta ) = @_;
@@ -160,6 +152,8 @@ sub read_long_info {
                         : $run_db->unset_tag( $username, 'rta' );
 
     $run_db->update();
+
+    $self->_delete_lanes();
 
     return;
 }
@@ -204,6 +198,23 @@ sub delay {
   }
 
   return $delay;
+}
+
+sub _delete_lanes {
+  my $self = shift;
+  
+  my $run_lanes = $self->run_db_row()->run_lanes;
+  if ( $self->lane_count && ($self->lane_count < $run_lanes->count()) ) {
+    while ( my $lane = $run_lanes->next ) {
+      my $position = $lane->position;
+      if ($position > $self->lane_count) {
+          $lane->delete();
+          warn "Deleted lane $position\n"; 
+      }
+    }
+  }
+
+  return;
 }
 
 1;
