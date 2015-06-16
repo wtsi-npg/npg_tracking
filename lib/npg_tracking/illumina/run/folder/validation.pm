@@ -27,19 +27,34 @@ sub check{
   my $self = shift;
   my $run_folder = $self->run_folder();
   my $run_folder_npg;
+  my $run_status;
   try {
     $run_folder_npg = $self->tracking_run()->folder_name();
+    $run_status = $self->tracking_run()->current_run_status_description();
   } catch {
     carp $_;
   };
 
-  $run_folder_npg ||= q[];
-  if(! ($run_folder eq $run_folder_npg )){
-    carp "Run folder '$run_folder' does not match '$run_folder_npg' from NPG";
-    return;
+  my $match = 1;
+
+  if ($run_folder_npg) {
+    if( $run_folder ne $run_folder_npg ){
+      carp "Run folder '$run_folder' does not match '$run_folder_npg' from NPG";
+      $match = 0;
+    }
+  } else {
+    if (!$run_status) {
+      carp 'Neither run folder name nor run status is available';
+      $match = 0;
+    } else {
+      if ($run_status ne 'run pending') {
+        carp "No run folder name for run with status '$run_status'";
+        $match = 0;
+      }
+    }
   }
 
-  return 1;
+  return $match;
 }
 
 no Moose;
@@ -60,7 +75,7 @@ $validation->check();
 
 =head1 DESCRIPTION
 
-Given a run_folder, check this is genuine or not against the tracking database
+Given a run folder name, checks this is genuine or not against the tracking database
 
 =head1 SUBROUTINES/METHODS
 
