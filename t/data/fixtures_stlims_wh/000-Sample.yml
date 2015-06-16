@@ -7,6 +7,9 @@
   description: ~
   id_lims: SQSCP
   id_sample_lims: 7283
+  cohort: plan2
+  donor_id: d5678
+  supplier_name: sample_33
   id_sample_tmp: 6323
   last_updated: 2012-08-03 10:07:02
   organism: Human
@@ -82,6 +85,9 @@
   id_sample_tmp: 1090776
   last_updated: 2012-10-02 15:12:05
   organism: ~
+  cohort: plan1
+  donor_id: 5678
+  supplier_name: sample_33
   recorded_at: 2014-11-18 21:14:59
   reference_genome: Homo_sapiens (1000Genomes)
   replicate: ~
