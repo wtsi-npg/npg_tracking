@@ -1,11 +1,11 @@
 use strict;
 use warnings;
-use Test::More tests => 404;
+use Test::More tests => 413;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
 
-my $num_delegated_methods = 40;
+my $num_delegated_methods = 43;
 
 use_ok('st::api::lims');
 is(st::api::lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
@@ -68,10 +68,16 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is($lims->tags->{$lims->spiked_phix_tag_index}, 'ACAACGCAAT', 'tag_sequence for phix');
   is(scalar $lims->children, 13, '13 children');
   is(scalar $lims->associated_lims, 13, '13 associated lims');
+  is($lims->sample_supplier_name, undef, 'supplier sample name undefined');
+  is($lims->sample_cohort, undef, 'supplier sample cohort undefined');
+  is($lims->sample_donor_id, undef, 'supplier sample donor id undefined');
   my @plexes = $lims->children;
   my $p1 = $plexes[0];
   my $p6 = $plexes[5];
   is ($p1->tag_index, 1, 'plex tag index');
+  is($p1->sample_supplier_name, undef, 'supplier sample name undefined');
+  is($p1->sample_cohort, undef, 'supplier sample cohort undefined');
+  is($p1->sample_donor_id, undef, 'supplier sample donor id undefined');
   is ($p6->tag_index, 6, 'plex tag index');
   is ($p1->default_tag_sequence, 'ATCACGTTAT', 'plex tag sequence');
   is ($p6->default_tag_sequence, 'GCCAATGTAT', 'plex tag sequence');

@@ -1,5 +1,8 @@
 CHANGES
 
+ - add sample_supplier_name, sample_cohort and sample_donor_id to
+   st::api::lims interface
+
 release 84.4
  - to avoid the need to create deep directory hierarchy containing www-live
    for a live server, set dev env variable value for the Apache server
