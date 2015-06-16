@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 110;
+use Test::More tests => 127;
 use Test::Exception;
 use Test::Deep;
 use Moose::Meta::Class;
@@ -95,6 +95,9 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   ok (!$d->is_pool, 'not pool');
   ok (!$d->study_name, 'no study name');
   ok (!$d->sample_id, 'no sample_id');
+  ok (!$d->sample_supplier_name, 'no supplier name');
+  ok (!$d->sample_cohort, 'no cohort');
+  ok (!$d->sample_donor_id, 'no donor id');
 
   my $lims1 = $children[0];
   ok (!$lims1->is_control, 'first lane is not control');
@@ -104,6 +107,10 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   cmp_ok($lims1->library_id, q(eq), '999999', 'lib id');
   cmp_ok($lims1->library_name, q(eq), '999999', 'lib name');
   ok(!$lims1->sample_consent_withdrawn(), 'sample consent not withdrawn');
+  is ($lims1->sample_id, 7283, 'sample id');
+  is ($lims1->sample_supplier_name, 'sample_33', 'supplier name');
+  is ($lims1->sample_cohort, 'plan2', 'cohort');
+  is ($lims1->sample_donor_id, 'd5678', 'donor id');
 
   my $insert_size;
   lives_ok {$insert_size = $lims1->required_insert_size_range} 'insert size for the first lane';
@@ -150,6 +157,9 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
                                  position         => 1);
   ok (!$lims7->bait_name, 'bait name undefined');
   ok ($lims7->is_pool, 'lane is a pool');
+  ok (!$lims7->sample_supplier_name, 'no supplier name');
+  ok (!$lims7->sample_cohort, 'no cohort');
+  ok (!$lims7->sample_donor_id, 'no donor id');
   ok (!$lims7->is_control, 'lane is not control');
   is (scalar $lims7->children, 9, 'nine-long children list');
   is ($lims7->spiked_phix_tag_index, 168, 'spike index');
@@ -164,6 +174,9 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   ok (!$lims7->is_control, 'tag zero is not control');
   is (scalar $lims7->children, 9, 'tag zero - nine-long children list');
   is ($lims7->spiked_phix_tag_index, 168, 'spike index');
+  ok (!$lims7->sample_supplier_name, 'no supplier name');
+  ok (!$lims7->sample_cohort, 'no cohort');
+  ok (!$lims7->sample_donor_id, 'no donor id');
 
   $lims7 = st::api::lims::ml_warehouse->new(
                                  mlwh_schema      => $schema_wh,
@@ -174,6 +187,10 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   is ($lims7->spiked_phix_tag_index, 168, 'spike index');
   ok (!$lims7->children, 'children list is empty');
   ok (!$lims7->is_control, 'tag 2 is not control');
+  is ($lims7->sample_id, 1092803, 'sample id');
+  is ($lims7->sample_supplier_name, 'sample_33', 'supplier name');
+  is ($lims7->sample_cohort, 'plan1', 'cohort');
+  is ($lims7->sample_donor_id, '5678', 'donor id');
 
   $lims7 = st::api::lims::ml_warehouse->new(
                                  mlwh_schema      => $schema_wh,
