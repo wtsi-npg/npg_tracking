@@ -109,7 +109,7 @@ lives_ok {
                                      _schema        => $schema, );
 
     move( "$mock_path/Data", "$mock_path/_Data" ) or die "Error $OS_ERROR";
-    lives_ok { $test->read_long_info(0) } 'Call read_long_info method without error';
+    lives_ok { $test->read_long_info() } 'Call read_long_info method without error';
     move( "$mock_path/_Data", "$mock_path/Data" ) or die "Error $OS_ERROR";
 
     is( $test->run_db_row->is_tag_set('single_read'), 1,
@@ -123,7 +123,7 @@ lives_ok {
     $mock_path = $MOCK_STAGING . '/IL3/incoming/100622_IL3_01234';
     $test = Monitor::RunFolder->new( runfolder_path => $mock_path,
                                      _schema        => $schema, );
-    $test->read_long_info(1);
+    $test->read_long_info();
 
     is( $test->run_db_row->is_tag_set('paired_read'), 1,
         '  \'paired_read\' tag is set on that run' );
@@ -181,7 +181,7 @@ q{<?xml version="1.0"?>
     is ($test->lane_count, 2, 'two lanes listed in run info');
     is ($test->run_db_row->run_lanes->count, 2, 'now run has two lanes');
 
-    $test->read_long_info(1);
+    $test->read_long_info();
     is ($test->run_db_row->run_lanes->count, 2, 'no change - run has two lanes');
 }
 
