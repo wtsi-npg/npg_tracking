@@ -190,7 +190,7 @@ sub move_to_analysis {
 
     my @ms;
     my $rf = $self->runfolder_path();
-    my $destination = $self->_destination_path('incoming', 'analysis', 1);
+    my $destination = $self->_destination_path('incoming', 'analysis');
     my ($moved, $m) = $self->_move_folder($destination);
     push @ms, $m;
     if ($moved) {
@@ -232,7 +232,7 @@ sub move_to_outgoing {
         my $id = $self->run_db_row->id_run;
         my $status = $self->current_run_status_description();
         if ($status eq 'qc complete') {
-            my $destination = $self->_destination_path('analysis', 'outgoing', 1);
+            my $destination = $self->_destination_path('analysis', 'outgoing');
             my $moved;
             ($moved, $m) = $self->_move_folder($destination);
         } else {
@@ -244,7 +244,7 @@ sub move_to_outgoing {
 }
 
 sub _destination_path {
-    my ($self, $src, $dest, $create_upstream_dest) = @_;
+    my ($self, $src, $dest) = @_;
     if (!$src || !$dest) {
         croak 'Need two names';
     }
@@ -259,11 +259,6 @@ sub _destination_path {
     }
     if (-e $new_path) {
         croak "Path in $dest $new_path already exists";
-    }
-
-    if ($create_upstream_dest) {
-        my ( $dest_path ) = $new_path =~ m{\A(.+/$dest)/.+ }msx;
-        ( -e $dest_path ) || ( mkdir $dest_path );
     }
 
     return $new_path;

@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 77;
+use Test::More tests => 76;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -232,24 +232,19 @@ my $schema = t::dbic_util->new->test_schema();
       'run status is not analysis pending');
     ok( !$test->is_in_analysis(), 'run folder is not in analysis');
     lives_ok { $test->move_to_analysis() } 'Move to analysis';
-    ok( !-e $test_source, 'Run folder is gone from incoming' );
-    ok(  -e $test_target, 'Run folder is present in analysis' );
+    ok( -e $test_source, 'Run folder is not gone from incoming' );
+    ok( !-e $test_target, 'Run folder is not present in analysis' );
 
-    is( $test->current_run_status_description(), 'analysis pending',
-          'Current run status is \'analysis pending\'' );
-
-    # Put things back as they were.
-    move( $test_target, $test_source );
     make_path( $analysis_dir );
     ok( -e $analysis_dir, 'analysis dir exists - test prerequisite');
     lives_ok { $test->move_to_analysis() } 
              'No error if analysis directory already exists...';
   
-    ok( !-e $test_source, '   ...gone from incoming again' );
-    ok(  -e $test_target, '   ...present in analysis again' );
+    ok( !-e $test_source, 'runfolder is gone from incoming' );
+    ok(  -e $test_target, 'runfolder is present in analysis' );
 
     is( $test->current_run_status_description(), 'analysis pending',
-          '   ...current run status unaffected' );
+          'Current run status is \'analysis pending\'' );
    
     $test_source = $test_target;
     my $outgoing_dir = $tmpdir . '/IL12/outgoing';
@@ -281,19 +276,19 @@ my $schema = t::dbic_util->new->test_schema();
                                                  _schema     => $schema, );
     ok( $test->is_in_analysis(), 'run folder is in analysis');
     lives_ok { $m = $test->move_to_outgoing() } 'Move to outgoing lives';
-    ok( -e $test_target, 'is in outgoing' );
-    is( $m, "Moved $test_source to $test_target", 'move is confirmed' );
-    ok( !-e $test_source, 'gone from analysis' );
-    throws_ok { $test->move_to_outgoing() } qr/already\ exists/msx,
-              'Refuse to overwrite an existing directory';
-
-    move( $test_target, $test_source ); # Put things back as they were.
+    ok( !-e $test_target, 'is not in outgoing');
+    is( $m, "Failed to move $test_source to $test_target" .
+      ': No such file or directory', 'move is confirmed' );
+    ok( -e $test_source, 'still in analysis' );
+    
     make_path( $outgoing_dir );
     ok( -e $outgoing_dir, 'outgoing directory exists' );
     lives_ok { $m = $test->move_to_outgoing() } 'Move to outgoing lives';
     ok( -e $test_target, 'is in outgoing' );
     is( $m, "Moved $test_source to $test_target", 'move is confirmed' );
     ok( !-e $test_source, 'gone from analysis' );
+    throws_ok { $test->move_to_outgoing() } qr/already\ exists/msx,
+              'Refuse to overwrite an existing directory';
 
     move( $test_target, $test_source ); # Put things back as they were.
     my $flag = $tmpdir . '/IL12/analysis/100721_IL12_05222/npg_do_not_move';
@@ -345,7 +340,7 @@ my $schema = t::dbic_util->new->test_schema();
     ok( !$r, 'initially the sticky bit is not set');
     Monitor::RunFolder::Staging::_set_sgid($tmpdir);
     $r= (stat($tmpdir))[2] & S_ISGID();
-    ok( $r, 'now the sticky bit is set');
+    ok( $r, 'now the s directory bit');
 
     $tmpdir = tempdir( CLEANUP => 1 );
     my ($user, $passwd, $uid, $gid ) = getpwuid $< ;

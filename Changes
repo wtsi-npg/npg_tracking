@@ -4,7 +4,9 @@ release 84.5
  - staging monitor extension:
      move qc complete runfolders from analysis to outgoing
      propagate group ownership inside the runfolder
- - staging/instrument monitor: remove superfluous run lanes
+ - staging/instrument monitor:
+     remove superfluous run lanes
+     assume all runs are RTA
  - perform runfolder name validation against the tracking db run record
    rather than against xml feeds
 

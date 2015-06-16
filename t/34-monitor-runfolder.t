@@ -117,9 +117,8 @@ lives_ok {
     is( $test->run_db_row->is_tag_set('multiplex'), 0,
         '  \'multiplex\' tag is not set on this run' );
 
-    is( $test->run_db_row->is_tag_set('rta'), 0,
-        '  \'rta\' tag is not set on this run' );
-
+    is( $test->run_db_row->is_tag_set('rta'), 1,
+        '  \'rta\' tag is set' );
 
     $mock_path = $MOCK_STAGING . '/IL3/incoming/100622_IL3_01234';
     $test = Monitor::RunFolder->new( runfolder_path => $mock_path,
