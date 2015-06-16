@@ -6,7 +6,7 @@ package Monitor::SRS::FTP;
 
 use Moose;
 use Monitor::RunFolder;
-extends 'Monitor::SRS';
+extends 'Monitor::Instrument';
 
 use Carp;
 use English qw(-no_match_vars);
