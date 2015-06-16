@@ -39,7 +39,7 @@ my @area_list = $monitor->validate_areas(@ARGV);
 
 croak 'No valid arguments' if scalar @area_list == 0;
 
-my $dry_run = $ENV{'dev'} and ($ENV{'dev'} ne 'live'); 
+my $dry_run = $ENV{'dev'} && ($ENV{'dev'} ne 'live'); 
 _log_noindent('*************** ' . ($dry_run ? 'DRY RUN' : 'LIVE RUN') .
           ' ***************');
 
