@@ -25,36 +25,47 @@ sub _build_npg_tracking_schema {
 
 sub check{
   my $self = shift;
+
   my $run_folder = $self->run_folder();
   my $run_folder_npg;
-  my $run_status;
+  my $run_row;
+
   try {
+    $run_row        = $self->tracking_run();
     $run_folder_npg = $self->tracking_run()->folder_name();
-    $run_status = $self->tracking_run()->current_run_status_description();
   } catch {
     carp $_;
   };
 
-  my $match = 1;
+  my $match = 0;
 
   if ($run_folder_npg) {
-    if( $run_folder ne $run_folder_npg ){
-      carp "Run folder '$run_folder' does not match '$run_folder_npg' from NPG";
-      $match = 0;
+    if( $run_folder eq $run_folder_npg ){
+      $match = 1;
+    } else {
+      warn "Run folder '$run_folder' does not match '$run_folder_npg' from NPG\n";
     }
   } else {
-    if (!$run_status) {
-      carp 'Neither run folder name nor run status is available';
-      $match = 0;
-    } else {
-      if ($run_status ne 'run pending') {
-        carp "No run folder name for run with status '$run_status'";
-        $match = 0;
-      }
+    if ($run_row) {
+      my $expected = $self->_expected_name();
+      warn "Expected run folder name: $expected\n";
+      $match = $run_folder eq $expected;
     }
   }
 
   return $match;
+}
+
+sub _expected_name {
+  my $self = shift;
+
+  my $date = $self->tracking_run()->loading_date();
+
+  return sprintf '%s_%s_%s%s',
+    $date ? substr($date->ymd(q[]), 2) : q[000000],
+    $self->tracking_run()->name,
+    $self->tracking_run()->is_tag_set('fc_slotB') ? 'B' : 'A',
+    $self->tracking_run()->flowcell_id() ? q[_] . $self->tracking_run()->flowcell_id() : q[];
 }
 
 no Moose;

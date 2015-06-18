@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 use Test::Exception;
 use Test::Warn;
 use DateTime;
@@ -18,15 +18,10 @@ use_ok($package);
     npg_tracking_schema => $schema
   );
   my $result;
-  warnings_like { $result = $v->check() }
-    [qr/Attribute \(tracking_run\) does not pass the type constraint/,
-     qr/Neither run folder name nor run status is available/],
-    'warnings for a run that is not in the db';
+  warning_like { $result = $v->check() }
+    qr/Attribute \(tracking_run\) does not pass the type constraint/,
+    'warning for a run that is not in the db';
   ok(!$result, 'not validated');
-
-  my $id = $schema->resultset('RunStatusDict')->search({description => 'run in progress'})->next->id_run_status_dict();
-  $schema->resultset('RunStatus')->create(
-   {id_run_status_dict => $id, iscurrent =>1, id_run => 6699, id_user => 7, date => DateTime->now()} );
 
   my $good_rf = '110818_IL34_06699';
   my $bad_rf  = '110819_IL34_06699';
@@ -51,18 +46,30 @@ use_ok($package);
      npg_tracking_schema => $schema
   );
   warning_like { $result = $v->check }
-    qr/No run folder name for run with status \'run in progress\'/,
-    'warning about missing run folder name';
-  ok(!$result, 'not validated: run in progress, no name');
+    qr/Expected run folder name: 000000_UNKNOWN_06699_A_70KV3AAXX/,
+    'warning about expected run folder name';
+  ok(!$result, 'not validated');
 
-  $id = $schema->resultset('RunStatusDict')->search({description => 'run pending'})->next->id_run_status_dict();
-  $schema->resultset('Run')->find(6699)->current_run_status->update( {id_run_status_dict => $id} );
+  my $date = DateTime->now();
+  my $prev_date = DateTime->now()->subtract(days => 3);
+  my $id   = $schema->resultset('RunStatusDict')->search(
+    {description => 'run pending'})->next->id_run_status_dict();
+  $schema->resultset('RunStatus')->create(
+   {id_run_status_dict => $id, iscurrent =>0, id_run => 6699, id_user => 7, date => $date} );
+  $schema->resultset('RunStatus')->create(
+   {id_run_status_dict => $id, iscurrent =>1, id_run => 6699, id_user => 7, date => $date} );
+  $schema->resultset('Run')->find(6699)->update({id_instrument => 67});
+
+  my $expected = substr($date->ymd(q[]), 2) . '_HS8_06699_A_70KV3AAXX';
 
   $v = $package->new(
-     run_folder          => $good_rf,
+     run_folder          => $expected,
      npg_tracking_schema => $schema
   );
-  ok($v->check, 'validated: run pending, no name');
+  warning_like { $result = $v->check }
+    qr/Expected run folder name: $expected/,
+    'warning about expected run folder name';
+  ok($result, 'validated via expected folder name');
 }
 
 1;

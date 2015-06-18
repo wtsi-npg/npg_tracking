@@ -830,6 +830,42 @@ sub reverse_read {
     return $self->runs_read->find({read_order=>2+$self->is_tag_set(q(multiplex))});
 }
 
+=head2 loading_date
+
+Latest run pending status date.
+
+=cut
+
+sub loading_date {
+  my $self = shift;
+
+  my $status = $self->run_statuses->search(
+    {
+         'run_status_dict.description' => 'run pending',
+    },
+    {
+         join     => 'run_status_dict',
+         order_by => { -asc => 'me.date'},
+    }
+  )->next;
+
+  return $status ? $status->date : undef;
+}
+
+=head2 name
+
+Run name (including instrument name).
+
+=cut
+
+sub name {
+  my $self = shift;
+  my $instr = $self->instrument;
+  return sprintf '%s_%05d',
+             $instr ? $instr->name()   : 'UNKNOWN',
+             $self->id_run;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
 
