@@ -7,7 +7,7 @@ use Perl6::Slurp;
 use IPC::System::Simple; #needed for Fatalised/autodying system()
 use autodie qw(:all);
 use Readonly;
-use Test::More tests => 28;
+use Test::More tests => 24;
 use Test::Deep;
 use Test::Exception::LessClever;
 use Test::MockModule;
@@ -127,7 +127,7 @@ SKIP: {
            1; };
 
     ## no critic (ControlStructures::ProhibitPostfixControls)
-    skip 'Test::FTP::Server needed for FTP tests', 19 if $EVAL_ERROR;
+    skip 'Test::FTP::Server needed for FTP tests', 15 if $EVAL_ERROR;
     ## use critic
 
     # Normal folder validation requires a db lookup. That's tested elsewhere
@@ -190,17 +190,6 @@ SKIP: {
     warning_like { $test->is_run_completed( $test_root . 'gibberish' ) }
                  { carped => qr/^Could[ ]not[ ]read[ ]ftp:/msx },
                  'Carp if run folder is empty/not readable';
-
-
-    is( $test->is_rta( $test_root . '100611_IL2_0022' ), 1,
-        'Run is rta' );
-    is( $test->is_rta( $test_root . '100628_IL2_04929' ), 0,
-        'Run is not rta' );
-    is( $test->is_rta( $test_root . 'this_is_not_a_run' ), undef,
-        'Cannot determine if run is rta' );
-    throws_ok { $test->is_rta() } qr/Run[ ]folder[ ]not[ ]supplied/msx,
-              'Insist on run folder argument';
-
 
     my $ages_ago = q{2000-01-12 13:34:43};
     $test->db_entry->latest_contact($ages_ago);

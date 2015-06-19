@@ -143,6 +143,7 @@ my $builder = $class->new(
                 'English'                         => '1.02',
                 'Errno'                           => 0,
                 'Exporter'                        => '5.63',
+                'Fcntl'                           => '0',
                 'FindBin'                         => '1.47',
                 'File::Basename'                  => 0,
                 'File::Copy'                      => 0,

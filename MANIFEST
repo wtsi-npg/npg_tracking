@@ -210,7 +210,6 @@ lib/Monitor/Roles/Schema.pm
 lib/Monitor/Roles/Username.pm
 lib/Monitor/RunFolder.pm
 lib/Monitor/RunFolder/Staging.pm
-lib/Monitor/SRS.pm
 lib/Monitor/SRS/File.pm
 lib/Monitor/SRS/FTP.pm
 lib/Monitor/SRS/Local.pm
@@ -421,6 +420,7 @@ t/00-critic.t
 t/00-distribution.t
 t/00-pod.t
 t/00-podcoverage.t
+t/00-scripts_compile.t
 t/10-authentication-sanger_ldap.t
 t/10-authentication-sanger_sso.t
 t/10-bait.t
@@ -473,7 +473,6 @@ t/10-reference-find.t
 t/10-reference-info.t
 t/10-reference-list.t
 t/10-reference.t
-t/10-scripts_compile.t
 t/10-snv.t
 t/10-transcriptome.t
 t/10-util.t
@@ -543,7 +542,6 @@ t/34-monitor-runfolder.t
 t/34-monitor-srs-file.t
 t/34-monitor-srs-ftp.t
 t/34-monitor-srs-local.t
-t/34-monitor-srs.t
 t/34-monitor-staging.t
 t/36-npg_tracking-monitor-status.t
 t/40-st-base.t

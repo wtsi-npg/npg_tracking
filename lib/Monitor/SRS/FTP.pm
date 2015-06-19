@@ -6,7 +6,7 @@ package Monitor::SRS::FTP;
 
 use Moose;
 use Monitor::RunFolder;
-extends 'Monitor::SRS';
+extends 'Monitor::Instrument';
 
 use Carp;
 use English qw(-no_match_vars);
@@ -172,20 +172,6 @@ sub is_run_completed {
 }
 
 
-sub is_rta {
-    my ( $self, $run_path ) = @_;
-
-    croak 'Run folder not supplied' if !$run_path;
-
-    my $rta_test = io( "$run_path/Data/" )->all();
-    return if !$rta_test;
-
-    $self->update_latest_contact();
-
-    return scalar @{ [ $rta_test =~ m/Intensities/gmsx ] };
-}
-
-
 sub update_latest_contact {
     my ($self) = @_;
 
@@ -290,12 +276,6 @@ number of the run.
 
 Look for the flag that indicates that a run is finished. Requires the run
 path as its sole argument. Returns 1 if the flag is found, 0 otherwise.
-
-=head2 is_rta
-
-Return true if the run is a 'real time analysis' run. The test is whether a
-subdirectory, 'Data/Intensities', exists in the runfolder.
-
 
 =head2 update_latest_contact
 

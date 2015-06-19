@@ -1,16 +1,11 @@
 #!/usr/bin/env perl
-#########
-# Author:        jo3
-# Created:       2010-05-27
-#
-package hiseq_checker;
 
 use strict;
 use warnings;
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Carp;
-use English qw(-no_match_vars);
+use Try::Tiny;
 use Readonly;
 
 use Monitor::SRS::File;
@@ -43,36 +38,29 @@ if (!exists $DISKS{$model}) {
 # Check the instrument. If ftp doesn't work, use local.
 #
 
-eval {
-        foreach my $disk ( @{$DISKS{$model}} ) {
-            $poll = Monitor::SRS::FTP->new_with_options( top_dir => $disk );
-            $poll->can_contact($disk);
-            main();
-        }
-        1;
-     }
-     or do {
-        carp "Error in FTP poll: $EVAL_ERROR";
-        $poll = Monitor::SRS::Local->new_with_options();
+try {
+    foreach my $disk ( @{$DISKS{$model}} ) {
+        $poll = Monitor::SRS::FTP->new_with_options( top_dir => $disk );
+        $poll->can_contact($disk);
         main();
-     };
-
+    }
+} catch {
+    carp "Error in FTP poll: $_";
+    $poll = Monitor::SRS::Local->new_with_options();
+    main();
+};
 
 sub main {
-
     ##
     # Make a list of regular (not repeats, not tests) run folders.
     my @run_paths;
-    eval {
-            @run_paths = $poll->get_normal_run_paths();
-            1;
-        }
-        or do {
-            croak "Failed to get run directory list\n$EVAL_ERROR";
-        };
+    try {
+        @run_paths = $poll->get_normal_run_paths();
+    } catch {
+        croak "Failed to get run directory list\n$_";
+    };
 
     carp 'Empty run directory list for '.$poll->top_dir if scalar @run_paths == 0;
-
 
     ##
     # Loop through each of them and extract the information we need.
@@ -90,28 +78,16 @@ sub main {
         my $run_complete = $poll->is_run_completed($address);
         $directory->check_cycle_count( $latest_cycle, $run_complete );
 
-
-        # If $poll isa Monitor::SRS::FTP we can't use long_info for this.
-        my $run_is_rta;
-
-        if ( ref $poll eq 'Monitor::SRS::FTP' ) {
-            $run_is_rta = $poll->is_rta($address);
-        }
-
-        eval {
-            $directory->read_long_info($run_is_rta);
-            1;
-        }
-        or do {
-            # If $poll is local then the recipe might just not be there yet.
-            if ( $EVAL_ERROR =~ m/(Multiple|No) recipe file(?:s?) found/ms ) {
+        try {
+            $directory->read_long_info();
+        } catch {
+            if ( $_ =~ m/(Multiple|No) recipe file(?:s?) found/ms ) {
                 carp "Single recipe file not found in $address";
-                next;
+            } else {
+                croak $_;
             }
-            croak $EVAL_ERROR;
         };
     }
-
 }
 
 
@@ -162,7 +138,7 @@ John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by John O'Brien
+Copyright (C) 2015 GRL, by John O'Brien
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

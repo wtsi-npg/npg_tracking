@@ -6,7 +6,7 @@ package Monitor::SRS::Local;
 
 use Moose;
 use Monitor::RunFolder;
-extends 'Monitor::SRS';
+extends 'Monitor::Instrument';
 with    'Monitor::Roles::Cycle';
 
 use Carp;

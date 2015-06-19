@@ -1,5 +1,16 @@
 CHANGES
 
+release 84.5
+ - staging monitor extension:
+     move qc complete runfolders from analysis to outgoing
+     propagate group ownership inside the runfolder
+ - staging/instrument monitor:
+     remove superfluous run lanes
+     assume all runs are RTA
+ - perform runfolder name validation against the tracking db run record
+   rather than against xml feeds; compare to expected runfolder name
+   if this name is not in the database yet
+
 release 84.4
  - to avoid the need to create deep directory hierarchy containing www-live
    for a live server, set dev env variable value for the Apache server

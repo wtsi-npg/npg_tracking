@@ -1,60 +1,71 @@
-#########
-# Author:        gq1
-# Created:       2010-05-05
-#
-
 package npg_tracking::illumina::run::folder::validation;
 
 use Moose;
 use Carp;
-use English qw{-no_match_vars};
-use npg::api::run;
+use Try::Tiny;
 
-with qw{npg_tracking::illumina::run::short_info};
+use npg_tracking::Schema;
+
+with qw{
+  npg_tracking::illumina::run::short_info
+  npg_tracking::illumina::run
+};
 
 our $VERSION = '0';
 
-has 'no_npg_check'=>  ( isa            => q{Bool},
-                         is            => q{rw},
-                         documentation => q{option to stop checking run_folder from npg},
-                         default       => 0,
-                       );
-
-has 'npg_api_run' =>  ( isa => q{npg::api::run},
-                        is => q{rw},
-                        lazy_build => 1,
-                        documentation => 'npg api run object',
-                       );
-
-sub _build_npg_api_run {
-  my $self = shift;
-  return npg::api::run->new({id_run => $self->id_run,});
+has npg_tracking_schema => (
+  is         => 'ro',
+  isa        => 'npg_tracking::Schema',
+  lazy_build => 1,
+);
+sub _build_npg_tracking_schema {
+  my ($self) = @_;
+  return npg_tracking::Schema->connect();
 }
 
 sub check{
   my $self = shift;
 
   my $run_folder = $self->run_folder();
-  if($self->no_npg_check){
-    carp "Run folder $run_folder will not be checked by NPG";
-    return 1;
-  }
-
   my $run_folder_npg;
-  eval{
-    $run_folder_npg = $self->npg_api_run->run_folder();
-    1;
-  } or do {
-    carp $EVAL_ERROR;
-    return;
+  my $run_row;
+
+  try {
+    $run_row        = $self->tracking_run();
+    $run_folder_npg = $self->tracking_run()->folder_name();
+  } catch {
+    carp $_;
   };
 
-  if(! ($run_folder eq $run_folder_npg )){
-    carp "Run folder $run_folder does not match $run_folder_npg from NPG";
-    return;
+  my $match = 0;
+
+  if ($run_folder_npg) {
+    if( $run_folder eq $run_folder_npg ){
+      $match = 1;
+    } else {
+      warn "Run folder '$run_folder' does not match '$run_folder_npg' from NPG\n";
+    }
+  } else {
+    if ($run_row) {
+      my $expected = $self->_expected_name();
+      warn "Expected run folder name: $expected\n";
+      $match = $run_folder eq $expected;
+    }
   }
 
-  return 1;
+  return $match;
+}
+
+sub _expected_name {
+  my $self = shift;
+
+  my $date = $self->tracking_run()->loading_date();
+
+  return sprintf '%s_%s_%s%s',
+    $date ? substr($date->ymd(q[]), 2) : q[000000],
+    $self->tracking_run()->name,
+    $self->tracking_run()->is_tag_set('fc_slotB') ? 'B' : 'A',
+    $self->tracking_run()->flowcell_id() ? q[_] . $self->tracking_run()->flowcell_id() : q[];
 }
 
 no Moose;
@@ -71,12 +82,11 @@ npg_tracking::illumina::run::folder::validation
 =head1 SYNOPSIS
 
 $validation = npg_tracking::illumina::run::folder::validation->new( run_folder => $run_folder, );
-$validation = npg_tracking::illumina::run::folder::validation->new( run_folder => $run_folder, no_npg_check => 1,);
 $validation->check();
 
 =head1 DESCRIPTION
 
-Given a run_folder, and get the final digits of it to be the id_run, check this is genuine or not in NPG
+Given a run folder name, checks this is genuine or not against the tracking database
 
 =head1 SUBROUTINES/METHODS
 
@@ -94,9 +104,7 @@ Given a run_folder, and get the final digits of it to be the id_run, check this 
 
 =item Carp
 
-=item English -no_match_vars
-
-=item npg_tracking::illumina::run::folder::validation
+=item Try::Tiny
 
 =back
 
@@ -110,7 +118,7 @@ Guoying Qi
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by Guoying Qi
+Copyright (C) 2015 GRL, by Guoying Qi
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
