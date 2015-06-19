@@ -5,15 +5,15 @@
 package Monitor::Instrument;
 
 use Moose;
-with 'Monitor::Roles::Schema';
-with 'Monitor::Roles::Username';
-with 'MooseX::Getopt';
-
 use Carp;
 use MooseX::StrictConstructor;
 use POSIX qw(strftime);
 
 use npg_tracking::illumina::run::folder::validation;
+
+with 'Monitor::Roles::Schema';
+with 'Monitor::Roles::Username';
+with 'MooseX::Getopt';
 
 our $VERSION = '0';
 
@@ -104,6 +104,14 @@ sub mysql_time_stamp {
     return strftime( '%F %T', localtime );
 }
 
+sub validate_run_folder {
+    my ( $self, $folder_name ) = @_;
+    return npg_tracking::illumina::run::folder::validation->new(
+        run_folder          => $folder_name,
+        npg_tracking_schema => $self->schema
+    )->check();
+}
+
 no Moose;
 __PACKAGE__->meta->make_immutable();
 1;
@@ -146,6 +154,11 @@ Return a npg_tracking::Schema::Result::Instrument row for an instrument.
 
 Return the current time in a format that can be inserted into a mysql table.
 
+=head2 validate_run_folder
+
+Check that a run folder name is of an allowed format. Croaks if no run folder
+name is supplied.
+
 =head1 CONFIGURATION AND ENVIRONMENT
 
 =head1 DEPENDENCIES
@@ -174,7 +187,7 @@ John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by John O'Brien
+Copyright (C) 2015 GRL, by John O'Brien
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

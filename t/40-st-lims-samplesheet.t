@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 118;
+use Test::More tests => 124;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -120,6 +120,9 @@ use_ok('st::api::lims::samplesheet');
   is ($plexes[0]->study_id, 55, 'plex study_id');
   is ($plexes[0]->sample_reference_genome, 'Enterococcus hirae (ATCC_9790)', 'sample ref genome');
   is ($plexes[0]->study_reference_genome, undef, 'study ref genome undefined');
+  is ($plexes[0]->sample_supplier_name, 'sample_3', 'supplier sample name');
+  is ($plexes[0]->sample_cohort, 'plan3', 'sample cohort');
+  is ($plexes[0]->sample_donor_id, 'donor3', 'sample donor id');
 
   is ($plexes[1]->tag_index, 4, 'tag index for the first plex');
   is ($plexes[1]->default_tag_sequence, 'CGATGTTT', 'tag sequence for the first plex');
@@ -128,6 +131,9 @@ use_ok('st::api::lims::samplesheet');
   is ($plexes[1]->study_id, 56, 'plex study_id');
   is ($plexes[1]->sample_reference_genome, undef, 'sample ref genome undefined');
   is ($plexes[1]->study_reference_genome, 'Rattus_norvegicus (Rnor_5.0)', 'study ref genome');
+  is ($plexes[1]->sample_supplier_name, 'sample_4', 'supplier sample name');
+  is ($plexes[1]->sample_cohort, 'plan4', 'sample cohort');
+  is ($plexes[1]->sample_donor_id, 'donor4', 'sample donor id');
 }
 
 {

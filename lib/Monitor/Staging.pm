@@ -65,7 +65,7 @@ sub validate_areas {
 }
 
 
-sub find_live_incoming {
+sub find_live {
     my ( $self, $staging_area ) = @_;
 
     croak 'Top level staging path required' if !$staging_area;
@@ -73,18 +73,17 @@ sub find_live_incoming {
 
     my %path_for;
 
-    foreach my $run_dir ( glob $staging_area . q{/{IL,HS}*/incoming/*} ) {
+    foreach my $run_dir ( glob $staging_area . q{/{IL,HS}*/{incoming,analysis}/*} ) {
 
         next if !-d $run_dir;
-
 
         my $check = Monitor::RunFolder->new( runfolder_path => $run_dir );
         my $run_folder = $check->run_folder();
 
-        my $validate = npg_tracking::illumina::run::folder::validation->
-                            new( run_folder => $run_folder );
-
-        next if !$validate->check($run_folder);
+        my $validate = npg_tracking::illumina::run::folder::validation->new(
+             run_folder          => $run_folder,
+             npg_tracking_schema => $self->schema );
+        next if !$validate->check();
 
         $path_for{ $check->id_run() } = $run_dir;
     }
@@ -106,7 +105,8 @@ sub find_live_incoming {
         my $cancelled_run_id = $run_status_row->id_run();
 
         if ( defined $path_for{$cancelled_run_id} ) {
-             ( delete $path_for{$cancelled_run_id} ); }
+             ( delete $path_for{$cancelled_run_id} );
+        }
     }
 
     return values %path_for;
@@ -149,11 +149,11 @@ Check if the parameters passed to the method are valid staging areas. They
 may be passed as absolute paths or as integer indices of some (hard-coded)
 external array.
 
-=head2 find_live_incoming
+=head2 find_live
 
 Take a staging area path as a required argument and return a list of all run
-directories (no tests or repeats) found in incoming folders below it. I.e.
-they match /staging_area/machine/incoming/run_folder
+directories (no tests or repeats) found in incoming and analysis folders below it. I.e.
+they match /staging_area/machine/{incoming, analysis}/run_folder
 
 
 =head1 CONFIGURATION AND ENVIRONMENT

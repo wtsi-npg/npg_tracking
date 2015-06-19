@@ -22,146 +22,125 @@ Readonly::Scalar our $ACCEPTABLE_CYCLE_DELAY => 6;
 # short_info's documentation says that run_folder will be constrained to the
 # last element of the path, so remember the input.
 has runfolder_path => (
-    is         => 'ro',
-    isa        => 'Str',
-    required   => 1,
+  is         => 'ro',
+  isa        => 'Str',
+  required   => 1,
 );
 with 'npg_tracking::illumina::run::long_info';   # lane, tile, cycle counts, is_rta
 
 has run_folder => (
-    is         => 'ro',
-    isa        => 'Str',
-    lazy_build => 1,
+  is         => 'ro',
+  isa        => 'Str',
+  lazy_build => 1,
 );
+sub _build_run_folder {
+  my ($self) = @_;
+  my $path = $self->runfolder_path();
+  return substr $path, 1 + rindex( $path, q{/} );
+}
 
 has run_db_row => (
-    is         => 'ro',
-    isa        => 'Maybe[npg_tracking::Schema::Result::Run]',
-    lazy_build => 1,
+  is         => 'ro',
+  isa        => 'Maybe[npg_tracking::Schema::Result::Run]',
+  lazy_build => 1,
 );
+sub _build_run_db_row {
+  my ($self) = @_;
+  my $id     = $self->id_run();
+  my $run_rs = $self->schema->resultset('Run')->find($id);
+  croak "Problem retrieving record for id_run => $id" if !defined $run_rs;
+  return $run_rs;
+}
 
 has file_obj => (
-    is         => 'ro',
-    isa        => 'Monitor::SRS::File',
-    lazy_build => 1,
+  is         => 'ro',
+  isa        => 'Monitor::SRS::File',
+  lazy_build => 1,
 );
 
-
-sub _build_run_folder {
-    my ($self) = @_;
-    my $path = $self->runfolder_path();
-
-    return substr $path, 1 + rindex( $path, q{/} );
-}
-
-
-sub _build_run_db_row {
-    my ($self) = @_;
-
-    my $id     = $self->id_run();
-    my $run_rs = $self->schema->resultset('Run')->find($id);
-
-    croak "Problem retrieving record for id_run => $id" if !defined $run_rs;
-
-    return $run_rs;
-}
-
-
 sub current_run_status_description {
-    my ($self) = @_;
+  my ($self) = @_;
 
-    my $run_status_rs = $self->schema->resultset('RunStatus')->search(
+  my $run_status_rs = $self->schema->resultset('RunStatus')->search(
         {
           id_run    => $self->id_run(),
           iscurrent => 1,
         }
-    );
+  );
 
-    croak 'Error getting current run status for run ' . $self->id_run()
-        if $run_status_rs->count() != 1;
+  croak 'Error getting current run status for run ' . $self->id_run()
+    if $run_status_rs->count() != 1;
 
-    return $run_status_rs->next->run_status_dict->description();
+  return $run_status_rs->next->run_status_dict->description();
 }
 
 sub current_run_status {
-    my ($self) = @_;
-    carp 'DO NOT USE THIS Monitor::RunFolder::current_run_status METHOD - IMPENDING RETURN VALUE CHANGE';
-    return $self->current_run_status_description();
+  my ($self) = @_;
+  carp 'DO NOT USE THIS Monitor::RunFolder::current_run_status METHOD - IMPENDING RETURN VALUE CHANGE';
+  return $self->current_run_status_description();
 }
-
 
 sub _build_file_obj {
-    my ($self) = @_;
-
-    my $file = Monitor::SRS::File->new(
-                   run_folder     => $self->run_folder(),
-                   runfolder_path => $self->runfolder_path(),
-    );
-
-    return $file;
+  my ($self) = @_;
+  return Monitor::SRS::File->new(
+           run_folder     => $self->run_folder(),
+           runfolder_path => $self->runfolder_path(),
+  );
 }
-
 
 sub check_cycle_count {
-    my ( $self, $latest_cycle, $run_complete ) = @_;
+  my ( $self, $latest_cycle, $run_complete ) = @_;
 
-    croak 'Latest cycle count not supplied'   if !defined $latest_cycle;
-    croak 'Run complete Boolean not supplied' if !defined $run_complete;
+  croak 'Latest cycle count not supplied'   if !defined $latest_cycle;
+  croak 'Run complete Boolean not supplied' if !defined $run_complete;
 
-    my $run_db = $self->run_db_row();
+  my $run_db = $self->run_db_row();
 
-    $latest_cycle
-        && ( $self->current_run_status_description() eq 'run pending' )
-        && $run_db->update_run_status( 'run in progress', $self->username() );
+  $latest_cycle
+    && ( $self->current_run_status_description() eq 'run pending' )
+    && $run_db->update_run_status( 'run in progress', $self->username() );
 
-    $run_complete
-        && $run_db->update_run_status( 'run complete', $self->username() );
+  $run_complete
+    && $run_db->update_run_status( 'run complete', $self->username() );
 
-    ( $latest_cycle > $run_db->actual_cycle_count() )
-        && $run_db->actual_cycle_count($latest_cycle);
+  ( $latest_cycle > $run_db->actual_cycle_count() )
+    && $run_db->actual_cycle_count($latest_cycle);
 
-    $run_db->update();
+  $run_db->update();
 
-    return;
+  return;
 }
 
-
 sub read_long_info {
-    my ( $self, $run_is_rta ) = @_;
+  my $self = shift;
 
-    my $recipe   = $self->file_obj();
-    my $run_db   = $self->run_db_row();
-    my $username = $self->username();
+  my $recipe   = $self->file_obj();
+  my $run_db   = $self->run_db_row();
+  my $username = $self->username();
 
-    eval {
-        $recipe->expected_cycle_count();
-        1;
-    }
-    or do {
-        croak $EVAL_ERROR;
-    };
+  $recipe->expected_cycle_count();
 
-    # Extract the relevant details.
-    my $expected_cycle_count = $recipe->expected_cycle_count();
-    my $run_is_indexed       = $recipe->is_indexed();
-    my $run_is_paired_read   = $recipe->is_paired_read();
-    ( defined $run_is_rta ) || ( $run_is_rta = $self->is_rta() );
+  # Extract the relevant details.
+  my $expected_cycle_count = $recipe->expected_cycle_count();
+  my $run_is_indexed       = $recipe->is_indexed();
+  my $run_is_paired_read   = $recipe->is_paired_read();
 
-    # Update the expected_cycle_count field and run tags.
-    $run_db->expected_cycle_count( $expected_cycle_count );
+  # Update the expected_cycle_count field and run tags.
+  $run_db->expected_cycle_count( $expected_cycle_count );
 
-    $run_is_paired_read ? $run_db->set_tag( $username, 'paired_read' )
-                        : $run_db->set_tag( $username, 'single_read' );
+  $run_is_paired_read ? $run_db->set_tag( $username, 'paired_read' )
+                      : $run_db->set_tag( $username, 'single_read' );
 
-    $run_is_indexed     ? $run_db->set_tag(   $username, 'multiplex' )
-                        : $run_db->unset_tag( $username, 'multiplex' );
+  $run_is_indexed     ? $run_db->set_tag(   $username, 'multiplex' )
+                      : $run_db->unset_tag( $username, 'multiplex' );
 
-    $run_is_rta         ? $run_db->set_tag(   $username, 'rta' )
-                        : $run_db->unset_tag( $username, 'rta' );
+  $run_db->set_tag( $username, 'rta' ); # run is always RTA in year 2015
 
-    $run_db->update();
+  $run_db->update();
 
-    return;
+  $self->_delete_lanes();
+
+  return;
 }
 
 sub check_delay {
@@ -204,6 +183,23 @@ sub delay {
   }
 
   return $delay;
+}
+
+sub _delete_lanes {
+  my $self = shift;
+  
+  my $run_lanes = $self->run_db_row()->run_lanes;
+  if ( $self->lane_count && ($self->lane_count < $run_lanes->count()) ) {
+    while ( my $lane = $run_lanes->next ) {
+      my $position = $lane->position;
+      if ($position > $self->lane_count) {
+          $lane->delete();
+          warn "Deleted lane $position\n"; 
+      }
+    }
+  }
+
+  return;
 }
 
 1;

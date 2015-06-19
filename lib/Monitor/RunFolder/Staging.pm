@@ -1,12 +1,6 @@
-#########
-# Author:        jo3
-# Created:       19/10/2010
-
 package Monitor::RunFolder::Staging;
 
 use Moose;
-extends 'Monitor::RunFolder';
-
 use Carp;
 use English qw(-no_match_vars);
 use File::Copy;
@@ -16,27 +10,33 @@ use IO::All;
 use List::Util qw(max);
 use Perl6::Slurp;
 use Readonly;
+use List::MoreUtils qw(any);
+use Try::Tiny;
+use Fcntl qw/S_ISGID/;
 
 use npg_tracking::util::config qw(get_config_staging_areas);
 
+extends 'Monitor::RunFolder';
+
 our $VERSION = '0';
 
-Readonly::Scalar my $MAXIMUM_CYCLE_LAG  =>  6;
-Readonly::Scalar my $MTIME_INDEX        =>  9;
-Readonly::Scalar my $SECONDS_PER_MINUTE => 60;
-Readonly::Scalar my $RTA_COMPLETE   => 10 * $SECONDS_PER_MINUTE;
+Readonly::Scalar my $MAXIMUM_CYCLE_LAG    => 6;
+Readonly::Scalar my $MTIME_INDEX          => 9;
+Readonly::Scalar my $SECONDS_PER_MINUTE   => 60;
+Readonly::Scalar my $RTA_COMPLETE         => 10 * $SECONDS_PER_MINUTE;
+Readonly::Scalar my $INTENSITIES_DIR_PATH => 'Data/Intensities';
+Readonly::Array  my @NO_MOVE_NAMES        => qw( npgdonotmove npg_do_not_move );
+Readonly::Scalar my $MODE_INDEX           => 2;
 
 has 'rta_complete_wait' => (isa          => 'Int',
                             is           => 'ro',
                             default      => $RTA_COMPLETE,
                            );
 
-
 sub cycle_lag {
     my ($self) = @_;
     return ( $self->delay() > $MAXIMUM_CYCLE_LAG ) ? 1 : 0;
 }
-
 
 sub validate_run_complete {
     my ($self) = @_;
@@ -49,12 +49,11 @@ sub validate_run_complete {
     return 0 if !$self->check_tiles( $path );
 
     # Set a marker for fallback_update().
-    $self->{run_is_complete} = 1;
+    $self->{'run_is_complete'} = 1;
 
     # What else goes here?
     return 1;
 }
-
 
 sub mirroring_complete {
     my ($self) = @_;
@@ -68,7 +67,6 @@ sub mirroring_complete {
     # The trailing slash forces IO::All to cope with symlinks.
     eval { @file_list = io("$run_path/")->all_files(); 1; }
         or do { carp $EVAL_ERROR; return 0; };
-
 
     my $rta = 'RTAComplete';
 
@@ -84,12 +82,10 @@ sub mirroring_complete {
     my $events_regex =
         qr{Copying[ ]logs[ ]to[ ]network[ ]run[ ]folder\s* \Z }msx;
 
-
     return ( $last_modified > $self->rta_complete_wait ) ? 1
          : ( $events_log =~ $events_regex )       ? 1
          :                                          0;
 }
-
 
 sub monitor_stats {
     my ($self) = @_;
@@ -108,7 +104,6 @@ sub monitor_stats {
     return ( $total_size, $latest_mod );
 }
 
-
 sub check_tiles {
     my ($self) = @_;
 
@@ -119,7 +114,7 @@ sub check_tiles {
 
     print {*STDERR} "\tChecking lanes, cycles, tiles...\n" or carp $OS_ERROR;
 
-    my @lanes   = glob "$path/Data/Intensities/L*";
+    my @lanes   = glob "$path/$INTENSITIES_DIR_PATH/L*";
     @lanes      = grep { m/ L \d+ $ /msx } @lanes;
     my $l_count = scalar @lanes;
     if ( !$l_count ){
@@ -140,14 +135,14 @@ sub check_tiles {
 
         my $cifs_present = 0;
         if ($c_count) {
-           #check first cycle for cif files - will actually fill in number of tiles but treat as boolean
-           $cifs_present = scalar grep { m/ s_ \d+ _ \d+ [.]cif $ /msx } glob "$cycles[0]/*.cif";
+            #check first cycle for cif files - will actually fill in number of tiles but treat as boolean
+            $cifs_present = scalar grep { m/ s_ \d+ _ \d+ [.]cif $ /msx } glob "$cycles[0]/*.cif";
         }
 
         if(! $cifs_present) {
-           $lane =~ s{Data/Intensities/L}{Data/Intensities/BaseCalls/L}smx;
-           @cycles  = grep { m/ C \d+ [.]1 $ /msx } glob "$lane/C*.1";
-           $c_count = scalar @cycles;
+            $lane =~ s{$INTENSITIES_DIR_PATH/L}{$INTENSITIES_DIR_PATH/BaseCalls/L}smx;
+            @cycles  = grep { m/ C \d+ [.]1 $ /msx } glob "$lane/C*.1";
+            $c_count = scalar @cycles;
         }
 
         if ( $c_count != $expected_cycles ) {
@@ -173,7 +168,6 @@ sub check_tiles {
     return 1;
 }
 
-
 sub mark_as_mirrored {
     my ($self) = @_;
 
@@ -191,45 +185,102 @@ sub mark_as_mirrored {
     return;
 }
 
-
 sub move_to_analysis {
     my ($self) = @_;
 
-    # If the path ever contains two '/incoming/' elements this method may
-    # break.
-    my $destination = $self->runfolder_path();
-    $destination =~ s{/incoming/}{/analysis/}msx;
-
-    croak "$destination already exists" if -e $destination;
-
-
-    # This is a PBP bug
-    ## no critic (RegularExpressions::ProhibitCaptureWithoutTest)
-    croak 'Source is not an \'incoming\' path'
-        if $self->runfolder_path() !~ m{^ (.+) /incoming/ (.+) }msx;
-    my ( $root, $branch ) = ( $1, $2 );
-
-    ( -e "$root/analysis" ) || ( mkdir "$root/analysis" );
-
-    move( $self->runfolder_path(), $destination );
-
-    my $group = get_config_staging_areas()->{'analysis_group'};
-    if ($group) {
-        $self->_change_group($group, $destination);
-        $self->_change_group($group, $destination . '/Data/Intensities');
+    my @ms;
+    my $rf = $self->runfolder_path();
+    my $destination = $self->_destination_path('incoming', 'analysis');
+    my ($moved, $m) = $self->_move_folder($destination);
+    push @ms, $m;
+    if ($moved) {
+        my $group = get_config_staging_areas()->{'analysis_group'};
+        if ($group) {
+            _change_group($group, $destination, 1);
+            _change_group($group, $destination . "/$INTENSITIES_DIR_PATH");
+            push @ms, "Changed group to $group";
+        }
+        my $status = 'analysis pending';
+        $self->run_db_row->update_run_status($status, $self->username() );
+        push @ms, "Updated run status to $status";
     }
 
-    $self->run_db_row->
-        update_run_status( 'analysis pending', $self->username() );
-
-    return;
+    return @ms;
 }
 
+sub is_in_analysis {
+    my ($self) = @_;
+    my $result = 1;
+    try {
+        $self->_destination_path('analysis', 'outgoing');
+    } catch {
+        if ($_ =~ 'is not in analysis') {
+            $result = 0;
+        }
+    };
+    return $result;
+}
+
+sub move_to_outgoing {
+    my ($self) = @_;
+
+    my $m;
+    my $rf = $self->runfolder_path();
+    if (any { -e join(q[/], $rf, $_) }  @NO_MOVE_NAMES) {
+        $m = "$rf flagged not to be moved to outgoing"
+    } else {
+        my $id = $self->run_db_row->id_run;
+        my $status = $self->current_run_status_description();
+        if ($status eq 'qc complete') {
+            my $destination = $self->_destination_path('analysis', 'outgoing');
+            my $moved;
+            ($moved, $m) = $self->_move_folder($destination);
+        } else {
+            $m = "Run $id status $status is not qc complete, not moving to outgoing";
+        }
+    }
+
+    return $m;
+}
+
+sub _destination_path {
+    my ($self, $src, $dest) = @_;
+    if (!$src || !$dest) {
+        croak 'Need two names';
+    }
+
+    my $new_path = $self->runfolder_path;
+    my $count = $new_path =~ s{/$src/}{/$dest/}msx;
+    if (!$count) {
+        croak $self->runfolder_path . " is not in $src";
+    }
+    if ($new_path =~ m{/$src/}msx) {
+        croak $self->runfolder_path . " contains multiple upstream $src directories";
+    }
+    if (-e $new_path) {
+        croak "Path in $dest $new_path already exists";
+    }
+
+    return $new_path;
+}
+
+sub _move_folder {
+    my ($self, $destination) = @_;
+    if (!$destination) {
+        croak 'Need destination';
+    }
+    my $rf = $self->runfolder_path();
+    my $result = move($rf, $destination); 
+    my $error = $OS_ERROR;
+    my $m = $result ? "Moved $rf to $destination"
+                    : "Failed to move $rf to $destination: $error";
+    return ($result, $m);
+}
 
 sub fallback_update {
     my ($self) = @_;
 
-    return if !$self->{run_is_complete};
+    return if !$self->{'run_is_complete'};
 
     my $path = $self->runfolder_path();
     my $latest_cycle = $self->get_latest_cycle($path);
@@ -241,15 +292,14 @@ sub fallback_update {
     return;
 }
 
-
 sub _get_folder_path_glob {
-   my ($self) = @_;
-   my $p = $self->runfolder_path;
-   my $n = $self->run_folder;
-   $p=~s| $n /? \Z ||smx or return;
-   $p=~s{ /(incoming|analysis|outgoing)/ \Z }{/*/}smx or return;
-   $p=~s/ \A \/(export|nfs)\/ /\/\{export,nfs\}\//smx;
-   return $p;
+    my ($self) = @_;
+    my $p = $self->runfolder_path;
+    my $n = $self->run_folder;
+    $p=~s| $n /? \Z ||smx or return;
+    $p=~s{ /(incoming|analysis|outgoing)/ \Z }{/*/}smx or return;
+    $p=~s/ \A \/(export|nfs)\/ /\/\{export,nfs\}\//smx;
+    return $p;
 }
 
 sub update_folder {
@@ -263,7 +313,8 @@ sub update_folder {
 }
 
 sub _change_group {
-    my ($self, $group, $directory) = @_;
+    my ($group, $directory, $set_sgid) = @_;
+  
     my $temp = $directory . '.original';
     move($directory, $temp) or croak "move error: $ERRNO";
     mkdir $directory or croak "mkdir error: $ERRNO";
@@ -275,8 +326,21 @@ sub _change_group {
 
     my $gid = getgrnam($group);
     chown -1, $gid, $directory;
+    # If needed, add 's' to group permission so that
+    # a new dir/file has the same group as parent directory
+    if ($set_sgid) {
+        _set_sgid($directory);
+    }
+
+    return;
 }
 
+sub _set_sgid {
+    my $directory = shift;
+    my $perms = (stat($directory))[$MODE_INDEX] | S_ISGID();
+    chmod $perms, $directory;
+    return;
+}
 
 no Moose;
 __PACKAGE__->meta->make_immutable();
@@ -346,6 +410,14 @@ that marks the mirroring as complete.
 Move the run folder from 'incoming' to 'analysis'. Then set the run status to
 'analysis pending'.
 
+=head2 is_in_analysis
+
+Returns true if the runfolder is in analysis upstream directory and false othenrwise
+
+=head2 move_to_outgoing
+
+Move the run folder from 'analysis' to 'outgoing'.
+
 =head2 fallback_update
 
 In case there has been a problem with the instrument monitors, do various
@@ -387,12 +459,13 @@ Ensure DB has updated runfolder name and a suitable glob for quickly finding the
 
 =item Readonly
 
+=item Try::Tiny
+
+=item Fcntl
+
 =back
 
-
-
 =head1 INCOMPATIBILITIES
-
 
 =head1 BUGS AND LIMITATIONS
 
@@ -400,11 +473,11 @@ Please inform the author of any found.
 
 =head1 AUTHOR
 
-John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+John O'Brien E<lt>jo3@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by John O'Brien
+Copyright (C) 2015 GRL, by John O'Brien
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

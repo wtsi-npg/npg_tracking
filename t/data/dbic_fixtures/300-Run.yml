@@ -74,6 +74,7 @@
   id_run_pair: 0
   team: 'RAD'
   is_paired: 0
+  folder_name: 150612_HS36_5222_A_C71G9ANXX
   priority: 1
   flowcell_id: 'dummy_flowcell2'
 - actual_cycle_count: 150

@@ -1,12 +1,8 @@
-#########
-# Author:        rmp
-# Created:       2008-04-28
-#
-
 use Test::More;
 
 eval "use Test::Pod::Coverage 1.00";
 plan skip_all => "Test::Pod::Coverage 1.00 required for testing POD coverage" if $@;
-all_pod_coverage_ok();
+# Monitor::RunFolder::Staging aquired S_ISGID from Fcntl
+all_pod_coverage_ok({also_private => [qw/S_ISGID/]});
 
 1;
