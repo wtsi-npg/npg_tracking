@@ -74,6 +74,9 @@ Readonly::Hash   my  %METHODS           => {
                            sample_consent_withdrawn
                            sample_description
                            sample_reference_genome
+                           sample_supplier_name
+                           sample_cohort
+                           sample_donor_id
                       /],
 
     'study'        => [qw/ study_id

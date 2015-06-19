@@ -10,6 +10,8 @@ release 84.5
  - perform runfolder name validation against the tracking db run record
    rather than against xml feeds; compare to expected runfolder name
    if this name is not in the database yet
+ - add sample_supplier_name, sample_cohort and sample_donor_id to
+   st::api::lims interface
 
 release 84.4
  - to avoid the need to create deep directory hierarchy containing www-live
