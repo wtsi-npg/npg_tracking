@@ -1,5 +1,7 @@
 CHANGES
 
+ - when changing ownership of run folder, set gid bit on every level
+
 release 84.5
  - staging monitor extension:
      move qc complete runfolders from analysis to outgoing
