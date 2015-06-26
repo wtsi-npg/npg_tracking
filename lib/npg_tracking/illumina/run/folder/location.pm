@@ -5,7 +5,7 @@
 package npg_tracking::illumina::run::folder::location;
 
 use Moose::Role;
-use Carp qw(croak);
+use Carp;
 use Cwd;
 use File::Spec::Functions;
 use Readonly;
