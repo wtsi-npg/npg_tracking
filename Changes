@@ -1,6 +1,8 @@
 CHANGES
 
+release 84.6
  - when changing ownership of run folder, set gid bit on every level
+ - Reporting croaks without full stacktraces for folder and folder/location
 
 release 84.5
  - staging monitor extension:
