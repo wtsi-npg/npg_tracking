@@ -2,7 +2,10 @@ CHANGES
 
 release 84.6
  - when changing ownership of run folder, set gid bit on every level
- - Reporting croaks without full stacktraces for folder and folder/location
+ - reporting croaks without full stacktraces for folder and folder/location
+ - daemon control:
+     do not use depricated load_class method
+     read a list of production users from a configuration file
 
 release 84.5
  - staging monitor extension:
