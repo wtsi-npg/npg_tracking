@@ -71,6 +71,14 @@ Returns a hash reference containing further configuration entries or an empty ha
   use npg_tracking::util::config qw/get_config_repository/;
   my $iprefix = get_config_repository()->{'instrument_prefix'};
 
+=head2 get_config_users
+
+A shortcut for users configuration
+
+  use npg_tracking::util::config qw/get_config_users/;
+  my @users = @{get_config_users()->{'production'}};
+
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
