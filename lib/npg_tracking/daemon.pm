@@ -1,19 +1,17 @@
-#########
-# Author:        Marina Gourtovaia
-# Created:       18 December 2009
-#
-
 package npg_tracking::daemon;
 
+
 use Moose;
-use Carp;
-use English qw(-no_match_vars);
-use Readonly;
+use namespace::autoclean;
 use Sys::Hostname;
-use POSIX qw(strftime);
+use POSIX   qw(strftime);
 use FindBin qw($Bin);
+use List::MoreUtils qw(any);
 use Readonly;
+
 use npg_tracking::util::abs_path qw(abs_path);
+use npg_tracking::util::config   qw(get_config_users);
+
 our $VERSION = '0';
 
 ## no critic (RequireInterpolationOfMetachars)
@@ -175,8 +173,31 @@ sub daemon_name {
     return $self->_class_name;
 }
 
+=head2 is_prod_user
 
-no Moose;
+Retrieves a list of known production users from the tracking configuration
+file and validates the given user. Returns true if the user is given and
+is production user, otherwise returns false. Can be called both as a class
+and instance method.
+
+  $obj->is_prod_user('myuser');
+  __PACKAGE__->is_prod_user('myuser');
+
+=cut
+sub is_prod_user {
+  my ($self, $user) = @_;
+
+  my $result = 0;
+  if ($user) {
+    my $h = get_config_users();
+    if( $h->{'production'} ) {
+      $result = any { $_ eq $user} @{$h->{'production'}};
+    }
+  }
+  return $result;
+}
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
@@ -191,9 +212,7 @@ __END__
 
 =item Moose
 
-=item Carp
-
-=item English
+=item namespace::autoclean
 
 =item Readonly
 
@@ -203,6 +222,8 @@ __END__
 
 =item FindBin
 
+=item List::MoreUtils
+
 =back
 
 =head1 INCOMPATIBILITIES
@@ -211,11 +232,11 @@ __END__
 
 =head1 AUTHOR
 
-Author: Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2009 GRL, by Marina Gourtovaia
+Copyright (C) 2015 GRL, by Marina Gourtovaia
 
 This file is part of NPG.
 
