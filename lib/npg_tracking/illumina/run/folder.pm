@@ -7,7 +7,7 @@ package npg_tracking::illumina::run::folder;
 use Moose::Role;
 use Moose::Meta::Class;
 use File::Spec::Functions qw(splitdir catfile catdir);
-use Carp qw(carp cluck croak confess);
+use Carp;
 use Cwd qw/getcwd/;
 use Try::Tiny;
 use Readonly;

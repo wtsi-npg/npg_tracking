@@ -12,7 +12,9 @@ use npg_tracking::util::config_constants qw($NPG_CONF_DIR_NAME);
 
 our @EXPORT_OK = qw(get_config
                     get_config_repository
-                    get_config_staging_areas);
+                    get_config_staging_areas
+                    get_config_users
+                   );
 
 our $VERSION = '0';
 
@@ -28,6 +30,8 @@ sub get_config { return \%CONFIG; }
 sub get_config_staging_areas { return $CONFIG{'staging_areas'} || {}; };
 
 sub get_config_repository { return $CONFIG{'repository'} || {}; };
+
+sub get_config_users { return $CONFIG{'users'} || {}; };
 
 1;
 __END__
@@ -66,6 +70,14 @@ Returns a hash reference containing further configuration entries or an empty ha
 
   use npg_tracking::util::config qw/get_config_repository/;
   my $iprefix = get_config_repository()->{'instrument_prefix'};
+
+=head2 get_config_users
+
+A shortcut for users configuration
+
+  use npg_tracking::util::config qw/get_config_users/;
+  my @users = @{get_config_users()->{'production'}};
+
 
 =head1 DIAGNOSTICS
 

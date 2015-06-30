@@ -1,16 +1,13 @@
 #!/usr/bin/env perl
 
 #########
-# Author:        Marina Gourtovaia
-# Created:       21 December 2009
 # copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/instrument_handling/trunk/bin/remote_process_monitor
 #
 
-use strict;
-use warnings;
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Moose;
+use Class::Load;
 use Carp;
 use English qw(-no_match_vars);
 use Getopt::Long;
@@ -21,7 +18,6 @@ use Readonly;
 
 our $VERSION = '0';
 
-Readonly::Scalar my $PRODUCTION_USER  => 'srpipe';
 Readonly::Scalar my $DAEMON_NAMESPACE => 'npg_tracking::daemon';
 
 my $opts = {};
@@ -35,10 +31,10 @@ my @classes = Module::Pluggable::Object->new(
 my @options = qw(help dry-run);
 my @actions = qw(ping stop start);
 foreach my $class (sort @classes) {
-    foreach my $action (@actions) {
-        my @temp = split m/:/msx, $class;
-        push @options, (join q[_], $action, (pop @temp));
-    }
+  foreach my $action (@actions) {
+    my @temp = split m/:/msx, $class;
+    push @options, (join q[_], $action, (pop @temp));
+  }
 }
 
 if (scalar @options == 2) {
@@ -55,16 +51,10 @@ if($opts->{help} || !scalar keys %{$opts}) {
 my ($request) = grep {/start_|ping_|stop_/msx} (keys %{$opts});
 if (defined $request && $request) {
 
-  if (!$ENV{USER} || ($ENV{USER} ne $PRODUCTION_USER)) {
-    warn "\n************************************\n";
-    warn   "*** YOU ARE NOT PRODUCTION USER  ***\n";
-    warn   "************************************\n";
-  }
-
   my @temp = split m/_/msx, $request;
   my $action = shift @temp;
   my $runner_package = $DAEMON_NAMESPACE . q[::] . join q[_], @temp;
-  Class::MOP::load_class($runner_package);
+  Class::Load::load_class($runner_package);
   
   my $h = {};
   my $local_host = 0;
@@ -77,6 +67,11 @@ if (defined $request && $request) {
     $h = {'hosts' => $hosts,};
   }
   my $runner = $runner_package->new($h);
+  if ( !$runner->is_prod_user($ENV{'USER'}) ) {
+    warn "\n************************************\n";
+    warn   "*** YOU ARE NOT PRODUCTION USER  ***\n";
+    warn   "************************************\n";
+  }
 
   print "\n" or carp $OS_ERROR;
   foreach my $host (@{$runner->hosts}) {
@@ -110,11 +105,10 @@ sub help {
   my @opts = @_;
   print fileparse($PROGRAM_NAME) . qq[ options:\n];
   foreach my $op (@opts) {
-      print qq[\t--$op\n] or carp $OS_ERROR;
+    print qq[\t--$op\n] or carp $OS_ERROR;
   }
   print qq[\n] or carp $OS_ERROR;
   return;
 }
 
 1;
-

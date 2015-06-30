@@ -196,7 +196,7 @@ sub move_to_analysis {
     if ($moved) {
         my $group = get_config_staging_areas()->{'analysis_group'};
         if ($group) {
-            _change_group($group, $destination, 1);
+            _change_group($group, $destination);
             _change_group($group, $destination . "/$INTENSITIES_DIR_PATH");
             push @ms, "Changed group to $group";
         }
@@ -313,7 +313,7 @@ sub update_folder {
 }
 
 sub _change_group {
-    my ($group, $directory, $set_sgid) = @_;
+    my ($group, $directory) = @_;
   
     my $temp = $directory . '.original';
     move($directory, $temp) or croak "move error: $ERRNO";
@@ -328,9 +328,7 @@ sub _change_group {
     chown -1, $gid, $directory;
     # If needed, add 's' to group permission so that
     # a new dir/file has the same group as parent directory
-    if ($set_sgid) {
-        _set_sgid($directory);
-    }
+    _set_sgid($directory);
 
     return;
 }

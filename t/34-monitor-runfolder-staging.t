@@ -337,7 +337,7 @@ my $schema = t::dbic_util->new->test_schema();
 {
     my $tmpdir = tempdir( CLEANUP => 1 );
     my $r= (stat($tmpdir))[2] & S_ISGID();
-    ok( !$r, 'initially the sticky bit is not set');
+    ok( !$r, 'initially the gid bit is not set');
     Monitor::RunFolder::Staging::_set_sgid($tmpdir);
     $r= (stat($tmpdir))[2] & S_ISGID();
     ok( $r, 'now the s directory bit');
@@ -348,7 +348,7 @@ my $schema = t::dbic_util->new->test_schema();
     lives_ok { Monitor::RunFolder::Staging::_change_group($group, $tmpdir, 1) }
        'changing group';
     $r= (stat($tmpdir))[2] & S_ISGID();
-    ok( $r, 'now the sticky bit is set');
+    ok( $r, 'now the gid bit is set');
 }
 
 1;
