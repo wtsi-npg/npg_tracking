@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 20;
 use Sys::Hostname;
 use Cwd;
 
@@ -8,7 +8,11 @@ my $hostname = hostname;
 my $timestamp = '20130417-133635';
 my $log_dir = join(q[/],getcwd(), 'logs');
 
-use_ok('npg_tracking::daemon');
+BEGIN {
+  local $ENV{'HOME'} = 't';
+  use_ok('npg_tracking::daemon');
+}
+
 my $default_command = q{perl -e '$|=1;while(1){print "daemon running\n";sleep5;}'};
 my $command = q{perl -e '$|=1;while(1){print "daemon running\n";sleep5;}' || echo Log directory } . $log_dir . q{ for staging host } . $hostname . q{ cannot be written to};
 {
@@ -30,6 +34,15 @@ my $command = q{perl -e '$|=1;while(1){print "daemon running\n";sleep5;}' || ech
     is($r->start(), qq([[ -d $log_dir && -w $log_dir ]] && daemon -i -r -a 10 -n daemon --umask 002 -A 10 -L 10 -M 10 -o $log_dir/daemon-) . $hostname . qq[-$timestamp.log -- $command], 'start command with an undefined host');
     is($r->ping(), q[daemon --running -n daemon && ((if [ -w /tmp/daemon.pid ]; then touch -mc /tmp/daemon.pid; fi) && echo -n 'ok') || echo -n 'not ok'], 'ping command with an undefined host');
     is($r->stop(), q[daemon --stop -n daemon], 'stop command with an undefined host');
+}
+
+{   # production users are defined in t/.npg/npg_tracking
+    my $r = npg_tracking::daemon->new();
+    ok(!$r->is_prod_user(), 'not production user if no user given');
+    ok(!$r->is_prod_user(q[]), 'not production user if empty string given');
+    ok(!$r->is_prod_user(q[userfive]), 'not production user');
+    ok($r->is_prod_user(q[userone]), 'is production user');
+    ok($r->is_prod_user(q[usertwo]), 'is production user');
 }
 
 {
