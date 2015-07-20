@@ -10,13 +10,15 @@ use Template;
 use Carp;
 use English qw(-no_match_vars);
 use List::MoreUtils qw/any/;
+use List::Util qw/min/;
 use URI::Escape qw(uri_escape_utf8);
 use Readonly;
+use Cwd qw(abs_path);
+
 use npg_tracking::Schema;
 use st::api::lims;
 use st::api::lims::samplesheet;
 use npg_tracking::data::reference;
-use Cwd qw(abs_path);
 
 our $VERSION = '0';
 
@@ -43,7 +45,6 @@ Readonly::Scalar our $REP_ROOT => q(/nfs/sf45);
 Readonly::Scalar our $SAMPLESHEET_PATH => q(/nfs/sf49/ILorHSorMS_sf49/samplesheets/);
 Readonly::Scalar our $DEFAULT_FALLBACK_REFERENCE_SPECIES=> q(PhiX);
 Readonly::Scalar my  $MIN_COLUMN_NUM => 3;
-Readonly::Scalar my  $DUAL_INDEX_TAG_LENGTH => 16;
 
 with 'MooseX::Getopt';
 with 'npg_tracking::glossary::run';
@@ -75,23 +76,42 @@ sub _build_samplesheet_path {
 
 has 'extend' => ( 'isa' => 'Bool', 'is' => 'ro',);
 
-has 'dual_index_size' => (
-  'isa' => 'Int',
+has 'dual_index' => (
+  'isa' => 'Bool',
   'is' => 'ro',
   'lazy_build' => 1,
 );
-sub _build_dual_index_size {
+sub _build_dual_index {
   my $self=shift;
   if ($self->_index_read) {
-    for my $l (@{$self->lims}) {
-      for my $tmpl ( $l->is_pool ? $l->children : ($l) ) {
-        if ($tmpl->tag_sequence && length($tmpl->tag_sequence) == $DUAL_INDEX_TAG_LENGTH) {
-          return $DUAL_INDEX_TAG_LENGTH/2;
-        }
+    for my $l ( @{$self->lims} ) {
+      if ($l->is_pool && any { scalar @{$_->tag_sequences} == 2 } $l->children) {
+        return 1;
       }
     }
   }
   return 0;
+}
+
+has '_min_index_length' => (
+  'isa' => 'Maybe[Int]',
+  'is' => 'ro',
+  'lazy_build' => 1,
+);
+sub _build__min_index_length {
+  my $self=shift;
+
+  my @tag_sequences = ();
+  if ($self->dual_index) {
+    for my $l ( @{$self->lims} ) {
+      if ($l->is_pool) {
+        map { push @tag_sequences, length($_->tag_sequences->[0]) }
+        grep { scalar @{$_->tag_sequences} == 2 } $l->children;
+      }
+    }
+  }
+
+  return min(@tag_sequences);
 }
 
 has 'repository' => ( 'isa' => 'Str', 'is' => 'ro', default => $REP_ROOT );
@@ -200,19 +220,21 @@ sub _build__limsreflist {
       push @row, $tmpl->sample_publishable_name;
       push @row, $ref;
       if($self->_index_read) {
-        if ($self->dual_index_size) {
-          # always tructate first index to dual_index_size
-          my $ts = $tmpl->tag_sequence || q[];
-          push @row, substr $ts, 0, $self->dual_index_size();
-          # empty second index unless size is dual_index_size (typically to cope with phix spike)
-          push @row, ( length($ts) == (2 * $self->dual_index_size()) ?
-                        substr $ts, $self->dual_index_size() :
-                        q[]
-                     );
-        } else {
-          push @row, $tmpl->tag_sequence || q[];
+        my $ts = $tmpl->tag_sequences->[0] || q[];
+        ###########
+        # Truncate phix tag sequence if it's longer than the first index.
+        # In practice important for MiSeq instrument only. However, Phix
+        # is not registered in LIMS in those cases.
+        if (scalar @{$tmpl->tag_sequences} == 1 && $self->_min_index_length &&
+          length($ts) > $self->_min_index_length) {
+          $ts = substr $ts, 0, $self->_min_index_length;
+        }
+        push @row, $ts;
+        if ($self->dual_index) {
+          push @row, $tmpl->tag_sequences->[1] || q[];
         }
       }
+      
       if ($self->extend) {
         push @row, map { _csv_compatible_value($tmpl->$_) } @{$self->_additional_columns};
       }
@@ -325,7 +347,7 @@ Project Name[% separator _ project_name %][% separator.repeat(one_less_sep) %]
 Experiment Name[% separator _ run.id_run %][% separator.repeat(one_less_sep) %]
 Date[% separator _ pendingstatus.date %][% separator.repeat(one_less_sep) %]
 Workflow[% separator %]LibraryQC[% separator.repeat(one_less_sep) %]
-Chemistry[% separator %][% IF has_dual_index_size %]Amplicon[% ELSE %]Default[% END -%]
+Chemistry[% separator %][% IF has_dual_index %]Amplicon[% ELSE %]Default[% END -%]
 [% separator.repeat(one_less_sep) %]
 [% separator.repeat(num_sep) -%]
 
@@ -346,7 +368,7 @@ Chemistry[% separator %][% IF has_dual_index_size %]Amplicon[% ELSE %]Default[% 
 [% 
    colnames = ['Sample_ID', 'Sample_Name', 'GenomeFolder'];
    IF has_index_read; colnames.push('Index') ;END;
-   IF has_dual_index_size; colnames.push('Index2'); END;
+   IF has_dual_index; colnames.push('Index2'); END;
    IF has_multiple_lanes; colnames.unshift('Lane'); END;
    colnames.join(separator);
    separator;
@@ -376,14 +398,14 @@ sub process {
   my $nc = $self->_num_columns;
 
   $tt->process(\$template,{
-    run                =>$self->run,
+    run                => $self->run,
     pendingstatus      =>
       $self->run->run_statuses->search({q(run_status_dict.description)=>q(run pending)},{join=>q(run_status_dict)})->first,
     limsa              => [$self->limsreflist],
     separator          => $st::api::lims::samplesheet::SAMPLESHEET_RECORD_SEPARATOR,
     has_multiple_lanes => $ml,
     has_index_read     => $ir,
-    has_dual_index_size     => $self->dual_index_size,
+    has_dual_index     => $self->dual_index,
     additional_columns => $ac,
     num_sep            => $nc,
     project_name       => join(q[ ], @{$self->study_names}) || 'unknown',
@@ -417,6 +439,8 @@ __END__
 
 =item List::MoreUtils
 
+=item List::Util
+
 =back
 
 =head1 INCOMPATIBILITIES
@@ -429,7 +453,7 @@ David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2011 GRL, by David K. Jackson 
+Copyright (C) 2015 GRL
 
 This file is part of NPG.
 
