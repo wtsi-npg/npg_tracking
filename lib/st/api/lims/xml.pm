@@ -320,22 +320,56 @@ Read-only string accessor, not possible to set from the constructor.
 Undefined on a lane level and for zero tag_index.
 
 =cut
-has 'default_tag_sequence' =>    (isa             => 'Maybe[Str]',
-                          is              => 'ro',
-                          init_arg        => undef,
-                          lazy_build      => 1,
-                         );
+has 'default_tag_sequence' =>  (isa             => 'Maybe[Str]',
+                                is              => 'ro',
+                                init_arg        => undef,
+                                lazy_build      => 1,
+                               );
 sub _build_default_tag_sequence {
   my $self = shift;
+  return $self->_get_tag_sequence('tag_id');
+}
+
+=head2 default_tag2_sequence
+
+Read-only string accessor, not possible to set from the constructor.
+Undefined on a lane level and for zero tag_index.
+
+=cut
+has 'default_tagtwo_sequence' => (isa             => 'Maybe[Str]',
+                                  is              => 'ro',
+                                  init_arg        => undef,
+                                  lazy_build      => 1,
+                                 );
+sub _build_default_tagtwo_sequence {
+  my $self = shift;
+  return $self->_get_tag_sequence('tag2_id');
+}
+
+sub _get_tag_sequence {
+  my ($self, $tag_sequence_name) = @_;
+
+  if (!$tag_sequence_name) {
+    croak 'Need tag sequence element name';
+  }
+
   my $seq;
   if ($self->tag_index) {
-    if (!$seq && $self->_entity_xml_element) {
-      my $sel = $self->_entity_xml_element->getElementsByTagName(q[expected_sequence]);
-      if ($sel) {
-        $seq = $sel->[0]->textContent();
+    if ($self->_entity_xml_element) {
+
+      my @tag_elts = grep { $_->hasAttribute($tag_sequence_name) } $self->_entity_xml_element->getElementsByTagName(q[tag]);
+      if (scalar @tag_elts > 1) {
+        croak "Multiple tag entries for $tag_sequence_name";
+      }
+      if (@tag_elts) {
+        my $sel = $tag_elts[0]->getElementsByTagName(q[expected_sequence]);
+        if ($sel) {
+          $seq = $sel->[0]->textContent();
+        }
       }
     }
   }
+
   return $seq;
 }
 
@@ -962,7 +996,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2011 GRL, by Marina Gourtovaia
+Copyright (C) 2015 GRL
 
 This file is part of NPG.
 
