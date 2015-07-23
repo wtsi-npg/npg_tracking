@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 127;
+use Test::More tests => 138;
 use Test::Exception;
 use Test::Deep;
 use Moose::Meta::Class;
@@ -98,6 +98,8 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   ok (!$d->sample_supplier_name, 'no supplier name');
   ok (!$d->sample_cohort, 'no cohort');
   ok (!$d->sample_donor_id, 'no donor id');
+  is ($d->default_tag_sequence, undef, 'first index sequence undefined');
+  is ($d->default_tagtwo_sequence, undef, 'second index sequence undefined');
 
   my $lims1 = $children[0];
   ok (!$lims1->is_control, 'first lane is not control');
@@ -151,56 +153,63 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
 }
 
 {
-  my $lims7 = st::api::lims::ml_warehouse->new(
+  my $lims = st::api::lims::ml_warehouse->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 16249,
                                  position         => 1);
-  ok (!$lims7->bait_name, 'bait name undefined');
-  ok ($lims7->is_pool, 'lane is a pool');
-  ok (!$lims7->sample_supplier_name, 'no supplier name');
-  ok (!$lims7->sample_cohort, 'no cohort');
-  ok (!$lims7->sample_donor_id, 'no donor id');
-  ok (!$lims7->is_control, 'lane is not control');
-  is (scalar $lims7->children, 9, 'nine-long children list');
-  is ($lims7->spiked_phix_tag_index, 168, 'spike index');
+  ok (!$lims->bait_name, 'bait name undefined');
+  ok ($lims->is_pool, 'lane is a pool');
+  ok (!$lims->sample_supplier_name, 'no supplier name');
+  ok (!$lims->sample_cohort, 'no cohort');
+  ok (!$lims->sample_donor_id, 'no donor id');
+  ok (!$lims->is_control, 'lane is not control');
+  is (scalar $lims->children, 9, 'nine-long children list');
+  is ($lims->spiked_phix_tag_index, 168, 'spike index');
 
-  $lims7 = st::api::lims::ml_warehouse->new(
+  $lims = st::api::lims::ml_warehouse->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 16249,
                                  position         => 1,
                                  tag_index        => 0,);
-  ok (!$lims7->bait_name, 'bait name undefined');
-  ok ($lims7->is_pool, 'tag zero is a pool');
-  ok (!$lims7->is_control, 'tag zero is not control');
-  is (scalar $lims7->children, 9, 'tag zero - nine-long children list');
-  is ($lims7->spiked_phix_tag_index, 168, 'spike index');
-  ok (!$lims7->sample_supplier_name, 'no supplier name');
-  ok (!$lims7->sample_cohort, 'no cohort');
-  ok (!$lims7->sample_donor_id, 'no donor id');
+  ok (!$lims->bait_name, 'bait name undefined');
+  ok ($lims->is_pool, 'tag zero is a pool');
+  ok (!$lims->is_control, 'tag zero is not control');
+  is (scalar $lims->children, 9, 'tag zero - nine-long children list');
+  is ($lims->spiked_phix_tag_index, 168, 'spike index');
+  ok (!$lims->sample_supplier_name, 'no supplier name');
+  ok (!$lims->sample_cohort, 'no cohort');
+  ok (!$lims->sample_donor_id, 'no donor id');
+  is ($lims->default_tag_sequence, undef, 'first index sequence undefined');
+  is ($lims->default_tagtwo_sequence, undef, 'second index sequence undefined');
 
-  $lims7 = st::api::lims::ml_warehouse->new(
+
+  $lims = st::api::lims::ml_warehouse->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 16249,
                                  position         => 1,
                                  tag_index        => 2,);
-  is($lims7->bait_name, 'Human all exon 50MB', 'bait name for a plex');
-  is ($lims7->spiked_phix_tag_index, 168, 'spike index');
-  ok (!$lims7->children, 'children list is empty');
-  ok (!$lims7->is_control, 'tag 2 is not control');
-  is ($lims7->sample_id, 1092803, 'sample id');
-  is ($lims7->sample_supplier_name, 'sample_33', 'supplier name');
-  is ($lims7->sample_cohort, 'plan1', 'cohort');
-  is ($lims7->sample_donor_id, '5678', 'donor id');
+  is($lims->bait_name, 'Human all exon 50MB', 'bait name for a plex');
+  is ($lims->spiked_phix_tag_index, 168, 'spike index');
+  ok (!$lims->children, 'children list is empty');
+  ok (!$lims->is_control, 'tag 2 is not control');
+  is ($lims->sample_id, 1092803, 'sample id');
+  is ($lims->sample_supplier_name, 'sample_33', 'supplier name');
+  is ($lims->sample_cohort, 'plan1', 'cohort');
+  is ($lims->sample_donor_id, '5678', 'donor id');
+  is ($lims->default_tag_sequence, 'CGATGT', 'first index sequence');
+  is ($lims->default_tagtwo_sequence, undef, 'second index sequence undefined');
 
-  $lims7 = st::api::lims::ml_warehouse->new(
+  $lims = st::api::lims::ml_warehouse->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 16249,
                                  position         => 1,
                                  tag_index        => 168,);
-  is ($lims7->bait_name, undef, 'bait name undefined for spiked phix plex');
-  ok (!$lims7->is_pool, 'is not a pool');
-  ok ($lims7->is_control, 'tag 168 is control');
-  is ($lims7->spiked_phix_tag_index, 168, 'spike index');
+  is ($lims->bait_name, undef, 'bait name undefined for spiked phix plex');
+  ok (!$lims->is_pool, 'is not a pool');
+  ok ($lims->is_control, 'tag 168 is control');
+  is ($lims->spiked_phix_tag_index, 168, 'spike index');
+  is ($lims->default_tag_sequence, 'ACAACGCAAT', 'first index sequence');
+  is ($lims->default_tagtwo_sequence, undef, 'second index sequence undefined');
 }
 
 {
@@ -222,6 +231,7 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
                                  tag_index        => 3,);
   is( $lims->sample_id, 1299694, 'sample id');
   is( $lims->default_tag_sequence, 'TTAGGC', 'tag sequence');
+  is($lims->default_tagtwo_sequence, undef, 'second index sequence undefined');
   is( $lims->default_library_type, 'Agilent Pulldown', 'library type');
   is( $lims->bait_name, 'DDD custom library', 'bait name');
   is( $lims->project_cost_code, 'S0802', 'project code code');
@@ -230,6 +240,15 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
 }
 
 {
+  my $rs = $schema_wh->resultset('IseqFlowcell');
+  my $row = $rs->search({id_flowcell_lims => 22043, position=>1, tag_index=>1})->first;
+  $row->set_column('tag2_sequence', 'ACGTAA');
+  $row->update();
+
+  $row = $rs->search({id_flowcell_lims => 22043, position=>1, tag_index=>96})->first;
+  $row->set_column('tag_sequence', 'ACGTAAACGTACCTGA');
+  $row->update();
+
   my $lims = st::api::lims::ml_warehouse->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 22043);
@@ -255,18 +274,21 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   is ($plexes[0]->study_reference_genome, ' ', 'study ref genome undefined');
   is ($plexes[0]->is_pool, 0, 'is_pool false on plex level');
   is ($plexes[0]->is_control, 0, 'is_control false on for a plex');
-  is ($plexes[0]->default_tag_sequence, 'ATCACGTT', 'default tag sequence of the first plex');
+  is ($plexes[0]->default_tag_sequence, 'ATCACGTT', 'first default tag sequence');
+  is ($plexes[0]->default_tagtwo_sequence, 'ACGTAA', 'second default tag sequence');
   is ($plexes[0]->spiked_phix_tag_index, undef, 'spike index undefined');
+
   is ($plexes[1]->study_id, 2077, 'plex study_id');
   is ($plexes[1]->sample_reference_genome, 'Anopheles_gambiae (PEST)', 'sample ref genome undefined');
   is ($plexes[1]->study_reference_genome, ' ', 'study ref genome');
+
   is ($plexes[95]->position, 1, 'position of the last plex is 1');
   is ($plexes[95]->tag_index, 96, 'tag_index of the last plex is 96');
-  is ($plexes[95]->default_tag_sequence, 'GTCTTGGC', 'tag sequence of the last plex');
+  is ($plexes[95]->default_tag_sequence, 'ACGTAAACGTACCTGA', 'first tag sequence of the last plex');
+  is ($plexes[95]->default_tagtwo_sequence, undef, 'second tag sequence undefined');
   ok (!defined $plexes[95]->library_id, 'library_id of the last plex undefined');
   ok (!defined $plexes[95]->library_name, 'library_name of the last plex undefined');
   is ($plexes[95]->sample_name, 'second', 'sample_name of the last plex');
-
   ok (!defined $plexes[95]->study_id, 'study id undefined');
   ok (!defined $plexes[95]->study_name, 'study name undefined');
   cmp_bag ($plexes[95]->email_addresses,[],'no study - no email addresses');
