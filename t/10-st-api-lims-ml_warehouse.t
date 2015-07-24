@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 138;
+use Test::More tests => 139;
 use Test::Exception;
 use Test::Deep;
 use Moose::Meta::Class;
@@ -295,6 +295,21 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   cmp_bag ($plexes[95]->email_addresses_of_managers,[],'no study - no email addresses');
   is_deeply ($plexes[95]->email_addresses_of_followers,[],'no study - no email addresses');
   is_deeply ($plexes[95]->email_addresses_of_owners,[],'no study - no email addresses');
+}
+
+{  
+  my $rs = $schema_wh->resultset('IseqFlowcell');
+  my $row = $rs->search({flowcell_barcode => '42UMBAAXX', position=>1})->next;
+  $row->set_column('id_flowcell_lims', $row->id_flowcell_lims+5);
+  $row->update();
+  
+  my $l = st::api::lims::ml_warehouse->new(
+      mlwh_schema      => $schema_wh,
+      flowcell_barcode => '42UMBAAXX');
+  my $error = join qq[\n], 'Multiple flowcell identifies:',
+    'id_flowcell_lims:flowcell_barcode', "'4780':'42UMBAAXX'", "'4775':'42UMBAAXX'";         
+  throws_ok { $l->children } qr/$error/,
+    'error for multiple flowcell ids';
 }
 
 1;
