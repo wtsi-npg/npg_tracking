@@ -87,10 +87,10 @@ sub is_run_completed {
 
     my $run_folder = Monitor::RunFolder->new( runfolder_path => $run_path, _schema => $self->schema );
 
-    my $netcopy = 'ImageAnalysis_Netcopy_complete_Read'.scalar $run_folder->read_cycle_counts;
+    my $rta = "RTAComplete";
 
 
-    return ( $file_string =~ m/\b$netcopy [.]txt\b/msx ) ? 1
+    return ( $file_string =~ m/\b$rta [.]txt\b/msx ) ? 1
          : ( $file_string =~ m/\bRun[.]completed\b/msx )          ? 1
          :                                                        0
          ;
