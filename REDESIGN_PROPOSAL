@@ -11,14 +11,11 @@
 
 CONTENT:
    TESTS IMPROVEMENTS
-   DEPLOYMENT AND DEPENDENCIES
    REDESIGN OF MODELS
    RUN AND INSTRUMENT TRACKING
    PIPELINE INTERACTION
    WEB APP, GUI
    REPORTS
-   MISC
-   APPENDIX 1: proposed npg_tracking namespaces for tracking dependencies in useful modules
 
 -------------------------------------------------------------------
 Regenereting content list
@@ -38,110 +35,6 @@ TASK: set up Selenium http://seleniumhq.org/projects/webdriver/
   time estimate: ??
 )
 
-REQUIREMENT:
-predict how change is propagated accross multiple projects
-TASK: set-up Jenkins continuous integration server http://jenkins-ci.org/ RT#162076
-( urgency: urgent
-  status: STARTED 4.12.2012, mg8
-          COMPLETED 19.12.2012
-)
-
-REQUIREMEMT:
-tests running in parallel should not clash
-TASK: use volatile local databases (mysql)
-( urgency: moderate
-  status: COMPLETED 14.12.2012, mg8
-    see Jenkins configuration for tracking-pre-prod
-)
-TASK: test should set up their own webserver if they need one
-( urgency: none
-)
-
-CATEGORY: DEPLOYMENT AND DEPENDENCIES
---------------------------------------
-
-REQUIREMENT: 
-consistent and predictable location of db credentials and other config options
-(per app config files)
-INFO: clearpress apps - data/config.ini - dependency on the location of the deployed code
-      dbix apps - .npg - dependency on home dirs
-TASK: consider options for config files location and a reliable way of propagating this
-      location to scripts and modules
-      if any decision is reached, further task might be added
-( urgency: urgent,
-  time estimate: 1 day
-  status: COMPLETED
-  details: all implementation SOPS use files in .npg as a master copy and either link to
-    these files or copy them
-)
-
-
-REQUIREMENT:
-easier branching and merging
-TASK: use git for version control
-( depends on: TASK(remove circular dependencies between package)
-  urgency: moderate
-  time estimate: 1 day
-  status: COMPLETED
-)
-
-REQUIREMENT: atomic deployment
-TASK: remove run-time dependency on /software/solexa
-      see also RT#161229: cleanup /software/solexa/lib/perl5
-               RT#269039: replace modules in /software/solexa/cpan with the ones built on lenny
-(status: COMPLETED, 20.12.2012, mg8, pending deployment)
-
-TASK: build procedure that installs all dependencies
-(status: COMPLETED, 17.12.2012, mg8)
-
-TASK: precise perl 5.14.2 complience
-(status: COMPLETED, 17.12.2012, ejz)
-
-TASK: remove circular dependencies between packages
-( time estimate: 7days,
-  urgency: urgent
-  status: COMPLETED
-)
-DETAILS: main useful modules dependency
-  config -> npg_tracking::util::config  see if we can depend directly on ConfigAny 
-  roles::run::runfolder_location -> npg_tracking::illumina::runfolder::location
-  run::folder_validation -> npg_tracking::illumina::runfolder::validation
-  roles::run       -> npg_tracking::gloss::run
-  roles::run::lane -> npg_tracking::gloss::lane
-  roles::run::lane::tag not tracked - to lims?
-  roles::run::path_info -> npg_tracking::illumina::runfolder::path_info
-  roles::run::log_info  -> npg_tracking::illumina::runfolder::log_info
-  sequence::reference -> npg_tracking::reference_data
-  
-  replace npg_common::roles::log with Log4Perl
-  do not use npg_common::pod_usage
-
-
-REQUIREMENT:
-tracking web app should run on a number of hosts: vm Ubuntu precise, sfweb
-TASK: set up dev and production server on sfweb with tracking and cpan modules deployed on sfweb blades
-      also see RT#270448: dev server for apps running on sfweb apache server
-( time estimate: ??
-  urgency: moderate
-  depends on: TASK(atomic deployment),
-  status: COMPLETED, January 2014
-)
-TASK: move from intweb to web team-hosted vms
-( time estimate: ??
-  urgency: the hardware that runs http://intweb.sanger.ac.uk is scheduled for retirement on 30th October 2013
-  depends on: EXTERNAL_RESOURCE(test, dev, live vm machines),
-              EXTERNAL_RESOURCE(web team deployment procedure),
-              TASK(atomic deployment)
-  syatus: COMPLETED, 2013
-)
-TASK: point npg::api to sfweb instance
-( time estimate: ??
-  urgency: moderate
-  depends on: TASK(atomic deployment),
-  status: COMPLETED, autumn 2013
-)
-
-
 CATEGORY: REDESIGN OF MODELS
 ----------------------------
 
@@ -152,10 +45,8 @@ have one type of models - DBIx;
 DBIx models are auto-generated; capable of supporting relatively complex queries out of the box;
 have good DBIx models
 TASK: npg_tracking::Schema::Result existing models refactoring
-      see also RT#187545: Use a transaction to update run_status
-               RT#188218: Shared methods in npg_tracking::Schema::Result::*
+      see also RT#188218: Shared methods in npg_tracking::Schema::Result::*
                RT#190956: dbix binding for npg tracking annotation table: graceful handling of dates
-               RT#191566: dbix schema auto generation: incorrect handling og on delete, on update, etc
                RT##234632: npg_tracking::Schema code review
 ( time estimate: do as needed,
   urgency: urgent,
@@ -173,25 +64,6 @@ TASK: move instrument status graph to db
   urgency: moderate,
   depends on: TASK(npg::model backend - replace Clearpress models by  DBIx models)
 )
-TASK: model-level run status rules; some status updates only allowed before run complete 
-( time estimate:
-  urgency: moderate,
-)
-
-REQUIREMENT
-manual qc should be possible on lanes that have no status (current status undefined)
-TASK: refactor methods used by the SeqQC server. Fix 'Error when logging manual qc action: DBIx::Class::Schema::txn_do(): Can't call method "update_run_lane_status" on an undefined value at /nfs/users/nfs_m/mg8/working/npg-catalyst-qc/trunk/npg_qc_viewer/script/../lib/npg_qc_viewer/Model/NpgDB.pm line 263'
-
-REQUIREMENT:
-compliance with dbs
-TASK: test against MySQL5.5 and PostgreSQL http://www.postgresql.org/
-TASK: RT#191884: Ensure NPG tracking works with MySQL in strict SQL mode.
-( time estimate: ??,
-  urgency: medium,
-  dependencies: none
-  status: COMPLETED, moved to MySQL 5.5 in 2013
-)
-
 
 CATEGORY: RUN AND INSTRUMENT TRACKING
 -----------------------------------------
@@ -204,9 +76,6 @@ TASK: RT#211772: npg-tracking - improve instrument polling robustness
 TASK: RT#212302: npg Monitor - cleanup (wishlist)
 TASK: use winshare instead of ftp
       have both working for a while
-TASK: remove access to the tracking web server (to get runfolder name);
-      move logic for inferring runfolder name either to a DBIc model or
-      to the poller itself;
 TASK: prevent a deadlock when no runfolder name is stored on the db, the
       run is created yesterday, and started today;
 
@@ -224,19 +93,10 @@ REQUIREMENT:
 TASK: RT#191887: npg tracking - allow team117 to continue if NPG tracking is unavailable
 
 REQUIREMENT:
-both staging and instrument tracking should cope with $ENV{dev} value not being set
-$ENV{dev} should not be used to control the flow of the production code, it's for
-database access and resolving urls
-TASK: review the use of $ENV{dev}, try creating a full test case against dev or test database
-
-SUGGESTION: NPG is rather picky about kit version number as in 130115_MS5_9164_A_MS2003607-300v2 - expects capital V. Probably, have to be capitalised on saving to teh database
-
-REQUIREMENT:
 independent tracking of flowcell on HiSeq instruments
 TASK: created a suitable model and implement in DBIX
 ( depends on: TASK(npg::model backend - replace Clearpress models by  DBIx models)
 )
-
 
 CATEGORY: PIPELINE INTERACTION
 ------------------------------   
@@ -253,35 +113,13 @@ TASK: remove id_run validation in short info and similar modules
 REQUIREMENT:
 decouple the analysis pipeline from the tracking web server and the reference repository
 to allow for a stand-alone lane-based pipeline
-TASK: extend staging monitor to pick up run and lane statuses from runfolder files
-      change pipeline jobs that update status to create relevant files
-      remove xml post status update(?)
-      delegate moving runfolder from analysis to outgoing to the staging monitor (?)
-( time estimate: up to 10 working days
-  urgency: medium
-)
-TASK: create abstract lims interface to query all lims and reference-related info
-      data stored as extended illumina spreadsheet
-      three implementations to infer the data: from psd xml feeds, from the warehouse and from the
-      illumina spreadsheets
-      ensure st::api::lims and caching works with the new inplementation
-( time estimate: 3 weeks?
-  urgency: medium
-  status: COMPLETED (not references), autumn 2013
-)
 TASK: two modes for reference finder - live and from cached info through this interface
-      also see RT#186087: reference override ability from a config file
                RT#241842: reference finder redesign
 ( time estimate: 1 weeks
   urgency: medium
   depends on: TASK(create abstract lims interface)
 )
-RELATED TASK: pipeline daemon to track runfolders rather than id runs and to kick off the pipeline
-               script with an explicit runfolder path that should be propagated by the pipeline to
-               all jobs
-              pipelien analysi sdaemon might be replaced by an expended staging daemon
 RELATED TASK: analysis and autoqc should be able to use arbitrary ids instead if id_run? - not sure
-RELATED TASK: autoqc jobs to take file names
 
 TASK: run status on last lane past this status
 ( time estimate: 1 week
@@ -293,25 +131,9 @@ TASK: tracking web app - display lane statuses
   urgency: low
   depends on: TASK(run status on last lane past this status)
 )
-RELATED TASK: lots of pipeline changes - NOT IN SCOPE
-
 
 CATEGORY: WEB APP, GUI
 -------------------------------
-
-REQUIREMENT:
-reduce scope for error in manual run status changes
-https://rt.sanger.ac.uk/Ticket/Display.html?id=298032
-(qcers choose run on hold instead on qc on hold)
-SOLUTION: use temporal indices tha go live in releaes 72.0 to order statuses
-          and diable earlier stages status when the run is in analysis
-TASK: reorder listing of statuses on run page
-      reorder and filter drop-down menu for run status change
-( time estimate: 4 days,
-  urgency: urgent, 
-  depends on: TASK(model-level run status rules)
-  status: COMPLETED, 2013
-)
 
 REQUIREMENT: 
 correct role-based permissions in the tracking web apps (admin should not be able to do all)
@@ -353,27 +175,14 @@ more information
 TASK: RT#207721: npg-tracking : link to the iRods page for archived run
 TASK: RT#225087: Add release flag information to NPG web pages
 
-REQUIREMENT
-RT#232284: add ability for intewdev to look at db of choice
-(status: COMPLETED, 2013)
-
 REQUIREMENT:
 independent tracking of flowcell on HiSeq instruments
 TASK: created suitable visual representation and widgets
 (depends on: TASK(created a suitable model and implement in DBIX)
 )
 
-
 CATEGORY: REPORTS
 -----------------
-
-REQUIREMENT: reduce overhead reporting illumina failures
-INFO: run manually currently
-TASK: RT#161876 Daemon to add failed lanes to illumina-sequencing-failures ticket queue
-( time estimate: 2days
-  urgency: urgent
-  status: COMPLETED, mg8, December 2012
-)
 
 REQUIREMENT:
 ensure emails (content&recipients) are up-to-date
@@ -381,11 +190,6 @@ TASK: RT#184260: NPG-tracking - Review emails sent to "engineers"
 
 REQUIREMENT:
 ensure maintanability and correcteness of instrument utilisation and up&down reports
-TASK: report to John Burton calculations used in producing instrument utilisation and up&down reports
-( time estimate: 1 day
-  urgency: urgent
-  status: COMPLETED, mg8, 4 January 2013, RT#304558
-)
 TASK: refactor/reimplement instrument reports and supply with a good test suit
 ( time estimate: ?
   urgency: moderate
@@ -396,44 +200,4 @@ TASK: move reports out of the interactive application
   urgency: low
   depends on: TASK(refactor/reimplement instrument reports)
 )
-
-
-CATEGORY: MISC
--------------------
-
-TASK: RT#180083: Correct long_info's tile count correction
-
-TASK: tracking archival failures: RT#236563: post qc review script success/failure feedback
-
-TASK: RT#264290: npg::api::request revise wait time between repeating requests
-
-
-APPENDIX 1: proposed npg_tracking namespaces for tracking dependencies in useful modules
-----------------------------------------------------------------------------------------
-
-npg_common::messages npg_tracking::util::messages
-npg_common::sequence::reference npg_tracking::data::reference
-npg_common::sequence::reference::roles::find npg_tracking::data::reference::find
-npg_common::sequence::reference::roles::list npg_tracking::data::reference::list
-npg_common::sequence::reference::info npg_tracking::data::reference::info
-npg_common::sequence::reference::roles::find_bait npg_tracking::data::bait::find
-npg_common::sequence::reference::bait npg_tracking::data::bait
-
-npg_common::pod_usage                                  do not use - DONE
-npg_common::roles::log                                 do not use - no need to log anything, in fact - DONE
-
-npg_common::config                                     do not use if possible - DONE
-npg_common::config::roles::db_connect npg_tracking::util::db_connect - try avoid using npg_common::config - DONE
-
-npg_common::roles::run npg_tracking::gloss(ary)::run - DONE
-npg_common::roles::run::lane npg_tracking::gloss(ary)::lane - DONE
-npg_common::roles::run::lane::tag npg_tracking::gloss(ary)::tag - DONE
-
-npg_common::roles::run::tracking npg_tracking::illumina::run
-npg_common::run::folder_validation npg_tracking::illumina::run::folder::validation
-npg_common::roles::run::folder_validation to delete, functionality move to  npg_tracking::illumina::run::folder::validation
-npg_common::roles::run::runfolder_location npg_tracking::illumina::run::folder::location
-npg_common::roles::run::long_info npg_tracking::illumina::run::long_info
-npg_common::roles::run::short_info npg_tracking::illumina::run::short_info
-npg_common::roles::run::path_info npg_tracking::illumina::run::folder
 
