@@ -1102,8 +1102,11 @@ t/data/samplesheet/6946_extended.csv
 t/data/samplesheet/7007_extended.csv
 t/data/samplesheet/8pools_extended.csv
 t/data/samplesheet/miseq_default.csv
+t/data/samplesheet/miseq_default_dual_index.csv
 t/data/samplesheet/miseq_extended.csv
+t/data/samplesheet/dual_index_extended.csv
 t/data/samplesheet/multilane.csv
+t/data/samplesheet/st/batches/1.xml
 t/data/samplesheet/st/batches/16538.xml
 t/data/samplesheet/st/batches/13994.xml
 t/data/samplesheet/st/batches/14505.xml

@@ -1,11 +1,11 @@
 use strict;
 use warnings;
-use Test::More tests => 413;
+use Test::More tests => 445;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
 
-my $num_delegated_methods = 43;
+my $num_delegated_methods = 44;
 
 use_ok('st::api::lims');
 is(st::api::lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
@@ -610,6 +610,43 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   lives_ok {$l = st::api::lims->new(id_run => 10262, path => $ss_path)}
     'no error creating an object with samplesheet file defined in env var and path given';
   is ($l->driver_type, 'samplesheet', 'driver type is samplesheet');
+}
+
+{
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/dual_index_extended.csv';
+  _test_di( st::api::lims->new(id_run => 6946) );
+}
+
+{
+  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/samplesheet';
+  _test_di( st::api::lims->new(batch_id => 1) );
+}
+
+sub _test_di { 
+  my $l = shift;
+
+  my @lanes = $l->children;
+  is (scalar @lanes, 2, 'two lanes');
+  my @plexes = $lanes[0]->children;
+  is (scalar @plexes, 3, 'three samples in lane 1');
+  my $plex = $plexes[0];
+  is($plex->default_tag_sequence, 'CGATGTTT', 'first index');
+  is($plex->default_tagtwo_sequence, 'AAAAAAAA', 'second index');
+  is($plex->tag_sequence, 'CGATGTTTAAAAAAAA', 'combined tag sequence');
+  $plex = $plexes[2];
+  is($plex->default_tag_sequence, 'TGACCACT', 'first index');
+  is($plex->default_tagtwo_sequence, 'AAAAAAAA', 'second index');
+  is($plex->tag_sequence, 'TGACCACTAAAAAAAA', 'combined tag sequence');
+  @plexes = $lanes[1]->children;
+  is (scalar @plexes, 3, 'three samples in lane 2');
+  $plex = $plexes[0];
+  is($plex->default_tag_sequence, 'GCTAACTC', 'first index');
+  is($plex->default_tagtwo_sequence, 'GGGGGGGG', 'second index');
+  is($plex->tag_sequence, 'GCTAACTCGGGGGGGG', 'combined tag sequence');
+  $plex = $plexes[2];
+  is($plex->default_tag_sequence, 'GTCTTGGC', 'first index');
+  is($plex->default_tagtwo_sequence, 'GGGGGGGG', 'second index');
+  is($plex->tag_sequence, 'GTCTTGGCGGGGGGGG', 'combined tag sequence');
 }
 
 1;

@@ -47,7 +47,6 @@ my$configr=get_config_repository();
 Readonly::Scalar our $INSTRUMENT_REFERENCE_PREFIX => $configr->{'instrument_prefix'}||q(C:\Illumina\MiSeq Reporter\Genomes);
 Readonly::Scalar our $DEFAULT_FALLBACK_REFERENCE_SPECIES=> q(PhiX);
 Readonly::Scalar my  $MIN_COLUMN_NUM => 3;
-Readonly::Scalar my  $DUAL_INDEX_TAG_LENGTH => 16;
 
 with 'MooseX::Getopt';
 with 'npg_tracking::glossary::run';
@@ -78,19 +77,17 @@ sub _build_samplesheet_path {
 
 has 'extend' => ( 'isa' => 'Bool', 'is' => 'ro',);
 
-has 'dual_index_size' => (
-  'isa' => 'Int',
+has 'dual_index' => (
+  'isa' => 'Bool',
   'is' => 'ro',
   'lazy_build' => 1,
 );
-sub _build_dual_index_size {
+sub _build_dual_index {
   my $self=shift;
   if ($self->_index_read) {
-    for my $l (@{$self->lims}) {
-      for my $tmpl ( $l->is_pool ? $l->children : ($l) ) {
-        if ($tmpl->tag_sequence && length($tmpl->tag_sequence) == $DUAL_INDEX_TAG_LENGTH) {
-          return $DUAL_INDEX_TAG_LENGTH/2;
-        }
+    for my $l ( @{$self->lims} ) {
+      if ($l->is_pool && any { scalar @{$_->tag_sequences} == 2 } $l->children) {
+        return 1;
       }
     }
   }
@@ -217,17 +214,9 @@ sub _build__limsreflist {
       push @row, $ref;
 
       if($self->_index_read) {
-        if ($self->dual_index_size) {
-          # always tructate first index to dual_index_size
-          my $ts = $tmpl->tag_sequence || q[];
-          push @row, substr $ts, 0, $self->dual_index_size();
-          # empty second index unless size is dual_index_size (typically to cope with phix spike)
-          push @row, ( length($ts) == (2 * $self->dual_index_size()) ?
-                        substr $ts, $self->dual_index_size() :
-                        q[]
-                     );
-        } else {
-          push @row, $tmpl->tag_sequence || q[];
+        push @row, $tmpl->tag_sequences->[0] || q[];
+        if ($self->dual_index) {
+          push @row, $tmpl->tag_sequences->[1] || q[];
         }
       }
       if ($self->extend) {
@@ -343,7 +332,7 @@ Project Name[% separator _ project_name %][% separator.repeat(one_less_sep) %]
 Experiment Name[% separator _ run.id_run %][% separator.repeat(one_less_sep) %]
 Date[% separator _ pendingstatus.date %][% separator.repeat(one_less_sep) %]
 Workflow[% separator %]LibraryQC[% separator.repeat(one_less_sep) %]
-Chemistry[% separator %][% IF has_dual_index_size %]Amplicon[% ELSE %]Default[% END -%]
+Chemistry[% separator %][% IF has_dual_index %]Amplicon[% ELSE %]Default[% END -%]
 [% separator.repeat(one_less_sep) %]
 [% separator.repeat(num_sep) -%]
 
@@ -364,7 +353,7 @@ Chemistry[% separator %][% IF has_dual_index_size %]Amplicon[% ELSE %]Default[% 
 [% 
    colnames = ['Sample_ID', 'Sample_Name', 'GenomeFolder'];
    IF has_index_read; colnames.push('Index') ;END;
-   IF has_dual_index_size; colnames.push('Index2'); END;
+   IF has_dual_index; colnames.push('Index2'); END;
    IF has_multiple_lanes; colnames.unshift('Lane'); END;
    colnames.join(separator);
    separator;
@@ -395,7 +384,7 @@ sub process {
   $stash->{'limsa'}               = [$self->limsreflist];
   $stash->{'has_multiple_lanes'}  = $self->_multiple_lanes;
   $stash->{'has_index_read'}      = $self->_index_read;
-  $stash->{'has_dual_index_size'} = $self->dual_index_size;
+  $stash->{'has_dual_index'}      = $self->dual_index;
   $stash->{'additional_columns'}  = $self->_additional_columns;
   $stash->{'num_sep'}             = $self->_num_columns;
   $stash->{'project_name'}        = join(q[ ], @{$self->study_names}) || 'unknown';
@@ -448,7 +437,7 @@ David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2011 GRL, by David K. Jackson 
+Copyright (C) 2015 GRL, by David K. Jackson 
 
 This file is part of NPG.
 

@@ -134,7 +134,7 @@ sub _build_data {
           $row->{'default_tag_sequence'} = $row->{'Index'};
           delete $row->{'Index'};
           if ($row->{'Index2'}) {
-            $row->{'default_tag_sequence'} .= $row->{'Index2'};
+            $row->{'default_tagtwo_sequence'} = $row->{'Index2'};
             delete $row->{'Index2'};
           }
         }
