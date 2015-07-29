@@ -1,5 +1,9 @@
 CHANGES
 
+ - refactor snv finder to stop warnings when ref genome is undefined RT#481506
+ - make function for parsing reference gemone public since it is used outside
+   of the module where it is defined
+
 release 84.6
  - when changing ownership of run folder, set gid bit on every level
  - reporting croaks without full stacktraces for folder and folder/location

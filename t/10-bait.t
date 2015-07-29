@@ -34,7 +34,6 @@ my $baits_repos = 't/data/repos1/baits';
 }
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/repos1';
-#local $ENV{SAVE2NPG_WEBSERVICE_CACHE} =1;
 use_ok('npg_tracking::data::bait');
 { # This id_run, position, tag_index should return valid results
   my $test = npg_tracking::data::bait->new ( id_run => 7753, position => 1, tag_index => 2, repository => $repos);

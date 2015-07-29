@@ -1,19 +1,13 @@
-#############
-# Created By: Jillian Durham (jillian)
-# Created On: 2014-03-20
-
 package npg_tracking::data::transcriptome::find;
 
 use Moose::Role;
 use Carp;
-use Readonly;
 
 use npg_tracking::util::abs_path qw(abs_path);
 
 with qw/ npg_tracking::data::reference::find /;
 
 our $VERSION = '0';
-
 
 has '_organism_dir' => ( isa => q{Maybe[Str]},
                          is => q{ro},
@@ -22,14 +16,13 @@ has '_organism_dir' => ( isa => q{Maybe[Str]},
 
 sub _build__organism_dir {
   my $self = shift;
-  my ($organism, $strain) = $self->_parse_reference_genome($self->lims->reference_genome);
+  my ($organism, $strain) = $self->parse_reference_genome($self->lims->reference_genome);
   if ($organism){
     return($self->transcriptome_repository . "/$organism");
   }
   $self->messages->push('No organism found');
   return;
 }
-
 
 has '_version_dir' => ( isa => q{Maybe[Str]},
                          is => q{ro},
@@ -39,7 +32,7 @@ has '_version_dir' => ( isa => q{Maybe[Str]},
 sub _build__version_dir {
   my $self = shift;
 
-  my ($organism, $strain, $transcriptome_version) = $self->_parse_reference_genome($self->lims->reference_genome);
+  my ($organism, $strain, $transcriptome_version) = $self->parse_reference_genome($self->lims->reference_genome);
   if ($organism && $strain){
       if ($transcriptome_version){
           return($self->_organism_dir . "/$transcriptome_version/$strain/");
@@ -131,8 +124,6 @@ __END__
 
 npg_tracking::data::transcriptome::find
 
-=head1 VERSION
-
 =head1 SYNOPSIS
 
   package MyPackage;
@@ -177,10 +168,6 @@ Documentation on GTF (GFF version2) format http://www.ensembl.org/info/website/u
 
 =item Carp
 
-=item Readonly
-
-=item npg_tracking::data::reference::find
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -193,7 +180,7 @@ Jillian Durham
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) GRL by 2014 Jillian Durham (jillian@sanger.ac.uk)
+Copyright (C) 2015 GRL
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
