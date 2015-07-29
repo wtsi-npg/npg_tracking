@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 124;
+use Test::More tests => 149;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -54,10 +54,12 @@ use_ok('st::api::lims::samplesheet');
   is ($plexes[0]->is_pool, 0, 'is_pool false on plex level');
   is ($plexes[0]->is_control, undef, 'is_control false on for a plex');
   is ($plexes[0]->default_tag_sequence, 'ATCACGTT', 'default tag sequence of the first plex');
+  is ($plexes[0]->default_tagtwo_sequence, undef, 'second index undefined');
   is ($plexes[95]->position, 1, 'position of the last plex is 1');
   is ($plexes[95]->tag_index, 96, 'tag_index of the last plex is 96');
   is ($plexes[95]->id_run, 10262, 'id_run of the last plex set correctly from Experiment Name');
   is ($plexes[95]->default_tag_sequence, 'GTCTTGGC', 'tag sequence of the last plex');
+  is ($plexes[95]->default_tagtwo_sequence, undef, 'second index undefined');
   is ($plexes[95]->library_id, 7583506, 'library_id of the last plex');
   is ($plexes[95]->sample_name, 'LIA_96', 'sample_name of the last plex');
 }
@@ -99,6 +101,7 @@ use_ok('st::api::lims::samplesheet');
   is ($ss->is_pool, 1, 'tag zero is a pool');
   is ($ss->library_id, undef, 'tag_zero library_id undefined');
   is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
+  is ($ss->default_tagtwo_sequence, undef, 'second tag sequence undefined');
 }
 
 {
@@ -115,6 +118,7 @@ use_ok('st::api::lims::samplesheet');
 
   is ($plexes[0]->tag_index, 3, 'tag index for the first plex');
   is ($plexes[0]->default_tag_sequence, 'ATCACGTT', 'tag sequence for the first plex');
+  is ($plexes[0]->default_tagtwo_sequence, undef, 'default tag sequence undefined');
   is ($plexes[0]->is_control, 0, 'plex is not control');
   is ($plexes[0]->sample_name, 'library_1', 'plex sample name from the extended set rather than from Sample_Name');
   is ($plexes[0]->study_id, 55, 'plex study_id');
@@ -126,6 +130,7 @@ use_ok('st::api::lims::samplesheet');
 
   is ($plexes[1]->tag_index, 4, 'tag index for the first plex');
   is ($plexes[1]->default_tag_sequence, 'CGATGTTT', 'tag sequence for the first plex');
+  is ($plexes[1]->default_tagtwo_sequence, undef, 'default tag sequence undefined');
   is ($plexes[1]->is_control, 1, 'plex is control');
   is ($plexes[1]->sample_name, 'library_2', 'plex sample name from the extended set rather than from Sample_Name');
   is ($plexes[1]->study_id, 56, 'plex study_id');
@@ -217,8 +222,50 @@ use_ok('st::api::lims::samplesheet');
   my @plexes = $ss_lanes[6]->children;
   my @spiked = grep {$_->spiked_phix_tag_index == 168} $ss_lanes[6]->children;
   is (scalar @spiked, scalar @plexes, 'spiked_phix_tag_index is set on plex level');
+  is ($spiked[0]->default_tagtwo_sequence, undef, 'default tag sequence undefined');
   my $tag_zero = st::api::lims::samplesheet->new(id_run => 6946, position => 7, tag_index => 0, path => $path);
   is ($tag_zero->spiked_phix_tag_index, 168, 'spiked_phix_tag_index is set for tag zero');
+}
+
+{
+  my $path = 't/data/samplesheet/dual_index_extended.csv';
+  my $ss = st::api::lims::samplesheet->new(id_run => 6946, path => $path);
+  my @lanes = $ss->children;
+  is (scalar @lanes, 2, 'two lanes');
+  my @plexes = $lanes[0]->children;
+  is (scalar @plexes, 3, 'three samples in lane 1');
+  my $plex = $plexes[0];
+  is($plex->default_tag_sequence, 'CGATGTTT', 'first index');
+  is($plex->default_tagtwo_sequence, 'AAAAAAAA', 'second index');
+  $plex = $plexes[2];
+  is($plex->default_tag_sequence, 'TGACCACT', 'first index');
+  is($plex->default_tagtwo_sequence, 'AAAAAAAA', 'second index');
+  @plexes = $lanes[1]->children;
+  is (scalar @plexes, 3, 'three samples in lane 2');
+  $plex = $plexes[0];
+  is($plex->default_tag_sequence, 'GCTAACTC', 'first index');
+  is($plex->default_tagtwo_sequence, 'GGGGGGGG', 'second index');
+  $plex = $plexes[2];
+  is($plex->default_tag_sequence, 'GTCTTGGC', 'first index');
+  is($plex->default_tagtwo_sequence, 'GGGGGGGG', 'second index');
+}
+
+{
+  my $path = 't/data/samplesheet/miseq_default_dual_index.csv';
+  my $ss = st::api::lims::samplesheet->new(id_run => 10262, position => 1, path => $path);
+  is ($ss->is_pool, 1, 'lane 1 is a pool');
+  my $plexes = {};
+  map { $plexes->{$_->tag_index} = $_ } $ss->children;
+  is(scalar keys %{$plexes}, 12, '12 plexes retrieved');
+  my $p = $plexes->{1};
+  is($p->default_tag_sequence, 'ATCACGTT', 'first index');
+  is($p->default_tagtwo_sequence, 'GCCAATGT', 'second index');
+  $p = $plexes->{2};
+  is($p->default_tag_sequence, 'CGATGTTT', 'first index');
+  is($p->default_tagtwo_sequence, 'ACTTGATG', 'second index');
+  $p = $plexes->{9};
+  is($p->default_tag_sequence, 'GATCAGCG', 'first index');
+  is($p->default_tagtwo_sequence, undef, 'no second index');
 }
 
 sub _lane_hash {
