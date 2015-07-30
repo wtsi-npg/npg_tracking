@@ -1,5 +1,11 @@
 CHANGES
 
+release 84.7
+ - accommodate LIMs-defined dual indexes
+ - Illumina samplesheet generation: do not truncate single index when shorter first
+     part of dual index is present; this was written with spiked Phix in mind,
+     however, spikes are not reflected in LIMs for MiSeq runs
+
 release 84.6
  - when changing ownership of run folder, set gid bit on every level
  - reporting croaks without full stacktraces for folder and folder/location
