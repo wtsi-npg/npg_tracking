@@ -3,9 +3,17 @@ use warnings;
 use IPC::Open2;
 use Perl6::Slurp;
 use Test::More tests => 77;
-use Cwd;
+use File::Temp qw/tempdir/;
+use File::Slurp;
+use File::Copy qw/cp/;
 
-local $ENV{'HOME'}=getcwd().'/t';
+my $tmpdir = tempdir( CLEANUP => 1 );
+local $ENV{'HOME'} = $tmpdir;
+my $jvar = "${tmpdir}/jenkins.war";
+write_file( $jvar, qw/some data/ ) ;
+my $npg_dir =  "${tmpdir}/.npg";
+mkdir $npg_dir;
+cp 't/.npg/npg_tracking', $npg_dir;
 
 my $command = 'bin/npg_daemon_control 2>&1';
  # or with handle autovivification
