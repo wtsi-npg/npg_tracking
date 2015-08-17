@@ -1,46 +1,54 @@
-######### 
-# Author:        Marina Gourtovaia
-# Created:       14 December 2012
-#
-
 package npg_tracking::daemon::jenkins;
 
 use Moose;
-use Moose::Util::TypeConstraints;
 use Carp;
-use English qw(-no_match_vars);
 use Readonly;
 
+use npg_tracking::util::types;
 extends 'npg_tracking::daemon';
 
 our $VERSION = '0';
 
 Readonly::Scalar our $PROXY_SERVER     => q[wwwcache.sanger.ac.uk];
 Readonly::Scalar our $PROXY_PORT       => 3128;
+Readonly::Scalar our $JENKINS_PORT     => 9960;
 Readonly::Scalar our $TIMEOUT_HOURS    => 6;
 Readonly::Scalar our $MINUTES_PER_HOUR => 60;
 
-subtype 'PositiveInt',
-  as 'Int',
-  where { $_ > 0 },
-  message { "The number you provided, $_, was not a positive number" };
-
 has 'session_timeout' => ('is'        => 'ro',
-                          'isa'       => 'PositiveInt',
+                          'isa'       => 'NpgTrackingPositiveInt',
                           'required'  => 0,
                           'default'   => $MINUTES_PER_HOUR * $TIMEOUT_HOURS,
                           'predicate' => 'has_session_timeout',
                           'clearer'   => 'clear_session_timeout',);
 
-override '_build_hosts' => sub { return ['sf2-farm-srv2']; };
+override '_build_hosts'    => sub { return ['sf2-farm-srv2']; };
 override '_build_env_vars' => sub { return {'http_proxy' => qq[http://$PROXY_SERVER:$PROXY_PORT]}; };
+
+has 'jenkins_war' => ('is'         => 'ro',
+                      'isa'        => 'NpgTrackingReadableFile',
+                      'required'   => 0,
+                      'lazy_build' => 1, );
+sub _build_jenkins_war {
+  my $sub = shift;
+  my $home = $ENV{'HOME'};
+  if (!$home) {
+    croak 'User home is not defined';
+  }
+  return join q[/], $home, q[jenkins.war];
+}
 
 # We assume that $JENKINS_HOME is the same both where the daemon monitor is run and the jenkins server is started.
 override 'command'  => sub {
   my ($self, $host) = @_;
 
   my $tmpdir = $ENV{'JENKINS_HOME'} ?  "-Djava.io.tmpdir=$ENV{'JENKINS_HOME'}/tmp" : q[];
-  my $command = qq[java -Xmx2g $tmpdir -Dhttp.proxyHost=$PROXY_SERVER -Dhttp.proxyPort=$PROXY_PORT -jar ~srpipe/jenkins.war --httpPort=9960];
+  my $command = sprintf 'java -Xmx2g %s -Dhttp.proxyHost=%s -Dhttp.proxyPort=%i -jar %s --httpPort=%i',
+                        $tmpdir,
+                        $PROXY_SERVER,
+                        $PROXY_PORT,
+                        $self->jenkins_war,
+                        $JENKINS_PORT;
 
   my $log_name = join q[_], q[jenkins], $host, $self->timestamp();
   $log_name .=  q[.log];
@@ -88,8 +96,6 @@ Metadata for a daemon that starts up jenkins integration server.
 
 =item Carp
 
-=item English
-
 =item Readonly
 
 =back
@@ -104,7 +110,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2012 GRL, by Marina Gourtovaia
+Copyright (C) 2015 GRL
 
 This file is part of NPG.
 

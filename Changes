@@ -1,5 +1,8 @@
 CHANGES
 
+release 84.8
+ - jenkins daemon definition: remove hardcoded path to prod user home directory
+
 release 84.7
  - accommodate LIMs-defined dual indexes
  - Illumina samplesheet generation: do not truncate single index when shorter first
