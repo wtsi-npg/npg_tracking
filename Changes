@@ -2,6 +2,9 @@ CHANGES
 
 release 84.8
  - jenkins daemon definition: remove hardcoded path to prod user home directory
+ - refactor snv finder to stop warnings when ref genome is undefined RT#481506
+ - make function for parsing reference gemone public since it is used outside
+   of the module where it is defined
 
 release 84.7
  - accommodate LIMs-defined dual indexes

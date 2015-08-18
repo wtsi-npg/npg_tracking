@@ -171,9 +171,9 @@ use_ok('npg_tracking::data::reference::find');
           roles => [qw/npg_tracking::data::reference::find/])
           ->new_object({ repository => $central });
   
-  is(join(q[ ], $ruser->_parse_reference_genome(q[Salmonella_enterica (Enteritidis_P125109)])), q[Salmonella_enterica Enteritidis_P125109], 'ref genome parsing');
-  is(join(q[ ], $ruser->_parse_reference_genome(q[Homo_sapiens (CGP_GRCh37.NCBI.allchr_MT)])), q[Homo_sapiens CGP_GRCh37.NCBI.allchr_MT], 'ref genome parsing');
-  is($ruser->_parse_reference_genome(q[Salmonella_enterica]), undef, 'ref genome parsing');
+  is(join(q[ ], $ruser->parse_reference_genome(q[Salmonella_enterica (Enteritidis_P125109)])), q[Salmonella_enterica Enteritidis_P125109], 'ref genome parsing');
+  is(join(q[ ], $ruser->parse_reference_genome(q[Homo_sapiens (CGP_GRCh37.NCBI.allchr_MT)])), q[Homo_sapiens CGP_GRCh37.NCBI.allchr_MT], 'ref genome parsing');
+  is($ruser->parse_reference_genome(q[Salmonella_enterica]), undef, 'ref genome parsing');
 }
 
 {
@@ -200,10 +200,10 @@ use_ok('npg_tracking::data::reference::find');
   my $ruser = Moose::Meta::Class->create_anon_class(
       roles => [qw/npg_tracking::data::transcriptome::find/])
       ->new_object({ repository => $transcriptome_repos });
-  is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)])),'Homo_sapiens 1000Genomes_hs37d5 ensembl_74_transcriptome','transcriptome ref genome parsing ok with correct format'); 
-  is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 ; ensembl_74_transcriptome)])),q[],'transcriptome ref genome parsing ok - returns empty with incorrect delimiter'); 
-  is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 ensembl_74_transcriptome)])),q[],'transcriptome ref genome parsing ok - returns empty with missing delimiter'); 
-  is(join(q[ ],$ruser->_parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome])),q[],'transcriptome ref genome parsing ok - returns empty with missing bracket'); 
+  is(join(q[ ],$ruser->parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)])),'Homo_sapiens 1000Genomes_hs37d5 ensembl_74_transcriptome','transcriptome ref genome parsing ok with correct format'); 
+  is(join(q[ ],$ruser->parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 ; ensembl_74_transcriptome)])),q[],'transcriptome ref genome parsing ok - returns empty with incorrect delimiter'); 
+  is(join(q[ ],$ruser->parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 ensembl_74_transcriptome)])),q[],'transcriptome ref genome parsing ok - returns empty with missing delimiter'); 
+  is(join(q[ ],$ruser->parse_reference_genome(q[Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome])),q[],'transcriptome ref genome parsing ok - returns empty with missing bracket'); 
 
   $ruser = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::find/])
