@@ -1,55 +1,58 @@
-#############
-# Created By: Jennifer Liddle (js10)
-# Created On: 2014-02-25
-
 package npg_tracking::data::snv::find;
 
-use strict;
-use warnings;
 use Moose::Role;
 use Carp;
-
 use npg_tracking::util::abs_path qw(abs_path);
-
-our $VERSION = '0';
 
 with qw/ npg_tracking::data::reference::find 
          npg_tracking::data::bait::find
-/;
+       /;
 
-has 'snv_path'     => ( isa => q{Maybe[Str]}, is => q{ro}, lazy_build => 1,
-                                 documentation => 'Path to the snv folder',);
+our $VERSION = '0';
 
+has 'snv_path' => ( isa        => q{Maybe[Str]},
+                    is         => q{ro},
+                    lazy_build => 1,
+                    documentation => 'Path to the snv folder',
+);
 sub _build_snv_path {
-    my $self = shift;
-    my ($organism, $strain) = $self->_parse_reference_genome($self->lims->reference_genome);
-    if ($organism && $strain) {
-        my $bait = $self->bait_name;
-        $bait ||= 'Standard';
-        $bait =~ s/\ /_/msxg;
-        return abs_path($self->snv_repository . "/$organism/default/$bait/$strain");
-    }
-    return;
+  my $self = shift;
+
+  my $path;
+  my ($organism, $strain) = $self->parse_reference_genome($self->lims->reference_genome);
+  if ($organism && $strain) {
+    my $bait = $self->bait_name || 'Standard';
+    $bait =~ s/\ /_/msxg;
+    $path = abs_path($self->snv_repository . "/$organism/default/$bait/$strain");
+  }
+
+  return $path;
 }
 
-has 'snv_file' => ( isa => q{Maybe[Str]}, is => q{ro}, lazy_build => 1, documentation => 'full name of SNV file',);
-
+has 'snv_file' => ( isa        => q{Maybe[Str]},
+                    is         => q{ro},
+                    lazy_build => 1,
+                    documentation => 'Full absolute path of SNV file',
+);
 sub _build_snv_file {
    my $self = shift;
-   my @snv_files;
-  if ($self->snv_path) { @snv_files = glob $self->snv_path . '/*.vcf.gz'; }
-   if (scalar @snv_files > 1) { croak 'Too many vcf files in ' . $self->snv_path; }
 
-   if (scalar @snv_files == 0) {
-       my ($organism, $strain) = $self->_parse_reference_genome($self->lims->reference_genome);
-      if (-d $self->snv_repository . "/$organism") {
-         $self->messages->push('Directory ' . $self->snv_repository . "/$organism exists, but no VCF files found");
-      }
-      return;
+   my $snv_file;
+   if ($self->snv_path) {
+     my @snv_files = glob $self->snv_path . '/*.vcf.gz';
+     if (scalar @snv_files > 1) {
+       croak 'Too many vcf files in ' . $self->snv_path;
+     }
+     if (!@snv_files) {
+        $self->messages->push('VCF files not found in ' . $self->snv_path);
+     }
+     $snv_file = $snv_files[0];
+   } else {
+     $self->messages->push('Failed to get svn_path');
    }
-   return $snv_files[0];
-}
 
+   return $snv_file;
+}
 
 1;
 __END__
@@ -57,8 +60,6 @@ __END__
 =head1 NAME
 
 npg_tracking::data::snv::find
-
-=head1 VERSION
 
 =head1 SYNOPSIS
 
@@ -89,10 +90,6 @@ A Moose role for finding the location of VCF files.
 
 =item Carp
 
-=item File::Spec::Functions
-
-=item npg_tracking::data::reference::find
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -105,7 +102,7 @@ Jennifer Liddle
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2012 GRL by Jennifer Liddle (js10@sanger.ac.uk)
+Copyright (C) 2015 Genome Research Limited
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

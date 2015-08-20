@@ -1,12 +1,5 @@
-#########
-# Author:        Marina Gourtovaia
-# Created:       14 April 2009
-#
-
 package npg_tracking::data::reference::find;
 
-use strict;
-use warnings;
 use Moose::Role;
 use Carp;
 use English qw(-no_match_vars);
@@ -29,8 +22,6 @@ Readonly::Scalar our $MINUS_ONE                  => -1;
 
 npg_tracking::data::reference::find
 
-=head1 VERSION
-
 =head1 SYNOPSIS
 
 An example of a class that implements this role
@@ -42,9 +33,7 @@ An example of a class that implements this role
  sub id_run   { return 1937; }
  sub position { return 1; }
  sub my_function { do something;}
-
  1;
- __END__
 
 Using your class
 
@@ -95,7 +84,7 @@ has 'species'  => (isa             => 'Maybe[Str]',
 sub _build_species {
   my $self = shift;
 
-  my @a = $self->_parse_reference_genome;
+  my @a = $self->parse_reference_genome;
   if (@a) {
     $self->_set_strain($a[1]);
     return $a[0];
@@ -121,7 +110,7 @@ has 'strain'=>    (isa             => 'Str',
                   );
 sub _build_strain {
   my $self = shift;
-  my @a = $self->_parse_reference_genome;
+  my @a = $self->parse_reference_genome;
   if (@a) {
     $self->_set_species($a[0]);
     return $a[1];
@@ -366,7 +355,7 @@ sub _get_reference_path {
 =head2 lims2ref
 
 Returns a path to a binary reference (with a prefix of the reference itself) for an asset object.
-Undefined value returned if the search has failed
+Undefined value returned if the search has failed.
 
 =cut
 sub lims2ref {
@@ -400,7 +389,14 @@ sub lims2ref {
   return $ref_path;
 }
 
-sub _parse_reference_genome {
+=head2 parse_reference_genome
+
+Parses LIMs notation for reference genome, returns a list containing
+an organism, strain (genome version) and, optionally,
+a transcriptome version or an empty list.
+
+=cut
+sub parse_reference_genome {
   my ($self, $reference_genome) = @_;
   $reference_genome ||= $self->reference_genome;
   if ($reference_genome) {
@@ -422,7 +418,7 @@ sub _preset_ref2ref_path {
   }
 
   my $ref_path = q[];
-  my ($species, $strain) = $self->_parse_reference_genome($ref);
+  my ($species, $strain) = $self->parse_reference_genome($ref);
   if ($species && $strain) {
     $ref_path = $self->_get_reference_path($species, $strain);
   } else {
@@ -443,10 +439,6 @@ __END__
 =head1 DEPENDENCIES
 
 =over
-
-=item strict
-
-=item warnings
 
 =item Moose::Role
 
@@ -478,7 +470,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2011 GRL, by Marina Gourtovaia
+Copyright (C) 2015 GRL
 
 This file is part of NPG.
 

@@ -85,14 +85,9 @@ sub is_run_completed {
     #   Check this again sometime - I don't know if that's really true.
     my $file_string = join "\n", @root_list;
 
-    my $run_folder = Monitor::RunFolder->new( runfolder_path => $run_path, _schema => $self->schema );
-
-    my $netcopy = 'ImageAnalysis_Netcopy_complete_Read'.scalar $run_folder->read_cycle_counts;
-
-
-    return ( $file_string =~ m/\b$netcopy [.]txt\b/msx ) ? 1
-         : ( $file_string =~ m/\bRun[.]completed\b/msx )          ? 1
-         :                                                        0
+    return ( $file_string =~ m/\bRTAComplete[.]txt\b/msx ) ? 1
+         : ( $file_string =~ m/\bRun[.]completed\b/msx )   ? 1
+         :                                                   0
          ;
 }
 
