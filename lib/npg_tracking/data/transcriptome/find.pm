@@ -42,6 +42,39 @@ sub _build__version_dir {
  return;
 }
 
+has 'rnaseqc_gtf_path'   => ( isa => q{Maybe[Str]},
+                        is => q{ro},
+                        lazy_build => 1,
+                        documentation => 'Path to the transcriptome GTF (GFF2) folder used by RNA-SeQC',);
+
+sub _build_rnaseqc_gtf_path {
+    my $self = shift;
+    if ($self->_version_dir){
+      return abs_path($self->_version_dir . '/RNA-SeQC');
+  }
+  return;
+}
+
+has 'rnaseqc_gtf_file' => ( isa => q{Maybe[Str]},
+                    is => q{ro},
+                    lazy_build => 1,
+                    documentation => 'full name of GTF file used by RNA-SeQC',);
+
+sub _build_rnaseqc_gtf_file {
+  my $self = shift;
+  my @gtf_files;
+  if ($self->rnaseqc_gtf_path) { @gtf_files = glob $self->rnaseqc_gtf_path . '/*.gtf'; }
+  if (scalar @gtf_files > 1) { croak 'More than 1 gtf file in ' . $self->rnaseqc_gtf_path; }
+
+  if (scalar @gtf_files == 0) {
+    if ($self->_organism_dir && -d $self->_organism_dir) {
+      $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but GTF file not found');
+    }
+    return;
+  }
+  return $gtf_files[0];
+}
+
 has 'gtf_path'     => ( isa => q{Maybe[Str]},
                         is => q{ro},
                         lazy_build => 1,

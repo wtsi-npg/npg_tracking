@@ -1,4 +1,5 @@
 CHANGES
+ - transcriptome find updated for RNA-SeQC directory and its gtf file 
 
 release 84.8
  - jenkins daemon definition: remove hardcoded path to prod user home directory

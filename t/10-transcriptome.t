@@ -5,7 +5,7 @@ package transcriptome;
 
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 9;
 use File::Basename;
 use File::Spec::Functions qw(catfile);
 use Test::Exception;
@@ -42,8 +42,12 @@ foreach my $spp (keys %builds){
         
           foreach my $build (@{ $builds{$spp} }){
             my $gtf_dir    = join q[/],$rel_dir,$build,'gtf'; 
+            my $rnaseq_dir = join q[/],$rel_dir,$build,'RNA-SeQC';
             my $tophat_dir = join q[/],$rel_dir,$build,'tophat2';
-            make_path($gtf_dir,$tophat_dir,{verbose => 0});
+            make_path($gtf_dir,
+                      $rnaseq_dir,
+                      $tophat_dir,
+                      {verbose => 0});
           }
         }
 
@@ -75,6 +79,7 @@ $files[0] = join(q[/], $dir, 'Mus_musculus','ensembl_75_transcriptome', 'GRCm38'
 foreach my $v ('ensembl_74_transcriptome','ensembl_75_transcriptome'){
         my $vdir = join(q[/], $dir, 'Homo_sapiens',$v, '1000Genomes_hs37d5',);
         push @files, join(q[/], $vdir,'gtf',$v . '-1000Genomes_hs37d5.gtf');
+        push @files, join(q[/], $vdir,'RNA-SeQC',$v . '-1000Genomes_hs37d5.gtf');
         push @files, join(q[/], $vdir,'tophat2','1000Genomes_hs37d5.known.1.bt2');
         push @files, join(q[/], $vdir,'tophat2','1000Genomes_hs37d5.known.ver');
         
@@ -128,6 +133,8 @@ $ver_fh->close;
 
 my $test3 = npg_tracking::data::transcriptome->new (id_run => 12161, position => 1, tag_index => 1, repository => $tmp_repos);
 lives_and { is basename($test3->gtf_file), 'ensembl_74_transcriptome-1000Genomes_hs37d5.gtf' } 'file ensembl_74_transcriptome-1000Genomes_hs37d5.gtf found where reference = Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)';
+
+lives_and { is basename($test3->rnaseqc_gtf_file), 'ensembl_74_transcriptome-1000Genomes_hs37d5.gtf' } 'RNA-SeQC file ensembl_74_transcriptome-1000Genomes_hs37d5.gtf found where reference = Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)';
 
 lives_and { is $test3->transcriptome_index_path, catfile($tmp_repos, q[transcriptomes/Homo_sapiens/ensembl_74_transcriptome/1000Genomes_hs37d5/tophat2])
 } "correct path for bowtie2 indices found";
