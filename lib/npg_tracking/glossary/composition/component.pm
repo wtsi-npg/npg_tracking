@@ -1,4 +1,4 @@
-package npg_qc::illumina::sequence::component;
+package npg_tracking::glossary::composition::component;
 
 use Moose;
 use namespace::autoclean;
@@ -7,43 +7,43 @@ use MooseX::Storage;
 use Carp;
 
 with Storage( 'traits' => ['OnlyWhenBuilt'],
-              'format' => '=npg_qc::illumina::sequence::serializable' );
+              'format' => '=npg_tracking::glossary::composition::serializable' );
 
 with qw( npg_tracking::glossary::run
          npg_tracking::glossary::lane
+         npg_tracking::glossary::subset
          npg_tracking::glossary::tag );
 
 our $VERSION = '0';
 
-has 'subset' => (isa       => 'Maybe[Str]',
-                 is        => 'ro',
-                 predicate => 'has_subset',
-                 required  => 0,
-);
-
 sub compare_serialized {
   my ($self, $other) = @_;
+
+  if (!defined $other) {
+    croak 'Object to compare to should be given';
+  }
   my $pname = __PACKAGE__;
-  if (ref $other ne $pname) {
+  my $type = ref $other;
+  if (!$type || $type ne $pname) {
     croak qq[Expect object of class $pname to compare to];
   }
+
   return ($self->freeze cmp $other->freeze);
 }
 
 __PACKAGE__->meta->make_immutable;
-
 1;
 __END__
 
 =head1 NAME
 
-npg_qc::illumina::sequence::component
+npg_tracking::glossary::composition::component
 
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
 
-Illumina sequence component definition.
+Serializable component (lane, lanelet or part of either of them) definition.
 
 =head1 SUBROUTINES/METHODS
 
@@ -62,6 +62,11 @@ in a multiplexed lane.
 
 An optional attribute, will default to 'target'.
 
+=head2 compare_serialized
+
+Compares this object to other as JSON serializations. cmp function
+is used to compare strings, the outcome of the comparison is returned.
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -74,11 +79,17 @@ An optional attribute, will default to 'target'.
 
 =item MooseX::Storage
 
+=item MooseX::StrictConstructor
+
 =item namespace::autoclean
+
+=item Carp
 
 =item npg_tracking::glossary::run
 
 =item npg_tracking::glossary::lane
+
+=item npg_tracking::glossary::subset
 
 =item npg_tracking::glossary::tag
 

@@ -1,4 +1,4 @@
-package npg_qc::illumina::sequence::serializable;
+package npg_tracking::glossary::composition::serializable;
 
 use Moose::Role;
 use JSON::XS;
@@ -28,26 +28,6 @@ sub freeze {
   return JSON::XS->new()->canonical(1)->encode( $self->_pack_custom() );
 }
 
-sub thaw_from_signature {
-  my ( $class, $signature, @args ) = @_;
-  if (!$signature) {
-    croak 'Object signature is required';
-  }
-  my %values;
-  {
-    use warnings FATAL => 'all';
-    %values = split /[^[:lower:][:upper:][:digit:]_]/smx, $signature;
-  }
-  return $class->unpack( \%values, @args );
-}
-
-sub freeze_to_signature {
-  my $self = shift;
-  my $sig = $self->freeze();
-  $sig =~ s/\A\{ | \" | \}\Z //gxms;
-  return $sig;
-}
-
 sub digest {
   my ($self, $digest_type) = @_;
   my $data = $self->freeze();
@@ -71,7 +51,7 @@ sub _clean_pack { # Recursive function
   my $values = {};
   while ( my ($k, $v) = each %{$old} ) {
      # Delete __CLASS__ key along with private attrs
-    if (defined $v && $k !~ /\A_/) {
+    if (defined $v && $k !~ /\A_/smx) {
       # Treat components the same way
       if (ref $v && ref $v eq 'ARRAY' && $k eq 'components') {
         my @clean = map { _clean_pack($_) } @{$v};
@@ -81,7 +61,7 @@ sub _clean_pack { # Recursive function
     }
   }
 
-  return $values; 
+  return $values;
 }
 
 no Moose::Role;
@@ -91,13 +71,47 @@ __END__
 
 =head1 NAME
 
-npg_qc::illumina::sequence::serialization::component
+npg_tracking::glossary::composition::serializable
 
 =head1 SYNOPSIS
 
+  package my::package;
+
+  use Moose;
+  use namespace::autoclean;
+  use MooseX::Storage;
+
+  with Storage( 
+    'traits' => ['OnlyWhenBuilt'],
+    'format' => '=npg_tracking::glossary::composition::serializable' );
+  
+  has 'attr_a'  => (isa => 'Str');
+  has 'attr_b'  => (isa => 'Int');
+  has '_attr_c' => (isa => 'Int', default => 3,);
+
+  __PACKAGE__->meta->make_immutable;
+
+  1;
+
+  package main;
+  use my::package;
+  
+  my $p = my::package->new(attr_a => 'a', attr_b => 2);
+  my json = $p->freeze();
+  print $json; # prints {"attr_a":"a","attr_b":2}
+               # note the absence of both the __CLASS__ key
+               # and private attributes
+  my $p1 = my::package->thaw($json);
+
 =head1 DESCRIPTION
 
-Illumina sequence component serialization.
+Custom JSON serialization format for MooseX::Storage framework.
+Differences with MooseX::Storage::Format::JSON:
+  - uses JSON::XS directly,
+  - private attributes are not serialized,
+  - the output does not contain the __CLASS__ key,
+  - the above applies recursively to an array reference attribute called
+    'components'.
 
 =head1 SUBROUTINES/METHODS
 
@@ -105,9 +119,20 @@ Illumina sequence component serialization.
 
 Instantiates an object from a json string.
 
+  my $p = my::package->thaw($json);
+
 =head2 freeze
 
-Serializes object's attributes to canonical (ordered) json string.
+Serializes object's public attributes to a canonical (ordered) json string.
+
+  $p->freeze();
+
+=head2 digest
+
+Returns a digest of the JSON serialization string.
+
+  $p->digest();      # sha256_hex digest
+  $p->digest('md5'); # md5 digest
 
 =head1 DIAGNOSTICS
 
@@ -117,17 +142,17 @@ Serializes object's attributes to canonical (ordered) json string.
 
 =over
 
-=item Moose
+=item Moose::Role
 
-=item MooseX::Storage
+=item JSON::XS
 
 =item namespace::autoclean
 
-=item npg_tracking::glossary::run
+=item Digest::SHA
 
-=item npg_tracking::glossary::lane
+=item Digest::MD5
 
-=item npg_tracking::glossary::tag
+=item Carp
 
 =back
 

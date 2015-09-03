@@ -337,9 +337,14 @@ lib/npg_tracking/data/reference/info.pm
 lib/npg_tracking/data/reference/list.pm
 lib/npg_tracking/data/transcriptome.pm
 lib/npg_tracking/data/transcriptome/find.pm
+lib/npg_tracking/glossary/composition.pm
+lib/npg_tracking/glossary/composition/component.pm
+lib/npg_tracking/glossary/composition/factory.pm
+lib/npg_tracking/glossary/composition/serializable.pm
 lib/npg_tracking/glossary/flowcell.pm
 lib/npg_tracking/glossary/lane.pm
 lib/npg_tracking/glossary/run.pm
+lib/npg_tracking/glossary/subset.pm
 lib/npg_tracking/glossary/tag.pm
 lib/npg_tracking/illumina/run.pm
 lib/npg_tracking/illumina/run/folder.pm
@@ -465,6 +470,9 @@ t/10-model-usergroup.t
 t/10-model.t
 t/10-npg_testing-db.t
 t/10-npg_testing-html.t
+t/10-npg_tracking-glossary-composition-component.t
+t/10-npg_tracking-glossary-composition-factory.t
+t/10-npg_tracking-glossary-composition.t
 t/10-npg_tracking-status.t
 t/10-npg_tracking-util-db_connect.t
 t/10-npg_tracking-util-config.t
