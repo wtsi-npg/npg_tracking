@@ -1,5 +1,7 @@
 CHANGES
 
+ - serializable sequence composition framework added
+
 release 84.8
  - jenkins daemon definition: remove hardcoded path to prod user home directory
  - refactor snv finder to stop warnings when ref genome is undefined RT#481506
