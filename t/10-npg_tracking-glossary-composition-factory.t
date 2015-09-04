@@ -19,7 +19,6 @@ subtest 'object with one attr missing' => sub {
 
   package npg_tracking::composition::factory::test1;
   use Moose;
-  use namespace::autoclean;
   with 'npg_tracking::glossary::composition::factory' =>
     {component_class => 'npg_tracking::composition::component::test'};
 
@@ -47,7 +46,6 @@ subtest 'object with all required attributes' => sub {
 
   package npg_tracking::composition::factory::test2;
   use Moose;
-  use namespace::autoclean;
   with 'npg_tracking::glossary::composition::factory' =>
     {component_class => 'npg_tracking::composition::component::test'};
 

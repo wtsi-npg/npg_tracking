@@ -1,100 +1,57 @@
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 5;
 use Test::Exception;
 
-my $pname = q[npg_tracking::glossary::composition::component];
-use_ok ("$pname");
+use_ok ('npg_tracking::glossary::composition::component');
+
+package npg_tracking::composition::component::test;
+use Moose;
+with 'npg_tracking::glossary::composition::component';
+has 'attr_1' => (isa => 'Int', is => 'ro', required => 1,);
+has 'attr_2' => (isa => 'Str', is => 'ro', required => 1,);
+has 'attr_3' => (isa => 'Maybe[Int]', is => 'ro', required => 0,);
+1;
+
+package main;
+
+my $pname = q[npg_tracking::composition::component::test];
 
 subtest 'object with all attrs defined' => sub {
-  plan tests => 7;
+  plan tests => 6;
 
-  my $c = $pname->new(subset => 'human', id_run => 1, position => 2, tag_index => 3);
+  my $c = $pname->new(attr_2 => 'human', attr_1 => 1, attr_3 => 3);
   isa_ok ($c, $pname);
-  my $j = '{"id_run":1,"position":2,"subset":"human","tag_index":3}';
+  my $j = '{"attr_1":1,"attr_2":"human","attr_3":3}';
   is ($c->freeze, $j, 'serialization to an ordered json string');
   my $c1 = $pname->thaw($j);
   isa_ok ($c1, $pname);
-  is ($c1->id_run, 1);
-  is ($c1->position, 2);
-  is ($c1->tag_index, 3);
-  is ($c1->subset, 'human');
+  is ($c1->attr_1, 1);
+  is ($c1->attr_3, 3);
+  is ($c1->attr_2, 'human');
 };
 
 subtest 'object with optional attrs undefined' => sub {
-  plan tests => 26;
+  plan tests => 10;
 
   for my $c ((
-    $pname->new(id_run => 1, position => 2, tag_index => 3),
-    $pname->new(id_run => 1, position => 2, tag_index => 3, subset => undef) ))
-  {
-    my $j = '{"id_run":1,"position":2,"tag_index":3}';
+    $pname->new(attr_2 => 'human', attr_1 => 1),
+    $pname->new(attr_2 => 'human', attr_1 => 1, attr_3 => undef) )) {
+    my $j = '{"attr_1":1,"attr_2":"human"}';
     is ($c->freeze, $j, 'serialization to an ordered json string');
     my $c1 = $pname->thaw($j);
     isa_ok ($c1, $pname);
-    is ($c1->id_run, 1);
-    is ($c1->position, 2);
-    is ($c1->tag_index, 3);
-    is ($c1->subset, undef);
-    ok (!$c1->has_subset);
+    is ($c1->attr_1, 1);
+    is ($c1->attr_2, 'human');
+    is ($c1->attr_3, undef);
   }
-
-  for my $c ((
-    $pname->new(id_run => 1, position => 2),
-    $pname->new(id_run => 1, position => 2, tag_index => undef, subset => undef) ))
-  {
-    $c = $pname->new(id_run => 1, position => 2);
-    my $j = '{"id_run":1,"position":2}';
-    is ($c->freeze, $j, 'serialization to an ordered json string');
-    my $c1 = $pname->thaw($j);
-    isa_ok ($c1, $pname);
-    is ($c1->id_run, 1);
-    is ($c1->position, 2);
-    is ($c1->tag_index, undef);
-    is ($c1->subset, undef);
-  }
-};
-
-subtest 'errors when required attrs are undefined' => sub {
-  plan tests => 6;
-
-  throws_ok { $pname->new() } qr/Attribute \(id_run\) is required/,
-    'no args constructor - error';
-  throws_ok { $pname->new(id_run => 1) } qr/Attribute \(position\) is required/,
-    'position undefined - error';
-  throws_ok { $pname->new(position => 1) } qr/Attribute \(id_run\) is required/,
-    'run id undefined - error';
-  
-  throws_ok { $pname->thaw() } qr/JSON string is required/,
-    'no args to thaw - error';
-  throws_ok { $pname->thaw(q[some]) } qr/malformed JSON string/,
-    'plain string to thaw - error';
-  throws_ok { $pname->thaw(q[{"id_run":1}]) }
-    qr/Attribute \(position\) is required/,
-    'position undefined - error';
-};
-
-subtest 'unknown attrs' => sub {
-  plan tests => 6;
-
-  throws_ok { $pname->new(id_run => 1, position => 2, id_position => 1) }
-    qr/Found unknown attribute/,
-    'invalid attr - error';
-  my $c;
-  lives_ok { $c = $pname->thaw(q[{"id_run":1,"position":2,"id_position":1}]) }
-    'invalid attr - no error';
-  isa_ok ($c, $pname);
-  is ($c->id_run, 1);
-  is ($c->position, 2);
-  throws_ok { $c->id_position } qr/Can\'t locate object method \"id_position\"/,
-    'error accessing undefined attribute';
 };
 
 subtest 'compare components' => sub {
   plan tests => 5;
 
-  my $c  = $pname->new(id_run => 1, position => 2, tag_index => 1);
-  my $c1 = $pname->new(id_run => 2, position => 2, tag_index => 1);
+  my $c  = $pname->new(attr_2 => 'human', attr_1 => 1, attr_3 => 3);
+  my $c1 = $pname->new(attr_2 => 'human', attr_1 => 2, attr_3 => 3);
   throws_ok { $c->compare_serialized() }
     qr/Object to compare to should be given/,
     'no other object - error';
@@ -107,22 +64,23 @@ subtest 'compare components' => sub {
 };
 
 subtest 'compute digest' => sub {
-  plan tests => 8;
+  plan tests => 9;
 
-  my $d   = 'cb3bd5d6db5a0e67086cd7d88c53d7d6048af6cdc67efc61d706237b4bbefbb5';
-  my $md5 = 'd99e452f9e7d8b68b50faed8f9cd1f3d';
-  my $c  = $pname->new(id_run => 1, position => 2, tag_index => 1);
+  my $d   = 'b2d58eb4175647b1dda29fe3a1a6603c80103ad710164905c04b4bca384434e9';
+  my $md5 = 'c60f2dec90ccb01ee1443e9f4cbd000e';
+  my $c  = $pname->new(attr_2 => 'human', attr_1 => 1);
   is($c->digest, $d, 'sha256 digest');
   is($c->digest('md5'), $md5, 'md5');
-  $c  = $pname->new(id_run => 1, position => 2, tag_index => 1, subset => undef);
+  is($c->digest('some'), $d, 'sha256 digest');
+  $c  = $pname->new(attr_2 => 'human', attr_1 => 1, attr_3 => undef);
   is($c->digest, $d, 'the same sha256 digest');
   is($c->digest('md5'), $md5, 'the same md5');
-  $c  = $pname->new(id_run => 1, position => 2, subset => undef);
-  $d   = '65485aca1f77dd273073b52784b1bda1c12163e41483a9e3abb05190c694e7f2';
-  $md5 = '8124a07e43465bc48591768e67a00697';
+  $c  = $pname->new(attr_2 => 'human', attr_1 => 1, attr_3 => 5);
+  $d   = '851381070101f38b58b7955cf78f983b7f4fcf086e0d33424769a9eca1a4910c';
+  $md5 = '279b9424281485054fd970e227e938ea';
   is($c->digest, $d, 'different sha256 digest');
   is($c->digest('md5'), $md5, 'different md5');
-  $c  = $pname->new(position => 2, id_run => 1);
+  $c  = $pname->new(attr_1 => 1, attr_3 => 5, attr_2 => 'human');
   is($c->digest, $d, 'the same sha256 digest');
   is($c->digest('md5'), $md5, 'the same md5');
 };

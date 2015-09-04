@@ -339,6 +339,7 @@ lib/npg_tracking/data/transcriptome.pm
 lib/npg_tracking/data/transcriptome/find.pm
 lib/npg_tracking/glossary/composition.pm
 lib/npg_tracking/glossary/composition/component.pm
+lib/npg_tracking/glossary/composition/component/illumina.pm
 lib/npg_tracking/glossary/composition/factory.pm
 lib/npg_tracking/glossary/composition/serializable.pm
 lib/npg_tracking/glossary/flowcell.pm
@@ -471,6 +472,7 @@ t/10-model.t
 t/10-npg_testing-db.t
 t/10-npg_testing-html.t
 t/10-npg_tracking-glossary-composition-component.t
+t/10-npg_tracking-glossary-composition-component-illumina.t
 t/10-npg_tracking-glossary-composition-factory.t
 t/10-npg_tracking-glossary-composition.t
 t/10-npg_tracking-status.t

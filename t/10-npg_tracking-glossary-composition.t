@@ -4,7 +4,7 @@ use Test::More tests => 6;
 use Test::Exception;
 
 my $pname = q[npg_tracking::glossary::composition];
-my $cpname = q[npg_tracking::glossary::composition::component];
+my $cpname = q[npg_tracking::glossary::composition::component::illumina];
 use_ok ("$pname");
 use_ok ("$cpname");
 
