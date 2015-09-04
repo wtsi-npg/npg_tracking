@@ -31,7 +31,7 @@ subtest 'adding components' => sub {
   throws_ok { $cmps->add_component() } qr/Nothing to add/,
     'no attrs - error';
   throws_ok { $cmps->add_component({'one' => 1,}) }
-    qr/Argument of type $cpname is expected/,
+    qr/A new member value for components does not pass its type constraint/,
     'wrong type - error';
   throws_ok { $cmps->add_component($c, $c) }
     qr/Duplicate entry in arguments to add/,
