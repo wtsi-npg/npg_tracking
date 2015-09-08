@@ -5,20 +5,17 @@ use namespace::autoclean;
 use MooseX::Storage;
 use MooseX::StrictConstructor;
 use Carp;
-use Readonly;
-use List::MoreUtils qw/any/;
+use List::MoreUtils qw/ any uniq /;
 
 with Storage( 'traits' => ['OnlyWhenBuilt'],
               'format' => '=npg_tracking::glossary::composition::serializable' );
 
 our $VERSION = '0';
 
-Readonly::Scalar my $COMPONENT_OBJ_TYPE => q[npg_tracking::glossary::composition::component];
-
 has 'components' => (
       traits    => [ qw/Array/ ],
       is        => 'ro',
-      isa       => "ArrayRef[$COMPONENT_OBJ_TYPE]",
+      isa       => 'ArrayRef[Object]',
       default   => sub { [] },
       handles   => {
           'add_component'     => 'push',
@@ -61,6 +58,19 @@ before 'freeze' => sub {
   $self->sort();
 };
 
+sub component_values4attr {
+  my ($self, $attr) = @_;
+
+  if (!$attr) {
+    croak 'Attribute name is missing';
+  }
+  if ($self->has_no_components) {
+    croak qq[Composition is empty, cannot compute values for $attr];
+  }
+  my @values = uniq grep { defined $_ }  map { $_->can($attr) ? $_->$attr : undef } @{$self->components()};
+  return @values;
+}
+
 sub find {
   my ($self, $c) = @_;
   if ( !defined $c ) {
@@ -78,8 +88,8 @@ sub sort {##no critic (Subroutines::ProhibitBuiltinHomonyms)
 
 sub _test_attr {
   my $c = shift;
-  if ( !(ref $c) || ref $c ne $COMPONENT_OBJ_TYPE ) {
-    croak qq[Argument of type $COMPONENT_OBJ_TYPE is expected];
+  if ( !(ref $c) || ref =~ /HASH|ARRAY/xms ) {
+    croak q[Object is expected];
   }
   return;
 }
@@ -146,13 +156,14 @@ Definition for a composition of multiple entities (lanes and/or lanelets).
 
 =head2 components
 
-An array reference of npg_tracking::glossary::composition::component
-objects, empty by default.
+An array reference of component objects, empty by default. The
+order of the object in the array is not necessary the order the objects
+are added in, ie this array cannot be treated as a queue.
 
 =head2 add_component
 
-Appends a single npg_tracking::glossary::composition::component object or
-a list of such objects to the end of the components array'.
+Appends a single component object or a list of component objects
+to the end of the components array.
 
   $composition->add($component);
   $composition->add((($component1, $component2));
@@ -215,6 +226,17 @@ Gives an error if the components array is empty.
   $composition->digest();      # sha256_hex digest
   $composition->digest('md5'); # md5 digest
 
+=head2 component_values4attr
+
+Returns a list of distinct true attribute values of the components. Takes
+the attribute name as input. An empty list is returned if none of the
+components has this value defined defined. Error if the composition is empty. 
+
+  my @subsets = $composition->component_values4attr('subset');
+
+The caller can enforce that the composition is homogeneous in respect of
+the attribute value.
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -232,8 +254,6 @@ Gives an error if the components array is empty.
 =item namespace::autoclean
 
 =item Carp
-
-=item Readonly
 
 =item List::MoreUtils
 

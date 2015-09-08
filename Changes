@@ -1,7 +1,8 @@
 CHANGES
  - transcriptome find updated for RNA-SeQC directory and its gtf file 
 
- - serializable sequence composition framework added
+ - generic serializable sequence composition framework and illumina
+   sequencing specific component
 
 release 84.8
  - jenkins daemon definition: remove hardcoded path to prod user home directory

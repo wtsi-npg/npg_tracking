@@ -4,12 +4,12 @@ use Test::More tests => 6;
 use Test::Exception;
 
 my $pname = q[npg_tracking::glossary::composition];
-my $cpname = q[npg_tracking::glossary::composition::component];
+my $cpname = q[npg_tracking::glossary::composition::component::illumina];
 use_ok ("$pname");
 use_ok ("$cpname");
 
 subtest 'empty composition' => sub {
-  plan tests => 6;
+  plan tests => 8;
 
   my $c = $cpname->new(id_run => 1, position => 2);
   my $cmps = $pname->new();
@@ -21,17 +21,23 @@ subtest 'empty composition' => sub {
   throws_ok { $cmps->digest() }
     qr/Composition is empty, cannot compute digest/, 
     'digest for an empty composition - error';
+  throws_ok { $cmps->component_values4attr() }
+    qr/Attribute name is missing/, 
+    'no attribute name - error';
+  throws_ok { $cmps->component_values4attr('subset') }
+    qr/Composition is empty, cannot compute values for subset/, 
+    'subsets for an empty composition - error';
 };
 
 subtest 'adding components' => sub {
-  plan tests => 7;
+  plan tests => 14;
 
   my $c = $cpname->new(id_run => 1, position => 2);
   my $cmps = $pname->new();
   throws_ok { $cmps->add_component() } qr/Nothing to add/,
     'no attrs - error';
   throws_ok { $cmps->add_component({'one' => 1,}) }
-    qr/Argument of type $cpname is expected/,
+    qr/A new member value for components does not pass its type constraint/,
     'wrong type - error';
   throws_ok { $cmps->add_component($c, $c) }
     qr/Duplicate entry in arguments to add/,
@@ -40,7 +46,19 @@ subtest 'adding components' => sub {
   is ($cmps->num_components, 1, 'one component is available');
   ok (!$cmps->has_no_components, 'some components');
   throws_ok { $cmps->add_component($c) } qr/already exists/,
-    'error adding the same component second time';
+    'error adding the same component second time'; 
+
+  is (scalar $cmps->component_values4attr('subset'), 0, 'empty list of subsets');
+  $cmps->add_component($cpname->new(id_run => 1, position => 2, subset => 'all'));
+  is (join(q[ ], $cmps->component_values4attr('subset')), 'all', 'one subset value returned');
+  $cmps->add_component($cpname->new(id_run => 1, position => 2, tag_index => 3, subset => 'human'));
+  is (join(q[ ], $cmps->component_values4attr('subset')), 'all human', 'two subset values returned');
+  $cmps->add_component($cpname->new(id_run => 1, position => 3, tag_index => 0, subset => 'human'));
+  is (join(q[ ], $cmps->component_values4attr('subset')), 'all human', 'two subset values returned');
+  is (join(q[ ], $cmps->component_values4attr('id_run')), '1', 'one run id value returned');
+  is (join(q[ ], $cmps->component_values4attr('tag_index')), '3 0', 'two tag index values returned');
+  is (scalar $cmps->component_values4attr('my_attr'), 0,
+    'empty list of not implemented attribute values');
 };
 
 subtest 'finding' => sub {
