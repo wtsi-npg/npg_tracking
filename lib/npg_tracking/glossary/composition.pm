@@ -58,13 +58,17 @@ before 'freeze' => sub {
   $self->sort();
 };
 
-sub subsets {
-  my $self = shift;
-  if ($self->has_no_components) {
-    croak 'Composition is empty, cannot compute subsets';
+sub component_values4attr {
+  my ($self, $attr) = @_;
+
+  if (!$attr) {
+    croak 'Attribute name is missing';
   }
-  my @subsets = uniq grep { $_ }  map { $_->subset } @{$self->components()};
-  return @subsets;
+  if ($self->has_no_components) {
+    croak qq[Composition is empty, cannot compute values for $attr];
+  }
+  my @values = uniq grep { defined $_ }  map { $_->can($attr) ? $_->$attr : undef } @{$self->components()};
+  return @values;
 }
 
 sub find {
@@ -222,16 +226,16 @@ Gives an error if the components array is empty.
   $composition->digest();      # sha256_hex digest
   $composition->digest('md5'); # md5 digest
 
-=head2 subsets
+=head2 component_values4attr
 
-Returns a list of distinct true subset attribute values of the components.
-An empty list is returned if none of the components has the subset attrubute
-defined. Errors if the composition is empty.
+Returns a list of distinct true attribute values of the components. Takes
+the attribute name as input. An empty list is returned if none of the
+components has this value defined defined. Error if the composition is empty. 
 
-  my @subsets = $composition->subsets();
+  my @subsets = $composition->component_values4attr('subset');
 
 The caller can enforce that the composition is homogeneous in respect of
-the subset attribute value.
+the attribute value.
 
 =head1 DIAGNOSTICS
 

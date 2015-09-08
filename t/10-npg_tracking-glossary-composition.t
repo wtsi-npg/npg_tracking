@@ -9,7 +9,7 @@ use_ok ("$pname");
 use_ok ("$cpname");
 
 subtest 'empty composition' => sub {
-  plan tests => 7;
+  plan tests => 8;
 
   my $c = $cpname->new(id_run => 1, position => 2);
   my $cmps = $pname->new();
@@ -21,13 +21,16 @@ subtest 'empty composition' => sub {
   throws_ok { $cmps->digest() }
     qr/Composition is empty, cannot compute digest/, 
     'digest for an empty composition - error';
-  throws_ok { $cmps->subsets() }
-    qr/Composition is empty, cannot compute subsets/, 
+  throws_ok { $cmps->component_values4attr() }
+    qr/Attribute name is missing/, 
+    'no attribute name - error';
+  throws_ok { $cmps->component_values4attr('subset') }
+    qr/Composition is empty, cannot compute values for subset/, 
     'subsets for an empty composition - error';
 };
 
 subtest 'adding components' => sub {
-  plan tests => 11;
+  plan tests => 14;
 
   my $c = $cpname->new(id_run => 1, position => 2);
   my $cmps = $pname->new();
@@ -45,13 +48,17 @@ subtest 'adding components' => sub {
   throws_ok { $cmps->add_component($c) } qr/already exists/,
     'error adding the same component second time'; 
 
-  is (scalar $cmps->subsets, 0, 'empty list of subsets');
+  is (scalar $cmps->component_values4attr('subset'), 0, 'empty list of subsets');
   $cmps->add_component($cpname->new(id_run => 1, position => 2, subset => 'all'));
-  is (join(q[ ], $cmps->subsets), 'all', 'one subset value returned');
-  $cmps->add_component($cpname->new(id_run => 1, position => 2, subset => 'human'));
-  is (join(q[ ], $cmps->subsets), 'all human', 'two subset values returned');
-  $cmps->add_component($cpname->new(id_run => 1, position => 3, subset => 'human'));
-  is (join(q[ ], $cmps->subsets), 'all human', 'two subset values returned');
+  is (join(q[ ], $cmps->component_values4attr('subset')), 'all', 'one subset value returned');
+  $cmps->add_component($cpname->new(id_run => 1, position => 2, tag_index => 3, subset => 'human'));
+  is (join(q[ ], $cmps->component_values4attr('subset')), 'all human', 'two subset values returned');
+  $cmps->add_component($cpname->new(id_run => 1, position => 3, tag_index => 0, subset => 'human'));
+  is (join(q[ ], $cmps->component_values4attr('subset')), 'all human', 'two subset values returned');
+  is (join(q[ ], $cmps->component_values4attr('id_run')), '1', 'one run id value returned');
+  is (join(q[ ], $cmps->component_values4attr('tag_index')), '3 0', 'two tag index values returned');
+  is (scalar $cmps->component_values4attr('my_attr'), 0,
+    'empty list of not implemented attribute values');
 };
 
 subtest 'finding' => sub {
