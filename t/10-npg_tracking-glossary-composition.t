@@ -9,7 +9,7 @@ use_ok ("$pname");
 use_ok ("$cpname");
 
 subtest 'empty composition' => sub {
-  plan tests => 6;
+  plan tests => 7;
 
   my $c = $cpname->new(id_run => 1, position => 2);
   my $cmps = $pname->new();
@@ -21,10 +21,13 @@ subtest 'empty composition' => sub {
   throws_ok { $cmps->digest() }
     qr/Composition is empty, cannot compute digest/, 
     'digest for an empty composition - error';
+  throws_ok { $cmps->subsets() }
+    qr/Composition is empty, cannot compute subsets/, 
+    'subsets for an empty composition - error';
 };
 
 subtest 'adding components' => sub {
-  plan tests => 7;
+  plan tests => 11;
 
   my $c = $cpname->new(id_run => 1, position => 2);
   my $cmps = $pname->new();
@@ -40,7 +43,15 @@ subtest 'adding components' => sub {
   is ($cmps->num_components, 1, 'one component is available');
   ok (!$cmps->has_no_components, 'some components');
   throws_ok { $cmps->add_component($c) } qr/already exists/,
-    'error adding the same component second time';
+    'error adding the same component second time'; 
+
+  is (scalar $cmps->subsets, 0, 'empty list of subsets');
+  $cmps->add_component($cpname->new(id_run => 1, position => 2, subset => 'all'));
+  is (join(q[ ], $cmps->subsets), 'all', 'one subset value returned');
+  $cmps->add_component($cpname->new(id_run => 1, position => 2, subset => 'human'));
+  is (join(q[ ], $cmps->subsets), 'all human', 'two subset values returned');
+  $cmps->add_component($cpname->new(id_run => 1, position => 3, subset => 'human'));
+  is (join(q[ ], $cmps->subsets), 'all human', 'two subset values returned');
 };
 
 subtest 'finding' => sub {

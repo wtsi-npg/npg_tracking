@@ -5,7 +5,7 @@ use namespace::autoclean;
 use MooseX::Storage;
 use MooseX::StrictConstructor;
 use Carp;
-use List::MoreUtils qw/any/;
+use List::MoreUtils qw/ any uniq /;
 
 with Storage( 'traits' => ['OnlyWhenBuilt'],
               'format' => '=npg_tracking::glossary::composition::serializable' );
@@ -57,6 +57,15 @@ before 'freeze' => sub {
   my ($self, @args) = @_;
   $self->sort();
 };
+
+sub subsets {
+  my $self = shift;
+  if ($self->has_no_components) {
+    croak 'Composition is empty, cannot compute subsets';
+  }
+  my @subsets = uniq grep { $_ }  map { $_->subset } @{$self->components()};
+  return @subsets;
+}
 
 sub find {
   my ($self, $c) = @_;
@@ -212,6 +221,17 @@ Gives an error if the components array is empty.
 
   $composition->digest();      # sha256_hex digest
   $composition->digest('md5'); # md5 digest
+
+=head2 subsets
+
+Returns a list of distinct true subset attribute values of the components.
+An empty list is returned if none of the components has the subset attrubute
+defined. Errors if the composition is empty.
+
+  my @subsets = $composition->subsets();
+
+The caller can enforce that the composition is homogeneous in respect of
+the subset attribute value.
 
 =head1 DIAGNOSTICS
 
