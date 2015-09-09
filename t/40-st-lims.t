@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 445;
+use Test::More tests => 447;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -28,6 +28,13 @@ my @libs_6551_1 = ('PhiX06Apr11','SS109114 2798524','SS109305 2798523','SS117077
 my @samples_6551_1 = qw/phiX_for_spiked_buffers SS109114 SS109305 SS117077 SS117886 SS127358 SS127858 SS128220 SS128716 SS129050 SS129764 SS130327 SS131636/;
 my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Shigella sp.');
 
+{
+  use_ok('st::api::lims::samplesheet');
+  lives_and( sub{
+    my $lims = st::api::lims->new(id_run => 6551, driver => st::api::lims::samplesheet->new(id_run => 6551, path => $ENV{NPG_WEBSERVICE_CACHE_DIR}));
+    is($lims->driver_type, 'samplesheet');
+  }, 'obtain driver type from driver if driver given');
+}
 {
   my $lims = st::api::lims->new(id_run => 6551);
   is($lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',

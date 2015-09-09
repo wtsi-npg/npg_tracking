@@ -17,6 +17,7 @@ with qw/  npg_tracking::glossary::run
        /;
 
 our $VERSION = '0';
+Readonly::Scalar our $LAST             => -1; #TODO - add -1 to critic's allowed values and purge codebase of constants equal to -1, or drop this todo
 
 =head1 NAME
 
@@ -120,6 +121,9 @@ has 'driver_type' => (
                      );
 sub _build_driver_type {
   my $self = shift;
+  if($self->has_driver){
+    return (split /::/xms,ref $self->driver)[$LAST];
+  }
   my $cached_path = $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
   if ($self->_has_path || ($cached_path && -f $cached_path)) {
     if (!$self->_has_path) {
@@ -137,9 +141,10 @@ Driver object (xml, warehouse, samplesheet)
 
 =cut
 has 'driver' => (
-                          'is'      => 'ro',
-                          'lazy'    => 1,
-                          'builder' => '_build_driver',
+                          'is'        => 'ro',
+                          'lazy'      => 1,
+                          'builder'   => '_build_driver',
+                          'predicate' => 'has_driver',
 );
 sub _build_driver {
   my $self = shift;
