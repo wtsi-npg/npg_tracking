@@ -135,9 +135,9 @@ sub BUILD {
   my $driver_class=$self->_driver_package_name;
   my %dargs=();
 
-  foreach my$k(map{$_->name}$driver_class->meta->get_all_attributes) {if(exists $args{$k}){$dargs{$k}=$args{$k}; delete $args{$k};}}
+  foreach my$k(grep{defined}map{$_->has_init_arg ? $_->init_arg : $_->name}$driver_class->meta->get_all_attributes) {if(exists $args{$k}){$dargs{$k}=$args{$k}; delete $args{$k};}}
   $self->_set__driver_arguments(\%dargs);
-  foreach my$k(map{$_->name}__PACKAGE__->meta->get_all_attributes) {delete $args{$k};}
+  foreach my$k(grep{defined}map{$_->has_init_arg ? $_->init_arg : $_->name}__PACKAGE__->meta->get_all_attributes) {delete $args{$k};}
   #TODO: only allow primary args - to recreate Strictness of constructor
   $self->_set__primary_arguments(\%args);
   return;
