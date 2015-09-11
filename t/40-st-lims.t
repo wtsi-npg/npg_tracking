@@ -561,7 +561,7 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
     qr/Validation failed for 'NpgTrackingReadableFile'/, 'error invoking a driver method on an object with non-existing path';
  
   my $ss=st::api::lims->new(id_run => 10262, position =>1, path => $path);
-  is ($ss->driver_type, 'samplesheet', 'driver type built correctly');
+  is ($ss->driver_type, 'samplesheet', 'driver type built correctly') or diag explain $ss;
   is ($ss->position, 1, 'correct position');
   is ($ss->is_pool, 1, 'lane is a pool');
   is ($ss->library_id, undef, 'pool lane library_id undefined');

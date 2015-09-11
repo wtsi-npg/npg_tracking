@@ -2,7 +2,11 @@ CHANGES
  - transcriptome find updated for RNA-SeQC directory and its gtf file 
  - generic serializable sequence composition framework and illumina
    sequencing specific component
- - lims shim now works out driver type from a given driver
+ - lims shim
+   - now works out driver type from a given driver
+   - endeavours to ensure consistency of primary info (e.g. id_run, position)
+     with drivers
+   - will pass through arguments to driver constructor if it takes them
  - sequencing failure RT emails cope with GCLP (no batch_id)
  - add predicates for glossary roles
 

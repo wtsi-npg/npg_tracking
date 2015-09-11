@@ -3,18 +3,12 @@ package st::api::lims;
 use Carp;
 use English qw(-no_match_vars);
 use Moose;
-use MooseX::StrictConstructor;
 use MooseX::Aliases;
 use Readonly;
-use List::MoreUtils qw/none uniq/;
+use List::MoreUtils qw/any none uniq/;
+use Class::Load qw/load_class/;
 
 use npg_tracking::util::types;
-
-with qw/  npg_tracking::glossary::run
-          npg_tracking::glossary::lane
-          npg_tracking::glossary::tag
-          npg_tracking::glossary::flowcell
-       /;
 
 our $VERSION = '0';
 
@@ -46,7 +40,14 @@ Readonly::Scalar my  $INLINE_INDEX_END     => 10;
 Readonly::Scalar my $DUAL_INDEX_TAG_LENGTH => 16;
 
 Readonly::Hash   my  %METHODS           => {
-
+    'primary'    =>   [qw/ tag_index
+                           position
+                           id_run
+                           path
+                           id_flowcell_lims
+                           batch_id
+                           flowcell_barcode
+                      /],
     'general'    =>   [qw/ spiked_phix_tag_index
                            is_pool
                            is_control
@@ -108,6 +109,40 @@ Readonly::Hash   my  %METHODS           => {
 Readonly::Array my @IMPLEMENTED_DRIVERS => qw/xml samplesheet ml_warehouse/;
 Readonly::Array my @DELEGATED_METHODS   => sort map { @{$_} } values %METHODS;
 
+has '_driver_arguments' => (
+                        isa    => 'HashRef',
+                        is     => 'ro',
+                        writer => '_set__driver_arguments',
+                        default => sub { {} },
+);
+
+has '_primary_arguments' => (
+                        isa    => 'HashRef',
+                        is     => 'ro',
+                        writer => '_set__primary_arguments',
+                        default => sub { {} },
+);
+
+=head2 BUILD
+
+Custom post construction method to help propagate varied arguments to driver constructors
+
+=cut
+sub BUILD {
+  my $self = shift;
+  my %args = %{shift||{}};
+  $self->_set__driver_arguments(\%args);
+  my $driver_class=$self->_driver_package_name;
+  my %dargs=();
+
+  foreach my$k(map{$_->name}$driver_class->meta->get_all_attributes) {if(exists $args{$k}){$dargs{$k}=$args{$k}; delete $args{$k};}}
+  $self->_set__driver_arguments(\%dargs);
+  foreach my$k(map{$_->name}__PACKAGE__->meta->get_all_attributes) {delete $args{$k};}
+  #TODO: only allow primary args - to recreate Strictness of constructor
+  $self->_set__primary_arguments(\%args);
+  return;
+}
+
 =head2 driver_type
 
 Driver type (xml, etc), currently defaults to xml
@@ -127,11 +162,7 @@ sub _build_driver_type {
     return $type;
   }
   my $cached_path = $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
-  if ($self->_has_path || ($cached_path && -f $cached_path)) {
-    if (!$self->_has_path) {
-      $self->_set_path($cached_path);
-      $self->clear_batch_id();
-    }
+  if ( $self->_driver_arguments()->{'path'} ||= $cached_path ? -f $cached_path ? $cached_path : q() : q()) {
     return $IMPLEMENTED_DRIVERS[1];
   }
   return $IMPLEMENTED_DRIVERS[0];
@@ -151,20 +182,7 @@ has 'driver' => (
 sub _build_driver {
   my $self = shift;
   my $d_package = $self->_driver_package_name;
-  ##no critic (ProhibitStringyEval)
-  eval "require $d_package" or croak "Error loading package $d_package: " . $EVAL_ERROR;
-  ##use critic
-  my $ref = {};
-  foreach my $attr (qw/tag_index position id_run path id_flowcell_lims flowcell_barcode/) {
-    if (defined $self->$attr) {
-      $ref->{$attr} = $self->$attr;
-    }
-  }
-
-  if ($self->has_batch_id) {
-    $ref->{'batch_id'} = $self->batch_id;
-  }
-  return $d_package->new($ref);
+  return $d_package->new($self->_driver_arguments());
 }
 
 sub _driver_package_name {
@@ -174,18 +192,22 @@ sub _driver_package_name {
     croak qq[Driver type '$type' not implemented.\n Implemented drivers: ] .
              join q[,], @IMPLEMENTED_DRIVERS;
   }
-  return join q[::], __PACKAGE__ , $type;
+  my $class = join q[::], __PACKAGE__ , $type;
+  load_class($class);
+  return $class;
 }
 
 for my$m ( @DELEGATED_METHODS ){
   __PACKAGE__->meta->add_method($m, sub{
     my$l=shift;
     my$d=$l->driver;
-    my$r= $d->can($m) ? $d->$m(@_) : undef;
+    my$r= $d->can($m) ? $d->$m(@_) : $l->_primary_arguments()->{$m};
     if( defined $r and length $r){ #if method exists and it returns a defined and non-empty result
       return $d->$m(@_); # call again here in case it returns different info in list context
     }elsif($m eq q(is_pool)){ # avoid obvious recursion
       return scalar $l->children;
+    }elsif(any {$_ eq $m} @{$METHODS{'primary'}} ){
+      return $r;
     }elsif($l->is_pool){ # else try any children
       return $l->_single_attribute($m,0); # 0 to ignore spike
     }
@@ -252,56 +274,6 @@ sub _build__sample_description {
   return $self->sample_description if ($self->sample_description);
   foreach my $c ($self->children) {
     return $c->sample_description if ($c->sample_description);
-  }
-  return;
-}
-
-=head2 path
-
-Samplesheet path
-
-=cut
-has 'path' => (
-                  isa       => 'Str',
-                  is        => 'ro',
-                  required  => 0,
-                  predicate => '_has_path',
-                  writer    => '_set_path',
-              );
-
-=head2 id_run
-
-Run id, optional attribute.
-
-=cut
-has '+id_run'   =>        (required        => 0,);
-
-=head2 position
-
-Position, optional attribute.
-
-=cut
-has '+position' =>        (required        => 0,);
-
-=head2 tag_index
-
-Tag index, optional attribute.
-
-=cut
-
-=head2 batch_id
-
-Batch id, optional attribute.
-
-=cut
-has 'batch_id'  =>        (isa             => 'Maybe[NpgTrackingPositiveInt]',
-                           is              => 'ro',
-                           lazy_build      => 1,
-                          );
-sub _build_batch_id {
-  my $self = shift;
-  if ($self->id_run && $self->driver_type eq 'xml') {
-    return $self->driver->batch_id;
   }
   return;
 }
@@ -1023,12 +995,6 @@ __END__
 =item Readonly
 
 =item npg_tracking::util::types
-
-=item npg_tracking::glossary::run
-
-=item npg_tracking::glossary::lane
-
-=item npg_tracking::glossary::tag
 
 =back
 
