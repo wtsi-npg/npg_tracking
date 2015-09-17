@@ -201,9 +201,11 @@ for my$m ( @DELEGATED_METHODS ){
   __PACKAGE__->meta->add_method($m, sub{
     my$l=shift;
     my$d=$l->driver;
-    my$r= $d->can($m) ? $d->$m(@_) : $l->_primary_arguments()->{$m};
+    my$r= $d->can($m) ? $d->$m(@_) : undef;
     if( defined $r and length $r){ #if method exists and it returns a defined and non-empty result
       return $d->$m(@_); # call again here in case it returns different info in list context
+    }elsif(exists $l->_primary_arguments()->{$m}){
+      return $l->_primary_arguments()->{$m}
     }elsif($m eq q(is_pool)){ # avoid obvious recursion
       return scalar $l->children;
     }elsif(any {$_ eq $m} @{$METHODS{'primary'}} ){
