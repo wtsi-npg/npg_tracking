@@ -8,6 +8,7 @@ use st::api::lims;
 use WTSI::DNAP::Warehouse::Schema;
 use WTSI::DNAP::Warehouse::Schema::Result::IseqFlowcell;
 with qw/  
+          npg_tracking::glossary::run
           npg_tracking::glossary::lane
           npg_tracking::glossary::tag
           npg_tracking::glossary::flowcell /;
@@ -31,6 +32,35 @@ in WTSI::DNAP::Warehouse::Schema.
 =head2 flowcell_barcode
 
 =head2 id_flowcell_lims
+
+=head2 id_run
+
+id_run, optional attribute.
+
+=cut
+has '+id_run' =>       ( required        => 0,
+                         lazy_build      => 1,
+                       );
+
+sub _build_id_run {
+  my $self = shift;
+  if (not $self->has_flowcell_barcode and not $self->has_id_flowcell_lims) {
+    croak 'Require flowcell_barcode or id_flowcell_lims to try to find id_run';
+  }
+  my$id_run_rs=$self->iseq_flowcell->related_resultset('iseq_product_metrics')->search({
+    ($self->has_flowcell_barcode ? ('flowcell_barcode' => $self->flowcell_barcode) : ()),
+    ($self->has_id_flowcell_lims ? ('id_flowcell_lims' => $self->id_flowcell_lims) : ()),
+  },{'columns'=>[qw(id_run)], 'distinct'=>1});
+  my$count = $id_run_rs->count;
+  croak "Found more than one ($count) id_run" if ($count > 1);
+  if($count){
+    return $id_run_rs->first->id_run;
+  }
+  carp join q( ), 'No id_run set yet',
+    ($self->has_flowcell_barcode ? ('flowcell_barcode:'.$self->flowcell_barcode) : ()),
+    ($self->has_id_flowcell_lims ? ('id_flowcell_lims:'.$self->id_flowcell_lims) : ());
+  return;
+}
 
 =head2 position
 
