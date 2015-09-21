@@ -12,6 +12,7 @@ our $VERSION = '0';
 has 'id_run'    =>   (isa       => 'NpgTrackingRunId',
                       is        => 'ro',
                       required  => 1,
+                      predicate => q(has_id_run),
                      );
 1;
 
