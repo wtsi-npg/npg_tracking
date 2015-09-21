@@ -134,12 +134,15 @@ sub BUILD {
   $self->_set__driver_arguments(\%args);
   my $driver_class=$self->_driver_package_name;
   my %dargs=();
+  my %pargs=();
 
   foreach my$k(grep{defined}map{$_->has_init_arg ? $_->init_arg : $_->name}$driver_class->meta->get_all_attributes) {if(exists $args{$k}){$dargs{$k}=$args{$k}; delete $args{$k};}}
   $self->_set__driver_arguments(\%dargs);
   foreach my$k(grep{defined}map{$_->has_init_arg ? $_->init_arg : $_->name}__PACKAGE__->meta->get_all_attributes) {delete $args{$k};}
-  #TODO: only allow primary args - to recreate Strictness of constructor
-  $self->_set__primary_arguments(\%args);
+  #only allow primary args - to recreate Strictness of constructor
+  foreach my$k(@{$METHODS{'primary'}}){if(exists $args{$k}){$pargs{$k}=$args{$k}; delete $args{$k};}}
+  croak 'Unknown attributes: '.join q(, ), keys %args if keys %args;
+  $self->_set__primary_arguments(\%pargs);
   return;
 }
 
@@ -204,13 +207,17 @@ for my$m ( @DELEGATED_METHODS ){
     my$r= $d->can($m) ? $d->$m(@_) : undef;
     if( defined $r and length $r){ #if method exists and it returns a defined and non-empty result
       return $d->$m(@_); # call again here in case it returns different info in list context
-    }elsif(exists $l->_primary_arguments()->{$m}){
+    }
+    if(exists $l->_primary_arguments()->{$m}){
       return $l->_primary_arguments()->{$m}
-    }elsif($m eq q(is_pool)){ # avoid obvious recursion
+    }
+    if($m eq q(is_pool)){ # avoid obvious recursion
       return scalar $l->children;
-    }elsif(any {$_ eq $m} @{$METHODS{'primary'}} ){
+    }
+    if(any {$_ eq $m} @{$METHODS{'primary'}} ){
       return $r;
-    }elsif($l->is_pool){ # else try any children
+    }
+    if($l->is_pool){ # else try any children
       return $l->_single_attribute($m,0); # 0 to ignore spike
     }
     return;
