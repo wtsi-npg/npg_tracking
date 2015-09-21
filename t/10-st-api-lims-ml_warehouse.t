@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 139;
+use Test::More tests => 140;
 use Test::Exception;
 use Test::Deep;
 use Moose::Meta::Class;
@@ -45,6 +45,9 @@ qr/No record retrieved for st::api::lims::ml_warehouse flowcell_barcode 42UMBAAX
       mlwh_schema      => $schema_wh,
       flowcell_barcode => '42UMBAAXX')->query_resultset->count,
    'data retrieved for existing barcode');
+  is (st::api::lims::ml_warehouse->new(
+      mlwh_schema      => $schema_wh,
+      flowcell_barcode => '42UMBAAXX')->id_run, 3905, 'find id_run if in product metrics table');
   ok (st::api::lims::ml_warehouse->new(
       mlwh_schema      => $schema_wh,
       id_flowcell_lims => 4775)->query_resultset->count,
