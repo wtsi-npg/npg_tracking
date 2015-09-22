@@ -47,10 +47,14 @@ sub _build_id_run {
   if (not $self->has_flowcell_barcode and not $self->has_id_flowcell_lims) {
     croak 'Require flowcell_barcode or id_flowcell_lims to try to find id_run';
   }
-  my$id_run_rs=$self->iseq_flowcell->related_resultset('iseq_product_metrics')->search({
-    ($self->has_flowcell_barcode ? ('flowcell_barcode' => $self->flowcell_barcode) : ()),
-    ($self->has_id_flowcell_lims ? ('id_flowcell_lims' => $self->id_flowcell_lims) : ()),
-  },{'columns'=>[qw(id_run)], 'distinct'=>1});
+  my%search;
+  if($self->has_flowcell_barcode){
+    $search{'flowcell_barcode'} = $self->flowcell_barcode;
+  }
+  if($self->has_id_flowcell_lims){
+    $search{'id_flowcell_lims'} = $self->id_flowcell_lims;
+  }
+  my$id_run_rs=$self->iseq_flowcell->related_resultset('iseq_product_metrics')->search(\%search,{'columns'=>[qw(id_run)], 'distinct'=>1});
   my$count = $id_run_rs->count;
   croak "Found more than one ($count) id_run" if ($count > 1);
   if($count){
