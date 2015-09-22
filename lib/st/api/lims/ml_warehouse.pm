@@ -125,7 +125,7 @@ around 'query_resultset' => sub {
   my $original = $self->$orig();
   my $rs = $original;
   if ($self->tag_index) {
-    $rs = $rs->search({tag_index => $self->tag_index});
+    $rs = $rs->search({'me.tag_index' => $self->tag_index});
   }
   if ($rs->count == 0) {
     croak 'No record retrieved for ' . $self->to_string;
@@ -252,7 +252,7 @@ sub _build__dbix_row {
     if (!$self->is_pool) {
       my $rs;
       if ($self->tag_index) {
-        $rs = $self->query_resultset->search({tag_index => $self->tag_index});
+        $rs = $self->query_resultset->search({'me.tag_index' => $self->tag_index});
       } else {
         $rs = $self->query_resultset->search({entity_type => [
           $WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::NON_INDEXED_LIBRARY,
