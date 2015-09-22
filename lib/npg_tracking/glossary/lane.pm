@@ -13,6 +13,7 @@ use npg_tracking::util::types;
 has 'position'    => (isa       => 'NpgTrackingLaneNumber',
                       is        => 'rw',
                       required  => 1,
+                      predicate => q(has_position),
                      );
 
 sub lane_archive {
