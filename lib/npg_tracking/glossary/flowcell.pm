@@ -27,6 +27,7 @@ Manufacturer flowcell barcode/id
 has 'flowcell_barcode' =>  ( isa       => 'Maybe[Str]',
                              is        => 'ro',
                              required  => 0,
+                             predicate => q(has_flowcell_barcode),
 );
 
 =head2 id_flowcell_lims
@@ -38,6 +39,7 @@ LIMs specific flowcell id
 has 'id_flowcell_lims' =>  ( isa       => 'Maybe[Str]',
                              is        => 'ro',
                              required  => 0,
+                             predicate => q(has_id_flowcell_lims),
 );
 
 1;
