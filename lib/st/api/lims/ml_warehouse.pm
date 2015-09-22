@@ -133,11 +133,17 @@ around 'query_resultset' => sub {
   return $original;
 };
 
+=head2 children
+
+=cut
+
 has '_lchildren' =>      ( isa             => 'ArrayRef',
+                           traits          => ['Array'],
                            is              => 'ro',
                            init_arg        => undef,
                            lazy_build      => 1,
                            clearer         => 'free_children',
+                           handles         => { children => 'elements'},
 );
 sub _build__lchildren {
   my $self = shift;
@@ -179,14 +185,6 @@ sub _build__lchildren {
   }
 
   return \@children;
-}
-
-=head2 children
-
-=cut
-sub children {
-  my $self = shift;
-  return @{$self->_lchildren};
 }
 
 has 'is_pool' =>         ( isa             => 'Bool',
