@@ -1,8 +1,9 @@
 CHANGES
  - transcriptome find updated for RNA-SeQC directory and its gtf file 
-
  - generic serializable sequence composition framework and illumina
    sequencing specific component
+ - lims shim now works out driver type from a given driver
+ - sequencing failure RT emails cope with GCLP (no batch_id)
 
 release 84.8
  - jenkins daemon definition: remove hardcoded path to prod user home directory

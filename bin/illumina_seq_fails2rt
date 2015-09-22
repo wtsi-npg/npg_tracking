@@ -92,7 +92,8 @@ sub tickets4run {
     ### organise lane data into hash keyed by study_id
     my %study2lane;
     my $with_illumina_controls = 0;
-    foreach my $l ($run->lims->associated_child_lims) {
+    my $lims = $run->lims;
+    foreach my $l ($lims ? $lims->associated_child_lims : ()) {
       next unless (defined $l->seq_qc_state && !$l->seq_qc_state);
       my @p = $l->study_names($with_illumina_controls);
       foreach my $p (@p) {
