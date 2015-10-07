@@ -1,26 +1,12 @@
-#############
-# Created By: Marina Gourtovaia
-# Created On: 23 April 2010
-
-package npg_tracking::glossary::run;
+package npg_tracking::glossary::subset;
 
 use Moose::Role;
-use npg_tracking::util::types;
 
 our $VERSION = '0';
 
-has 'id_run'    =>   (isa       => 'NpgTrackingRunId',
-                      is        => 'ro',
-                      required  => 1,
-                      predicate => q(has_id_run),
-                     );
-1;
-
-__END__
-
 =head1 NAME
 
-npg_tracking::glossary::run
+npg_tracking::glossary::subset
 
 =head1 VERSION
 
@@ -28,11 +14,31 @@ npg_tracking::glossary::run
 
 =head1 DESCRIPTION
 
-run interface
+Sequence subset definition.
+Anticipated use:
+  - 'all' for original lane/lanelet,
+  - 'target' or undef for a target part of the lane/lanelet,
+  - 'phix', 'human', 'xahuman', 'yhuman', etc for a part of
+     the lane/lanelet that was separated out by alignment
+     and is not to be used by downsteam pipelines.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 id_run - run identifier, a positive integer
+=head2 subset
+
+=cut
+
+has 'subset' =>  ( isa       => 'Maybe[Str]',
+                   is        => 'ro',
+                   predicate => 'has_subset',
+                   required  => 0,
+);
+
+no Moose::Role;
+
+1;
+
+__END__
 
 =head1 DIAGNOSTICS
 
@@ -43,8 +49,6 @@ run interface
 =over
 
 =item Moose::Role
-
-=item  npg_tracking::util::types
 
 =back
 
@@ -58,7 +62,7 @@ Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by Marina Gourtovaia
+Copyright (C) 2015 Genome Research Ltd.
 
 This file is part of NPG.
 
