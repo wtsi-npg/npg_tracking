@@ -10,9 +10,9 @@ my $num_delegated_methods = 44;
 use_ok('st::api::lims');
 is(st::api::lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
     'correct name of the cached samplesheet env var');
-is(scalar st::api::lims->driver_method_list(), $num_delegated_methods, 'driver method list lenght');
-is(scalar st::api::lims::driver_method_list_short(), $num_delegated_methods, 'short driver method list lenght');
-is(scalar st::api::lims->driver_method_list_short(), $num_delegated_methods, 'short driver method list lenght');
+is(scalar st::api::lims->driver_method_list(), $num_delegated_methods, 'driver method list length');
+is(scalar st::api::lims::driver_method_list_short(), $num_delegated_methods, 'short driver method list length');
+is(scalar st::api::lims->driver_method_list_short(), $num_delegated_methods, 'short driver method list length');
 is(scalar st::api::lims::driver_method_list_short(qw/sample_name/), $num_delegated_methods-1, 'one method removed from the list');
 is(scalar st::api::lims->driver_method_list_short(qw/sample_name study_name/), $num_delegated_methods-2, 'two methods removed from the list');
 
@@ -53,8 +53,6 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is(scalar $lims->descendants, 185, '185 descendant lims');
   is(scalar $lims->children, 8, '8 child lims');
   is($lims->to_string, 'st::api::lims object, driver - xml, batch_id 12141, id_run 6551', 'object as string');
-  throws_ok { $lims->_list_of_properties(q[id], q[bird]) } qr/Invalid object type bird in st::api::lims::_list_of_properties/, 'error with invalid entity name';
-  throws_ok { $lims->_list_of_properties(q[colour], q[sample]) } qr/Invalid property colour in st::api::lims::_list_of_properties/, 'error with invalid entity name';
   is(scalar($lims->library_names), 0, 'batch-level library_names list empty');
   is(scalar($lims->sample_names), 0, 'batch-level sample_names list empty');
   is(scalar($lims->study_names), 0, 'batch-level study_names list empty');
@@ -118,7 +116,8 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is(join(q[,], $lims->study_names($with_spiked_phix)), join(q[,], sort @studies), 'pool lane-level study_names list $with_spiked_phix = 0;');
   is(join(q[,], $lims->library_types()), 'Standard', 'pool lane-level library types list');
 
-  is($lims->sample_consent_withdrawn, undef, 'concent withdrawn false');
+  is($lims->sample_consent_withdrawn, undef, 'consent withdrawn false');
+  is($lims->any_sample_consent_withdrawn, 0, 'any consent withdrawn false');
 }
 
 {
