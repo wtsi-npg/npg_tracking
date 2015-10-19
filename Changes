@@ -1,4 +1,6 @@
 CHANGES
+ 
+release 84.9 
  - transcriptome find updated for RNA-SeQC directory and its gtf file 
  - generic serializable sequence composition framework and illumina
    sequencing specific component
