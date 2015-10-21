@@ -95,8 +95,8 @@ sub _build_iseq_flowcell {
 #######
 # This role requires iseq_flowcell, which is implemented as
 # an attribute rather than as a method in this class, hence,
-# according to Moose documentation, the need to consule the
-#role after the attribute was defined.
+# according to Moose documentation, the need to consume the
+# role after the attribute was defined.
 
 with qw/ WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell /;
 
@@ -314,6 +314,8 @@ __END__
 =item MooseX::StrictConstructor
 
 =item Carp
+
+=item npg_tracking::glossary::run
 
 =item npg_tracking::glossary::lane
 
