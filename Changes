@@ -1,6 +1,7 @@
 
  - create multi-attribute methods automatically
  - added method st::api::lims::any_sample_consent_withdrawn
+ - removed potential warnings in event notification RT#495946
 
 release 84.9
  - transcriptome find updated for RNA-SeQC directory and its gtf file 

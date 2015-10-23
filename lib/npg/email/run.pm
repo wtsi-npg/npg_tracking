@@ -1,25 +1,17 @@
-#############
-# Created By: ajb
-# Created On: 2010-02-10
-
 package npg::email::run;
-use strict;
-use warnings;
+
 use Moose;
 use Carp;
-use English qw{-no_match_vars};
-use Readonly;
+use Try::Tiny;
+use st::api::lims;
+
+extends qw{npg::email};
 
 our $VERSION = '0';
-
-use st::api::lims;
-extends qw{npg::email};
 
 =head1 NAME
 
 npg::email::run
-
-=head1 VERSION
 
 =head1 SYNOPSIS
 
@@ -72,35 +64,33 @@ sub study_lane_followers {
   my ($self, $id_run) = @_;
 
   my $return_hash = {};
-  eval {
+  try {
     my $lims = $self->get_lims($id_run);
     my $with_spiked_control = 0;
     foreach my $child_lims ($lims->associated_child_lims) {
       my $position = $child_lims->position;
       foreach my $study_name ($child_lims->study_names($with_spiked_control)) {
         if ( !exists $return_hash->{ $study_name } ) {
-          $return_hash->{$study_name}->{followers} = undef;
-          $return_hash->{$study_name}->{lanes} = [];
+          $return_hash->{$study_name}->{'followers'} = undef;
+          $return_hash->{$study_name}->{'lanes'} = [];
         }
-        push @{ $return_hash->{$study_name}->{lanes} }, {position => $position,library => $child_lims->library_name,};
+        push @{ $return_hash->{$study_name}->{'lanes'} },
+          {'position' => $position,'library' => $child_lims->library_name,};
       }
     }
 
     foreach my $dlims ($lims->associated_lims) {
       my $study_name = $dlims->study_name;
-      if ( $study_name && exists $return_hash->{$study_name} && !$return_hash->{$study_name}->{followers} ) {
-        my @addresses = $dlims->email_addresses;
-        $return_hash->{$study_name}->{followers} = $dlims->email_addresses;
+      if ( $study_name && exists $return_hash->{$study_name} && !$return_hash->{$study_name}->{'followers'} ) {
+        $return_hash->{$study_name}->{'followers'} = $dlims->email_addresses;
       }
     }
-    1;
-  } or do {
-    carp qq{Unable to obtain lims data for run $id_run: } . $EVAL_ERROR;
+  } catch {
+    carp qq{Unable to obtain lims data for run $id_run: $_};
   };
 
   return $return_hash;
 }
-
 
 =head2 id_run
 
@@ -118,9 +108,9 @@ sub _build_id_run {
   my ($self) = @_;
 
   my $id_run;
-  eval {
+  try {
     $id_run = $self->entity->id_run();
-  } or do {
+  } catch {
     $id_run = $self->entity->run_lane->id_run();
   };
 
@@ -143,32 +133,31 @@ has batch_details => (
 sub _build_batch_details {
   my ($self) = @_;
 
-  my $details = {error => q{}, lanes => [], batch_id => undef,};
-  eval {
+  my $details = {'error' => q{}, 'lanes' => [], 'batch_id' => 0,};
+  try {
     my $lims = $self->get_lims($self->id_run);
-    $details->{batch_id} = $lims->batch_id;
+    $details->{'batch_id'} = $lims->batch_id;
 
     foreach my $child_lims ($lims->associated_child_lims) {
-      push @{ $details->{lanes} }, {
+      push @{ $details->{'lanes'} }, {
         position     => $child_lims->position,
-        library      => $child_lims->library_name,
-        control      => $child_lims->is_control,
-        request_id   => $child_lims->request_id,
+        library      => $child_lims->library_name || q[],
+        control      => $child_lims->is_control   ?  1 : 0,
+        request_id   => $child_lims->request_id   || q[],
         req_ent_name => 'request',
       };
     }
-    1;
-  } or do {
-     $details->{error} = $EVAL_ERROR;
+  } catch {
+     $details->{'error'} = $_;
   };
 
   return $details;
 }
 
-
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
+
 __END__
 
 =head1 DIAGNOSTICS
@@ -183,9 +172,7 @@ __END__
 
 =item Carp
 
-=item English -no_match_vars
-
-=item Readonly
+=item Try::Tiny
 
 =back
 
@@ -195,11 +182,13 @@ __END__
 
 =head1 AUTHOR
 
-Andy Brown
+Andy Brown ajb@sanger.ac.uk
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by Andy Brown (ajb@sanger.ac.uk)
+Copyright (C) 2015 GRL
+
+This program is part of NPG software suit.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -213,3 +202,5 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut
