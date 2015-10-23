@@ -75,7 +75,7 @@ sub study_lane_followers {
           $return_hash->{$study_name}->{'lanes'} = [];
         }
         push @{ $return_hash->{$study_name}->{'lanes'} },
-          {'position' => $position,'library' => $child_lims->library_name,};
+          {'position' => $position,'library' => $child_lims->library_name || q[],};
       }
     }
 
