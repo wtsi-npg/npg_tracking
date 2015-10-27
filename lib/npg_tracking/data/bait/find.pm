@@ -46,9 +46,8 @@ sub _build_bait_path {
   }
   if (scalar @refs > 1) {
     ##no critic (ProhibitParensWithBuiltins)
-    ####croak 'Multiple references returned: ' . join(q[ ], @refs);
-    ##use critic
     $self->messages->push('Multiple references returned: ' . join(q[ ], @refs));
+    ##use critic
     return;
   }
   my $reference = $refs[0];
