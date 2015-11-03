@@ -5,11 +5,11 @@ use MooseX::StrictConstructor;
 use Carp;
 
 use st::api::lims;
+use npg_tracking::util::types;
 use WTSI::DNAP::Warehouse::Schema;
 use WTSI::DNAP::Warehouse::Schema::Result::IseqFlowcell;
-with qw/  
-          npg_tracking::glossary::run
-          npg_tracking::glossary::lane
+
+with qw/  npg_tracking::glossary::lane
           npg_tracking::glossary::tag
           npg_tracking::glossary::flowcell /;
 
@@ -38,10 +38,11 @@ in WTSI::DNAP::Warehouse::Schema.
 id_run, optional attribute.
 
 =cut
-has '+id_run' =>       ( required        => 0,
-                         lazy_build      => 1,
-                       );
-
+has 'id_run' =>       ( isa             => 'Maybe[NpgTrackingRunId]',
+                        is              => 'ro',
+                        required        => 0,
+                        lazy_build      => 1,
+);
 sub _build_id_run {
   my $self = shift;
   if (not $self->has_flowcell_barcode and not $self->has_id_flowcell_lims) {
@@ -315,7 +316,7 @@ __END__
 
 =item Carp
 
-=item npg_tracking::glossary::run
+=item npg_tracking::util::types
 
 =item npg_tracking::glossary::lane
 
