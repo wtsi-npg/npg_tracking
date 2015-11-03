@@ -1,7 +1,8 @@
 use strict;
 use warnings;
-use Test::More tests => 144;
+use Test::More tests => 145;
 use Test::Exception;
+use Test::Warn;
 use Test::Deep;
 use Moose::Meta::Class;
 
@@ -79,11 +80,13 @@ qr/No record retrieved for st::api::lims::ml_warehouse flowcell_barcode 42UMBAAX
       id_flowcell_lims => 22043,
       flowcell_barcode => 'barcode')->query_resultset->count,
     'data retrieved as long as flowcell id is valid');
-  throws_ok { st::api::lims::ml_warehouse->new(
+  my $id_run;
+  warning_like { $id_run = st::api::lims::ml_warehouse->new(
       mlwh_schema      => $schema_wh,
       flowcell_barcode => 'barcode')->id_run }
-    qr/Validation failed for 'NpgTrackingRunId' with value undef/,
-    'error finding id_run if not in product metrics table';
+    qr/No id_run set yet/,
+    'warning finding id_run if not in product metrics table';
+  is($id_run, undef, 'run id undefined');
   throws_ok { st::api::lims::ml_warehouse->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 22043,
