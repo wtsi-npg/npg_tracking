@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 109; #remember to change the skip number below as well!
+use Test::More tests => 118; #remember to change the skip number below as well!
 use Test::Deep;
 use Test::Exception;
 use Try::Tiny;
@@ -55,7 +55,7 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
   SKIP: {
 
     if (!$do_test) {
-      skip $reason, 36;
+      skip $reason, 39;
     }
 
     my $lims = st::api::lims->new($lfield => 4775, driver_type => $driver);
@@ -81,6 +81,7 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
     is ($insert_size->{$lims1->library_id}->{q[to]}, 400, 'required TO insert size');
 
     ok(!$lims1->sample_consent_withdrawn(), 'sample consent not withdrawn');
+    ok(!$lims1->any_sample_consent_withdrawn(), 'not any sample consent withdrawn');
     
     my $lims4 = st::api::lims->new($lfield => 4775, position => 4, driver_type => $driver);
     is($lims4->is_control, 1, 'first st lane has control');
@@ -125,6 +126,10 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
       'tag zero reference genome when common for whole pool');
     my $lims8 = st::api::lims->new($lfield =>15728, position=>2, tag_index=>3, driver_type => $driver);    
     ok( $lims8->sample_consent_withdrawn(), 'sample 1299723 consent withdrawn' );
+    ok( $lims8->any_sample_consent_withdrawn(), 'any sample (1299723) consent withdrawn' );
+
+    my $lims9 = st::api::lims->new($lfield =>15728, position=>2, tag_index=>0, driver_type => $driver);
+    ok( $lims9->any_sample_consent_withdrawn(), 'any sample consent withdrawn' );
 
   }; # end of SKIP
 }
