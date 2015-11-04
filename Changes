@@ -1,4 +1,5 @@
 
+release 84.10
  - create multi-attribute methods automatically
  - added method st::api::lims::any_sample_consent_withdrawn
  - removed potential warnings in event notification RT#495946
