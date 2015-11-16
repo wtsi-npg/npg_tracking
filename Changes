@@ -1,3 +1,4 @@
+ - Alter "run complete" email alert text to make clear analysis and qc time
 
 release 84.10
  - create multi-attribute methods automatically

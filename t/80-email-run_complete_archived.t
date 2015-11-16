@@ -93,33 +93,58 @@ my $hash_projects_followers = {
 
   lives_ok { $object->run(); } q{no croak running $object->run()};
 
-  my $email1_body = qq{has a status of run complete in NPG tracking.\n\n};
-  $email1_body   .= qq{From the database system, the following project has the following lanes on this run\n\nhuman\n\n};
-  $email1_body   .= qq{Lanes:\n\n};
-  $email1_body   .= qq{Lane - 1 : Library - 1k\n};
-  $email1_body   .= qq{Lane - 2 : Library - 1k\n};
-  $email1_body   .= qq{Lane - 3 : Library - 1k\n\n};
-  $email1_body   .= qq{You will be notified when this run reaches run archived.\n\n};
-  $email1_body   .= qq{In the mean time, you can check the status of the run through NPG:\n\n};
-  $email1_body   .= qq{http://npg.sanger.ac.uk/perl/npg/run/};
+  my $email1_body = << 'EMAIL1';
+has a status of run complete in NPG tracking.
+(The sequencing instrument has finished imaging. It will complete basecalling soon.
+Alignments and QC metrics will then proceed automatically followed by a manual
+QC process and archival to iRODS).
 
+From the database system, the following project has the following lanes on this run
+
+human
+
+Lanes:
+
+Lane - 1 : Library - 1k
+Lane - 2 : Library - 1k
+Lane - 3 : Library - 1k
+
+You will be notified when this run reaches run archived (this will vary from one
+day for a small high priority run to a fortnight for a large normal priority run).
+In the mean time, you can check the status of the run through NPG:
+http://npg.sanger.ac.uk/perl/npg/run/
+EMAIL1
+  chomp $email1_body;
   my $email_hash = $util->parse_email($util->{emails}->[0]);
   like($email_hash->{subject}, qr{Run[ ]\d+[ ]-[ ]run[ ]complete[ ]-[ ]human}, q{email1 subject correct});
   is($email_hash->{to}, q{human@sanger.ac.uk, monkey@sanger.ac.uk}. qq{\n}, q{email1 to correct});
   is($email_hash->{from}, q{srpipe@sanger.ac.uk}. qq{\n}, q{email1 from correct});
-  like($email_hash->{annotation}, qr{$email1_body}, q{email1 body correct});
+  like($email_hash->{annotation}, qr{\Q$email1_body\E}, q{email1 body correct});
 
   $email_hash = $util->parse_email($util->{emails}->[1]);
-  my $email2_body = qq{has a status of run complete in NPG tracking.\n\n};
-  $email2_body   .= qq{From the database system, the following project has the following lanes on this run\n\nplatypus\n\n};
-  $email2_body   .= qq{Lanes:\n\n};
-  $email2_body   .= qq{Lane - 5 : Library - Duck\n};
-  $email2_body   .= qq{Lane - 6 : Library - Billed\n\n};
-  $email2_body   .= qq{You will be notified when this run reaches run archived.\n\n};
-  $email2_body   .= qq{In the mean time, you can check the status of the run through NPG:\n\n};
-  $email2_body   .= qq{http://npg.sanger.ac.uk/perl/npg/run/};
+  my $email2_body = << 'EMAIL2';
+has a status of run complete in NPG tracking.
+(The sequencing instrument has finished imaging. It will complete basecalling soon.
+Alignments and QC metrics will then proceed automatically followed by a manual
+QC process and archival to iRODS).
+
+From the database system, the following project has the following lanes on this run
+
+platypus
+
+Lanes:
+
+Lane - 5 : Library - Duck
+Lane - 6 : Library - Billed
+
+You will be notified when this run reaches run archived (this will vary from one
+day for a small high priority run to a fortnight for a large normal priority run).
+In the mean time, you can check the status of the run through NPG:
+http://npg.sanger.ac.uk/perl/npg/run/
+EMAIL2
+  chomp $email2_body;
   is($email_hash->{to}, q{platypus@sanger.ac.uk}. qq{\n}, q{email2 to correct});
-  like($email_hash->{annotation}, qr{$email2_body}, q{email2 body correct});
+  like($email_hash->{annotation}, qr{\Q$email2_body\E}, q{email2 body correct});
 }
 
 1;
