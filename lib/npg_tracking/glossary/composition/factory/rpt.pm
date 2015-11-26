@@ -62,7 +62,7 @@ npg_tracking::glossary::composition::factory::rpt
   # See http://search.cpan.org/~ether/Moose-2.1604/lib/Moose/Manual/Roles.pod#Required_Attributes
 
   with 'npg_tracking::glossary::composition::factory::rpt' =>
-    => { component_class =>
+       { 'component_class' =>
          'npg_tracking::glossary::composition::component::illumina' };
 
   has 'composition' => (isa        => 'npg_tracking::glossary::composition',
