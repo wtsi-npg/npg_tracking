@@ -4,12 +4,13 @@ use strict;
 use warnings;
 use MooseX::Role::Parameterized;
 use Class::Load qw/load_class/;
-use Carp;
 
 use npg_tracking::glossary::composition;
 use npg_tracking::glossary::rpt;
 
 our $VERSION = '0';
+
+requires 'rpt_list';
 
 parameter 'component_class' => (
         isa      => 'Str',
@@ -31,9 +32,6 @@ role {
   method 'create_composition' => sub {
     my ($self) = @_;
 
-    if (!$self->can('rpt_list')) {
-      croak 'rpt_list method or attribute should be available';
-    }
     my $rpt_list = $self->rpt_list // q[];
     my $composition = npg_tracking::glossary::composition->new();
     foreach my $rpt ( @{npg_tracking::glossary::rpt->split_rpts($rpt_list)} ) {
@@ -53,21 +51,23 @@ npg_tracking::glossary::composition::factory::rpt
 
 =head1 SYNOPSIS
 
-  package my::component;
-  use Moose;
-  has 'attr_1' => (isa => 'Int', is => 'ro', required => 1,);
-  has 'attr_2' => (isa => 'Str', is => 'ro', required => 1,);
-  1;
-
   package my::composition;
   use Moose;
-  with 'npg_tracking::glossary::composition::factory' =>
-    => { component_class => 'my::component' };
 
-  has 'attr_1' => (isa => 'Int', is => 'ro', required => 1,);
-  has 'attr_2' => (isa => 'Str', is => 'ro', required => 0,);
-  has 'composition' => (isa => ' npg_tracking::glossary::composition',
-                        required => 0, lazy_build => 1,);
+  has 'rpt_list'    => (isa => 'Str', is => 'ro', required => 1,);
+
+  # The call to has which defines an attribute happens at runtime.
+  # This means that you must define the attribute before consuming the role,
+  # or else the role will not see the generated accessor.
+  # See http://search.cpan.org/~ether/Moose-2.1604/lib/Moose/Manual/Roles.pod#Required_Attributes
+
+  with 'npg_tracking::glossary::composition::factory::rpt' =>
+    => { component_class =>
+         'npg_tracking::glossary::composition::component::illumina' };
+
+  has 'composition' => (isa        => 'npg_tracking::glossary::composition',
+                        required   => 0,
+                        lazy_build => 1,);
   sub _build_composition {
     my $self = shift;
     return $self->create_composition();
@@ -76,33 +76,38 @@ npg_tracking::glossary::composition::factory::rpt
 
   package main;
   use my::composition;
-  my $c = my::composition->new(attr_1 => 2);
-  $self->composition(); # error, cannot satisfy required constraint
-                        # for attr_2 in my::component
-  my $c = my::composition->new(attr_1 => 2, attr_1 => 'apple');
-  $self->composition(); # ok
-  
+  my $c = my::composition->new(rpt_list => '3:4;3:4:7');
+  my $composition = $c->composition();
 
 =head1 DESCRIPTION
 
-A Moose role providing factory functionality for npg_tracking::glossary::composition::component
-and npg_tracking::glossary::composition type objects. The type of teh component to be used
-shoudl be set as the component_class parameter.
+A Moose role providing factory functionality for
+npg_tracking::glossary::composition::component and
+npg_tracking::glossary::composition::component::illumina (or similar) type objects.
+The type of the component to be used should be set as the component_class parameter.
+Run:position:tag_index (rpt) strings and lists of strings are used as input.
+
+Requires that the class consuming this role implements the rpt_list method
+or attribute that returns a string representation of an rpt list.
 
 =head1 SUBROUTINES/METHODS
 
 =head2 create_component
 
-Inspects the attributes of the object and returns an instance of
-class specified as the component_class parameter. Populates all
-attributes of component class that are present and defined in the
-class consuming this role. Scalar values are copied, data structures
-and objects are copied by reference. No weak copy for objects.
+Returns an instance of a class specified by the component_class parameter. The
+attributes of the component class are derived from the argument rpt string.
+See inflate_rpt subroutine in npg_tracking::glossary::rpt.
+
+  my $component = $obj->create_component('4:5:6');
 
 =head2 create_composition
 
-Inspects the attributes of the object and returns an instance of
-npg_tracking::glossary::composition with a single component.
+Returns an instance of npg_tracking::glossary::composition with potentially
+multiple components of the type specified by the component_class parameter.
+Uses a string representation of an rpt list as a source of components.
+See inflate_rpts subroutine in npg_tracking::glossary::rpt.
+
+  my $composition = $obj->create_composition();
 
 =head1 DIAGNOSTICS
 
@@ -119,8 +124,6 @@ npg_tracking::glossary::composition with a single component.
 =item MooseX::Role::Parameterized
 
 =item Class::Load
-
-=item Carp
 
 =back
 
