@@ -12,6 +12,16 @@ with qw( npg_tracking::glossary::composition::component
 
 our $VERSION = '0';
 
+sub filename {
+  my ($self, $ext) = @_;
+  $ext //= q[];
+  my $fn = join q[_], $self->id_run, $self->position.$self->tag_label;
+  if (defined $self->subset) {
+    $fn .= q[_].$self->subset;
+  }
+  return $fn.$ext;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
 __END__
@@ -45,6 +55,29 @@ in a multiplexed lane. See npg_tracking::glossary::tag
 
 An optional attribute, will default to 'target'.
 See npg_tracking::glossary::subset.
+
+=head2 filename
+
+A standard filename for a component. An optional extension can be specified,
+which is appended at the end of the standard filename root as given.
+
+  my $p = 'npg_tracking::glossary::composition::component::illumina';
+  my $c = $p->new(id_run => 2, position => 3);
+  $c->filename(); # 2_3 is returned
+  $c->filename('.fastq'); # 2_3.fastq is returned
+  $c->filename('_error_table'); # 2_3_error_table is returned
+
+  $c = $p->new(id_run => 2, position => 3, tag_index => 3);
+  $c->filename(); # 2_3#3 is returned
+  $c = $p->new(id_run => 2, position => 3, tag_index => undef);
+  $c->filename(); # 2_3 is returned
+
+  $c = $p->new(id_run => 2, position => 3, tag_index => 3, subset => 'phix');
+  $c->filename(); # 2_3#3_phix is returned
+  $c = $p->new(id_run => 2, position => 3, tag_index => undef, subset => 'human');
+  $c->filename(); # 2_3_human is returned
+  $c = $p->new(id_run => 2, position => 3, tag_index => undef, subset => undef);
+  $c->filename('.cram'); # 2_3.cram is returned
 
 =head2 compare_serialized
 

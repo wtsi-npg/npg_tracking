@@ -111,6 +111,7 @@ my $builder = $class->new(
           },
 
           'requires'    => {
+                'perl'                            => '5.010',
                 'autodie'                         => '2.10',
                 'base'                            => '2.12',
                 'Carp'                            => '1.04',
