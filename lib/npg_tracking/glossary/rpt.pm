@@ -6,8 +6,11 @@ use Readonly;
 
 our $VERSION = '0';
 
-Readonly::Scalar our $RPT_KEY_DELIM  => q[:];
-Readonly::Scalar our $RPT_LIST_DELIM => q[;];
+Readonly::Scalar my $RPT_KEY_DELIM  => q[:];
+Readonly::Scalar my $RPT_LIST_DELIM => q[;];
+Readonly::Scalar my $LESS    => -1;
+Readonly::Scalar my $MORE    =>  1;
+Readonly::Scalar my $EQUAL   =>  0;
 
 =head1 NAME
 
@@ -94,6 +97,9 @@ itself is a source of data.
   __PACKAGE__->deflate_rpt(
     {id_run=>7,position=>8,tag_index=>0}); #returns 7:8:0
 
+It is expected that the object/hash that is being serialized has at least
+id_run and position accessors/keys.
+
 =cut
 sub deflate_rpt {
   my ($self, $rpt) = @_;
@@ -145,6 +151,19 @@ sub split_rpts {
   return [split /$RPT_LIST_DELIM/smx, $s];
 }
 
+=head2 join_rpts
+
+Converts a list of string rpt representations to a string
+representation of an rpt list.
+
+  my $array = __PACKAGE__->join_rpts(['1:2','1:2:5']);
+
+=cut
+sub join_rpts {
+  my ($self, @rpts) = @_;
+
+  return join $RPT_LIST_DELIM, @rpts;
+}
 
 =head2 inflate_rpts
 
@@ -177,7 +196,7 @@ sub deflate_rpts {
   if (! ref $rpts || ref $rpts ne 'ARRAY') {
     croak 'Array input expected';
   }
-  return join $RPT_LIST_DELIM, map { $self->deflate_rpt($_) } @{$rpts};
+  return __PACKAGE__->join_rpts(map { $self->deflate_rpt($_) } @{$rpts});
 }
 
 no Moose;

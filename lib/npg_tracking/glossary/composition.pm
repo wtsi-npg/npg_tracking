@@ -58,6 +58,11 @@ before 'freeze' => sub {
   $self->sort();
 };
 
+before 'freeze2rpt' => sub {
+  my ($self, @args) = @_;
+  $self->sort();
+};
+
 sub component_values4attr {
   my ($self, $attr) = @_;
 
@@ -204,11 +209,27 @@ object.
 =head2 freeze
 
 Returns a custom canonical (sorted) JSON serialization of the object.
+
 Guaranteed to be the same for a set of components regardless of the
 order the componets were added to the composition. Inherited from
 npg_tracking::glossary::composition::serializable.
 
   $composition->freeze();
+
+=head2 freeze2rpt
+
+Returns a serialization of the object to a string representation of
+the rpt list. Components should at least implement id_run and
+position methods/attributes, otherwise this method gives an error.
+See npg_tracking::glossary::rpt.
+
+Guaranteed to be the same for a set of components regardless of the
+order the componets were added to the composition. Inherited from
+npg_tracking::glossary::composition::serializable.
+
+  $composition->freeze2rpt();
+
+If the composition is empty, and empty string is returned.
 
 =head2 thaw
 
