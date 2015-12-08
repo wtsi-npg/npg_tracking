@@ -1,6 +1,8 @@
+LIST OF CHANGES
  
  - composition and component serialization to rpt 
 
+release 84.11
  - Operations (inflation and deflation) on rpt strings and their hash
    representation and lists of rpt values (based on npg_qc::autoqc::role::rpt_key)
  - Factory to create composition from a string representation of an rpt list
