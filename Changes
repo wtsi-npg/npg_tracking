@@ -1,3 +1,9 @@
+release 84.11
+ - Operations (inflation and deflation) on rpt strings and their hash
+   representation and lists of rpt values (based on npg_qc::autoqc::role::rpt_key)
+ - Factory to create composition from a string representation of an rpt list
+ - New filename method for the illumina component
+ - Alter "run complete" email alert text to make clear analysis and qc time
 
 release 84.10
  - create multi-attribute methods automatically

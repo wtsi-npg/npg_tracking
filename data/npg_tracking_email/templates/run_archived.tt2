@@ -21,4 +21,4 @@ Analysis and QC information about this run can be found in these locations:
 [% PROCESS npg_qc_web_url.tt2 %]/summary/[% run %]
 [% PROCESS npg_qsea_web_url.tt2 %]/checks/runs/[% run %]
 
-New Pipeline Development
+NPG, DNA Pipelines Informatics
