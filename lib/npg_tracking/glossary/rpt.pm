@@ -8,9 +8,6 @@ our $VERSION = '0';
 
 Readonly::Scalar my $RPT_KEY_DELIM  => q[:];
 Readonly::Scalar my $RPT_LIST_DELIM => q[;];
-Readonly::Scalar my $LESS    => -1;
-Readonly::Scalar my $MORE    =>  1;
-Readonly::Scalar my $EQUAL   =>  0;
 
 =head1 NAME
 
