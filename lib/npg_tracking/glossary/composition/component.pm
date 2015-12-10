@@ -36,13 +36,23 @@ npg_tracking::glossary::composition::component
 
 =head1 DESCRIPTION
 
-A Moose role defining a common interface for a sequencing component.
+A Moose role defining a common interface for a component, which can be
+a part of a composition, see npg_tracking::glossary::camposition.
+
+A component defines a set of necessary and sufficient metadata identifying
+data from a single experiment on a single sample or library. This interface
+does not define any metadata, they should be defined by a class consuming
+this role. The role provides methods that every component should implement
+in order to be a part of a composition.
+
+See npg_tracking::glossary::composition::component::illumina for an
+implementation of Illumina sequencing specific component.
 
 =head1 SUBROUTINES/METHODS
 
 =head2 compare_serialized
 
-Compares this object to other object of teh same type as JSON serializations.
+Compares this object to other object of the same type as JSON serializations.
 'cmp' function is used, the outcome of the comparison is returned.
 
 =head2 thaw

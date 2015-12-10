@@ -153,17 +153,49 @@ see npg_tracking::glossary::composition::factory for details.
   __PACKAGE__->meta->make_immutable;
   1;
 
+See also npg_tracking::glossary::rpt::factory for conversion from
+Illumina sequencing specific stringified identifies.
+
 =head1 DESCRIPTION
 
-Definition for a composition of multiple entities (lanes and/or lanelets).
+A base class for a collection of one or more entities (components).
+See npg_tracking::glossary::composition::component for a generic component
+interface and npg_tracking::glossary::composition::component::illumina
+for Illumina sequencing specific implementation.
+
+A file with sequencing data can contain reads obtained in a single
+sequencing run or in a number of runs. The composition describes the origin
+of the data via components. The component binds together necessary and
+sufficient metadata belonging to data originating from a single experiment
+on a sample or library.
+
+For example, for Illumina sequencing, data for a particular sample, which are
+obtained in a single sequencing experiment, are inambiquously defined by run
+or flowcell id, flowcell position and tag sequence or tag index. A sample
+or library can be sequenced a number of times in different runs. 
+
+Attempt Run_Id Lane_Id Tag_Index
+1         3       2        56
+2         7       7        56
+3         9       1        56
+
+The data then can be merged together into a single file. For auditing
+purposes it is important to know the origin of the data, which is
+given by a composition of three components, 3-2-56, 7-7-56 and 9-1-56,
+a triplet per component.
+
+Where the data originates from a single run, is can be described
+by a composition containing a single component. Thus the data from attempt
+1 in the above example are described by a one-componet composition 3-2-56.   
 
 =head1 SUBROUTINES/METHODS
 
 =head2 components
 
-An array reference of component objects, empty by default. The
-order of the object in the array is not necessary the order the objects
-are added in, ie this array cannot be treated as a queue.
+An array reference of component objects, empty by default, see
+npg_tracking::glossary::composition::component interface. The order of
+the objects in the array is not necessary the order the objects are added
+in, i.e. this array cannot be treated as a queue.
 
 =head2 add_component
 
