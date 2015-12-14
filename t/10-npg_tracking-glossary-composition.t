@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 use Test::Exception;
 
 my $pname = q[npg_tracking::glossary::composition];
@@ -95,6 +95,49 @@ subtest 'serialization' => sub {
   is ($cmps->digest(), $d, 'digest is the same');
   is ($cmps->digest('md5'), $md5, 'md5 digest is the same');
   is ($cmps->freeze(), $j, 'json is the same'); 
+};
+
+subtest 'serialization to rpt' => sub {
+  plan tests => 7;
+
+  package test::npg_tracking::component;
+  use Moose;
+  with 'npg_tracking::glossary::composition::component';
+  has 'attr1' => (
+      isa       => 'Str',
+      is        => 'ro',
+      required  => 1,
+  );
+  1;
+
+  package main;
+
+  my $c1 = $cpname->new(id_run => 1, position => 2);
+  is ($c1->freeze2rpt, '1:2', 'rpt component string');
+  my $c2 = $cpname->new(id_run => 1, position => 3, tag_index => 6);
+  is ($c2->freeze2rpt, '1:3:6', 'rpt component string');
+  my $c3 = test::npg_tracking::component->new(attr1 => 'value1');
+  throws_ok {$c3->freeze2rpt}
+    qr/Either id_run or position key is undefined /,
+    'failure to serialize component without core illumina attr';
+
+  my $cmps = $pname->new();
+  is ($cmps->freeze2rpt, q[], 'empty rpt composition string');
+  $cmps->add_component($c2);
+  $cmps->add_component($c1);
+  is ($cmps->freeze2rpt, '1:2;1:3:6', 'rpt composition string');
+
+  $cmps = $pname->new();
+  $cmps->add_component($c1);
+  $cmps->add_component($c2);
+  is ($cmps->freeze2rpt, '1:2;1:3:6',
+   'no dependency on the order components were added');
+
+  $cmps = $pname->new();
+  $cmps->add_component($c3);
+  throws_ok {$cmps->freeze2rpt}
+    qr/Either id_run or position key is undefined/,
+    'failure to serialize component without core illumina attr';
 };
 
 1;

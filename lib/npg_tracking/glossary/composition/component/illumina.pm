@@ -34,7 +34,28 @@ npg_tracking::glossary::composition::component::illumina
 
 =head1 DESCRIPTION
 
-Serializable component (illumina lane, lanelet or part of either of them) definition.
+Serializable component definition for an Illumina sequencing data - a lane,
+lanelet or part of either of them. Defines a set of necessary and sufficient
+metadata identifying data from a single Illumina sequencing run on a single
+sample or library.
+
+The required attributes are
+  (1) id_run, identifying an Illumina run and, implicitly, a flowcell,
+  (2) position, identifying the lane of the flowcell.
+The optional attributes are
+  (1) tag_index, identifying a tag sequence (barcode) that was attached
+    to a library (sample) to facilitate its separation during
+    analysis from other libraries (samples),
+  (2) subset, identifying sequencing reads that, formally speaking,
+    belong to a sample, but practically might not be wanted in the final
+    data. Example: a bacterial sample from human blood might contain a
+    considerable proportion of human DNA, which ends up being sequenced
+    alogside the bacterial DNA. During the analysis the bacterial
+    and human DNA can be separated by alignment. The human reads are
+    described by the same metadata as the 'target' sample, a subset
+    attrubute with value 'human' is added. The data before the separation
+    is described by the same metadata as 'target' data, a 'subset' attribute
+    is set to the value 'all'.
 
 =head1 SUBROUTINES/METHODS
 
@@ -58,7 +79,7 @@ See npg_tracking::glossary::subset.
 
 =head2 filename
 
-A standard filename for a component. An optional extension can be specified,
+A standard filename for a file. An optional extension can be specified,
 which is appended at the end of the standard filename root as given.
 
   my $p = 'npg_tracking::glossary::composition::component::illumina';
