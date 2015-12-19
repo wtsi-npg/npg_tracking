@@ -107,7 +107,8 @@ Readonly::Hash   my  %METHODS           => {
 };
 
 Readonly::Array my @IMPLEMENTED_DRIVERS => qw/xml samplesheet ml_warehouse/;
-Readonly::Array my @DELEGATED_METHODS   => sort map { @{$_} } values %METHODS;
+Readonly::Array my @METHODS             => sort map { @{$_} } values %METHODS;
+Readonly::Array my @DELEGATED_METHODS   => sort map { @{$METHODS{$_}} } grep {$_ ne 'primary'} keys %METHODS;
 
 has '_driver_arguments' => (
                         isa    => 'HashRef',
@@ -200,7 +201,7 @@ sub _driver_package_name {
   return $class;
 }
 
-for my$m ( @DELEGATED_METHODS ){
+for my$m ( @METHODS ){
   __PACKAGE__->meta->add_method($m, sub{
     my$l=shift;
     my$d=$l->driver;
@@ -950,7 +951,7 @@ sub method_list {
     }
     push @attrs, $name;
   }
-  push @attrs, @DELEGATED_METHODS;
+  push @attrs, @METHODS;
   @attrs = sort @attrs;
   return @attrs;
 }
