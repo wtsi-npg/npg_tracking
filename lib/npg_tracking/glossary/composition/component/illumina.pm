@@ -12,6 +12,16 @@ with qw( npg_tracking::glossary::composition::component
 
 our $VERSION = '0';
 
+sub filename {
+  my ($self, $ext) = @_;
+  $ext //= q[];
+  my $fn = join q[_], $self->id_run, $self->position.$self->tag_label;
+  if (defined $self->subset) {
+    $fn .= q[_].$self->subset;
+  }
+  return $fn.$ext;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
 __END__
@@ -24,7 +34,28 @@ npg_tracking::glossary::composition::component::illumina
 
 =head1 DESCRIPTION
 
-Serializable component (illumina lane, lanelet or part of either of them) definition.
+Serializable component definition for an Illumina sequencing data - a lane,
+lanelet or part of either of them. Defines a set of necessary and sufficient
+metadata identifying data from a single Illumina sequencing run on a single
+sample or library.
+
+The required attributes are
+  (1) id_run, identifying an Illumina run and, implicitly, a flowcell,
+  (2) position, identifying the lane of the flowcell.
+The optional attributes are
+  (1) tag_index, identifying a tag sequence (barcode) that was attached
+    to a library (sample) to facilitate its separation during
+    analysis from other libraries (samples),
+  (2) subset, identifying sequencing reads that, formally speaking,
+    belong to a sample, but practically might not be wanted in the final
+    data. Example: a bacterial sample from human blood might contain a
+    considerable proportion of human DNA, which ends up being sequenced
+    alogside the bacterial DNA. During the analysis the bacterial
+    and human DNA can be separated by alignment. The human reads are
+    described by the same metadata as the 'target' sample, a subset
+    attrubute with value 'human' is added. The data before the separation
+    is described by the same metadata as 'target' data, a 'subset' attribute
+    is set to the value 'all'.
 
 =head1 SUBROUTINES/METHODS
 
@@ -45,6 +76,29 @@ in a multiplexed lane. See npg_tracking::glossary::tag
 
 An optional attribute, will default to 'target'.
 See npg_tracking::glossary::subset.
+
+=head2 filename
+
+A standard filename for a file. An optional extension can be specified,
+which is appended at the end of the standard filename root as given.
+
+  my $p = 'npg_tracking::glossary::composition::component::illumina';
+  my $c = $p->new(id_run => 2, position => 3);
+  $c->filename(); # 2_3 is returned
+  $c->filename('.fastq'); # 2_3.fastq is returned
+  $c->filename('_error_table'); # 2_3_error_table is returned
+
+  $c = $p->new(id_run => 2, position => 3, tag_index => 3);
+  $c->filename(); # 2_3#3 is returned
+  $c = $p->new(id_run => 2, position => 3, tag_index => undef);
+  $c->filename(); # 2_3 is returned
+
+  $c = $p->new(id_run => 2, position => 3, tag_index => 3, subset => 'phix');
+  $c->filename(); # 2_3#3_phix is returned
+  $c = $p->new(id_run => 2, position => 3, tag_index => undef, subset => 'human');
+  $c->filename(); # 2_3_human is returned
+  $c = $p->new(id_run => 2, position => 3, tag_index => undef, subset => undef);
+  $c->filename('.cram'); # 2_3.cram is returned
 
 =head2 compare_serialized
 

@@ -6,11 +6,16 @@ use namespace::autoclean;
 use Digest::SHA qw/sha256_hex/;
 use Digest::MD5 qw/md5_hex/;
 use Carp;
+use Readonly;
+
+use npg_tracking::glossary::rpt;
 
 requires 'pack';
 requires 'unpack';
 
 our $VERSION = '0';
+
+Readonly::Scalar my $COMPONENTS_ATTR_NAME => 'components';
 
 sub thaw {
   my ( $class, $json, @args ) = @_;
@@ -26,6 +31,21 @@ sub freeze {
     $self->sort();
   }
   return JSON::XS->new()->canonical(1)->encode( $self->_pack_custom() );
+}
+
+sub freeze2rpt {
+  my $self = shift;
+
+  my $values = $self->_pack_custom();
+  my $rpt_string;
+  if ($values->{$COMPONENTS_ATTR_NAME}) {
+    $rpt_string = npg_tracking::glossary::rpt
+                    ->deflate_rpts($values->{$COMPONENTS_ATTR_NAME});
+  } else {
+    $rpt_string = npg_tracking::glossary::rpt->deflate_rpt($values);
+  }
+
+  return $rpt_string;
 }
 
 sub digest {
@@ -53,7 +73,7 @@ sub _clean_pack { # Recursive function
      # Delete __CLASS__ key along with private attrs
     if (defined $v && $k !~ /\A_/smx) {
       # Treat components the same way
-      if (ref $v && ref $v eq 'ARRAY' && $k eq 'components') {
+      if (ref $v eq 'ARRAY' && $k eq $COMPONENTS_ATTR_NAME) {
         my @clean = map { _clean_pack($_) } @{$v};
         $v = \@clean;
       }
@@ -127,6 +147,17 @@ Serializes object's public attributes to a canonical (ordered) json string.
 
   $p->freeze();
 
+=head2 freeze2rpt
+
+Returns a serialization of the object to an rpt string representation.
+If the object has 'components' attribute/method that returns a true value,
+this value is serialized instead. It is expected that the objects that
+are serialized satisfy the minimum requirements of the
+npg_tracking::glossary::rpt->deflate_rpt method, otherwise this method
+gives an error. See npg_tracking::glossary::rpt for details.
+
+  $p->freeze2rpt();
+
 =head2 digest
 
 Returns a digest of the JSON serialization string.
@@ -153,6 +184,10 @@ Returns a digest of the JSON serialization string.
 =item Digest::MD5
 
 =item Carp
+
+=item Readonly
+
+=item npg_tracking::glossary::rpt
 
 =back
 

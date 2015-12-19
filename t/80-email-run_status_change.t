@@ -82,7 +82,7 @@ cmp_deeply( $test[0]->batch_details(),
               lanes    => $lane_detail }, 'Return correct batch details' );
 
 my $bd = $test[1]->batch_details();
-is($bd->{batch_id}, undef, 'batch id undefined');
+is($bd->{batch_id}, 0, 'batch id undefined');
 like($bd->{error}, qr/Attribute \(batch_id\) does not pass the type constraint because: Validation failed .+ with value 0/, 'Error string for batch id zero is correct');
 
 lives_ok {  $test[2] = npg::email::event::status_change::run->new(

@@ -74,16 +74,16 @@ npg_tracking::glossary::composition::factory
   package main;
   use my::composition;
   my $c = my::composition->new(attr_1 => 2);
-  $self->composition(); # error, cannot satisfy required constraint
-                        # for attr_2 in my::component
+  $c->composition(); # error, cannot satisfy required constraint
+                     # for attr_2 in my::component
   my $c = my::composition->new(attr_1 => 2, attr_1 => 'apple');
-  $self->composition(); # ok
+  $c->composition(); # ok
   
 
 =head1 DESCRIPTION
 
 A Moose role providing factory functionality for npg_tracking::glossary::composition::component
-and npg_tracking::glossary::composition type objects. The type of teh component to be used
+and npg_tracking::glossary::composition type objects. The type of the component to be used
 shoudl be set as the component_class parameter.
 
 =head1 SUBROUTINES/METHODS

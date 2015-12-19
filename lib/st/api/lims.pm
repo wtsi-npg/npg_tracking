@@ -147,6 +147,47 @@ sub BUILD {
   return;
 }
 
+# Mapping of LIMS object types to attributes for which methods are to
+# be generated. These generated methods are 'plural' methods which
+# return an array of that attributes e.g. $lims->library_ids (returns
+# an array of library_id), $lims->sample_public_name (returns an array
+# of sample public_names).
+Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
+    'library'      => [qw/ id
+                           name
+                         /],
+    'project'      => [qw/ id
+                         /],
+    'sample'       => [qw/ cohort
+                           common_name
+                           donor_id
+                           id
+                           name
+                           public_name
+                           supplier_name
+                         /],
+    'study'        => [qw/ accession_number
+                           id
+                           name
+                           title
+                         /]
+};
+
+foreach my $object_type (keys %ATTRIBUTE_LIST_METHODS) {
+  foreach my $property (@{$ATTRIBUTE_LIST_METHODS{$object_type}}) {
+    my $attr_name   = join q[_], $object_type, $property;
+    my $method_name = $attr_name . q[s];
+
+    my $method_body = sub {
+      my ($self, $with_spiked_control) = @_;
+
+      return $self->_list_of_attributes($attr_name, $with_spiked_control);
+    };
+
+    __PACKAGE__->meta->add_method($method_name, $method_body);
+  }
+}
+
 =head2 driver_type
 
 Driver type (xml, etc), currently defaults to xml
@@ -182,7 +223,7 @@ has 'driver' => (
                           'lazy'      => 1,
                           'builder'   => '_build_driver',
                           'predicate' => 'has_driver',
-);
+                );
 sub _build_driver {
   my $self = shift;
   my $d_package = $self->_driver_package_name;
@@ -564,6 +605,26 @@ sub _build_contains_nonconsented_xahuman {
   return $self->_helper_over_pool_for_boolean_build_methods('study_contains_nonconsented_xahuman');
 }
 
+=head2 any_sample_consent_withdrawn
+
+Read-only accessor, not possible to set from the constructor.
+
+Return true if any sample, when representing a multiple sample scope,
+has had its consent withdrawn, or false otherwise.
+
+=cut
+
+has 'any_sample_consent_withdrawn' => (isa             => 'Bool',
+                                       is              => 'ro',
+                                       init_arg        => undef,
+                                       lazy_build      => 1,
+                                      );
+sub _build_any_sample_consent_withdrawn {
+  my $self = shift;
+  return $self->_helper_over_pool_for_boolean_build_methods
+    ('sample_consent_withdrawn');
+}
+
 =head2 alignments_in_bam
 
 Read-only accessor, not possible to set from the constructor.
@@ -735,20 +796,6 @@ The same as children_ia. Retained for backward compatibility
 =cut
 *associated_child_lims_ia = \&children_ia; #backward compat
 
-sub _list_of_properties {
-  my ($self, $prop, $object_type, $with_spiked_control) = @_;
-
-  if ($object_type !~ /^library|sample|study|project$/smx) {
-    croak qq[Invalid object type $object_type in ] . ( caller 0 )[$PROC_NAME_INDEX];
-  }
-  if ($prop !~ /^name|id$/smx) {
-    croak qq[Invalid property $prop in ] . ( caller 0 )[$PROC_NAME_INDEX]
-  }
-  my $attr_name = join q[_], $object_type, $prop;
-
-  return $self->_list_of_attributes($attr_name, $with_spiked_control);
-}
-
 sub _list_of_attributes {
   my ($self, $attr_name, $with_spiked_control) = @_;
 
@@ -777,11 +824,15 @@ A list of library names. if $self->is_pool is true, returns unique library
 names of plex-level objects, otherwise returns object's own library name.
 Takes an optional argument with_spiked_control, wich defaults to true.
 
+
 =cut
-sub library_names {
-  my ($self, $with_spiked_control) = @_;
-  return $self->_list_of_properties(q[name], q[library], $with_spiked_control);
-}
+
+=head2 library_ids
+
+Similar to library_names, but for ids.
+
+=cut
+
 
 =head2 sample_names
 
@@ -790,10 +841,42 @@ names of plex-level objects, otherwise returns object's own sample name.
 Takes an optional argument with_spiked_control, wich defaults to true.
 
 =cut
-sub sample_names {
-  my ($self, $with_spiked_control) = @_;
-  return $self->_list_of_properties(q[name], q[sample], $with_spiked_control);
-}
+
+
+=head2 sample_cohorts
+
+Similar to sample_names, but for cohorts.
+
+=cut
+
+
+=head2 sample_donor_ids
+
+Similar to sample_names, but for donor_ids.
+
+=cut
+
+
+=head2 sample_ids
+
+Similar to sample_names, but for ids.
+
+=cut
+
+
+=head2 sample_public_names
+
+Similar to sample_names, but for public_names.
+
+=cut
+
+
+=head2 sample_supplier_names
+
+Similar to sample_names, but for supplier_names.
+
+=cut
+
 
 =head2 study_names
 
@@ -802,50 +885,35 @@ names of plex-level objects, otherwise returns object's own study name.
 Takes an optional argument with_spiked_control, wich defaults to true.
 
 =cut
-sub study_names {
-  my ($self, $with_spiked_control) = @_;
-  return $self->_list_of_properties(q[name], q[study], $with_spiked_control);
-}
 
-=head2 library_ids
 
-Similar to library_names, but for ids
+=head2 study_accession_numbers
+
+Similar to study_names, but for accession_numbers.
 
 =cut
-sub library_ids {
-  my ($self, $with_spiked_control) = @_;
-  return $self->_list_of_properties(q[id], q[library], $with_spiked_control);
-}
 
-=head2 sample_ids
-
-Similar to sample_names, but for ids
-
-=cut
-sub sample_ids {
-  my ($self, $with_spiked_control) = @_;
-  return $self->_list_of_properties(q[id], q[sample], $with_spiked_control);
-}
 
 =head2 study_ids
 
-Similar to study_names, but for ids
+Similar to study_names, but for ids.
 
 =cut
-sub study_ids {
-  my ($self, $with_spiked_control) = @_;
-  return $self->_list_of_properties(q[id], q[study], $with_spiked_control);
-}
+
+
+=head2 study_titles
+
+Similar to study_names, but for study_titles.
+
+=cut
+
 
 =head2 project_ids
 
-A list of project ids, similar to study_ids
+A list of project ids, similar to study_ids.
 
 =cut
-sub project_ids {
-  my ($self, $with_spiked_control) = @_;
-  return $self->_list_of_properties(q[id], q[project], $with_spiked_control);
-}
+
 
 =head2 library_type
 

@@ -1,12 +1,30 @@
-CHANGES
- - transcriptome find updated for RNA-SeQC directory and its gtf file 
- - generic serializable sequence composition framework and illumina
-   sequencing specific component
+LIST OF CHANGES
+ 
  - lims shim
-   - now works out driver type from a given driver
    - endeavours to ensure consistency of primary info (e.g. id_run, position)
      with drivers
    - will pass through arguments to driver constructor if it takes them
+
+release 84.12 
+ - composition and component serialization to rpt 
+
+release 84.11
+ - Operations (inflation and deflation) on rpt strings and their hash
+   representation and lists of rpt values (based on npg_qc::autoqc::role::rpt_key)
+ - Factory to create composition from a string representation of an rpt list
+ - New filename method for the illumina component
+ - Alter "run complete" email alert text to make clear analysis and qc time
+
+release 84.10
+ - create multi-attribute methods automatically
+ - added method st::api::lims::any_sample_consent_withdrawn
+ - removed potential warnings in event notification RT#495946
+
+release 84.9
+ - transcriptome find updated for RNA-SeQC directory and its gtf file 
+ - generic serializable sequence composition framework and illumina
+   sequencing specific component
+ - lims shim now works out driver type from a given driver
  - sequencing failure RT emails cope with GCLP (no batch_id)
  - add predicates for glossary roles
 
