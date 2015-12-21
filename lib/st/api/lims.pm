@@ -144,7 +144,7 @@ has '_primary_arguments' => (
 Custom post construction method to help propagate varied arguments to driver constructors
 
 =cut
-sub BUILD { use Data::Dumper;
+sub BUILD {
   my $self = shift;
   my %args = %{shift||{}};
   delete $args{'driver'}; # better not to have this extra reference
