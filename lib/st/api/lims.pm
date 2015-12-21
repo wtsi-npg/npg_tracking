@@ -28,6 +28,21 @@ st::api::lims
 Generic NPG pipeline oriented LIMS wrapper capable of retrieving data from multiple sources
 (drivers).
 
+Any driver attribute can be passed through to the driver's constructor via this objects's
+constructor. Not all of the attributes passed through to the driver will be available
+as this object's accessors. Example:
+
+ $lims = st::api::lims->new(
+                             id_flowcell_lims => 34567,
+                             position         => 5,
+                             driver_type      => 'ml_warehouse',
+                             iseq_flowcell    => $iseq_flowcell
+                           );
+ print $lims->position();         # 5
+ print $lims->id_flowcell_lims(); # 34567
+ print $lims->driver_type;        # ml_warehouse
+ print $lims->iseq_flowcell();    # ERROR
+
 =head1 SUBROUTINES/METHODS
 
 =cut
@@ -39,7 +54,7 @@ Readonly::Hash   my  %QC_EVAL_MAPPING      => {'pass' => 1, 'fail' => 0, 'pendin
 Readonly::Scalar my  $INLINE_INDEX_END     => 10;
 Readonly::Scalar my $DUAL_INDEX_TAG_LENGTH => 16;
 
-Readonly::Hash   my  %METHODS           => {
+Readonly::Hash   my  %METHODS_PER_CATEGORY => {
     'primary'    =>   [qw/ tag_index
                            position
                            id_run
@@ -106,9 +121,9 @@ Readonly::Hash   my  %METHODS           => {
     'request'      => [qw/ request_id /],
 };
 
-Readonly::Array my @IMPLEMENTED_DRIVERS => qw/xml samplesheet ml_warehouse/;
-Readonly::Array my @METHODS             => sort map { @{$_} } values %METHODS;
-Readonly::Array my @DELEGATED_METHODS   => sort map { @{$METHODS{$_}} } grep {$_ ne 'primary'} keys %METHODS;
+Readonly::Array my @METHODS             => sort map { @{$_} } values %METHODS_PER_CATEGORY;
+Readonly::Array my @DELEGATED_METHODS   => sort map { @{$METHODS_PER_CATEGORY{$_}} }
+                                             grep {$_ ne 'primary'} keys %METHODS_PER_CATEGORY;
 
 has '_driver_arguments' => (
                         isa    => 'HashRef',
@@ -129,21 +144,68 @@ has '_primary_arguments' => (
 Custom post construction method to help propagate varied arguments to driver constructors
 
 =cut
-sub BUILD {
+sub BUILD { use Data::Dumper;
   my $self = shift;
   my %args = %{shift||{}};
+  delete $args{'driver'}; # better not to have this extra reference
   $self->_set__driver_arguments(\%args);
-  my $driver_class=$self->_driver_package_name;
   my %dargs=();
   my %pargs=();
 
-  foreach my$k(grep{defined}map{$_->has_init_arg ? $_->init_arg : $_->name}$driver_class->meta->get_all_attributes) {if(exists $args{$k}){$dargs{$k}=$args{$k}; delete $args{$k};}}
+  my $switch2wh;
+  if ($self->driver_type eq 'ml_warehouse') {
+    if ($args{'batch_id'} && !$args{'id_library_lims'}) {
+      $dargs{'id_library_lims'} = $args{'batch_id'};
+      delete $args{'batch_id'};
+    }
+    $switch2wh = _recognise_tube_barcode($args{'id_library_lims'}, \%dargs, \%args);
+  } elsif ($self->driver_type eq 'xml') {
+    $switch2wh = _recognise_tube_barcode($args{'batch_id'}, \%dargs, \%args);
+  }
+
+  if ($switch2wh) {
+    my $new_type = 'warehouse';
+    carp 'Changing driver type from ' . $self->driver_type . " to $new_type for LIMs ID $switch2wh";
+    $self->_set_driver_type($new_type);
+  }
+
+  my $driver_class=$self->_driver_package_name;
+
+  foreach my$k (grep {defined && $_ !~ /^_/smx} map{ $_->has_init_arg ? $_->init_arg : $_->name}
+                $driver_class->meta->get_all_attributes) {
+    if(exists $args{$k}){
+      $dargs{$k}=$args{$k};
+      delete $args{$k};
+    }
+  }
   $self->_set__driver_arguments(\%dargs);
-  foreach my$k(grep{defined}map{$_->has_init_arg ? $_->init_arg : $_->name}__PACKAGE__->meta->get_all_attributes) {delete $args{$k};}
+
+  foreach my$k (grep {defined} map{$_->has_init_arg ? $_->init_arg : $_->name}
+      __PACKAGE__->meta->get_all_attributes) {
+    delete $args{$k};
+  }
+
   #only allow primary args - to recreate Strictness of constructor
-  foreach my$k(@{$METHODS{'primary'}}){if(exists $args{$k}){$pargs{$k}=$args{$k}; delete $args{$k};}}
+  foreach my$k( @{$METHODS_PER_CATEGORY{'primary'}} ) {
+    if(exists $args{$k}) {
+      $pargs{$k}=$args{$k};
+      delete $args{$k};
+    }
+  }
   croak 'Unknown attributes: '.join q(, ), keys %args if keys %args;
   $self->_set__primary_arguments(\%pargs);
+  return;
+}
+
+sub _recognise_tube_barcode {
+  my ($lims_id, $dargs, $args) = @_;
+  if ($lims_id && $lims_id =~ /\A\d{13}\z/smx) {
+    $dargs->{'tube_ean13_barcode'} = $lims_id;
+    if (! exists $args->{'position'} ) {
+      $dargs->{'position'} = 1;
+    }
+    return $lims_id;
+  }
   return;
 }
 
@@ -194,9 +256,10 @@ Driver type (xml, etc), currently defaults to xml
 
 =cut
 has 'driver_type' => (
-                        isa     => 'Str',
-                        is      => 'ro',
+                        isa        => 'Str',
+                        is         => 'ro',
                         lazy_build => 1,
+                        writer     => '_set_driver_type',
                      );
 sub _build_driver_type {
   my $self = shift;
@@ -206,16 +269,18 @@ sub _build_driver_type {
     $type =~ s/\A\Q$prefix\E//smx;
     return $type;
   }
-  my $cached_path = $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
-  if ( $self->_driver_arguments()->{'path'} ||= $cached_path ? -f $cached_path ? $cached_path : q() : q()) {
-    return $IMPLEMENTED_DRIVERS[1];
+
+  $self->_driver_arguments()->{'path'} ||= $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
+  if ( $self->_driver_arguments()->{'path'} ) {
+    return 'samplesheet';
   }
-  return $IMPLEMENTED_DRIVERS[0];
+
+  return 'xml';
 }
 
 =head2 driver
 
-Driver object (xml, warehouse, samplesheet)
+Driver object (xml, warehouse, mlwarehouse, samplesheet ...)
 
 =cut
 has 'driver' => (
@@ -226,18 +291,12 @@ has 'driver' => (
                 );
 sub _build_driver {
   my $self = shift;
-  my $d_package = $self->_driver_package_name;
-  return $d_package->new($self->_driver_arguments());
+  return $self->_driver_package_name()->new($self->_driver_arguments());
 }
 
 sub _driver_package_name {
   my $self = shift;
-  my $type = $self->driver_type;
-  if (none {$type} @IMPLEMENTED_DRIVERS) {
-    croak qq[Driver type '$type' not implemented.\n Implemented drivers: ] .
-             join q[,], @IMPLEMENTED_DRIVERS;
-  }
-  my $class = join q[::], __PACKAGE__ , $type;
+  my $class = join q[::], __PACKAGE__ , $self->driver_type;
   load_class($class);
   return $class;
 }
@@ -256,7 +315,7 @@ for my$m ( @METHODS ){
     if($m eq q(is_pool)){ # avoid obvious recursion
       return scalar $l->children;
     }
-    if(any {$_ eq $m} @{$METHODS{'primary'}} ){
+    if(any {$_ eq $m} @{$METHODS_PER_CATEGORY{'primary'}} ){
       return $r;
     }
     if($l->is_pool){ # else try any children

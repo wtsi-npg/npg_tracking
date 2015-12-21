@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 447;
+use Test::More tests => 449;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -603,19 +603,25 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet';
   lives_ok {$l = st::api::lims->new(id_run => 10262,)}
     'no error creating an object with samplesheet file defined in env var';
-  is ($l->driver_type, 'xml', 'driver type is xml since env var points to a directory');
-  ok (!$l->path, 'path is not built');
+  is ($l->driver_type, 'samplesheet', 'driver type is samplesheet');
+  ok ($l->path, 'path is built');
+  throws_ok {$l->children}
+    qr/Is a directory/,
+    'directory given as a samplesheet file path - error';
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/non-existing';
   lives_ok {$l = st::api::lims->new(id_run => 10262,)}
     'no error creating an object with samplesheet file defined in env var';
-  is ($l->driver_type, 'xml', 'driver type is xml since env var points to a non-existing file');
-  ok (!$l->path, 'path is not built');
+  is ($l->driver_type, 'samplesheet', 'driver type is samplesheet');
+  throws_ok {$l->children}
+    qr/Attribute \(path\) does not pass the type constraint/,
+    'directory given as a samplesheet file path - error';
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/non-existing';
   lives_ok {$l = st::api::lims->new(id_run => 10262, path => $ss_path)}
     'no error creating an object with samplesheet file defined in env var and path given';
   is ($l->driver_type, 'samplesheet', 'driver type is samplesheet');
+  lives_ok {$l->children} 'given path takes precedence';
 }
 
 {
