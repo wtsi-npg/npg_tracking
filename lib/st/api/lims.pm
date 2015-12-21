@@ -18,15 +18,21 @@ st::api::lims
 
 =head1 SYNOPSIS
 
- $lims = st::api::lims->new(id_run => 333) #run (batch) level object
- $lims = st::api::lims->new(batch_id => 222) # as above
- $lims = st::api::lims->new(batch_id => 222, position => 3) # lane level object
- $lims = st::api::lims->new(id_run => 333, position => 3, tag_index => 44) # plex level object
+ $lims = st::api::lims->new(id_run => 333); #run (batch) level object
+ $lims = st::api::lims->new(batch_id => 222); # as above
+ $lims = st::api::lims->new(batch_id => 222, position => 3); # lane level object
+ $lims = st::api::lims->new(id_run => 333, position => 3, tag_index => 44); # plex level object
+ $lims = st::api::lims->new(driver_type => q(ml_warehouse), flowcell_barcode => q(HTC3HADXX),
+                            position => 2, tag_index => 40); # plex level object from ml_warehouse
+ $lims = st::api::lims->new(driver_type => q(ml_warehouse), flowcell_barcode => q(HTC3HADXX),
+                            position => 2, tag_index => 40, mlwh_schema=>$suitable_dbic_schema);
 
 =head1 DESCRIPTION
 
 Generic NPG pipeline oriented LIMS wrapper capable of retrieving data from multiple sources
-(drivers).
+(drivers). Provides methods performing "business" logic independent of data source.
+
+Note the set of valid arguments to the constructor are a function of the driver_type passed.
 
 =head1 SUBROUTINES/METHODS
 
