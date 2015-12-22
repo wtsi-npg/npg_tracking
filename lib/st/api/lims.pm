@@ -47,11 +47,12 @@ as this object's accessors. Example:
 
 =cut
 
-Readonly::Scalar my  $CACHED_SAMPLESHEET_FILE_VAR_NAME => 'NPG_CACHED_SAMPLESHEET_FILE';
+Readonly::Scalar my $CACHED_SAMPLESHEET_FILE_VAR_NAME => 'NPG_CACHED_SAMPLESHEET_FILE';
+Readonly::Scalar my $DEFAULT_DRIVER_TYPE              => 'xml';
 
-Readonly::Scalar my  $PROC_NAME_INDEX      => 3;
-Readonly::Hash   my  %QC_EVAL_MAPPING      => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
-Readonly::Scalar my  $INLINE_INDEX_END     => 10;
+Readonly::Scalar my $PROC_NAME_INDEX       => 3;
+Readonly::Hash   my %QC_EVAL_MAPPING       => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
+Readonly::Scalar my $INLINE_INDEX_END      => 10;
 Readonly::Scalar my $DUAL_INDEX_TAG_LENGTH => 16;
 
 Readonly::Hash   my  %METHODS_PER_CATEGORY => {
@@ -246,7 +247,7 @@ sub _build_driver_type {
     return 'samplesheet';
   }
 
-  return 'xml';
+  return $DEFAULT_DRIVER_TYPE;
 }
 
 =head2 driver
