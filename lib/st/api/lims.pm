@@ -152,23 +152,6 @@ sub BUILD {
   my %dargs=();
   my %pargs=();
 
-  my $switch2wh;
-  if ($self->driver_type eq 'ml_warehouse') {
-    if ($args{'batch_id'} && !$args{'id_library_lims'}) {
-      $dargs{'id_library_lims'} = $args{'batch_id'};
-      delete $args{'batch_id'};
-    }
-    $switch2wh = _recognise_tube_barcode($args{'id_library_lims'}, \%dargs, \%args);
-  } elsif ($self->driver_type eq 'xml') {
-    $switch2wh = _recognise_tube_barcode($args{'batch_id'}, \%dargs, \%args);
-  }
-
-  if ($switch2wh) {
-    my $new_type = 'warehouse';
-    carp 'Changing driver type from ' . $self->driver_type . " to $new_type for LIMs ID $switch2wh";
-    $self->_set_driver_type($new_type);
-  }
-
   my $driver_class=$self->_driver_package_name;
 
   foreach my$k (grep {defined && $_ !~ /^_/smx} map{ $_->has_init_arg ? $_->init_arg : $_->name}
@@ -194,18 +177,6 @@ sub BUILD {
   }
   croak 'Unknown attributes: '.join q(, ), keys %args if keys %args;
   $self->_set__primary_arguments(\%pargs);
-  return;
-}
-
-sub _recognise_tube_barcode {
-  my ($lims_id, $dargs, $args) = @_;
-  if ($lims_id && $lims_id =~ /\A\d{13}\z/smx) {
-    $dargs->{'tube_ean13_barcode'} = $lims_id;
-    if (! exists $args->{'position'} ) {
-      $dargs->{'position'} = 1;
-    }
-    return $lims_id;
-  }
   return;
 }
 
