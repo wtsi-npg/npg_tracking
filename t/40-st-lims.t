@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 22;
+use Test::More tests => 23;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -27,6 +27,63 @@ subtest 'Class methods' => sub {
   is(st::api::lims->_trim_value("  $value"), $value, 'leading space trimmed');
   is(st::api::lims->_trim_value("  $value  "), $value, 'space trimmed');
   is(st::api::lims->_trim_value("  "), undef, 'white space string trimmed to undef');
+};
+
+subtest 'Setting return value for primary attributes' => sub {
+  plan tests => 33;
+
+  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
+
+  my @other = qw/path id_flowcell_lims flowcell_barcode/;
+
+  my $lims = st::api::lims->new(id_run => 6551, position => 2);
+  for my $attr (@other) {
+    is ($lims->$attr, undef, "$attr is undefined");
+  }
+  is ($lims->id_run, 6551, 'id run is set correctly');
+  is ($lims->batch_id, 12141, 'batch id is set correctly');
+  is ($lims->position, 2, 'position is set correctly');
+  is ($lims->tag_index, undef, 'tag_index is undefined');
+  ok ($lims->is_pool, 'lane is a pool');
+
+  my @children = $lims->children();
+  $lims = shift @children;
+  for my $attr (@other) {
+    is ($lims->$attr, undef, "$attr is undefined");
+  }
+  is ($lims->id_run, 6551, 'id run is set correctly');
+  is ($lims->batch_id, 12141, 'batch id is set correctly');
+  is ($lims->position, 2, 'position is set correctly');
+  is ($lims->tag_index, 1, 'tag_index is set to 1');
+  
+  $lims = st::api::lims->new(id_run => 6551, position => 2, tag_index => 0);
+  for my $attr (@other) {
+    is ($lims->$attr, undef, "$attr is undefined");
+  }
+  is ($lims->id_run, 6551, 'id run is set correctly');
+  is ($lims->batch_id, 12141, 'batch id is set correctly');
+  is ($lims->position, 2, 'position is set correctly');
+  is ($lims->tag_index, 0, 'tag_index is set to zero');
+  ok ($lims->is_pool, 'tag zero is not a pool');
+
+  $lims = st::api::lims->new(id_run => 6551, position => 2, tag_index => 2);
+  is ($lims->tag_index, 2, 'tag_index is set correctly');
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/miseq_default.csv';
+  $lims = st::api::lims->new(id_run => 6551, position => 1, tag_index => 0);
+  is ($lims->driver_type, 'samplesheet', 'samplesheet driver');
+
+  push @other, 'batch_id';
+  shift @other;
+
+  for my $attr (@other) {
+    is ($lims->$attr, undef, "$attr is undefined");
+  }
+  is ($lims->id_run, 6551, 'id run is set correctly');
+  is ($lims->path, 't/data/samplesheet/miseq_default.csv', 'path is set correctly');
+  is ($lims->position, 1, 'position is set correctly');
+  is ($lims->tag_index, 0, 'tag_index is set to zero');
+  ok ($lims->is_pool, 'tag zero is not a pool');
 };
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
