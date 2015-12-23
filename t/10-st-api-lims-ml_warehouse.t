@@ -335,7 +335,7 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
       mlwh_schema      => $schema_wh,
       flowcell_barcode => '42UMBAAXX');
   my $error = join qq[\n], 'Multiple flowcell identifies:',
-    'id_flowcell_lims:flowcell_barcode', "'4780':'42UMBAAXX'", "'4775':'42UMBAAXX'";         
+    'id_flowcell_lims:flowcell_barcode', "'4775':'42UMBAAXX'", "'4780':'42UMBAAXX'";         
   throws_ok { $l->children } qr/$error/,
     'error for multiple flowcell ids';
 }
