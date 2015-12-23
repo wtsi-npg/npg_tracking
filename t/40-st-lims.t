@@ -30,13 +30,14 @@ subtest 'Class methods' => sub {
 };
 
 subtest 'Setting return value for primary attributes' => sub {
-  plan tests => 33;
+  plan tests => 42;
 
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 
   my @other = qw/path id_flowcell_lims flowcell_barcode/;
 
   my $lims = st::api::lims->new(id_run => 6551, position => 2);
+  my $lane_lims = $lims;
   for my $attr (@other) {
     is ($lims->$attr, undef, "$attr is undefined");
   }
@@ -64,7 +65,18 @@ subtest 'Setting return value for primary attributes' => sub {
   is ($lims->batch_id, 12141, 'batch id is set correctly');
   is ($lims->position, 2, 'position is set correctly');
   is ($lims->tag_index, 0, 'tag_index is set to zero');
-  ok ($lims->is_pool, 'tag zero is not a pool');
+  ok ($lims->is_pool, 'tag zero is a pool');
+
+  $lims = st::api::lims->new(driver => $lane_lims->driver(),
+    id_run => 6551, position => 2, tag_index => 0);
+  is ($lims->id_run, 6551, 'id run is set correctly');
+  is ($lims->batch_id, 12141, 'batch id is set correctly');
+  is ($lims->position, 2, 'position is set correctly');
+  TODO: {
+    local $TODO = 'tag zero attribute is lost';
+    is ($lims->tag_index, 0, 'tag_index is set to zero');
+  }
+  ok ($lims->is_pool, 'tag zero is a pool');
 
   $lims = st::api::lims->new(id_run => 6551, position => 2, tag_index => 2);
   is ($lims->tag_index, 2, 'tag_index is set correctly');
@@ -83,7 +95,18 @@ subtest 'Setting return value for primary attributes' => sub {
   is ($lims->path, 't/data/samplesheet/miseq_default.csv', 'path is set correctly');
   is ($lims->position, 1, 'position is set correctly');
   is ($lims->tag_index, 0, 'tag_index is set to zero');
-  ok ($lims->is_pool, 'tag zero is not a pool');
+  ok ($lims->is_pool, 'tag zero is a pool');
+
+  $lane_lims =  st::api::lims->new(id_run => 6551, position => 1);
+  $lims = st::api::lims->new(driver => $lane_lims->driver(),
+    id_run => 6551, position => 1, tag_index => 0);
+  is ($lims->id_run, 6551, 'id run is set correctly');
+  is ($lims->position, 1, 'position is set correctly');
+  TODO: {
+    local $TODO = 'tag zero attribute is lost';
+    is ($lims->tag_index, 0, 'tag_index is set to zero');
+  }
+  ok ($lims->is_pool, 'tag zero is a pool');
 };
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
