@@ -72,10 +72,7 @@ subtest 'Setting return value for primary attributes' => sub {
   is ($lims->id_run, 6551, 'id run is set correctly');
   is ($lims->batch_id, 12141, 'batch id is set correctly');
   is ($lims->position, 2, 'position is set correctly');
-  TODO: {
-    local $TODO = 'tag zero attribute is lost';
-    is ($lims->tag_index, 0, 'tag_index is set to zero');
-  }
+  is ($lims->tag_index, 0, 'tag_index is set to zero');
   ok ($lims->is_pool, 'tag zero is a pool');
 
   $lims = st::api::lims->new(id_run => 6551, position => 2, tag_index => 2);
@@ -102,10 +99,7 @@ subtest 'Setting return value for primary attributes' => sub {
     id_run => 6551, position => 1, tag_index => 0);
   is ($lims->id_run, 6551, 'id run is set correctly');
   is ($lims->position, 1, 'position is set correctly');
-  TODO: {
-    local $TODO = 'tag zero attribute is lost';
-    is ($lims->tag_index, 0, 'tag_index is set to zero');
-  }
+  is ($lims->tag_index, 0, 'tag_index is set to zero');
   ok ($lims->is_pool, 'tag zero is a pool');
 };
 

@@ -158,6 +158,7 @@ sub BUILD {
   $self->_set__driver_arguments(\%args);
   my %dargs=();
   my %pargs=();
+  my %primary_arg_type = map {$_ => 1} @{$METHODS_PER_CATEGORY{'primary'}};
 
   my $driver_class=$self->_driver_package_name;
 
@@ -165,7 +166,9 @@ sub BUILD {
                 $driver_class->meta->get_all_attributes) {
     if(exists $args{$k}){
       $dargs{$k}=$args{$k};
-      delete $args{$k};
+      if ( not $primary_arg_type{$k} ){ #allow caching of primary args later even if driver provides methods - important for when passing tag_index=>0 and a lane level lims driver object to constructor
+        delete $args{$k};
+      }
     }
   }
   $self->_set__driver_arguments(\%dargs);
