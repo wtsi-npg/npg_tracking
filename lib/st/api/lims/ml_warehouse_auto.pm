@@ -6,6 +6,7 @@ use Carp;
 
 extends qw/ st::api::lims::ml_warehouse /;
 with 'WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell' => {'autonomous' => 1};
+around 'query_resultset' => \&st::api::lims::ml_warehouse::ensure_nonzero_query_resultset;
 
 our $VERSION = '0';
 
