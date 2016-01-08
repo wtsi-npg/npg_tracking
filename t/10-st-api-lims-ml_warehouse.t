@@ -1,12 +1,15 @@
 use strict;
 use warnings;
-use Test::More tests => 145;
+use Test::More tests => 10;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
 use Moose::Meta::Class;
 
-use_ok('st::api::lims::ml_warehouse');
+my $mlwh_d      = 'st::api::lims::ml_warehouse';
+my $mlwh_auto_d = 'st::api::lims::ml_warehouse_auto';
+use_ok($mlwh_d);
+use_ok($mlwh_auto_d);
 
 my $schema_wh;
 lives_ok { $schema_wh = Moose::Meta::Class->create_anon_class(
@@ -14,27 +17,33 @@ lives_ok { $schema_wh = Moose::Meta::Class->create_anon_class(
   q[WTSI::DNAP::Warehouse::Schema],q[t/data/fixtures_stlims_wh]) 
 } 'ml_warehouse test db created';
 
-{
-  throws_ok {st::api::lims::ml_warehouse->new(
+subtest 'constructing objects' => sub {
+  plan tests => 34;
+
+        for my $d ($mlwh_d, $mlwh_auto_d) {
+
+  my $m = ($d =~ /_auto$/) ? 'id_flowcell_lims, flowcell_barcode or id_run' :
+                             'id_flowcell_lims or flowcell_barcode';
+  throws_ok {$d->new(
     mlwh_schema => $schema_wh)->query_resultset}
-    qr/Either id_flowcell_lims or flowcell_barcode should be defined/,
+    qr/Either $m should be defined/,
     'error when no flowcell attributes are given';
 
   my $rs;
-  throws_ok {$rs = st::api::lims::ml_warehouse->new(
+  throws_ok {$rs = $d->new(
       mlwh_schema      => $schema_wh,
-      flowcell_barcode => 'barcode')->query_resultset}
+      flowcell_barcode => 'barcode', position => 1)->query_resultset}
 qr/No record retrieved for st::api::lims::ml_warehouse flowcell_barcode barcode/,
     'error when non-existing barcode is given';
 
-  throws_ok {$rs = st::api::lims::ml_warehouse->new(
+  throws_ok {$rs = $d->new(
       mlwh_schema      => $schema_wh,
-      id_flowcell_lims => 'XX_99_XX')->query_resultset}
+      id_flowcell_lims => 'XX_99_XX', position=>1)->query_resultset}
 qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims XX_99_XX/,
     'error when non-existing flowcell id is given';
 
   throws_ok {
-    $rs = st::api::lims::ml_warehouse->new(
+    $rs = $d->new(
       mlwh_schema      => $schema_wh,
       flowcell_barcode => '42UMBAAXX',
       id_flowcell_lims => 'XX_99_XX')->query_resultset
@@ -42,74 +51,81 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims XX_99_XX
 qr/No record retrieved for st::api::lims::ml_warehouse flowcell_barcode 42UMBAAXX, id_flowcell_lims XX_99_XX/,
   'error retrieving data with valid barcode and invalid flowcell id';
 
-  ok (st::api::lims::ml_warehouse->new(
+  ok ($d->new(
       mlwh_schema      => $schema_wh,
       flowcell_barcode => '42UMBAAXX')->query_resultset->count,
    'data retrieved for existing barcode');
-  is (st::api::lims::ml_warehouse->new(
+  is ($d->new(
       mlwh_schema      => $schema_wh,
       flowcell_barcode => '42UMBAAXX')->id_run, 3905, 'find id_run if in product metrics table');
-  ok (st::api::lims::ml_warehouse->new(
+  ok ($d->new(
       mlwh_schema      => $schema_wh,
       id_flowcell_lims => 4775)->query_resultset->count,
     'data retrieved for existing flowcell id supplied as an integer');
-  ok (st::api::lims::ml_warehouse->new(
+  ok ($d->new(
       mlwh_schema      => $schema_wh,
       id_flowcell_lims => '4775')->query_resultset->count,
     'data retrieved for existing flowcell id supplied as a string');
-  is (st::api::lims::ml_warehouse->new(
+  is ($d->new(
       mlwh_schema      => $schema_wh,
       id_flowcell_lims => '4775')->id_run, 3905, 'find id_run if in product metrics table');
   my $product_metrics_row = st::api::lims::ml_warehouse->new(
       mlwh_schema      => $schema_wh,
       id_flowcell_lims => '4775')->query_resultset()->next()->iseq_product_metrics()->next();
   $product_metrics_row->update({id_run => 3906});
-  throws_ok { st::api::lims::ml_warehouse->new(
+  throws_ok { $d->new(
       mlwh_schema      => $schema_wh,
       id_flowcell_lims => '4775')->id_run }
     qr/Found more than one \(2\) id_run/,
     'error finding id_run if multiple values found';
-  lives_ok {st::api::lims::ml_warehouse->new(
+  lives_ok {$d->new(
       id_run           => 3905,
       mlwh_schema      => $schema_wh,
       id_flowcell_lims => '4775')->id_run}
     'no checks when the value is set by the caller';
 
-  ok (st::api::lims::ml_warehouse->new(
+  ok ($d->new(
       mlwh_schema      => $schema_wh,
       id_flowcell_lims => 22043,
       flowcell_barcode => 'barcode')->query_resultset->count,
     'data retrieved as long as flowcell id is valid');
   my $id_run;
-  warning_like { $id_run = st::api::lims::ml_warehouse->new(
+  warning_like { $id_run = $d->new(
       mlwh_schema      => $schema_wh,
       flowcell_barcode => 'barcode')->id_run }
     qr/No id_run set yet/,
     'warning finding id_run if not in product metrics table';
   is($id_run, undef, 'run id undefined');
-  throws_ok { st::api::lims::ml_warehouse->new(
+  throws_ok { $d->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 22043,
                                  position         => 2)->query_resultset}
 qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, position 2/,
     'error when lane does not exist';
 
-  ok (st::api::lims::ml_warehouse->new(
+  ok ($d->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 22043,
                                  position         => 1)->query_resultset->count,
     'data retrieved for existing lane');
-  throws_ok { st::api::lims::ml_warehouse->new(
+  throws_ok { $d->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 22043,
                                  position         => 1,
                                  tag_index        => 326)->query_resultset}
 qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, position 1, tag_index 326/,
     'error when tag index does not exist';
-}
+  
+  $product_metrics_row->update({id_run => 3905});
+        }
+};
 
-{
-  my $d = st::api::lims::ml_warehouse->new(
+subtest 'lane-level driver from run-level driver' => sub {
+  plan tests => 52;
+
+        for my $p ($mlwh_d, $mlwh_auto_d) {
+
+  my $d = $p->new(
       mlwh_schema      => $schema_wh,
       id_flowcell_lims => '4775');
   isa_ok ($d, 'st::api::lims::ml_warehouse');
@@ -146,10 +162,15 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   lives_ok {$insert_size = $lims1->required_insert_size_range} 'insert size for the first lane';
   is ($insert_size->{'from'}, 300, 'required FROM insert size');
   is ($insert_size->{'to'}, 400, 'required TO insert size');
-}
+        }
+};
 
-{
-  my $lims4 = st::api::lims::ml_warehouse->new(
+subtest 'lane-level drivers' => sub {
+  plan tests => 36;
+
+        for my $p ($mlwh_d, $mlwh_auto_d) {
+
+  my $lims4 = $p->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => '4775',
                                  position         => 4);
@@ -178,9 +199,14 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   is_deeply ($lims6->email_addresses_of_owners,[qw(sunny@sanger.ac.uk)],'Owners email addresses');
 
   is ($lims6->study_alignments_in_bam, 1,'do bam alignments');
-}
+        }
+};
 
-{
+subtest 'lane and tag level drivers' => sub {
+  plan tests => 68;
+
+        for my $p ($mlwh_d, $mlwh_auto_d) {
+
   my $lims = st::api::lims::ml_warehouse->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 16249,
@@ -238,9 +264,14 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   is ($lims->spiked_phix_tag_index, 168, 'spike index');
   is ($lims->default_tag_sequence, 'ACAACGCAAT', 'first index sequence');
   is ($lims->default_tagtwo_sequence, undef, 'second index sequence undefined');
-}
+        }
+};
 
-{
+subtest 'lave and tag level drivers' => sub {
+  plan tests => 20;
+
+        for my $d ($mlwh_d, $mlwh_auto_d) {
+
   my $lims = st::api::lims::ml_warehouse->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 15728);
@@ -265,9 +296,12 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   is( $lims->project_cost_code, 'S0802', 'project code code');
   is( $lims->sample_reference_genome, 'Not suitable for alignment', 'sample ref genome');
   ok( $lims->sample_consent_withdrawn(), 'sample consent withdrawn' );
-}
+        }
+};
 
-{
+subtest 'lave and tag level drivers' => sub {
+  plan tests => 74;
+
   my $rs = $schema_wh->resultset('IseqFlowcell');
   my $row = $rs->search({id_flowcell_lims => 22043, position=>1, tag_index=>1})->first;
   $row->set_column('tag2_sequence', 'ACGTAA');
@@ -276,6 +310,8 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   $row = $rs->search({id_flowcell_lims => 22043, position=>1, tag_index=>96})->first;
   $row->set_column('tag_sequence', 'ACGTAAACGTACCTGA');
   $row->update();
+
+        for my $d ($mlwh_d, $mlwh_auto_d) {
 
   my $lims = st::api::lims::ml_warehouse->new(
                                  mlwh_schema      => $schema_wh,
@@ -323,21 +359,30 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   cmp_bag ($plexes[95]->email_addresses_of_managers,[],'no study - no email addresses');
   is_deeply ($plexes[95]->email_addresses_of_followers,[],'no study - no email addresses');
   is_deeply ($plexes[95]->email_addresses_of_owners,[],'no study - no email addresses');
-}
+        };
+};
 
-{  
-  my $rs = $schema_wh->resultset('IseqFlowcell');
-  my $row = $rs->search({flowcell_barcode => '42UMBAAXX', position=>1})->next;
-  $row->set_column('id_flowcell_lims', $row->id_flowcell_lims+5);
-  $row->update();
+subtest 'multiple flowcell identifies error' => sub {
+  plan tests => 2;
+
+  for my $d ($mlwh_d, $mlwh_auto_d) {
+
+    my $rs = $schema_wh->resultset('IseqFlowcell');
+    my $row = $rs->search({flowcell_barcode => '42UMBAAXX', position=>1})->next;
+    my $old = $row->id_flowcell_lims;
+    $row->set_column('id_flowcell_lims', $row->id_flowcell_lims+5);
+    $row->update();
   
-  my $l = st::api::lims::ml_warehouse->new(
+    my $l = st::api::lims::ml_warehouse->new(
       mlwh_schema      => $schema_wh,
       flowcell_barcode => '42UMBAAXX');
-  my $error = join qq[\n], 'Multiple flowcell identifies:',
-    'id_flowcell_lims:flowcell_barcode', "'4775':'42UMBAAXX'", "'4780':'42UMBAAXX'";         
-  throws_ok { $l->children } qr/$error/,
-    'error for multiple flowcell ids';
-}
+    my $error = join qq[\n], 'Multiple flowcell identifies:',
+      'id_flowcell_lims:flowcell_barcode', "'4775':'42UMBAAXX'", "'4780':'42UMBAAXX'";         
+    throws_ok { $l->children } qr/$error/,
+      'error for multiple flowcell ids';
+    $row->set_column('id_flowcell_lims', $old);
+    $row->update();
+  }
+};
 
 1;
