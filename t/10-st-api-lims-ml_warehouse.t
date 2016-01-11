@@ -121,19 +121,31 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
 };
 
 subtest 'lane-level driver from run-level driver' => sub {
-  plan tests => 52;
+  plan tests => 78;
 
-        for my $p ($mlwh_d, $mlwh_auto_d) {
+  my $count = 0;
+        for my $p ($mlwh_d, $mlwh_auto_d, $mlwh_auto_d) {
 
-  my $d = $p->new(
+  $count++;
+  my $d;
+
+  if ($count < 3) {
+    $d = $p->new(
       mlwh_schema      => $schema_wh,
       id_flowcell_lims => '4775');
-  isa_ok ($d, 'st::api::lims::ml_warehouse');
+  } else {
+    $d = $p->new(
+      mlwh_schema      => $schema_wh,
+      id_run           => 3905);
+  }
+  isa_ok ($d, ($count == 1) ? 'st::api::lims::ml_warehouse' : 'st::api::lims::ml_warehouse_auto');
   my @children = $d->children;
   my %types;
   my @positions = ();
   map { $types{ref $_} = 1; push @positions, $_->position} @children;
-  is (join(q[,], keys %types), 'st::api::lims::ml_warehouse', 'children have correct class');
+  is (join(q[,], keys %types),
+    ($count == 1) ? 'st::api::lims::ml_warehouse' : 'st::api::lims::ml_warehouse_auto',
+    'children have correct class');
   is (join(q[,], @positions), '1,2,3,4,5,6,7,8', 'eight children sorted by position');
   ok (!$d->is_control, 'not control');
   ok (!$d->is_pool, 'not pool');
@@ -166,14 +178,49 @@ subtest 'lane-level driver from run-level driver' => sub {
 };
 
 subtest 'lane-level drivers' => sub {
-  plan tests => 36;
+  plan tests => 78;
 
-        for my $p ($mlwh_d, $mlwh_auto_d) {
+ is( $schema_wh->resultset('IseqFlowcell')
+     ->search({id_flowcell_lims => '4775', tag_index => undef})->count(), 8,
+     'flowcell table does not define tag indices');
 
-  my $lims4 = $p->new(
-                                 mlwh_schema      => $schema_wh,
-                                 id_flowcell_lims => '4775',
-                                 position         => 4);
+  my $count = 0;
+        for my $p ($mlwh_d, $mlwh_auto_d, $mlwh_auto_d, $mlwh_auto_d) {
+
+  $count++;
+
+  if ($count == 4) {
+    $schema_wh->resultset('IseqFlowcell')
+      ->search({id_flowcell_lims => '4775', position => [4,6]})->
+      update({tag_index => 1});
+    diag 'test one-tag pool that was sequenced without reading the index read';
+    is( $schema_wh->resultset('IseqFlowcell')
+      ->search({id_flowcell_lims => '4775', tag_index => 1})->count(),
+      2, 'two tag indexes are set');
+  }
+
+  my ($lims4, $lims6);
+
+  if ($count < 3) {
+    $lims4 = $p->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 4);
+    $lims6 = $p->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 6);
+  } else {
+    $lims4 = $p->new(
+      mlwh_schema      => $schema_wh,
+      id_run           => 3905,
+      position         => 4);
+    $lims6 = $p->new(
+      mlwh_schema      => $schema_wh,
+      id_run           => 3905,
+      position         => 6);
+  }
+
   is ($lims4->is_control, 1, 'is control');
   is ($lims4->is_pool, 0, 'not pool');
   ok (!$lims4->children, 'children list is empty');
@@ -184,10 +231,6 @@ subtest 'lane-level drivers' => sub {
   ok (!$lims4->study_id, 'study id from fourth lane undef');
   ok (!$lims4->required_insert_size_range, 'no insert size for control lane');
 
-  my $lims6 = st::api::lims::ml_warehouse->new(
-                                 mlwh_schema      => $schema_wh,
-                                 id_flowcell_lims => '4775',
-                                 position         => 6);
   is ($lims6->library_id, 556677, 'new library id returned');
   is ($lims6->library_name, 556677, 'library name is based on the new library id');  
   is ($lims6->study_id, 333, 'study id');
@@ -199,18 +242,45 @@ subtest 'lane-level drivers' => sub {
   is_deeply ($lims6->email_addresses_of_owners,[qw(sunny@sanger.ac.uk)],'Owners email addresses');
 
   is ($lims6->study_alignments_in_bam, 1,'do bam alignments');
+  is ($lims6->tag_index, undef, 'tag index is undefined');
         }
 };
 
+sub _add2query {
+  my ($query, $count, $lims_id, $id_run) = @_;
+  if ($count < 3) {
+    $query->{'id_flowcell_lims'} = $lims_id;
+  } else {
+    $query->{'id_run'} = $id_run;
+  } 
+}
+
 subtest 'lane and tag level drivers' => sub {
-  plan tests => 68;
+  plan tests => 102;
 
-        for my $p ($mlwh_d, $mlwh_auto_d) {
+  my $lims_id = 16249;
+  my $id_run  = 45678;
+  my $pos     = 1;
 
-  my $lims = st::api::lims::ml_warehouse->new(
-                                 mlwh_schema      => $schema_wh,
-                                 id_flowcell_lims => 16249,
-                                 position         => 1);
+  my $fcrs = $schema_wh->resultset('IseqFlowcell')->search(
+   { id_flowcell_lims => $lims_id, position => 1});
+  my $prs = $schema_wh->resultset('IseqProductMetric');
+  while (my $row = $fcrs->next) {
+    $prs->create({id_iseq_flowcell_tmp => $row->id_iseq_flowcell_tmp,
+                  tag_index            => $row->tag_index,
+                  position             => $pos,
+                  id_run               => $id_run});
+  }
+
+  my $count  = 0;
+        for my $p ($mlwh_d, $mlwh_auto_d, $mlwh_auto_d) {
+
+  $count++;
+
+  my $query = { mlwh_schema      => $schema_wh,
+                position         => $pos };
+  _add2query($query, $count, $lims_id, $id_run);  
+  my $lims = $p->new($query);
   ok (!$lims->bait_name, 'bait name undefined');
   ok ($lims->is_pool, 'lane is a pool');
   ok (!$lims->sample_supplier_name, 'no supplier name');
@@ -220,11 +290,12 @@ subtest 'lane and tag level drivers' => sub {
   is (scalar $lims->children, 9, 'nine-long children list');
   is ($lims->spiked_phix_tag_index, 168, 'spike index');
 
-  $lims = st::api::lims::ml_warehouse->new(
-                                 mlwh_schema      => $schema_wh,
-                                 id_flowcell_lims => 16249,
-                                 position         => 1,
-                                 tag_index        => 0,);
+  $query = { mlwh_schema      => $schema_wh,
+             position         => $pos,
+             tag_index        => 0,
+           };
+  _add2query($query, $count, $lims_id, $id_run);
+  $lims = $p->new($query);
   ok (!$lims->bait_name, 'bait name undefined');
   ok ($lims->is_pool, 'tag zero is a pool');
   ok (!$lims->is_control, 'tag zero is not control');
@@ -236,12 +307,12 @@ subtest 'lane and tag level drivers' => sub {
   is ($lims->default_tag_sequence, undef, 'first index sequence undefined');
   is ($lims->default_tagtwo_sequence, undef, 'second index sequence undefined');
 
-
-  $lims = st::api::lims::ml_warehouse->new(
-                                 mlwh_schema      => $schema_wh,
-                                 id_flowcell_lims => 16249,
-                                 position         => 1,
-                                 tag_index        => 2,);
+  $query = { mlwh_schema      => $schema_wh,
+             position         => $pos,
+             tag_index        => 2,  
+           };
+  _add2query($query, $count, $lims_id, $id_run);
+  $lims = $p->new($query);
   is($lims->bait_name, 'Human all exon 50MB', 'bait name for a plex');
   is ($lims->spiked_phix_tag_index, 168, 'spike index');
   ok (!$lims->children, 'children list is empty');
@@ -253,11 +324,12 @@ subtest 'lane and tag level drivers' => sub {
   is ($lims->default_tag_sequence, 'CGATGT', 'first index sequence');
   is ($lims->default_tagtwo_sequence, undef, 'second index sequence undefined');
 
-  $lims = st::api::lims::ml_warehouse->new(
-                                 mlwh_schema      => $schema_wh,
-                                 id_flowcell_lims => 16249,
-                                 position         => 1,
-                                 tag_index        => 168,);
+  $query = { mlwh_schema      => $schema_wh,
+             position         => $pos,
+             tag_index        => 168,  
+           };
+  _add2query($query, $count, $lims_id, $id_run);
+  $lims = $p->new($query);
   is ($lims->bait_name, undef, 'bait name undefined for spiked phix plex');
   ok (!$lims->is_pool, 'is not a pool');
   ok ($lims->is_control, 'tag 168 is control');
@@ -268,29 +340,49 @@ subtest 'lane and tag level drivers' => sub {
 };
 
 subtest 'lave and tag level drivers' => sub {
-  plan tests => 20;
+  plan tests => 33;
 
-        for my $d ($mlwh_d, $mlwh_auto_d) {
+  my $id_run  = 99789;
+  my $lims_id = 15728;
+  my $fcrs = $schema_wh->resultset('IseqFlowcell')->search({ id_flowcell_lims => $lims_id});
+  my $prs = $schema_wh->resultset('IseqProductMetric');
+  while (my $row = $fcrs->next) {
+    $prs->create({id_iseq_flowcell_tmp => $row->id_iseq_flowcell_tmp,
+                  tag_index            => $row->tag_index,
+                  position             => $row->position,
+                  id_run               => $id_run});
+  }
 
-  my $lims = st::api::lims::ml_warehouse->new(
-                                 mlwh_schema      => $schema_wh,
-                                 id_flowcell_lims => 15728);
+  my $count = 0;
+        for my $d ($mlwh_d, $mlwh_auto_d, $mlwh_auto_d) {
+
+  $count++;
+
+  my $query = {mlwh_schema      => $schema_wh};
+  _add2query($query, $count, $lims_id, $id_run);
+  my $lims = $d->new($query);
   is (scalar $lims->children, 8, '8 child lanes');
 
-  $lims = st::api::lims::ml_warehouse->new(
-                                 mlwh_schema      => $schema_wh,
-                                 id_flowcell_lims => 15728,
-                                 position         => 1);
-  is (scalar $lims->children, 9, 'nine child plexes');
+  $query = {mlwh_schema      => $schema_wh,
+            position         => 1};
+  _add2query($query, $count, $lims_id, $id_run);
+  $lims = $d->new($query);
+  my @children = $lims->children;
+  is (scalar @children, 9, 'nine child plexes');
+  my %types;
+  map { $types{ref $_} = 1 } @children;
+  is (join(q[,], keys %types),
+    ($count == 1) ? 'st::api::lims::ml_warehouse' : 'st::api::lims::ml_warehouse_auto',
+    'children have correct class');
 
-  $lims = st::api::lims::ml_warehouse->new(
-                                 mlwh_schema      => $schema_wh,
-                                 id_flowcell_lims => 15728,
-                                 position         => 1,
-                                 tag_index        => 3,);
+  $query = {mlwh_schema      => $schema_wh,
+            position         => 1,
+            tag_index        => 3};
+  _add2query($query, $count, $lims_id, $id_run);
+  $lims = $d->new($query);
   is( $lims->sample_id, 1299694, 'sample id');
   is( $lims->default_tag_sequence, 'TTAGGC', 'tag sequence');
-  is($lims->default_tagtwo_sequence, undef, 'second index sequence undefined');
+  is( $lims->default_tagtwo_sequence, undef, 'second index sequence undefined');
   is( $lims->default_library_type, 'Agilent Pulldown', 'library type');
   is( $lims->bait_name, 'DDD custom library', 'bait name');
   is( $lims->project_cost_code, 'S0802', 'project code code');
@@ -313,9 +405,8 @@ subtest 'lave and tag level drivers' => sub {
 
         for my $d ($mlwh_d, $mlwh_auto_d) {
 
-  my $lims = st::api::lims::ml_warehouse->new(
-                                 mlwh_schema      => $schema_wh,
-                                 id_flowcell_lims => 22043);
+  my $lims = $d->new( mlwh_schema      => $schema_wh,
+                      id_flowcell_lims => 22043);
 
   my @lanes = $lims->children;
   is (scalar @lanes, 1, 'one lane returned');

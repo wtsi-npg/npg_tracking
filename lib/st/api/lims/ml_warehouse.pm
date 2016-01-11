@@ -160,6 +160,7 @@ sub _build__lchildren {
 
   if (!$self->tag_index) {
 
+    my $package_name = ref $self;
     my $init = {};
     foreach my $init_attr (qw/id_flowcell_lims flowcell_barcode/) {
       if ($self->$init_attr) {
@@ -174,16 +175,16 @@ sub _build__lchildren {
         my %hashed_rs = map { $_->tag_index => 1} $self->query_resultset->all;
         foreach my $tag_index (sort keys %hashed_rs) {
           $init->{'tag_index'} = $tag_index;
-          push @children, __PACKAGE__->new($init);
+          push @children, $package_name->new($init);
 	}
       }
     } else {
       my %hashed_rs = map { $_->position => 1} $self->query_resultset->all;
       my @positions = sort keys %hashed_rs;
       foreach my $position (@positions) {
-        $init->{'query_resultset'} = $self->query_resultset->search({position => $position});
+        $init->{'query_resultset'} = $self->query_resultset->search({'me.position' => $position});
         $init->{'position'}        = $position;
-        push @children, __PACKAGE__->new($init);
+        push @children, $package_name->new($init);
       }
     }
   }
