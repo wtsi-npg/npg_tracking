@@ -184,8 +184,8 @@ sub _build_data {
     my $en = _id_run_from_header($d);
     if ($en) {
       $self->_set_id_run($en);
+      carp qq[id_run is set to Experiment Name, $en];
     }
-    carp qq[id_run is set to Experiment Name, $en];
   }
 
   return $d;

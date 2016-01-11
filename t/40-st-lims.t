@@ -1,26 +1,107 @@
 use strict;
 use warnings;
-use Test::More tests => 447;
+use Test::More tests => 23;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
 
 my $num_delegated_methods = 44;
 
-use_ok('st::api::lims');
-is(st::api::lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
-    'correct name of the cached samplesheet env var');
-is(scalar st::api::lims->driver_method_list(), $num_delegated_methods, 'driver method list length');
-is(scalar st::api::lims::driver_method_list_short(), $num_delegated_methods, 'short driver method list length');
-is(scalar st::api::lims->driver_method_list_short(), $num_delegated_methods, 'short driver method list length');
-is(scalar st::api::lims::driver_method_list_short(qw/sample_name/), $num_delegated_methods-1, 'one method removed from the list');
-is(scalar st::api::lims->driver_method_list_short(qw/sample_name study_name/), $num_delegated_methods-2, 'two methods removed from the list');
+local $ENV{'http_proxy'} = 'http://wibble.com';
 
-my $value = 'some other';
-is(st::api::lims->_trim_value($value), $value, 'nothing trimmed trimmed');
-is(st::api::lims->_trim_value("  $value"), $value, 'leading space trimmed');
-is(st::api::lims->_trim_value("  $value  "), $value, 'space trimmed');
-is(st::api::lims->_trim_value("  "), undef, 'white space string trimmed to undef');
+use_ok('st::api::lims');
+
+subtest 'Class methods' => sub {
+  plan tests => 10;
+
+  is(st::api::lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
+    'correct name of the cached samplesheet env var');
+  is(scalar st::api::lims->driver_method_list(), $num_delegated_methods, 'driver method list length');
+  is(scalar st::api::lims::driver_method_list_short(), $num_delegated_methods, 'short driver method list length');
+  is(scalar st::api::lims->driver_method_list_short(), $num_delegated_methods, 'short driver method list length');
+  is(scalar st::api::lims::driver_method_list_short(qw/sample_name/), $num_delegated_methods-1, 'one method removed from the list');
+  is(scalar st::api::lims->driver_method_list_short(qw/sample_name study_name/), $num_delegated_methods-2, 'two methods removed from the list');
+
+  my $value = 'some other';
+  is(st::api::lims->_trim_value($value), $value, 'nothing trimmed trimmed');
+  is(st::api::lims->_trim_value("  $value"), $value, 'leading space trimmed');
+  is(st::api::lims->_trim_value("  $value  "), $value, 'space trimmed');
+  is(st::api::lims->_trim_value("  "), undef, 'white space string trimmed to undef');
+};
+
+subtest 'Setting return value for primary attributes' => sub {
+  plan tests => 42;
+
+  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
+
+  my @other = qw/path id_flowcell_lims flowcell_barcode/;
+
+  my $lims = st::api::lims->new(id_run => 6551, position => 2);
+  my $lane_lims = $lims;
+  for my $attr (@other) {
+    is ($lims->$attr, undef, "$attr is undefined");
+  }
+  is ($lims->id_run, 6551, 'id run is set correctly');
+  is ($lims->batch_id, 12141, 'batch id is set correctly');
+  is ($lims->position, 2, 'position is set correctly');
+  is ($lims->tag_index, undef, 'tag_index is undefined');
+  ok ($lims->is_pool, 'lane is a pool');
+
+  my @children = $lims->children();
+  $lims = shift @children;
+  for my $attr (@other) {
+    is ($lims->$attr, undef, "$attr is undefined");
+  }
+  is ($lims->id_run, 6551, 'id run is set correctly');
+  is ($lims->batch_id, 12141, 'batch id is set correctly');
+  is ($lims->position, 2, 'position is set correctly');
+  is ($lims->tag_index, 1, 'tag_index is set to 1');
+  
+  $lims = st::api::lims->new(id_run => 6551, position => 2, tag_index => 0);
+  for my $attr (@other) {
+    is ($lims->$attr, undef, "$attr is undefined");
+  }
+  is ($lims->id_run, 6551, 'id run is set correctly');
+  is ($lims->batch_id, 12141, 'batch id is set correctly');
+  is ($lims->position, 2, 'position is set correctly');
+  is ($lims->tag_index, 0, 'tag_index is set to zero');
+  ok ($lims->is_pool, 'tag zero is a pool');
+
+  $lims = st::api::lims->new(driver => $lane_lims->driver(),
+    id_run => 6551, position => 2, tag_index => 0);
+  is ($lims->id_run, 6551, 'id run is set correctly');
+  is ($lims->batch_id, 12141, 'batch id is set correctly');
+  is ($lims->position, 2, 'position is set correctly');
+  is ($lims->tag_index, 0, 'tag_index is set to zero');
+  ok ($lims->is_pool, 'tag zero is a pool');
+
+  $lims = st::api::lims->new(id_run => 6551, position => 2, tag_index => 2);
+  is ($lims->tag_index, 2, 'tag_index is set correctly');
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/miseq_default.csv';
+  $lims = st::api::lims->new(id_run => 6551, position => 1, tag_index => 0);
+  is ($lims->driver_type, 'samplesheet', 'samplesheet driver');
+
+  push @other, 'batch_id';
+  shift @other;
+
+  for my $attr (@other) {
+    is ($lims->$attr, undef, "$attr is undefined");
+  }
+  is ($lims->id_run, 6551, 'id run is set correctly');
+  is ($lims->path, 't/data/samplesheet/miseq_default.csv', 'path is set correctly');
+  is ($lims->position, 1, 'position is set correctly');
+  is ($lims->tag_index, 0, 'tag_index is set to zero');
+  ok ($lims->is_pool, 'tag zero is a pool');
+
+  $lane_lims =  st::api::lims->new(id_run => 6551, position => 1);
+  $lims = st::api::lims->new(driver => $lane_lims->driver(),
+    id_run => 6551, position => 1, tag_index => 0);
+  is ($lims->id_run, 6551, 'id run is set correctly');
+  is ($lims->position, 1, 'position is set correctly');
+  is ($lims->tag_index, 0, 'tag_index is set to zero');
+  ok ($lims->is_pool, 'tag zero is a pool');
+};
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 
@@ -28,14 +109,35 @@ my @libs_6551_1 = ('PhiX06Apr11','SS109114 2798524','SS109305 2798523','SS117077
 my @samples_6551_1 = qw/phiX_for_spiked_buffers SS109114 SS109305 SS117077 SS117886 SS127358 SS127858 SS128220 SS128716 SS129050 SS129764 SS130327 SS131636/;
 my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Shigella sp.');
 
-{
+subtest 'Driver type build' => sub {
+  plan tests => 6;
+
+  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
+
   use_ok('st::api::lims::samplesheet');
   lives_and( sub{
-    my $lims = st::api::lims->new(id_run => 6551, driver => st::api::lims::samplesheet->new(id_run => 6551, path => $ENV{NPG_WEBSERVICE_CACHE_DIR}));
+    my $lims = st::api::lims->new(id_run => 6551,
+                                  driver => st::api::lims::samplesheet->new(
+                                    id_run => 6551,
+                                    path => $ENV{NPG_WEBSERVICE_CACHE_DIR}));
     is($lims->driver_type, 'samplesheet');
   }, 'obtain driver type from driver if driver given');
-}
-{
+
+  throws_ok { st::api::lims->new(id_run => 6551, driver_type => 'some') }
+    qr/Can\'t locate st\/api\/lims\/some\.pm in \@INC/,
+    'unknown driver type specified - error';
+
+  isa_ok (st::api::lims->new(id_run => 6551, driver_type => 'xml')->driver(),
+    'st::api::lims::xml');
+  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[];
+  isa_ok (st::api::lims->new(id_run => 6551)->driver(), 'st::api::lims::xml');
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/miseq_default.csv';
+  isa_ok (st::api::lims->new(id_run => 6551)->driver(), 'st::api::lims::samplesheet');
+};
+
+subtest 'Run-level object' => sub {
+  plan tests => 18;
+
   my $lims = st::api::lims->new(id_run => 6551);
   is($lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
     'correct name of the cached samplesheet env var');
@@ -56,9 +158,11 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is(scalar($lims->library_names), 0, 'batch-level library_names list empty');
   is(scalar($lims->sample_names), 0, 'batch-level sample_names list empty');
   is(scalar($lims->study_names), 0, 'batch-level study_names list empty');
-}
+};
 
-{
+subtest 'Lane-level object' => sub {
+  plan tests => 40;
+
   my $lims = st::api::lims->new(id_run => 6551, position => 1);
   is($lims->lane_id(), 3065552, q{lane_id ok for id_run 6551, position 1} );
   is($lims->batch_id, 12141, 'batch id is 12141 for lane 1');
@@ -118,9 +222,11 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
 
   is($lims->sample_consent_withdrawn, undef, 'consent withdrawn false');
   is($lims->any_sample_consent_withdrawn, 0, 'any consent withdrawn false');
-}
+};
 
-{
+subtest 'Object for tag zero' => sub {
+  plan tests => 24;
+
   my $lims = st::api::lims->new(id_run => 6551, position => 1, tag_index => 0);
   is($lims->lane_id(), undef, q{lane_id undef for id_run 6551, position 1, tag_index defined} );
   is($lims->batch_id, 12141, 'batch id is 12141 for lane 1');
@@ -153,9 +259,11 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is(join(q[,], $lims->library_names($with_spiked_phix)), join(q[,], sort @libs), 'tag 0 library_names list $with_spiked_phix = 0;');
   is(join(q[,], $lims->sample_names($with_spiked_phix)), join(q[,], sort @samples), 'tag 0 sample_names list $with_spiked_phix = 0;');
   is(join(q[,], $lims->study_names($with_spiked_phix)), join(q[,], sort @studies), 'tag 0 study_names list $with_spiked_phix = 0;');
-}
+};
 
-{
+subtest 'Object for spiked phix tag' => sub {
+  plan tests => 23;
+
   my $lims = st::api::lims->new(id_run => 6551, position => 1, tag_index => 168);
   is($lims->is_control, 1, 'tag 1/168 is control');
   is($lims->is_pool, 0, 'tag 1/168 is not a pool');
@@ -186,9 +294,11 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is(join(q[ ], $lims->library_names($with_spiked_phix)), $libs_6551_1[0], 'tag 168 library_names list');
   is(join(q[ ], $lims->sample_names($with_spiked_phix)), $samples_6551_1[0], 'tag 168 sample_names list');
   is(join(q[ ], $lims->study_names($with_spiked_phix)), $studies_6551_1[0], 'tag 168 study_names list');
-}
+};
 
-{
+subtest 'Object for a tag' => sub {
+  plan tests => 31;
+
   my $lims = st::api::lims->new(id_run => 6551, position => 1, tag_index => 1);
   is($lims->is_control, 0, 'tag 1/1 is not control');
   is($lims->is_pool, 0, 'tag 1/1 is not a pool');
@@ -203,10 +313,37 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is(join(q[ ], $lims->library_names($with_spiked_phix)), 'SS109305 2798523', 'tag 1 library_names list $with_spiked_phix = 0');
   is(join(q[ ], $lims->sample_names($with_spiked_phix)), 'SS109305', 'tag 1 sample_names list $with_spiked_phix = 0');
   is(join(q[ ], $lims->study_names($with_spiked_phix)), $studies_6551_1[1], 'tag 1 study_names list $with_spiked_phix = 0');
-}
 
-{
-  my $lims = st::api::lims->new(id_run => 6607, position => 1);  # non-pool lane
+  $lims = st::api::lims->new(id_run => 6607, position => 5, tag_index => 1);
+  my $lims_nofb = st::api::lims->new(id_run => 6607, position => 5, tag_index => 1);
+  is($lims->batch_id, 12378, 'batch id for lane 5 tag 1');
+  is($lims->tag_index, 1, 'tag index 1');
+  is($lims->is_control, 0, 'plex 5/1 is not control');
+  is($lims->is_pool, 0, 'plex 5/1 is not pool');
+  is($lims->library_id, 3111679, 'lib id');
+  is($lims->sample_id, 1132331, 'sample id');
+  is($lims->study_id, 429, 'study id'); # fallback
+  my $project_id = 429;
+  is($lims_nofb->study_id, $project_id, 'study id'); # no fallback
+  is($lims->project_id, $project_id, 'project id');
+  is($lims->request_id, undef, 'request id');
+  is($lims->library_name, 'HiC_H_ON_DCJ 3111679', 'lib name');
+  is($lims->sample_name, 'HiC_H_ON_DCJ', 'sample name undefined');
+  is($lims->study_name, '3C and HiC of Plasmodium falciparum IT', 'study name');
+  my $project_name = q[3C and HiC of Plasmodium falciparum IT];
+  is($lims->project_name, $project_name, 'project name');
+  is($lims->tag_sequence, 'ATCACGTT', 'tag_sequence');
+  is($lims->tags, undef, 'tags undefined');
+  is($lims->spiked_phix_tag_index, undef, 'spiked phix tag index undefined');
+  ok(!$lims->alignments_in_bam, 'no bam alignment');
+  is($lims->seq_qc_state, undef, 'no seq qc state');
+  is(scalar $lims->associated_lims, 0, 'no associated lims');
+};
+
+subtest 'Object for a non-pool lane' => sub {
+  plan tests => 93;
+
+  my $lims = st::api::lims->new(id_run => 6607, position => 1);
   isa_ok($lims, 'st::api::lims');
   is($lims->batch_id, 12378, 'batch id for lane 1');
   is($lims->is_control, 0, 'lane 1 is not control');
@@ -238,9 +375,11 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is(join(q[ ], $lims->library_names), 'BS_3hrsomuleSm_202790 3033734', 'non-pool lane library_names list');
   is(join(q[ ], $lims->sample_names), 'BS_3hrsomuleSm_202790', 'non-pool lane sample_names list');
   is(join(q[ ], $lims->study_names), 'Schistosoma mansoni methylome', 'non-pool lane study_names list');
-}
+};
 
-{
+subtest 'Priority and seqqc state' => sub {
+  plan tests => 8;
+
   my $lims = st::api::lims->new(id_run => 6607, position => 2); # non-pool lane
   is($lims->seq_qc_state, undef, 'seq qc not set for pending');
   is($lims->lane_priority, 0, 'priority 0');
@@ -255,10 +394,12 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is($lims->lane_priority, undef, 'priority undefined on plex level');
   $lims = st::api::lims->new(id_run => 6607);
   is($lims->lane_priority, undef, 'priority undefined on batch level');
-}
+};
 
-{
-  my $lims = st::api::lims->new(id_run => 6607, position => 5); # pool lane, not spiked
+subtest 'Object for a not spiked pool' => sub {
+  plan tests => 24;
+
+  my $lims = st::api::lims->new(id_run => 6607, position => 5);
   is($lims->batch_id, 12378, 'batch id for lane 5');
   is($lims->tag_index, undef, 'tag index undefined');
   is($lims->is_control, 0, 'lane 5 is not control');
@@ -292,41 +433,16 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is(join(q[,], $lims->library_names($with_spiked_phix)), $libs, 'pooled not-spiked lane library_names list $with_spiked_phix = 0');
   is(join(q[,], $lims->sample_names($with_spiked_phix)), $samples, 'pooled not-spiked lane sample_names list $with_spiked_phix = 0');
   is(join(q[,], $lims->study_names($with_spiked_phix)), $study, 'pooled not-spiked lane study_names list $with_spiked_phix = 0');
-}
-
-{
-  my $lims = st::api::lims->new(id_run => 6607, position => 5, tag_index => 1);
-  my $lims_nofb = st::api::lims->new(id_run => 6607, position => 5, tag_index => 1);
-  is($lims->batch_id, 12378, 'batch id for lane 5 tag 1');
-  is($lims->tag_index, 1, 'tag index 1');
-  is($lims->is_control, 0, 'plex 5/1 is not control');
-  is($lims->is_pool, 0, 'plex 5/1 is not pool');
-  is($lims->library_id, 3111679, 'lib id');
-  is($lims->sample_id, 1132331, 'sample id');
-  is($lims->study_id, 429, 'study id'); # fallback
-  my $project_id = 429;
-  is($lims_nofb->study_id, $project_id, 'study id'); # no fallback
-  is($lims->project_id, $project_id, 'project id');
-  is($lims->request_id, undef, 'request id');
-  is($lims->library_name, 'HiC_H_ON_DCJ 3111679', 'lib name');
-  is($lims->sample_name, 'HiC_H_ON_DCJ', 'sample name undefined');
-  is($lims->study_name, '3C and HiC of Plasmodium falciparum IT', 'study name');
-  my $project_name = q[3C and HiC of Plasmodium falciparum IT];
-  is($lims->project_name, $project_name, 'project name');
-  is($lims->tag_sequence, 'ATCACGTT', 'tag_sequence');
-  is($lims->tags, undef, 'tags undefined');
-  is($lims->spiked_phix_tag_index, undef, 'spiked phix tag index undefined');
-  ok(!$lims->alignments_in_bam, 'no bam alignment');
-  is($lims->seq_qc_state, undef, 'no seq qc state');
-  is(scalar $lims->associated_lims, 0, 'no associated lims');
-}
+};
 
 {
   my $lims = st::api::lims->new(batch_id => 13410, position => 1);
   ok(!$lims->is_control, 'lane is not a control (despite having a control tag within its hyb buffer tag)');
 }
 
-{
+subtest 'Library types' => sub {
+  plan tests => 6;
+
   my $lims = st::api::lims->new(id_run => 6607);
   is($lims->library_type, undef, 'library type undefined on a batch level');
   $lims = st::api::lims->new(id_run => 6607, position => 2); # non-pool lane
@@ -339,10 +455,13 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is($lims->library_type, 'Custom', 'library type');
   $lims = st::api::lims->new(id_run => 6607, position => 6, tag_index => 8);
   is($lims->library_type, 'Standard', 'library type');
-}
+};
 
-{
+subtest 'Unconcented human and xahuman' => sub {
+  plan tests => 11;
+
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/npg_api';
+
   my $lims = st::api::lims->new(batch_id   => 1536,position => 5);
   ok(!$lims->is_pool, 'lane is not a pool');
   is($lims->contains_nonconsented_human, 1, 'contains nonconsented human');
@@ -354,9 +473,26 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
 
   $lims = st::api::lims->new(batch_id => 13861, position => 2, tag_index => 0);
   ok($lims->contains_nonconsented_human, 'tag 0 contains unconsented human');
-}
 
-{
+ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
+
+  $lims = st::api::lims->new(id_run => 8260);
+  is($lims->contains_nonconsented_xahuman, 0,
+    'run does contain nonconsented X and autosomal human does not propagate to run level');
+
+  $lims = st::api::lims->new(id_run => 8260, position => 2);
+  is($lims->contains_nonconsented_xahuman, 0, 'lane 2 does not contain nonconsented X and autosomal human');
+  $lims = st::api::lims->new(id_run => 8260, position => 8);
+  is($lims->contains_nonconsented_xahuman, 1, 'lane 8 does contain nonconsented X and autosomal human');
+  $lims = st::api::lims->new(id_run => 8260, position => 2, tag_index => 33);
+  is($lims->contains_nonconsented_xahuman, 0, 'plex 33 lane 2 does not contain nonconsented X and autosomal human');
+  $lims = st::api::lims->new(id_run => 8260, position => 8, tag_index => 57);
+  is($lims->contains_nonconsented_xahuman, 1, 'plex 57 lane 8 does contain nonconsented X and autosomal human');
+};
+
+subtest 'Bait name' => sub {
+  plan tests => 11;
+
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/npg_api';
   my $lims = st::api::lims->new(batch_id   => 16442);
   is($lims->bait_name, undef, 'bait name undefined on a batch level');
@@ -381,62 +517,11 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is($lims->bait_name, undef, 'bait name undefined for a non-pool lane if there is no bait element');
   $lims = st::api::lims->new(batch_id   => 3022, position => 4);
   is($lims->bait_name, undef, 'bait name undefined for a control lane despite the presence of the bait element');
-}
+};
 
-{
-  my $lims = st::api::lims->new(id_run => 8260);
-  is($lims->contains_nonconsented_xahuman, 0,
-    'run does contain nonconsented X and autosomal human does not propagate to run level');
+subtest 'Study attributes' => sub {
+  plan tests => 11;
 
-  $lims = st::api::lims->new(id_run => 8260, position => 2);
-  is($lims->contains_nonconsented_xahuman, 0, 'lane 2 does not contain nonconsented X and autosomal human');
-  $lims = st::api::lims->new(id_run => 8260, position => 8);
-  is($lims->contains_nonconsented_xahuman, 1, 'lane 8 does contain nonconsented X and autosomal human');
-  $lims = st::api::lims->new(id_run => 8260, position => 2, tag_index => 33);
-  is($lims->contains_nonconsented_xahuman, 0, 'plex 33 lane 2 does not contain nonconsented X and autosomal human');
-  $lims = st::api::lims->new(id_run => 8260, position => 8, tag_index => 57);
-  is($lims->contains_nonconsented_xahuman, 1, 'plex 57 lane 8 does contain nonconsented X and autosomal human');
-}
-
-{
-  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/tag_from_sample_description';
-  #diag q[Tests for deducing tags from batch 19158 (associated with run 3905 by hand)]; 
-  my $lims8 = st::api::lims->new(batch_id => 19158, position => 8);
-  my @alims8 = $lims8->associated_lims;
-  is(scalar @alims8, 7, 'Found 7 plexes in position 8');
-
-  #diag q[Checking tag created by _build_tag is equal to the description value, not the tag value in expected_sequence, if a tag is available in the description];
-
-  my @tags = $lims8->tags();
-  is(scalar @tags, 1, 'Found 1 tags array');
-
-  cmp_ok($tags[0]->{5}, q(ne), q(ACAGTGGT), 'Do not use expected_sequence sequence for tag');
-  cmp_ok($tags[0]->{5}, q(eq), q(GTAGAC), 'Use sample_description sequence for tag');
-
-  #diag q[Checking tag created by _build_tag is equal to the expected_sequence where no sample description is available];
-
-  my $lims1 = st::api::lims->new(batch_id => 19158, position => 1);
-  my @alims1 = $lims1->associated_lims;
-  is(scalar @alims1, 6, 'Found 6 plexes in position 1');
-
-  my @tags1 = $lims1->tags();
-  is(scalar @tags1, 1, 'Found 1 tags array');
-
-  cmp_ok($tags1[0]->{144}, q(eq), q(CCTGAGCA), 'Use expected_sequence sequence for tag');
-
-  #diag q[Checking library_type is changed to 3 prime poly-A pulldown where tag is taken from sample description];
-  my $lims85 = st::api::lims->new(batch_id => 19158, position => 8, tag_index => 5);
-  is($lims85->library_type, '3 prime poly-A pulldown', 'library type');
-  is($lims85->tag_sequence, 'GTAGAC', 'plex tag sequence from sample description');
-  ok($lims85->sample_description =~ /end enriched mRNA/sm, 'sample description available');
-
-  #diag q[Checking library_type is not changed to 3 prime poly-A pulldown where no sample description is available];
-  my $lims1144 = st::api::lims->new(batch_id => 19158, position => 1, tag_index => 144);
-  isnt($lims1144->library_type, '3 prime poly-A pulldown', 'library type');
-  is($lims1144->tag_sequence, 'CCTGAGCA', 'plex tag sequence directly from batch xml');
-}
-
-{
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 
   my $lims = st::api::lims->new(batch_id=>17763, position=>1,tag_index=>1);
@@ -455,19 +540,52 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
 
   $lims = st::api::lims->new(batch_id => 22061, position =>1, tag_index=>66);
   ok($lims->separate_y_chromosome_data, 'separate y chromosome data');
-}
+};
 
-{
+subtest 'Tag sequence and library type from sample description' => sub {
+  plan tests => 15;
+
   my $sample_description =  'AB GO (grandmother) of the MGH meiotic cross. The same DNA was split into three aliquots (of which this';
   is(st::api::lims::_tag_sequence_from_sample_description($sample_description), undef, q{tag undefined for a description containing characters in round brackets} );
   $sample_description = "3' end enriched mRNA from morphologically abnormal embryos from dag1 knockout incross 3. A 6 base indexing sequence (GTAGAC) is bases 5 to 11 of read 1 followed by polyT.  More information describing the mutant phenotype can be found at the Wellcome Trust Sanger Institute Zebrafish Mutation Project website http://www.sanger.ac.uk/cgi-bin/Projects/D_rerio/zmp/search.pl?q=zmp_phD";
   is(st::api::lims::_tag_sequence_from_sample_description($sample_description), q{GTAGAC}, q{correct tag from a complex description} );
-#  is(st::api::lims::
   $sample_description = "^M";
   is(st::api::lims::_tag_sequence_from_sample_description($sample_description), undef, q{tag undefined for a description with carriage return} );
-}
 
-{
+  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/tag_from_sample_description';
+  #diag q[Tests for deducing tags from batch 19158 (associated with run 3905 by hand)]; 
+  my $lims8 = st::api::lims->new(batch_id => 19158, position => 8);
+  my @alims8 = $lims8->associated_lims;
+  is(scalar @alims8, 7, 'Found 7 plexes in position 8');
+
+  my @tags = $lims8->tags();
+  is(scalar @tags, 1, 'Found 1 tags array');
+
+  cmp_ok($tags[0]->{5}, q(ne), q(ACAGTGGT), 'Do not use expected_sequence sequence for tag');
+  cmp_ok($tags[0]->{5}, q(eq), q(GTAGAC), 'Use sample_description sequence for tag');
+
+  my $lims1 = st::api::lims->new(batch_id => 19158, position => 1);
+  my @alims1 = $lims1->associated_lims;
+  is(scalar @alims1, 6, 'Found 6 plexes in position 1');
+
+  my @tags1 = $lims1->tags();
+  is(scalar @tags1, 1, 'Found 1 tags array');
+
+  cmp_ok($tags1[0]->{144}, q(eq), q(CCTGAGCA), 'Use expected_sequence sequence for tag');
+
+  my $lims85 = st::api::lims->new(batch_id => 19158, position => 8, tag_index => 5);
+  is($lims85->library_type, '3 prime poly-A pulldown', 'library type');
+  is($lims85->tag_sequence, 'GTAGAC', 'plex tag sequence from sample description');
+  ok($lims85->sample_description =~ /end enriched mRNA/sm, 'sample description available');
+
+  my $lims1144 = st::api::lims->new(batch_id => 19158, position => 1, tag_index => 144);
+  isnt($lims1144->library_type, '3 prime poly-A pulldown', 'library type');
+  is($lims1144->tag_sequence, 'CCTGAGCA', 'plex tag sequence directly from batch xml');
+};
+
+subtest 'Inline index' => sub {
+  plan tests => 14;
+
   my $lims = st::api::lims->new(id_run=>10638, position=>5);
   is ($lims->id_run(), 10638, "Found the run");
   my @children = $lims->children();
@@ -477,21 +595,21 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is($lims->inline_index_end,12,'found correct inline index end');
   is($lims->inline_index_read,2,'found correct inline index read');
   is($lims->tag_sequence,undef,'tag sequence undefined for lane level');
-}
 
-{
-  my $lims = st::api::lims->new(id_run=>10638, position=>6);
+  $lims = st::api::lims->new(id_run=>10638, position=>6);
   is ($lims->id_run(), 10638, "Found the run");
-  my @children = $lims->children();
+  @children = $lims->children();
   isnt (scalar @children, 0, "We have children");
   is($lims->inline_index_exists,1,'Found an inline index');
   is($lims->inline_index_start,6,'found correct inline index start');
   is($lims->inline_index_end,10,'found correct inline index end');
   is($lims->inline_index_read,1,'found correct inline index read');
   is($lims->tag_sequence,undef,'tag sequence undefined for lane level');
-}
+};
 
-{
+subtest 'Run-level object via samplesheet driver' => sub {
+  plan tests => 36;
+
   my $path = 't/data/samplesheet/miseq_default.csv';
 
   my $ss = st::api::lims->new(id_run => 10262,  path => $path, driver_type => 'samplesheet');
@@ -542,9 +660,11 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is ($plexes[95]->tag_sequence, 'GTCTTGGC', 'tag sequence of the last plex');
   is ($plexes[95]->library_id, 7583506, 'library_id of the last plex');
   is ($plexes[95]->sample_name, 'LIA_96', 'sample_name of the last plex');
-}
+};
 
-{
+subtest 'Lane-level object via samplesheet driver' => sub {
+  plan tests => 25;
+
   my $path = 't/data/samplesheet/miseq_default.csv';
   lives_ok {st::api::lims->new(id_run => 10262, position =>2, path => $path, driver_type => 'samplesheet')}
     'no error instantiation an object for a non-existing lane';
@@ -560,7 +680,7 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
     qr/Validation failed for 'NpgTrackingReadableFile'/, 'error invoking a driver method on an object with non-existing path';
  
   my $ss=st::api::lims->new(id_run => 10262, position =>1, path => $path);
-  is ($ss->driver_type, 'samplesheet', 'driver type built correctly');
+  is ($ss->driver_type, 'samplesheet', 'driver type built correctly') or diag explain $ss;
   is ($ss->position, 1, 'correct position');
   is ($ss->is_pool, 1, 'lane is a pool');
   is ($ss->library_id, undef, 'pool lane library_id undefined');
@@ -587,9 +707,11 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   is ($ss->library_id, undef, 'tag_zero library_id undefined');
   is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
   is ($ss->tag_sequence, undef, 'tag sequence undefined');
-}
+};
 
-{
+subtest 'Instantiating a samplesheet driver' => sub {
+  plan tests => 15;
+
   my $ss_path = 't/data/samplesheet/miseq_default.csv';
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $ss_path;
   my $l;
@@ -603,32 +725,38 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet';
   lives_ok {$l = st::api::lims->new(id_run => 10262,)}
     'no error creating an object with samplesheet file defined in env var';
-  is ($l->driver_type, 'xml', 'driver type is xml since env var points to a directory');
-  ok (!$l->path, 'path is not built');
+  is ($l->driver_type, 'samplesheet', 'driver type is samplesheet');
+  ok ($l->path, 'path is built');
+  throws_ok {$l->children}
+    qr/Is a directory/,
+    'directory given as a samplesheet file path - error';
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/non-existing';
   lives_ok {$l = st::api::lims->new(id_run => 10262,)}
     'no error creating an object with samplesheet file defined in env var';
-  is ($l->driver_type, 'xml', 'driver type is xml since env var points to a non-existing file');
-  ok (!$l->path, 'path is not built');
+  is ($l->driver_type, 'samplesheet', 'driver type is samplesheet');
+  throws_ok {$l->children}
+    qr/Attribute \(path\) does not pass the type constraint/,
+    'directory given as a samplesheet file path - error';
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/non-existing';
   lives_ok {$l = st::api::lims->new(id_run => 10262, path => $ss_path)}
     'no error creating an object with samplesheet file defined in env var and path given';
   is ($l->driver_type, 'samplesheet', 'driver type is samplesheet');
-}
+  lives_ok {$l->children} 'given path takes precedence';
+};
 
-{
+subtest 'Dual index' => sub {
+  plan tests => 30;
+
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/dual_index_extended.csv';
   _test_di( st::api::lims->new(id_run => 6946) );
-}
 
-{
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/samplesheet';
   _test_di( st::api::lims->new(batch_id => 1) );
-}
+};
 
-sub _test_di { 
+sub _test_di {
   my $l = shift;
 
   my @lanes = $l->children;

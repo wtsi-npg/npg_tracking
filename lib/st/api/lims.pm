@@ -3,18 +3,12 @@ package st::api::lims;
 use Carp;
 use English qw(-no_match_vars);
 use Moose;
-use MooseX::StrictConstructor;
 use MooseX::Aliases;
 use Readonly;
-use List::MoreUtils qw/none uniq/;
+use List::MoreUtils qw/any none uniq/;
+use Class::Load qw/load_class/;
 
 use npg_tracking::util::types;
-
-with qw/  npg_tracking::glossary::run
-          npg_tracking::glossary::lane
-          npg_tracking::glossary::tag
-          npg_tracking::glossary::flowcell
-       /;
 
 our $VERSION = '0';
 
@@ -24,29 +18,58 @@ st::api::lims
 
 =head1 SYNOPSIS
 
- $lims = st::api::lims->new(id_run => 333) #run (batch) level object
- $lims = st::api::lims->new(batch_id => 222) # as above
- $lims = st::api::lims->new(batch_id => 222, position => 3) # lane level object
- $lims = st::api::lims->new(id_run => 333, position => 3, tag_index => 44) # plex level object
+ $lims = st::api::lims->new(id_run => 333); #run (batch) level object
+ $lims = st::api::lims->new(batch_id => 222); # as above
+ $lims = st::api::lims->new(batch_id => 222, position => 3); # lane level object
+ $lims = st::api::lims->new(id_run => 333, position => 3, tag_index => 44); # plex level object
+ $lims = st::api::lims->new(driver_type => q(ml_warehouse), flowcell_barcode => q(HTC3HADXX),
+                            position => 2, tag_index => 40); # plex level object from ml_warehouse
+ $lims = st::api::lims->new(driver_type => q(ml_warehouse), flowcell_barcode => q(HTC3HADXX),
+                            position => 2, tag_index => 40, mlwh_schema=>$suitable_dbic_schema);
 
 =head1 DESCRIPTION
 
 Generic NPG pipeline oriented LIMS wrapper capable of retrieving data from multiple sources
-(drivers).
+(drivers). Provides methods performing "business" logic independent of data source.
+
+Note the set of valid arguments to the constructor are a function of the driver_type passed.
+
+Any driver attribute can be passed through to the driver's constructor via this objects's
+constructor. Not all of the attributes passed through to the driver will be available
+as this object's accessors. Example:
+
+ $lims = st::api::lims->new(
+                             id_flowcell_lims => 34567,
+                             position         => 5,
+                             driver_type      => 'ml_warehouse',
+                             iseq_flowcell    => $iseq_flowcell
+                           );
+ print $lims->position();         # 5
+ print $lims->id_flowcell_lims(); # 34567
+ print $lims->driver_type;        # ml_warehouse
+ print $lims->iseq_flowcell();    # ERROR
 
 =head1 SUBROUTINES/METHODS
 
 =cut
 
-Readonly::Scalar my  $CACHED_SAMPLESHEET_FILE_VAR_NAME => 'NPG_CACHED_SAMPLESHEET_FILE';
+Readonly::Scalar my $CACHED_SAMPLESHEET_FILE_VAR_NAME => 'NPG_CACHED_SAMPLESHEET_FILE';
+Readonly::Scalar my $DEFAULT_DRIVER_TYPE              => 'xml';
 
-Readonly::Scalar my  $PROC_NAME_INDEX      => 3;
-Readonly::Hash   my  %QC_EVAL_MAPPING      => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
-Readonly::Scalar my  $INLINE_INDEX_END     => 10;
+Readonly::Scalar my $PROC_NAME_INDEX       => 3;
+Readonly::Hash   my %QC_EVAL_MAPPING       => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
+Readonly::Scalar my $INLINE_INDEX_END      => 10;
 Readonly::Scalar my $DUAL_INDEX_TAG_LENGTH => 16;
 
-Readonly::Hash   my  %METHODS           => {
-
+Readonly::Hash   my  %METHODS_PER_CATEGORY => {
+    'primary'    =>   [qw/ tag_index
+                           position
+                           id_run
+                           path
+                           id_flowcell_lims
+                           batch_id
+                           flowcell_barcode
+                      /],
     'general'    =>   [qw/ spiked_phix_tag_index
                            is_pool
                            is_control
@@ -105,8 +128,67 @@ Readonly::Hash   my  %METHODS           => {
     'request'      => [qw/ request_id /],
 };
 
-Readonly::Array my @IMPLEMENTED_DRIVERS => qw/xml samplesheet ml_warehouse/;
-Readonly::Array my @DELEGATED_METHODS   => sort map { @{$_} } values %METHODS;
+Readonly::Array my @METHODS             => sort map { @{$_} } values %METHODS_PER_CATEGORY;
+Readonly::Array my @DELEGATED_METHODS   => sort map { @{$METHODS_PER_CATEGORY{$_}} }
+                                             grep {$_ ne 'primary'} keys %METHODS_PER_CATEGORY;
+
+has '_driver_arguments' => (
+                        isa    => 'HashRef',
+                        is     => 'ro',
+                        writer => '_set__driver_arguments',
+                        default => sub { {} },
+);
+
+has '_primary_arguments' => (
+                        isa    => 'HashRef',
+                        is     => 'ro',
+                        writer => '_set__primary_arguments',
+                        default => sub { {} },
+);
+
+=head2 BUILD
+
+Custom post construction method to help propagate varied arguments to driver constructors
+
+=cut
+sub BUILD {
+  my $self = shift;
+  my %args = %{shift||{}};
+  delete $args{'driver'}; # better not to have this extra reference
+  $self->_set__driver_arguments(\%args);
+  my %dargs=();
+  my %pargs=();
+  my %primary_arg_type = map {$_ => 1} @{$METHODS_PER_CATEGORY{'primary'}};
+
+  my $driver_class=$self->_driver_package_name;
+
+  foreach my$k (grep {defined && $_ !~ /^_/smx} map{ $_->has_init_arg ? $_->init_arg : $_->name}
+                $driver_class->meta->get_all_attributes) {
+    if(exists $args{$k}){
+      $dargs{$k}=$args{$k};
+      if ( not $primary_arg_type{$k} ){ #allow caching of primary args later even if driver provides methods - important for when passing tag_index=>0 and a lane level lims driver object to constructor
+        delete $args{$k};
+      }
+    }
+  }
+  $self->_set__driver_arguments(\%dargs);
+
+  foreach my$k (grep {defined} map{$_->has_init_arg ? $_->init_arg : $_->name}
+      __PACKAGE__->meta->get_all_attributes) {
+    delete $args{$k};
+  }
+
+  #only allow primary args - to recreate Strictness of constructor
+  foreach my$k( @{$METHODS_PER_CATEGORY{'primary'}} ) {
+    if(exists $args{$k}) {
+      $pargs{$k}=$args{$k};
+      delete $args{$k};
+    }
+  }
+  croak 'Unknown attributes: '.join q(, ), keys %args if keys %args;
+  $self->_set__primary_arguments(\%pargs);
+  return;
+}
 
 # Mapping of LIMS object types to attributes for which methods are to
 # be generated. These generated methods are 'plural' methods which
@@ -155,9 +237,10 @@ Driver type (xml, etc), currently defaults to xml
 
 =cut
 has 'driver_type' => (
-                        isa     => 'Str',
-                        is      => 'ro',
+                        isa        => 'Str',
+                        is         => 'ro',
                         lazy_build => 1,
+                        writer     => '_set_driver_type',
                      );
 sub _build_driver_type {
   my $self = shift;
@@ -167,20 +250,18 @@ sub _build_driver_type {
     $type =~ s/\A\Q$prefix\E//smx;
     return $type;
   }
-  my $cached_path = $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
-  if ($self->_has_path || ($cached_path && -f $cached_path)) {
-    if (!$self->_has_path) {
-      $self->_set_path($cached_path);
-      $self->clear_batch_id();
-    }
-    return $IMPLEMENTED_DRIVERS[1];
+
+  $self->_driver_arguments()->{'path'} ||= $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
+  if ( $self->_driver_arguments()->{'path'} ) {
+    return 'samplesheet';
   }
-  return $IMPLEMENTED_DRIVERS[0];
+
+  return $DEFAULT_DRIVER_TYPE;
 }
 
 =head2 driver
 
-Driver object (xml, warehouse, samplesheet)
+Driver object (xml, warehouse, mlwarehouse, samplesheet ...)
 
 =cut
 has 'driver' => (
@@ -191,43 +272,34 @@ has 'driver' => (
                 );
 sub _build_driver {
   my $self = shift;
-  my $d_package = $self->_driver_package_name;
-  ##no critic (ProhibitStringyEval)
-  eval "require $d_package" or croak "Error loading package $d_package: " . $EVAL_ERROR;
-  ##use critic
-  my $ref = {};
-  foreach my $attr (qw/tag_index position id_run path id_flowcell_lims flowcell_barcode/) {
-    if (defined $self->$attr) {
-      $ref->{$attr} = $self->$attr;
-    }
-  }
-
-  if ($self->has_batch_id) {
-    $ref->{'batch_id'} = $self->batch_id;
-  }
-  return $d_package->new($ref);
+  return $self->_driver_package_name()->new($self->_driver_arguments());
 }
 
 sub _driver_package_name {
   my $self = shift;
-  my $type = $self->driver_type;
-  if (none {$type} @IMPLEMENTED_DRIVERS) {
-    croak qq[Driver type '$type' not implemented.\n Implemented drivers: ] .
-             join q[,], @IMPLEMENTED_DRIVERS;
-  }
-  return join q[::], __PACKAGE__ , $type;
+  my $class = join q[::], __PACKAGE__ , $self->driver_type;
+  load_class($class);
+  return $class;
 }
 
-for my$m ( @DELEGATED_METHODS ){
+for my$m ( @METHODS ){
   __PACKAGE__->meta->add_method($m, sub{
     my$l=shift;
     my$d=$l->driver;
     my$r= $d->can($m) ? $d->$m(@_) : undef;
     if( defined $r and length $r){ #if method exists and it returns a defined and non-empty result
       return $d->$m(@_); # call again here in case it returns different info in list context
-    }elsif($m eq q(is_pool)){ # avoid obvious recursion
+    }
+    if(exists $l->_primary_arguments()->{$m}){
+      return $l->_primary_arguments()->{$m}
+    }
+    if($m eq q(is_pool)){ # avoid obvious recursion
       return scalar $l->children;
-    }elsif($l->is_pool){ # else try any children
+    }
+    if(any {$_ eq $m} @{$METHODS_PER_CATEGORY{'primary'}} ){
+      return $r;
+    }
+    if($l->is_pool){ # else try any children
       return $l->_single_attribute($m,0); # 0 to ignore spike
     }
     return;
@@ -293,56 +365,6 @@ sub _build__sample_description {
   return $self->sample_description if ($self->sample_description);
   foreach my $c ($self->children) {
     return $c->sample_description if ($c->sample_description);
-  }
-  return;
-}
-
-=head2 path
-
-Samplesheet path
-
-=cut
-has 'path' => (
-                  isa       => 'Str',
-                  is        => 'ro',
-                  required  => 0,
-                  predicate => '_has_path',
-                  writer    => '_set_path',
-              );
-
-=head2 id_run
-
-Run id, optional attribute.
-
-=cut
-has '+id_run'   =>        (required        => 0,);
-
-=head2 position
-
-Position, optional attribute.
-
-=cut
-has '+position' =>        (required        => 0,);
-
-=head2 tag_index
-
-Tag index, optional attribute.
-
-=cut
-
-=head2 batch_id
-
-Batch id, optional attribute.
-
-=cut
-has 'batch_id'  =>        (isa             => 'Maybe[NpgTrackingPositiveInt]',
-                           is              => 'ro',
-                           lazy_build      => 1,
-                          );
-sub _build_batch_id {
-  my $self = shift;
-  if ($self->id_run && $self->driver_type eq 'xml') {
-    return $self->driver->batch_id;
   }
   return;
 }
@@ -1037,7 +1059,7 @@ sub method_list {
     }
     push @attrs, $name;
   }
-  push @attrs, @DELEGATED_METHODS;
+  push @attrs, @METHODS;
   @attrs = sort @attrs;
   return @attrs;
 }
@@ -1091,12 +1113,6 @@ __END__
 =item Readonly
 
 =item npg_tracking::util::types
-
-=item npg_tracking::glossary::run
-
-=item npg_tracking::glossary::lane
-
-=item npg_tracking::glossary::tag
 
 =back
 
