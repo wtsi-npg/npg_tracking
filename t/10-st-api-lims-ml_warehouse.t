@@ -32,13 +32,13 @@ subtest 'constructing objects' => sub {
   my $rs;
   throws_ok {$rs = $d->new(
       mlwh_schema      => $schema_wh,
-      flowcell_barcode => 'barcode', position => 1)->query_resultset}
+      flowcell_barcode => 'barcode')->query_resultset}
 qr/No record retrieved for st::api::lims::ml_warehouse flowcell_barcode barcode/,
     'error when non-existing barcode is given';
 
   throws_ok {$rs = $d->new(
       mlwh_schema      => $schema_wh,
-      id_flowcell_lims => 'XX_99_XX', position=>1)->query_resultset}
+      id_flowcell_lims => 'XX_99_XX')->query_resultset}
 qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims XX_99_XX/,
     'error when non-existing flowcell id is given';
 
