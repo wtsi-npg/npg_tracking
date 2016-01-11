@@ -162,8 +162,9 @@ sub _build__lchildren {
 
     my $package_name = ref $self;
     my $init = {};
-    foreach my $init_attr (qw/id_flowcell_lims flowcell_barcode/) {
-      if ($self->$init_attr) {
+    foreach my $init_attr ( qw/id_flowcell_lims flowcell_barcode id_run/) {
+      my $pred = "has_$init_attr";
+      if ($self->$pred) {
         $init->{$init_attr} = $self->$init_attr;
       }
     }
