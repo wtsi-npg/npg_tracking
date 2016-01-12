@@ -174,14 +174,14 @@ sub _build__lchildren {
         $init->{'query_resultset'} = $self->query_resultset;
         $init->{'position'}        = $self->position;
         my %hashed_rs = map { $_->tag_index => 1} $self->query_resultset->all;
-        foreach my $tag_index (sort keys %hashed_rs) {
+        foreach my $tag_index (sort {$a <=> $b} keys %hashed_rs) {
           $init->{'tag_index'} = $tag_index;
           push @children, $package_name->new($init);
 	}
       }
     } else {
       my %hashed_rs = map { $_->position => 1} $self->query_resultset->all;
-      my @positions = sort keys %hashed_rs;
+      my @positions = sort {$a <=> $b} keys %hashed_rs;
       foreach my $position (@positions) {
         $init->{'query_resultset'} = $self->query_resultset->search({'me.position' => $position});
         $init->{'position'}        = $position;
