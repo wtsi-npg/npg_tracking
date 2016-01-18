@@ -1,5 +1,11 @@
 LIST OF CHANGES
  
+release 85.0
+ - lims shim
+   - endeavours to ensure consistency of primary info (e.g. id_run, position)
+     with drivers
+   - will pass through arguments to driver constructor if it takes them
+
 release 84.12 
  - composition and component serialization to rpt 
 
