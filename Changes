@@ -1,5 +1,6 @@
 LIST OF CHANGES
  
+release 85.0
  - lims shim
    - endeavours to ensure consistency of primary info (e.g. id_run, position)
      with drivers
