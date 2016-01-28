@@ -64,6 +64,12 @@ Position, optional attribute.
 =cut
 has '+position' =>        (required        => 0,);
 
+=head2 purpose
+
+Purpose
+
+=cut
+has 'purpose' => (isa => 'Str', is => 'ro', default => 'standard');
 
 =head2 BUILD
 
