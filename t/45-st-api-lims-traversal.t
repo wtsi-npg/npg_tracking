@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 118; #remember to change the skip number below as well!
+use Test::More tests => 121; #remember to change the skip number below as well!
 use Test::Deep;
 use Test::Exception;
 use Try::Tiny;
@@ -55,7 +55,7 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
   SKIP: {
 
     if (!$do_test) {
-      skip $reason, 39;
+      skip $reason, 42;
     }
 
     my $lims = st::api::lims->new($lfield => 4775, driver_type => $driver);
@@ -130,6 +130,9 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
 
     my $lims9 = st::api::lims->new($lfield =>15728, position=>2, tag_index=>0, driver_type => $driver);
     ok( $lims9->any_sample_consent_withdrawn(), 'any sample consent withdrawn' );
+
+    my $lims10 = st::api::lims->new($lfield =>43500, position=>1, tag_index=>1, driver_type => $driver);
+    is($lims10->purpose,'standard','Purpose');
 
   }; # end of SKIP
 }
