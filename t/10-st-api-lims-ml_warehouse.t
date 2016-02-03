@@ -121,7 +121,7 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
 };
 
 subtest 'lane-level driver from run-level driver' => sub {
-  plan tests => 78;
+  plan tests => 81;
 
   my $count = 0;
         for my $p ($mlwh_d, $mlwh_auto_d, $mlwh_auto_d) {
@@ -169,6 +169,7 @@ subtest 'lane-level driver from run-level driver' => sub {
   is ($lims1->sample_supplier_name, 'sample_33', 'supplier name');
   is ($lims1->sample_cohort, 'plan2', 'cohort');
   is ($lims1->sample_donor_id, 'd5678', 'donor id');
+  is ($lims1->purpose, 'qc', 'purpose');
 
   my $insert_size;
   lives_ok {$insert_size = $lims1->required_insert_size_range} 'insert size for the first lane';
@@ -178,7 +179,7 @@ subtest 'lane-level driver from run-level driver' => sub {
 };
 
 subtest 'lane-level drivers' => sub {
-  plan tests => 78;
+  plan tests => 82;
 
  is( $schema_wh->resultset('IseqFlowcell')
      ->search({id_flowcell_lims => '4775', tag_index => undef})->count(), 8,
@@ -230,6 +231,7 @@ subtest 'lane-level drivers' => sub {
   is ($lims4->sample_id, 9836, 'sample id from fourth lane');
   ok (!$lims4->study_id, 'study id from fourth lane undef');
   ok (!$lims4->required_insert_size_range, 'no insert size for control lane');
+  is ($lims4->purpose, 'standard', 'purpose');
 
   is ($lims6->library_id, 556677, 'new library id returned');
   is ($lims6->library_name, 556677, 'library name is based on the new library id');  
@@ -243,6 +245,7 @@ subtest 'lane-level drivers' => sub {
 
   is ($lims6->study_alignments_in_bam, 1,'do bam alignments');
   is ($lims6->tag_index, undef, 'tag index is undefined');
+
         }
 };
 
