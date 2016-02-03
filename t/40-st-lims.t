@@ -707,7 +707,11 @@ subtest 'Lane-level object via samplesheet driver' => sub {
   is ($ss->library_id, undef, 'tag_zero library_id undefined');
   is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
   is ($ss->tag_sequence, undef, 'tag sequence undefined');
+<<<<<<< HEAD
   is ($ss->purpose, undef, 'purpose');
+=======
+  is ($ss->purpose, 'standard', 'purpose');
+>>>>>>> 06da0f605793ba9ec7de218298e78acdb900095b
 };
 
 subtest 'Instantiating a samplesheet driver' => sub {
