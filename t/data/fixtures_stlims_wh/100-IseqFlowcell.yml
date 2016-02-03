@@ -2,6 +2,7 @@
 - bait_name: ~
   cost_code: S0277
   entity_id_lims: 21582
+  purpose: 'qc'
   entity_type: library
   external_release: 1
   flowcell_barcode: 42UMBAAXX
@@ -203,6 +204,7 @@
   tag_set_name: ~
 - bait_name: ~
   cost_code: ~
+  purpose: 'standard'
   entity_id_lims: 3314798
   entity_type: library_control
   external_release: 0
@@ -1349,6 +1351,7 @@
   reverse_read_length: 75
   tag_index: 3
   tag_sequence: TTAGGC
+  purpose: 'qc'
   tag_set_id_lims: 3
   tag_set_name: 'Illumina set/Scriptseq - 6 mer tags'
 - bait_name: DDD custom library
