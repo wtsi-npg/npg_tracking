@@ -55,7 +55,7 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
   SKIP: {
 
     if (!$do_test) {
-      skip $reason, 42;
+      skip $reason, 40;
     }
 
     my $lims = st::api::lims->new($lfield => 4775, driver_type => $driver);
