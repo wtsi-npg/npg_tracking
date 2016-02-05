@@ -17,6 +17,12 @@ our $VERSION = '0';
 Readonly::Scalar our $FEATURE_EXTENSION => q[.yml];
 Readonly::Scalar our $TEMP_DIR => q{/tmp};
 
+has 'sqlite_utf8_enabled' =>
+  (is      => 'rw',
+   isa     => 'Bool',
+   default => 0,    # This default preserves current behaviour
+   documentation => 'Enable UTF-8 support for SQLite',);
+
 has 'verbose' =>
   (is      => 'rw',
    isa     => 'Bool',
@@ -35,11 +41,12 @@ npg_testing::db
 =head1 DESCRIPTION
 
 A Moose role for creating and loading a test SQLite database using an
-existing DBIx database binding. The encoding used in the YAML files
-and in the test database is UTF-8. If UTF-8 is enabled for the MySQL
-database (using mysql_enable_utf8 => 1 in the DBI connection attributes),
-then it will be enabled automatically in any temporary SQLite database
-created by the create_test_db method.
+existing DBIx database binding. The encoding used in the YAML files.
+
+Setting sqlite_utf8_enabled will enable UTF-8 for any temporary SQLite
+database created by the create_test_db method. The UTF-8 setting of
+the MySQL databases used by this class must be configured
+independently.
 
 =head1 SUBROUTINES/METHODS
 
@@ -109,9 +116,8 @@ ls -l | grep .yml | perl -nle 'my @columns = split q[ ], $_; my $old = pop @colu
 sub load_fixtures {
     my ($self, $schema, $path) = @_;
 
-    if (!$path && !(ref $schema)) {
-        $path = $schema;
-        $schema = $self;
+    if (!$schema) {
+        croak ' should be given';
     }
     if (!$path) {
         croak 'Path should be given';
@@ -200,23 +206,7 @@ sub create_test_db {
     my $pass = undef;
     my $dbattr = {RaiseError => 1};
 
-    if ($self->has_config_file) {
-      # If there is a config file (MySQL) which has UTF-8 enabled,
-      # enable it for SQLite too.
-      if ($self->dbattr->{mysql_enable_utf8}) {
-        $dbattr->{sqlite_unicode} = 1;
-        if ($self->verbose) {
-          carp q[Enabled UTF-8 support for SQLite ] .
-               q[because it is enabled for MySQL];
-        }
-      }
-      else {
-        carp q[UTF-8 support is not enabled for SQLite ] .
-             q[because it is not enabled for MySQL];
-      }
-    }
-    else {
-      # There is no config file, so enable UTF-8 by default.
+    if ($self->sqlite_utf8_enabled) {
       $dbattr->{sqlite_unicode} = 1;
       if ($self->verbose) {
         carp q[Enabled UTF-8 support for SQLite];
@@ -288,7 +278,7 @@ sub deploy_test_db {
     my $schema = $schema_package->connect($self->dsn, $self->dbuser, $self->dbpass, $self->dbattr);
     $schema->deploy({add_drop_table => 1});
     if ($fixtures_path) {
-        load_fixtures($schema,  $fixtures_path);
+        $self->load_fixtures($schema, $fixtures_path);
     } else {
         carp q[Fixtures path undefined in create_test_db];
     }
