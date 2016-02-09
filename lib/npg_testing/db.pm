@@ -183,10 +183,8 @@ SQLite database. If the third argument is not given, a randomly
 named file in a temporary directory is used; this file will
 be cleaned up on exit.
 
-If UTF-8 is enabled for the MySQL database (using mysql_enable_utf8 =>
-1 in the DBI connection attributes), then it will be enabled
-automatically in any temporary SQLite database created by the
-this method.
+Setting the sqlite_utf8_enabled attribute will enable UTF-8 for any
+temporary SQLite database created by the this method.
 
 =cut
 sub create_test_db {
