@@ -64,7 +64,6 @@ Position, optional attribute.
 =cut
 has '+position' =>        (required        => 0,);
 
-
 =head2 BUILD
 
 Validates attributes given to the constructor against data

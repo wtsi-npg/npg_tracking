@@ -5,7 +5,7 @@ use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
 
-my $num_delegated_methods = 44;
+my $num_delegated_methods = 45;
 
 local $ENV{'http_proxy'} = 'http://wibble.com';
 
@@ -341,7 +341,7 @@ subtest 'Object for a tag' => sub {
 };
 
 subtest 'Object for a non-pool lane' => sub {
-  plan tests => 93;
+  plan tests => 94;
 
   my $lims = st::api::lims->new(id_run => 6607, position => 1);
   isa_ok($lims, 'st::api::lims');
@@ -663,7 +663,7 @@ subtest 'Run-level object via samplesheet driver' => sub {
 };
 
 subtest 'Lane-level object via samplesheet driver' => sub {
-  plan tests => 25;
+  plan tests => 26;
 
   my $path = 't/data/samplesheet/miseq_default.csv';
   lives_ok {st::api::lims->new(id_run => 10262, position =>2, path => $path, driver_type => 'samplesheet')}
@@ -707,6 +707,7 @@ subtest 'Lane-level object via samplesheet driver' => sub {
   is ($ss->library_id, undef, 'tag_zero library_id undefined');
   is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
   is ($ss->tag_sequence, undef, 'tag sequence undefined');
+  is ($ss->purpose, undef, 'purpose');
 };
 
 subtest 'Instantiating a samplesheet driver' => sub {
@@ -747,7 +748,7 @@ subtest 'Instantiating a samplesheet driver' => sub {
 };
 
 subtest 'Dual index' => sub {
-  plan tests => 30;
+  plan tests => 32;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/dual_index_extended.csv';
   _test_di( st::api::lims->new(id_run => 6946) );
@@ -781,6 +782,7 @@ sub _test_di {
   is($plex->default_tag_sequence, 'GTCTTGGC', 'first index');
   is($plex->default_tagtwo_sequence, 'GGGGGGGG', 'second index');
   is($plex->tag_sequence, 'GTCTTGGCGGGGGGGG', 'combined tag sequence');
+  is($plex->purpose, 'standard', 'purpose');
 }
 
 1;

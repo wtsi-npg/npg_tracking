@@ -8,7 +8,7 @@ BEGIN {
 package main;
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 7;
 use Test::Exception;
 
 my $db_role_user = db_role_user->new();
@@ -28,5 +28,10 @@ throws_ok {$db_role_user->deploy_test_db()} qr/Schema package undefined/,
 throws_ok {$db_role_user->deploy_test_db('npg_tracking::does::not::exist')}
   qr/Can't locate npg_tracking\/does\/not\/exist.pm/,
   'should be possible to load the schema package into memory';
+
+ok($db_role_user->verbose,
+   'Fixture loading is verbose by default');
+ok(!$db_role_user->sqlite_utf8_enabled,
+   'SQLite UTF-8 support is off by default');
 
 1;
