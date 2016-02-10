@@ -126,6 +126,8 @@ sub _build_npg_api_run {
    return $run_obj;
 }
 
+has 'purpose' => (isa => 'Str', is => 'ro', default => 'standard');
+
 has '_lane_elements' =>   (isa             => 'ArrayRef',
                            is              => 'ro',
                            init_arg        => undef,

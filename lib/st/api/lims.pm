@@ -78,6 +78,7 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
                            default_tagtwo_sequence
                            required_insert_size_range
                            qc_state
+                           purpose
                       /],
 
     'lane'         => [qw/ lane_id
