@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+
 use Test::More tests => 23;
 use Test::Exception;
 use Test::Warn;
@@ -107,6 +108,7 @@ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 
 my @libs_6551_1 = ('PhiX06Apr11','SS109114 2798524','SS109305 2798523','SS117077 2798526','SS117886 2798525','SS127358 2798527','SS127858 2798529','SS128220 2798530','SS128716 2798531','SS129050 2798528','SS129764 2798532','SS130327 2798533','SS131636 2798534');
 my @samples_6551_1 = qw/phiX_for_spiked_buffers SS109114 SS109305 SS117077 SS117886 SS127358 SS127858 SS128220 SS128716 SS129050 SS129764 SS130327 SS131636/;
+my @accessions_6551_1 = qw/ERS024591 ERS024592 ERS024593 ERS024594 ERS024595 ERS024596 ERS024597 ERS024598 ERS024599 ERS024600 ERS024601 ERS024602/;
 my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Shigella sp.');
 
 subtest 'Driver type build' => sub {
@@ -136,7 +138,7 @@ subtest 'Driver type build' => sub {
 };
 
 subtest 'Run-level object' => sub {
-  plan tests => 18;
+  plan tests => 19;
 
   my $lims = st::api::lims->new(id_run => 6551);
   is($lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
@@ -157,11 +159,12 @@ subtest 'Run-level object' => sub {
   is($lims->to_string, 'st::api::lims object, driver - xml, batch_id 12141, id_run 6551', 'object as string');
   is(scalar($lims->library_names), 0, 'batch-level library_names list empty');
   is(scalar($lims->sample_names), 0, 'batch-level sample_names list empty');
+  is(scalar($lims->sample_accession_numbers), 0, 'batch-level sample_accession_numbers list empty');
   is(scalar($lims->study_names), 0, 'batch-level study_names list empty');
 };
 
 subtest 'Lane-level object' => sub {
-  plan tests => 40;
+  plan tests => 43;
 
   my $lims = st::api::lims->new(id_run => 6551, position => 1);
   is($lims->lane_id(), 3065552, q{lane_id ok for id_run 6551, position 1} );
@@ -193,11 +196,14 @@ subtest 'Lane-level object' => sub {
   is($lims->to_string, 'st::api::lims object, driver - xml, batch_id 12141, id_run 6551, position 1', 'object as string');
   is(join(q[,], $lims->library_names), join(q[,], sort @libs_6551_1), 'pool lane-level library_names list');
   is(join(q[,], $lims->sample_names), join(q[,], sort @samples_6551_1), 'pool lane-level sample_names list');
+  is(join(q[,], $lims->sample_accession_numbers), join(q[,], sort @accessions_6551_1), 'pool lane-level sample_accession_numbers list');
   is(join(q[,], $lims->study_names), join(q[,], sort @studies_6551_1), 'pool lane-level study_names list');
-    
+
   my $with_spiked_phix = 1;
   is(join(q[,], $lims->library_names($with_spiked_phix)), join(q[,], sort @libs_6551_1), 'pool lane-level library_names list $with_spiked_phix = 1');
   is(join(q[,], $lims->sample_names($with_spiked_phix)), join(q[,], sort @samples_6551_1), 'pool lane-level sample_names list $with_spiked_phix = 1');
+  is(join(q[,], $lims->sample_accession_numbers($with_spiked_phix)),
+     join(q[,], sort @accessions_6551_1), 'pool lane-level sample_accession_number list $with_spiked_phix = 1');
   is(join(q[,], $lims->study_names($with_spiked_phix)), join(q[,], sort @studies_6551_1), 'pool lane-level study_names list $with_spiked_phix = 1');
 
   is(join(q[,], $lims->library_ids($with_spiked_phix)),
@@ -206,6 +212,7 @@ subtest 'Lane-level object' => sub {
   is(join(q[,], $lims->sample_ids($with_spiked_phix)), 
      '1093818,1093819,1093820,1093821,1093822,1093823,1093824,1093825,1093826,1093827,1093828,1093829,1255141',
      'pool lane-level sample_names list $with_spiked_phix = 1');
+
   is(join(q[,], $lims->study_ids($with_spiked_phix)), '198,297',
      'pool lane-level study_ids list $with_spiked_phix = 1');
   is(join(q[,], $lims->project_ids($with_spiked_phix)), '297',
@@ -217,6 +224,9 @@ subtest 'Lane-level object' => sub {
   my @studies = @studies_6551_1; shift @studies;
   is(join(q[,], $lims->library_names($with_spiked_phix)), join(q[,], sort @libs), 'pool lane-level library_names list $with_spiked_phix = 0;');
   is(join(q[,], $lims->sample_names($with_spiked_phix)), join(q[,], sort @samples), 'pool lane-level sample_names list $with_spiked_phix = 0;');
+  is(join(q[,], $lims->sample_accession_numbers($with_spiked_phix)),
+     join(q[,], sort @accessions_6551_1),
+     'pool lane-level sample_accession_number list $with_spiked_phix = 0');
   is(join(q[,], $lims->study_names($with_spiked_phix)), join(q[,], sort @studies), 'pool lane-level study_names list $with_spiked_phix = 0;');
   is(join(q[,], $lims->library_types()), 'Standard', 'pool lane-level library types list');
 
@@ -225,7 +235,7 @@ subtest 'Lane-level object' => sub {
 };
 
 subtest 'Object for tag zero' => sub {
-  plan tests => 24;
+  plan tests => 27;
 
   my $lims = st::api::lims->new(id_run => 6551, position => 1, tag_index => 0);
   is($lims->lane_id(), undef, q{lane_id undef for id_run 6551, position 1, tag_index defined} );
@@ -245,11 +255,13 @@ subtest 'Object for tag zero' => sub {
   is($lims->to_string, 'st::api::lims object, driver - xml, batch_id 12141, id_run 6551, position 1, tag_index 0', 'object as string');
   is(join(q[,], $lims->library_names), join(q[,], sort @libs_6551_1), 'tag 0 library_names list');
   is(join(q[,], $lims->sample_names), join(q[,], sort @samples_6551_1), 'tag 0 sample_names list');
+  is(join(q[,], $lims->sample_accession_numbers), join(q[,], sort @accessions_6551_1), 'tag 0 sample_accession_numbers list');
   is(join(q[,], $lims->study_names), join(q[,], sort @studies_6551_1), 'tag 0 study_names list');
-    
+
   my $with_spiked_phix = 1;
   is(join(q[,], $lims->library_names($with_spiked_phix)), join(q[,], sort @libs_6551_1), 'tag 0 library_names list $with_spiked_phix = 1');
   is(join(q[,], $lims->sample_names($with_spiked_phix)), join(q[,], sort @samples_6551_1), 'tag 0 sample_names list $with_spiked_phix = 1');
+  is(join(q[,], $lims->sample_accession_numbers($with_spiked_phix)), join(q[,], sort @accessions_6551_1), 'tag 0 sample_accession_numbers list $with_spiked_phix = 1');
   is(join(q[,], $lims->study_names($with_spiked_phix)), join(q[,], sort @studies_6551_1), 'tag 0 study_names list $with_spiked_phix = 1');
 
   $with_spiked_phix = 0;
@@ -258,11 +270,12 @@ subtest 'Object for tag zero' => sub {
   my @studies = @studies_6551_1; shift @studies;
   is(join(q[,], $lims->library_names($with_spiked_phix)), join(q[,], sort @libs), 'tag 0 library_names list $with_spiked_phix = 0;');
   is(join(q[,], $lims->sample_names($with_spiked_phix)), join(q[,], sort @samples), 'tag 0 sample_names list $with_spiked_phix = 0;');
+  is(join(q[,], $lims->sample_accession_numbers($with_spiked_phix)), join(q[,], sort @accessions_6551_1), 'tag 0 sample_accession_numbers list $with_spiked_phix = 0');
   is(join(q[,], $lims->study_names($with_spiked_phix)), join(q[,], sort @studies), 'tag 0 study_names list $with_spiked_phix = 0;');
 };
 
 subtest 'Object for spiked phix tag' => sub {
-  plan tests => 23;
+  plan tests => 24;
 
   my $lims = st::api::lims->new(id_run => 6551, position => 1, tag_index => 168);
   is($lims->is_control, 1, 'tag 1/168 is control');
@@ -288,6 +301,7 @@ subtest 'Object for spiked phix tag' => sub {
   is(scalar $lims->children, 0, 'no child lims');
   is(join(q[ ], $lims->library_names), $libs_6551_1[0], 'tag 168 library_names list');
   is(join(q[ ], $lims->sample_names), $samples_6551_1[0], 'tag 168 sample_names list');
+  is(join(q[ ], $lims->sample_accession_numbers), q[], 'tag 168 sample_accession_numbers list (no accession for phiX)');
   is(join(q[ ], $lims->study_names), $studies_6551_1[0], 'tag 168 study_names list');
 
   my $with_spiked_phix = 0;
@@ -297,7 +311,7 @@ subtest 'Object for spiked phix tag' => sub {
 };
 
 subtest 'Object for a tag' => sub {
-  plan tests => 31;
+  plan tests => 33;
 
   my $lims = st::api::lims->new(id_run => 6551, position => 1, tag_index => 1);
   is($lims->is_control, 0, 'tag 1/1 is not control');
@@ -307,11 +321,13 @@ subtest 'Object for a tag' => sub {
   is($lims->spiked_phix_tag_index, 168, 'spiked phix tag index returned');
   is(join(q[ ], $lims->library_names), 'SS109305 2798523', 'tag 1 library_names list');
   is(join(q[ ], $lims->sample_names), 'SS109305', 'tag 1 sample_names list');
+  is(join(q[ ], $lims->sample_accession_numbers), 'ERS024591', 'tag 1 sample_accession_numbers list');
   is(join(q[ ], $lims->study_names), $studies_6551_1[1], 'tag 1 study_names list');
 
   my $with_spiked_phix = 0;
   is(join(q[ ], $lims->library_names($with_spiked_phix)), 'SS109305 2798523', 'tag 1 library_names list $with_spiked_phix = 0');
   is(join(q[ ], $lims->sample_names($with_spiked_phix)), 'SS109305', 'tag 1 sample_names list $with_spiked_phix = 0');
+  is(join(q[ ], $lims->sample_accession_numbers($with_spiked_phix)), 'ERS024591', 'tag 1 sample_accession_numbers list $with_spiked_phix = 0');
   is(join(q[ ], $lims->study_names($with_spiked_phix)), $studies_6551_1[1], 'tag 1 study_names list $with_spiked_phix = 0');
 
   $lims = st::api::lims->new(id_run => 6607, position => 5, tag_index => 1);
@@ -341,7 +357,7 @@ subtest 'Object for a tag' => sub {
 };
 
 subtest 'Object for a non-pool lane' => sub {
-  plan tests => 94;
+  plan tests => 95;
 
   my $lims = st::api::lims->new(id_run => 6607, position => 1);
   isa_ok($lims, 'st::api::lims');
@@ -374,6 +390,7 @@ subtest 'Object for a non-pool lane' => sub {
 
   is(join(q[ ], $lims->library_names), 'BS_3hrsomuleSm_202790 3033734', 'non-pool lane library_names list');
   is(join(q[ ], $lims->sample_names), 'BS_3hrsomuleSm_202790', 'non-pool lane sample_names list');
+  is(join(q[ ], $lims->sample_accession_numbers), 'ERS028649', 'non-pool lane sample_accession_numbers list');
   is(join(q[ ], $lims->study_names), 'Schistosoma mansoni methylome', 'non-pool lane study_names list');
 };
 
@@ -397,7 +414,7 @@ subtest 'Priority and seqqc state' => sub {
 };
 
 subtest 'Object for a not spiked pool' => sub {
-  plan tests => 24;
+  plan tests => 26;
 
   my $lims = st::api::lims->new(id_run => 6607, position => 5);
   is($lims->batch_id, 12378, 'batch id for lane 5');
@@ -424,14 +441,17 @@ subtest 'Object for a not spiked pool' => sub {
 
   my $libs = 'HIC_M_B15C2 3111683,HiC_H_Dd2 3111680,HiC_H_LT3D7 3111687,HiC_H_OFF_DCJ 3111682,HiC_H_ON_DCJ 3111679,HiC_H_PQP1 3111681,HiC_M_3D7 3111685,HiC_M_ER3D7 3111686,HiC_M_Rev1 3111684';
   my $samples = 'HIC_M_B15C2,HiC_H_Dd2,HiC_H_LT3D7,HiC_H_OFF_DCJ,HiC_H_ON_DCJ,HiC_H_PQP1,HiC_M_3D7,HiC_M_ER3D7,HiC_M_Rev1';
+  my $accessions = 'ERS033158,ERS033160,ERS033162,ERS033168,ERS033170,ERS033172,ERS033174,ERS033176,ERS033178';
   my $study = '3C and HiC of Plasmodium falciparum IT';
   is(join(q[,], $lims->library_names), $libs, 'pooled not-spiked lane library_names list');
   is(join(q[,], $lims->sample_names), $samples, 'pooled not-spiked lane sample_names list');
+  is(join(q[,], $lims->sample_accession_numbers), $accessions, 'pooled not-spiked lane sample_accession_numbers list');
   is(join(q[,], $lims->study_names), $study, 'pooled not-spiked lane study_names list');
 
   my $with_spiked_phix = 0;
   is(join(q[,], $lims->library_names($with_spiked_phix)), $libs, 'pooled not-spiked lane library_names list $with_spiked_phix = 0');
   is(join(q[,], $lims->sample_names($with_spiked_phix)), $samples, 'pooled not-spiked lane sample_names list $with_spiked_phix = 0');
+  is(join(q[,], $lims->sample_accession_numbers($with_spiked_phix)), $accessions, 'pooled not-spiked lane sample_accession_numbers list $with_spiked_phix = 0');
   is(join(q[,], $lims->study_names($with_spiked_phix)), $study, 'pooled not-spiked lane study_names list $with_spiked_phix = 0');
 };
 
