@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - Added 'sample_accession_numbers' to lims shim
+
 release 85.1
  - Added 'purpose' to lims shim
  - utf8 option for test sqlite db

@@ -202,7 +202,8 @@ Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
                          /],
     'project'      => [qw/ id
                          /],
-    'sample'       => [qw/ cohort
+    'sample'       => [qw/ accession_number
+                           cohort
                            common_name
                            donor_id
                            id
