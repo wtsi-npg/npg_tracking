@@ -1,6 +1,7 @@
 LIST OF CHANGES
 
  - Added 'sample_accession_numbers' to lims shim
+ - Depricated old accessors for qc outcomes.
 
 release 85.1
  - Added 'purpose' to lims shim

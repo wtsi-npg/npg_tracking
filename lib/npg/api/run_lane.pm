@@ -114,6 +114,7 @@ sub is_spiked_phix {
 sub manual_qc {
   my $self  = shift;
   my $lims = $self->lims();
+  warn "WARNING (08.03.2016): 'manual_qc' in npg::api::run_lane is depricated\n";
   my $manual_qc = undef;
   if ($lims && defined $lims->seq_qc_state) {
     $manual_qc = $lims->seq_qc_state ? 'pass' : 'fail';
