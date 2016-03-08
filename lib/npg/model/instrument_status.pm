@@ -56,7 +56,7 @@ sub _check_order_ok {
   my $status = $self->instrument_status_dict;
   my $new = $status->description() || q[];
   if (!$status->iscurrent) {
-    croak "Status \"$new\" is depricated";
+    croak "Status \"$new\" is deprecated";
   }
   my $instrument = $self->instrument();
   my $status_obj = $instrument->current_instrument_status();

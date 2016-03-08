@@ -36,7 +36,7 @@ my $util = t::util->new({fixtures => 1});
       });
   isa_ok($model, $ISD, '$model');
   is($model->description(), 'down', 'initialised by id_instrument_status_dict ok');
-  is($model->iscurrent, 0, 'depricated flag is retrieved');
+  is($model->iscurrent, 0, 'deprecated flag is retrieved');
 }
 
 {
