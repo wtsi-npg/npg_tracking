@@ -540,7 +540,12 @@ sub _entity_required_insert_size {
 
 =head2 seq_qc_state
 
- 1 for passes, 0 for failed, undef if the value is not set
+ 1 for passes, 0 for failed, undef if the value is not set.
+
+ This method is deprecated as of 08 March 2016. It should not be used in any
+ new code. The only place where this method is used in production code is
+ the old warehouse loader. Deprecation warning is not appropriate because the
+ old wh loader logs will be flooded.
 
 =cut
 sub  seq_qc_state {

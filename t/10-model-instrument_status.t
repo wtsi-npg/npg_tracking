@@ -72,8 +72,8 @@ my $already_at_status_up = npg::model::instrument_status->new({
     id_instrument_status_dict => 2,
   });
   throws_ok  { $model->_check_order_ok(); }
-    qr/Status \"down\" is depricated/,
-    q{croak on trying to move to depricated status};
+    qr/Status \"down\" is deprecated/,
+    q{croak on trying to move to deprecated status};
 
   $model = npg::model::instrument_status->new({
     util => $util,

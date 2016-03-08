@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 148; #remember to change the skip number below as well!
+use Test::More tests => 142; #remember to change the skip number below as well!
 use Test::Deep;
 use Test::Exception;
 use npg_testing::intweb qw(npg_is_accessible);
@@ -27,7 +27,7 @@ foreach my $pa (['test', 'using mocked data'],
   SKIP: {
 
     if (!$do_test) {
-     skip 'Live test, but sanger intweb is not accessible',  49;
+      skip 'Live test, but sanger intweb is not accessible',  47;
     }
 
     my $run = npg::api::run->new({
@@ -109,20 +109,6 @@ foreach my $pa (['test', 'using mocked data'],
       ok(!$run_lane->is_library, 'not from a single library');
       ok(!$run_lane->is_control, 'not from a control');
       ok($run_lane->is_pool, 'from a pool');
-    }
-    {
-      my $run_lane = npg::api::run_lane->new({
-                                          'id_run'   => 4354,
-                                          'position' => 2,
-                                         });
-      cmp_ok($run_lane->manual_qc, q(eq), 'pass', 'QC pass on lane 2 run 4354');
-    }
-    {
-      my $run_lane = npg::api::run_lane->new({
-                                          'id_run'   => 4354,
-                                          'position' => 3,
-                                         });
-      cmp_ok($run_lane->manual_qc, q(eq), 'fail', 'QC fail on lane 3 run 4354');
     }
 
     {
