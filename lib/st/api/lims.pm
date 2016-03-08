@@ -845,7 +845,7 @@ sub _list_of_attributes {
 
   if (!defined $with_spiked_control) { $with_spiked_control = 1; }
 
-  my @l = sort {$a cmp $b} uniq grep {$_} map {$_->$attr_name} $self->is_pool ?
+  my @l = sort {$a cmp $b} uniq grep {defined and length} map {$_->$attr_name} $self->is_pool ?
     $attr_name ne 'spiked_phix_tag_index' ? # avoid unintended recursion
       grep { $with_spiked_control || ! $_->is_phix_spike } $self->children :
       () :
