@@ -6,6 +6,7 @@ use Carp;
 use File::Slurp;
 use Readonly;
 use URI::Escape qw(uri_unescape);
+use open q(:encoding(UTF8));
 
 use npg_tracking::util::types;
 use st::api::lims;
