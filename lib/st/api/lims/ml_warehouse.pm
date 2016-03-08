@@ -90,8 +90,9 @@ has 'iseq_flowcell' =>   ( isa             => 'DBIx::Class::ResultSet',
 );
 sub _build_iseq_flowcell {
   my $self = shift;
-  if ($self->has_query_resultset) { return $self->query_resultset->result_source->schema->resultset(q(IseqFlowcell)); }
-  return $self->mlwh_schema->resultset('IseqFlowcell');
+  my $schema = $self->has_query_resultset ?
+    $self->query_resultset->result_source->schema : $self->mlwh_schema;
+  return $schema->resultset('IseqFlowcell');
 }
 
 #######
@@ -190,7 +191,7 @@ sub _build__lchildren {
       }
     }
   }
-
+  $self->iseq_flowcell(); # In case id_run accessor is called after the children are built
   if (@children) {
     $self->free_query_resultset();
   }
