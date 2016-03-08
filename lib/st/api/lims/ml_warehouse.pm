@@ -90,9 +90,7 @@ has 'iseq_flowcell' =>   ( isa             => 'DBIx::Class::ResultSet',
 );
 sub _build_iseq_flowcell {
   my $self = shift;
-  my $schema = $self->has_query_resultset ?
-    $self->query_resultset->result_source->schema : $self->mlwh_schema;
-  return $schema->resultset('IseqFlowcell');
+  return $self->mlwh_schema->resultset('IseqFlowcell');
 }
 
 #######
@@ -113,7 +111,10 @@ has 'mlwh_schema' =>     ( isa             => 'WTSI::DNAP::Warehouse::Schema',
                            lazy_build      => 1,
 );
 sub _build_mlwh_schema {
-  return WTSI::DNAP::Warehouse::Schema->connect();
+  my $self = shift;
+  return  $self->has_query_resultset ?
+    $self->query_resultset->result_source->schema :
+    WTSI::DNAP::Warehouse::Schema->connect();
 }
 
 =head2 ensure_nonzero_query_resultset
