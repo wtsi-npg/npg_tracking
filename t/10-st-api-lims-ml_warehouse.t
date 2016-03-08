@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 11;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -477,6 +477,132 @@ subtest 'multiple flowcell identifies error' => sub {
     $row->set_column('id_flowcell_lims', $old);
     $row->update();
   }
+};
+
+subtest 'qc outcomes' => sub {
+  plan tests => 21;
+  
+  #lanes 2-8 are converted to plexes for lane 2 
+  for my $p ((2 .. 8)) {
+    $schema_wh->resultset('IseqProductMetric')
+              ->search({id_run => 3905, position => $p})
+              ->update({tag_index => $p});
+    $schema_wh->resultset('IseqFlowcell')
+              ->search({id_flowcell_lims => 4775, position => $p})
+              ->update({tag_index => $p});
+  }
+  for my $p ((2 .. 8)) {
+    $schema_wh->resultset('IseqProductMetric')
+              ->search({id_run => 3905, position => $p})
+              ->update({position => 2});
+    my $lt = ($p == 8) ? 'library_indexed_spike' : 'library_indexed';
+    $schema_wh->resultset('IseqFlowcell')
+              ->search({id_flowcell_lims => 4775, position => $p})
+              ->update({position => 2, entity_type => $lt});
+  }
+  
+  my $d = $mlwh_d->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 1);
+  is ($d->qc_state, undef, 'qc state not set for a lane');
+  $schema_wh->resultset('IseqProductMetric')
+            ->search({id_run => 3905, position => 1})
+            ->update({qc => 0});
+  is ($d->qc_state, 0, 'lane failed qc');
+  $schema_wh->resultset('IseqProductMetric')
+            ->search({id_run => 3905, position => 1})
+            ->update({qc => 1});
+  ok (!$d->is_pool, 'lane is not a pool');
+  is ($d->qc_state, 1, 'lane passed qc');
+
+  $d = $mlwh_d->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 2);
+  my $dzero = $mlwh_d->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 2,
+      tag_index        => 0);
+  ok ($d->is_pool, 'lane 2 is a pool');
+  is ( scalar (grep { defined }  map {$_->qc_state} $d->children),
+       0, 'all plex values undefined');
+  is ($d->qc_state, undef, 'pool qc state not set');
+  is ($dzero->qc_state, undef, 'tag 0 qc state not set');
+
+  $schema_wh->resultset('IseqProductMetric')
+            ->search({id_run => 3905, position => 2})
+            ->update({qc => 0}); # convert all tags to a fail
+  $d = $mlwh_d->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 2);
+  $dzero = $mlwh_d->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 2,
+      tag_index        => 0);
+  is ( join(q[ ], map {$_->qc_state} $d->children),
+       '0 0 0 0 0 0 0', 'all plexes failed');
+  is ($d->qc_state, undef, 'pool qc undef');
+  is ($dzero->qc_state, undef, 'tagzero qc undef');
+
+  $schema_wh->resultset('IseqProductMetric')
+            ->search({id_run => 3905, position => 2})
+            ->update({qc => 1}); # convert all tags to a pass
+  $d = $mlwh_d->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 2);
+  $dzero = $mlwh_d->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 2,
+      tag_index        => 0);
+  is ( join(q[ ], map {$_->qc_state} $d->children),
+       '1 1 1 1 1 1 1', 'all plexes passed');
+  is ($d->qc_state, undef, 'pool qc undef');
+  is ($dzero->qc_state, undef, 'tagzero qc undef');
+  
+  $schema_wh->resultset('IseqProductMetric')
+             ->search({id_run => 3905, position => 2, tag_index => 2})
+             ->update({qc => 0}); # convert one tag to a fail
+  $d = $mlwh_d->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 2);
+  $dzero = $mlwh_d->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 2,
+      tag_index        => 0);
+  is ( join(q[ ], map {$_->qc_state} $d->children),
+       '0 1 1 1 1 1 1', 'a mixture of passed and failed plexes');
+  is ($d->qc_state, undef, 'pool qc undefined');
+  is ($dzero->qc_state, undef, 'tagzero qc undefined');
+
+  # delete product metrics rows for a run
+  $schema_wh->resultset('IseqProductMetric')
+             ->search({id_run => 3905})->delete();
+  $d = $mlwh_d->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 1);
+  is ($d->qc_state, undef, 'lane qc undefined');
+  $d = $mlwh_d->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 2);
+  is ($d->qc_state, undef, 'pool qc undefined');
+  $dzero = $mlwh_d->new(
+      mlwh_schema      => $schema_wh,
+      id_flowcell_lims => '4775',
+      position         => 2,
+      tag_index        => 0);
+  is ($dzero->qc_state, undef, 'tagzero qc undefined');
+  is ( scalar (grep { defined }  map {$_->qc_state} $d->children),
+       0, 'all plex values undefined');
 };
 
 1;
