@@ -90,6 +90,7 @@ has 'iseq_flowcell' =>   ( isa             => 'DBIx::Class::ResultSet',
 );
 sub _build_iseq_flowcell {
   my $self = shift;
+  if ($self->has_query_resultset) { return $self->query_resultset->result_source->schema->resultset(q(IseqFlowcell)); }
   return $self->mlwh_schema->resultset('IseqFlowcell');
 }
 
