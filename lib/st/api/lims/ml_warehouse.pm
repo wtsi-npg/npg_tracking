@@ -192,7 +192,7 @@ sub _build__lchildren {
       }
     }
   }
-  $self->iseq_flowcell(); # In case id_run accessor is called after the children are built
+  $self->mlwh_schema(); # Cache db connection
   if (@children) {
     $self->free_query_resultset();
   }
