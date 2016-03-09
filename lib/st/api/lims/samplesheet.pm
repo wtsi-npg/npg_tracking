@@ -378,6 +378,9 @@ for my $m ( st::api::lims->driver_method_list_short(__PACKAGE__->meta->get_attri
           } else {
             if ($value) {
               $value = uri_unescape($value);
+              if ( not utf8::is_utf8($value)) {
+                utf8::decode($value) or croak "Cannot decode $value to UTF8";
+              }
             }
           }
           return $value;
