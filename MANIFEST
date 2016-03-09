@@ -561,9 +561,10 @@ t/36-npg_tracking-monitor-status.t
 t/40-st-base.t
 t/40-st-batch.t
 t/40-st-event.t
-t/40-st-lims-insert_size.t
-t/40-st-lims-samplesheet.t
 t/40-st-lims.t
+t/40-st-lims-insert_size.t
+t/40-st-lims-mlwarehouse.t
+t/40-st-lims-samplesheet.t
 t/40-st-project.t
 t/40-st-sample.t
 t/40-st-study.t
