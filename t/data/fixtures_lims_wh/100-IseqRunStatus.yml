@@ -1,0 +1,142 @@
+---
+- date: 2015-02-04 11:39:20
+  id_run: 15440
+  id_run_status: 206015
+  id_run_status_dict: 1
+  iscurrent: 0
+- date: 2015-02-04 16:06:51
+  id_run: 15440
+  id_run_status: 206100
+  id_run_status_dict: 2
+  iscurrent: 0
+- date: 2015-02-05 14:08:06
+  id_run: 15454
+  id_run_status: 206345
+  id_run_status_dict: 1
+  iscurrent: 0
+- date: 2015-02-05 17:36:52
+  id_run: 15440
+  id_run_status: 206409
+  id_run_status_dict: 4
+  iscurrent: 0
+- date: 2015-02-05 17:56:44
+  id_run: 15440
+  id_run_status: 206410
+  id_run_status_dict: 11
+  iscurrent: 0
+- date: 2015-02-05 17:56:44
+  id_run: 15440
+  id_run_status: 206411
+  id_run_status_dict: 6
+  iscurrent: 0
+- date: 2015-02-05 18:06:44
+  id_run: 15440
+  id_run_status: 206412
+  id_run_status_dict: 7
+  iscurrent: 0
+- date: 2015-02-05 18:22:46
+  id_run: 15454
+  id_run_status: 206416
+  id_run_status_dict: 2
+  iscurrent: 0
+- date: 2015-02-05 23:24:04
+  id_run: 15440
+  id_run_status: 206426
+  id_run_status_dict: 24
+  iscurrent: 0
+- date: 2015-02-06 06:52:29
+  id_run: 15454
+  id_run_status: 206445
+  id_run_status_dict: 4
+  iscurrent: 0
+- date: 2015-02-06 07:20:57
+  id_run: 15454
+  id_run_status: 206446
+  id_run_status_dict: 11
+  iscurrent: 0
+- date: 2015-02-06 07:20:57
+  id_run: 15454
+  id_run_status: 206447
+  id_run_status_dict: 6
+  iscurrent: 0
+- date: 2015-02-06 07:24:20
+  id_run: 15454
+  id_run_status: 206449
+  id_run_status_dict: 7
+  iscurrent: 0
+- date: 2015-02-06 07:38:54
+  id_run: 15454
+  id_run_status: 206450
+  id_run_status_dict: 24
+  iscurrent: 0
+- date: 2015-02-06 07:51:10
+  id_run: 15440
+  id_run_status: 206453
+  id_run_status_dict: 9
+  iscurrent: 0
+- date: 2015-02-06 07:51:11
+  id_run: 15440
+  id_run_status: 206454
+  id_run_status_dict: 19
+  iscurrent: 0
+- date: 2015-02-06 08:26:37
+  id_run: 15454
+  id_run_status: 206463
+  id_run_status_dict: 9
+  iscurrent: 0
+- date: 2015-02-06 08:26:38
+  id_run: 15454
+  id_run_status: 206464
+  id_run_status_dict: 19
+  iscurrent: 1
+- date: 2015-02-06 08:34:35
+  id_run: 15440
+  id_run_status: 206467
+  id_run_status_dict: 26
+  iscurrent: 0
+- date: 2015-02-06 08:58:40
+  id_run: 15454
+  id_run_status: 206472
+  id_run_status_dict: 17
+  iscurrent: 0
+- date: 2015-02-06 09:07:05
+  id_run: 15454
+  id_run_status: 206474
+  id_run_status_dict: 18
+  iscurrent: 0
+- date: 2015-02-06 09:09:55
+  id_run: 15454
+  id_run_status: 206475
+  id_run_status_dict: 12
+  iscurrent: 0
+- date: 2015-02-06 09:10:15
+  id_run: 15454
+  id_run_status: 206476
+  id_run_status_dict: 20
+  iscurrent: 0
+- date: 2015-02-08 15:36:50
+  id_run: 15440
+  id_run_status: 206705
+  id_run_status_dict: 17
+  iscurrent: 0
+- date: 2015-02-08 15:36:55
+  id_run: 15440
+  id_run_status: 206706
+  id_run_status_dict: 17
+  iscurrent: 0
+- date: 2015-02-08 15:39:38
+  id_run: 15440
+  id_run_status: 206707
+  id_run_status_dict: 18
+  iscurrent: 0
+- date: 2015-02-08 21:09:08
+  id_run: 15440
+  id_run_status: 206717
+  id_run_status_dict: 12
+  iscurrent: 0
+- date: 2015-02-08 21:09:14
+  id_run: 15440
+  id_run_status: 206718
+  id_run_status_dict: 20
+  iscurrent: 1
+
