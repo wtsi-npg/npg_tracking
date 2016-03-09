@@ -287,13 +287,13 @@ sub _driver_package_name {
 for my$m ( @METHODS ){
   __PACKAGE__->meta->add_method($m, sub{
     my$l=shift;
+    if(exists $l->_primary_arguments()->{$m}){
+      return $l->_primary_arguments()->{$m};
+    }
     my$d=$l->driver;
     my$r= $d->can($m) ? $d->$m(@_) : undef;
     if( defined $r and length $r){ #if method exists and it returns a defined and non-empty result
       return $d->$m(@_); # call again here in case it returns different info in list context
-    }
-    if(exists $l->_primary_arguments()->{$m}){
-      return $l->_primary_arguments()->{$m}
     }
     if($m eq q(is_pool)){ # avoid obvious recursion
       return scalar $l->children;
