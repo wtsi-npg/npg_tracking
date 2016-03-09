@@ -561,9 +561,10 @@ t/36-npg_tracking-monitor-status.t
 t/40-st-base.t
 t/40-st-batch.t
 t/40-st-event.t
-t/40-st-lims-insert_size.t
-t/40-st-lims-samplesheet.t
 t/40-st-lims.t
+t/40-st-lims-insert_size.t
+t/40-st-lims-mlwarehouse.t
+t/40-st-lims-samplesheet.t
 t/40-st-project.t
 t/40-st-sample.t
 t/40-st-study.t
@@ -600,6 +601,14 @@ t/data/cbot/cBot1/GetRunList.xml
 t/data/cbot/cBot1/InstrumentStatus.xml
 t/data/cbot/cBot1/RunInfo/091111_OEM-0B6VO7E14KH_0001.xml
 t/data/cbot/cBot2/InstrumentStatus.xml
+t/data/fixtures_lims_wh/00-IseqRunStatusDict.yml
+t/data/fixtures_lims_wh/000-Sample.yml
+t/data/fixtures_lims_wh/000-Study.yml
+t/data/fixtures_lims_wh/100-IseqFlowcell.yml
+t/data/fixtures_lims_wh/100-IseqRunLaneMetric.yml
+t/data/fixtures_lims_wh/100-IseqRunStatus.yml
+t/data/fixtures_lims_wh/100-StudyUser.yml
+t/data/fixtures_lims_wh/200-IseqProductMetric.yml
 t/data/dbic_fixtures/000-Designation.yml
 t/data/dbic_fixtures/000-EntityType.yml
 t/data/dbic_fixtures/000-InstrumentStatusDict.yml
