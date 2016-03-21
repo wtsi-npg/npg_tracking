@@ -76,7 +76,7 @@ qr/No record retrieved for st::api::lims::ml_warehouse flowcell_barcode 42UMBAAX
   throws_ok { $d->new(
       mlwh_schema      => $schema_wh,
       id_flowcell_lims => '4775')->id_run }
-    qr/Found more than one \(2\) id_run/,
+    qr/Found more than one id_run/,
     'error finding id_run if multiple values found';
   lives_ok {$d->new(
       id_run           => 3905,
