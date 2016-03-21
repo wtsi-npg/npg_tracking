@@ -231,12 +231,10 @@ sub _build_spiked_phix_tag_index {
   if ($self->position) {
     my $spike_type = $WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::INDEXED_LIBRARY_SPIKE;
     my $rs = $self->query_resultset->search({entity_type => $spike_type});
-    my $num_rows = $rs->count;
-    if ($num_rows > 1) {
-      croak q[Multiple spike definitions];
-    }
-    if ($num_rows) {
-      $tag_index = $rs->next->tag_index;
+    my $row = $rs->next;
+    if ($row) {
+      croak q[Multiple spike definitions] if $rs->next;
+      $tag_index = $row->tag_index;
       if (!$tag_index) {
         croak q[Tag index for the spike is missing];
       }
@@ -271,14 +269,11 @@ sub _build__dbix_row {
           $WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::CONTROL_LANE,
         ]});
       }
-      my $num_rows = $rs->count;
-      if (!$num_rows) {
-        croak 'No record for ' . $self->to_string;
+      if( my $row = $rs->next ) {
+        croak 'Multiple entities for ' . $self->to_string if $rs->next;
+        return $row;
       }
-      if ($num_rows > 1) {
-        croak 'Multiple entities for ' . $self->to_string;
-      }
-      return $rs->next;
+      croak 'No record for ' . $self->to_string;
     }
   }
   return;
