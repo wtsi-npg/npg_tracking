@@ -56,10 +56,9 @@ sub _build_id_run {
     $search{'id_flowcell_lims'} = $self->id_flowcell_lims;
   }
   my$id_run_rs=$self->iseq_flowcell->related_resultset('iseq_product_metrics')->search(\%search,{'columns'=>[qw(id_run)], 'distinct'=>1});
-  my$count = $id_run_rs->count;
-  croak "Found more than one ($count) id_run" if ($count > 1);
-  if($count){
-    return $id_run_rs->first->id_run;
+  if( my$id_run_record = $id_run_rs->next() ){
+    croak 'Found more than one id_run' if($id_run_rs->next());
+    return $id_run_record->id_run;
   }
   carp join q( ), 'No id_run set yet',
     ($self->has_flowcell_barcode ? ('flowcell_barcode:'.$self->flowcell_barcode) : ()),
