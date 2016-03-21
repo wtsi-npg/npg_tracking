@@ -124,11 +124,11 @@ Helper method for Moose "around" of query_resultset.
 sub ensure_nonzero_query_resultset {
   my ($orig, $self) = @_;
   my $original = $self->$orig();
-  my $rs = $original;
+  my $rs = $original->search();
   if ($self->tag_index) {
     $rs = $rs->search({'me.tag_index' => $self->tag_index});
   }
-  if ($rs->count == 0) {
+  if (not $rs->first) {
     croak 'No record retrieved for ' . $self->to_string;
   }
   return $original;
@@ -208,7 +208,7 @@ sub _build_is_pool {
   my $self = shift;
   if ( $self->position && !$self->tag_index ) {
     return $self->query_resultset->search( {entity_type =>
-      $WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::INDEXED_LIBRARY})->count ? 1 : 0;
+      $WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::INDEXED_LIBRARY})->first ? 1 : 0;
   }
   return 0;
 }
