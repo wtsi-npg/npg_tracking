@@ -25,20 +25,20 @@ subtest 'constructing objects' => sub {
   my $m = ($d =~ /_auto$/) ? 'id_flowcell_lims, flowcell_barcode or id_run' :
                              'id_flowcell_lims or flowcell_barcode';
   throws_ok {$d->new(
-    mlwh_schema => $schema_wh)->query_resultset}
+    mlwh_schema => $schema_wh)}
     qr/Either $m should be defined/,
     'error when no flowcell attributes are given';
 
   my $rs;
   throws_ok {$rs = $d->new(
       mlwh_schema      => $schema_wh,
-      flowcell_barcode => 'barcode')->query_resultset}
+      flowcell_barcode => 'barcode')}
 qr/No record retrieved for st::api::lims::ml_warehouse flowcell_barcode barcode/,
     'error when non-existing barcode is given';
 
   throws_ok {$rs = $d->new(
       mlwh_schema      => $schema_wh,
-      id_flowcell_lims => 'XX_99_XX')->query_resultset}
+      id_flowcell_lims => 'XX_99_XX')}
 qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims XX_99_XX/,
     'error when non-existing flowcell id is given';
 
@@ -46,7 +46,7 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims XX_99_XX
     $rs = $d->new(
       mlwh_schema      => $schema_wh,
       flowcell_barcode => '42UMBAAXX',
-      id_flowcell_lims => 'XX_99_XX')->query_resultset
+      id_flowcell_lims => 'XX_99_XX')
   }
 qr/No record retrieved for st::api::lims::ml_warehouse flowcell_barcode 42UMBAAXX, id_flowcell_lims XX_99_XX/,
   'error retrieving data with valid barcode and invalid flowcell id';
@@ -102,7 +102,7 @@ qr/No record retrieved for st::api::lims::ml_warehouse flowcell_barcode 42UMBAAX
   throws_ok { $d->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 22043,
-                                 position         => 2)->query_resultset}
+                                 position         => 2)}
 qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, position 2/,
     'error when lane does not exist';
 
@@ -115,7 +115,7 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 22043,
                                  position         => 1,
-                                 tag_index        => 326)->query_resultset}
+                                 tag_index        => 326)}
 qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, position 1, tag_index 326/,
     'error when tag index does not exist';
   
