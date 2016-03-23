@@ -29,6 +29,19 @@ in WTSI::DNAP::Warehouse::Schema.
 
 =head1 SUBROUTINES/METHODS
 
+=head2 BUILD
+
+sanity checks on construction
+
+=cut
+
+sub BUILD {
+  my ($self) = @_;
+  # call query_resultset here to get its sanity checks on construction
+  $self->query_resultset;
+  return;
+}
+
 =head2 flowcell_barcode
 
 =head2 id_flowcell_lims
