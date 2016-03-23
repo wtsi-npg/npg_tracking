@@ -156,6 +156,17 @@ retrieved.
 =cut
 around 'query_resultset' => \&ensure_nonzero_query_resultset;
 
+=head2 count
+
+Number of underlying records used for evaluating this object
+
+=cut
+
+sub count {
+  my$self=shift;
+  return $self->query_resultset->count();
+}
+
 =head2 children
 
 =cut

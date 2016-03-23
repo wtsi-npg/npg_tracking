@@ -53,18 +53,18 @@ qr/No record retrieved for st::api::lims::ml_warehouse flowcell_barcode 42UMBAAX
 
   ok ($d->new(
       mlwh_schema      => $schema_wh,
-      flowcell_barcode => '42UMBAAXX')->query_resultset->count,
+      flowcell_barcode => '42UMBAAXX')->count,
    'data retrieved for existing barcode');
   is ($d->new(
       mlwh_schema      => $schema_wh,
       flowcell_barcode => '42UMBAAXX')->id_run, 3905, 'find id_run if in product metrics table');
   ok ($d->new(
       mlwh_schema      => $schema_wh,
-      id_flowcell_lims => 4775)->query_resultset->count,
+      id_flowcell_lims => 4775)->count,
     'data retrieved for existing flowcell id supplied as an integer');
   ok ($d->new(
       mlwh_schema      => $schema_wh,
-      id_flowcell_lims => '4775')->query_resultset->count,
+      id_flowcell_lims => '4775')->count,
     'data retrieved for existing flowcell id supplied as a string');
   is ($d->new(
       mlwh_schema      => $schema_wh,
@@ -89,7 +89,7 @@ qr/No record retrieved for st::api::lims::ml_warehouse flowcell_barcode 42UMBAAX
   ok ($d->new(
       mlwh_schema      => $schema_wh,
       id_flowcell_lims => 22043,
-      flowcell_barcode => 'barcode')->query_resultset->count,
+      flowcell_barcode => 'barcode')->count,
     'data retrieved as long as flowcell id is valid');
   my $id_run;
   warning_like { $id_run = $d->new(
@@ -109,7 +109,7 @@ qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims 22043, p
   ok ($d->new(
                                  mlwh_schema      => $schema_wh,
                                  id_flowcell_lims => 22043,
-                                 position         => 1)->query_resultset->count,
+                                 position         => 1)->count,
     'data retrieved for existing lane');
   throws_ok { $d->new(
                                  mlwh_schema      => $schema_wh,
