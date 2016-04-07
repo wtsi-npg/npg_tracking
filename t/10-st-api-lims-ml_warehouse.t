@@ -8,7 +8,7 @@ use Moose::Meta::Class;
 
 my $mlwh_d      = 'st::api::lims::ml_warehouse';
 my $mlwh_auto_d = 'st::api::lims::ml_warehouse_auto';
-my $mlwh_alt_d      = 'st::api::lims::ml_warehouse_alt';
+my $mlwh_alt_d      = 'st::api::lims::ml_warehouse_fc_cache';
 use_ok($mlwh_d);
 use_ok($mlwh_auto_d);
 use_ok($mlwh_alt_d);
