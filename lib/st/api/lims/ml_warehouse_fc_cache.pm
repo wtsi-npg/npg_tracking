@@ -3,7 +3,7 @@ package st::api::lims::ml_warehouse_fc_cache;
 use Moose;
 use MooseX::StrictConstructor;
 use Carp;
-use List::MoreUtils qw(any);
+use List::MoreUtils qw(any uniq);
 
 use st::api::lims;
 use npg_tracking::util::types;
@@ -63,21 +63,15 @@ has 'id_run' =>       ( isa             => 'Maybe[NpgTrackingRunId]',
 );
 sub _build_id_run {
   my $self = shift;
-  if (not $self->has_flowcell_barcode and not $self->has_id_flowcell_lims) {
-    croak 'Require flowcell_barcode or id_flowcell_lims to try to find id_run';
+
+  my @ids = uniq grep{defined} map {$_->id_run}
+       map{$_->iseq_product_metrics} $self->_run_resultset_rows;
+  if(@ids) {
+    my $id_run = pop @ids;
+    croak 'Found more than one id_run' if @ids;
+    return $id_run;
   }
-  my%search;
-  if($self->has_flowcell_barcode){
-    $search{'flowcell_barcode'} = $self->flowcell_barcode;
-  }
-  if($self->has_id_flowcell_lims){
-    $search{'id_flowcell_lims'} = $self->id_flowcell_lims;
-  }
-  my$id_run_rs=$self->iseq_flowcell->related_resultset('iseq_product_metrics')->search(\%search,{'columns'=>[qw(id_run)], 'distinct'=>1});
-  if( my$id_run_record = $id_run_rs->next() ){
-    croak 'Found more than one id_run' if($id_run_rs->next());
-    return $id_run_record->id_run;
-  }
+
   carp join q( ), 'No id_run set yet',
     ($self->has_flowcell_barcode ? ('flowcell_barcode:'.$self->flowcell_barcode) : ()),
     ($self->has_id_flowcell_lims ? ('id_flowcell_lims:'.$self->id_flowcell_lims) : ());
