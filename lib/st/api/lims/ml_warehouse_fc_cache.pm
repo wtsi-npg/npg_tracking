@@ -89,21 +89,6 @@ has '+position' =>       ( required        => 0, );
 
 Tag index, optional attribute
 
-=head2 iseq_flowcell
-
-DBIx result set for the iseq_flowcell table
-
-=cut
-has 'iseq_flowcell' =>   ( isa             => 'DBIx::Class::ResultSet',
-                           is              => 'ro',
-                           init_arg        => undef,
-                           lazy_build      => 1,
-);
-sub _build_iseq_flowcell {
-  my $self = shift;
-  return $self->mlwh_schema->resultset('IseqFlowcell');
-}
-
 =head2 mlwh_schema
 
 WTSI::DNAP::Warehouse::Schema connection
@@ -115,9 +100,7 @@ has 'mlwh_schema' =>     ( isa             => 'WTSI::DNAP::Warehouse::Schema',
 );
 sub _build_mlwh_schema {
   my $self = shift;
-  return  $self->has_iseq_flowcell ?
-    $self->iseq_flowcell->result_source->schema :
-    WTSI::DNAP::Warehouse::Schema->connect();
+  return WTSI::DNAP::Warehouse::Schema->connect();
 }
 
 
@@ -135,7 +118,8 @@ sub _build__run_resultset_rows_cache {
   elsif ($self->has_id_run) { $q->{id_run}=$self->id_run; }
   elsif ($self->has_flowcell_barcode) { $q->{flowcell_barcode}=$self->flowcell_barcode; }
   croak 'Either id_flowcell_lims, flowcell_barcode or id_run should be defined' if not keys %{$q};
-  return [$self->iseq_flowcell->search($q,{prefetch =>[qw(sample study iseq_product_metrics)]})->all];
+  return [$self->mlwh_schema->resultset('IseqFlowcell')
+    ->search($q,{prefetch =>[qw(sample study iseq_product_metrics)]})->all];
 }
 
 has '_position_resultset_rows_cache' =>
@@ -212,9 +196,10 @@ has 'is_pool' =>         ( isa             => 'Bool',
 );
 sub _build_is_pool {
   my $self = shift;
+  my $indexed_lib_type = $WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::INDEXED_LIBRARY;
   if ( $self->position && !$self->tag_index ) {
     return 1 if any {
-      $_->entity_type eq $WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::INDEXED_LIBRARY
+      $_->entity_type eq $indexed_lib_type
     } $self->_position_resultset_rows;
   }
   return 0;
@@ -264,8 +249,8 @@ sub qc_state {
     if( defined $t ){
       @r = grep {$_->tag_index and $_->tag_index == $t} @r;
     } else {
-      @r = grep {$_->entity_type ne
-          $WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::INDEXED_LIBRARY_SPIKE } @r;
+      my $spike_type = $WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::INDEXED_LIBRARY_SPIKE;
+      @r = grep {$_->entity_type ne $spike_type} @r;
     }
     @r = grep{defined} map {$_->qc} map{$_->iseq_product_metrics}@r;
     return shift @r if @r==1;
@@ -294,12 +279,9 @@ sub _build__dbix_row {
       if ($self->tag_index) {
         @rs = grep{$_->tag_index == $self->tag_index} $self->_position_resultset_rows;
       } else {
-        @rs = grep {
-          ( $_->entity_type eq
-          $WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::NON_INDEXED_LIBRARY
-          ) or ( $_->entity_type eq
-          $WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::CONTROL_LANE
-          ) } $self->_position_resultset_rows;
+        my @lib_types = ($WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::NON_INDEXED_LIBRARY,
+                         $WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell::CONTROL_LANE);
+        @rs = grep {my $et=$_->entity_type; any {$_ eq $et} @lib_types} $self->_position_resultset_rows;
       }
       if( my $row = shift @rs ) {
         croak 'Multiple entities ('.(scalar @rs).' excess) for ' . $self->to_string if @rs;
@@ -380,7 +362,7 @@ David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 Genome Research Ltd.
+Copyright (C) 2016 Genome Research Ltd.
 
 This file is part of NPG.
 
