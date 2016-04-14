@@ -12,6 +12,7 @@ use English qw(-no_match_vars);
 use List::MoreUtils qw/any/;
 use URI::Escape qw(uri_escape_utf8);
 use Readonly;
+use open q(:encoding(UTF8));
 use npg_tracking::Schema;
 use st::api::lims;
 use st::api::lims::samplesheet;

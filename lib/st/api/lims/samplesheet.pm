@@ -6,6 +6,7 @@ use Carp;
 use File::Slurp;
 use Readonly;
 use URI::Escape qw(uri_unescape);
+use open q(:encoding(UTF8));
 
 use npg_tracking::util::types;
 use st::api::lims;
@@ -377,6 +378,9 @@ for my $m ( st::api::lims->driver_method_list_short(__PACKAGE__->meta->get_attri
           } else {
             if ($value) {
               $value = uri_unescape($value);
+              if ( not utf8::is_utf8($value)) {
+                utf8::decode($value) or croak "Cannot decode $value to UTF8";
+              }
             }
           }
           return $value;
