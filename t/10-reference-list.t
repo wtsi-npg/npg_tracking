@@ -23,7 +23,7 @@ sub _copy_ref_rep {
     return;
   }
   my ($volume,$directories,$file_name) = File::Spec->splitpath($n);
-  $directories =~ s/$current//smx;
+  $directories =~ s/\Q$current\E//smx;
   $directories = $new . $directories;
   make_path $directories;
   copy $n, $directories;
