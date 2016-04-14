@@ -202,7 +202,8 @@ Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
                          /],
     'project'      => [qw/ id
                          /],
-    'sample'       => [qw/ cohort
+    'sample'       => [qw/ accession_number
+                           cohort
                            common_name
                            donor_id
                            id
@@ -286,13 +287,13 @@ sub _driver_package_name {
 for my$m ( @METHODS ){
   __PACKAGE__->meta->add_method($m, sub{
     my$l=shift;
+    if(exists $l->_primary_arguments()->{$m}){
+      return $l->_primary_arguments()->{$m};
+    }
     my$d=$l->driver;
     my$r= $d->can($m) ? $d->$m(@_) : undef;
     if( defined $r and length $r){ #if method exists and it returns a defined and non-empty result
       return $d->$m(@_); # call again here in case it returns different info in list context
-    }
-    if(exists $l->_primary_arguments()->{$m}){
-      return $l->_primary_arguments()->{$m}
     }
     if($m eq q(is_pool)){ # avoid obvious recursion
       return scalar $l->children;
@@ -539,7 +540,12 @@ sub _entity_required_insert_size {
 
 =head2 seq_qc_state
 
- 1 for passes, 0 for failed, undef if the value is not set
+ 1 for passes, 0 for failed, undef if the value is not set.
+
+ This method is deprecated as of 08 March 2016. It should not be used in any
+ new code. The only place where this method is used in production code is
+ the old warehouse loader. Deprecation warning is not appropriate because the
+ old wh loader logs will be flooded.
 
 =cut
 sub  seq_qc_state {
@@ -844,7 +850,7 @@ sub _list_of_attributes {
 
   if (!defined $with_spiked_control) { $with_spiked_control = 1; }
 
-  my @l = sort {$a cmp $b} uniq grep {$_} map {$_->$attr_name} $self->is_pool ?
+  my @l = sort {$a cmp $b} uniq grep {defined and length} map {$_->$attr_name} $self->is_pool ?
     $attr_name ne 'spiked_phix_tag_index' ? # avoid unintended recursion
       grep { $with_spiked_control || ! $_->is_phix_spike } $self->children :
       () :

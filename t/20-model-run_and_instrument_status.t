@@ -87,8 +87,8 @@ my $util = t::util->new({
     id_user => 1,
     id_instrument_status_dict => 6,
   })->create() }
-  qr/Status \"planned maintenance\" is depricated/,
-  'error creating a depricated status';
+  qr/Status \"planned maintenance\" is deprecated/,
+  'error creating a deprecated status';
 
   lives_ok { npg::model::instrument_status->new({
     util => $util,

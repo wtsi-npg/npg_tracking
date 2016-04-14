@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+release 85.2
+ - Added 'sample_accession_numbers' to lims shim
+ - Deprecated old accessors for qc outcomes.
+
 release 85.1
  - Added 'purpose' to lims shim
  - utf8 option for test sqlite db
@@ -51,7 +55,7 @@ release 84.6
  - when changing ownership of run folder, set gid bit on every level
  - reporting croaks without full stacktraces for folder and folder/location
  - daemon control:
-     do not use depricated load_class method
+     do not use deprecated load_class method
      read a list of production users from a configuration file
 
 release 84.5
@@ -316,7 +320,7 @@ release 76.0
  - instrument uptime menu link removed - target graph is broken
  - consolidated all instrument menu 70* tests in one 20 test
  - removed code repetition from bin/ga_II_checker
- - removed depricated last_30_days method from npg::model::instrument_utilisation
+ - removed deprecated last_30_days method from npg::model::instrument_utilisation
  - fixed the code where in test conditions operations on undefined variables
    were performed
  - removed excessive verbosity in most of the tests
@@ -372,7 +376,7 @@ release 75.1
  - patch for samplesheet parser
  - switch live npg api base URL to a different host in order to separate
      human- and api-driven requests
- - removed depricated methods from npg::api::run_lane
+ - removed deprecated methods from npg::api::run_lane
  - removed unused save2cache method from npg::api::util
  - simplified logic for saving to cache in npg::api::request;
      removed unused save2cache method
@@ -688,9 +692,9 @@ release 68.1
 
 release 68.0
 - rebalanced the code in st&npg::api::base and ::util onjects; st::api::util object removed
-- depricated and unused code removed from st and npg apis, tests adjusted accordingly
+- deprecated and unused code removed from st and npg apis, tests adjusted accordingly
 - old test data for st package removed
-- tests refactored to exclude depricated calls and make use of test useragents transparent
+- tests refactored to exclude deprecated calls and make use of test useragents transparent
 - cgi script for e-mailing annotations removed
 
 release 67.1
@@ -728,10 +732,10 @@ release 65.1
 release 65.0
 - st::api modules
     passing around st_cache attribute is removed
-    some additional methods depricated
+    some additional methods deprecated
 - npg tracking web app:
     npg::util - st_cache and useragent accessors removed
-    depricated module npg::graph removed 
+    deprecated module npg::graph removed 
     own decorator object is used instead of SangerWeb; no dependency on SangerPath
     app version number is taken from npg::view instead of npg::controller
     /nfs/WWWdev/SHARED_docs/lib/core dependency retained in npg::view object for SSO and LDAP access, but the code runs OK if any of these modules is unaccessible 
@@ -756,7 +760,7 @@ release 64.0
 release 63.4
 - npg::email and illumina qc failures script for creating RT tickets use st::api::lims now; RT#241274
 - link to SeqQC on analysis in progress RT#245662
-- depricated module st::api::run removed
+- deprecated module st::api::run removed
 
 release 63.3
 - a date-related bug in the 10-model-run_status.t test fixed
@@ -776,29 +780,29 @@ release-63.0
 
 - npg::api::project object removed
 - npg::api::run module:
-    ->batch accessor is depricated
+    ->batch accessor is deprecated
     ->lims accessor created insted
 - npg::api:run_lane module:
     ->lims, ->is_pool, ->is_library, ->is_control methods added;
-    previously depricated ->stproject_id, ->stproject_name, ->sample, ->project methods removed;
+    previously deprecated ->stproject_id, ->stproject_name, ->sample, ->project methods removed;
     ->id_project field removed;
-    ->asset, ->library, ->pool, ->control, ->entity, ->st_lane methods made depricated;
+    ->asset, ->library, ->pool, ->control, ->entity, ->st_lane methods made deprecated;
     ->is_spiked_phix, ->asset_id, ->contains_unconsented_human, ->manual_qc methods are refactored to use npg::api:run_lane->lims method;
 - st::api::request module:
-    previously depricated ->libraries method removed
-    ->project method marked as depricated
+    previously deprecated ->libraries method removed
+    ->project method marked as deprecated
 - st::api::sample module:
-    previously depricated ->project ->workflow_samples methods removed
-- st::api::run module marked as depricated
-- st::api::lane module  as a whole is depricated
-    previously depricated ->sample method removed
-    all methods marked as depricated
+    previously deprecated ->project ->workflow_samples methods removed
+- st::api::run module marked as deprecated
+- st::api::lane module  as a whole is deprecated
+    previously deprecated ->sample method removed
+    all methods marked as deprecated
 - st::api::batch:
-    methods ->batches, ->batches_released_cluster, ->lane_count, ->lanes marked as depricated
+    methods ->batches, ->batches_released_cluster, ->lane_count, ->lanes marked as deprecated
 - st::api::asset module:
-    previously depricated methods ->workflow_sample, ->libraries, ->projects, ->project removed
-    methods ->required_fragment_size, ->studies, ->reference_sequence, ->organism, ->study, ->study_name, ->sample marked as depricated
-- st::api::tag module is depricated, all methods marked as depricated
+    previously deprecated methods ->workflow_sample, ->libraries, ->projects, ->project removed
+    methods ->required_fragment_size, ->studies, ->reference_sequence, ->organism, ->study, ->study_name, ->sample marked as deprecated
+- st::api::tag module is deprecated, all methods marked as deprecated
 - refactoring of some tests to use the web cache where possible
 - update schema scripts moved to scripts/upgrade_schema directory
 - some unused scripts removed from the scripts directory: runs_for_casproject, api-demo-project, project_finder, api-demo-stproject, report_q_values_to_sequencescapeprojects
@@ -914,7 +918,7 @@ release-54.3
 
 release-54.2
 - following a change in live data, 45 test fixed
-- tests for phix reference that use a depricated method removed from 45 test
+- tests for phix reference that use a deprecated method removed from 45 test
 - some tests that compare DateTime object to a string data fixed by stringifying the object explicitly
 - added blocking_runs method and  mapping of hiseq slots to blocking runs for the instrument model
 - possible to create a new hiseq run if there is a run-complete run in a slot 
@@ -1035,7 +1039,7 @@ release-42.0
  - add buttons for each isnturment status to annotate them
  - cycle count and current_ok fields added to run annotation
  - new st api study calss, the same class as old project class
- - depricated some methods in st api project and transfer the calls to the corresponding study if the sequencescape api version newer than 0.5
+ - deprecated some methods in st api project and transfer the calls to the corresponding study if the sequencescape api version newer than 0.5
  - fix summer-time error in annotation creation time-stamps
  - move planned maintenance instrument to down on run cancelled as well as run complete - RT167177
  - Add latest_contact column (DATETIME type) to instrument table
@@ -1054,7 +1058,7 @@ release-41.0
 release-40.0
  - add a having_control_lane method in api run
  - methods to get organism-related info about a sample
- - depricated st::api::sample::reference_sequence
+ - deprecated st::api::sample::reference_sequence
  - added required_fragment_size method to an asset object
  - add utility script to create tickets for failed lanes
  - add email infrastructure to email run complete etc to contact found via Sequencescape
@@ -1072,8 +1076,8 @@ release-37.0
  - instruments' utilisation info for 90 days
  - re-styled menu for instruments
  - 'Instrument Formats' pag unlinked from the top level menu and linked to the Instruments menu
- - npg::graph object made depricated
- - npg::model::instrument_utilisation->last_30_days marked as depricated
+ - npg::graph object made deprecated
+ - npg::model::instrument_utilisation->last_30_days marked as deprecated
  - st::api::pool - cope with new Sequencescape release - Pool id in Sequencescape Pipelines refers to an item in Sequencescape Projects as of 13/08/2009
  - minor st:api refinements
 
