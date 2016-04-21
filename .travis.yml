@@ -11,6 +11,7 @@ env:
     - DNAP_UTILITIES_VERSION="0.5.0"
 before_install:
   - cpanm --quiet --notest Alien::Tidyp
+install:
   - cpanm --no-lwp --notest https://github.com/wtsi-npg/perl-dnap-utilities/releases/download/${DNAP_UTILITIES_VERSION}/WTSI-DNAP-Utilities-${DNAP_UTILITIES_VERSION}.tar.gz
   - cpanm --installdeps --notest .
 before_script:
