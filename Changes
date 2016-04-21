@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+ - In order to have correctly versioned files in a distribution,
+     changed the builder base class.
+ - Travis conf update to pre-load perl-dnap-utilities from github.
+ 
 release 85.2
  - Added 'sample_accession_numbers' to lims shim
  - Deprecated old accessors for qc outcomes.
