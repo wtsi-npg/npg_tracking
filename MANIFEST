@@ -1872,3 +1872,5 @@ wtsi_local/envvars
 wtsi_local/httpd_sfweb.conf
 wtsi_local/httpd_vm.conf
 
+META.yml
+META.json

@@ -79,8 +79,8 @@ EOF
 my $builder = $class->new(
 
                 'module_name'         => 'npg-tracking',
-                'dist_author'         => q(wtsi-npg <npg@sanger.ac.uk>),
-                'dist_version'        => $class->git_tag(),
+                'dist_author'         => 'NPG team at WTSI <npg@sanger.ac.uk>',
+                'dist_version'        => $class->report_version,
                 'dist_abstract'       => 'Illumina sequencing instruments tracking',
                 'license'             => 'gpl',
 
@@ -110,7 +110,7 @@ my $builder = $class->new(
                 'Perl::Critic::Policy::Subroutines::ProhibitUnusedPrivateSubroutines' => 0,
                 'Test::Trap'                      => '0.2.0',
                 'Test::Warn'                      => '0.11',
-                'WTSI::DNAP::Utilities'           => '>= 0.5.0',
+                'WTSI::DNAP::Utilities'           => '>= 0.5.1',
           },
 
           'requires'    => {
@@ -232,8 +232,6 @@ my $builder = $class->new(
                 'XML::Simple'                     => '2.18',
                 'YAML'                            => '0.68',
             },
-         
-            'dist'         => { COMPRESS => 'gzip', SUFFIX => 'gz', },
          );
 
 $builder->install_path('data' => join q{/}, $builder->install_base() || (), 'data');
