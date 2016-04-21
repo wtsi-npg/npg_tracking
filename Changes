@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - In order to have correctly versioned files in a distribution,
+     changed the builder base class.
+ - Travis conf update to pre-load perl-dnap-utilities from github.
  - Samplesheet daemon:
      fixed logger;
      changed reference repository root so that it can be run on a staging host.
