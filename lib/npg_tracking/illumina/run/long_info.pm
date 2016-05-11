@@ -333,11 +333,11 @@ sub _set_values_at_end_of_read {
       $self->_push_reads_indexed(1);
       if ( $self->has_indexing_cycle_range ) {
         my ($start,$end) = $self->indexing_cycle_range;
-        if ( $end != $rc->{start} + 1 ) {
+        if ( $rc->{start} == $end + 1 ) {
           $self->_pop_indexing_cycle_range();
           $self->_push_indexing_cycle_range( $rc->{index} );
         } else {
-          carp "Don't know how to deal with no adjacent indexing reads: $start,$end and $rc->{start},$rc->{index}"
+          carp "Don't know how to deal with non adjacent indexing reads: $start,$end and $rc->{start},$rc->{index}"
         }
       } else {
         $self->_push_indexing_cycle_range( $rc->{start},$rc->{index} );
@@ -692,6 +692,41 @@ has is_rta => (
 sub _build_is_rta {
   my $self = shift;
   return io(join q(/),$self->runfolder_path, qw(Data Intensities) )->exists;
+}
+
+=head2 lane_tilecount
+
+utilises the Data/Intensities/config.xml to generate a hashref of
+
+  {lanes} = tilecount_value
+
+=cut
+
+has q{lane_tilecount} => (
+  isa => q{HashRef},
+  is  => q{ro},
+  lazy_build => 1,
+);
+
+sub _build_lane_tilecount {
+  my ( $self ) = @_;
+  my $lane_tilecount = {};
+  try {
+    my $run_el = ( $self->data_intensities_config_xml_object()->getElementsByTagName( 'Run' ) )[0];
+
+    for my $lane_el ( ( $run_el->getChildrenByTagName( 'TileSelection' ) )[0]->getChildrenByTagName( 'Lane' ) ) {
+      my $lane = $lane_el->getAttribute( 'Index' );
+      $lane_tilecount->{ $lane } = $lane_el->getElementsByTagName('Tile')->size();
+    }
+  } catch {
+    my $lane_count = $self->lane_count();
+    my $tile_count = $self->tile_count();
+    for my $lane (1..$lane_count) {
+      $lane_tilecount->{ $lane } = $tile_count;
+    }
+  };
+
+  return $lane_tilecount;
 }
 
 =head2 lane_tile_clustercount

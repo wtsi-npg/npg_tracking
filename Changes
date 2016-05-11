@@ -6,6 +6,7 @@ LIST OF CHANGES
  - Samplesheet daemon:
      fixed logger;
      changed reference repository root so that it can be run on a staging host.
+ - Changes to handle a different number of tiles in each lane
 
 release 85.2
  - Added 'sample_accession_numbers' to lims shim
