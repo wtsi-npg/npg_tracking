@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 59;
+use Test::More tests => 63;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
@@ -142,6 +142,13 @@ note($long_info->runfolder_path);
     $tilelayout_columns = $long_info->tilelayout_columns;
   } q{recreate object and call tilelayout_columns ok};
   cmp_ok($tilelayout_columns, '==', 6, 'correct tile columns');
+  
+  $long_info=undef;
+  lives_ok  { $long_info = test::long_info->new({id_run => 19395}); } q{created role_test (HiSeq run 19395, RunInfo.xml) object ok};
+  cmp_ok($long_info->lane_tilecount->{1}, '==', 64, 'correct lane 1 tile count');
+  lives_ok  { $long_info = test::long_info->new({id_run => 19395}); } q{created role_test (HiSeq run 19395, RunInfo.xml) object ok};
+  cmp_ok($long_info->lane_tilecount->{2}, '==', 63, 'correct lane 2 tile count');
+note($long_info->runfolder_path);
   
 
 }

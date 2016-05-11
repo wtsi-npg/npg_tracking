@@ -6,6 +6,8 @@ LIST OF CHANGES
  - Samplesheet daemon:
      fixed logger;
      changed reference repository root so that it can be run on a staging host.
+ - Changes to handle a different number of tiles in each lane
+ - Increased TAG_INDEX_MAX to 9999 to handle pools with >999 samples
 
 release 85.2
  - Added 'sample_accession_numbers' to lims shim
