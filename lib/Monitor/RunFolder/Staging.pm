@@ -109,7 +109,7 @@ sub check_tiles {
 
     my $expected_lanes  = $self->lane_count();
     my $expected_cycles = $self->expected_cycle_count();
-    my $expected_tiles  = $self->tile_count();
+    my $expected_tiles  = $self->lane_tilecount();
     my $path            = $self->runfolder_path();
 
     print {*STDERR} "\tChecking lanes, cycles, tiles...\n" or carp $OS_ERROR;
@@ -150,15 +150,22 @@ sub check_tiles {
             return 0;
         }
 
+        my $this_lane = substr($lane, -1, 1);
+        if ( ! exists($expected_tiles->{$this_lane}) ) {
+            carp "No expected tile count for lane $this_lane";
+            return 0;
+        }
+        my $expected_tiles_this_lane = $expected_tiles->{$this_lane};
+
         foreach my $cycle ( @cycles) {
             my $filetype = $cifs_present ? 'cif' : 'bcl';
             my @tiles   = glob "$cycle/*.$filetype" . q({,.gz});
             @tiles      = grep { m/ s_ \d+ _ \d+ [.] $filetype (?: [.] gz )? $ /msx } @tiles;
             my $t_count = scalar @tiles;
 
-            if ( $t_count != $expected_tiles ) {
+            if ( $t_count != $expected_tiles_this_lane ) {
                 carp 'Missing tile(s): '
-                   . "$lane C#$cycle - [$expected_tiles $t_count]";
+                   . "$lane C#$cycle - [$expected_tiles_this_lane $t_count]";
                 return 0;
             }
 

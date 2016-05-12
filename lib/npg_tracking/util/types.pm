@@ -13,7 +13,7 @@ our $VERSION = '0';
 Readonly::Scalar our $POSITION_MIN  => 1;
 Readonly::Scalar our $POSITION_MAX  => 9;
 Readonly::Scalar our $TAG_INDEX_MIN => 0;
-Readonly::Scalar our $TAG_INDEX_MAX => 999;
+Readonly::Scalar our $TAG_INDEX_MAX => 9999;
 
 subtype 'NpgTrackingReadableFile'
       => as 'Str'

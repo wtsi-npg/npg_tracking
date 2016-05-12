@@ -37,7 +37,7 @@ before 'add_component' => sub {
   foreach my $c ( @components ) {
     _test_attr($c);
     if ( any { !$c->compare_serialized($_) } @seen ) {
-      croak sprintf 'Duplicate entry in arguments to add: ', $c->freeze();
+      croak sprintf 'Duplicate entry in arguments to add: %s', $c->freeze();
     }
     if ($self->find($c)) {
       croak sprintf 'Cannot add component %s, already exists', $c->freeze();

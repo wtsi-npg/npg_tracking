@@ -8,16 +8,20 @@ package npg_tracking::daemon::samplesheet;
 use Moose;
 use Carp;
 use English qw(-no_match_vars);
+use Readonly;
 
 our $VERSION = '0';
 
 extends 'npg_tracking::daemon';
 
+Readonly::Scalar my $REFERENCE_ROOT => '/nfs/srpipe_references';
+
 override '_build_hosts' => sub { return ['sf49-nfs']; };
 ##no critic (RequireInterpolationOfMetachars)
-override 'command'  => sub { return q[perl -e 'use strict; use warnings; use npg::samplesheet::auto;  use Log::Log4perl qw(:easy); BEGIN{ Log::Log4perl->easy_init({level=>$INFO,}); } npg::samplesheet::auto->new()->loop();']; };
+override 'command'  => sub { return q[perl -e 'use strict; use warnings; use npg::samplesheet::auto;  use Log::Log4perl qw(:easy); Log::Log4perl->easy_init($INFO); npg::samplesheet::auto->new()->loop();']; };
 ##use critic
-override 'daemon_name'  => sub { return 'npg_samplesheet_daemon'; };
+override 'daemon_name'     => sub { return 'npg_samplesheet_daemon'; };
+override '_build_env_vars' => sub { return {'NPG_REPOSITORY_ROOT' => $REFERENCE_ROOT}};
 
 no Moose;
 
@@ -35,6 +39,15 @@ npg_tracking::daemon::samplesheet
 Class for a daemon that generates sample sheets.
 
 =head1 SUBROUTINES/METHODS
+
+=head2 daemon_name
+
+=head2 env_vars
+
+ NPG_REPOSITORY_ROOT env. variable is set for the daemon to
+ overwrite the default reference repository on a lustre file
+ file system, which is not mounted on the staging areas hosts,
+ where this daemon is running by default.
 
 =head1 DIAGNOSTICS
 

@@ -1,9 +1,10 @@
 use strict;
 use warnings;
 use lib 'lib';
-use npg_tracking::util::build;
 
-my $class = npg_tracking::util::build->subclass(code => <<'EOF');
+use WTSI::DNAP::Utilities::Build;
+
+my $class = WTSI::DNAP::Utilities::Build->subclass(code => <<'EOF');
 
  sub dir_files {
     my $dir = shift;
@@ -78,17 +79,21 @@ EOF
 my $builder = $class->new(
 
                 'module_name'         => 'npg-tracking',
-                'dist_author'         => q(wtsi-npg <npg@sanger.ac.uk>),
-                'dist_version'        => $class->git_tag(),
+                'dist_author'         => 'NPG team at WTSI <npg@sanger.ac.uk>',
+                'dist_version'        => $class->report_version,
                 'dist_abstract'       => 'Illumina sequencing instruments tracking',
                 'license'             => 'gpl',
 
           'configure_requires' => {
                 'ExtUtils::CBuilder'              => 0,
+                'Module::Build'                   => '>= 0.42',
           },
 
           'build_requires' => {
                 'ExtUtils::CBuilder'              => 0,
+                'DateTime::Duration'              => 0,
+                'DateTime::Format::SQLite'        => 0,
+                'IO::File'                        => 0,
                 'IPC::Open2'                      => 0,
                 'Test::Compile'                   => 0,
                 'Test::Distribution'              => 0,
@@ -105,9 +110,7 @@ my $builder = $class->new(
                 'Perl::Critic::Policy::Subroutines::ProhibitUnusedPrivateSubroutines' => 0,
                 'Test::Trap'                      => '0.2.0',
                 'Test::Warn'                      => '0.11',
-                'DateTime::Duration'              => 0,
-                'DateTime::Format::SQLite'        => 0,
-                'IO::File'                        => 0,
+                'WTSI::DNAP::Utilities'           => '>= 0.5.1',
           },
 
           'requires'    => {
@@ -229,8 +232,6 @@ my $builder = $class->new(
                 'XML::Simple'                     => '2.18',
                 'YAML'                            => '0.68',
             },
-         
-            'dist'         => { COMPRESS => 'gzip', SUFFIX => 'gz', },
          );
 
 $builder->install_path('data' => join q{/}, $builder->install_base() || (), 'data');

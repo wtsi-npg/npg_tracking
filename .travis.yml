@@ -6,9 +6,35 @@ addons:
 language: perl
 perl:
   - "5.16"
+  - "5.22"
+env:
+  global:
+    - secure: "QfmTURdOMius663oUxecwg2cWo1Tk5KmYgpIWFISfHNjICIXyOnhmbftl2d0g3ANqDqgZxhZcIESszPRh44unYKZUahb2vMi4YWh6D5MqnwzesC4qwEhbwkyFy1/L7Zh5T5IZ8WKT/NAuG2wAC8hLcfBNUplVHXX0FCeFq2/nvg="
+    - TEST_AUTHOR=1 TZ=Europe/London
+    - DNAP_UTILITIES_VERSION="0.5.1"
 before_install:
   - cpanm --quiet --notest Alien::Tidyp
+  - cpanm --no-lwp --notest https://github.com/wtsi-npg/perl-dnap-utilities/releases/download/${DNAP_UTILITIES_VERSION}/WTSI-DNAP-Utilities-${DNAP_UTILITIES_VERSION}.tar.gz
+  - cpanm --installdeps --notest .
 before_script:
   - mysql -e 'create database npgt;'
-env:
-  - TEST_AUTHOR=1 TZ=Europe/London
+after_success:
+  - ./Build dist
+  - export DIST_FILE=$(ls npg-tracking-*.tar.gz)
+  - export MD5_FILE=$DIST_FILE.md5
+  - md5sum $DIST_FILE > $MD5_FILE
+  - export SHA256_FILE=$DIST_FILE.sha256
+  - shasum -a 256 $DIST_FILE > $SHA256_FILE
+deploy:
+  provider: releases
+  api-key: $GH_OAUTH
+  file:
+    - $DIST_FILE
+    - $MD5_FILE
+    - $SHA256_FILE
+  skip_cleanup: true
+  on:
+    perl: 5.16
+    tags: true
+    all_branches: true
+

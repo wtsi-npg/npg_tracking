@@ -1,5 +1,16 @@
 LIST OF CHANGES
 
+release 85.3
+ - Add deployment to GitHub Releases
+ - In order to have correctly versioned files in a distribution,
+     changed the builder base class.
+ - Travis conf update to pre-load perl-dnap-utilities from github.
+ - Samplesheet daemon:
+     fixed logger;
+     changed reference repository root so that it can be run on a staging host.
+ - Changes to handle a different number of tiles in each lane
+ - Increased TAG_INDEX_MAX to 9999 to handle pools with >999 samples
+
 release 85.2
  - Added 'sample_accession_numbers' to lims shim
  - Deprecated old accessors for qc outcomes.
