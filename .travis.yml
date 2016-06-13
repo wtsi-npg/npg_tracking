@@ -1,8 +1,11 @@
-sudo: false
+sudo: required
 addons:
   apt:
     packages:
     - libgd2-xpm-dev
+    - mysql-server-5.7.13
+    - mysql-client-core-5.7.13
+    - mysql-client-5.7.13
 language: perl
 perl:
   - "5.16"
