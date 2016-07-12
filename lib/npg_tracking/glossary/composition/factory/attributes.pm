@@ -131,7 +131,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 20156GRL
+Copyright (C) 2016 GRL
 
 This file is part of NPG.
 
