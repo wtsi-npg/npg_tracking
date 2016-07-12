@@ -3,7 +3,7 @@ use warnings;
 use Test::More tests => 3;
 use Test::Exception;
 
-use_ok ('npg_tracking::glossary::composition::factory');
+use_ok ('npg_tracking::glossary::composition::factory::attributes');
 
 subtest 'object with one attr missing' => sub {
   plan tests => 2;
@@ -19,7 +19,7 @@ subtest 'object with one attr missing' => sub {
 
   package npg_tracking::composition::factory::test1;
   use Moose;
-  with 'npg_tracking::glossary::composition::factory' =>
+  with 'npg_tracking::glossary::composition::factory::attributes' =>
     {component_class => 'npg_tracking::composition::component::test'};
 
   has 'composition' => (
@@ -51,7 +51,7 @@ subtest 'object with all required attributes' => sub {
 
   package npg_tracking::composition::factory::test2;
   use Moose;
-  with 'npg_tracking::glossary::composition::factory' =>
+  with 'npg_tracking::glossary::composition::factory::attributes' =>
     {component_class => 'npg_tracking::composition::component::test'};
 
   has 'attr_1' => (isa => 'Int', is => 'ro', required => 1,);

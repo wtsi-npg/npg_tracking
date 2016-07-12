@@ -186,8 +186,7 @@ my $builder = $class->new(
                 'Lingua::EN::PluralToSingular'    => 0,
                 ## }}}
                 'Linux::Inotify2'                 => 0,
-                'List::MoreUtils'                 => '0.22',
-                'List::Util'                      => '1.21',
+                'List::MoreUtils'                 => '0.416',
                 'Log::Log4perl'                   => 0,
                 'LWP::UserAgent'                  => '5.823',
                 'Math::Round'                     => '0.06',

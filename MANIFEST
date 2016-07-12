@@ -341,6 +341,7 @@ lib/npg_tracking/glossary/composition.pm
 lib/npg_tracking/glossary/composition/component.pm
 lib/npg_tracking/glossary/composition/component/illumina.pm
 lib/npg_tracking/glossary/composition/factory.pm
+lib/npg_tracking/glossary/composition/factory/attributes.pm
 lib/npg_tracking/glossary/composition/factory/rpt.pm
 lib/npg_tracking/glossary/composition/serializable.pm
 lib/npg_tracking/glossary/flowcell.pm
@@ -358,7 +359,7 @@ lib/npg_tracking/illumina/run/short_info.pm
 lib/npg_tracking/monitor/status.pm
 lib/npg_tracking/Schema.pm
 lib/npg_tracking/Schema/Result/Annotation.pm
-lib/npg_tracking/Schema/Result/CostCode.pm
+lib/npg_tracking/Schema/Result/CostCode.pmx
 lib/npg_tracking/Schema/Result/CostGroup.pm
 lib/npg_tracking/Schema/Result/Designation.pm
 lib/npg_tracking/Schema/Result/EntityType.pm
@@ -476,6 +477,7 @@ t/10-npg_testing-db.t
 t/10-npg_testing-html.t
 t/10-npg_tracking-glossary-composition-component-illumina.t
 t/10-npg_tracking-glossary-composition-component.t
+t/10-npg_tracking-glossary-composition-factory-attributes.t
 t/10-npg_tracking-glossary-composition-factory-rpt.t
 t/10-npg_tracking-glossary-composition-factory.t
 t/10-npg_tracking-glossary-composition.t

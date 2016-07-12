@@ -1,4 +1,4 @@
-package npg_tracking::glossary::composition::factory;
+package npg_tracking::glossary::composition::factory::attributes;
 
 use strict;
 use warnings;
@@ -6,7 +6,7 @@ use MooseX::Role::Parameterized;
 use Class::Load qw/load_class/;
 use Carp;
 
-use npg_tracking::glossary::composition;
+use npg_tracking::glossary::composition::factory;
 
 our $VERSION = '0';
 
@@ -35,9 +35,9 @@ role {
 
   method 'create_composition' => sub {
     my $self = shift;
-    my $composition = npg_tracking::glossary::composition->new();
-    $composition->add_component($self->create_component());
-    return $composition;
+    my $factory = npg_tracking::glossary::composition::factory->new();
+    $factory->add_component($self->create_component());
+    return $factory->create_composition();
   };
 };
 
@@ -46,7 +46,7 @@ __END__
 
 =head1 NAME
 
-npg_tracking::glossary::composition::factory
+npg_tracking::glossary::composition::factory::attributes
 
 =head1 SYNOPSIS
 
@@ -58,7 +58,7 @@ npg_tracking::glossary::composition::factory
 
   package my::composition;
   use Moose;
-  with 'npg_tracking::glossary::composition::factory' =>
+  with 'npg_tracking::glossary::composition::factory::attributes' =>
     => { component_class => 'my::component' };
 
   has 'attr_1' => (isa => 'Int', is => 'ro', required => 1,);
@@ -131,7 +131,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 GRL
+Copyright (C) 20156GRL
 
 This file is part of NPG.
 

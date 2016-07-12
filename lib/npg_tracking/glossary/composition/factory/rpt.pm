@@ -5,8 +5,8 @@ use warnings;
 use MooseX::Role::Parameterized;
 use Class::Load qw/load_class/;
 
-use npg_tracking::glossary::composition;
 use npg_tracking::glossary::rpt;
+use npg_tracking::glossary::composition::factory;
 
 our $VERSION = '0';
 
@@ -33,12 +33,11 @@ role {
     my ($self) = @_;
 
     my $rpt_list = $self->rpt_list // q[];
-    my $composition = npg_tracking::glossary::composition->new();
+    my $factory = npg_tracking::glossary::composition::factory->new();
     foreach my $rpt ( @{npg_tracking::glossary::rpt->split_rpts($rpt_list)} ) {
-      $composition->add_component( $self->create_component($rpt) );
+      $factory->add_component( $self->create_component($rpt) );
     }
-
-    return $composition;
+    return $factory->create_composition();
   };
 };
 
@@ -137,7 +136,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 GRL
+Copyright (C) 2016 GRL
 
 This file is part of NPG.
 

@@ -26,13 +26,14 @@ has '_closed' => (
       isa       => 'Bool',
       is        => 'ro',
       default   => 0,
-      reader    => 'is_closed',
+      init_arg  => undef,
+      reader    => '_is_closed',
       writer    => '_set_closed',
 );
 
 sub _error_if_closed {
   my $self = shift;
-  if ($self->_closed()) {
+  if ($self->_is_closed()) {
     croak 'Factory closed';
   }
   return;
@@ -63,7 +64,7 @@ sub create_composition {
   $self->_error_if_closed();
   $self->_set_closed(1);
   return npg_tracking::glossary::composition->new(
-    components => $self->_components;
+    components => $self->_components()
   );
 }
 
