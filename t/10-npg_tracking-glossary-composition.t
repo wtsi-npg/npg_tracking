@@ -30,8 +30,8 @@ subtest 'maintaining composition integrity' => sub {
     'cannot serialize composition';
 };
 
-subtest 'finding, counting, returning a list' => sub {
-  plan tests => 10;
+subtest 'getting, finding, counting, returning a list' => sub {
+  plan tests => 17;
 
   my $c = $cpname->new(id_run => 1, position => 2);
   my $cmps = $pname->new(components => [$c]);
@@ -39,6 +39,9 @@ subtest 'finding, counting, returning a list' => sub {
   ok($found && (ref $found eq $cpname), 'found an object');
   my $c1 = $cpname->new(id_run => 1, position => 3);
   is($cmps->find($c1), undef, 'not found');
+  isa_ok($cmps->get_component(0), $cpname, 'retrieved component');
+  is($cmps->get_component(1), undef, 'retrieved undefined');
+  isa_ok($cmps->get_component(-1), $cpname, 'retrieved component');
 
   is($cmps->num_components, 1, 'one component');
   my @l = $cmps->components_list();
@@ -55,6 +58,11 @@ subtest 'finding, counting, returning a list' => sub {
   ok($found && (ref $found eq $cpname), 'found an object');
 
   is($cmps->num_components, 2, 'two components');
+  isa_ok($cmps->get_component(0), $cpname, 'retrieved component');
+  isa_ok($cmps->get_component(1), $cpname, 'retrieved component');
+  my $last = $cmps->get_component(-1);
+  isa_ok($last, $cpname, 'retrieved component');
+  is($last->position, 3, 'correct position');
   @l = $cmps->components_list();
   is(scalar @l, 2, 'two components');
 };

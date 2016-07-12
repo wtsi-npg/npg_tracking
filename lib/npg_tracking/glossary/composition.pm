@@ -23,6 +23,7 @@ has 'components' => (
       handles   => {
           '_sort_components'  => 'sort_in_place',
           'num_components'    => 'count',
+          'get_component'     => 'get',
           'components_list'   => 'elements',
                    },
 );
@@ -192,6 +193,12 @@ A list of component objects.
 Returns number of components.
 
   print 'Number of components ' . $composition->num_components();
+
+=head2 get_component
+
+Returns a component at index.
+
+  my $component = $composition->get_component(2);
 
 =head2 find
 
