@@ -359,7 +359,7 @@ lib/npg_tracking/illumina/run/short_info.pm
 lib/npg_tracking/monitor/status.pm
 lib/npg_tracking/Schema.pm
 lib/npg_tracking/Schema/Result/Annotation.pm
-lib/npg_tracking/Schema/Result/CostCode.pmx
+lib/npg_tracking/Schema/Result/CostCode.pm
 lib/npg_tracking/Schema/Result/CostGroup.pm
 lib/npg_tracking/Schema/Result/Designation.pm
 lib/npg_tracking/Schema/Result/EntityType.pm
