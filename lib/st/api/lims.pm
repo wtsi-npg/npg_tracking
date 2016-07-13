@@ -1,9 +1,9 @@
 package st::api::lims;
 
 use Carp;
-use English qw(-no_match_vars);
 use Moose;
 use MooseX::Aliases;
+use namespace::autoclean;
 use Readonly;
 use List::MoreUtils qw/any none uniq/;
 use Class::Load qw/load_class/;
@@ -70,6 +70,7 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
                            batch_id
                            flowcell_barcode
                       /],
+
     'general'    =>   [qw/ spiked_phix_tag_index
                            is_pool
                            is_control
@@ -134,17 +135,19 @@ Readonly::Array my @DELEGATED_METHODS   => sort map { @{$METHODS_PER_CATEGORY{$_
                                              grep {$_ ne 'primary'} keys %METHODS_PER_CATEGORY;
 
 has '_driver_arguments' => (
-                        isa    => 'HashRef',
-                        is     => 'ro',
-                        writer => '_set__driver_arguments',
-                        default => sub { {} },
+                        isa      => 'HashRef',
+                        is       => 'ro',
+                        init_arg => undef,
+                        writer   => '_set__driver_arguments',
+                        default  => sub { {} },
 );
 
 has '_primary_arguments' => (
-                        isa    => 'HashRef',
-                        is     => 'ro',
-                        writer => '_set__primary_arguments',
-                        default => sub { {} },
+                        isa      => 'HashRef',
+                        is       => 'ro',
+                        init_arg => undef,
+                        writer   => '_set__primary_arguments',
+                        default  => sub { {} },
 );
 
 =head2 BUILD
@@ -194,8 +197,8 @@ sub BUILD {
 # Mapping of LIMS object types to attributes for which methods are to
 # be generated. These generated methods are 'plural' methods which
 # return an array of that attributes e.g. $lims->library_ids (returns
-# an array of library_id), $lims->sample_public_name (returns an array
-# of sample public_names).
+# an array of library_id values), $lims->sample_public_names (returns
+# an array of of sample_public_name values).
 Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
     'library'      => [qw/ id
                            name
@@ -238,11 +241,10 @@ foreach my $object_type (keys %ATTRIBUTE_LIST_METHODS) {
 Driver type (xml, etc), currently defaults to xml
 
 =cut
-has 'driver_type' => (
-                        isa        => 'Str',
-                        is         => 'ro',
-                        lazy_build => 1,
-                        writer     => '_set_driver_type',
+has 'driver_type' => ( isa        => 'Str',
+                       is         => 'ro',
+                       lazy_build => 1,
+                       writer     => '_set_driver_type',
                      );
 sub _build_driver_type {
   my $self = shift;
@@ -266,11 +268,10 @@ sub _build_driver_type {
 Driver object (xml, warehouse, mlwarehouse, samplesheet ...)
 
 =cut
-has 'driver' => (
-                          'is'        => 'ro',
-                          'lazy'      => 1,
-                          'builder'   => '_build_driver',
-                          'predicate' => 'has_driver',
+has 'driver' => ( 'is'        => 'ro',
+                  'lazy'      => 1,
+                  'builder'   => '_build_driver',
+                  'predicate' => 'has_driver',
                 );
 sub _build_driver {
   my $self = shift;
@@ -308,16 +309,17 @@ for my$m ( @METHODS ){
   });
 }
 
-=head2 inline_index_end
+=head2 inline_index_read
 
-index end
+index read
 
 =cut
 
-has 'inline_index_read' => (isa => 'Maybe[Int]',
-                           is => 'ro',
-                           lazy_build => 1,
-                          );
+has 'inline_index_read' => (isa        => 'Maybe[Int]',
+                            is         => 'ro',
+                            init_arg   => undef,
+                            lazy_build => 1,
+                           );
 
 sub _build_inline_index_read {
   my $self = shift;
@@ -325,10 +327,17 @@ sub _build_inline_index_read {
   return $x[3];  ## no critic (ProhibitMagicNumbers)
 }
 
-has 'inline_index_end' => (isa => 'Maybe[Int]',
-                           is => 'ro',
+has 'inline_index_end' => (isa        => 'Maybe[Int]',
+                           is         => 'ro',
+                           init_arg   => undef,
                            lazy_build => 1,
                           );
+
+=head2 inline_index_end
+
+index end
+
+=cut
 
 sub _build_inline_index_end {
   my $self = shift;
@@ -336,8 +345,15 @@ sub _build_inline_index_end {
   return $x[2];
 }
 
-has 'inline_index_start' => (isa => 'Maybe[Int]',
-                             is => 'ro',
+=head2 inline_index_start
+
+index start
+
+=cut
+
+has 'inline_index_start' => (isa        => 'Maybe[Int]',
+                             is         => 'ro',
+                             init_arg   => undef,
                              lazy_build => 1,
                             );
 
@@ -347,8 +363,13 @@ sub _build_inline_index_start {
   return $x[1];
 }
 
-has 'inline_index_exists' => (isa => 'Bool',
-                              is => 'ro',
+=head2 inline_index_exists
+
+=cut
+
+has 'inline_index_exists' => (isa        => 'Bool',
+                              is         => 'ro',
+                              init_arg   => undef,
                               lazy_build => 1,
                              );
 
@@ -357,8 +378,9 @@ sub _build_inline_index_exists {
   return _tag_sequence_from_sample_description($self->_sample_description) ? 1 : 0;
 }
 
-has '_sample_description' => (isa => 'Maybe[Str]',
-                              is => 'ro',
+has '_sample_description' => (isa        => 'Maybe[Str]',
+                              is         => 'ro',
+                              init_arg   => undef,
                               lazy_build => 1,
                              );
 
@@ -1092,7 +1114,6 @@ sub to_string {
 }
 
 __PACKAGE__->meta->make_immutable;
-no Moose;
 
 1;
 __END__
@@ -1109,13 +1130,11 @@ __END__
 
 =item MooseX::Aliases
 
-=item MooseX::StrictConstructor
+=item namespace::autoclean
 
 =item List::MoreUtils
 
 =item Carp
-
-=item English
 
 =item Readonly
 
@@ -1133,7 +1152,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 Genome Research Ltd
+Copyright (C) 2016 Genome Research Ltd
 
 This file is part of NPG.
 

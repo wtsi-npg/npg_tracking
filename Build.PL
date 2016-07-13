@@ -211,6 +211,7 @@ my $builder = $class->new(
                 'MooseX::StrictConstructor'       => '0.08',
                 'namespace::autoclean'            => '0.09',
                 'Net::LDAP'                       => 0,
+                'open'                            => 0,
                 'Perl6::Slurp'                    => '0.03',
                 'Pod::Usage'                      => '0',
                 'POSIX'                           => '1.09',
