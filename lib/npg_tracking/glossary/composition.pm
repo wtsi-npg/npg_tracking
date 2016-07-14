@@ -5,7 +5,6 @@ use namespace::autoclean;
 use MooseX::Storage;
 use MooseX::StrictConstructor;
 use List::MoreUtils qw/ bsearch/;
-use Readonly;
 use Carp;
 
 with Storage( 'traits' => ['OnlyWhenBuilt'],
@@ -13,48 +12,27 @@ with Storage( 'traits' => ['OnlyWhenBuilt'],
 
 our $VERSION = '0';
 
-Readonly::Scalar my $DIGEST_TYPE => 'md5';
-
 has 'components' => (
       isa       => 'ArrayRef[Object]',
       traits    => [ qw/Array/ ],
-      is        => 'ro',
+      is        => 'bare',
       required  => 1,
       handles   => {
-          '_sort_components'  => 'sort_in_place',
-          'num_components'    => 'count',
-          'get_component'     => 'get',
-          'components_list'   => 'elements',
+          '_sort_components' => 'sort_in_place',
+          'num_components'   => 'count',
+          'get_component'    => 'get',
+          'components_list'  => 'elements',
                    },
-);
-
-has '_checksum' => (
-      isa       => 'Str',
-      is        => 'ro',
-      required  => 0,
-      init_arg  => undef,
-      writer    => '_set_checksum',
 );
 
 sub BUILD {
   my $self = shift;
-  if (scalar @{$self->components} == 0) {
+  if ($self->num_components() == 0) {
     croak 'Composition cannot be empty';
   }
   $self->_sort_components(sub { $_[0]->compare_serialized($_[1]) });
-  $self->_set_checksum($self->digest($DIGEST_TYPE));
   return;
 }
-
-around 'freeze' => sub {
-  my ($orig, $self, @args) = @_;
-  my $frozen = $self->$orig;
-  if ( $self->_checksum() && ($self->_checksum() ne
-       $self->compute_digest($frozen, $DIGEST_TYPE)) ) {
-    croak 'Composition has changed';
-  }
-  return $frozen;
-};
 
 sub find {
   my ($self, $c) = @_;
@@ -63,21 +41,12 @@ sub find {
 
 sub find_in_sorted_array {
   my ($self, $c, $a) = @_;
-  $self->_test_component($c);
-  $a ||= $self->components;
-  my @found = bsearch { $_->compare_serialized($c) } @{$a};
-  return @found ? $found[0] : undef;
-}
-
-sub _test_component {
-  my ($self, $c) = @_;
-  if ( !defined $c ) {
-    croak 'Missing component';
-  }
   if ( !(ref $c) || ref =~ /HASH|ARRAY/xms ) {
     croak q[Object is expected];
   }
-  return 1;
+  my @list = $a ? @{$a} : $self->components_list;
+  my @found = bsearch { $_->compare_serialized($c) } @list;
+  return @found ? $found[0] : undef;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -178,15 +147,11 @@ not empty (error for an empty composition) and sorts the composition
 thus ensuring that the order the components were given to the composition
 factory does not matter.
 
-=head2 components
-
-A reference to a non-empty array of component objects, see
-npg_tracking::glossary::composition::component interface.
-Do not change this array directly.
-
 =head2 components_list
 
-A list of component objects.
+Returns a list of component objects.
+  
+  my @list = $composition->components_list();
 
 =head2 num_components
 
@@ -221,11 +186,9 @@ As find(), but can take optionally a sorted array to perform a search on.
 
 Returns a custom canonical (sorted) JSON serialization of the object.
 
-Guaranteed to be the same for a set of components regardless of the
-order the componets were added to the composition. Inherited from
-npg_tracking::glossary::composition::serializable. Raises an error
-if the internal signature of the object has changed since the object
-was created.
+Guaranteed to be the same for a set of immutable components regardless
+of the order the componets were added to the composition. Inherited
+from npg_tracking::glossary::composition::serializable.
 
   $composition->freeze();
 
@@ -255,7 +218,8 @@ object.
 
 Computes a unique signature for the composition as defined by the
 digest method in npg_tracking::glossary::composition::serializable.
-Gives an error if the components array is empty.
+Guaranteed to be the same for a set of immutable components regardless
+of the order the componets were added to the composition.
 
   $composition->digest();      # sha256_hex digest
   $composition->digest('md5'); # md5 digest

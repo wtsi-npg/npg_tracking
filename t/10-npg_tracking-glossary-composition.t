@@ -20,14 +20,17 @@ subtest 'empty composition' => sub {
 };
 
 subtest 'maintaining composition integrity' => sub {
-  plan tests => 2;
+  plan tests => 3;
 
   my $composition = $pname->new(
     components => [$cpname->new(id_run => 1, position => 2)]);
   lives_ok {$composition->freeze()} 'can serialize composition';
-  push @{$composition->components}, $cpname->new(id_run => 1, position => 3);
-  throws_ok {$composition->freeze()} qr/Composition has changed/,
-    'cannot serialize composition';
+  throws_ok { push @{$composition->components}, $cpname->new(id_run => 1, position => 3)}
+    qr/Can\'t locate object method "components"/,
+    'cannot push directly to the components array';
+  throws_ok { $composition->components->[0] = 3 }
+    qr/Can\'t locate object method "components"/,
+    'cannot reassign a component';
 };
 
 subtest 'getting, finding, counting, returning a list' => sub {

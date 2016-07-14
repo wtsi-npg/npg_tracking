@@ -1,13 +1,13 @@
 LIST OF CHANGES
 
- - Composition framework - the composition object  should be immutable (as much as
-   it is practically possible in Perl):
-     - functionality for an incremental assembly of a composition moved to 
-       a generic composition factory;
-     - empty compositions are not allowed;
-     - sort is performed by the constructor and removed from other functions;
-     - integrity check when serializing composition;
- - Composition - find uses binary search.
+ - Composition framework - the composition object becomes immutable as long
+   as its components are immutable.
+     - Functionality for an incremental assembly of a composition moved to 
+       a generic composition factory.
+     - Empty compositions are not allowed.
+     - Composition constructor returns a sorted composition.
+     - Public sort function is removed.
+ - Composition - find is implemented as a binary search.
 
 release 85.3
  - Add deployment to GitHub Releases

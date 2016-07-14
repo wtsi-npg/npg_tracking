@@ -74,7 +74,7 @@ subtest 'object with all required attributes' => sub {
              attr_2 => 'test');
   ok ($t->composition, 'composition is defined');
   isa_ok ($t->composition, 'npg_tracking::glossary::composition');
-  isa_ok ($t->composition->components->[0], 'npg_tracking::composition::component::test');
+  isa_ok ($t->composition->get_component(0), 'npg_tracking::composition::component::test');
   is($t->composition->num_components, 1, 'one-component composition');
   is ($t->composition->freeze, '{"components":[{"attr_1":1,"attr_2":"test"}]}',
     'correct composition serialization'); 
