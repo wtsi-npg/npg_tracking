@@ -34,10 +34,20 @@ subtest 'maintaining composition integrity' => sub {
 };
 
 subtest 'getting, finding, counting, returning a list' => sub {
-  plan tests => 17;
+  plan tests => 20;
 
   my $c = $cpname->new(id_run => 1, position => 2);
   my $cmps = $pname->new(components => [$c]);
+
+  throws_ok { $cmps->find() } qr/Object to compare to should be given/,
+    'argument is needed';
+  throws_ok { $cmps->find(2) }
+    qr/Expect object of class npg_tracking::glossary::composition::component::illumina/,
+    'argument should be a component of teh same class';
+  throws_ok { $cmps->find([1, 2]) }
+    qr/Expect object of class npg_tracking::glossary::composition::component::illumina/,
+    'argument should be a component of the same class';
+    
   my $found = $cmps->find($c);
   ok($found && (ref $found eq $cpname), 'found an object');
   my $c1 = $cpname->new(id_run => 1, position => 3);

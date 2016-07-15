@@ -41,9 +41,6 @@ sub find {
 
 sub find_in_sorted_array {
   my ($self, $c, $a) = @_;
-  if ( !(ref $c) || ref =~ /HASH|ARRAY/xms ) {
-    croak q[Object is expected];
-  }
   my @list = $a ? @{$a} : $self->components_list;
   my @found = bsearch { $_->compare_serialized($c) } @list;
   return @found ? $found[0] : undef;
