@@ -1,13 +1,14 @@
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 9;
 use Test::Exception;
+use List::Util qw/shuffle/;
 
 my $pname = q[npg_tracking::glossary::composition];
 my $cpname = q[npg_tracking::glossary::composition::component::illumina];
 use_ok ("$pname");
 use_ok ("$cpname");
-  use_ok 'npg_tracking::glossary::composition::factory';
+use_ok 'npg_tracking::glossary::composition::factory';
 
 subtest 'empty composition' => sub {
   plan tests => 2;
@@ -78,6 +79,46 @@ subtest 'getting, finding, counting, returning a list' => sub {
   is($last->position, 3, 'correct position');
   @l = $cmps->components_list();
   is(scalar @l, 2, 'two components');
+};
+
+
+subtest 'find for a large number of components' => sub {
+
+  my @components = ();
+  my @no_components = ();
+  for my $i ((0 .. 10)) {
+    push    @components, $cpname->new(id_run => 1, position => 2, tag_index => $i);
+    push @no_components, $cpname->new(id_run => 3, position => 2, tag_index => $i);
+       push @components, $cpname->new(id_run => 1, position => 3, tag_index => $i);
+    push @no_components, $cpname->new(id_run => 1, position => 4, tag_index => $i);
+    push @components, $cpname->new(id_run => 1, position => 3, tag_index => $i, subset => 'phix');
+    push @components, $cpname->new(id_run => 1, position => 3, tag_index => $i, subset => 'human');
+  }
+  push @components, $cpname->new(id_run => 1, position => 3);
+  push @components, $cpname->new(id_run => 1, position => 3, subset => 'phix');
+  push @components, $cpname->new(id_run => 1, position => 3, subset => 'human');
+  push @no_components, $cpname->new(id_run => 1, position => 5);
+  push @no_components, $cpname->new(id_run => 2, position => 3, subset => 'phix');
+  push @no_components, $cpname->new(id_run => 1, position => 3, subset => 'cat');
+
+  plan tests => (scalar @components ) * 2 + (scalar @no_components);
+
+  my $f = npg_tracking::glossary::composition::factory->new();
+  @components = shuffle @components;
+  for my $c (@components) {
+    $f->add_component($c);
+  }
+  my $composition = $f->create_composition();
+  @components = shuffle @components;
+  for my $c (@components) {
+    my $found = $composition->find($c);
+    ok ($found, 'component found');
+    is($found->digest, $c->digest, 'correct component');
+  }
+
+  for my $c (@no_components) {
+    ok (!$composition->find($c), 'component not found');
+  }
 };
 
 subtest 'serialization' => sub {

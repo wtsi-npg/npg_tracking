@@ -52,7 +52,7 @@ before 'add_component' => sub {
     if ( any { !$c->compare_serialized($_) } @seen ) {
       croak sprintf 'Duplicate entry in arguments to add: %s', $c->freeze();
     }
-    if (npg_tracking::glossary::composition->find_in_sorted_array($c, $self->_components)) {
+    if ( any { !$c->compare_serialized($_) } @{$self->_components} ) {
       croak sprintf 'Cannot add component %s, already exists', $c->freeze();
     }
     push @seen, $c;

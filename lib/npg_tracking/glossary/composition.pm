@@ -36,13 +36,7 @@ sub BUILD {
 
 sub find {
   my ($self, $c) = @_;
-  return $self->find_in_sorted_array($c);
-}
-
-sub find_in_sorted_array {
-  my ($self, $c, $a) = @_;
-  my @list = $a ? @{$a} : $self->components_list;
-  my @found = bsearch { $_->compare_serialized($c) } @list;
+  my @found = bsearch { $_->compare_serialized($c) } $self->components_list;
   return @found ? $found[0] : undef;
 }
 
@@ -171,13 +165,6 @@ npg_tracking::glossary::composition::component object.
   my $found = $composition->find($component);
 
 Undefined value is returned if nothing was found.
-
-=head2 find_in_sorted_array
-
-As find(), but can take optionally a sorted array to perform a search on.
-  
-  $composition->find_in_sorted_array($component);
-  $composition->find_in_sorted_array($component, $array);
 
 =head2 freeze
 

@@ -1,10 +1,13 @@
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 6;
 use Test::Exception;
 use DateTime;
+use List::Util qw/shuffle/;
 
 use_ok ('npg_tracking::glossary::composition::factory');
+my $cpname = q[npg_tracking::glossary::composition::component::illumina];
+use_ok ("$cpname");
 
 subtest 'empty composition cannot be created' => sub {
   plan tests => 2;
@@ -29,20 +32,19 @@ subtest 'component type is important' => sub {
     'components should implement "compare_serialized" method';
 };
 
-subtest 'create non-empty composition' => sub {
+subtest 'create a non-empty composition' => sub {
   plan tests => 14;
 
   my $f = npg_tracking::glossary::composition::factory->new();
   throws_ok { $f->add_component() } qr/Nothing to add/,
     'no attrs - error';
-
-  my $cpname = q[npg_tracking::glossary::composition::component::illumina];
-  use_ok ("$cpname");
+  throws_ok { $f->add_component(()) } qr/Nothing to add/,
+    'empty list attr - error';
 
   $f = npg_tracking::glossary::composition::factory->new();
   my $c = $cpname->new(id_run => 1, position => 2);
   throws_ok { $f->add_component($c, $c) }
-    qr/Duplicate entry in arguments to add/,
+    qr/Duplicate entry in arguments/,
     'add one component twice in one call';
 
   lives_ok { $f->add_component($c) } 'add one component';
@@ -69,6 +71,22 @@ subtest 'create non-empty composition' => sub {
     qr/Factory closed/, 'cannot create further compositions';  
 };
 
+subtest 'add many components' => sub {
+  plan tests => 22;
 
+  my $f = npg_tracking::glossary::composition::factory->new();
+  my @components = ();
+  for ((0 .. 10)) {
+    push @components, $cpname->new(id_run => 1, position => 2, tag_index => $_);
+  }
+  @components = shuffle @components;
+  for (@components) {
+    lives_ok { $f->add_component($_) } 'added component';
+  }
+  @components = shuffle @components;
+  for (@components) {
+    throws_ok { $f->add_component($_) } qr/already exists/, 'cannot add duplicate';
+  }
+};
 
 1;
