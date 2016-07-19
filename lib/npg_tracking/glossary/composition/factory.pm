@@ -1,45 +1,74 @@
 package npg_tracking::glossary::composition::factory;
 
-use strict;
-use warnings;
-use MooseX::Role::Parameterized;
-use Class::Load qw/load_class/;
+use Moose;
+use namespace::autoclean;
+use MooseX::StrictConstructor;
+use List::MoreUtils qw/ any /;
 use Carp;
 
 use npg_tracking::glossary::composition;
 
 our $VERSION = '0';
 
-parameter 'component_class' => (
-        isa      => 'Str',
-        required => 1,
+has '_components' => (
+      isa       => 'ArrayRef[Object]',
+      traits    => [ qw/Array/ ],
+      is        => 'ro',
+      required  => 0,
+      init_arg => undef,
+      default   => sub { [] },
+      handles   => {
+          'add_component'     => 'push',
+                   },
 );
 
-role {
-  my $param = shift;
+has '_closed' => (
+      isa       => 'Bool',
+      is        => 'ro',
+      default   => 0,
+      init_arg  => undef,
+      reader    => '_is_closed',
+      writer    => '_set_closed',
+);
 
-  method 'create_component' => sub {
-    my $self = shift;
+sub _error_if_closed {
+  my $self = shift;
+  if ($self->_is_closed()) {
+    croak 'Factory closed';
+  }
+  return;
+}
 
-    my $class = $param->component_class;
-    load_class($class);
+before 'add_component' => sub {
+  my ($self, @components) = @_;
 
-    my $h = {};
-    for my $attr_obj ( $class->meta->get_all_attributes ) {
-      my $attr = $attr_obj->name;
-      $h->{$attr} = $self->can($attr) && defined $self->$attr ? $self->$attr : undef;
+  $self->_error_if_closed();
+  if (!@components) {
+    croak 'Nothing to add';
+  }
+
+  my @seen = ();
+  foreach my $c ( @components ) {
+    if ( any { !$c->compare_serialized($_) } @seen ) {
+      croak sprintf 'Duplicate entry in arguments to add: %s', $c->freeze();
     }
-
-    return $class->new($h);
-  };
-
-  method 'create_composition' => sub {
-    my $self = shift;
-    my $composition = npg_tracking::glossary::composition->new();
-    $composition->add_component($self->create_component());
-    return $composition;
-  };
+    if ( any { !$c->compare_serialized($_) } @{$self->_components} ) {
+      croak sprintf 'Cannot add component %s, already exists', $c->freeze();
+    }
+    push @seen, $c;
+  }
 };
+
+sub create_composition {
+  my $self = shift;
+  $self->_error_if_closed();
+  $self->_set_closed(1);
+  return npg_tracking::glossary::composition->new(
+    components => $self->_components()
+  );
+}
+
+__PACKAGE__->meta->make_immutable;
 
 1;
 __END__
@@ -58,48 +87,41 @@ npg_tracking::glossary::composition::factory
 
   package my::composition;
   use Moose;
-  with 'npg_tracking::glossary::composition::factory' =>
-    => { component_class => 'my::component' };
+  use npg_tracking::glossary::composition::factory;
 
-  has 'attr_1' => (isa => 'Int', is => 'ro', required => 1,);
-  has 'attr_2' => (isa => 'Str', is => 'ro', required => 0,);
-  has 'composition' => (isa => ' npg_tracking::glossary::composition',
-                        required => 0, lazy_build => 1,);
-  sub _build_composition {
-    my $self = shift;
-    return $self->create_composition();
-  }
-  1;
-
-  package main;
-  use my::composition;
-  my $c = my::composition->new(attr_1 => 2);
-  $c->composition(); # error, cannot satisfy required constraint
-                     # for attr_2 in my::component
-  my $c = my::composition->new(attr_1 => 2, attr_1 => 'apple');
-  $c->composition(); # ok
-  
+  my $factory = npg_tracking::glossary::composition::factory->new();
+  $factory->add_component(my::component->new(attr_1 => 1, attr_2 => 'a'));
+  $factory->add_component(my::component->new(attr_1 => 2, attr_2 => 'b'));
+  my $composition = $factory->create_composition();
 
 =head1 DESCRIPTION
 
-A Moose role providing factory functionality for npg_tracking::glossary::composition::component
-and npg_tracking::glossary::composition type objects. The type of the component to be used
-shoudl be set as the component_class parameter.
+Generic factory functionality for npg_tracking::glossary::composition type objects.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 create_component
+=head2 add_component
 
-Inspects the attributes of the object and returns an instance of
-class specified as the component_class parameter. Populates all
-attributes of component class that are present and defined in the
-class consuming this role. Scalar values are copied, data structures
-and objects are copied by reference. No weak copy for objects.
+Stores a single component object or a list of component objects
+inside the factory.
+
+  $factory->add($component);
+  $factory->add((($component1, $component2));
+
+Gives an error if a list of components contains duplicates or if any of
+the argument components have been already given to this factory.
+
+Cannot be called after the create_composition() method has been called;
+
+=cut
 
 =head2 create_composition
 
-Inspects the attributes of the object and returns an instance of
-npg_tracking::glossary::composition with a single component.
+Returns a composition containing all components added to the factory.
+Can only be called once. The order of the objects in the array is not necessary
+the same as the order the objects were added to the factory.
+
+  $factory->create_composition();
 
 =head1 DIAGNOSTICS
 
@@ -109,15 +131,15 @@ npg_tracking::glossary::composition with a single component.
 
 =over
 
-=item strict
+=item Moose
 
-=item warnings
+=item namespace::autoclean
 
-=item MooseX::Role::Parameterized
-
-=item Class::Load
+=item MooseX::StrictConstructor
 
 =item Carp
+
+=item List::MoreUtils
 
 =back
 
@@ -131,7 +153,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 GRL
+Copyright (C) 2016 GRL
 
 This file is part of NPG.
 

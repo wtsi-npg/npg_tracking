@@ -4,8 +4,8 @@ use Moose;
 use namespace::autoclean;
 use MooseX::Storage;
 use MooseX::StrictConstructor;
+use List::MoreUtils qw/ bsearch/;
 use Carp;
-use List::MoreUtils qw/ any uniq /;
 
 with Storage( 'traits' => ['OnlyWhenBuilt'],
               'format' => '=npg_tracking::glossary::composition::serializable' );
@@ -13,90 +13,31 @@ with Storage( 'traits' => ['OnlyWhenBuilt'],
 our $VERSION = '0';
 
 has 'components' => (
-      traits    => [ qw/Array/ ],
-      is        => 'ro',
       isa       => 'ArrayRef[Object]',
-      default   => sub { [] },
+      traits    => [ qw/Array/ ],
+      is        => 'bare',
+      required  => 1,
       handles   => {
-          'add_component'     => 'push',
-          'has_no_components' => 'is_empty',
-          'sort_components'   => 'sort_in_place',
-          'find_component'    => 'first',
-          'num_components'    => 'count',
+          '_sort_components' => 'sort_in_place',
+          'num_components'   => 'count',
+          'get_component'    => 'get',
+          'components_list'  => 'elements',
                    },
 );
 
-before 'add_component' => sub {
-  my ($self, @components) = @_;
-
-  if (!@components) {
-    croak 'Nothing to add';
+sub BUILD {
+  my $self = shift;
+  if ($self->num_components() == 0) {
+    croak 'Composition cannot be empty';
   }
-
-  my @seen = ();
-  foreach my $c ( @components ) {
-    _test_attr($c);
-    if ( any { !$c->compare_serialized($_) } @seen ) {
-      croak sprintf 'Duplicate entry in arguments to add: %s', $c->freeze();
-    }
-    if ($self->find($c)) {
-      croak sprintf 'Cannot add component %s, already exists', $c->freeze();
-    }
-    push @seen, $c;
-  }
-};
-
-before 'digest' => sub {
-  my ($self, @args) = @_;
-  if ($self->has_no_components) {
-    croak 'Composition is empty, cannot compute digest';
-  }
-};
-
-before 'freeze' => sub {
-  my ($self, @args) = @_;
-  $self->sort();
-};
-
-before 'freeze2rpt' => sub {
-  my ($self, @args) = @_;
-  $self->sort();
-};
-
-sub component_values4attr {
-  my ($self, $attr) = @_;
-
-  if (!$attr) {
-    croak 'Attribute name is missing';
-  }
-  if ($self->has_no_components) {
-    croak qq[Composition is empty, cannot compute values for $attr];
-  }
-  my @values = uniq grep { defined $_ }  map { $_->can($attr) ? $_->$attr : undef } @{$self->components()};
-  return @values;
+  $self->_sort_components(sub { $_[0]->compare_serialized($_[1]) });
+  return;
 }
 
 sub find {
   my ($self, $c) = @_;
-  if ( !defined $c ) {
-    croak 'Missing argument';
-  }
-  _test_attr($c);
-  return $self->find_component( sub { !($c->compare_serialized($_)) } );
-}
-
-sub sort {##no critic (Subroutines::ProhibitBuiltinHomonyms)
-  my $self = shift;
-  $self->sort_components(sub { $_[0]->compare_serialized($_[1]) });
-  return;
-}
-
-sub _test_attr {
-  my $c = shift;
-  if ( !(ref $c) || ref =~ /HASH|ARRAY/xms ) {
-    croak q[Object is expected];
-  }
-  return;
+  my @found = bsearch { $_->compare_serialized($c) } $self->components_list;
+  return @found ? $found[0] : undef;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -110,8 +51,6 @@ npg_tracking::glossary::composition
 
 =head1 SYNOPSIS
 
-A simple derived class example.
-
   package my::package;
   use Moose;
   use namespace::autoclean;
@@ -119,8 +58,8 @@ A simple derived class example.
 
   has 'composition' => (
     is        => 'ro',
+    required  => 1,
     isa       => 'npg_tracking::glossary::composition',
-    default   => sub { npg_tracking::glossary::composition->new() },
     handles   => {
       'composition_digest' => 'digest',
     }
@@ -129,13 +68,14 @@ A simple derived class example.
   __PACKAGE__->meta->make_immutable;
   1;
   
-A derived class that uses its own attributes to build the composition,
-see npg_tracking::glossary::composition::factory for details.
+A class that uses its own attributes to build the composition,
+see npg_tracking::glossary::composition::factory::attributes for details.
 
   package my::package;
   use Moose;
   use namespace::autoclean;
-  with qw( npg_tracking::glossary::composition::factory );
+  with 'npg_tracking::glossary::composition::factory::attributes' =>
+    => { component_class => 'my::component' };
 
   has 'composition' => (
     is         => 'ro',
@@ -147,14 +87,11 @@ see npg_tracking::glossary::composition::factory for details.
   );
   sub _build_composition {
     my $self = shift;
-    return $self->create_sequence_composition();
+    return $self->create_composition();
   }
  
   __PACKAGE__->meta->make_immutable;
   1;
-
-See also npg_tracking::glossary::rpt::factory for conversion from
-Illumina sequencing specific stringified identifies.
 
 =head1 DESCRIPTION
 
@@ -162,6 +99,10 @@ A base class for a collection of one or more entities (components).
 See npg_tracking::glossary::composition::component for a generic component
 interface and npg_tracking::glossary::composition::component::illumina
 for Illumina sequencing specific implementation.
+
+See npg_tracking::glossary::composition::factory and roles in
+npg_tracking::glossary::composition::factory::* for factory methods to
+generate the composition object.
 
 A file with sequencing data can contain reads obtained in a single
 sequencing run or in a number of runs. The composition describes the origin
@@ -190,37 +131,30 @@ by a composition containing a single component. Thus the data from attempt
 
 =head1 SUBROUTINES/METHODS
 
-=head2 components
+=head2 BUILD
 
-An array reference of component objects, empty by default, see
-npg_tracking::glossary::composition::component interface. The order of
-the objects in the array is not necessary the order the objects are added
-in, i.e. this array cannot be treated as a queue.
+An extension for the constructor method. Checks that the composition is
+not empty (error for an empty composition) and sorts the composition
+thus ensuring that the order the components were given to the composition
+factory does not matter.
 
-=head2 add_component
+=head2 components_list
 
-Appends a single component object or a list of component objects
-to the end of the components array.
-
-  $composition->add($component);
-  $composition->add((($component1, $component2));
-
-Gives an error if a list of components contains duplicates or if any of
-the argument components already exists in the components array.
-
-=head2 has_no_components
-
-Returns true if the components array is empty, false otherwise.
-
-  if ($composition->has_no_components()) {
-    print 'No components';
-  }
+Returns a list of component objects.
+  
+  my @list = $composition->components_list();
 
 =head2 num_components
 
 Returns number of components.
 
   print 'Number of components ' . $composition->num_components();
+
+=head2 get_component
+
+Returns a component at index.
+
+  my $component = $composition->get_component(2);
 
 =head2 find
 
@@ -230,21 +164,15 @@ npg_tracking::glossary::composition::component object.
 
   my $found = $composition->find($component);
 
-=head2 sort
-
-Sorts components array in place. The comparison is based on the
-compare_serialized method of the npg_tracking::glossary::composition::component
-object.
-
-  $composition->sort();
+Undefined value is returned if nothing was found.
 
 =head2 freeze
 
 Returns a custom canonical (sorted) JSON serialization of the object.
 
-Guaranteed to be the same for a set of components regardless of the
-order the componets were added to the composition. Inherited from
-npg_tracking::glossary::composition::serializable.
+Guaranteed to be the same for a set of immutable components regardless
+of the order the componets were added to the composition. Inherited
+from npg_tracking::glossary::composition::serializable.
 
   $composition->freeze();
 
@@ -274,21 +202,11 @@ object.
 
 Computes a unique signature for the composition as defined by the
 digest method in npg_tracking::glossary::composition::serializable.
-Gives an error if the components array is empty.
+Guaranteed to be the same for a set of immutable components regardless
+of the order the componets were added to the composition.
 
   $composition->digest();      # sha256_hex digest
   $composition->digest('md5'); # md5 digest
-
-=head2 component_values4attr
-
-Returns a list of distinct true attribute values of the components. Takes
-the attribute name as input. An empty list is returned if none of the
-components has this value defined defined. Error if the composition is empty. 
-
-  my @subsets = $composition->component_values4attr('subset');
-
-The caller can enforce that the composition is homogeneous in respect of
-the attribute value.
 
 =head1 DIAGNOSTICS
 
@@ -306,9 +224,9 @@ the attribute value.
 
 =item namespace::autoclean
 
-=item Carp
+=item Readonly
 
-=item List::MoreUtils
+=item Carp
 
 =back
 
@@ -322,7 +240,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 GRL
+Copyright (C) 2016 GRL
 
 This file is part of NPG.
 

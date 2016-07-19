@@ -1,5 +1,14 @@
 LIST OF CHANGES
 
+ - Composition framework - the composition object becomes immutable as long
+   as its components are immutable.
+     - Functionality for an incremental assembly of a composition moved to 
+       a generic composition factory.
+     - Empty compositions are not allowed.
+     - Composition constructor returns a sorted composition.
+     - Public sort function is removed.
+ - Composition - find is implemented as a binary search.
+
 release 85.3
  - Add deployment to GitHub Releases
  - In order to have correctly versioned files in a distribution,
