@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - Add HiSeq 4000 to graphical instrument list
+ - Limit menu for changing run status, when not analyst, to those on instrument
  - Composition framework - the composition object becomes immutable as long
    as its components are immutable.
      - Functionality for an incremental assembly of a composition moved to 
