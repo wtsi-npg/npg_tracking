@@ -50,9 +50,13 @@ sub freeze2rpt {
 
 sub digest {
   my ($self, $digest_type) = @_;
-  my $data = $self->freeze();
+  return $self->compute_digest($self->freeze(), $digest_type);
+}
+
+sub compute_digest {
+  my ($self, $data, $digest_type) = @_;
   return ($digest_type && $digest_type eq 'md5') ?
-          md5_hex $data : sha256_hex $data;
+      md5_hex $data : sha256_hex $data;
 }
 
 sub _pack_custom {
@@ -160,10 +164,17 @@ gives an error. See npg_tracking::glossary::rpt for details.
 
 =head2 digest
 
-Returns a digest of the JSON serialization string.
+Returns a digest of the JSON serialization string for $self.
 
   $p->digest();      # sha256_hex digest
   $p->digest('md5'); # md5 digest
+
+=head2 compute_digest
+
+Returns a digest of an input string.
+
+  $p->compute_digest($string);        # sha256_hex digest
+  $p->compute_digest($string, 'md5'); # md5 digest
 
 =head1 DIAGNOSTICS
 
@@ -201,7 +212,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 GRL
+Copyright (C) 2016 GRL
 
 This file is part of NPG.
 
