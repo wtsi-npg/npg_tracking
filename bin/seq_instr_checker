@@ -22,6 +22,7 @@ Readonly::Array my @MiSeq_DISKS => qw( MiSeqAnalysis MiSeqTemp );
 Readonly::Hash my %DISKS => (
                               'HiSeq'  => \@HiSeq_DISKS,
                               'HiSeqX' => \@HiSeqX_DISKS,
+                              'HiSeq 4000' => \@HiSeqX_DISKS,
                               'MiSeq'  => \@MiSeq_DISKS,
                             );
 
