@@ -283,7 +283,7 @@ sub _build__runinfo_store {
     }
 
   ## no critic (ValuesAndExpressions::ProhibitMagicNumbers)
-  }elsif($formatversion == 2 || $formatversion == 3){
+  }elsif($formatversion == 2 || $formatversion == 3 || $formatversion == 4){
     my $fcl_el = $doc->getElementsByTagName('FlowcellLayout')->[0];
     $self->_set_lane_count($fcl_el->getAttribute('LaneCount'));
     my $ncol = $fcl_el->getAttribute('SurfaceCount') * $fcl_el->getAttribute('SwathCount');
