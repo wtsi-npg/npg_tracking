@@ -1,6 +1,8 @@
 LIST OF CHANGES
 
 release 85.4
+ - Run/instrument tracking; added full support for HiSeq 4000 and limited support
+   for NextSeq and MiniSeq
  - Add HiSeq 4000 to graphical instrument list
  - Limit menu for changing run status, when not analyst, to those on instrument
  - Composition framework - the composition object becomes immutable as long
