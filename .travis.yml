@@ -13,7 +13,6 @@ env:
     - TEST_AUTHOR=1 TZ=Europe/London
     - DNAP_UTILITIES_VERSION="0.5.1"
 before_install:
-  - ./.travis/before_install_mysql57.sh
   - cpanm --quiet --notest Alien::Tidyp
   - cpanm --no-lwp --notest https://github.com/wtsi-npg/perl-dnap-utilities/releases/download/${DNAP_UTILITIES_VERSION}/WTSI-DNAP-Utilities-${DNAP_UTILITIES_VERSION}.tar.gz
   - cpanm --installdeps --notest .
