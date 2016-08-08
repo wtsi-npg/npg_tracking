@@ -37,18 +37,16 @@ my $class = WTSI::DNAP::Utilities::Build->subclass(code => <<'EOF');
 
   sub process_cgibin_files {
     my $self = shift;
-    my $files = $self->rscan_dir('cgi-bin', sub {-f $_});
-    my $blib  = $self->blib();
-    foreach my $file ( @{$files} ) {
+    foreach my $file ( @{$self->rscan_dir('cgi-bin', sub {-f $_})} ) {
       my $dest_file = $self->copy_if_modified(
         from    => $file,
-        to_dir  => join(q[/], $self->base_dir(), $blib),
+        to_dir  => join(q[/], $self->base_dir(), $self->blib()),
         flatten => 0);
       if ($dest_file) {
         $self->fix_shebang_line($dest_file);
+        `chmod +x $dest_file`;
       }
     }
-    `chmod +x ${blib}/cgi-bin/*`;
     return;
   }
 
@@ -239,7 +237,7 @@ foreach my $path (qw(data htdocs cgi-bin wtsi_local)) {
   $name =~ s/-//;
   $builder->add_build_element($name);
   if ($builder->install_base()) {
-    $builder->install_path($name => join q{/}, $builder->install_base(), $path);
+    $builder->install_path($path => join q{/}, $builder->install_base(), $path);
   }
 }
 
