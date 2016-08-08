@@ -21,6 +21,7 @@
     [%- IF !(requestor.is_member_of('analyst')) -%]
       [%- FOREACH rsd = rsd_list - %]
         [%- IF rsd.temporal_index > current_temporal_index -%]
+          [%- IF rsd.description == "run mirrored"; LAST; END -%]
           [%- new_rsd_list.push(rsd); -%]
         [%- END -%]
       [%- END -%]

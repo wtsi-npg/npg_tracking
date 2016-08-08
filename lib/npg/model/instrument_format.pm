@@ -111,10 +111,11 @@ sub instrument_count {
 
 sub is_used_sequencer_type {
   my ( $self ) = @_;
-  my $types = {'HiSeq'  => 'HiSeq',
-               'MiSeq'  => 'MiSeq',
-               'HiSeqX' => 'HiSeqX',
-               'HK'     => 'GAII',
+  my $types = {'HiSeq'      => 'HiSeq',
+               'MiSeq'      => 'MiSeq',
+               'HiSeqX'     => 'HiSeqX',
+               'HiSeq 4000' => 'HiSeq 4000',
+               'HK'         => 'GAII',
               };
   return $types->{$self->model()};
 }
