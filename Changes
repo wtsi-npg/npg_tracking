@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - Composition-enabled LIMs object.
+
 release 85.4
  - Run/instrument tracking; added full support for HiSeq 4000 and limited support
    for NextSeq and MiniSeq
