@@ -1,5 +1,5 @@
 [% PROCESS instrument_top.tt2
-           top_menu_index=3
+           top_menu_index=2
 -%]
 <p class="npgmenu2">
 &nbsp;

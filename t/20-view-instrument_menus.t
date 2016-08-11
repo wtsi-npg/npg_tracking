@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 6;
 use t::util;
 use t::request;
 
@@ -15,53 +15,6 @@ my $util = t::util->new({fixtures => 1,});
           });
   ok($util->test_rendered($str,  't/data/rendered/menus/instruments_formats.html'),
     'menu instruments>formats');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument_utilisation',
-           username       => 'public',
-           util           => $util,
-          });
-  ok($util->test_rendered($str, 't/data/rendered/menus/instruments_utilisation_30days_textual.html'),
-    'menu instruments>utilisation>30days-textual');
-
-  $str = t::request->new({
-           REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument_utilisation/graphical',
-           username       => 'public',
-           util           => $util,
-          });
-  ok($util->test_rendered($str, 't/data/rendered/menus/instruments_utilisation_30days_barchart.html'),
-    'menu instruments>utilisation>30days-barchart');
-
-  $str = t::request->new({
-           REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument_utilisation/graphical/line',
-           username       => 'public',
-           util           => $util,
-          });
-  ok($util->test_rendered($str, 't/data/rendered/menus/instruments_utilisation_30days_lineplot.html'),
-    'menu instruments>utilisation>30days-lineplot');
-
-  $str = t::request->new({
-           REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument_utilisation/text90',
-           username       => 'public',
-           util           => $util,
-          });
-  ok($util->test_rendered($str, 't/data/rendered/menus/instruments_utilisation_90days_textual.html'),
-    'menu instruments>utilisation>90days-textual');
-
-  $str = t::request->new({
-           REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument_utilisation/graphical/line90',
-           username       => 'public',
-           util           => $util,
-          });
-  ok($util->test_rendered($str, 't/data/rendered/menus/instruments_utilisation_90days_lineplot.html'),
-    'menu instruments>utilisation>90days_lineplot');
 }
 
 {

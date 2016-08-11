@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - Remove instrument utilisation views for web pages
+
 release 85.4
  - Run/instrument tracking; added full support for HiSeq 4000 and limited support
    for NextSeq and MiniSeq

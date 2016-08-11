@@ -93,12 +93,6 @@ data/templates/instrument_top.tt2
 data/templates/instrument_update_statuses.tt2
 data/templates/instrument_utilisation_create.tt2
 data/templates/instrument_utilisation_create_xml.tt2
-data/templates/instrument_utilisation_list.tt2
-data/templates/instrument_utilisation_list_graphical.tt2
-data/templates/instrument_utilisation_list_graphical_line.tt2
-data/templates/instrument_utilisation_list_graphical_line90.tt2
-data/templates/instrument_utilisation_list_text90.tt2
-data/templates/instrument_utilisation_menu.tt2
 data/templates/intensity_list.tt2
 data/templates/manufacturer_add.tt2
 data/templates/manufacturer_create.tt2
@@ -998,11 +992,6 @@ t/data/rendered/menus/instruments_make_change_mods.html
 t/data/rendered/menus/instruments_make_change_statuses.html
 t/data/rendered/menus/instruments_status_graphical.html
 t/data/rendered/menus/instruments_status_textual.html
-t/data/rendered/menus/instruments_utilisation_30days_barchart.html
-t/data/rendered/menus/instruments_utilisation_30days_lineplot.html
-t/data/rendered/menus/instruments_utilisation_30days_textual.html
-t/data/rendered/menus/instruments_utilisation_90days_lineplot.html
-t/data/rendered/menus/instruments_utilisation_90days_textual.html
 t/data/rendered/run.html
 t/data/rendered/run.html-POST
 t/data/rendered/run.html;add

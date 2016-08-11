@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 4;
 use Test::Exception;
 use t::util;
 use t::request;
@@ -57,50 +57,6 @@ my $util = t::util->new({ fixtures => 1});
            });
   ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/create.xml'),
     'pipeline create ok');
-}
-
-{
-  my $str = t::request->new({
-            PATH_INFO      => '/instrument_utilisation',
-            REQUEST_METHOD => 'GET',
-            username       => 'joe_public',
-            util           => $util,
-           });
-  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list.html'),
-    'table list view ok');
-}
-
-{
-  my $str = t::request->new({
-            PATH_INFO      => '/instrument_utilisation/graphical',
-            REQUEST_METHOD => 'GET',
-            username       => 'joe_public',
-            util           => $util,
-           });
-  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list_graphical.html'),
-    'graphical list view ok');
-}
-
-{
-  my $str = t::request->new({
-            PATH_INFO      => '/instrument_utilisation/text90',
-            REQUEST_METHOD => 'GET',
-            username       => 'joe_public',
-            util           => $util,
-           });
-  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list.html'),
-    '90 days table list view ok');
-}
-
-{
-  my $str = t::request->new({
-            PATH_INFO      => '/instrument_utilisation/graphical/line90',
-            REQUEST_METHOD => 'GET',
-            username       => 'joe_public',
-            util           => $util,
-           });
-  ok($util->test_rendered($str, 't/data/rendered/instrument_utilisation/list_graphical_90days.html'),
-    'graphical list view ok');
 }
 
 1;
