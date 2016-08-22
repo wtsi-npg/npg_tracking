@@ -1,6 +1,6 @@
 LIST OF CHANGES
 
- - Composition-enabled LIMs object.
+ - Composition-enabled LIMs object and reference finder.
 
 release 85.4
  - Run/instrument tracking; added full support for HiSeq 4000 and limited support

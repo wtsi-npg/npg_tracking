@@ -1,10 +1,5 @@
-# Author:        Marina Gourtovaia
-# Created:       14 April 2009
-#
 package npg_tracking::data::reference;
 
-use strict;
-use warnings;
 use Moose;
 
 our $VERSION = '0';
@@ -15,6 +10,15 @@ with qw/
           npg_tracking::glossary::tag
           npg_tracking::data::reference::find
        /;
+
+has '+id_run'   => ( required        => 0, );
+
+has '+position' => ( required        => 0, );
+
+has 'rpt_list'  => ( isa             => 'Str',
+                     is              => 'ro',
+                     required        => 0,
+                   );
 
 __PACKAGE__->meta->make_immutable;
 no Moose;
@@ -34,14 +38,42 @@ npg_tracking::data::reference
  my @refs = $r_user->refs();
  my @messages = $r_user->messages->messages;
 
+ $r_user = npg_tracking::data::reference->new(rpt_list => '22:1');
+
+ $r_user = npg_tracking::data::reference->new(id_run    => 22,
+                                              position  => 1,
+                                              tag_index => 3,
+                                              aligner   => 'bowtie');
+
+ $r_user = npg_tracking::data::reference->new(rpt_list  => '22:1:3',
+                                              aligner   => 'bowtie');
+
+ # To retrieve the original reference path
+ $r_user = npg_tracking::data::reference->new(id_run    => 22,
+                                              position  => 1,
+                                              tag_index => 3,
+                                              aligner   => 'fasta');
+
+ $r_user = npg_tracking::data::reference->new(rpt_list  => '22:1:3;22:2:3',
+                                              aligner   => 'fasta');
+
 See npg_tracking::data::reference::find role for a detailed description.
 
 =head1 DESCRIPTION
 
 A wrapper class for npg_tracking::data::reference::find role.
-Retrieves a path to a binary, aligner-specific reference sequence for a lane.
+Retrieves a path to a binary aligner-specific reference sequence for a lane or,
+with aligher option set to 'fasta', to a reference itself.
 
 =head1 SUBROUTINES/METHODS
+
+=head2 id_run
+
+=head2 position
+
+=head2 tag_index
+
+=head2 rpt_list
 
 =head1 DIAGNOSTICS
 
@@ -50,10 +82,6 @@ Retrieves a path to a binary, aligner-specific reference sequence for a lane.
 =head1 DEPENDENCIES
 
 =over
-
-=item warnings
-
-=item strict
 
 =item Moose
 
@@ -77,7 +105,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by Marina Gourtovaia
+Copyright (C) 2016 GRL, by Marina Gourtovaia
 
 This file is part of NPG.
 
