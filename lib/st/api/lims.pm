@@ -20,10 +20,12 @@ st::api::lims
 
 =head1 SYNOPSIS
 
- $lims = st::api::lims->new(id_run => 333); #run (batch) level object
+ $lims = st::api::lims->new(id_run => 333);   #run (batch) level object
  $lims = st::api::lims->new(batch_id => 222); # as above
  $lims = st::api::lims->new(batch_id => 222, position => 3); # lane level object
  $lims = st::api::lims->new(id_run => 333, position => 3, tag_index => 44); # plex level object
+ $lims = st::api::lims->new(rpt_list => '333:3:44'); # object for a one-component composition
+ $lims = st::api::lims->new(rpt_list => '333:3:44;333:4:44;'); # object for a two-component composition
  $lims = st::api::lims->new(driver_type => q(ml_warehouse), flowcell_barcode => q(HTC3HADXX),
                             position => 2, tag_index => 40); # plex level object from ml_warehouse
  $lims = st::api::lims->new(driver_type => q(ml_warehouse), flowcell_barcode => q(HTC3HADXX),
@@ -57,6 +59,7 @@ as this object's accessors. Example:
 
 Readonly::Scalar my $CACHED_SAMPLESHEET_FILE_VAR_NAME => 'NPG_CACHED_SAMPLESHEET_FILE';
 Readonly::Scalar my $DEFAULT_DRIVER_TYPE              => 'xml';
+Readonly::Scalar my $SAMPLESHEET_DRIVER_TYPE          => 'samplesheet';
 
 Readonly::Scalar my $PROC_NAME_INDEX       => 3;
 Readonly::Hash   my %QC_EVAL_MAPPING       => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
@@ -259,11 +262,9 @@ sub _build_driver_type {
     return $type;
   }
 
-  if (!$self->_primary_arguments->{'rpt_list'}) {
-    $self->_driver_arguments()->{'path'} ||= $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
-    if ( $self->_driver_arguments()->{'path'} ) {
-      return 'samplesheet';
-    }
+  $self->_driver_arguments()->{'path'} ||= $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
+  if ( $self->_driver_arguments()->{'path'} ) {
+    return $SAMPLESHEET_DRIVER_TYPE;
   }
 
   return $DEFAULT_DRIVER_TYPE;
@@ -808,7 +809,6 @@ sub _build__cached_children {
   } else {
     my $rpt_list = $self->_primary_arguments->{'rpt_list'};
     if ($rpt_list) {
-
       my $package_name = __PACKAGE__ . '::rpt_composition_factory';
       my $class=Moose::Meta::Class->create($package_name);
       $class->add_attribute('rpt_list', {isa =>'Str', is=>'ro', required =>1});
@@ -820,9 +820,18 @@ sub _build__cached_children {
                         ]
       )->new_object(rpt_list => $rpt_list)->create_composition();
 
-      foreach my $component ($composition->components_list()) {
+      my @components = $composition->components_list();
+      my $driver_type = $self->driver_type;
+      if ($driver_type eq $SAMPLESHEET_DRIVER_TYPE) {
+        my @unique_ids = uniq map { $_->id_run } @components;
+        if (@unique_ids != 1) {
+          croak qq[Cannot use $SAMPLESHEET_DRIVER_TYPE driver with components from multiple runs];
+        }
+      }
+
+      foreach my $component (@components) {
         my %init = %{$self->_driver_arguments()};
-        $init{'driver_type'} = $self->driver_type;
+        $init{'driver_type'} = $driver_type;
         foreach my $attr (@basic_attrs) {
           $init{$attr} = $component->$attr;
         }

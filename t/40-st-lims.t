@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 23;
+use Test::More tests => 25;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -756,7 +756,7 @@ subtest 'Run-level object via samplesheet driver' => sub {
 };
 
 subtest 'Lane-level object via samplesheet driver' => sub {
-  plan tests => 26;
+  plan tests => 16;
 
   my $path = 't/data/samplesheet/miseq_default.csv';
   lives_ok {st::api::lims->new(id_run => 10262, position =>2, path => $path, driver_type => 'samplesheet')}
@@ -779,12 +779,25 @@ subtest 'Lane-level object via samplesheet driver' => sub {
   is ($ss->library_id, undef, 'pool lane library_id undefined');
   is (scalar $ss->children, 96, '96 plexes returned');
 
+  $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 0, path => $path, driver_type => 'samplesheet');
+  is (scalar $ss->children, 96, '96 children returned for tag zero');
+  is ($ss->is_pool, 1, 'tag zero is a pool');
+  is ($ss->library_id, undef, 'tag_zero library_id undefined');
+  is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
+  is ($ss->tag_sequence, undef, 'tag sequence undefined');
+  is ($ss->purpose, undef, 'purpose');
+};
+
+subtest 'Plex-level object via samplesheet driver' => sub {
+  plan tests => 10;
+
+  my $path = 't/data/samplesheet/miseq_default.csv';
   lives_ok {st::api::lims->new(id_run => 10262, position =>1, tag_index=>999,path => $path, driver_type => 'samplesheet')}
     'no error instantiation an object for a non-existing tag_index';
   throws_ok {st::api::lims->new(id_run => 10262, position =>1, tag_index => 999, path => $path, driver_type => 'samplesheet')->children}
     qr/Tag index 999 not defined in/, 'error invoking a driver method on an object for a non-existing tag_index';
 
-  $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 3, path => $path, driver_type => 'samplesheet');
+  my $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 3, path => $path, driver_type => 'samplesheet');
   is ($ss->position, 1, 'correct position');
   is ($ss->tag_index, 3, 'correct tag_index');
   is ($ss->is_pool, 0, 'plex is not a pool');
@@ -793,14 +806,47 @@ subtest 'Lane-level object via samplesheet driver' => sub {
   is ($ss->library_id, 7583413, 'library id is correct');
   is ($ss->sample_name, 'LIA_3', 'sample name is correct');
   is (scalar $ss->children, 0, 'zero children returned');
+};
 
-  $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 0, path => $path, driver_type => 'samplesheet');
-  is (scalar $ss->children, 96, '96 children returned for tag zero');
-  is ($ss->is_pool, 1, 'tag zero is a pool');
-  is ($ss->library_id, undef, 'tag_zero library_id undefined');
-  is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
-  is ($ss->tag_sequence, undef, 'tag sequence undefined');
-  is ($ss->purpose, undef, 'purpose');
+subtest 'Samplesheet driver for a composition' => sub {
+  plan tests => 28;
+
+  my $path = 't/data/samplesheet/miseq_default.csv';
+  my $ss;
+  lives_ok { $ss = st::api::lims->new(rpt_list => '10262:1:3;2:3:4', path => $path) }
+    'no error instantiation an object for a composition';
+  throws_ok { $ss->children }
+    qr/Cannot use samplesheet driver with components from multiple runs/,
+   'error when components belong to different runs';
+
+  $ss=st::api::lims->new(rpt_list => '10262:1:3', path => $path);
+  is ($ss->driver, undef, 'driver undefined');
+  is ($ss->driver_type, 'samplesheet', 'driver type is samplesheet');
+  is ($ss->rpt_list, '10262:1:3', 'rpt list as given');
+  is ($ss->id_run, undef, 'run id undefined');
+  is ($ss->position, undef, 'position undefined');
+  is ($ss->tag_index, undef, 'tag_index undefined');
+  ok (!$ss->is_pool, 'not a pool');
+  is ($ss->is_composition, 1, 'this is a composition');
+  is (scalar $ss->num_children, 1, 'one child');
+  is ($ss->default_tag_sequence, 'TTAGGCAT', 'correct default tag sequence');
+  is ($ss->tag_sequence, undef, 'tag sequence is undefined');
+  is ($ss->library_id, 7583413, 'library id is correct');
+  is ($ss->sample_name, 'LIA_3', 'sample name is correct');
+  $ss = ($ss->children)[0];
+  ok ($ss->driver && (ref $ss->driver eq 'st::api::lims::samplesheet'), 'correct driver');
+  is ($ss->driver_type, 'samplesheet', 'driver type is samplesheet');
+  is ($ss->rpt_list, undef, 'rpt list is undefined');
+  is ($ss->id_run, 10262, 'correct run id');
+  is ($ss->position, 1, 'correct position');
+  is ($ss->tag_index, 3, 'correct tag_index');
+  ok (!$ss->is_pool, 'plex is not a pool');
+  is ($ss->is_composition, 0, 'not a composition');
+  is ($ss->default_tag_sequence, 'TTAGGCAT', 'correct default tag sequence');
+  is ($ss->tag_sequence, $ss->default_tag_sequence, 'tag sequence is the same as default tag sequence');
+  is ($ss->library_id, 7583413, 'library id is correct');
+  is ($ss->sample_name, 'LIA_3', 'sample name is correct');
+  is (scalar $ss->children, 0, 'zero children returned');
 };
 
 subtest 'Instantiating a samplesheet driver' => sub {
