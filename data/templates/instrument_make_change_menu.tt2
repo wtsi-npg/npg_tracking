@@ -1,5 +1,5 @@
 [% PROCESS instrument_top.tt2
-           top_menu_index=2
+           top_menu_index=1
 -%]
 [% labels    = ['edit statuses', 'update mod', ] -%]
 [% addresses = ['instrument/edit_statuses', 'instrument_mod'] -%]

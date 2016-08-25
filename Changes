@@ -1,6 +1,7 @@
 LIST OF CHANGES
 
  - Install all files, including cgi-related, within the install action.
+ - Remove instrument utilisation views for web pages
 
 release 85.4
  - Run/instrument tracking; added full support for HiSeq 4000 and limited support
