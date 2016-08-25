@@ -3,12 +3,14 @@ package st::api::lims;
 use Carp;
 use Moose;
 use MooseX::Aliases;
+use Moose::Meta::Class;
 use namespace::autoclean;
 use Readonly;
 use List::MoreUtils qw/any none uniq/;
 use Class::Load qw/load_class/;
 
 use npg_tracking::util::types;
+use npg_tracking::glossary::rpt;
 
 our $VERSION = '0';
 
@@ -18,10 +20,12 @@ st::api::lims
 
 =head1 SYNOPSIS
 
- $lims = st::api::lims->new(id_run => 333); #run (batch) level object
+ $lims = st::api::lims->new(id_run => 333);   #run (batch) level object
  $lims = st::api::lims->new(batch_id => 222); # as above
  $lims = st::api::lims->new(batch_id => 222, position => 3); # lane level object
  $lims = st::api::lims->new(id_run => 333, position => 3, tag_index => 44); # plex level object
+ $lims = st::api::lims->new(rpt_list => '333:3:44'); # object for a one-component composition
+ $lims = st::api::lims->new(rpt_list => '333:3:44;333:4:44;'); # object for a two-component composition
  $lims = st::api::lims->new(driver_type => q(ml_warehouse), flowcell_barcode => q(HTC3HADXX),
                             position => 2, tag_index => 40); # plex level object from ml_warehouse
  $lims = st::api::lims->new(driver_type => q(ml_warehouse), flowcell_barcode => q(HTC3HADXX),
@@ -55,6 +59,7 @@ as this object's accessors. Example:
 
 Readonly::Scalar my $CACHED_SAMPLESHEET_FILE_VAR_NAME => 'NPG_CACHED_SAMPLESHEET_FILE';
 Readonly::Scalar my $DEFAULT_DRIVER_TYPE              => 'xml';
+Readonly::Scalar my $SAMPLESHEET_DRIVER_TYPE          => 'samplesheet';
 
 Readonly::Scalar my $PROC_NAME_INDEX       => 3;
 Readonly::Hash   my %QC_EVAL_MAPPING       => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
@@ -69,6 +74,7 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
                            id_flowcell_lims
                            batch_id
                            flowcell_barcode
+                           rpt_list
                       /],
 
     'general'    =>   [qw/ spiked_phix_tag_index
@@ -204,6 +210,7 @@ Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
                            name
                          /],
     'project'      => [qw/ id
+
                          /],
     'sample'       => [qw/ accession_number
                            cohort
@@ -248,7 +255,7 @@ has 'driver_type' => ( isa        => 'Str',
                      );
 sub _build_driver_type {
   my $self = shift;
-  if($self->has_driver){
+  if($self->has_driver && $self->driver){
     my $type = ref $self->driver;
     my $prefix = __PACKAGE__ . q(::);
     $type =~ s/\A\Q$prefix\E//smx;
@@ -257,7 +264,7 @@ sub _build_driver_type {
 
   $self->_driver_arguments()->{'path'} ||= $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
   if ( $self->_driver_arguments()->{'path'} ) {
-    return 'samplesheet';
+    return $SAMPLESHEET_DRIVER_TYPE;
   }
 
   return $DEFAULT_DRIVER_TYPE;
@@ -268,14 +275,18 @@ sub _build_driver_type {
 Driver object (xml, warehouse, mlwarehouse, samplesheet ...)
 
 =cut
-has 'driver' => ( 'is'        => 'ro',
+has 'driver' => ( 'isa'       => 'Maybe[Object]',
+                  'is'        => 'ro',
                   'lazy'      => 1,
                   'builder'   => '_build_driver',
                   'predicate' => 'has_driver',
                 );
 sub _build_driver {
   my $self = shift;
-  return $self->_driver_package_name()->new($self->_driver_arguments());
+  if (!$self->_primary_arguments->{'rpt_list'}) {
+    return $self->_driver_package_name()->new($self->_driver_arguments());
+  }
+  return;
 }
 
 sub _driver_package_name {
@@ -285,28 +296,40 @@ sub _driver_package_name {
   return $class;
 }
 
-for my$m ( @METHODS ){
+for my $m ( @METHODS ){
   __PACKAGE__->meta->add_method($m, sub{
-    my$l=shift;
+    my $l = shift;
     if(exists $l->_primary_arguments()->{$m}){
       return $l->_primary_arguments()->{$m};
     }
-    my$d=$l->driver;
-    my$r= $d->can($m) ? $d->$m(@_) : undef;
+    my $d = $l->driver;
+    my $r = ($d && $d->can($m)) ? $d->$m(@_) : undef;
     if( defined $r and length $r){ #if method exists and it returns a defined and non-empty result
       return $d->$m(@_); # call again here in case it returns different info in list context
     }
     if($m eq q(is_pool)){ # avoid obvious recursion
+      if($l->_primary_arguments()->{'rpt_list'}){
+        return;
+      }
       return scalar $l->children;
     }
     if(any {$_ eq $m} @{$METHODS_PER_CATEGORY{'primary'}} ){
       return $r;
     }
-    if($l->is_pool){ # else try any children
+    if($l->is_pool || $l->is_composition){ # else try any children
       return $l->_single_attribute($m,0); # 0 to ignore spike
     }
     return;
   });
+}
+
+=head2 is_composition
+
+=cut
+
+sub is_composition {
+  my $self = shift;
+  return $self->rpt_list ? 1 : 0;
 }
 
 =head2 inline_index_read
@@ -572,7 +595,7 @@ sub _entity_required_insert_size {
 =cut
 sub  seq_qc_state {
   my $self = shift;
-  my $state = $self->driver->qc_state;
+  my $state = $self->driver ? $self->driver->qc_state : q[];
   if (!defined $state || $state eq '1' || $state eq '0') {
     return $state;
   }
@@ -736,26 +759,84 @@ sub _build_separate_y_chromosome_data {
   return $self->_helper_over_pool_for_boolean_build_methods('study_separate_y_chromosome_data');
 }
 
-has '_cached_children'              => (isa             => 'ArrayRef',
-                                        is              => 'ro',
+=head2 children
+
+Method returning a list of st::api::lims objects that are associated with this object
+and belong to the next (one lower) level. An empty list for a non-pool lane and for a plex.
+For a pooled lane contains plex-level objects. On a run level, when the position 
+accessor is not set, returns lane level objects.
+
+=cut
+
+=head2 num_children
+
+Returns the number of children objects, ie the length children list.
+
+=cut
+
+has '_cached_children'              => (isa             => 'ArrayRef[Object]',
+                                        traits          => [ qw/Array/ ],
+                                        is              => 'bare',
+                                        required        => 0,
                                         init_arg        => undef,
                                         lazy_build      => 1,
+                                        handles   => {
+                                         'num_children' => 'count',
+                                         'children'     => 'elements',
+                                                     },
                                        );
 sub _build__cached_children {
   my $self = shift;
+
   my @children = ();
-  if($self->driver->can('children')) {
-    foreach my $c ($self->driver->children) {
-      my $init = {'driver_type' => $self->driver_type, 'driver' => $c};
-      foreach my $attr (qw/id_run position tag_index/) {
-        if(my $attr_value=$self->$attr || ($c->can($attr) ? $c->$attr : undef)) {
-          $init->{$attr}=$attr_value;
+  my @basic_attrs = qw/id_run position tag_index/;
+
+  if ($self->driver) {
+    if($self->driver->can('children')) {
+      foreach my $c ($self->driver->children) {
+        my $init = {'driver_type' => $self->driver_type, 'driver' => $c};
+        foreach my $attr (@basic_attrs) {
+          if(my $attr_value=$self->$attr || ($c->can($attr) ? $c->$attr : undef)) {
+            $init->{$attr}=$attr_value;
+          }
+        }
+        push @children, st::api::lims->new($init);
+      }
+      if($self->driver->can('free_children')) {
+        $self->driver->free_children;
+      }
+    }
+  } else {
+    my $rpt_list = $self->_primary_arguments->{'rpt_list'};
+    if ($rpt_list) {
+      my $package_name = __PACKAGE__ . '::rpt_composition_factory';
+      my $class=Moose::Meta::Class->create($package_name);
+      $class->add_attribute('rpt_list', {isa =>'Str', is=>'ro', required =>1});
+      my $composition = Moose::Meta::Class->create_anon_class(
+        superclasses => [$package_name],
+        roles        => [
+         'npg_tracking::glossary::composition::factory::rpt' =>
+         {'component_class' => 'npg_tracking::glossary::composition::component::illumina'}
+                        ]
+      )->new_object(rpt_list => $rpt_list)->create_composition();
+
+      my @components = $composition->components_list();
+      my $driver_type = $self->driver_type;
+      if ($driver_type eq $SAMPLESHEET_DRIVER_TYPE) {
+        my @unique_ids = uniq map { $_->id_run } @components;
+        if (@unique_ids != 1) {
+          croak qq[Cannot use $SAMPLESHEET_DRIVER_TYPE driver with components from multiple runs];
         }
       }
-      push @children, st::api::lims->new($init);
-    }
-    if($self->driver->can('free_children')) {
-      $self->driver->free_children;
+
+      foreach my $component (@components) {
+        my %init = %{$self->_driver_arguments()};
+        $init{'driver_type'} = $driver_type;
+        foreach my $attr (@basic_attrs) {
+          $init{$attr} = $component->$attr;
+        }
+        push @children, __PACKAGE__->new(\%init);
+      }
     }
   }
   return \@children;
@@ -770,19 +851,6 @@ a samplesheet driver is used by this class.
 =cut
 sub cached_samplesheet_var_name {
   return $CACHED_SAMPLESHEET_FILE_VAR_NAME;
-}
-
-=head2 children
-
-Method returning a list of st::api::lims objects that are associated with this object
-and belong to the next (one lower) level. An empty list for a non-pool lane and for a plex.
-For a pooled lane contains plex-level objects. On a run level, when the position 
-accessor is not set, returns lane level objects.
-
-=cut
-sub children {
-  my $self = shift;
-  return @{$self->_cached_children};
 }
 
 =head2 descendants
@@ -832,7 +900,12 @@ sub children_ia {
   my $self = shift;
   my $h = {};
   foreach my $alims ($self->children) {
-    my $key = $alims->tag_index ? $alims->tag_index : $alims->position;
+    my $key;
+    if ($self->rpt_list) {
+      $key = npg_tracking::glossary::rpt->deflate_rpt($alims);
+    } else {
+      $key = $alims->tag_index ? $alims->tag_index : $alims->position;
+    }
     $h->{$key} = $alims;
   }
   return $h;
@@ -867,12 +940,18 @@ The same as children_ia. Retained for backward compatibility
 
 sub _list_of_attributes {
   my ($self, $attr_name, $with_spiked_control) = @_;
-
-  if (!defined $self->position) { my @l = (); return @l; }
+  my @l = ();
+  if (!defined $self->position && !$self->is_composition) {
+    return @l;
+  }
 
   if (!defined $with_spiked_control) { $with_spiked_control = 1; }
 
-  my @l = sort {$a cmp $b} uniq grep {defined and length} map {$_->$attr_name} $self->is_pool ?
+  @l = sort {$a cmp $b}
+       uniq
+       grep {defined and length}
+       map {$_->$attr_name}
+    ($self->is_pool || $self->is_composition) ?
     $attr_name ne 'spiked_phix_tag_index' ? # avoid unintended recursion
       grep { $with_spiked_control || ! $_->is_phix_spike } $self->children :
       () :
@@ -1103,8 +1182,11 @@ sub to_string {
 
   my $d = ref $self->driver;
   ($d)= $d=~/::(\w+?)\z/smx;
-  my $s = __PACKAGE__ . q[ object, driver - ] . $d;
-  foreach my $attr (sort qw(id_run batch_id flowcell_barcode id_flowcell_lims position tag_index)) {
+  my $s = __PACKAGE__ . q[ object];
+  if ($d) {
+    $s .= ", driver - $d";
+  }
+  foreach my $attr ( sort @{$METHODS_PER_CATEGORY{'primary'}} ) {
     my $value=$self->$attr;
     if (defined $value){
       $s .= q[, ] . join q[ ], $attr, $value;
@@ -1130,6 +1212,10 @@ __END__
 
 =item MooseX::Aliases
 
+=item Moose::Meta::Class
+
+=item Class::Load
+
 =item namespace::autoclean
 
 =item List::MoreUtils
@@ -1139,6 +1225,12 @@ __END__
 =item Readonly
 
 =item npg_tracking::util::types
+
+=item npg_tracking::glossary::rpt
+
+=item npg_tracking::glossary::composition::factory::rpt
+
+=item npg_tracking::glossary::composition::component::illumina
 
 =back
 

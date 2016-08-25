@@ -1,20 +1,11 @@
-# Author:        Jennifer Liddle <js10@sanger.ac.uk>
-# Created:       25th February 2014
-#
 package npg_tracking::data::snv;
 
-use strict;
-use warnings;
 use Moose;
 
 our $VERSION = '0';
 
-with qw/
-          npg_tracking::glossary::run
-          npg_tracking::glossary::lane
-          npg_tracking::glossary::tag
-          npg_tracking::data::snv::find
-       /;
+extends 'npg_tracking::data::reference';
+with    'npg_tracking::data::snv::find';
 
 __PACKAGE__->meta->make_immutable;
 no Moose;
@@ -36,6 +27,14 @@ A wrapper class for finding the location of VCF files.
 
 =head1 SUBROUTINES/METHODS
 
+=head2 id_run
+
+=head2 position
+
+=head2 tag_index
+
+=head2 rpt_list
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -44,19 +43,7 @@ A wrapper class for finding the location of VCF files.
 
 =over
 
-=item warnings
-
-=item strict
-
 =item Moose
-
-=item npg_tracking::glossary::run
-
-=item npg_tracking::glossary::lane
-
-=item npg_tracking::glossary::tag
-
-=item npg_tracking::data::snv::find
 
 =back
 
@@ -70,7 +57,7 @@ Jennifer Liddle E<lt>js10@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 GRL, by Jennifer Liddle
+Copyright (C) 2016 GRL
 
 This file is part of NPG.
 

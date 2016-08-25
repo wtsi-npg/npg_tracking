@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 23;
+use Test::More tests => 25;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -24,14 +24,14 @@ subtest 'Class methods' => sub {
   is(scalar st::api::lims->driver_method_list_short(qw/sample_name study_name/), $num_delegated_methods-2, 'two methods removed from the list');
 
   my $value = 'some other';
-  is(st::api::lims->_trim_value($value), $value, 'nothing trimmed trimmed');
+  is(st::api::lims->_trim_value($value), $value, 'nothing trimmed');
   is(st::api::lims->_trim_value("  $value"), $value, 'leading space trimmed');
   is(st::api::lims->_trim_value("  $value  "), $value, 'space trimmed');
   is(st::api::lims->_trim_value("  "), undef, 'white space string trimmed to undef');
 };
 
 subtest 'Setting return value for primary attributes' => sub {
-  plan tests => 42;
+  plan tests => 51;
 
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 
@@ -96,12 +96,24 @@ subtest 'Setting return value for primary attributes' => sub {
   ok ($lims->is_pool, 'tag zero is a pool');
 
   $lane_lims =  st::api::lims->new(id_run => 6551, position => 1);
-  $lims = st::api::lims->new(driver => $lane_lims->driver(),
-    id_run => 6551, position => 1, tag_index => 0);
+  $lims = st::api::lims->new(driver    => $lane_lims->driver(),
+                             id_run    => 6551,
+                             position  => 1,
+                             tag_index => 0);
   is ($lims->id_run, 6551, 'id run is set correctly');
   is ($lims->position, 1, 'position is set correctly');
   is ($lims->tag_index, 0, 'tag_index is set to zero');
   ok ($lims->is_pool, 'tag zero is a pool');
+  ok (!$lims->is_composition, 'tag zero is not a composition');
+
+  $lims = st::api::lims->new(rpt_list => '6551:1');
+  my @a = @other;
+  push @a, qw/id_run position tag_index/;
+  is ($lims->rpt_list, '6551:1', 'rpt_list is set correctly');
+  ok ($lims->is_composition, 'is a composition');
+  for my $attr (@a) {
+    is($lims->$attr, undef, "$attr is undefined");
+  }
 };
 
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
@@ -111,7 +123,7 @@ my @samples_6551_1 = qw/phiX_for_spiked_buffers SS109114 SS109305 SS117077 SS117
 my @accessions_6551_1 = qw/ERS024591 ERS024592 ERS024593 ERS024594 ERS024595 ERS024596 ERS024597 ERS024598 ERS024599 ERS024600 ERS024601 ERS024602/;
 my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Shigella sp.');
 
-subtest 'Driver type build' => sub {
+subtest 'Driver type and driver build' => sub {
   plan tests => 6;
 
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
@@ -164,74 +176,135 @@ subtest 'Run-level object' => sub {
 };
 
 subtest 'Lane-level object' => sub {
-  plan tests => 43;
+  plan tests => 101;
 
-  my $lims = st::api::lims->new(id_run => 6551, position => 1);
-  is($lims->lane_id(), 3065552, q{lane_id ok for id_run 6551, position 1} );
-  is($lims->batch_id, 12141, 'batch id is 12141 for lane 1');
-  is($lims->is_control, 0, 'lane 1 is not control');
-  is($lims->is_pool, 1, 'lane 1 is pool');
-  is($lims->library_id, 2988920, 'lib id');
-  is($lims->library_name, '297p11', 'pool lib name');
-  is($lims->seq_qc_state, 1, 'seq qc passed');
-  is($lims->tag_sequence, undef, 'tag_sequence undefined');
-  is(scalar keys %{$lims->tags}, 13, '13 tags defined');
-  is($lims->spiked_phix_tag_index, 168, 'spiked phix tag index 168');
-  is($lims->tags->{$lims->spiked_phix_tag_index}, 'ACAACGCAAT', 'tag_sequence for phix');
-  is(scalar $lims->children, 13, '13 children');
-  is(scalar $lims->associated_lims, 13, '13 associated lims');
-  is($lims->sample_supplier_name, undef, 'supplier sample name undefined');
-  is($lims->sample_cohort, undef, 'supplier sample cohort undefined');
-  is($lims->sample_donor_id, undef, 'supplier sample donor id undefined');
-  my @plexes = $lims->children;
-  my $p1 = $plexes[0];
-  my $p6 = $plexes[5];
-  is ($p1->tag_index, 1, 'plex tag index');
-  is($p1->sample_supplier_name, undef, 'supplier sample name undefined');
-  is($p1->sample_cohort, undef, 'supplier sample cohort undefined');
-  is($p1->sample_donor_id, undef, 'supplier sample donor id undefined');
-  is ($p6->tag_index, 6, 'plex tag index');
-  is ($p1->default_tag_sequence, 'ATCACGTTAT', 'plex tag sequence');
-  is ($p6->default_tag_sequence, 'GCCAATGTAT', 'plex tag sequence');
-  is($lims->to_string, 'st::api::lims object, driver - xml, batch_id 12141, id_run 6551, position 1', 'object as string');
-  is(join(q[,], $lims->library_names), join(q[,], sort @libs_6551_1), 'pool lane-level library_names list');
-  is(join(q[,], $lims->sample_names), join(q[,], sort @samples_6551_1), 'pool lane-level sample_names list');
-  is(join(q[,], $lims->sample_accession_numbers), join(q[,], sort @accessions_6551_1), 'pool lane-level sample_accession_numbers list');
-  is(join(q[,], $lims->study_names), join(q[,], sort @studies_6551_1), 'pool lane-level study_names list');
+  my @lims_list = ();
+  push @lims_list, st::api::lims->new(id_run => 6551, position => 1);
+  my @comps = ();
+  foreach my $tag ((1 .. 12)) {
+    push @comps, "6551:1:${tag}";
+  }
+  my $rpt_list = join q[;], @comps;
+  push @lims_list, st::api::lims->new(rpt_list => $rpt_list);
+  my $count = 0;
+  foreach my $lims (@lims_list) {
+    is($lims->rpt_list, $count ? $rpt_list : undef, 'rpt list value');
+    is($lims->id_run,   $count ? undef     : 6551,  'id_run value');
+    is($lims->position, $count ? undef     : 1,     'position value');
+    is($lims->lane_id(),      $lims->rpt_list ? undef : 3065552, 'lane id');
+    is($lims->batch_id,       $lims->rpt_list ? undef : 12141, 'batch id');
+    is($lims->is_control,     0, 'entity is not control');
+    is($lims->is_pool,        $lims->rpt_list ? undef : 1, 'pool flag value');
+    is($lims->is_composition, $lims->rpt_list ? 1 : 0, 'composition flag value');
+   
+    is($lims->library_id, $lims->rpt_list ? undef : 2988920, 'lib id');
+    is($lims->library_name, $lims->rpt_list ? undef : '297p11', 'pool lib name');
+    is($lims->seq_qc_state, $lims->rpt_list ? undef : 1, 'seq qc passed');
+    is($lims->tag_sequence, undef, 'tag_sequence undefined');
+    is(scalar keys %{$lims->tags}, $lims->rpt_list ? 12 : 13, '13 tags defined');
+    is($lims->spiked_phix_tag_index, $lims->rpt_list ? undef : 168,
+      'spiked phix tag index 168');
+    if (!$lims->rpt_list) {
+      is($lims->tags->{$lims->spiked_phix_tag_index},
+        'ACAACGCAAT', 'tag_sequence for phix');
+    }
+    is(scalar $lims->children, $lims->rpt_list ? 12 : 13, 'number of children');
+    is($lims->num_children, $lims->rpt_list ? 12 : 13, 'number of children');
 
-  my $with_spiked_phix = 1;
-  is(join(q[,], $lims->library_names($with_spiked_phix)), join(q[,], sort @libs_6551_1), 'pool lane-level library_names list $with_spiked_phix = 1');
-  is(join(q[,], $lims->sample_names($with_spiked_phix)), join(q[,], sort @samples_6551_1), 'pool lane-level sample_names list $with_spiked_phix = 1');
-  is(join(q[,], $lims->sample_accession_numbers($with_spiked_phix)),
-     join(q[,], sort @accessions_6551_1), 'pool lane-level sample_accession_number list $with_spiked_phix = 1');
-  is(join(q[,], $lims->study_names($with_spiked_phix)), join(q[,], sort @studies_6551_1), 'pool lane-level study_names list $with_spiked_phix = 1');
+    is($lims->sample_supplier_name, undef, 'supplier sample name undefined');
+    is($lims->sample_cohort, undef, 'supplier sample cohort undefined');
+    is($lims->sample_donor_id, undef, 'supplier sample donor id undefined');
 
-  is(join(q[,], $lims->library_ids($with_spiked_phix)),
-     '2389196,2798523,2798524,2798525,2798526,2798527,2798528,2798529,2798530,2798531,2798532,2798533,2798534',
-     'pool lane-level library_ids list $with_spiked_phix = 1');
-  is(join(q[,], $lims->sample_ids($with_spiked_phix)), 
-     '1093818,1093819,1093820,1093821,1093822,1093823,1093824,1093825,1093826,1093827,1093828,1093829,1255141',
-     'pool lane-level sample_names list $with_spiked_phix = 1');
+    my $plexes_hash = $lims->children_ia();
+    my $k1 = $lims->rpt_list ? '6551:1:1' : 1;
+    my $k6 = $lims->rpt_list ? '6551:1:6' : 6;
+    my $p1 = $plexes_hash->{$k1};
+    my $p6 = $plexes_hash->{$k6};
+    is($p1->id_run,    6551, 'plex id_run');
+    is($p1->position,  1,    'plex position');
+    is($p1->tag_index, 1,    'plex tag index');
+    ok(!$p1->is_pool, 'not a pool');
+    ok(!$p1->is_composition, 'not a composition');
+    is ($p1->default_tag_sequence, 'ATCACGTTAT', 'plex tag sequence');
+    is($p1->sample_supplier_name, undef, 'supplier sample name undefined');
+    is($p1->sample_cohort, undef, 'supplier sample cohort undefined');
+    is($p1->sample_donor_id, undef, 'supplier sample donor id undefined');
+    is ($p6->tag_index, 6, 'plex tag index');
+    is ($p6->default_tag_sequence, 'GCCAATGTAT', 'plex tag sequence');
 
-  is(join(q[,], $lims->study_ids($with_spiked_phix)), '198,297',
-     'pool lane-level study_ids list $with_spiked_phix = 1');
-  is(join(q[,], $lims->project_ids($with_spiked_phix)), '297',
-     'pool lane-level project_ids list $with_spiked_phix = 1');
+    is($lims->to_string, $lims->rpt_list ?
+      "st::api::lims object, rpt_list $rpt_list" :
+      'st::api::lims object, driver - xml, batch_id 12141, id_run 6551, position 1',
+      'string respresentation of the object');
 
-  $with_spiked_phix = 0;
-  my @libs = @libs_6551_1; shift @libs;
-  my @samples = @samples_6551_1; shift @samples;
-  my @studies = @studies_6551_1; shift @studies;
-  is(join(q[,], $lims->library_names($with_spiked_phix)), join(q[,], sort @libs), 'pool lane-level library_names list $with_spiked_phix = 0;');
-  is(join(q[,], $lims->sample_names($with_spiked_phix)), join(q[,], sort @samples), 'pool lane-level sample_names list $with_spiked_phix = 0;');
-  is(join(q[,], $lims->sample_accession_numbers($with_spiked_phix)),
-     join(q[,], sort @accessions_6551_1),
-     'pool lane-level sample_accession_number list $with_spiked_phix = 0');
-  is(join(q[,], $lims->study_names($with_spiked_phix)), join(q[,], sort @studies), 'pool lane-level study_names list $with_spiked_phix = 0;');
-  is(join(q[,], $lims->library_types()), 'Standard', 'pool lane-level library types list');
+    my @libs    = @libs_6551_1;
+    my @samples = @samples_6551_1;
+    my @studies = @studies_6551_1;
+    if ($lims->rpt_list) {
+      shift @libs;
+      shift @samples;
+      shift @studies;
+    }
 
-  is($lims->sample_consent_withdrawn, undef, 'consent withdrawn false');
-  is($lims->any_sample_consent_withdrawn, 0, 'any consent withdrawn false');
+    is(join(q[,], $lims->library_names), join(q[,], sort @libs),
+      'top level library_names list');
+    is(join(q[,], $lims->sample_names), join(q[,], sort @samples),
+      'top level sample_names list');
+    is(join(q[,], $lims->sample_accession_numbers), join(q[,], sort @accessions_6551_1),
+      'top level sample_accession_numbers list');
+    is(join(q[,], $lims->study_names), join(q[,], sort @studies),
+      'top level study_names list');
+
+    my $with_spiked_phix = 1;
+    my @lib_ids    = qw/2798523 2798524 2798525 2798526 2798527 2798528
+                        2798529 2798530 2798531 2798532 2798533 2798534/;
+    is_deeply([$lims->library_ids($with_spiked_phix)],
+      $lims->rpt_list ? [@lib_ids] : [2389196, @lib_ids],
+      'top level library_ids list $with_spiked_phix = 1');
+    is(join(q[,], $lims->library_names($with_spiked_phix)), join(q[,], sort @libs),
+      'top level library_names list $with_spiked_phix = 1');
+
+    my @sample_ids = qw/1093818 1093819 1093820 1093821 1093822 1093823
+                        1093824 1093825 1093826 1093827 1093828 1093829/;
+    is_deeply([$lims->sample_ids($with_spiked_phix)],
+      $lims->rpt_list ? [@sample_ids] : [@sample_ids, 1255141], 
+      'top level sample_names list $with_spiked_phix = 1');
+    is(join(q[,], $lims->sample_names($with_spiked_phix)), join(q[,], sort @samples),
+      'top level sample_names list $with_spiked_phix = 1');
+    is(join(q[,], $lims->sample_accession_numbers($with_spiked_phix)),
+      join(q[,], sort @accessions_6551_1),
+      'top level sample_accession_number list $with_spiked_phix = 1');
+
+    is(join(q[,], $lims->study_names($with_spiked_phix)), join(q[,], sort @studies),
+      'top level study_names list $with_spiked_phix = 1');
+    is(join(q[,], $lims->study_ids($with_spiked_phix)),
+      $lims->rpt_list ? '297' : '198,297',
+      'top level study_ids list $with_spiked_phix = 1');
+    is(join(q[,], $lims->project_ids($with_spiked_phix)), '297',
+      'top level project_ids list $with_spiked_phix = 1');
+
+    $with_spiked_phix = 0;
+    if (!$lims->rpt_list) {
+      shift @libs;
+      shift @samples;
+      shift @studies;
+    }
+    is(join(q[,], $lims->library_names($with_spiked_phix)), join(q[,], sort @libs),
+      'top level library_names list $with_spiked_phix = 0;');
+    is(join(q[,], $lims->sample_names($with_spiked_phix)), join(q[,], sort @samples),
+      'top level sample_names list $with_spiked_phix = 0;');
+    is(join(q[,], $lims->sample_accession_numbers($with_spiked_phix)),
+      join(q[,], sort @accessions_6551_1),
+      'top level sample_accession_number list $with_spiked_phix = 0');
+    is(join(q[,], $lims->study_names($with_spiked_phix)), join(q[,], sort @studies),
+      'top level study_names list $with_spiked_phix = 0;');
+    is(join(q[,], $lims->library_types()), 'Standard', 'top level library types list');
+
+    is($lims->sample_consent_withdrawn, undef, 'consent withdrawn false');
+    is($lims->any_sample_consent_withdrawn, 0, 'any consent withdrawn false');
+
+    $count++;
+  }
 };
 
 subtest 'Object for tag zero' => sub {
@@ -357,7 +430,7 @@ subtest 'Object for a tag' => sub {
 };
 
 subtest 'Object for a non-pool lane' => sub {
-  plan tests => 95;
+  plan tests => 96;
 
   my $lims = st::api::lims->new(id_run => 6607, position => 1);
   isa_ok($lims, 'st::api::lims');
@@ -683,7 +756,7 @@ subtest 'Run-level object via samplesheet driver' => sub {
 };
 
 subtest 'Lane-level object via samplesheet driver' => sub {
-  plan tests => 26;
+  plan tests => 16;
 
   my $path = 't/data/samplesheet/miseq_default.csv';
   lives_ok {st::api::lims->new(id_run => 10262, position =>2, path => $path, driver_type => 'samplesheet')}
@@ -706,12 +779,25 @@ subtest 'Lane-level object via samplesheet driver' => sub {
   is ($ss->library_id, undef, 'pool lane library_id undefined');
   is (scalar $ss->children, 96, '96 plexes returned');
 
+  $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 0, path => $path, driver_type => 'samplesheet');
+  is (scalar $ss->children, 96, '96 children returned for tag zero');
+  is ($ss->is_pool, 1, 'tag zero is a pool');
+  is ($ss->library_id, undef, 'tag_zero library_id undefined');
+  is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
+  is ($ss->tag_sequence, undef, 'tag sequence undefined');
+  is ($ss->purpose, undef, 'purpose');
+};
+
+subtest 'Plex-level object via samplesheet driver' => sub {
+  plan tests => 10;
+
+  my $path = 't/data/samplesheet/miseq_default.csv';
   lives_ok {st::api::lims->new(id_run => 10262, position =>1, tag_index=>999,path => $path, driver_type => 'samplesheet')}
     'no error instantiation an object for a non-existing tag_index';
   throws_ok {st::api::lims->new(id_run => 10262, position =>1, tag_index => 999, path => $path, driver_type => 'samplesheet')->children}
     qr/Tag index 999 not defined in/, 'error invoking a driver method on an object for a non-existing tag_index';
 
-  $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 3, path => $path, driver_type => 'samplesheet');
+  my $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 3, path => $path, driver_type => 'samplesheet');
   is ($ss->position, 1, 'correct position');
   is ($ss->tag_index, 3, 'correct tag_index');
   is ($ss->is_pool, 0, 'plex is not a pool');
@@ -720,14 +806,47 @@ subtest 'Lane-level object via samplesheet driver' => sub {
   is ($ss->library_id, 7583413, 'library id is correct');
   is ($ss->sample_name, 'LIA_3', 'sample name is correct');
   is (scalar $ss->children, 0, 'zero children returned');
+};
 
-  $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 0, path => $path, driver_type => 'samplesheet');
-  is (scalar $ss->children, 96, '96 children returned for tag zero');
-  is ($ss->is_pool, 1, 'tag zero is a pool');
-  is ($ss->library_id, undef, 'tag_zero library_id undefined');
-  is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
-  is ($ss->tag_sequence, undef, 'tag sequence undefined');
-  is ($ss->purpose, undef, 'purpose');
+subtest 'Samplesheet driver for a composition' => sub {
+  plan tests => 28;
+
+  my $path = 't/data/samplesheet/miseq_default.csv';
+  my $ss;
+  lives_ok { $ss = st::api::lims->new(rpt_list => '10262:1:3;2:3:4', path => $path) }
+    'no error instantiation an object for a composition';
+  throws_ok { $ss->children }
+    qr/Cannot use samplesheet driver with components from multiple runs/,
+   'error when components belong to different runs';
+
+  $ss=st::api::lims->new(rpt_list => '10262:1:3', path => $path);
+  is ($ss->driver, undef, 'driver undefined');
+  is ($ss->driver_type, 'samplesheet', 'driver type is samplesheet');
+  is ($ss->rpt_list, '10262:1:3', 'rpt list as given');
+  is ($ss->id_run, undef, 'run id undefined');
+  is ($ss->position, undef, 'position undefined');
+  is ($ss->tag_index, undef, 'tag_index undefined');
+  ok (!$ss->is_pool, 'not a pool');
+  is ($ss->is_composition, 1, 'this is a composition');
+  is (scalar $ss->num_children, 1, 'one child');
+  is ($ss->default_tag_sequence, 'TTAGGCAT', 'correct default tag sequence');
+  is ($ss->tag_sequence, undef, 'tag sequence is undefined');
+  is ($ss->library_id, 7583413, 'library id is correct');
+  is ($ss->sample_name, 'LIA_3', 'sample name is correct');
+  $ss = ($ss->children)[0];
+  ok ($ss->driver && (ref $ss->driver eq 'st::api::lims::samplesheet'), 'correct driver');
+  is ($ss->driver_type, 'samplesheet', 'driver type is samplesheet');
+  is ($ss->rpt_list, undef, 'rpt list is undefined');
+  is ($ss->id_run, 10262, 'correct run id');
+  is ($ss->position, 1, 'correct position');
+  is ($ss->tag_index, 3, 'correct tag_index');
+  ok (!$ss->is_pool, 'plex is not a pool');
+  is ($ss->is_composition, 0, 'not a composition');
+  is ($ss->default_tag_sequence, 'TTAGGCAT', 'correct default tag sequence');
+  is ($ss->tag_sequence, $ss->default_tag_sequence, 'tag sequence is the same as default tag sequence');
+  is ($ss->library_id, 7583413, 'library id is correct');
+  is ($ss->sample_name, 'LIA_3', 'sample name is correct');
+  is (scalar $ss->children, 0, 'zero children returned');
 };
 
 subtest 'Instantiating a samplesheet driver' => sub {

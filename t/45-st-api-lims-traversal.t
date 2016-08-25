@@ -38,12 +38,14 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
     $reason = 'Live test, but sanger intweb is not accessible';
   } elsif ($driver eq 'ml_warehouse') {
     my $package = 'st::api::lims::ml_warehouse';
+    my $schema_package = 'WTSI::DNAP::Warehouse::Schema';
     eval "require $package" or $do_test = 0;
+    eval "require $schema_package" or $do_test = 0;
     if (!$do_test) {
       $reason = "$package is not deployed or cannot be loaded";
     } else {
       try {
-        $package->new()->mlwh_schema();
+        $schema_package->connect();
       } catch {
         $reason = "Failed to connect to ml_warehouse";
         diag "$reason $_";

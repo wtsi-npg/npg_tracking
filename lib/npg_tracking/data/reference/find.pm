@@ -9,6 +9,7 @@ use Readonly;
 use npg_tracking::util::abs_path qw(abs_path);
 use npg_tracking::data::reference::info;
 use npg_tracking::util::messages;
+use npg_tracking::glossary::rpt;
 use st::api::lims;
 
 with qw/ npg_tracking::data::reference::list /;
@@ -57,7 +58,6 @@ Readonly::Scalar our $ALIGNER          => q[bwa];
 Readonly::Scalar our $STRAIN           => q[default];
 Readonly::Scalar our $SUBSET           => q[all];
 Readonly::Scalar our $PHIX             => q[PhiX];
-Readonly::Array  our @REQUIRED_ACCESSORS  => qw/id_run position tag_index/;
 
 =head2 reference_genome
 
@@ -176,12 +176,20 @@ has 'lims'      => (isa             => 'st::api::lims',
 sub _build_lims {
   my $self = shift;
 
-  foreach my $method (@REQUIRED_ACCESSORS) {
-    if (!$self->can($method)) {
-      croak qq[Need '$method' accessor to access lims data];
+  my $ref = {};
+  if ($self->can('rpt_list') && $self->rpt_list) {
+    my @hlist = @{npg_tracking::glossary::rpt->inflate_rpts($self->rpt_list)};
+    if (scalar @hlist > 1) {
+      $ref->{'rpt_list'} = $self->rpt_list();
+    } else {
+      $ref = $hlist[0];
     }
+  } else {
+    my $rpt_key = npg_tracking::glossary::rpt->deflate_rpt($self);
+    $ref = npg_tracking::glossary::rpt->inflate_rpt($rpt_key);
   }
-  return st::api::lims->new(id_run => $self->id_run, position => $self->position, tag_index => $self->tag_index);
+
+  return st::api::lims->new($ref);
 }
 
 sub _abs_ref_path {
@@ -456,6 +464,8 @@ __END__
 
 =item npg_tracking::data::reference::list
 
+=item npg_tracking::glossary::rpt
+
 =item st::api::lims
 
 =back
@@ -470,7 +480,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 GRL
+Copyright (C) 2016 GRL
 
 This file is part of NPG.
 
