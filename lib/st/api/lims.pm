@@ -262,9 +262,8 @@ sub _build_driver_type {
     return $type;
   }
 
-  $self->_driver_arguments()->{'path'} ||= $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
-  if ( $self->_driver_arguments()->{'path'} ) {
-    return $SAMPLESHEET_DRIVER_TYPE;
+  if ($ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME}) {
+    return 'samplesheet';
   }
 
   return $DEFAULT_DRIVER_TYPE;
