@@ -40,8 +40,6 @@ Readonly::Scalar  my  $NOT_INDEXED_FLAG             => q[NO_INDEX];
 Readonly::Scalar  my  $RECORD_SPLIT_LIMIT           => -1;
 Readonly::Scalar  my  $DATA_SECTION                 => q[Data];
 Readonly::Scalar  my  $HEADER_SECTION               => q[Header];
-Readonly::Scalar  my  $CACHED_SAMPLESHEET_FILE_VAR_NAME =>
-  q[NPG_CACHED_SAMPLESHEET_FILE];
 
 =head2 path
 
@@ -59,7 +57,7 @@ has 'path' => (
 sub _build_path {
   my $self = shift;
 
-  return $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
+  return $ENV{$st::api::lims::CACHED_SAMPLESHEET_FILE_VAR_NAME};
 }
 
 =head2 id_run
