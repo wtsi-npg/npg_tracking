@@ -79,7 +79,9 @@ subtest 'Setting return value for primary attributes' => sub {
   $lims = st::api::lims->new(id_run => 6551, position => 2, tag_index => 2);
   is ($lims->tag_index, 2, 'tag_index is set correctly');
 
-  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/miseq_default.csv';
+  my $path = 't/data/samplesheet/miseq_default.csv';
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $path;
+
   $lims = st::api::lims->new(id_run => 6551, position => 1, tag_index => 0);
   is ($lims->driver_type, 'samplesheet', 'samplesheet driver');
 
@@ -90,7 +92,7 @@ subtest 'Setting return value for primary attributes' => sub {
     is ($lims->$attr, undef, "$attr is undefined");
   }
   is ($lims->id_run, 6551, 'id run is set correctly');
-  is ($lims->path, 't/data/samplesheet/miseq_default.csv', 'path is set correctly');
+  is ($lims->path, $path, 'path is set correctly');
   is ($lims->position, 1, 'position is set correctly');
   is ($lims->tag_index, 0, 'tag_index is set to zero');
   ok ($lims->is_pool, 'tag zero is a pool');
@@ -766,20 +768,26 @@ subtest 'Lane-level object via samplesheet driver' => sub {
 
   lives_ok {st::api::lims->new(id_run => 10262, position =>2, driver_type => 'samplesheet')}
     'no error instantiation an object without path';
+
   throws_ok {st::api::lims->new(id_run => 10262, position =>2, driver_type => 'samplesheet')->library_id}
-    qr/Attribute \(path\) is required/, 'error invoking a driver method on an object with path undefined';
+    qr/Attribute \(path\) does not pass the type constraint/, 'error invoking a driver method on an object with path undefined'; # NPG_CACHED_SAMPLESHEET_FILE is unset
+
   my $nopath = join q[/], tempdir( CLEANUP => 1 ), 'xxx';
   throws_ok {st::api::lims->new(id_run => 10262, path => $nopath, position =>2, driver_type => 'samplesheet')->library_id}
     qr/Validation failed for 'NpgTrackingReadableFile'/, 'error invoking a driver method on an object with non-existing path';
- 
-  my $ss=st::api::lims->new(id_run => 10262, position =>1, path => $path);
-  is ($ss->driver_type, 'samplesheet', 'driver type built correctly') or diag explain $ss;
-  is ($ss->position, 1, 'correct position');
-  is ($ss->is_pool, 1, 'lane is a pool');
-  is ($ss->library_id, undef, 'pool lane library_id undefined');
-  is (scalar $ss->children, 96, '96 plexes returned');
 
-  $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 0, path => $path, driver_type => 'samplesheet');
+  {
+    local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $path;
+
+    my $ss=st::api::lims->new(id_run => 10262, position =>1, driver_type => 'samplesheet');
+    is ($ss->path, $path, 'samplesheet path captured from NPG_CACHED_SAMPLESHEET_FILE') or diag explain $ss;
+    is ($ss->position, 1, 'correct position');
+    is ($ss->is_pool, 1, 'lane is a pool');
+    is ($ss->library_id, undef, 'pool lane library_id undefined');
+    is (scalar $ss->children, 96, '96 plexes returned');
+  }
+
+  my $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 0, path => $path, driver_type => 'samplesheet');
   is (scalar $ss->children, 96, '96 children returned for tag zero');
   is ($ss->is_pool, 1, 'tag zero is a pool');
   is ($ss->library_id, undef, 'tag_zero library_id undefined');
@@ -812,6 +820,8 @@ subtest 'Samplesheet driver for a composition' => sub {
   plan tests => 28;
 
   my $path = 't/data/samplesheet/miseq_default.csv';
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $path;
+
   my $ss;
   lives_ok { $ss = st::api::lims->new(rpt_list => '10262:1:3;2:3:4', path => $path) }
     'no error instantiation an object for a composition';
@@ -819,9 +829,9 @@ subtest 'Samplesheet driver for a composition' => sub {
     qr/Cannot use samplesheet driver with components from multiple runs/,
    'error when components belong to different runs';
 
-  $ss=st::api::lims->new(rpt_list => '10262:1:3', path => $path);
+  $ss=st::api::lims->new(rpt_list => '10262:1:3', driver_type => 'samplesheet');
   is ($ss->driver, undef, 'driver undefined');
-  is ($ss->driver_type, 'samplesheet', 'driver type is samplesheet');
+  is ($ss->path, undef, 'samplesheet path is undefined');
   is ($ss->rpt_list, '10262:1:3', 'rpt list as given');
   is ($ss->id_run, undef, 'run id undefined');
   is ($ss->position, undef, 'position undefined');

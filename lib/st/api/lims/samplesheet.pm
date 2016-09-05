@@ -50,7 +50,15 @@ has 'path' => (
                   isa => 'NpgTrackingReadableFile',
                   is  => 'ro',
                   required => 1,
+                  builder  => '_build_path',
+                  lazy     => 1,
 );
+
+sub _build_path {
+  my $self = shift;
+
+  return $ENV{$st::api::lims::CACHED_SAMPLESHEET_FILE_VAR_NAME};
+}
 
 =head2 id_run
 

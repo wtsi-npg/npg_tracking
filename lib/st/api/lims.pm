@@ -57,7 +57,7 @@ as this object's accessors. Example:
 
 =cut
 
-Readonly::Scalar my $CACHED_SAMPLESHEET_FILE_VAR_NAME => 'NPG_CACHED_SAMPLESHEET_FILE';
+Readonly::Scalar our $CACHED_SAMPLESHEET_FILE_VAR_NAME => 'NPG_CACHED_SAMPLESHEET_FILE';
 Readonly::Scalar my $DEFAULT_DRIVER_TYPE              => 'xml';
 Readonly::Scalar my $SAMPLESHEET_DRIVER_TYPE          => 'samplesheet';
 
@@ -262,8 +262,7 @@ sub _build_driver_type {
     return $type;
   }
 
-  $self->_driver_arguments()->{'path'} ||= $ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME};
-  if ( $self->_driver_arguments()->{'path'} ) {
+  if ($ENV{$CACHED_SAMPLESHEET_FILE_VAR_NAME}) {
     return $SAMPLESHEET_DRIVER_TYPE;
   }
 
