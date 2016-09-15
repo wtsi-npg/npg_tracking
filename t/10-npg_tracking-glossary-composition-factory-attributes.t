@@ -36,8 +36,9 @@ subtest 'object with one attr missing' => sub {
   package main;
 
   my $tA = npg_tracking::composition::factory::testA->new();
-  throws_ok { $tA->composition }
-    qr/Attribute \(attr_1\) does not pass the type constraint/,
+  throws_ok { $tA->composition } # attribute evaluation order
+                                 # differes in Perl 5.16 and 5.22 
+    qr/Attribute \(attr_[1|2)\) does not pass the type constraint/,
     'error when required object attribute is not defined';
 
   package npg_tracking::composition::component::testB;
