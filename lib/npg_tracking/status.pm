@@ -1,8 +1,3 @@
-#############
-# Created By: kt6
-# Created On: 2014-05-28
-#
-
 package npg_tracking::status;
 
 use Moose;
@@ -11,7 +6,6 @@ use MooseX::Storage;
 use DateTime;
 use DateTime::Format::Strptime;
 use DateTime::TimeZone;
-use JSON::Any;
 use File::Spec;
 use File::Slurp;
 use Carp;
@@ -110,10 +104,6 @@ __END__
 
 npg_tracking::status
 
-=head1 AUTHOR
-
-Kate Taylor
-
 =head1 SYNOPSIS
 
 =head1 DESCRIPTION
@@ -134,7 +124,7 @@ Kate Taylor
 
 =head2 lanes
 
- An optional array of lane numbers attribute
+ An optional array of lane numbers attribute.
 
 =head2 status
 
@@ -142,7 +132,7 @@ Kate Taylor
 
 =head2 filename
 
- Suggested filename for serializing this object
+ Suggested filename for serializing this object.
 
 =head2 timestamp
 
@@ -154,12 +144,12 @@ Kate Taylor
 
 =head2 to_string
 
- String representation of tehe object that does not trigger
+ String representation of the object that does not trigger
  Moose lazy builders.
 
 =head2 from_file
 
- Reads a file given as an attribute into a string and tries to instantiate
+ Reads a file, given as an attribute, into a string and tries to instantiate
  an npg_tracking::status object from this string.
 
  my $obj = npg_tracking::status->from_file($path);
@@ -168,7 +158,7 @@ Kate Taylor
 
  Writes serialized object ($self) to a file. The file is created in a directory
  given as an attribute or, if not passed, in the current directory. Filename returned
- by the filename() method of the object is used. Returns the path of teh file created.
+ by the filename() method of the object is used. Returns the path of the file created.
  
  my $path = $status_obj->to_file('mydir');
  my $path = $status_obj->to_file();
@@ -193,8 +183,6 @@ Kate Taylor
 
 =item DateTime::Format::Strptime
 
-=item JSON::Any
-
 =item File::Spec
 
 =item File::Slurp
@@ -211,11 +199,15 @@ Kate Taylor
 
 =head1 BUGS AND LIMITATIONS
 
-Does not validate the status against the status dictionaries
+Limitation: does not validate the status against the status dictionaries.
+
+=head1 AUTHOR
+
+Kate Taylor E<lt>kt6@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 Genome Research Limited
+Copyright (C) 2016 Genome Research Limited
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

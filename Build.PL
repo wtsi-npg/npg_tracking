@@ -176,12 +176,8 @@ my $builder = $class->new(
                 'IPC::System::Simple'             => 0,
                 'JSON'                            => '2.12',
                 'JSON::XS'                        => '2.34',
-                'JSON::Any'                       => '0',
                 'lib'                             => '0.5565',
                 'Lingua::EN::Inflect'             => 0,
-                ## {{{ This is a ClearPress dependency not declared by ClearPress
-                'Lingua::EN::PluralToSingular'    => 0,
-                ## }}}
                 'Linux::Inotify2'                 => 0,
                 'List::MoreUtils'                 => '0.416',
                 'Log::Log4perl'                   => 0,
