@@ -25,8 +25,20 @@ role {
 
     my $class = $param->component_class;
     load_class($class);
+    my %attrs = map { $_->name() => 1} $class->meta->get_all_attributes();
+
     $rpt //= q[];
-    return $class->new(npg_tracking::glossary::rpt->inflate_rpt($rpt));
+    my $init = npg_tracking::glossary::rpt->inflate_rpt($rpt);
+    foreach my $key (keys %{$init}) {
+      if (!$attrs{$key}) {
+        delete $init->{$key};
+      }
+    }
+    my $subset_attr_name = q[subset];
+    if ($attrs{$subset_attr_name} && $self->can($subset_attr_name) && $self->$subset_attr_name) {
+      $init->{$subset_attr_name} = $self->$subset_attr_name;
+    }
+    return $class->new($init);
   };
 
   method 'create_composition' => sub {
@@ -87,7 +99,12 @@ The type of the component to be used should be set as the component_class parame
 Run:position:tag_index (rpt) strings and lists of strings are used as input.
 
 Requires that the class consuming this role implements the rpt_list method
-or attribute that returns a string representation of an rpt list.
+or attribute that returns a string representation of an rpt list. If this
+class implements the subset attribute or method, which returns a true value,
+and if the component class supports the subset attribute, the latter will
+be set for all components in the composition.
+
+The component class dooes not have to support all keys of the rpt hashes.
 
 =head1 SUBROUTINES/METHODS
 

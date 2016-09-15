@@ -27,7 +27,12 @@ role {
     my $h = {};
     for my $attr_obj ( $class->meta->get_all_attributes ) {
       my $attr = $attr_obj->name;
-      $h->{$attr} = $self->can($attr) && defined $self->$attr ? $self->$attr : undef;
+      if ($self->can($attr) && defined $self->$attr) {
+        $h->{$attr} = $self->$attr;
+      }
+      if (!exists $h->{$attr} && $attr_obj->is_required()) {
+        $h->{$attr} = undef;
+      }
     }
 
     return $class->new($h);
@@ -84,7 +89,7 @@ npg_tracking::glossary::composition::factory::attributes
 
 A Moose role providing factory functionality for npg_tracking::glossary::composition::component
 and npg_tracking::glossary::composition type objects. The type of the component to be used
-shoudl be set as the component_class parameter.
+should be set as the component_class parameter.
 
 =head1 SUBROUTINES/METHODS
 
@@ -95,6 +100,9 @@ class specified as the component_class parameter. Populates all
 attributes of component class that are present and defined in the
 class consuming this role. Scalar values are copied, data structures
 and objects are copied by reference. No weak copy for objects.
+
+If the class consuming this role does not have an attribute where
+in the component it is required, undefined value is used.
 
 =head2 create_composition
 
