@@ -16,27 +16,29 @@ my $test;
 my $test_instrument_id = 6;
 
 {
-     lives_ok {
-            $test = $schema->resultset('Instrument')->find
+    lives_ok {
+        $test = $schema->resultset('Instrument')->find
                         ( { id_instrument => $test_instrument_id } )
-         }
-         'Create test object';
+    } 'Create test object';
 
     isa_ok( $test, 'npg_tracking::Schema::Result::Instrument', 'Correct class' );
     is( $test->current_instrument_status(), 'wash required',
         'new instrument status returned' );
 
-    my $id = $schema->resultset('InstrumentStatusDict')->find({description => 'wash performed',})->id_instrument_status_dict;
+    my $id = $schema->resultset('InstrumentStatusDict')
+        ->find({description => 'wash performed',})->id_instrument_status_dict;
     my $wash_interval = $test->instrument_format->days_between_washes;
     if (!$wash_interval) {
-       die 'No wash interval';
+        die 'No wash interval';
     }
-    $schema->resultset('InstrumentStatus')->create({id_instrument => $test_instrument_id,
-                                                    id_instrument_status_dict => $id,
-                                                    id_user => 1,
-                                                    iscurrent => 0,
-                                                    date => DateTime->now()->subtract(DateTime::Duration->new(days=>$wash_interval+4)),
-                                                    });
+    $schema->resultset('InstrumentStatus')->create(
+        {id_instrument => $test_instrument_id,
+         id_instrument_status_dict => $id,
+         id_user => 1,
+         iscurrent => 0,
+         date => DateTime->now()
+             ->subtract_duration(DateTime::Duration->new(days=>$wash_interval+4)),
+        });
     throws_ok {$test->update_instrument_status('down', 'joe_engineer', 'instrument is down')}
         qr/Instrument status \"down\" is not current/,
         'error attempting to changed status to down (not current)';
