@@ -3,6 +3,12 @@ LIST OF CHANGES
  - Install all files, including cgi-related, within the install action.
  - Remove instrument utilisation views for web pages
  - Composition-enabled LIMs object and reference finder.
+ - Subset support added to the rpt key based composition factory.
+ - Objects's attributes based composition factory sets only those components
+   that are either defined or required. Previously an undef value might
+   have been used for a component attribute even if the value did not have
+   to be set, i.e. the code was not future compatible with planned removal
+   of 'Maybe' qualifies from the tag_index and subset definition.
 
 release 85.4
  - Run/instrument tracking; added full support for HiSeq 4000 and limited support
