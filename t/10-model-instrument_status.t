@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 39;
+use Test::More tests => 41;
 use Test::Exception;
 use t::util;
 
@@ -147,22 +147,24 @@ my $already_at_status_up = npg::model::instrument_status->new({
                  id_user => $already_at_status_down->user->id_user(),
                  id_instrument_status_dict => 5,
                 });
-  lives_ok { $model->_request_approval(); } q{no croak on request approval for moving status to not 'up'};
+  lives_ok { $model->_request_approval(); } q{no croak on request approval for moving status to not 'wash required'};
   lives_ok { $model->_check_order_ok(); } q{no croak on moving status to 'request approval' from 'down'};
+  lives_ok { $model->create() } 'saved status';
 
   $model = npg::model::instrument_status->new({
                  util => $util,
                  id_instrument => $already_at_status_request_approval->instrument->id_instrument(),
                  id_user => $already_at_status_request_approval->user->id_user(),
-                 id_instrument_status_dict => 1,
+                 id_instrument_status_dict => 3, # wash required
                 });
-  lives_ok { $model->_check_order_ok(); } q{no croak on moving status to 'up' from 'request approval'};
+  lives_ok { $model->_check_order_ok(); } q{no croak on moving status to 'wash required' from 'request approval'};
   throws_ok { $model->_request_approval(); }
     qr/public is not a member of 'approvers' usergroup/,
-    q{error on request approval for moving status to 'up' as not an approver};
+    q{error on request approval for moving status to 'wash required' as not an approver};
 
   $util->requestor('joe_approver');
-  lives_ok { $model->_request_approval(); } q{no croak on request approval for moving status to 'up' as user is an approver};
+  lives_ok { $model->_request_approval(); } q{no croak on request approval for moving status to 'wash required' as user is an approver};
+  lives_ok { $model->create() } 'saved status';
 }
 
 {

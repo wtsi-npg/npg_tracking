@@ -77,17 +77,20 @@ sub _request_approval {
   my $self = shift;
 
   my $new_status = $self->instrument_status_dict->description() || q[];
-  if ($new_status ne 'up') {
+  if ($new_status ne 'wash required') {
     return;
   }
 
   my $requestor  = $self->util()->requestor();
-  my $instrument = $self->instrument();
-  my $cis_desc   = $instrument->current_instrument_status->instrument_status_dict->description();
-
-  if ($cis_desc eq 'request approval' &&
-      !$requestor->is_member_of('approvers')) {
-    croak "@{[$requestor->username()]} is not a member of 'approvers' usergroup";
+  if (!$requestor->is_member_of('approvers')) {
+    my $instrument = $self->instrument();
+    my $current_status = $instrument->current_instrument_status;
+    if ($current_status) { # 'wash required' is the first status that is
+                           # assigned to an instrument
+      if ($current_status->instrument_status_dict->description() eq 'request approval') {
+        croak "@{[$requestor->username()]} is not a member of 'approvers' usergroup";
+      }
+    }
   }
   return;
 }
