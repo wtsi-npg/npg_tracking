@@ -2,6 +2,8 @@ LIST OF CHANGES
 
  - Install all files, including cgi-related, within the install action.
  - Remove instrument utilisation views for web pages
+ - Change in allowed next instrument status for 'request approval':
+   replace 'up' with 'wash required' (customer request)
  - Composition-enabled LIMs object and reference finder.
  - Subset support added to the rpt key based composition factory.
  - Objects's attributes based composition factory sets only those components

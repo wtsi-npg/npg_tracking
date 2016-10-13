@@ -33,8 +33,9 @@ Readonly::Array  our @CURRENT_RUNS    => ('run pending', 'run in progress', 'run
 Readonly::Array  our @BLOCKING_RUNS   => ('run pending', 'run in progress', 'run on hold');
 
 Readonly::Hash my %STATUS_CHANGE_AUTO => {
-  'up' => 'wash required',
+  'up'                  => 'wash required',
   'wash performed'      => 'up',
+  'request approval'    => 'wash required',
   'planned maintenance' => 'down for repair',
   'planned repair'      => 'down for repair',
   'planned service'     => 'down for service',
@@ -44,7 +45,7 @@ Readonly::Hash my %STATUS_GRAPH => {
 
   'up' => ['planned service', 'planned repair', 'down for repair', 'wash required', 'wash in progress'],
 
-  'request approval' => ['up', 'down for repair', 'down for service', 'planned repair', 'planned service'],
+  'request approval' => ['wash required', 'down for repair', 'down for service', 'planned repair', 'planned service'],
 
   'wash required'  => ['wash in progress', 'wash performed', 'planned repair', 'planned service', 'down for repair'],
   'wash in progress'   => ['wash performed', 'planned repair', 'planned service', 'down for repair'],
@@ -455,7 +456,8 @@ sub status_to_change_to {
     if ( $self->is_idle() &&
       ($current eq 'planned maintenance' ||
        $current eq 'planned repair' ||
-       $current eq 'planned service')) {
+       $current eq 'planned service' ||
+       $current eq 'request approval')) {
         return $next_auto;
     }
 
@@ -719,7 +721,7 @@ returns true if the instrument is a MiSeq, false otherwise
 
 =head2 is_idle - returns true if the instrument is idle false otherwise. The instrument is idle if it has not current runs associated with it.
 
-=head2 status_to_change_to - returns a status teh instrument should be or undefined if no change is necessary
+=head2 status_to_change_to - returns a status the instrument should be or undefined if no change is necessary
 
 =head2 status_reset - resets the status of the instrument to a new status
  $oInstrument->status_reset('new status');
