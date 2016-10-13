@@ -144,7 +144,7 @@ my $util = t::util->new({
   })->create() } 'instrument status for request approval created';
 
   my $instr_status = npg::model::instrument->new({util => $util, id_instrument => $id_instrument,})->current_instrument_status->instrument_status_dict->description;
-  is($instr_status, 'request approval', 'request approval is current instrument status');
+  is($instr_status, 'wash required', 'wash required is current instrument status');
 
   lives_ok { npg::model::instrument_status->new({
     util => $util,
@@ -287,7 +287,7 @@ diag 'Status change for runs on HiSeq instruments';
     id_instrument_status_dict => 5,
   })->create() } 'instrument status for request approva created';
   my $instr_status = npg::model::instrument->new({util => $util, id_instrument => $id_instrument,})->current_instrument_status->instrument_status_dict->description;
-  is($instr_status, 'request approval', 'request approva is current instrument status');
+  is($instr_status, 'wash required', 'wash required is current instrument status');
 
   my $run = npg::model::run->new({id_run => $id_run1,util   => $util,});
   lives_ok { $run->save_tags(['fc_slotA']) } 'fc_slotA tag added';

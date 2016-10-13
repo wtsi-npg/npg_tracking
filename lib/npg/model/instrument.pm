@@ -456,7 +456,8 @@ sub status_to_change_to {
     if ( $self->is_idle() &&
       ($current eq 'planned maintenance' ||
        $current eq 'planned repair' ||
-       $current eq 'planned service')) {
+       $current eq 'planned service' ||
+       $current eq 'request approval')) {
         return $next_auto;
     }
 
