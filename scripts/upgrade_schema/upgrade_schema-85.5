@@ -1,0 +1,16 @@
+---------
+-- Find all instruments that currently have 'request approval' status
+--
+SELEST * FROM instrument status WHERE iscurrent=1 AND id_instrument_status_dict=5;
+
+---------
+-- If any found, reset the status
+--
+UPDATE instrument_status SET id_instrument_status_dict=3 WHERE iscurrent=1 AND id_instrument_status_dict=5;
+
+---------
+-- Deprecate 'request approval' status
+--
+UPDATE instrument_status_dict SET iscurrent=0 WHERE description='request approval';
+
+
