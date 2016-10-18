@@ -13,7 +13,7 @@
   iscurrent: 1
 - description: request approval
   id_instrument_status_dict: 5
-  iscurrent: 1
+  iscurrent: 0
 - description: planned maintenance
   id_instrument_status_dict: 6
   iscurrent: 0

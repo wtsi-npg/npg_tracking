@@ -73,32 +73,12 @@ sub _check_order_ok {
   croak q{Instrument } . $instrument->name() . qq{ "$new" status cannot follow current "$current" status};
 }
 
-sub _request_approval {
-  my $self = shift;
-
-  my $new_status = $self->instrument_status_dict->description() || q[];
-  if ($new_status ne 'up') {
-    return;
-  }
-
-  my $requestor  = $self->util()->requestor();
-  my $instrument = $self->instrument();
-  my $cis_desc   = $instrument->current_instrument_status->instrument_status_dict->description();
-
-  if ($cis_desc eq 'request approval' &&
-      !$requestor->is_member_of('approvers')) {
-    croak "@{[$requestor->username()]} is not a member of 'approvers' usergroup";
-  }
-  return;
-}
-
 sub create {
   my $self     = shift;
   my $util     = $self->util();
   my $dbh      = $util->dbh();
   my $tr_state = $util->transactions();
 
-  $self->_request_approval();
   $self->_check_order_ok();
 
   eval {
@@ -650,10 +630,6 @@ npg::model::instrument_status
 =head2 check_order_ok - handles the rules to which instrument_statuses can be assigned via a manual entry. Croaks if not successful
 
   $oInstrumentStatus->check_order_ok();
-
-=head2 request_approval - handles checking that if moving the status to 'up' from 'request approval', only the correct group can do so
-
-  $oInstrumentStatus->request_approval();
 
 =head2 dates_all_instruments_up - fetches from the database the status history of up and down times for all instruments, and returns a hash keyed on instrument name, each containing an array, which each element is a hash of the up periods, keys 'up' and 'down'
 
