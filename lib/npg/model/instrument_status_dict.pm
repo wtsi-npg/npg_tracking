@@ -14,17 +14,17 @@ use Readonly;
 our $VERSION = '0';
 
 Readonly::Hash our %SHORT_DESCRIPTIONS => {
-                  'down'             => 'down',
-                  'request approval' => 'requ',
-                  'up'               => 'up',
-                  'wash required'    => 'wash',
-                  'wash in progress'     => 'wash',
-                  'wash performed'   => 'wash',
-                  'planned maintenance'   => 'plan',
-                  'planned repair'   => 'pl_r',
-                  'planned service'  => 'pl_s',
-                  'down for repair'  => 'dn4r',
-                  'down for service' => 'dn4s',
+                  'down'                => 'down',
+                  'request approval'    => 'requ',
+                  'up'                  => 'up',
+                  'wash required'       => 'wash',
+                  'wash in progress'    => 'wash',
+                  'wash performed'      => 'wash',
+                  'planned maintenance' => 'plan',
+                  'planned repair'      => 'pl_r',
+                  'planned service'     => 'pl_s',
+                  'down for repair'     => 'dn4r',
+                  'down for service'    => 'dn4s',
                                           };
 
 __PACKAGE__->mk_accessors(fields());

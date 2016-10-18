@@ -1,7 +1,7 @@
 use strict;
 use warnings;
-use Test::More tests => 25;
-use Test::Exception::LessClever;
+use Test::More tests => 24;
+use Test::Exception;
 use t::util;
 use t::request;
 use GD qw(:DEFAULT :cmp);
@@ -202,17 +202,6 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
   shift @lines; shift @lines; shift @lines;
   my $rendered = GD::Image->new(join "\n", @lines);
   ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle HiSeq image'); 
-}
-
-{
-  my $str = t::request->new({
-    PATH_INFO      => '/instrument/7',
-    REQUEST_METHOD => 'GET',
-    username       => 'joe_admin',
-    util           => $util,
-  });
-
-  ok($util->test_rendered($str, 't/data/rendered/instrument_status;add-cis2.html'), 'render of add ok for current instrument status of down');
 }
 
 {

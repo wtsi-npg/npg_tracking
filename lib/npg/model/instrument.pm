@@ -33,28 +33,24 @@ Readonly::Array  our @CURRENT_RUNS    => ('run pending', 'run in progress', 'run
 Readonly::Array  our @BLOCKING_RUNS   => ('run pending', 'run in progress', 'run on hold');
 
 Readonly::Hash my %STATUS_CHANGE_AUTO => {
-  'up' => 'wash required',
+  'up'                  => 'wash required',
   'wash performed'      => 'up',
-  'planned maintenance' => 'down for repair',
   'planned repair'      => 'down for repair',
   'planned service'     => 'down for service',
 };
 
 Readonly::Hash my %STATUS_GRAPH => {
-
-  'up' => ['planned service', 'planned repair', 'down for repair', 'wash required', 'wash in progress'],
+  'up'               => ['planned service', 'planned repair', 'down for repair', 'wash required', 'wash in progress'],
 
   'request approval' => ['up', 'down for repair', 'down for service', 'planned repair', 'planned service'],
 
-  'wash required'  => ['wash in progress', 'wash performed', 'planned repair', 'planned service', 'down for repair'],
-  'wash in progress'   => ['wash performed', 'planned repair', 'planned service', 'down for repair'],
-  'wash performed' => ['up', 'wash required', 'down for repair'],
+  'wash required'    => ['wash in progress', 'wash performed', 'planned repair', 'planned service', 'down for repair'],
+  'wash in progress' => ['wash performed', 'planned repair', 'planned service', 'down for repair'],
+  'wash performed'   => ['up', 'wash required', 'down for repair'],
 
-  'planned maintenance' => ['down for repair'],
-  'planned repair'      => ['down for repair'],
-  'planned service'     => ['down for service', 'planned repair', 'down for repair'],
+  'planned repair'   => ['down for repair'],
+  'planned service'  => ['down for service', 'planned repair', 'down for repair'],
 
-  'down'             => ['request approval'],
   'down for repair'  => ['request approval'],
   'down for service' => ['request approval', 'down for repair'],
 };
@@ -453,8 +449,7 @@ sub status_to_change_to {
 
   if ($self->does_sequencing) {
     if ( $self->is_idle() &&
-      ($current eq 'planned maintenance' ||
-       $current eq 'planned repair' ||
+      ($current eq 'planned repair' ||
        $current eq 'planned service')) {
         return $next_auto;
     }

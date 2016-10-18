@@ -303,9 +303,9 @@ sub _read_png_colour {
   ##no critic (ProhibitCascadingIfElse)
   if ( $statuses->{instrument} eq 'request approval' ) {
     $bg = $colours->{'purple'};
-  } elsif ( $statuses->{instrument} eq 'down' || $statuses->{instrument} eq 'down for repair') {
+  } elsif ( $statuses->{instrument} eq 'down for repair') {
     $bg = $colours->{'red'};
-  } elsif ( $statuses->{instrument} eq 'planned maintenance' || $statuses->{instrument} eq 'planned repair') {
+  } elsif ( $statuses->{instrument} eq 'planned repair') {
     $bg = $colours->{'pink'};
   } elsif ( $statuses->{instrument} eq 'down for service') {
     $bg = $colours->{'orange'};
