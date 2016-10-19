@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use t::util;
-use Test::More tests => 121;
+use Test::More tests => 120;
 use Test::Deep;
 use Test::Exception;
 
@@ -107,8 +107,6 @@ my $util = t::util->new({ fixtures => 1 });
   isa_ok($current_instruments, 'ARRAY', '$model->current_instruments()');
   is((scalar@{$current_instruments} + 1), scalar@{$instruments}, 'scalar@{$model->current_instruments()} is 1 less than scalar@{$model->instruments()}');
   is($model->current_instruments(), $current_instruments, '$model->current_instruments() cached ok');
-
-  isa_ok($model->utilisation(), 'ARRAY', '$model->utilisation()');
 }
 
 {

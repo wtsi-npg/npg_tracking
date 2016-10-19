@@ -15,7 +15,6 @@ use npg::model::instrument_format;
 use npg::model::manufacturer;
 use npg::model::instrument;
 use npg::model::instrument_annotation;
-use npg::model::instrument_utilisation;
 use npg::model::instrument_status;
 use npg::model::run;
 use npg::model::run_lane;
@@ -35,7 +34,6 @@ use npg::view::manufacturer;
 use npg::view::instrument_format;
 use npg::view::instrument_status;
 use npg::view::instrument_annotation;
-use npg::view::instrument_utilisation;
 use npg::view::instrument;
 use npg::view::instrument_mod;
 use npg::view::run_status_dict;
@@ -50,7 +48,6 @@ use npg::view::usergroup;
 use npg::view::search;
 use npg::view::administration;
 use npg::view::run_lane_annotation;
-use npg::view::intensity;
 use npg::view::instrument_status_annotation;
 use npg::view::usage;
 
@@ -175,8 +172,6 @@ npg::controller - NPG tracking controller
 =item npg::view::instrument_mod
 
 =item npg::view::instrument_status
-
-=item npg::view::intensity
 
 =item npg::view::manufacturer
 

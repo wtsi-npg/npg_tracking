@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - remove all code that relates to instrument utilisation
+ - remove an option to create database entries via XML POST.
+
  - Install all files, including cgi-related, within the install action.
  - Remove instrument utilisation views for web pages.
  - Deprecate 'request approval' instrument status, enable status change

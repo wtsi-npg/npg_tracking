@@ -213,49 +213,6 @@ sub read { ## no critic (ProhibitBuiltinHomonyms)
   return $self->{read_dom};
 }
 
-sub create {
-  my ($self,$xml) = @_;
-  my $util        = $self->util();
-  my ($obj_type)  = (ref $self) =~ /([^:]+)$/smx;
-  my $obj_pk      = $self->primary_key();
-  my $obj_pk_val  = $self->$obj_pk();
-
-  if($obj_pk_val) {
-    croak qq(Cannot create a $obj_type with an existing $obj_pk ($obj_pk_val));
-  }
-
-  my $obj_uri = sprintf '%s/%s/', $util->base_uri(), $obj_type;
-  if ($xml) {
-    $obj_uri =~ s{/\z}{.xml}xms;
-  }
-
-  my $large_fields = { map { $_ => undef } $self->large_fields() };
-  my @small_fields = grep { !exists $large_fields->{$_} } $self->fields();
-  my $payload      = ['Content_Type' => 'form-data',
-                      'Content'      => [
-                                          'pipeline' => 1,
-                                          (map { $_ => $self->{$_} || q() } @small_fields),
-                                          (map { $_ => [
-                                                         undef,
-                                                         $_,
-                                                         'Content_Type'   => 'binary/octet-stream',
-                                                         'Content_Length' => length ($self->{$_}||q()),
-                                                         'Content'        => $self->{$_}||q(),
-                                                       ]
-                                               } keys %{$large_fields}),
-                                        ],
-                     ];
-  my $content =  $util->post($obj_uri, $payload);
-  $self->{read_dom} = $util->parser->parse_string($content);
-  my $root = $self->{read_dom}->getDocumentElement();
-
-  for my $field ($self->fields()) {
-    $self->{$field} = $root->getAttribute($field);
-  }
-
-  return 1;
-}
-
 1;
 __END__
 
@@ -341,14 +298,6 @@ Fetches XML over HTTP based on self->util->base_uri().
 =head2 read - default handling for reading individual objects
 
   my $oDOM = $oDerived->read();
-
-=head2 create - default handling object creation
-
-  my $oDOM = $oDerived->create();
-
-  This creates an HTTP POST request with a multipart/form-data flavour
-  and pushes object member data, for a new entity, up to the
-  create_xml aspects of the service.
 
 =head2 retry - method retries connecting to ST before croaking with an error
 

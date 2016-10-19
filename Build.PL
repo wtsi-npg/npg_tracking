@@ -128,7 +128,6 @@ my $builder = $class->new(
                 'Config::Auto'                    => 0,
                 'Crypt::CBC'                      => 0,
                 'Cwd'                             => 0,
-                'Date::Calc'                      => '5.4',
                 'Date::Parse'                     => '2.27',
                 'DateTime'                        => '0.5',
                 'DateTime::TimeZone'              => 0,

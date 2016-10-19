@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 9;
 use Test::Exception;
 
 use t::util;
@@ -10,56 +10,6 @@ use_ok 'npg::model::instrument_status';
 use_ok 'npg::view::instrument_status';
 
 my $util = t::util->new({fixtures => 1});
-
-{
-  my $str = t::request->new({
-    PATH_INFO      => '/instrument_status/up/down_xml',
-    REQUEST_METHOD => 'GET',
-    username       => 'public',
-    util           => $util,
-  });
-  ok($util->test_rendered($str, 't/data/rendered/instrument_status/list_up_down_xml.xml'), 'render of list_up_down_xml ok for instruments');
-}
-
-{
-  my $str = t::request->new({
-    PATH_INFO      => '/instrument_status.xml',
-    REQUEST_METHOD => 'POST',
-    username       => 'public',
-    util           => $util,
-  });
-  like($str, qr{not\ authorised}mx, 'public access to create_xml');
-}
-
-{
-  my $str = t::request->new({
-    PATH_INFO      => '/instrument_status.xml',
-    REQUEST_METHOD => 'POST',
-    username       => 'pipeline',
-    util           => $util,
-  });
-  unlike($str, qr{not\ authorised}mx, 'pipeline access to create_xml');
-}
-
-{
-  my $str = t::request->new({
-    PATH_INFO      => '/instrument_status',
-    REQUEST_METHOD => 'POST',
-    username       => 'joe_annotator',
-    util           => $util,
-  });
-  unlike($str, qr{not\ authorised}mx, 'annotator access to create_xml');
-}
-
-{
-  my $str = t::request->new({
-    PATH_INFO      => '/instrument_status',
-    REQUEST_METHOD => 'POST',
-    username       => 'joe_engineer',
-    util           => $util,
-  });
-  unlike($str, qr{not\ authorised}mx, 'engineer access to create_xml');
-}
 
 {
   my $str = t::request->new({

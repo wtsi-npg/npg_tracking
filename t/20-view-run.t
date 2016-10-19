@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 83;
+use Test::More tests => 41;
 use Test::Exception;
 use Test::Deep;
 use MIME::Lite;
@@ -116,44 +116,6 @@ my $util = t::util->new({fixtures  => 1,});
 }
 
 {
-  my @emails;
-  my $sub = sub {
-     my $msg = shift;
-           push @emails, $msg->as_string;
-     return;
-          };
-  MIME::Lite->send('sub',$sub);
-
-  my $str  = t::request->new({
-			      PATH_INFO      => '/run/16.xml',
-			      REQUEST_METHOD => 'POST',
-			      username       => 'pipeline',
-			      util           => $util,
-			      cgi_params     => {
-						 id_instrument        => 3,
-						 id_run_pair          => 0,
-						 team                 => 'RAD',
-						 batch_id             => 42,
-						 tracks               => 3,
-						 lane_1_tile_count    => 330,
-						 expected_cycle_count => 37,
-						 priority             => 1,
-						},
-			     });
-  ok($util->test_rendered($str, 't/data/rendered/run/16;update_xml'), 'loader update_xml');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run/42.xml',
-           REQUEST_METHOD => 'POST',
-           username       => 'public',
-           util           => $util,
-          });
-  like($str, qr/not\ authorised/mix, 'non-pipeline access to run/x;update_xml');
-}
-
-{
   my $str = t::request->new({
            PATH_INFO      => '/run/16;update_statuses',
            REQUEST_METHOD => 'POST',
@@ -210,7 +172,7 @@ my $util = t::util->new({fixtures  => 1,});
            REQUEST_METHOD => 'GET',
            username       => 'public',
            util           => $util,
-                             cgi_params     => {id_run_status_dict => 'all', id_instrument => 3, },
+           cgi_params     => {id_run_status_dict => 'all', id_instrument => 3, },
           });
   ok($util->test_rendered($str, 't/data/rendered/run/runs_on_instrument.html'), 'html list render run instrument 3 all statuses');
 }
@@ -279,138 +241,6 @@ my $util = t::util->new({fixtures  => 1,});
                  },
           });
   like($str, qr/updated\ statuses\ ok/mix, 'update_statuses');
-}
-
-{
-  my $run1 = npg::model::run->new({
-           util   => $util,
-           id_run => 1,
-          });
-  for my $lane (@{$run1->run_lanes()}) {
-    is($lane->tracks(), 2, 'existing tracks for run_lane');
-    is($lane->tile_count(), 200, 'existing tile_count for run_lane');
-  }
-  my $str = t::request->new({
-           PATH_INFO      => '/run/1.xml',
-           REQUEST_METHOD => 'POST',
-           username       => 'pipeline',
-           util           => $util,
-           cgi_params     => {
-            tile_columns => 3,
-            tile_rows    => 110,
-                 },
-          });
-  unlike($str, qr/error/mix, 'update tile_columns & tile_rows');
-
-  my $run2 = npg::model::run->new({
-           util   => $util,
-           id_run => 1,
-          });
-  for my $lane (@{$run2->run_lanes()}) {
-    is($lane->tracks(), 3, 'updated tracks for run_lane');
-    is($lane->tile_count(), 330, 'updated tile_count for run_lane');
-  }
-}
-
-{
-  my $runs1 = [map { $_->id_run() } @{npg::model::run->new({util=>$util})->runs()}];
-  my $str   = t::request->new({
-			       PATH_INFO      => '/run',
-			       REQUEST_METHOD => 'POST',
-			       username       => 'joe_loader',
-			       util           => $util,
-			       cgi_params     => {
-						  id_instrument        => 3,
-						  id_run_pair          => 0,
-						  team                 => 'RAD',
-						  batch_id             => 42,
-						  tracks               => 3,
-						  lane_1_tile_count    => 330,
-						  expected_cycle_count => 37,
-						  priority             => 1,
-						 },
-			      });
-  my $runs2 = {map { $_->id_run() => 1 } @{npg::model::run->new({util=>$util})->runs()}};
-
-  for my $run (@{$runs1}) {
-    delete $runs2->{$run};
-  }
-
-  is((scalar keys %{$runs2}), 1, 'one new run');
-  my ($new_id) = keys %{$runs2};
-  my $run = npg::model::run->new({
-          util   => $util,
-          id_run => $new_id,
-         });
-  is($run->is_dev(), 1, 'r&d run');
-}
-
-{
-  my $runs1 = [map { $_->id_run() } @{npg::model::run->new({util=>$util})->runs()}];
-  my $str   = t::request->new({
-			       PATH_INFO      => '/run',
-			       REQUEST_METHOD => 'POST',
-			       username       => 'joe_loader',
-			       util           => $util,
-			       cgi_params     => {
-						  id_instrument        => 3,
-						  id_run_pair          => 0,
-						  batch_id             => 42,
-						  tracks               => 3,
-						  lane_1_tile_count    => 330,
-						  expected_cycle_count => 37,
-						  team                 => 'A',
-						  priority             => 1,
-						 },
-			      });
-
-  unlike($str, qr/Error/smx);
-  my $runs2 = {map { $_->id_run() => 1 } @{npg::model::run->new({util=>$util})->runs()}};
-
-  for my $run (@{$runs1}) {
-    delete $runs2->{$run};
-  }
-
-  is((scalar keys %{$runs2}), 1, 'one new run');
-  my ($new_id) = keys %{$runs2};
-  my $run = npg::model::run->new({
-          util   => $util,
-          id_run => $new_id,
-         });
-  is($run->is_dev(), 0, 'run is not dev');
-}
-
-{
-  my $runs1 = [map { $_->id_run() } @{npg::model::run->new({util=>$util})->runs()}];
-  my $str   = t::request->new({
-			       PATH_INFO      => '/run',
-			       REQUEST_METHOD => 'POST',
-			       username       => 'joe_r_n_d',
-			       util           => $util,
-			       cgi_params     => {
-						  id_instrument        => 3,
-						  id_run_pair          => 0,
-						  team                 => 'RAD',
-						  batch_id             => 42,
-						  tracks               => 3,
-						  lane_1_tile_count    => 330,
-						  expected_cycle_count => 37,
-						  priority             => 1,
-						 },
-			      });
-  my $runs2 = {map { $_->id_run() => 1 } @{npg::model::run->new({util=>$util})->runs()}};
-
-  for my $run (@{$runs1}) {
-    delete $runs2->{$run};
-  }
-
-  is((scalar keys %{$runs2}), 1, 'one new run');
-  my ($new_id) = keys %{$runs2};
-  my $run = npg::model::run->new({
-          util   => $util,
-          id_run => $new_id,
-         });
-  is($run->is_dev(), 1, 'r+d user can set is_dev');
 }
 
 {

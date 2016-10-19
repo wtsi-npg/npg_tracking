@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 31;
+use Test::More tests => 29;
 use English qw(-no_match_vars);
 use t::util;
 use npg::model::run_lane_annotation;
@@ -33,7 +33,6 @@ my $util = t::util->new({
 # testing authorisation method
 #
 
-  is($view->authorised(), undef, 'create xml aspect/create action - public not authorised');
   $view->action('update');
   is($view->authorised(), undef, 'update action - public not authorised');
   $view->action('read');
@@ -41,7 +40,6 @@ my $util = t::util->new({
 
   $view->action('create');
   $util->requestor('pipeline');
-  is($view->authorised(), 1, 'create xml aspect - pipeline authorised');
   $view->action('read');
   $view->aspect('read_attachment');
   is($view->authorised(), 1, 'read xml aspect - pipeline authorised');

@@ -14,12 +14,9 @@ use npg::model::instrument_status_dict;
 use npg::model::run_status_dict;
 use npg::model::instrument_status_dict;
 use GD;
-use GD::Graph::bars;
 use GD::Text;
-use npg::util::image::graph;
 use Carp;
 use English qw(-no_match_vars);
-use Date::Calc qw(Add_Delta_Days);
 use Readonly;
 use List::MoreUtils qw(any);
 use DateTime::Format::MySQL;
@@ -578,66 +575,9 @@ sub render {
       carp "ERROR generating image for instrument $i: $e";
     };
     return $image;
-  } elsif($aspect eq 'utilisation_png') {
-    return $self->list_utilisation_png();
-
-  } elsif($aspect eq 'uptime_png') {
-    return $self->list_uptime_png();
   }
 
   return $self->SUPER::render(@args);
-}
-
-sub list_utilisation_png {
-  my ($self) = @_;
-  my $cgi    = $self->util->cgi();
-  my $type   = $cgi->param('type') || q[];
-  my $data   = $self->model->utilisation($type);
-  my $graph  = npg::util::image::graph->new();
-  my $instrument_status = npg::model::instrument_status->new({
-                    util => $self->util(),
-                   });
-
-  for my $date (@{$data}) {
-    if ($type ne 'hour') {
-      ($date->{'date'}) = $date->{'date'} =~ /\d{4}-(\d{2}-\d{2})/xms;
-    }
-    $date = [$date->{'date'},$date->{'perc_utilisation'}];
-  }
-
-  if ($type eq 'hour') {
-    return $graph->plotter($data, {
-           width             => $PLOTTER_WIDTH,
-           height            => $PLOTTER_HEIGHT,
-           x_label           => 'Hour',
-           y_label           => 'Percentage Utilisation',
-           x_label_skip      => $X_LABEL_SKIP,
-           x_labels_vertical => 1,
-          }, 'area');
-  }
-
-  return $graph->plotter($data, {
-         width   => $PLOTTER_WIDTH,
-         height  => $PLOTTER_HEIGHT,
-         x_label => 'date',
-         y_label => 'percentage',
-        }, 'bars');
-}
-
-sub list_uptime_png {
-  my ($self) = @_;
-  my $graph  = npg::util::image::graph->new();
-  my $instrument_status = npg::model::instrument_status->new({
-                    util => $self->util(),
-                   });
-  my $data = $instrument_status->average_percentage_uptime_for_day();
-  return $graph->plotter($data, {
-         width             => $PLOTTER_WIDTH,
-         height            => $PLOTTER_HEIGHT,
-         x_label           => 'date',
-         y_label           => 'percentage',
-         x_labels_vertical => 1,
-        });
 }
 
 1;
@@ -680,15 +620,11 @@ npg::view::instrument - view handling for instruments
 
 =head2 render - specifics for read_graphical
 
-=head2 list_utilisation_png - handling to show percentage activity as a bar chart
-
 =head2 list_edit_statuses - batch instrument_status listing/form
 
 =head2 list_textual - basic text listing
 
 =head2 update_statuses - batch instrument_status update (form action)
-
-=head2 list_uptime_png - handling to show percentage up-time of instruments as a graph
 
 =head1 DIAGNOSTICS
 
@@ -718,13 +654,9 @@ npg::view::instrument - view handling for instruments
 
 =item GD
 
-=item GD::Graph::bars
-
 =item Carp
 
 =item English
-
-=item Date::Calc
 
 =back
 

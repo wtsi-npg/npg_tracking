@@ -311,15 +311,6 @@ sub current_instrument_status {
   return $self->{'current_instrument_status'};
 }
 
-sub utilisation {
-  my ($self, $type) = @_;
-  my $root_is = npg::model::instrument_status->new({
-                                                    util => $self->util(),
-                                                  });
-  return $root_is->utilisation($type);
-}
-
-
 sub latest_instrument_annotation {
   my $self = shift;
 
@@ -671,10 +662,6 @@ Has a side-effect of updating an instrument's current instrument_status to 'wash
 =head2 current_instrument_status - npg::model::instrument_status with iscurrent=1 for this instrument
 
   my $oInstrumentStatus = $oInstrument->current_instrument_status();
-
-=head2 utilisation - fetches npg::model::instrument_status->utilisation(type) where type is hour or day
-
-  my $aUtilisation = $oInstrument->utilisation(type);
 
 =head2 instrument_mods - returns array of instrument modifications for this instrument
 

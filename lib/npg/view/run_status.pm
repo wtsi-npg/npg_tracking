@@ -25,14 +25,6 @@ sub authorised {
   my $aspect    = $self->aspect();
   my $requestor = $util->requestor();
 
-  #########
-  # Allow pipeline group access to the create_xml interface of run_status
-  #
-  if($aspect eq 'create_xml' &&
-     $requestor->is_member_of('pipeline')) {
-    return 1;
-  }
-
   if(($action eq 'create' ||
       $action eq 'read'   ||
       $action eq 'list') &&

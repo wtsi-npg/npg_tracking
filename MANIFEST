@@ -10,7 +10,6 @@ bin/npg_status_watcher
 bin/seq_instr_checker
 bin/staging_area_monitor
 bin/update_sensors
-bin/utilisation_loader
 Build.PL
 cgi-bin/locate_runfolder
 cgi-bin/npg
@@ -68,7 +67,6 @@ data/templates/instrument_list_xml.tt2
 data/templates/instrument_make_change_menu.tt2
 data/templates/instrument_mod_add_ajax.tt2
 data/templates/instrument_mod_create.tt2
-data/templates/instrument_mod_create_xml.tt2
 data/templates/instrument_mod_list.tt2
 data/templates/instrument_mod_list_xml.tt2
 data/templates/instrument_mod_read_xml.tt2
@@ -84,15 +82,11 @@ data/templates/instrument_status_annotation.tt2
 data/templates/instrument_status_annotation_add_ajax.tt2
 data/templates/instrument_status_annotation_create.tt2
 data/templates/instrument_status_create.tt2
-data/templates/instrument_status_create_xml.tt2
 data/templates/instrument_status_list.tt2
-data/templates/instrument_status_list_up_down_xml.tt2
 data/templates/instrument_status_menu.tt2
 data/templates/instrument_status_read_xml.tt2
 data/templates/instrument_top.tt2
 data/templates/instrument_update_statuses.tt2
-data/templates/instrument_utilisation_create.tt2
-data/templates/instrument_utilisation_create_xml.tt2
 data/templates/intensity_list.tt2
 data/templates/manufacturer_add.tt2
 data/templates/manufacturer_create.tt2
@@ -104,7 +98,6 @@ data/templates/run_annotation_add_ajax.tt2
 data/templates/run_annotation_add_input_form.tt2
 data/templates/run_annotation_create.tt2
 data/templates/run_annotation_create_multiple_run_annotations.tt2
-data/templates/run_annotation_create_xml.tt2
 data/templates/run_annotation_read_xml.tt2
 data/templates/run_annotation_tables.tt2
 data/templates/run_create.tt2
@@ -132,7 +125,6 @@ data/templates/run_read.tt2
 data/templates/run_read_simple_xml.tt2
 data/templates/run_read_xml.tt2
 data/templates/run_status_create.tt2
-data/templates/run_status_create_xml.tt2
 data/templates/run_status_dict_list_xml.tt2
 data/templates/run_status_dict_read_footer_xml.tt2
 data/templates/run_status_dict_read_header_xml.tt2
@@ -213,7 +205,6 @@ lib/npg/api/base.pm
 lib/npg/api/designation.pm
 lib/npg/api/instrument.pm
 lib/npg/api/instrument_status.pm
-lib/npg/api/instrument_utilisation.pm
 lib/npg/api/request.pm
 lib/npg/api/run.pm
 lib/npg/api/run_annotation.pm
@@ -258,7 +249,6 @@ lib/npg/model/instrument_mod_dict.pm
 lib/npg/model/instrument_status.pm
 lib/npg/model/instrument_status_annotation.pm
 lib/npg/model/instrument_status_dict.pm
-lib/npg/model/instrument_utilisation.pm
 lib/npg/model/manufacturer.pm
 lib/npg/model/run.pm
 lib/npg/model/run_annotation.pm
@@ -298,8 +288,6 @@ lib/npg/view/instrument_format.pm
 lib/npg/view/instrument_mod.pm
 lib/npg/view/instrument_status.pm
 lib/npg/view/instrument_status_annotation.pm
-lib/npg/view/instrument_utilisation.pm
-lib/npg/view/intensity.pm
 lib/npg/view/manufacturer.pm
 lib/npg/view/run.pm
 lib/npg/view/run_annotation.pm
@@ -442,11 +430,9 @@ t/10-model-instrument_designation.t
 t/10-model-instrument_format.t
 t/10-model-instrument_mod.t
 t/10-model-instrument_mod_dict.t
-t/10-model-instrument_status-uptime.t
 t/10-model-instrument_status.t
 t/10-model-instrument_status_annotation.t
 t/10-model-instrument_status_dict.t
-t/10-model-instrument_utilisation.t
 t/10-model-manufacturer.t
 t/10-model-run.t
 t/10-model-run_annotation.t
@@ -515,7 +501,6 @@ t/20-view-instrument_menus.t
 t/20-view-instrument_mod.t
 t/20-view-instrument_status.t
 t/20-view-instrument_status_annotation.t
-t/20-view-instrument_utilisation.t
 t/20-view-run-create_tags.t
 t/20-view-run.t
 t/20-view-run_annotation.t
@@ -536,8 +521,6 @@ t/25-template-actions.t
 t/30-api-annotation.t
 t/30-api-base.t
 t/30-api-instrument.t
-t/30-api-instrument_status.t
-t/30-api-instrument_utilisation.t
 t/30-api-request.t
 t/30-api-run.t
 t/30-api-run_lane.t
@@ -654,7 +637,6 @@ t/data/fixtures/300-run_lane.yml
 t/data/fixtures/400-instrument_mod.yml
 t/data/fixtures/400-instrument_status.yml
 t/data/fixtures/400-instrument_status_annotation.yml
-t/data/fixtures/400-instrument_utilisation.yml
 t/data/fixtures/400-run_annotation.yml
 t/data/fixtures/400-run_lane_annotation.yml
 t/data/fixtures/400-run_status.yml
@@ -871,8 +853,6 @@ t/data/npg_api/npg/instrument/24.xml
 t/data/npg_api/npg/instrument/36.xml
 t/data/npg_api/npg/instrument_designation_list.xml
 t/data/npg_api/npg/instrument_status/3.xml
-t/data/npg_api/npg/instrument_status/list_up_down_xml.xml
-t/data/npg_api/npg/instrument_utilisation/20090202.xml
 t/data/npg_api/npg/run.xml
 t/data/npg_api/npg/run/1.xml
 t/data/npg_api/npg/run/1104.xml
@@ -945,7 +925,6 @@ t/data/rendered/20-view-administration_list_engineers.html
 t/data/rendered/20-view-administration_list_public.html
 t/data/rendered/20-view-instrument_mod_add_ajax.html
 t/data/rendered/20-view-instrument_mod_batch_update.html
-t/data/rendered/20-view-instrument_mod_read_xml.xml
 t/data/rendered/20-view-instrument_status-1.html
 t/data/rendered/20-view-instrument_status-2.html
 t/data/rendered/20-view-instrument_status-cis3.html
@@ -979,12 +958,7 @@ t/data/rendered/instrument/11;read_runs_ajax
 t/data/rendered/instrument/13.xml
 t/data/rendered/instrument_mod_list_engineer.html
 t/data/rendered/instrument_mod_list_public.html
-t/data/rendered/instrument_status/list_up_down_xml.xml
 t/data/rendered/instrument_status_annotation;add-ajax.html
-t/data/rendered/instrument_utilisation/create.xml
-t/data/rendered/instrument_utilisation/list.html
-t/data/rendered/instrument_utilisation/list_graphical.html
-t/data/rendered/instrument_utilisation/list_graphical_90days.html
 t/data/rendered/map.html
 t/data/rendered/menus/instruments_formats.html
 t/data/rendered/menus/instruments_make_change_mods.html
@@ -997,7 +971,6 @@ t/data/rendered/run.html;add
 t/data/rendered/run/1.html;update_tags
 t/data/rendered/run/1.html;update_tags-no-tags
 t/data/rendered/run/1.xml
-t/data/rendered/run/16;update_xml
 t/data/rendered/run/list_stuck_runs.html
 t/data/rendered/run/recent/running/runs_4000_days.xml
 t/data/rendered/run/recent/running/runs_basic_days.xml
@@ -1005,8 +978,6 @@ t/data/rendered/run/runs_on_instrument.html
 t/data/rendered/run_annotation_add_ajax.html
 t/data/rendered/run_lane/1;update_tags
 t/data/rendered/run_list_basic.xml
-t/data/rendered/run_status/create_xml.xml
-t/data/rendered/run_status/t_request_create.xml
 t/data/rendered/run_status/t_run_status_list_sorted.html
 t/data/rendered/run_status/t_run_status_list_sorted_from_analysis_complete.html
 t/data/rendered/run_status/t_run_status_list_sorted_from_data_discarded.html

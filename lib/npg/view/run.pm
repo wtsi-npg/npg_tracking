@@ -46,14 +46,6 @@ sub authorised {
   my $aspect = $self->aspect() || q[];
 
   #########
-  # Allow pipeline group access to the update_xml interface of run
-  #
-  if($aspect eq 'update_xml' &&
-     $requestor->is_member_of('pipeline')) {
-    return 1;
-  }
-
-  #########
   # Allow loaders the ability to create runs
   #
   if ( ( $aspect eq 'add' || $aspect eq 'add_pair_ajax' ) && $requestor->is_member_of('loaders') ) {return 1;}

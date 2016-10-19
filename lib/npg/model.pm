@@ -50,21 +50,6 @@ sub dbh_datetime {
   return $self->util->dbh->selectall_arrayref('SELECT NOW()',{})->[0]->[0];
 }
 
-sub dates_of_last_ninety_days {
-  my ($self) = @_;
-  if (!$self->{_dates_of_last_ninety_days}) {
-    $self->{_dates_of_last_ninety_days} = [];
-    my @temp;
-    foreach my $i (0..$NINETY_DAYS) {
-      my $dt = DateTime->now(time_zone => 'floating');
-      $dt->subtract( days=> $i );
-      push @temp, $dt->ymd();
-    }
-    @{$self->{_dates_of_last_ninety_days}} = reverse @temp;
-  }
-  return $self->{_dates_of_last_ninety_days};
-}
-
 sub aspect {
   my ($self, $aspect) = @_;
   if ($aspect) {
@@ -205,13 +190,6 @@ under 20 minutes in the Autumn of 2006.
 runs input through a regex to sanitise that the input has no bad characters - only allows /[a-z0-9_]+/ixms
 
   my $sSanitisedInput = $oModelSubClass->sanitise_input( $sInput );
-
-=head2 dates_of_last_ninety_days
-
-returns arrayref of the last 90 days, ascending order in format ymd from DateTime
-caches this for reuse
-
-  my $aDateOfLast90Days = $oModelSubClass->dates_of_last_ninety_days();
 
 =head2 location_is_instrument
 
