@@ -1,12 +1,12 @@
 ---------
--- Find all instruments that currently have 'request approval' status
+-- Find all current instruments that currently have 'request approval' status
 --
-SELEST * FROM instrument status WHERE iscurrent=1 AND id_instrument_status_dict=5;
+SELECT id_instrument_status FROM instrument_status ins, instrument i WHERE ins.id_instrument=i.id_instrument AND i.iscurrent=0 AND ins.iscurrent=1 AND ins.id_instrument_status_dict=5;
 
 ---------
--- If any found, reset the status
+-- If any found, reset the status to 'wash required'
 --
-UPDATE instrument_status SET id_instrument_status_dict=3 WHERE iscurrent=1 AND id_instrument_status_dict=5;
+UPDATE instrument_status SET id_instrument_status_dict=3 WHERE id_instrument_status in (XXX, YYY);
 
 ---------
 -- Deprecate 'request approval' status
