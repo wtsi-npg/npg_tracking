@@ -5,7 +5,7 @@ LIST OF CHANGES
  - Deprecate 'request approval' instrument status, enable status change
    from either of down statuses directly to 'wash required'.
  - Remove code and tests for deprecated instrument statuses.
- - Create a flag to mark users and usergroups as deprecated,
+ - Create flags to mark users and usergroups as deprecated,
    deprecate 'approvers' group.
  - User and usergroup lists are alphabetically sorted and include only
    current entries.
