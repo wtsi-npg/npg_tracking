@@ -12,11 +12,11 @@ use_ok('npg::view::run_status');
 my $mock = {
       q(SELECT id_user, username FROM user WHERE id_user=?:1) => [{id_user => 1,username=>'public'}],
       q(SELECT id_user FROM user WHERE username = ?:,public) => [[1]],
-      q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.id_usergroup = uug.id_usergroup:1) => [{id_usergroup => 102, groupname => 'public'}],
+      q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, ug.iscurrent, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.iscurrent = 1 AND ug.id_usergroup = uug.id_usergroup:1) => [{id_usergroup => 102, groupname => 'public'}],
       q(SELECT id_usergroup FROM usergroup WHERE groupname = ?:,public) => [[102]],
-      q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.id_usergroup = uug.id_usergroup:2) => [{id_usergroup => 103, groupname => 'pipeline'}],
-      q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.id_usergroup = uug.id_usergroup:3) => [{id_usergroup => 104, groupname => 'engineers'}],
-      q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.id_usergroup = uug.id_usergroup:4) => [{id_usergroup => 105, groupname => 'loaders'}],
+      q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, ug.iscurrent, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.iscurrent = 1 AND ug.id_usergroup = uug.id_usergroup:2) => [{id_usergroup => 103, groupname => 'pipeline'}],
+      q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, ug.iscurrent, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.iscurrent = 1 AND ug.id_usergroup = uug.id_usergroup:3) => [{id_usergroup => 104, groupname => 'engineers'}],
+      q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description,ug.iscurrent,  uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.iscurrent = 1 AND ug.id_usergroup = uug.id_usergroup:4) => [{id_usergroup => 105, groupname => 'loaders'}],
      };
 my $util = t::util->new({'mock'=>$mock});
 

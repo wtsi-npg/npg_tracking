@@ -15,7 +15,7 @@ our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
-sub fields { return qw(id_usergroup groupname is_public description); }
+sub fields { return qw(id_usergroup groupname is_public description iscurrent); }
 
 sub init {
   my $self = shift;
@@ -41,8 +41,8 @@ sub init {
 
 sub usergroups {
   my $self = shift;
-  my $ref  = $self->gen_getall();
-  return $ref;
+  my @current_groups = sort {$a->groupname cmp $b->groupname} grep { $_->iscurrent() } @{$self->gen_getall()};
+  return \@current_groups;
 }
 
 sub public_usergroups {

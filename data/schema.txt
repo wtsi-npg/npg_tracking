@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 5.5.41, for debian-linux-gnu (x86_64)
 --
--- Host: nqct-db    Database: npgt
+-- Host: npgt-db    Database: npgt
 -- ------------------------------------------------------
--- Server version	5.5.31-log
+-- Server version	5.7.13-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -116,8 +116,8 @@ CREATE TABLE `event` (
   PRIMARY KEY (`id_event`),
   KEY `ev_u` (`id_user`),
   KEY `id_event_type` (`id_event_type`),
-  CONSTRAINT `event_ibfk_1` FOREIGN KEY (`id_event_type`) REFERENCES `event_type` (`id_event_type`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `ev_u` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `ev_u` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `event_ibfk_1` FOREIGN KEY (`id_event_type`) REFERENCES `event_type` (`id_event_type`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -810,6 +810,7 @@ CREATE TABLE `user` (
   `id_user` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` char(128) DEFAULT NULL,
   `rfid` varchar(64) DEFAULT NULL,
+  `iscurrent` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `uidx_username` (`username`),
   UNIQUE KEY `rf_id` (`rfid`)
@@ -848,6 +849,7 @@ CREATE TABLE `usergroup` (
   `id_usergroup` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `is_public` tinyint(1) NOT NULL DEFAULT '0',
   `description` varchar(128) DEFAULT '',
+  `iscurrent` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id_usergroup`) USING BTREE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -861,4 +863,4 @@ CREATE TABLE `usergroup` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-04-09 18:37:31
+-- Dump completed on 2016-10-19 11:47:27

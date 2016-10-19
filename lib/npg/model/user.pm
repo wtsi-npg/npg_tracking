@@ -16,7 +16,7 @@ our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
 
-sub fields { return qw(id_user username rfid); }
+sub fields { return qw(id_user username rfid iscurrent); }
 
 sub init {
   my $self = shift;
@@ -84,6 +84,7 @@ sub usergroups {
                    FROM   @{[$pkg->table()]} ug,
                           user2usergroup     uug
                    WHERE  uug.id_user     = ?
+                   AND    ug.iscurrent    = 1
                    AND    ug.id_usergroup = uug.id_usergroup);
     $self->{'usergroups'} = $self->gen_getarray( $pkg, $query, $self->id_user());
   }
@@ -102,7 +103,8 @@ sub is_member_of {
 
 sub users {
   my $self = shift;
-  return $self->gen_getall();
+  my @current_users = sort {$a->username cmp $b->username} grep { $_->iscurrent() } @{$self->gen_getall()};
+  return \@current_users;
 }
 
 sub runs_loaded {

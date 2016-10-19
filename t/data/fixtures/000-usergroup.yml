@@ -3,43 +3,54 @@
   groupname: admin
   id_usergroup: 1
   is_public: 0
+  iscurrent: 1
 - description: Pipeline Automation
   groupname: pipeline
   id_usergroup: 2
   is_public: 0
+  iscurrent: 1
 - description: Analysis Notifications
   groupname: results
   id_usergroup: 3
   is_public: 1
+  iscurrent: 1
 - description: Run Notifications
   groupname: events
   id_usergroup: 4
   is_public: 1
+  iscurrent: 1
 - description: Machine Loaders
   groupname: loaders
   id_usergroup: 5
   is_public: 0
+  iscurrent: 1
 - description: Illumina Engineers
   groupname: engineers
   id_usergroup: 6
   is_public: 0
+  iscurrent: 1
 - description: Annotators
   groupname: annotators
   id_usergroup: 7
   is_public: 0
+  iscurrent: 1
 - description: Instrument Approvals
   groupname: approvers
   id_usergroup: 8
   is_public: 0
+  iscurrent: 0
 - description: Research & Development
   groupname: r+d
   id_usergroup: 9
   is_public: 0
+  iscurrent: 1
 - description: mail on errors
   groupname: errors
   id_usergroup: 10
   is_public: 0
+  iscurrent: 1
 - description: npg analyst
   groupname: analyst
   id_usergroup: 11
   is_public: 0
+  iscurrent: 1

@@ -57,6 +57,12 @@ __PACKAGE__->table("user");
   is_nullable: 1
   size: 64
 
+=head2 iscurrent
+
+  data_type: 'tinyint'
+  default_value: 1
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -71,6 +77,8 @@ __PACKAGE__->add_columns(
   { data_type => "char", is_nullable => 1, size => 128 },
   "rfid",
   { data_type => "varchar", is_nullable => 1, size => 64 },
+  "iscurrent",
+  { data_type => "tinyint", default_value => 1, is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -249,8 +257,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-04-09 18:30:04
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:2THWOsZDGFrmdSXNn2Pq6w
+# Created by DBIx::Class::Schema::Loader v0.07045 @ 2016-10-19 11:44:50
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Izb038DNoPlC92eN4HrnPw
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08

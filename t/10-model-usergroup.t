@@ -1,8 +1,8 @@
 use strict;
 use warnings;
 use Test::More tests => 8;
+
 use t::util;
-use Test::Trap;
 
 use_ok('npg::model::usergroup');
 
@@ -13,16 +13,9 @@ my $util = t::util->new({fixtures=>1});
                 util => $util,
                });
   isa_ok($usergroup, 'npg::model::usergroup');
-}
-
-{
-  trap {
-    my $usergroup = npg::model::usergroup->new({
-            util      => 'bla',
-            groupname => 'fail!',
-                 });
-    is($usergroup->init(), undef, 'database query failure');
-  };
+  is(join(q[ ], map {$_->groupname} @{$usergroup->usergroups}),
+    'admin analyst annotators engineers errors events loaders pipeline r+d results',
+    'list of current usergroups');
 }
 
 {

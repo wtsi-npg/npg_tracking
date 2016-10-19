@@ -11,11 +11,12 @@ my $mock  = {
          q(SELECT id_user FROM user WHERE username = ?:,public) => [[1]],
          q(SELECT id_usergroup FROM usergroup WHERE groupname = ?:,public) => [[1000]],
          q(SELECT ug.id_usergroup, ug.groupname,
-                  ug.is_public, ug.description,
+                  ug.is_public, ug.description, ug.iscurrent,
                   uug.id_user_usergroup
                FROM   usergroup      ug,
                       user2usergroup uug
                WHERE  uug.id_user = ?
+               AND    ug.iscurrent = 1
                AND    ug.id_usergroup = uug.id_usergroup:1) => [{
                                  id_usergroup      => 1000,
                                  groupname         => 'public',
