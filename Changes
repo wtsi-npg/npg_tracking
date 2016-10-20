@@ -15,6 +15,8 @@ LIST OF CHANGES
    deprecate 'approvers' group.
  - User and usergroup lists are alphabetically sorted and include only
    current entries.
+ - Fixed instrument status menu for batch updates to display only
+   current statuses.
  - Composition-enabled LIMs object and reference finder.
  - Subset support added to the rpt key based composition factory.
  - Objects's attributes based composition factory sets only those components
