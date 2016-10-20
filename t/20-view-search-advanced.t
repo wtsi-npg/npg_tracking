@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 5;
 use t::util;
 use npg::model::search;
 use CGI;
@@ -92,26 +92,6 @@ my $mock  = {
                      });
   isa_ok($view, 'npg::view::search');
   ok($util->test_rendered($view->render(), 't/data/rendered/20-view-search-advanced-results.html'), '20-view-search-list_advanced results rendered ok');
-}
-{
-  my $cgi   = CGI->new();
-  $cgi->param('run_tags', 1);
-  my $util  = t::util->new({
-                mock => $mock,
-                cgi  => $cgi,
-               });
-
-  my $model = npg::model::search->new({
-                       util  => $util,
-                      });
-  my $view  = npg::view::search->new({
-                      util   => $util,
-                      model  => $model,
-                      action => 'read',
-                      aspect => 'list_advanced_xml',
-                     });
-  isa_ok($view, 'npg::view::search');
-  ok($util->test_rendered($view->render(), 't/data/rendered/20-view-search-advanced-results.xml'), '20-view-search-list_advanced xml results rendered ok');
 }
 
 1;

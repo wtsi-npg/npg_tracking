@@ -1,7 +1,9 @@
 LIST OF CHANGES
 
- - remove all code that relates to instrument utilisation
- - remove an option to create database entries via XML POST.
+ - removed all code that relates to instrument utilisation
+ - removed an option to create database entries via XML POST.
+ - removed custom error view
+ - deleted special privisions for the 'pipeline' user
 
  - Install all files, including cgi-related, within the install action.
  - Remove instrument utilisation views for web pages.

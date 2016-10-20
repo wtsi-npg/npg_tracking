@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<search_results>[% FOREACH result = model.advanced_search %]
-  [% keys = model.result_keys %]<result [% FOREACH element = result %][% key = keys.shift %][% key %]="[% element %]" [% keys.push(key) %][% END %]/>[% END %]
-</search_results>
