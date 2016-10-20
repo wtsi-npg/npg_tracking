@@ -42,13 +42,6 @@ use_ok('npg::view::run_status');
                'action' => 'create',
                'model'  => $model,
               });
-  my $sub = sub {
-    my $msg = shift;
-    push @{$model->{emails}}, $msg->as_string;
-    return;
-  };
-  MIME::Lite->send('sub',$sub); 
-  ok($rs->authorised(), 'engineers ok to create new run_status');
 }
 
 {

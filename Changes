@@ -4,6 +4,7 @@ LIST OF CHANGES
  - removed an option to create database entries via XML POST.
  - removed custom error view
  - deleted special privisions for the 'pipeline' user
+ - removed unused xml views for run lists
 
  - Install all files, including cgi-related, within the install action.
  - Remove instrument utilisation views for web pages.

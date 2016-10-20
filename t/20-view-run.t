@@ -1,9 +1,8 @@
 use strict;
 use warnings;
-use Test::More tests => 41;
+use Test::More tests => 35;
 use Test::Exception;
 use Test::Deep;
-use MIME::Lite;
 use CGI;
 use Cwd;
 
@@ -77,14 +76,6 @@ my $util = t::util->new({fixtures  => 1,});
 }
 
 {
-  my @emails;
-  my $sub = sub {
-     my $msg = shift;
-           push @emails, $msg->as_string;
-     return;
-          };
-  MIME::Lite->send('sub',$sub);
-
   my $str = t::request->new({
 			     PATH_INFO      => '/run',
 			     REQUEST_METHOD => 'POST',
@@ -245,75 +236,6 @@ my $util = t::util->new({fixtures  => 1,});
 
 {
   my $str = t::request->new({
-           PATH_INFO      => '/run.xml',
-           REQUEST_METHOD => 'GET',
-           username       => 'public',
-           util           => $util,
-           cgi_params     => {
-            id_run => q[11,12,14,95],
-                 },
-          });
-
-  ok($util->test_rendered($str, 't/data/rendered/run_list_basic.xml'), 'SequenceScape service with commas');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run.xml',
-           REQUEST_METHOD => 'GET',
-           username       => 'public',
-           util           => $util,
-           cgi_params     => {
-            id_run => q[11|12|14|95],
-                 },
-          });
-
-  ok($util->test_rendered($str, 't/data/rendered/run_list_basic.xml'), 'SequenceScape service with pipes');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run.xml',
-           REQUEST_METHOD => 'GET',
-           username       => 'public',
-           util           => $util,
-           cgi_params     => {
-                 id_run         => [11,12,14,95],
-                 },
-          });
-
-  ok($util->test_rendered($str, 't/data/rendered/run_list_basic.xml'), 'SequenceScape service with list');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run/recent/running/runs.xml',
-           REQUEST_METHOD => 'GET',
-           username       => 'joe_r_n_d',
-           util           => $util,
-          });
-  ok($util->test_rendered($str, 't/data/rendered/run/recent/running/runs_basic_days.xml'), '/run/recent/running/runs.xml - basic days');
-}
-
-{
-  my $model = npg::model::run->new({
-                 util   => $util,
-                 id_run => q(),
-                });
-  $model->{days} = 4000;
-  my $view = npg::view::run->new({
-          util  => $util,
-          model => $model,
-          action => 'list',
-          aspect => 'list_recent_running_runs_xml',
-         });
-  my $str;
-  lives_ok { $str = $view->render(); } 'no croak in render list_recent_running_runs_xml';
-  ok($util->test_rendered($str, 't/data/rendered/run/recent/running/runs_4000_days.xml'), '/run/recent/running/runs.xml - 4000 days');
-}
-
-{
-  my $str = t::request->new({
            PATH_INFO      => '/run/95',
            REQUEST_METHOD => 'GET',
            username       => 'public',
@@ -322,7 +244,6 @@ my $util = t::util->new({fixtures  => 1,});
   like ($str, qr/NPG SeqQC/, 'run with a current status --analysis complete-- contains the NPG-SeqQC link');
   like ($str, qr/checks\/runs\/95/, 'href value of the NPG-SeqQC link');
 }
-
 
 {
   my $str = t::request->new({
@@ -394,6 +315,5 @@ my $util = t::util->new({fixtures  => 1,});
   $cgi->param('days', 7);
   is($view->selected_days(), 7, '$view->selected_days() gives selected days if set as cgi param');
 }
-
 
 1;

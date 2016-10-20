@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 47;
+use Test::More tests => 43;
 use Test::Exception;
 use t::useragent;
 use npg::api::util;
@@ -80,9 +80,6 @@ is($run3->id_run(999), 999);
   my $run_annotations = $run->run_annotations();
   is(scalar @{$run_annotations}, 5);
   is($run_annotations->[0]->id_run_annotation(),665);
-
-  my $recent = $run->list_recent();
-  is(scalar @{$recent}, 128);
 }
 
 {
@@ -126,27 +123,6 @@ is($run3->id_run(999), 999);
   $lims = $run->run_pair->lims();
   is($lims->batch_id, 1001, 'run_pair lims object batch id is set correctly');
   is($lims->id_run, 604, 'run_pair lims object id_run is set correctly');
-}
-
-local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[];
-{
-  my $ua   = t::useragent->new({
-    is_success => 1,
-    mock => { $base_url.q{/run/recent/running/runs.xml} => q{t/data/rendered/run/recent/running/runs_4000_days.xml} },
-             });
-  my $run  = npg::api::run->new({
-         util   => npg::api::util->new({useragent => $ua,}),
-        });
-
-  my $runs;
-  lives_ok { $runs = $run->recent_running_runs(); } 'no croak on recent_running_runs';
-  is(scalar@{$runs}, 3, '3 recent runs returned');
-  my $test_deeply = [
-    { id_run =>  1, start => '2007-06-05 10:04:23', end => '2009-01-29 14:09:31', id_instrument => 3},
-    { id_run =>  5, start => '2007-06-05 12:31:44', end => '2007-06-05 12:32:28', id_instrument => 3},
-    { id_run => 95, start => '2007-06-05 10:04:23', end => '2007-06-05 11:16:55', id_instrument => 4},
-  ];
-  is_deeply($runs, $test_deeply, 'returned data structure is correct');
 }
 
 1;

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<run[% FOREACH f = model.fields %] [% f %]="[% model.$f %]"[% END %] name="[% model.name %]" loader="[% run.loader_info.loader %]" loading_date="[% run.loader_info.date %]">
- <current_run_status id_run_status="[% model.current_run_status.id_run_status %]" id_run="[% model.current_run_status.id_run %]" date="[% model.current_run_status.date %]" id_run_status_dict="[% model.current_run_status.id_run_status_dict %]" id_user="[% model.current_run_status.id_user %]" username="[% model.current_run_status.user.username %]" iscurrent="[% model.current_run_status.iscurrent %]" description="[% model.current_run_status.run_status_dict.description %]" />
-</run>

@@ -197,7 +197,7 @@ sub run_lanes {
     my $run_lanes = $self->read->getElementsByTagName('run_lanes')->[0];
 
     if(!$run_lanes) {
-      croak q[Error: Failed to fetch run_lanes.];#.$run_lanes->asString(1); # pretty print serialised DOM
+      croak q[Error: Failed to fetch run_lanes.];
     }
 
     ## no critic (ProhibitComplexMappings)
@@ -214,45 +214,6 @@ sub run_lanes {
 sub run_annotations {
   my ($self, @args) = @_;
   return $self->annotations(@args);
-}
-
-sub list_recent {
-  my $self       = shift;
-  # used somewhere
-  my $util       = $self->util();
-  my ($obj_type) = (ref $self) =~ /([^:]+)$/smx;
-  my $obj_pk     = $self->primary_key();
-  my $obj_pk_val = $self->$obj_pk();
-  my $obj_uri    = sprintf '%s/%s;list_summary_xml', $util->base_uri(), $obj_type;
-
-  $self->{'list_recent'} = $util->parser->parse_string($util->get($obj_uri,[]));
-
-  my $runs    = $self->{'list_recent'}->getElementsByTagName('runs')->[0];
-  my $pkg     = ref $self;
-
-  return [map { $self->new_from_xml($pkg, $_) } $runs->getElementsByTagName('run')];
-}
-
-sub recent_running_runs {
-  my ($self) = @_;
-  # used in instrument_utilisation module
-  my $util       = $self->util();
-  my ($obj_type) = (ref $self) =~ /([^:]+)$/smx;
-  my $obj_uri    = sprintf '%s/%s/recent/running/runs.xml', $util->base_uri(), $obj_type;
-
-  my $xml_obj = $util->parser->parse_string( $util->get($obj_uri, []));
-  my @runs    = $xml_obj->getElementsByTagName('run');
-
-  foreach my $run (@runs) {
-    my $temp = {};
-    $temp->{id_run} = $run->getAttribute('id_run');
-    $temp->{start} = $run->getAttribute('start');
-    $temp->{end} = $run->getAttribute('end');
-    $temp->{id_instrument} = $run->getAttribute('id_instrument');
-    $run = $temp;
-  }
-
-  return \@runs;
 }
 
 sub lims {
@@ -382,16 +343,6 @@ npg::api::run
 =head2 run_annotations - arrayref of npg::api::run_annotations on this run
 
   my $arAnnotations = $oRun->run_annotations();
-
-=head2 list_recent - arrayref of npg::api::runs with recent status changes
-
-  (within 14 days at time of writing)
-
-  my $arRecentRuns = $oRun->list_recent();
-
-=head2 recent_running_runs - fetch an arrayref of hashrefs that are designated recent runs in NPG - the hashrefs only contain id_run, id_instrument, start and end (end may not be true end of the run on an instrument, as it may be ongoing whilst the method is called)
-
-  my $arRecentRunningRuns - $oRun->recent_running_runs();
 
 =head2 lims  - returns st::api::lims batch-level object for the batch id this run relates to
  
