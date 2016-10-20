@@ -5,6 +5,8 @@ LIST OF CHANGES
  - Deprecate 'request approval' instrument status, enable status change
    from either of down statuses directly to 'wash required'.
  - Remove code and tests for deprecated instrument statuses.
+ - Fixed instrument status menu for batch updates to display only
+   current statuses.
  - Composition-enabled LIMs object and reference finder.
  - Subset support added to the rpt key based composition factory.
  - Objects's attributes based composition factory sets only those components

@@ -145,7 +145,7 @@ sub list_edit_statuses {
   my $root_isd = npg::model::instrument_status_dict->new({
                 util => $self->util(),
                });
-  $self->model->{instrument_status_dicts} = $root_isd->instrument_status_dicts();
+  $self->model->{instrument_status_dicts} = $root_isd->current_instrument_status_dicts();
 
   my $root_imd = npg::model::instrument_mod_dict->new({
                    util => $self->util(),
