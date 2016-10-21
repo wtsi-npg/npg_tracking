@@ -114,7 +114,6 @@ data/templates/run_list_stuck_runs.tt2
 data/templates/run_list_summary.tt2
 data/templates/run_list_xml_frag.tt2
 data/templates/run_read.tt2
-data/templates/run_read_simple_xml.tt2
 data/templates/run_read_xml.tt2
 data/templates/run_status_create.tt2
 data/templates/run_status_dict_list_xml.tt2

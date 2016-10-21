@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use t::util;
-use Test::More tests => 120;
+use Test::More tests => 119;
 use Test::Deep;
 use Test::Exception;
 
@@ -164,9 +164,6 @@ my $util = t::util->new({ fixtures => 1 });
 
   my $current_instrument_status = $model->current_instrument_status();
   isa_ok($current_instrument_status, 'npg::model::instrument_status', q{$model->current_instrument_status()});
-
-  $util->catch_email($model);
-  is( scalar @{ $model->{emails} }, 0, q{no email sent} );
 
   is($model->current_instrument_status->instrument_status_dict->description, 'up', 'current status is up');
 
