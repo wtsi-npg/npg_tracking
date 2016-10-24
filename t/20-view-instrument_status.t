@@ -1,12 +1,13 @@
 use strict;
 use warnings;
-use Test::More tests => 13;
-use English qw(-no_match_vars);
+use Test::More tests => 14;
+use Test::Exception;
+
 use t::util;
 use t::request;
-use npg::model::instrument_status;
 
-use_ok('npg::view::instrument_status');
+use_ok 'npg::model::instrument_status';
+use_ok 'npg::view::instrument_status';
 
 my $util = t::util->new({fixtures => 1});
 
@@ -104,12 +105,12 @@ my $util = t::util->new({fixtures => 1});
   my $render;
   
   $util->catch_email($model);
-  eval { $render = $view->render(); };
-  like($EVAL_ERROR, qr{Instrument IL5 \"request approval\" status cannot follow current \"wash required\" status}, 'croaked as not correct order of assigning instrument statuses');
+  throws_ok { $view->render(); }
+    qr{Status \"request approval\" is deprecated},
+    'error as status is depreceted';
 
   $cgi->param('id_instrument_status_dict', 11);
-  eval { $render = $view->render(); };
-  is($EVAL_ERROR, q{}, 'no croak on render of create');
+  lives_ok { $render = $view->render(); } 'no error on render of create';
   ok($util->test_rendered($render, 't/data/rendered/20-view-instrument_status-update.html'), 'render of create ok for correct movement between statuses');
   ok(! scalar @{ $model->{emails} }, 'no emails have been sent to alert of new status update');
 }

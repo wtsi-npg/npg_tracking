@@ -64,6 +64,13 @@ sub instrument_status_dicts {
   return $self->gen_getall();
 }
 
+sub current_instrument_status_dicts {
+  my $self = shift;
+  return [sort {$a->description cmp $b->description}
+          grep { $_->iscurrent }
+          @{$self->instrument_status_dicts()}];
+}
+
 sub instruments {
   my $self = shift;
   if(!$self->{'instruments'}) {
@@ -115,6 +122,8 @@ npg::model::instrument_status_dict
 =head2 instrument_status_dicts - Arrayref of npg::model::instrument_status_dicts
 
   my $arInstrumentStatusDicts = $oInstrumentStatusDict->instrument_status_dicts();
+
+=head2 current_instrument_status_dicts
 
 =head2 instruments - Arrayref of npg::model::instruments with a current status having this id_instrument_status_dict
 

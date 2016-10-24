@@ -42,8 +42,6 @@ Readonly::Hash my %STATUS_CHANGE_AUTO => {
 Readonly::Hash my %STATUS_GRAPH => {
   'up'               => ['planned service', 'planned repair', 'down for repair', 'wash required', 'wash in progress'],
 
-  'request approval' => ['up', 'down for repair', 'down for service', 'planned repair', 'planned service'],
-
   'wash required'    => ['wash in progress', 'wash performed', 'planned repair', 'planned service', 'down for repair'],
   'wash in progress' => ['wash performed', 'planned repair', 'planned service', 'down for repair'],
   'wash performed'   => ['up', 'wash required', 'down for repair'],
@@ -51,8 +49,8 @@ Readonly::Hash my %STATUS_GRAPH => {
   'planned repair'   => ['down for repair'],
   'planned service'  => ['down for service', 'planned repair', 'down for repair'],
 
-  'down for repair'  => ['request approval'],
-  'down for service' => ['request approval', 'down for repair'],
+  'down for repair'  => ['wash required'],
+  'down for service' => ['wash required', 'down for repair'],
 };
 
 __PACKAGE__->mk_accessors(fields());

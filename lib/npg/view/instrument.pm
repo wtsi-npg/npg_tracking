@@ -65,7 +65,6 @@ Readonly::Scalar our $COLOUR_LIGHT_ORANGE => [(252,174,42)];
 Readonly::Scalar our $COLOUR_BLUE   => [(61,171,255)];
 Readonly::Scalar our $COLOUR_YELLOW => [(246,229,171)];
 Readonly::Scalar our $COLOUR_PINK   => [(255,192,203)];
-Readonly::Scalar our $COLOUR_PURPLE     => [(160,0,147)];
 Readonly::Scalar our $PROGRESS_BAR_BG   => [(220,220,220)];
 Readonly::Scalar our $PROGRESS_BAR_FG   => [(225,225,60)];
 
@@ -146,7 +145,7 @@ sub list_edit_statuses {
   my $root_isd = npg::model::instrument_status_dict->new({
                 util => $self->util(),
                });
-  $self->model->{instrument_status_dicts} = $root_isd->instrument_status_dicts();
+  $self->model->{instrument_status_dicts} = $root_isd->current_instrument_status_dicts();
 
   my $root_imd = npg::model::instrument_mod_dict->new({
                    util => $self->util(),
@@ -234,7 +233,6 @@ sub read_key_png {
                                  {'busy'          => $colours->{'green'},  },
                                  {'idle'          => $colours->{'blue'},   },
                                  {'wash required' => $colours->{'yellow'}, },
-                                 {'req. approval' => $colours->{'purple'}, },
                                  {'plnd. repair'  => $colours->{'pink'},   },
                                  {'down4repair'   => $colours->{'red'},    },
                                  {'plnd. service' => $colours->{'lorange'},},
@@ -264,7 +262,6 @@ sub _allocate_colours {
   $colours->{'blue'}   = $im->colorAllocate(@{$COLOUR_BLUE});
   $colours->{'yellow'} = $im->colorAllocate(@{$COLOUR_YELLOW});
   $colours->{'pink'}   = $im->colorAllocate(@{$COLOUR_PINK});
-  $colours->{'purple'}   = $im->colorAllocate(@{$COLOUR_PURPLE});
   $colours->{'pbar_bg'}   = $im->colorAllocate(@{$PROGRESS_BAR_BG});
   $colours->{'pbar_fg'}   = $im->colorAllocate(@{$PROGRESS_BAR_FG});
   return $colours;
@@ -301,9 +298,7 @@ sub _read_png_colour {
     }
   }
   ##no critic (ProhibitCascadingIfElse)
-  if ( $statuses->{instrument} eq 'request approval' ) {
-    $bg = $colours->{'purple'};
-  } elsif ( $statuses->{instrument} eq 'down for repair') {
+  if ( $statuses->{instrument} eq 'down for repair') {
     $bg = $colours->{'red'};
   } elsif ( $statuses->{instrument} eq 'planned repair') {
     $bg = $colours->{'pink'};

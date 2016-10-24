@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 36;
+use Test::More tests => 30;
 use Test::Exception;
 use t::util;
 
@@ -16,10 +16,6 @@ my $already_at_status_down = npg::model::instrument_status->new({
                  util => $util,
                  id_instrument_status => 4,
                 });
-my $already_at_status_request_approval = npg::model::instrument_status->new({
-                       util => $util,
-                       id_instrument_status => 1,
-                      });
 my $already_at_status_up = npg::model::instrument_status->new({
                      util => $util,
                      id_instrument_status => 13,
@@ -56,14 +52,6 @@ my $already_at_status_up = npg::model::instrument_status->new({
   throws_ok { $model->_check_order_ok(); }
     qr/Instrument IL10 \"wash performed\" status cannot follow current \"up\"/,
     q{error moving from 'up' to 'wash performed'};
-
-  $model = npg::model::instrument_status->new({
-    util => $util,
-    id_instrument => $already_at_status_up->instrument->id_instrument(),
-    id_user => $already_at_status_up->user->id_user(),
-    id_instrument_status_dict => 5,
-  });
-  throws_ok { $model->_check_order_ok(); } qr//,  q{croaked on moving status to 'request approval' from 'up'};
 
   $model = npg::model::instrument_status->new({
     util => $util,
@@ -118,8 +106,6 @@ my $already_at_status_up = npg::model::instrument_status->new({
   throws_ok { $model->_check_order_ok(); }
     qr/Instrument IL5 \"up\" status cannot follow current \"wash required\" status/,
     q{error on moving status to 'up' from 'wash required'};
-  lives_ok { $model->_request_approval(); }
-    q{no error on request approval for moving status to 'up' from 'wash required'};
 
   $model = npg::model::instrument_status->new({
                  util => $util,
@@ -127,21 +113,6 @@ my $already_at_status_up = npg::model::instrument_status->new({
                  id_user => $already_at_status_down->user->id_user(),
                  id_instrument_status_dict => 5,
                 });
-  lives_ok { $model->_request_approval(); } q{no croak on request approval for moving status to not 'up'};
-
-  $model = npg::model::instrument_status->new({
-                 util => $util,
-                 id_instrument => $already_at_status_request_approval->instrument->id_instrument(),
-                 id_user => $already_at_status_request_approval->user->id_user(),
-                 id_instrument_status_dict => 1,
-                });
-  lives_ok { $model->_check_order_ok(); } q{no croak on moving status to 'up' from 'request approval'};
-  throws_ok { $model->_request_approval(); }
-    qr/public is not a member of 'approvers' usergroup/,
-    q{error on request approval for moving status to 'up' as not an approver};
-
-  $util->requestor('joe_approver');
-  lives_ok { $model->_request_approval(); } q{no croak on request approval for moving status to 'up' as user is an approver};
 }
 
 {
