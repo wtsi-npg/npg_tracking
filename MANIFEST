@@ -980,7 +980,6 @@ t/data/rendered/instrument/13.xml
 t/data/rendered/instrument_mod_list_engineer.html
 t/data/rendered/instrument_mod_list_public.html
 t/data/rendered/instrument_status/list_up_down_xml.xml
-t/data/rendered/instrument_status;add-cis2.html
 t/data/rendered/instrument_status_annotation;add-ajax.html
 t/data/rendered/instrument_utilisation/create.xml
 t/data/rendered/instrument_utilisation/list.html

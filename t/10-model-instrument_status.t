@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 39;
+use Test::More tests => 36;
 use Test::Exception;
 use t::util;
 
@@ -122,33 +122,12 @@ my $already_at_status_up = npg::model::instrument_status->new({
     q{no error on request approval for moving status to 'up' from 'wash required'};
 
   $model = npg::model::instrument_status->new({
-    util => $util,
-    id_instrument => $already_at_status_down->instrument->id_instrument(),
-    id_user => $already_at_status_down->user->id_user(),
-    id_instrument_status_dict => 1,
-  });
-  throws_ok { $model->_check_order_ok(); }
-    qr/Instrument IL4 \"up\" status cannot follow current \"down\" status/,
-    q{error on moving status to 'up' from 'down'};
-
-  $model = npg::model::instrument_status->new({
-    util => $util,
-    id_instrument => $already_at_status_down->instrument->id_instrument(),
-    id_user => $already_at_status_down->user->id_user(),
-    id_instrument_status_dict => 3,
-  });
-  throws_ok { $model->_check_order_ok(); }
-    qr/Instrument IL4 \"wash required\" status cannot follow current \"down\" status/,
-    q{error on moving status to 'wash required' from 'down'};
-
-  $model = npg::model::instrument_status->new({
                  util => $util,
                  id_instrument => $already_at_status_down->instrument->id_instrument(),
                  id_user => $already_at_status_down->user->id_user(),
                  id_instrument_status_dict => 5,
                 });
   lives_ok { $model->_request_approval(); } q{no croak on request approval for moving status to not 'up'};
-  lives_ok { $model->_check_order_ok(); } q{no croak on moving status to 'request approval' from 'down'};
 
   $model = npg::model::instrument_status->new({
                  util => $util,

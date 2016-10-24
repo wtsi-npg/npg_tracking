@@ -1,7 +1,8 @@
 LIST OF CHANGES
 
  - Install all files, including cgi-related, within the install action.
- - Remove instrument utilisation views for web pages
+ - Remove instrument utilisation views for web pages.
+ - Remove code and tests for deprecated instrument statuses.
  - Composition-enabled LIMs object and reference finder.
  - Subset support added to the rpt key based composition factory.
  - Objects's attributes based composition factory sets only those components

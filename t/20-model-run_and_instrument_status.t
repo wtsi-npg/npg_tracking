@@ -8,29 +8,29 @@ use_ok('npg::model::run');
 use_ok('npg::model::run_status');
 use_ok('npg::model::instrument_status');
 
-my $util = t::util->new({
-       fixtures  => 1,
-      });
+my $util = t::util->new({fixtures  => 1});
 
 {
+  my $run = npg::model::run->new({id_run => 16, util => $util});
+  my $id_instrument = $run->id_instrument();
+  $util->dbh->do(
+    "update instrument_status set id_instrument_status_dict=7 where id_instrument=$id_instrument and iscurrent=1");
+  my $instrument = $run->instrument();
+  my $istatus       = $instrument->current_instrument_status()->instrument_status_dict()->description();
+  is($istatus, 'planned repair', '"planned repair" is current instrument status in database');
+
   my $model = npg::model::run_status->new({
              util               => $util,
              id_run             => 16,
              id_run_status_dict => 4,
              id_user            => 1,
             });
-  my $run = npg::model::run->new({id_run => 16,util   => $util,});
   $model->{run} = $run;
-
-  my $instr_status = npg::model::instrument->new({util => $util, id_instrument => $model->{run}->id_instrument})->current_instrument_status->instrument_status_dict->description;
-
-  is($instr_status, 'planned maintenance', 'planned maintenance is current instrument status in database');
   $util->catch_email($model);
+  lives_ok { $model->create()} 'run status "run complete" created for id_run 16';
 
-  lives_ok { $model->create()} 'run status run complete created for id_run 16';
-
-  $instr_status = npg::model::instrument->new({util => $util, id_instrument => $model->{run}->id_instrument})->current_instrument_status->instrument_status_dict->description;
-  is($instr_status, 'planned maintenance', 'no automatic change from planned maintenance on run complete)');
+  $istatus = npg::model::instrument->new({util => $util, id_instrument => $id_instrument})->current_instrument_status->instrument_status_dict->description;
+  is($istatus, 'planned repair', 'no automatic change from "planned repair" on run complete)');
 
   $model = npg::model::run_status->new({
              util               => $util,
@@ -38,14 +38,14 @@ my $util = t::util->new({
              id_run_status_dict => 11,
              id_user            => 1,
             });
-  $run = npg::model::run->new({id_run => 16,util   => $util,});
+  $run = npg::model::run->new({id_run => 16, util => $util,});
   $model->{run} = $run;
   $util->catch_email($model);
-  lives_ok { $model->create()} 'run status run mirrored created for id_run 16';
+  lives_ok { $model->create()} 'run status "run mirrored" created for id_run 16';
 
-  $instr_status = npg::model::instrument->new({util => $util, id_instrument => $model->{run}->id_instrument})->current_instrument_status->instrument_status_dict->description;
-  is($instr_status, 'down for repair',
-  'automatic change from planned maintenance to down for repair on moving a run to run mirrored');
+  $istatus = npg::model::instrument->new({util => $util, id_instrument => $id_instrument})->current_instrument_status->instrument_status_dict->description;
+  is($istatus, 'down for repair',
+    'automatic change from "planned service" to "down for repair" on moving a run to "run mirrored"');
 }
 
 {
@@ -159,7 +159,7 @@ my $util = t::util->new({
   'automatic instrument status change to "down for repair" from "planned rrepair" for a cancelled run');
 }
 
-diag 'Status change for runs on HiSeq instruments';
+note 'Status change for runs on HiSeq instruments';
 {
   my $id_instrument = 36;
   my $id_run = 9951;
