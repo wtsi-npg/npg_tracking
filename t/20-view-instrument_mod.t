@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 19;
+use Test::More tests => 17;
 use English qw(-no_match_vars);
 use t::util;
 use npg::model::instrument_mod;
@@ -86,28 +86,6 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
   $view->aspect('add_ajax');
   ok($view->authorised(), 'engineers authorised for add_ajax');
   ok($util->test_rendered($view->render(), 't/data/rendered/20-view-instrument_mod_add_ajax.html'), 'add_ajax renders ok');
-}
-
-$util = t::util->new({ fixtures => 1, cgi => CGI->new() });
-{
-  my $cgi = $util->cgi();
-  $cgi->param('id_instrument_mod_dict', 1);
-  $cgi->param('id_instrument', 3);
-  $cgi->param('iscurrent', 1);
-  $cgi->param('remove', 1);
-  $util->requestor('pipeline');
-  my $view = npg::view::instrument_mod->new({
-               util   => $util,
-               action => 'create',
-               aspect => 'create_xml',
-               model  => npg::model::instrument_mod->new({
-                      util => $util,
-                           }),
-              });
-  my $render;
-  eval { $render = $view->render(); };
-  is($EVAL_ERROR, q{}, 'create_xml and pipeline member');
-  ok($util->test_rendered($render, 't/data/rendered/20-view-instrument_mod_read_xml.xml'), 'create_xml renders ok');
 }
 
 $util = t::util->new({ fixtures => 1, cgi => CGI->new() });

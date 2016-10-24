@@ -15,7 +15,7 @@ use_ok('npg::controller');
   trap {
     ok(npg::controller->handler($util));
   };
-  is($util->username(), q[]);
+  is($util->username(), q[], q[user is not defined]);
 
   my $cgi = CGI->new();
   $cgi->param('pipeline', 1);
@@ -23,7 +23,7 @@ use_ok('npg::controller');
   trap {
     ok(npg::controller->handler($util));
   };
-  is($util->username(), q[pipeline]);
+  is($util->username(), q[], q[pipeline user is not special in any way]);
 }
 
 1;

@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 24;
+use Test::More tests => 20;
 use Test::Exception;
 use t::util;
 use t::request;
@@ -116,53 +116,6 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 {
   my $str = t::request->new({
            REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument;list_uptime_png',
-           username       => 'public',
-           util           => $util,
-          });
-
-  like($str, qr{image/png.*PNG}smx, 'instrument graphical uptime is a png');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument;list_utilisation_png',
-           username       => 'public',
-           util           => $util,
-          });
-
-  like($str, qr{image/png.*PNG}smx, 'instrument graphical utilisation');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument/utilisation.png',
-           username       => 'public',
-           util           => $util,
-          });
-
-  like($str, qr{image/png.*PNG}smx, 'instrument graphical utilisation (new-style)');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument;list_utilisation_png',
-           username       => 'public',
-           util           => $util,
-           cgi_params     => {
-            type => 'hour',
-                 },
-          });
-
-  like($str, qr{image/png.*PNG}smx, 'instrument graphical utilisation by hour');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'GET',
            PATH_INFO      => '/instrument/12.png',
            username       => 'public',
            util           => $util,
@@ -186,7 +139,6 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
   my $rendered = GD::Image->new(join "\n", @lines);
   ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'legend image'); 
 }
-
 
 {
   my $str = t::request->new({

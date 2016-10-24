@@ -572,23 +572,6 @@ sub run_finished_on_instrument {
   return $date;
 }
 
-sub recent_running_runs {
-  my ($self) = @_;
-  my $pending   = $self->recent_pending_runs('return_all');
-
-  my $run_info = [];
-  foreach my $run (@{$pending}) {
-    push @{$run_info}, {
-      id_run => $run->id_run(),
-      start => $run->loader_info(1)->{date},
-      end => $run->run_finished_on_instrument(),
-      id_instrument => $run->id_instrument(),
-    };
-  }
-
-  return $run_info;
-}
-
 sub id_user {
   my ($self, $id_op) = @_;
   if(defined $id_op) {
@@ -1314,7 +1297,6 @@ npg::model::run
   eval { $oRun->remove_tags(['tag1','tag2'], $oRequestor); };
 
 =head2 recent_pending_runs
-=head2 recent_running_runs
 =head2 run_finished_on_instrument
 =head2 run_folder - returns a run folder name (no HTML formating),
 

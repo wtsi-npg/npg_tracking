@@ -19,14 +19,6 @@ sub authorised {
   my $aspect = $self->aspect();
   my $requestor = $self->util->requestor();
 
-  #########
-  # Allow pipeline group access to the create_xml interface of instrument_status
-  #
-  if ( $aspect eq 'create_xml' &&
-       $requestor->is_member_of( 'pipeline' ) ) {
-    return 1;
-  }
-
   if (
       ( $action eq 'create' || $action eq 'read' )
       &&
@@ -57,11 +49,6 @@ sub create {
   return $self->SUPER::create();
 }
 
-sub list_up_down_xml {
-  my ($self) = @_;
-  return 1;
-}
-
 1;
 
 __END__
@@ -83,8 +70,6 @@ npg::view::instrument_status - view handling for instrument_statuses
 =head2 add_ajax - set up id_instrument from CGI block
 
 =head2 create - set up requestor's id_user
-
-=head2 list_up_down_xml - handling to return an XML of all the up and down statuses for an instrument
 
 =head1 DIAGNOSTICS
 

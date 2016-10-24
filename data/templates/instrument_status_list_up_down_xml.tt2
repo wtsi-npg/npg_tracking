@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<instruments>[% FOREACH inst = model.instrument_up_down(1) %]
-  <instrument name="[% inst.name %]">
-    <instrument_statuses>[% FOREACH status = inst.statuses %]
-      <instrument_status date="[% status.date %]" description="[% status.description %]" />[% END %]
-    </instrument_statuses>
-  </instrument>[% END %]
-</instruments>

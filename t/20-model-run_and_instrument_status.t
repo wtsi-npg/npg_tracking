@@ -26,7 +26,6 @@ my $util = t::util->new({fixtures  => 1});
              id_user            => 1,
             });
   $model->{run} = $run;
-  $util->catch_email($model);
   lives_ok { $model->create()} 'run status "run complete" created for id_run 16';
 
   $istatus = npg::model::instrument->new({util => $util, id_instrument => $id_instrument})->current_instrument_status->instrument_status_dict->description;
@@ -40,7 +39,6 @@ my $util = t::util->new({fixtures  => 1});
             });
   $run = npg::model::run->new({id_run => 16, util => $util,});
   $model->{run} = $run;
-  $util->catch_email($model);
   lives_ok { $model->create()} 'run status "run mirrored" created for id_run 16';
 
   $istatus = npg::model::instrument->new({util => $util, id_instrument => $id_instrument})->current_instrument_status->instrument_status_dict->description;
@@ -57,7 +55,6 @@ my $util = t::util->new({fixtures  => 1});
              id_user            => 1,
             });
   $model->{run} = $run;
-  $util->catch_email($model);
   lives_ok { $model->create() } 'run status run pending created';  
 
   my $id_instrument = $run->id_instrument;
@@ -111,7 +108,6 @@ my $util = t::util->new({fixtures  => 1});
              id_user            => 1,
             });
   $model->{run} = $run;
-  $util->catch_email($model);
   lives_ok { $model->create() } 'run status run cancelled created';
   is ($run->current_run_status()->run_status_dict()->description(), 'run cancelled', 'run status is run cancelled');
 
@@ -130,7 +126,6 @@ my $util = t::util->new({fixtures  => 1});
              id_user            => 1,
             });
   $model->{run} = $run;
-  $util->catch_email($model);
   lives_ok { $model->create() } 'run status run cancelled created';
   is ($run->current_run_status()->run_status_dict()->description(), 'run cancelled', 'run status is run cancelled');
 
@@ -177,7 +172,6 @@ note 'Status change for runs on HiSeq instruments';
              id_user            => 1,
             });
   $model->{run} = $run;
-  $util->catch_email($model);
   lives_ok { $model->create() } 'run status run cancelled created';
 
   is($i->current_instrument_status->instrument_status_dict->description,
@@ -216,7 +210,6 @@ note 'Status change for runs on HiSeq instruments';
              id_user            => 1,
             });
   $model->{run} = $run;
-  $util->catch_email($model);
   lives_ok { $model->create() } 'run status "run cancelled" created for a run in one of the slots';
 
   lives_ok { npg::model::instrument_status->new({
@@ -239,7 +232,6 @@ note 'Status change for runs on HiSeq instruments';
              id_user            => 1,
               });
   $model->{run} = $run;
-  $util->catch_email($model);
   lives_ok { $model->create() } 'run status "run cancelled" created for a run in the other slot';
   
   is($in->current_instrument_status->instrument_status_dict->description,
@@ -269,7 +261,6 @@ note 'Status change for runs on HiSeq instruments';
              id_user            => 1,
               });
   $model->{run} = $run;
-  $util->catch_email($model);
   lives_ok { $model->create() } 'run status "run pending" created for a run in one of the slots';
 
   $run = npg::model::run->new({id_run => $id_run2,util   => $util,});
@@ -281,7 +272,6 @@ note 'Status change for runs on HiSeq instruments';
              id_user            => 1,
               });
   $model->{run} = $run;
-  $util->catch_email($model);
   lives_ok { $model->create() } 'run status "run cancelled" created for a run in the other slot';
 
   lives_ok { npg::model::instrument_status->new({
@@ -304,7 +294,6 @@ note 'Status change for runs on HiSeq instruments';
              id_user            => 1,
               });
   $model->{run} = $run;
-  $util->catch_email($model);
   lives_ok { $model->create() } 'run status "run mirrored" created for a run in one of the slots';
   is($in->current_instrument_status->instrument_status_dict->description,
     'planned repair',
@@ -318,7 +307,6 @@ note 'Status change for runs on HiSeq instruments';
              id_user            => 1,
               });
   $model->{run} = $run;
-  $util->catch_email($model);
   lives_ok { $model->create() } 'run status "run mirrored" created for a run in the other slots';
   is($in->current_instrument_status->instrument_status_dict->description,
      'down for repair',

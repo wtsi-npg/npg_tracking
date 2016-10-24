@@ -4,7 +4,7 @@ use t::util;
 use npg::model::instrument;
 use npg::model::user;
 use npg::model::annotation;
-use Test::More tests => 125;
+use Test::More tests => 124;
 use Test::Exception;
 
 use_ok('npg::model::run');
@@ -140,12 +140,6 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
   throws_ok { $run->attach_annotation(); } qr{No\ annotation\ to\ save}, '$run->attach_annotation() with no annotation';
 
   $util->requestor('public');
-  my $sub = sub {
-    my $msg = shift;
-    push @{$run->{emails}}, $msg->as_string;
-    return;
-  };
-  MIME::Lite->send('sub',$sub);
   my $annotation = npg::model::annotation->new({util => $util, id_annotation => 1});
   is($run->attach_annotation($annotation), 1, 'attach_annotation successful');
   my $recent_runs = $run->recent_runs();
@@ -163,15 +157,6 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
   ok($recent_runs->[0], 'recent runs found');
   $recent_mirrored_runs = $run->recent_mirrored_runs();
   ok($recent_mirrored_runs->[0], 'recent mirrored runs found');
-
-  my $recent_running_runs = $run->recent_running_runs();
-  my $test_deeply = [
-    { id_run => 1,  start => '2007-06-05 10:04:23', end => '', id_instrument => 3, },
-    { id_run => 5,  start => '2007-06-05 12:31:44', end => '2007-06-05 12:32:28', id_instrument => 3, },
-    { id_run => 95, start => '2007-06-05 10:04:23', end => '2007-06-05 11:16:55', id_instrument => 4, },
-  ];
-  $recent_running_runs->[0]->{end} = q{};
-  is_deeply($recent_running_runs, $test_deeply, 'returned data structure is correct');
 
   is($run->id_user(), 1, '$run->id_user() got from current run status');
   is($run->id_user(5), 5, 'id_user set by $run->id_user(5)');

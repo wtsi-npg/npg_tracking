@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 30;
+use Test::More tests => 24;
 use Test::Exception;
 use t::util;
 
@@ -123,7 +123,6 @@ my $already_at_status_up = npg::model::instrument_status->new({
               id_user => 4,
              });
   $util->requestor('joe_engineer');
-  $util->catch_email($model);
   lives_ok { $model->create(); }  q{no croak on create of 'down for repair' status for id_instrument 13};
   $model = npg::model::instrument->new({util => $util, id_instrument => 13});
   cmp_ok(npg::model::instrument->new({util => $util, id_instrument => 13})
@@ -138,7 +137,6 @@ my $already_at_status_up = npg::model::instrument_status->new({
     id_instrument_status_dict => 11,
     id_user => 4,
   });
-  $util->catch_email($model);
   lives_ok { $model->create(); } 'no croak on create of wash in progress status for id_instrument 8';
 
   $model = npg::model::instrument_status->new({
@@ -147,7 +145,6 @@ my $already_at_status_up = npg::model::instrument_status->new({
     id_instrument_status_dict => 4,
     id_user => 4,
   });
-  $util->catch_email($model);
   lives_ok { $model->create(); } 'no croak on create of wash performed status for id_instrument 8';
 
   cmp_ok(npg::model::instrument->new({util => $util, id_instrument => 8})
@@ -160,35 +157,7 @@ my $already_at_status_up = npg::model::instrument_status->new({
     id_instrument_status_dict => 7,
     id_user => 4,
   });
-  $util->catch_email($model);
   lives_ok { $model->create(); } 'no croak on create of planned repair status for id_instrument 8';
-}
-
-#######
-# testing utilisation
-#
-{
-  my $model = npg::model::instrument_status->new({'util' => $util});
-
-
-  isa_ok($model->utilisation('hour'), 'ARRAY', 'run by hour');
-  is(scalar @{$model->utilisation('hour')}, 720, 'run by hour');
-}
-
-{
-  my $model = npg::model::instrument->new({'util' => $util});
-
-
-  isa_ok($model->utilisation('hour'), 'ARRAY', 'run by hour, via call in npg::model::instrument');
-  is(scalar @{$model->utilisation('hour')}, 720, 'run by hour, via call in npg::model::instrument');
-}
-
-{
-  my $model = npg::model::instrument_status->new({'util' => $util});
-
-
-  isa_ok($model->utilisation(), 'ARRAY', 'run by day');
-  is(scalar @{$model->utilisation('day')}, 30, 'run by day');
 }
 
 {
