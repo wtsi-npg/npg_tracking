@@ -13,4 +13,13 @@ UPDATE instrument_status SET id_instrument_status_dict=3 WHERE id_instrument_sta
 --
 UPDATE instrument_status_dict SET iscurrent=0 WHERE description='request approval';
 
+---------
+-- Create a way to depricate users and user groups
+--
+ALTER TABLE user      ADD COLUMN iscurrent TINYINT(1) NOT NULL DEFAULT 1;
+ALTER TABLE usergroup ADD COLUMN iscurrent TINYINT(1) NOT NULL DEFAULT 1;
 
+---------
+-- Deprecate 'approvers' usergroup
+--
+UPDATE usergroup SET iscurrent=0 WHERE groupname='approvers';

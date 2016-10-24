@@ -1,10 +1,10 @@
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Test::Exception;
 use t::util;
-use npg::model::user;
 
+use_ok('npg::model::user');
 use_ok('npg::view::user');
 
 my $util = t::util->new({

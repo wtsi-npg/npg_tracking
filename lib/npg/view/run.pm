@@ -67,7 +67,7 @@ sub authorised {
   }
 
   if ( $action eq 'update' &&
-       ( $requestor->is_member_of('loaders') || $requestor->is_member_of('approvers')  || $requestor->is_member_of('manual_qc') ) ) {
+       ( $requestor->is_member_of('loaders') || $requestor->is_member_of('manual_qc') ) ) {
     return 1;
   }
 

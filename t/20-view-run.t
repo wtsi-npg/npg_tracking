@@ -544,7 +544,7 @@ my $util = t::util->new({fixtures  => 1,});
   my $mock    = {
     q(SELECT id_user FROM user WHERE username = ?:,public) => [[1]],
     q(SELECT id_usergroup FROM usergroup WHERE groupname = ?:,public) => [[]],
-    q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.id_usergroup = uug.id_usergroup:1) => [{}],
+    q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, ug.iscurrent, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.iscurrent = 1 AND ug.id_usergroup = uug.id_usergroup:1) => [{}],
   };
 
   my $cgi = CGI->new();

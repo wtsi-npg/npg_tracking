@@ -7,6 +7,10 @@ LIST OF CHANGES
  - Remove code and tests for deprecated instrument statuses.
  - Fixed instrument status menu for batch updates to display only
    current statuses.
+ - Create flags to mark users and usergroups as deprecated,
+   deprecate 'approvers' group.
+ - User and usergroup lists are alphabetically sorted and include only
+   current entries.
  - Composition-enabled LIMs object and reference finder.
  - Subset support added to the rpt key based composition factory.
  - Objects's attributes based composition factory sets only those components
