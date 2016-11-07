@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use t::util;
-use Test::More tests => 121;
+use Test::More tests => 119;
 use Test::Deep;
 use Test::Exception;
 
@@ -107,8 +107,6 @@ my $util = t::util->new({ fixtures => 1 });
   isa_ok($current_instruments, 'ARRAY', '$model->current_instruments()');
   is((scalar@{$current_instruments} + 1), scalar@{$instruments}, 'scalar@{$model->current_instruments()} is 1 less than scalar@{$model->instruments()}');
   is($model->current_instruments(), $current_instruments, '$model->current_instruments() cached ok');
-
-  isa_ok($model->utilisation(), 'ARRAY', '$model->utilisation()');
 }
 
 {
@@ -166,9 +164,6 @@ my $util = t::util->new({ fixtures => 1 });
 
   my $current_instrument_status = $model->current_instrument_status();
   isa_ok($current_instrument_status, 'npg::model::instrument_status', q{$model->current_instrument_status()});
-
-  $util->catch_email($model);
-  is( scalar @{ $model->{emails} }, 0, q{no email sent} );
 
   is($model->current_instrument_status->instrument_status_dict->description, 'up', 'current status is up');
 

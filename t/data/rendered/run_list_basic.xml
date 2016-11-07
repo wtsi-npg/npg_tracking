@@ -1,6 +1,0 @@
-<runs>
- <run id="11" is_paired="1" id_run_pair="12" batch_id="0"/>
- <run id="12" is_paired="1" id_run_pair="11" batch_id="0"/>
- <run id="14" is_paired="1" id_run_pair="15" batch_id="0"/>
- <run id="95" is_paired="0" id_run_pair=""  batch_id="62"/>
-</runs>

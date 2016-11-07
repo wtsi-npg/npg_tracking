@@ -72,7 +72,10 @@ sub create_user {
   if (!$username) {
     croak 'No username given';
   }
-  my $user = npg::model::user->new({util => $util, username => $username});
+  my $user = npg::model::user->new({
+    util       => $util,
+    username  => $username,
+    iscurrent => 1});
   $user->create();
   return;
 }
@@ -88,10 +91,11 @@ sub create_usergroup {
     croak 'No groupname and/or group description given';
   }
   my $usergroup = npg::model::usergroup->new({
-    util => $util,
-    groupname => $groupname,
+    util        => $util,
+    groupname   => $groupname,
     description => $description,
-    is_public => $is_public
+    is_public   => $is_public,
+    iscurrent   => 1
   });
   $usergroup->create();
   return;

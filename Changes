@@ -1,5 +1,30 @@
 LIST OF CHANGES
 
+ - removed all code that relates to instrument utilisation
+ - removed an option to create database entries via XML POST.
+ - removed custom error view
+ - deleted special privisions for the 'pipeline' user
+ - removed unused xml views for run lists
+
+ - Install all files, including cgi-related, within the install action.
+ - Remove instrument utilisation views for web pages.
+ - Deprecate 'request approval' instrument status, enable status change
+   from either of down statuses directly to 'wash required'.
+ - Remove code and tests for deprecated instrument statuses.
+ - Create flags to mark users and usergroups as deprecated,
+   deprecate 'approvers' group.
+ - User and usergroup lists are alphabetically sorted and include only
+   current entries.
+ - Fixed instrument status menu for batch updates to display only
+   current statuses.
+ - Composition-enabled LIMs object and reference finder.
+ - Subset support added to the rpt key based composition factory.
+ - Objects's attributes based composition factory sets only those components
+   that are either defined or required. Previously an undef value might
+   have been used for a component attribute even if the value did not have
+   to be set, i.e. the code was not future compatible with planned removal
+   of 'Maybe' qualifies from the tag_index and subset definition.
+
 release 85.4
  - Run/instrument tracking; added full support for HiSeq 4000 and limited support
    for NextSeq and MiniSeq

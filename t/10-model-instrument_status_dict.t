@@ -1,8 +1,7 @@
 use strict;
 use warnings;
 use t::util;
-use Test::More tests => 20;
-use Test::Trap;
+use Test::More tests => 19;
 
 our $ISD     = 'npg::model::instrument_status_dict';
 
@@ -20,16 +19,6 @@ my $util = t::util->new({fixtures => 1});
 }
 
 {
-  trap {
-    my $model = $ISD->new({
-         util        => 'bla',
-         description => 'fail!',
-        });
-    is($model->init(), undef, 'database query failure');
-  };
-}
-
-{
   my $model = $ISD->new({
        util                      => $util,
        id_instrument_status_dict => 2,
@@ -40,13 +29,17 @@ my $util = t::util->new({fixtures => 1});
 }
 
 {
-  my $model = $ISD->new({
-       util => $util,
-      });
+  my $model = $ISD->new({util => $util,});
   my $isds = $model->instrument_status_dicts();
-  isa_ok($isds, 'ARRAY', 'unprimed cache $model->instrument_status_dicts()');
-  is((scalar @{$isds}), 11, 'unprimed cache number of instrument_status_dicts');
-  is_deeply($isds, $model->instrument_status_dicts(), 'primed cache insturment_status_dicts');
+  isa_ok($isds, 'ARRAY', 'array of instrument dict objects');
+  is((scalar @{$isds}), 11, 'number of instrument_status_dicts');
+}
+
+{
+  my $model = $ISD->new({util => $util,});
+  is (join(q[;], map {$_->description} @{$model->current_instrument_status_dicts()}),
+    'down for repair;down for service;planned repair;planned service;up;wash in progress;wash performed;wash required',
+    'list of current instrument statuses');
 }
 
 {

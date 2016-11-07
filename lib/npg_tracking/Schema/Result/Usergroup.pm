@@ -65,6 +65,12 @@ __PACKAGE__->table("usergroup");
   is_nullable: 1
   size: 128
 
+=head2 iscurrent
+
+  data_type: 'tinyint'
+  default_value: 1
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -81,6 +87,8 @@ __PACKAGE__->add_columns(
   { data_type => "tinyint", default_value => 0, is_nullable => 0 },
   "description",
   { data_type => "varchar", default_value => "", is_nullable => 1, size => 128 },
+  "iscurrent",
+  { data_type => "tinyint", default_value => 1, is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -128,8 +136,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fWkhaUn/pPyRoLyYXBI80w
+# Created by DBIx::Class::Schema::Loader v0.07045 @ 2016-10-19 11:44:50
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:L20Y51wGH2tb6UvY2SGW5A
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08

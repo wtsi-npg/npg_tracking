@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<search>
-<query>[% model.query | xml_entity %]</query>
-[% IF model.query %]
-<hits>[% FOREACH hit = model.results %]
-<hit type="[% hit.0 %]" id_[% hit.0 %]="[% hit.1 %]" location="[% hit.2 %]">[% hit.3 | xml_entity %]</hit>[% END %]
-</hits>
-[% END %]
-</search>

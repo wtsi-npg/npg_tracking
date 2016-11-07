@@ -46,14 +46,6 @@ sub authorised {
   my $aspect = $self->aspect() || q[];
 
   #########
-  # Allow pipeline group access to the update_xml interface of run
-  #
-  if($aspect eq 'update_xml' &&
-     $requestor->is_member_of('pipeline')) {
-    return 1;
-  }
-
-  #########
   # Allow loaders the ability to create runs
   #
   if ( ( $aspect eq 'add' || $aspect eq 'add_pair_ajax' ) && $requestor->is_member_of('loaders') ) {return 1;}
@@ -67,7 +59,7 @@ sub authorised {
   }
 
   if ( $action eq 'update' &&
-       ( $requestor->is_member_of('loaders') || $requestor->is_member_of('approvers')  || $requestor->is_member_of('manual_qc') ) ) {
+       ( $requestor->is_member_of('loaders') || $requestor->is_member_of('manual_qc') ) ) {
     return 1;
   }
 
@@ -76,17 +68,6 @@ sub authorised {
   }
 
   return $self->SUPER::authorised();
-}
-
-sub render {
-  my ($self, @args) = @_;
-  my $aspect = $self->aspect() || q();
-
-  if($aspect eq 'list_xml') {
-    $self->list_xml();
-    return q[];
-  }
-  return $self->SUPER::render(@args);
 }
 
 sub read { ## no critic (ProhibitBuiltinHomonyms)
@@ -103,11 +84,6 @@ sub read { ## no critic (ProhibitBuiltinHomonyms)
   $model->{id_run_pair} = $model->run_pair() ? $model->run_pair->id_run() : 0;
 
   return 1;
-}
-
-sub read_simple_xml {
-  my $self = shift;
-  return $self->read();
 }
 
 sub add {
@@ -183,7 +159,7 @@ sub list {
   my $len        = $cgi->param('len')   || $PAGINATION_LEN;
   my $start      = $cgi->param('start') || $PAGINATION_START;
   my $batch_id   = $cgi->param('batch_id');
-  my $id_rsd     = $cgi->param('id_run_status_dict'); # || $session->{id_run_status_dict};
+  my $id_rsd     = $cgi->param('id_run_status_dict');
 
   my $id_instrument_format = $cgi->param( q{id_instrument_format} ) || q{all};
   my $id_instrument = $cgi->param( q{id_instrument} );
@@ -245,57 +221,6 @@ sub list {
   return 1;
 }
 
-sub list_xml {
-  my $self    = shift;
-  my $util    = $self->util();
-  my $cgi     = $util->cgi();
-  my $session = $util->session();
-  my $model   = $self->model();
-  my @id_runs = $cgi->param('id_run');
-  my @id_run;
-  my $template = q[run_list_row_xml.tt2];
-
-  if(scalar @id_runs) {
-    my $seen = {};
-    @id_run = grep { $_ && !$seen->{$_}++ }
-              map  { split /[|,]/smx } @id_runs;
-    $model->{runs} = [map { npg::model::run->new({
-              util   => $util,
-              id_run => $_,
-             }) } @id_run];
-    #########
-    # switch to simple template
-    #
-    $template = q[run_list_row_simple_xml.tt2];
-
-  } else {
-    #########
-    # configure runs based on any cgi param filters (e.g. id_run_status_dict)
-    # but default to 'all' for xml service-based response
-    #
-    my $id_rsd  = $cgi->param('id_run_status_dict') || $session->{id_run_status_dict} || q[all];
-    $cgi->param('id_run_status_dict', $id_rsd);
-    $self->list();
-  }
-
-  print "Content-type: text/xml\n\n" or croak $OS_ERROR;
-
-  $self->process_template('run_list_header_xml.tt2');
-
-  for my $row (@{$model->runs()}) {
-    $self->process_template($template, {run=>$row});
-  }
-
-  $self->process_template('run_list_footer_xml.tt2');
-
-  #########
-  # flush and close
-  #
-  $self->output_finished(1);
-
-  return 1;
-}
-
 sub list_summary {
   my $self       = shift;
   my $util       = $self->util();
@@ -303,13 +228,6 @@ sub list_summary {
   my $model      = $self->model();
   $model->{days} = $days;
 
-  return 1;
-}
-
-sub list_summary_xml {
-  #########
-  # no additional work to do
-  #
   return 1;
 }
 
@@ -515,12 +433,6 @@ sub update_statuses {
   return 1;
 }
 
-sub list_recent_running_runs_xml {
-  my ($self) = @_;
-
-  return 1;
-}
-
 sub list_stuck_runs {
   my ( $self ) = @_;
   return 1;
@@ -544,8 +456,6 @@ npg::view::run - view handling for runs
 
 =head2 new
 
-=head2 render
-
 =head2 authorised - additional handling for public list_ajax response
 
 =head2 add - handling for run creation view
@@ -554,21 +464,15 @@ npg::view::run - view handling for runs
 
 =head2 list - handling for runs-by-id_run_status_dict
 
-=head2 list_xml - handling for streamed XML list response
-
 =head2 list_ajax - list handling for AJAX response
 
 =head2 list_summary - handling for recent run display
-
-=head2 list_summary_xml - handling for recent run display for XML responses
 
 =head2 selected_days - factored out obtaining the number of days selected, with default to set to 14
 
 =head2 create - handling for run, run_lanes, and run_status
 
 =head2 read - handling for override id_run_pair (which will be empty for R1) using the id_run of any existing second end
-
-=head2 read_simple_xml - handle to read XML
 
 =head2 update_tags - handles incoming request to add/remove tags for the run. Wraps all in a single
        transaction so that all tags are done, or none at all
@@ -578,8 +482,6 @@ npg::view::run - view handling for runs
 =head2 update_statuses - handling for batch updating statuses
 
 =head2 update - handling for tile-layout updates
-
-=head2 list_recent_running_runs_xml - handles returning XML of recent_running runs with info id_run, id_instrument, start, end (although end may not be the true end of the run, as a run may still be in progress, in which case it is the time it is called)
 
 =head2 list_stuck_runs
 

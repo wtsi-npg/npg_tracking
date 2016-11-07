@@ -1,1 +1,0 @@
-[% PROCESS run_status_read_xml.tt2 %]

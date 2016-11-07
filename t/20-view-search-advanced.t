@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 5;
 use t::util;
 use npg::model::search;
 use CGI;
@@ -11,11 +11,12 @@ my $mock  = {
          q(SELECT id_user FROM user WHERE username = ?:,public) => [[1]],
          q(SELECT id_usergroup FROM usergroup WHERE groupname = ?:,public) => [[1000]],
          q(SELECT ug.id_usergroup, ug.groupname,
-                  ug.is_public, ug.description,
+                  ug.is_public, ug.description, ug.iscurrent,
                   uug.id_user_usergroup
                FROM   usergroup      ug,
                       user2usergroup uug
                WHERE  uug.id_user = ?
+               AND    ug.iscurrent = 1
                AND    ug.id_usergroup = uug.id_usergroup:1) => [{
                                  id_usergroup      => 1000,
                                  groupname         => 'public',
@@ -91,26 +92,6 @@ my $mock  = {
                      });
   isa_ok($view, 'npg::view::search');
   ok($util->test_rendered($view->render(), 't/data/rendered/20-view-search-advanced-results.html'), '20-view-search-list_advanced results rendered ok');
-}
-{
-  my $cgi   = CGI->new();
-  $cgi->param('run_tags', 1);
-  my $util  = t::util->new({
-                mock => $mock,
-                cgi  => $cgi,
-               });
-
-  my $model = npg::model::search->new({
-                       util  => $util,
-                      });
-  my $view  = npg::view::search->new({
-                      util   => $util,
-                      model  => $model,
-                      action => 'read',
-                      aspect => 'list_advanced_xml',
-                     });
-  isa_ok($view, 'npg::view::search');
-  ok($util->test_rendered($view->render(), 't/data/rendered/20-view-search-advanced-results.xml'), '20-view-search-list_advanced xml results rendered ok');
 }
 
 1;

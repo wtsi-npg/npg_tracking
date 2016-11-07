@@ -33,30 +33,24 @@ Readonly::Array  our @CURRENT_RUNS    => ('run pending', 'run in progress', 'run
 Readonly::Array  our @BLOCKING_RUNS   => ('run pending', 'run in progress', 'run on hold');
 
 Readonly::Hash my %STATUS_CHANGE_AUTO => {
-  'up' => 'wash required',
+  'up'                  => 'wash required',
   'wash performed'      => 'up',
-  'planned maintenance' => 'down for repair',
   'planned repair'      => 'down for repair',
   'planned service'     => 'down for service',
 };
 
 Readonly::Hash my %STATUS_GRAPH => {
+  'up'               => ['planned service', 'planned repair', 'down for repair', 'wash required', 'wash in progress'],
 
-  'up' => ['planned service', 'planned repair', 'down for repair', 'wash required', 'wash in progress'],
+  'wash required'    => ['wash in progress', 'wash performed', 'planned repair', 'planned service', 'down for repair'],
+  'wash in progress' => ['wash performed', 'planned repair', 'planned service', 'down for repair'],
+  'wash performed'   => ['up', 'wash required', 'down for repair'],
 
-  'request approval' => ['up', 'down for repair', 'down for service', 'planned repair', 'planned service'],
+  'planned repair'   => ['down for repair'],
+  'planned service'  => ['down for service', 'planned repair', 'down for repair'],
 
-  'wash required'  => ['wash in progress', 'wash performed', 'planned repair', 'planned service', 'down for repair'],
-  'wash in progress'   => ['wash performed', 'planned repair', 'planned service', 'down for repair'],
-  'wash performed' => ['up', 'wash required', 'down for repair'],
-
-  'planned maintenance' => ['down for repair'],
-  'planned repair'      => ['down for repair'],
-  'planned service'     => ['down for service', 'planned repair', 'down for repair'],
-
-  'down'             => ['request approval'],
-  'down for repair'  => ['request approval'],
-  'down for service' => ['request approval', 'down for repair'],
+  'down for repair'  => ['wash required'],
+  'down for service' => ['wash required', 'down for repair'],
 };
 
 __PACKAGE__->mk_accessors(fields());
@@ -317,15 +311,6 @@ sub current_instrument_status {
   return $self->{'current_instrument_status'};
 }
 
-sub utilisation {
-  my ($self, $type) = @_;
-  my $root_is = npg::model::instrument_status->new({
-                                                    util => $self->util(),
-                                                  });
-  return $root_is->utilisation($type);
-}
-
-
 sub latest_instrument_annotation {
   my $self = shift;
 
@@ -453,8 +438,7 @@ sub status_to_change_to {
 
   if ($self->does_sequencing) {
     if ( $self->is_idle() &&
-      ($current eq 'planned maintenance' ||
-       $current eq 'planned repair' ||
+      ($current eq 'planned repair' ||
        $current eq 'planned service')) {
         return $next_auto;
     }
@@ -678,10 +662,6 @@ Has a side-effect of updating an instrument's current instrument_status to 'wash
 =head2 current_instrument_status - npg::model::instrument_status with iscurrent=1 for this instrument
 
   my $oInstrumentStatus = $oInstrument->current_instrument_status();
-
-=head2 utilisation - fetches npg::model::instrument_status->utilisation(type) where type is hour or day
-
-  my $aUtilisation = $oInstrument->utilisation(type);
 
 =head2 instrument_mods - returns array of instrument modifications for this instrument
 

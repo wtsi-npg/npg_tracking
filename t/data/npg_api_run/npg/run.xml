@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<runs>
-<run id_run="604" batch_id="1001" id_instrument="16" priority="1" actual_cycle_count="37" expected_cycle_count="37" is_paired="1" id_run_pair="636" is_dev="0" name="IL13_0604" id_run_status="10121" date="2008-04-30 10:12:12" id_run_status_dict="20" id_user="27" username="mdf" description="qc complete" loader="sb18" loading_date="2008-04-15"/>
-<run id_run="636" batch_id="1001" id_instrument="16" priority="1" actual_cycle_count="37" expected_cycle_count="37" is_paired="1" id_run_pair="604" is_dev="0" name="IL13_0636" id_run_status="10122" date="2008-04-30 10:12:14" id_run_status_dict="20" id_user="27" username="mdf" description="qc complete" loader="pnc" loading_date="2008-04-22"/>
-</runs>

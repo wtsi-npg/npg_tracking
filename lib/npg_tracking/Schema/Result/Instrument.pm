@@ -337,7 +337,6 @@ Readonly::Array  our @BLOCKING_RUNS   => ('run pending', 'run in progress', 'run
 Readonly::Hash my %STATUS_CHANGE_AUTO => {
   'up'                  => 'wash required',
   'wash performed'      => 'up',
-  'planned maintenance' => 'down for repair',
   'planned repair'      => 'down for repair',
   'planned service'     => 'down for service',
 };
@@ -520,10 +519,8 @@ sub status_to_change_to {
     my $next_auto = $STATUS_CHANGE_AUTO{$current};
 
     if ( $self->is_idle() &&
-      ($current eq 'planned maintenance' ||
-       $current eq 'planned repair' ||
-       $current eq 'planned service')) {
-        return $next_auto;
+       ($current eq 'planned repair' || $current eq 'planned service')) {
+      return $next_auto;
     }
 
     if ($current eq 'wash performed' ||

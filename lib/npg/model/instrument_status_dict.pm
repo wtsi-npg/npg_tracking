@@ -14,17 +14,17 @@ use Readonly;
 our $VERSION = '0';
 
 Readonly::Hash our %SHORT_DESCRIPTIONS => {
-                  'down'             => 'down',
-                  'request approval' => 'requ',
-                  'up'               => 'up',
-                  'wash required'    => 'wash',
-                  'wash in progress'     => 'wash',
-                  'wash performed'   => 'wash',
-                  'planned maintenance'   => 'plan',
-                  'planned repair'   => 'pl_r',
-                  'planned service'  => 'pl_s',
-                  'down for repair'  => 'dn4r',
-                  'down for service' => 'dn4s',
+                  'down'                => 'down',
+                  'request approval'    => 'requ',
+                  'up'                  => 'up',
+                  'wash required'       => 'wash',
+                  'wash in progress'    => 'wash',
+                  'wash performed'      => 'wash',
+                  'planned maintenance' => 'plan',
+                  'planned repair'      => 'pl_r',
+                  'planned service'     => 'pl_s',
+                  'down for repair'     => 'dn4r',
+                  'down for service'    => 'dn4s',
                                           };
 
 __PACKAGE__->mk_accessors(fields());
@@ -62,6 +62,13 @@ sub init {
 sub instrument_status_dicts {
   my $self = shift;
   return $self->gen_getall();
+}
+
+sub current_instrument_status_dicts {
+  my $self = shift;
+  return [sort {$a->description cmp $b->description}
+          grep { $_->iscurrent }
+          @{$self->instrument_status_dicts()}];
 }
 
 sub instruments {
@@ -115,6 +122,8 @@ npg::model::instrument_status_dict
 =head2 instrument_status_dicts - Arrayref of npg::model::instrument_status_dicts
 
   my $arInstrumentStatusDicts = $oInstrumentStatusDict->instrument_status_dicts();
+
+=head2 current_instrument_status_dicts
 
 =head2 instruments - Arrayref of npg::model::instruments with a current status having this id_instrument_status_dict
 

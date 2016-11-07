@@ -1,9 +1,8 @@
 use strict;
 use warnings;
-use Test::More tests => 83;
+use Test::More tests => 35;
 use Test::Exception;
 use Test::Deep;
-use MIME::Lite;
 use CGI;
 use Cwd;
 
@@ -77,14 +76,6 @@ my $util = t::util->new({fixtures  => 1,});
 }
 
 {
-  my @emails;
-  my $sub = sub {
-     my $msg = shift;
-           push @emails, $msg->as_string;
-     return;
-          };
-  MIME::Lite->send('sub',$sub);
-
   my $str = t::request->new({
 			     PATH_INFO      => '/run',
 			     REQUEST_METHOD => 'POST',
@@ -113,44 +104,6 @@ my $util = t::util->new({fixtures  => 1,});
            util           => $util,
           });
   like($str, qr/not\ authorised/mix, 'non-pipeline access to run;create');
-}
-
-{
-  my @emails;
-  my $sub = sub {
-     my $msg = shift;
-           push @emails, $msg->as_string;
-     return;
-          };
-  MIME::Lite->send('sub',$sub);
-
-  my $str  = t::request->new({
-			      PATH_INFO      => '/run/16.xml',
-			      REQUEST_METHOD => 'POST',
-			      username       => 'pipeline',
-			      util           => $util,
-			      cgi_params     => {
-						 id_instrument        => 3,
-						 id_run_pair          => 0,
-						 team                 => 'RAD',
-						 batch_id             => 42,
-						 tracks               => 3,
-						 lane_1_tile_count    => 330,
-						 expected_cycle_count => 37,
-						 priority             => 1,
-						},
-			     });
-  ok($util->test_rendered($str, 't/data/rendered/run/16;update_xml'), 'loader update_xml');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run/42.xml',
-           REQUEST_METHOD => 'POST',
-           username       => 'public',
-           util           => $util,
-          });
-  like($str, qr/not\ authorised/mix, 'non-pipeline access to run/x;update_xml');
 }
 
 {
@@ -210,7 +163,7 @@ my $util = t::util->new({fixtures  => 1,});
            REQUEST_METHOD => 'GET',
            username       => 'public',
            util           => $util,
-                             cgi_params     => {id_run_status_dict => 'all', id_instrument => 3, },
+           cgi_params     => {id_run_status_dict => 'all', id_instrument => 3, },
           });
   ok($util->test_rendered($str, 't/data/rendered/run/runs_on_instrument.html'), 'html list render run instrument 3 all statuses');
 }
@@ -282,207 +235,6 @@ my $util = t::util->new({fixtures  => 1,});
 }
 
 {
-  my $run1 = npg::model::run->new({
-           util   => $util,
-           id_run => 1,
-          });
-  for my $lane (@{$run1->run_lanes()}) {
-    is($lane->tracks(), 2, 'existing tracks for run_lane');
-    is($lane->tile_count(), 200, 'existing tile_count for run_lane');
-  }
-  my $str = t::request->new({
-           PATH_INFO      => '/run/1.xml',
-           REQUEST_METHOD => 'POST',
-           username       => 'pipeline',
-           util           => $util,
-           cgi_params     => {
-            tile_columns => 3,
-            tile_rows    => 110,
-                 },
-          });
-  unlike($str, qr/error/mix, 'update tile_columns & tile_rows');
-
-  my $run2 = npg::model::run->new({
-           util   => $util,
-           id_run => 1,
-          });
-  for my $lane (@{$run2->run_lanes()}) {
-    is($lane->tracks(), 3, 'updated tracks for run_lane');
-    is($lane->tile_count(), 330, 'updated tile_count for run_lane');
-  }
-}
-
-{
-  my $runs1 = [map { $_->id_run() } @{npg::model::run->new({util=>$util})->runs()}];
-  my $str   = t::request->new({
-			       PATH_INFO      => '/run',
-			       REQUEST_METHOD => 'POST',
-			       username       => 'joe_loader',
-			       util           => $util,
-			       cgi_params     => {
-						  id_instrument        => 3,
-						  id_run_pair          => 0,
-						  team                 => 'RAD',
-						  batch_id             => 42,
-						  tracks               => 3,
-						  lane_1_tile_count    => 330,
-						  expected_cycle_count => 37,
-						  priority             => 1,
-						 },
-			      });
-  my $runs2 = {map { $_->id_run() => 1 } @{npg::model::run->new({util=>$util})->runs()}};
-
-  for my $run (@{$runs1}) {
-    delete $runs2->{$run};
-  }
-
-  is((scalar keys %{$runs2}), 1, 'one new run');
-  my ($new_id) = keys %{$runs2};
-  my $run = npg::model::run->new({
-          util   => $util,
-          id_run => $new_id,
-         });
-  is($run->is_dev(), 1, 'r&d run');
-}
-
-{
-  my $runs1 = [map { $_->id_run() } @{npg::model::run->new({util=>$util})->runs()}];
-  my $str   = t::request->new({
-			       PATH_INFO      => '/run',
-			       REQUEST_METHOD => 'POST',
-			       username       => 'joe_loader',
-			       util           => $util,
-			       cgi_params     => {
-						  id_instrument        => 3,
-						  id_run_pair          => 0,
-						  batch_id             => 42,
-						  tracks               => 3,
-						  lane_1_tile_count    => 330,
-						  expected_cycle_count => 37,
-						  team                 => 'A',
-						  priority             => 1,
-						 },
-			      });
-
-  unlike($str, qr/Error/smx);
-  my $runs2 = {map { $_->id_run() => 1 } @{npg::model::run->new({util=>$util})->runs()}};
-
-  for my $run (@{$runs1}) {
-    delete $runs2->{$run};
-  }
-
-  is((scalar keys %{$runs2}), 1, 'one new run');
-  my ($new_id) = keys %{$runs2};
-  my $run = npg::model::run->new({
-          util   => $util,
-          id_run => $new_id,
-         });
-  is($run->is_dev(), 0, 'run is not dev');
-}
-
-{
-  my $runs1 = [map { $_->id_run() } @{npg::model::run->new({util=>$util})->runs()}];
-  my $str   = t::request->new({
-			       PATH_INFO      => '/run',
-			       REQUEST_METHOD => 'POST',
-			       username       => 'joe_r_n_d',
-			       util           => $util,
-			       cgi_params     => {
-						  id_instrument        => 3,
-						  id_run_pair          => 0,
-						  team                 => 'RAD',
-						  batch_id             => 42,
-						  tracks               => 3,
-						  lane_1_tile_count    => 330,
-						  expected_cycle_count => 37,
-						  priority             => 1,
-						 },
-			      });
-  my $runs2 = {map { $_->id_run() => 1 } @{npg::model::run->new({util=>$util})->runs()}};
-
-  for my $run (@{$runs1}) {
-    delete $runs2->{$run};
-  }
-
-  is((scalar keys %{$runs2}), 1, 'one new run');
-  my ($new_id) = keys %{$runs2};
-  my $run = npg::model::run->new({
-          util   => $util,
-          id_run => $new_id,
-         });
-  is($run->is_dev(), 1, 'r+d user can set is_dev');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run.xml',
-           REQUEST_METHOD => 'GET',
-           username       => 'public',
-           util           => $util,
-           cgi_params     => {
-            id_run => q[11,12,14,95],
-                 },
-          });
-
-  ok($util->test_rendered($str, 't/data/rendered/run_list_basic.xml'), 'SequenceScape service with commas');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run.xml',
-           REQUEST_METHOD => 'GET',
-           username       => 'public',
-           util           => $util,
-           cgi_params     => {
-            id_run => q[11|12|14|95],
-                 },
-          });
-
-  ok($util->test_rendered($str, 't/data/rendered/run_list_basic.xml'), 'SequenceScape service with pipes');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run.xml',
-           REQUEST_METHOD => 'GET',
-           username       => 'public',
-           util           => $util,
-           cgi_params     => {
-                 id_run         => [11,12,14,95],
-                 },
-          });
-
-  ok($util->test_rendered($str, 't/data/rendered/run_list_basic.xml'), 'SequenceScape service with list');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run/recent/running/runs.xml',
-           REQUEST_METHOD => 'GET',
-           username       => 'joe_r_n_d',
-           util           => $util,
-          });
-  ok($util->test_rendered($str, 't/data/rendered/run/recent/running/runs_basic_days.xml'), '/run/recent/running/runs.xml - basic days');
-}
-
-{
-  my $model = npg::model::run->new({
-                 util   => $util,
-                 id_run => q(),
-                });
-  $model->{days} = 4000;
-  my $view = npg::view::run->new({
-          util  => $util,
-          model => $model,
-          action => 'list',
-          aspect => 'list_recent_running_runs_xml',
-         });
-  my $str;
-  lives_ok { $str = $view->render(); } 'no croak in render list_recent_running_runs_xml';
-  ok($util->test_rendered($str, 't/data/rendered/run/recent/running/runs_4000_days.xml'), '/run/recent/running/runs.xml - 4000 days');
-}
-
-{
   my $str = t::request->new({
            PATH_INFO      => '/run/95',
            REQUEST_METHOD => 'GET',
@@ -492,7 +244,6 @@ my $util = t::util->new({fixtures  => 1,});
   like ($str, qr/NPG SeqQC/, 'run with a current status --analysis complete-- contains the NPG-SeqQC link');
   like ($str, qr/checks\/runs\/95/, 'href value of the NPG-SeqQC link');
 }
-
 
 {
   my $str = t::request->new({
@@ -544,7 +295,7 @@ my $util = t::util->new({fixtures  => 1,});
   my $mock    = {
     q(SELECT id_user FROM user WHERE username = ?:,public) => [[1]],
     q(SELECT id_usergroup FROM usergroup WHERE groupname = ?:,public) => [[]],
-    q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.id_usergroup = uug.id_usergroup:1) => [{}],
+    q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, ug.iscurrent, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.iscurrent = 1 AND ug.id_usergroup = uug.id_usergroup:1) => [{}],
   };
 
   my $cgi = CGI->new();
@@ -564,6 +315,5 @@ my $util = t::util->new({fixtures  => 1,});
   $cgi->param('days', 7);
   is($view->selected_days(), 7, '$view->selected_days() gives selected days if set as cgi param');
 }
-
 
 1;

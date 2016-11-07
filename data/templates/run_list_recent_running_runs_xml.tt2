@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<runs>[% FOREACH run = model.recent_running_runs %]
-  <run id_run="[% run.id_run %]" start="[% run.start %]" end="[% run.end %]" id_instrument="[% run.id_instrument %]" />[% END %]
-</runs>

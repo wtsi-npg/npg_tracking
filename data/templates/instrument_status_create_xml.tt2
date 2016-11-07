@@ -1,1 +1,0 @@
-[% PROCESS instrument_status_read_xml.tt2 %]

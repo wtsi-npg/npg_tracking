@@ -23,14 +23,6 @@ sub authorised {
   my $aspect = $self->aspect();
 
   #########
-  # Allow pipeline group access to the create_xml interface of instrument_mod
-  #
-  if ($aspect eq 'create_xml' &&
-      $util->requestor->is_member_of('pipeline')) {
-    return 1;
-  }
-
-  #########
   # Allow engineers group access to create and update instrument_mod
   #
   if (($action eq 'create' ||

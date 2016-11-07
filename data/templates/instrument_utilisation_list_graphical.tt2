@@ -1,9 +1,0 @@
-
-[% PROCESS instrument_utilisation_menu.tt2 
-           group_index=0
-           index=1
-%]
-
-<img src="[% SCRIPT_NAME %]/instrument_utilisation/;list_graph_png?type=utilisation&inst_format=[% instrument %]" alt="Percentage Utilisation" title="Percentage Utilisation" /><br />
-<img src="[% SCRIPT_NAME %]/instrument_utilisation/;list_graph_png?type=uptime&inst_format=[% instrument %]" alt="Percentage Uptime" title="Percentage Uptime" /><br />
-<img src="[% SCRIPT_NAME %]/instrument_utilisation/;list_graph_png?type=utilisation_uptime&inst_format=[% instrument %]" alt="Utilisation as a Percentage of Uptime" title="Utilisation as a Percentage of Uptime" /><br />

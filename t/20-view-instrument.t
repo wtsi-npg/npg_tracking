@@ -1,7 +1,7 @@
 use strict;
 use warnings;
-use Test::More tests => 25;
-use Test::Exception::LessClever;
+use Test::More tests => 20;
+use Test::Exception;
 use t::util;
 use t::request;
 use GD qw(:DEFAULT :cmp);
@@ -116,53 +116,6 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 {
   my $str = t::request->new({
            REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument;list_uptime_png',
-           username       => 'public',
-           util           => $util,
-          });
-
-  like($str, qr{image/png.*PNG}smx, 'instrument graphical uptime is a png');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument;list_utilisation_png',
-           username       => 'public',
-           util           => $util,
-          });
-
-  like($str, qr{image/png.*PNG}smx, 'instrument graphical utilisation');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument/utilisation.png',
-           username       => 'public',
-           util           => $util,
-          });
-
-  like($str, qr{image/png.*PNG}smx, 'instrument graphical utilisation (new-style)');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument;list_utilisation_png',
-           username       => 'public',
-           util           => $util,
-           cgi_params     => {
-            type => 'hour',
-                 },
-          });
-
-  like($str, qr{image/png.*PNG}smx, 'instrument graphical utilisation by hour');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'GET',
            PATH_INFO      => '/instrument/12.png',
            username       => 'public',
            util           => $util,
@@ -187,7 +140,6 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
   ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'legend image'); 
 }
 
-
 {
   my $str = t::request->new({
            REQUEST_METHOD => 'GET',
@@ -202,17 +154,6 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
   shift @lines; shift @lines; shift @lines;
   my $rendered = GD::Image->new(join "\n", @lines);
   ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle HiSeq image'); 
-}
-
-{
-  my $str = t::request->new({
-    PATH_INFO      => '/instrument/7',
-    REQUEST_METHOD => 'GET',
-    username       => 'joe_admin',
-    util           => $util,
-  });
-
-  ok($util->test_rendered($str, 't/data/rendered/instrument_status;add-cis2.html'), 'render of add ok for current instrument status of down');
 }
 
 {

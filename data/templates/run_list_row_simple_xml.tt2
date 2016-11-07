@@ -1,1 +1,0 @@
-<run id="[% run.id_run %]" is_paired="[% run.is_paired %]" id_run_pair="[% run.run_pair.id_run %]" batch_id="[% run.batch_id %]" />

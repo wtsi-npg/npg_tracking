@@ -1,18 +1,11 @@
-# Author:        Jillian Durham <jillian@sanger.ac.uk>
-# Created:       19th March 2014
-#
 package npg_tracking::data::transcriptome;
 
 use Moose;
 
 our $VERSION = '0';
 
-with qw/
-          npg_tracking::glossary::run
-          npg_tracking::glossary::lane
-          npg_tracking::glossary::tag
-          npg_tracking::data::transcriptome::find
-       /;
+extends 'npg_tracking::data::reference';
+with    'npg_tracking::data::transcriptome::find';
 
 __PACKAGE__->meta->make_immutable;
 no Moose;
@@ -34,6 +27,14 @@ A wrapper class for finding the location of transcriptome files.
 
 =head1 SUBROUTINES/METHODS
 
+=head2 id_run
+
+=head2 position
+
+=head2 tag_index
+
+=head2 rpt_list
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -43,14 +44,6 @@ A wrapper class for finding the location of transcriptome files.
 =over
 
 =item Moose
-
-=item npg_tracking::glossary::run
-
-=item npg_tracking::glossary::lane
-
-=item npg_tracking::glossary::tag
-
-=item npg_tracking::data::transcriptome::find
 
 =back
 
@@ -64,7 +57,7 @@ Jillian Durham E<lt>jillian@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 GRL, by Jillian Durham
+Copyright (C) 2016 GRL
 
 This file is part of NPG.
 

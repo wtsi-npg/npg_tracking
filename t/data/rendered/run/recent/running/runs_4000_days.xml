@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<runs>
-  <run id_run="1" start="2007-06-05 10:04:23" end="2009-01-29 14:09:31" id_instrument="3" />
-  <run id_run="5" start="2007-06-05 12:31:44" end="2007-06-05 12:32:28" id_instrument="3" />
-  <run id_run="95" start="2007-06-05 10:04:23" end="2007-06-05 11:16:55" id_instrument="4" />
-</runs>

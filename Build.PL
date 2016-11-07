@@ -6,69 +6,65 @@ use WTSI::DNAP::Utilities::Build;
 
 my $class = WTSI::DNAP::Utilities::Build->subclass(code => <<'EOF');
 
- sub dir_files {
-    my $dir = shift;
-    opendir my $dh, $dir || die "can't opendir $dir: $!";
-    my @files = map { "$dir/$_" } grep { /^\w+$/ && -f "$dir/$_" } readdir $dh;
-    closedir $dh;
-    return @files;
-  }
-
   sub process_data_files {
     my $self = shift;
-    `find data/npg_tracking_email/templates -type f | cpio -pdv --quiet blib`;
-    if ($self->invoked_action() eq q[webinstall]) {
-      `find data/templates -type f | cpio -pdv --quiet blib`;
-      `find data/gfx -type f | cpio -pdv --quiet blib`;
+    my @files  = @{ $self->rscan_dir('data/templates',
+                                     sub {-f $_ and /\.tt2$/}) };
+    push @files, @{ $self->rscan_dir('data/npg_tracking_email/templates',
+                                     sub {-f $_ and /\.tt2$/}) };
+    push @files, @{ $self->rscan_dir('data/gfx',
+                                     sub {-f $_ and /\.png$/}) };
+    foreach my $f ( @files ) {
+      $self->copy_if_modified(
+        from    => $f,
+        to_dir  => join(q[/], $self->base_dir(), $self->blib()),
+        flatten => 0);
     }
     return;
   }
 
   sub process_htdocs_files {
-    `find htdocs -type f | cpio -pdv --quiet blib`;
+    my $self = shift;
+    my $files = $self->rscan_dir('htdocs', sub {-f $_ and (/\.css$/ or /\.js$/)});
+    foreach my $f (@{$files}) {
+      $self->copy_if_modified(
+        from    => $f,
+        to_dir  => join(q[/], $self->base_dir(), $self->blib()),
+        flatten => 0);
+    }
     return;
   }
 
-  sub process_cgi_files {
+  sub process_cgibin_files {
     my $self = shift;
-    my @files = dir_files('cgi-bin');
-    foreach my $file (@files) {
-      my $dest_file = $self->copy_if_modified('from' => $file, 'to_dir' => 'blib');
+    foreach my $file ( @{$self->rscan_dir('cgi-bin', sub {-f $_})} ) {
+      my $dest_file = $self->copy_if_modified(
+        from    => $file,
+        to_dir  => join(q[/], $self->base_dir(), $self->blib()),
+        flatten => 0);
       if ($dest_file) {
         $self->fix_shebang_line($dest_file);
+        `chmod +x $dest_file`;
       }
     }
-    `chmod +x blib/cgi-bin/*`;
     return;
   }
 
-  sub process_wtsilocal_files {
-    `find wtsi_local -type f | cpio -pdv --quiet blib`;
-    return;
-  }
-
-  sub ACTION_webinstall {
+  sub process_wtsi_local_files {
     my $self = shift;
-    if (!$self->install_base()) {
-      warn "WARNING: '--install_base' option is not given, nothing to do for the 'webinstall' action\n\n";
-      return;
+    foreach my $file ( @{$self->rscan_dir('wtsi_local', sub {-f $_})} ) {
+      $self->copy_if_modified(
+        from => $file,
+        to_dir  => join(q[/], $self->base_dir(), $self->blib()),
+        flatten => 0);
     }
-
-    $self->install_path('htdocs' => join q{/}, $self->install_base(), 'htdocs');
-    $self->add_build_element('htdocs');
-    $self->install_path('cgi-bin' => join q{/}, $self->install_base(), 'cgi-bin');
-    $self->add_build_element('cgi');
-    $self->install_path('wtsi_local' => join q{/}, $self->install_base(), 'wtsi_local');
-    $self->add_build_element('wtsilocal');
-    $self->depends_on('install');
-
     return;
   }
 
   sub ACTION_install {
     my $self = shift;
     $self->SUPER::ACTION_install;
-    my$config_path = $self->install_path->{'data'}.'/npg_tracking';
+    my$config_path = join q[/], $self->install_path->{'data'}, 'npg_tracking';
     if(not -e $config_path) {
       warn "WARNING: There is no existing config file installed at $config_path so it is likely stuff will NOT work\n";
     }
@@ -132,7 +128,6 @@ my $builder = $class->new(
                 'Config::Auto'                    => 0,
                 'Crypt::CBC'                      => 0,
                 'Cwd'                             => 0,
-                'Date::Calc'                      => '5.4',
                 'Date::Parse'                     => '2.27',
                 'DateTime'                        => '0.5',
                 'DateTime::TimeZone'              => 0,
@@ -180,12 +175,8 @@ my $builder = $class->new(
                 'IPC::System::Simple'             => 0,
                 'JSON'                            => '2.12',
                 'JSON::XS'                        => '2.34',
-                'JSON::Any'                       => '0',
                 'lib'                             => '0.5565',
                 'Lingua::EN::Inflect'             => 0,
-                ## {{{ This is a ClearPress dependency not declared by ClearPress
-                'Lingua::EN::PluralToSingular'    => 0,
-                ## }}}
                 'Linux::Inotify2'                 => 0,
                 'List::MoreUtils'                 => '0.416',
                 'Log::Log4perl'                   => 0,
@@ -235,8 +226,15 @@ my $builder = $class->new(
             },
          );
 
-$builder->install_path('data' => join q{/}, $builder->install_base() || (), 'data');
-$builder->add_build_element('data');
+# Build and install cgi-related files
+foreach my $path (qw(data htdocs cgi-bin wtsi_local)) {
+  my $name = $path;
+  $name =~ s/-//;
+  $builder->add_build_element($name);
+  if ($builder->install_base()) {
+    $builder->install_path($path => join q{/}, $builder->install_base(), $path);
+  }
+}
 
 $builder->create_build_script();
 
