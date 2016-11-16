@@ -25,7 +25,7 @@ my $class = WTSI::DNAP::Utilities::Build->subclass(code => <<'EOF');
 
   sub process_htdocs_files {
     my $self = shift;
-    my $files = $self->rscan_dir('htdocs', sub {-f $_ and (/\.css$/ or /\.js$/)});
+    my $files = $self->rscan_dir('htdocs', sub { -f $_ and /\.(:? css | js | png | gif ) $/smx });
     foreach my $f (@{$files}) {
       $self->copy_if_modified(
         from    => $f,
