@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - updated links to NPG QC since the pages moved to SeqQC
+
  - removed all code that relates to instrument utilisation
  - removed an option to create database entries via XML POST.
  - removed custom error view
