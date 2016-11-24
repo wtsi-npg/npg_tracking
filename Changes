@@ -2,6 +2,7 @@ LIST OF CHANGES
 
  - Build.PL fix to ensure that images under htdocs dir are copied to blib
    when building.
+ - updated links to NPG QC since the pages moved to SeqQC
 
 release 85.5
  - removed all code that relates to instrument utilisation
