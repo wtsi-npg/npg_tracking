@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - use mysql 5.7.13 in travis (installing from deb)
  - Build.PL fix to ensure that images under htdocs dir are copied to blib
    when building.
  - updated links to NPG QC since the pages moved to SeqQC
