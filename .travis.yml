@@ -6,7 +6,7 @@ addons:
 language: perl
 perl:
   - "5.16"
-  - "5.22"
+  - "5.22-shrplib"
 env:
   global:
     - secure: "QfmTURdOMius663oUxecwg2cWo1Tk5KmYgpIWFISfHNjICIXyOnhmbftl2d0g3ANqDqgZxhZcIESszPRh44unYKZUahb2vMi4YWh6D5MqnwzesC4qwEhbwkyFy1/L7Zh5T5IZ8WKT/NAuG2wAC8hLcfBNUplVHXX0FCeFq2/nvg="
