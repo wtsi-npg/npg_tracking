@@ -1152,8 +1152,11 @@ sub is_dev {
 
 sub staging_server_name {
   my $self = shift;
-  my @components = split m{/}smx, $self->folder_path_glob;
-  return $components[$FOLDER_GLOB_INDEX];
+  if ($self->folder_path_glob) {
+    my @components = split m{/}smx, $self->folder_path_glob;
+    return $components[$FOLDER_GLOB_INDEX];
+  }
+  return;
 }
 
 1;
