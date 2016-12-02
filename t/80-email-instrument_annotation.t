@@ -5,7 +5,7 @@ use DateTime::Format::MySQL;
 use Perl6::Slurp;
 use Test::More tests => 14;
 use Test::Deep;
-use Test::Exception::LessClever;
+use Test::Exception;
 use Test::MockModule;
 
 use t::dbic_util;

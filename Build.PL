@@ -96,7 +96,6 @@ my $builder = $class->new(
                 'Test::Distribution'              => 0,
                 'Test::Deep'                      => '0.103',
                 'Test::Exception'                 => '0.27',
-                'Test::Exception::LessClever'     => '0.005',
                 'Test::LongString'                => 0,
                 'Test::MockModule'                => 0,
                 'Test::MockObject'                => 0,

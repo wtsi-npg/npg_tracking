@@ -4,7 +4,7 @@ use English qw(-no_match_vars);
 
 use Test::More tests => 10;
 use Test::Deep;
-use Test::Exception::LessClever;
+use Test::Exception;
 use Test::MockModule;
 
 use t::dbic_util;

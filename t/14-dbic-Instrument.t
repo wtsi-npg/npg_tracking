@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More tests => 54;
 use Test::Deep;
-use Test::Exception::LessClever;
+use Test::Exception;
 use DateTime;
 use DateTime::Duration;
 
