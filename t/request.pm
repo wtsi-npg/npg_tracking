@@ -9,8 +9,6 @@ use t::util;
 use npg::controller;
 use npg::model::user;
 
-*IO::Scalar::BINMODE = sub {};
-
 sub new {
   my ($class, $ref) = @_;
 

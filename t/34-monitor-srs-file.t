@@ -11,7 +11,7 @@ use English qw(-no_match_vars);
 use File::chdir;
 
 use Test::More tests => 24;
-use Test::Exception::LessClever;
+use Test::Exception;
 use Readonly;
 
 use t::dbic_util;

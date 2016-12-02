@@ -5,7 +5,7 @@ use English qw(-no_match_vars);
 use XML::LibXML;
 
 use Test::More tests => 12;
-use Test::Exception::LessClever;
+use Test::Exception;
 
 use t::dbic_util;
 use t::useragent;

@@ -6,7 +6,7 @@ use English qw{-no_match_vars};
 use Perl6::Slurp;
 use Test::More tests => 37;
 use Test::Deep;
-use Test::Exception::LessClever;
+use Test::Exception;
 use Test::MockModule;
 use LWP::UserAgent;
 use HTTP::Response;

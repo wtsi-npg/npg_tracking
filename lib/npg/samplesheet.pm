@@ -295,7 +295,7 @@ sub _csv_compatible_value {
         $value = join $as, @{$value};
       } elsif ($type eq 'HASH') {
         my @tmp = ();
-        while (my ($key,$val) = each $value) {
+        while (my ($key,$val) = each %{$value}) {
           push @tmp, join $hs, $key, $val;
         }
         $value = join $as, sort @tmp;

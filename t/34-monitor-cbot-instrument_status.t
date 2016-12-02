@@ -5,7 +5,7 @@ use English qw(-no_match_vars);
 use Perl6::Slurp;
 
 use Test::More tests => 14;
-use Test::Exception::LessClever;
+use Test::Exception;
 
 use t::dbic_util;
 use t::useragent;

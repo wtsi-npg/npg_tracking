@@ -10,7 +10,7 @@ use autodie qw(:all);
 
 use Test::More tests => 11;
 use Test::Deep;
-use Test::Exception::LessClever;
+use Test::Exception;
 use Test::MockModule;
 use Test::Warn;
 
