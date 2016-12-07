@@ -116,7 +116,6 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 
 <div class="run_menu rfloat">
 <ul class="inline">
-  <li><a class="npg_menu" href="[% staging_url %]/cgi-bin/mpsa_image/[% id_run %]/1/1/[% IF !is_miseq_instrument; '110'; END %]1.html">Image Browser</a></li>
 [%- IF !is_miseq_instrument && batch_id %]
   <li><a class="npg_menu" href="http://psd-production.internal.sanger.ac.uk:6900/batches/search?id=[% batch_id %]">SybrGreen Images</a></li>
 [% END -%]
