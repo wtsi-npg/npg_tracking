@@ -2,7 +2,9 @@ LIST OF CHANGES
 
  - code and tests changes to reduce number of warnings under Perl 5.22.2
  - use mysql 5.7.13 in travis (installing from deb)
- - Run web page - removed image browser link
+ - Run web page
+   - removed image browser link
+   - Add EBI submissions link
  - Build.PL fix to ensure that images under htdocs dir are copied to blib
    when building.
  - updated links to NPG QC since the pages moved to SeqQC
