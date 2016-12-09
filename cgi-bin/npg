@@ -1,25 +1,7 @@
-#!/usr/local/bin/perl -T
-#########
-# Author:        rmp
-# Created:       2007-03-28
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/cgi-bin/npg, r16549
-
-my @npg_libs;
-BEGIN {
-  my $libs_string = $ENV{'NPG_PERL5LIB'};
-  if ($libs_string) {
-    my @libs = split /:/smx, $libs_string;
-    foreach my $l (@libs) {
-      my ($dtl) = $l =~ /([a-z0-9\/\._\-]+)/i;
-      if ($dtl) {push @npg_libs, $dtl;}
-    }
-  }
-}
+#!/usr/bin/env perl -T
 
 use strict;
-use lib @npg_libs;
-use warnings; # loads Carp, which we want to source from our cpan build
-
+use warnings;
 use npg::controller;
 use npg::util;
 
