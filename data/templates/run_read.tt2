@@ -116,11 +116,13 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 
 <div class="run_menu rfloat">
 <ul class="inline">
-  <li><a class="npg_menu" href="[% staging_url %]/cgi-bin/mpsa_image/[% id_run %]/1/1/[% IF !is_miseq_instrument; '110'; END %]1.html">Image Browser</a></li>
+[%- IF model.has_run_archived %]
+  <li><a class="npg_menu" href="http://si-trace-web.internal.sanger.ac.uk:8080/cgi-bin/ebi_submissions.pl?show=both&filter=run&filter_op=equals&sort_by=run&psz=25&filter_val=[% id_run %]">EBI submissions</a></li>
+[% END -%]
 [%- IF !is_miseq_instrument && batch_id %]
   <li><a class="npg_menu" href="http://psd-production.internal.sanger.ac.uk:6900/batches/search?id=[% batch_id %]">SybrGreen Images</a></li>
 [% END -%]
- <li><a class="npg_menu" href="[% SCRIPT_NAME _ '_qc/summary/' _ earliest_id %]">NPG QC</a></li>
+ <li><a class="npg_menu" href="[% seqqc_url %]/illumina/runs/[% earliest_id %]">NPG QC</a></li>
 [%- IF model.has_analysis_in_progress %]
  <li><a class="npg_menu" href="[% seqqc_url %]/checks/runs/[% earliest_id %]">NPG SeqQC</a></li>
 [% END -%]

@@ -1,11 +1,20 @@
 LIST OF CHANGES
 
+ - code and tests changes to reduce number of warnings under Perl 5.22.2
+ - use mysql 5.7.13 in travis (installing from deb)
+ - Run web page
+   - removed image browser link
+   - Add EBI submissions link
+ - Build.PL fix to ensure that images under htdocs dir are copied to blib
+   when building.
+ - updated links to NPG QC since the pages moved to SeqQC
+
+release 85.5
  - removed all code that relates to instrument utilisation
  - removed an option to create database entries via XML POST.
  - removed custom error view
  - deleted special privisions for the 'pipeline' user
  - removed unused xml views for run lists
-
  - Install all files, including cgi-related, within the install action.
  - Remove instrument utilisation views for web pages.
  - Deprecate 'request approval' instrument status, enable status change

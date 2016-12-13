@@ -3,7 +3,7 @@ use warnings;
 use English qw(-no_match_vars);
 
 use Test::More tests => 8;
-use Test::Exception::LessClever;
+use Test::Exception;
 
 use t::dbic_util;
 

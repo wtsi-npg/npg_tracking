@@ -83,7 +83,6 @@
 <li><a class="npg_menu_highlight" href="[% SCRIPT_NAME %]/run/;add?id_run=[% id %]">Duplicate Run</a></li>
   [% END -%]
 [% END %]
- <li><a class="npg_menu" href="[% SCRIPT_NAME _ '_qc' %]">NPG QC Home</a></li>
  <li><a class="npg_menu" href="[% SCRIPT_NAME %]/search/">Search</a></li>
 </ul>
 
