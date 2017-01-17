@@ -3,6 +3,7 @@ bin/email_project_followers_run_complete_archived
 bin/event_notifications
 bin/generate_samplesheet
 bin/illumina_seq_fails2rt
+bin/illumina_instruments_uptime
 bin/InstrumentPoller
 bin/npg_daemon_control
 bin/npg_status2file
