@@ -6,18 +6,37 @@ use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Carp;
 use Readonly;
+use Getopt::Long;
+use DateTime;
+use DateTime::Duration;
 use DateTime::Format::Strptime;
 use npg_tracking::Schema;
-
-# TODO - variable number of months
-#        variable start date
-#        verbose mode, log
 
 our $VERSION = '0';
 
 Readonly::Scalar my $HUNDRED         => 100;
 Readonly::Scalar my $DURATION_MONTHS => 3;
-Readonly::Scalar my $st => npg_tracking::Schema->connect()->storage();
+Readonly::Scalar my $DT_PARSER =>
+  DateTime::Format::Strptime->new(pattern => "%F %T", on_error  => 'croak');
+
+my $num_months = $DURATION_MONTHS;
+my $from_string;
+my $to_string;
+
+GetOptions ("from=s"     => \$from_string,
+            "to=s"       => \$to_string,
+            "nmonths=i"  => \$num_months)
+  or croak("Error in command line arguments\n");
+
+($num_months > 0 && $num_months < 12) ||
+  croak "Number of months $num_months failed validation";
+my $to   = $to_string     ? $DT_PARSER->parse_datetime($to_string)   : DateTime->now();
+my $from = $from_string ? $DT_PARSER->parse_datetime($from_string) :
+           $to->clone()->subtract_duration(DateTime::Duration->new(months => $num_months));
+$to->subtract_datetime_absolute($from)->is_positive() ||
+  croak q['to' time should be later than 'from' time];
+
+Readonly::Scalar my $ST => npg_tracking::Schema->connect()->storage();
 
 sub _was_down {
   my ($id_instrument, $date)= @_;
@@ -30,7 +49,7 @@ sub _was_down {
     order by ist.date desc
   };
 
-  my $rows = $st->dbh_do(
+  my $rows = $ST->dbh_do(
     sub {
       my ($storage, $dbh, @args) = @_; 
       $dbh->selectall_arrayref($s, { Slice => {} });
@@ -43,8 +62,8 @@ sub _was_down {
 
 sub _duration {
   my ($start, $finish) = @_;
-  my $p = DateTime::Format::Strptime->new(pattern => "%F %T", on_error  => 'croak');
-  my $dur = $p->parse_datetime($finish)->subtract_datetime_absolute($p->parse_datetime($start));
+  my $dur = $DT_PARSER->parse_datetime($finish)
+    ->subtract_datetime_absolute($DT_PARSER->parse_datetime($start));
   if ($dur->is_negative()) {
     croak 'Down time is negative';
   }
@@ -71,20 +90,26 @@ sub _uptime {
   return sprintf '%.1f', $up;
 }
 
+my $now          = $DT_PARSER->format_datetime($to);
+my $start_time   = $DT_PARSER->format_datetime($from);
+my $all_time     = _duration($start_time, $now);
+
+# Report title
+print qq[ILLUMINA SEQUENCING INSTRUMENTS UPTIME FROM $start_time TO $now\n\n];
+
 my $statement = qq{
   select ifr.model, i.id_instrument, i.name, i.iscurrent, isd.description,
-         ist.date, ist.id_instrument_status,
-         DATE_SUB(now(), INTERVAL $DURATION_MONTHS MONTH) as start_time, now() as time_now
+         ist.date, ist.id_instrument_status
   from instrument_format ifr, instrument i, instrument_status ist, instrument_status_dict isd
   where ist.id_instrument=i.id_instrument and
         ist.id_instrument_status_dict=isd.id_instrument_status_dict and
         i.id_instrument_format=ifr.id_instrument_format and 
         ifr.model not in ('Cluster Station', 'cBot') and
         isd.description in ('down for repair', 'down for service', 'wash required') and
-        ist.date > DATE_SUB(now(), INTERVAL $DURATION_MONTHS MONTH)
+        (ist.date > '$start_time' and ist.date < '$now')
   order by ifr.model, i.name , ist.date, isd.description};
 
-my $rows = $st->dbh_do(
+my $rows = $ST->dbh_do(
   sub {
     my ($storage, $dbh, @args) = @_; 
     $dbh->selectall_arrayref($statement, { Slice => {} });
@@ -94,10 +119,6 @@ my $rows = $st->dbh_do(
 if (!$rows || !@{$rows}) {
   croak 'No rows returned';
 }
-
-my $now          = $rows->[0]->{'time_now'};
-my $start_time   = $rows->[0]->{'start_time'};
-my $all_time     = _duration($start_time, $now);
 
 my $num_statuses = scalar @{$rows};
 my @instruments = ();
@@ -152,8 +173,6 @@ while ($i < $num_statuses) {
   $i++;
 }
 
-# Report title
-print qq[ILLUMINA SEQUENCING INSTRUMENTS UPTIME FROM $start_time TO $now\n\n];
 # Report header
 print join qq[\t], 'Model', 'Name', 'Current', 'Uptime, %', 'Num. Times Down';
 print qq[\n];
