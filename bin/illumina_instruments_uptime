@@ -15,7 +15,7 @@ use npg_tracking::Schema;
 our $VERSION = '0';
 
 Readonly::Scalar my $HUNDRED         => 100;
-Readonly::Scalar my $DURATION_MONTHS => 3;
+Readonly::Scalar my $DURATION_MONTHS => 1;
 Readonly::Scalar my $DT_PARSER =>
   DateTime::Format::Strptime->new(pattern => "%F %T", on_error  => 'croak');
 
@@ -94,8 +94,8 @@ my $now          = $DT_PARSER->format_datetime($to);
 my $start_time   = $DT_PARSER->format_datetime($from);
 my $all_time     = _duration($start_time, $now);
 
-# Report title
-print qq[ILLUMINA SEQUENCING INSTRUMENTS UPTIME FROM $start_time TO $now\n\n];
+#### Report title ####
+print qq[# ILLUMINA SEQUENCING INSTRUMENTS UPTIME FROM $start_time TO $now\n\n];
 
 my $statement = qq{
   select ifr.model, i.id_instrument, i.name, i.iscurrent, isd.description,
@@ -117,7 +117,9 @@ my $rows = $ST->dbh_do(
 );
 
 if (!$rows || !@{$rows}) {
-  croak 'No rows returned';
+  #### Early exit ####
+  print "# No data available\n";
+  exit 0;
 }
 
 my $num_statuses = scalar @{$rows};
@@ -131,7 +133,6 @@ while ($i < $num_statuses) {
 
   # Get the currently considered instrument.
   my $head     = $instruments[-1];
-  my $old_head = $head;
   if (!$head || ($row->{'name'} ne $head->{'name'})) {
     # Create a new instrument entry.
     my $instrument = {};
@@ -143,6 +144,7 @@ while ($i < $num_statuses) {
     push @instruments,$instrument;
     $head = $instrument;
   }
+  my $old_head = $head;
 
   if ($row->{'description'} eq 'wash required') {
     if ($old_head->{'name'} ne $head->{'name'}) {
@@ -173,10 +175,10 @@ while ($i < $num_statuses) {
   $i++;
 }
 
-# Report header
+#### Report header ####
 print join qq[\t], 'Model', 'Name', 'Current', 'Uptime, %', 'Num. Times Down';
 print qq[\n];
-# Report lines
+#### Report lines ####
 foreach my $in (@instruments) {
   print join qq[\t], $in->{'model'},
                      $in->{'name'},
@@ -189,3 +191,131 @@ foreach my $in (@instruments) {
 
 1;
 
+
+=head1 NAME
+
+illumina_instruments_uptime
+
+=head1 USAGE
+  
+  # report for one month from the current time
+  illumina_instruments_uptime
+
+  # report for two months from the current time
+  illumina_instruments_uptime --nmonths 2
+
+  # report for one month leading to time given by the 'to' option
+  illumina_instruments_uptime --to '2016-11-01 00:00:00'
+
+  # report for three months leading to time given by the 'to' option
+  illumina_instruments_uptime --nmonths 3 --to '2016-11-01 00:00:00'
+
+  # report covering period from the current time back to time given
+  # by the 'from' option
+  illumina_instruments_uptime --from '2016-11-01 00:00:00'
+
+  # report for the duration of time between the times given by the
+  # 'from' and 'to' options
+  illumina_instruments_uptime --from '2016-11-01 00:00:00' \
+                              --to '2017-01-01 00:00:00'
+
+=head1 DESCRIPTION
+
+  Reports uptime (percent of time up) and number of times down for
+  Illumina sequencing instruments. The tab-separated report is output
+  to standard out. The first line is the name of the report, which also
+  includes the time interval covered, then the column headers follow,
+  then the data.
+  
+  The down time is calculated as the difference between timestamps when the
+  instrument is assigned one of down statuses ('down for service' or
+  'down for repair') and either the next 'wash required' status or the end
+  of reporting period, whatever is earlier. If at the start of the reporting
+  period the instrument is down, the start of the reporting period is taken
+  the start of the down time.
+
+  New types of sequencing instruments will be picked up automatically.
+  Uptime for instruments that came or went during the report period and had
+  down times will not be accurate since 100% will be the length of the report
+  period rather than the length of the period in service during the report
+  period. The number of times the instrument was down will still be accurate.
+
+  The instruments having 0 in the 'Current' column were taken out of service
+  during the report period. 
+
+=head1 REQUIRED ARGUMENTS
+
+  None
+
+=head1 OPTIONS
+
+=over
+
+=item to
+  
+=item from
+
+=item nmonths
+
+=back
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION
+
+=head1 DEPENDENCIES
+
+=over
+
+=item strict
+
+=item warnings
+
+=item FindBin
+
+=item lib
+
+=item Carp
+
+=item Readonly
+
+=item Getopt::Long
+
+=item DateTime
+
+=item DateTime::Duration
+
+=item DateTime::Format::Strptime
+
+=item npg_tracking::Schema
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2017 Genome Research Limited
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut
