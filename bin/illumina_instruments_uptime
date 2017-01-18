@@ -40,13 +40,14 @@ Readonly::Scalar my $ST => npg_tracking::Schema->connect()->storage();
 
 sub _was_down {
   my ($id_instrument, $date)= @_;
+
   my $s = qq{
     select ist.date, isd.description
     from instrument_status ist, instrument_status_dict isd
     where ist.id_instrument_status_dict = isd.id_instrument_status_dict and
           ist.id_instrument = $id_instrument and
           ist.date < '$date'
-    order by ist.date desc
+    order by ist.date asc
   };
 
   my $rows = $ST->dbh_do(
@@ -55,9 +56,10 @@ sub _was_down {
       $dbh->selectall_arrayref($s, { Slice => {} });
     }
   );
+
   # The instrument was down at the start of the interval
   # if most recent preceeding status was (planned|down for) (repair/service)
-  return @{$rows} && ($rows->[0] =~ /repair|service/);
+  return @{$rows} && ($rows->[-1]->{'description'} =~ /repair|service/);
 }
 
 sub _duration {
@@ -87,7 +89,7 @@ sub _uptime {
   if ($down_time) {
     $up = (($all_time - $down_time)/$all_time) * $HUNDRED;
   }
-  return sprintf '%.1f', $up;
+  return sprintf '%.2f', $up;
 }
 
 my $now          = $DT_PARSER->format_datetime($to);
@@ -133,6 +135,7 @@ while ($i < $num_statuses) {
 
   # Get the currently considered instrument.
   my $head     = $instruments[-1];
+  my $old_head = $head;
   if (!$head || ($row->{'name'} ne $head->{'name'})) {
     # Create a new instrument entry.
     my $instrument = {};
@@ -144,10 +147,9 @@ while ($i < $num_statuses) {
     push @instruments,$instrument;
     $head = $instrument;
   }
-  my $old_head = $head;
 
   if ($row->{'description'} eq 'wash required') {
-    if ($old_head->{'name'} ne $head->{'name'}) {
+    if (!$old_head || $old_head->{'name'} ne $head->{'name'}) {
       # First retrieved status for a given instrument is 'wash required'
       # so it might have followed down time.
       if (_was_down($row->{'id_instrument'}, $row->{'date'})) {
