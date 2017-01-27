@@ -218,7 +218,6 @@ lib/npg/email/roles/event_attributes.pm
 lib/npg/email/roles/instrument.pm
 lib/npg/email/run.pm
 lib/npg/email/run/complete_archived.pm
-lib/npg/email/run/status_change.pm
 lib/npg/model.pm
 lib/npg/model/administration.pm
 lib/npg/model/annotation.pm
