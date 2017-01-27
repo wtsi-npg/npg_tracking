@@ -99,11 +99,11 @@ has a status of run complete in NPG tracking.
 Alignments and QC metrics will then proceed automatically followed by a manual
 QC process and archival to iRODS).
 
-From the database system, the following project has the following lanes on this run
+Study
 
 human
 
-Lanes:
+has the following lanes on this run:
 
 Lane - 1 : Library - 1k
 Lane - 2 : Library - 1k
@@ -128,11 +128,11 @@ has a status of run complete in NPG tracking.
 Alignments and QC metrics will then proceed automatically followed by a manual
 QC process and archival to iRODS).
 
-From the database system, the following project has the following lanes on this run
+Study
 
 platypus
 
-Lanes:
+has the following lanes on this run:
 
 Lane - 5 : Library - Duck
 Lane - 6 : Library - Billed

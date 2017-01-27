@@ -32,7 +32,6 @@ data/npg_tracking_email/templates/devel_header.tt2
 data/npg_tracking_email/templates/instrument_annotation.tt2
 data/npg_tracking_email/templates/instrument_status_change.tt2
 data/npg_tracking_email/templates/lane_detail.tt2
-data/npg_tracking_email/templates/npg_qc_web_url.tt2
 data/npg_tracking_email/templates/npg_qsea_web_url.tt2
 data/npg_tracking_email/templates/npg_tracking_web_url.tt2
 data/npg_tracking_email/templates/run_annotation.tt2
