@@ -16,6 +16,7 @@ before_install:
   - ./.travis/before_install_mysql57.sh
   - cpanm --quiet --notest Alien::Tidyp
   - cpanm --no-lwp --notest https://github.com/wtsi-npg/perl-dnap-utilities/releases/download/${DNAP_UTILITIES_VERSION}/WTSI-DNAP-Utilities-${DNAP_UTILITIES_VERSION}.tar.gz
+  - cpanm --quiet --notest RPETTETT/ClearPress-v473.0.5.tar.gz
   - cpanm --installdeps --notest .
 before_script:
   - mysql -e 'create database npgt;'
