@@ -1,6 +1,7 @@
 LIST OF CHANGES
 
  - simple uptime report for Illumina sequencing instruments
+ - text of notification e-mails updated and unified
  - ClearPress library is pinned to v. 473.0.5
 
 release 85.6
