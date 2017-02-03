@@ -1,7 +1,8 @@
 LIST OF CHANGES
 
  - simple uptime report for Illumina sequencing instruments
- - text of notification e-mails updated and unified
+ - reinmplementation of events reporting
+ - ClearPress library is pinned to v. 473.0.5
 
 release 85.6
  - code and tests changes to reduce number of warnings under Perl 5.22.2
