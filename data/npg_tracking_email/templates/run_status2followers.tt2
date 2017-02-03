@@ -1,0 +1,30 @@
+[% WRAPPER wrapper %]
+[% id_run = event_entity.id_run;
+   status_description = event_entity.description;
+   event_entity.information %]
+
+Study
+
+[% study_name %]
+
+has samples in the following lanes of this run:
+
+[% FOREACH lane = lanes; PROCESS lane_details.tt2; END %]
+
+[% IF status_description == 'run complete' %] 
+The sequencing instrument has finished imaging. It will complete basecalling soon.
+Alignments and QC metrics will then proceed automatically followed by a manual
+QC process and archival to iRODS.
+[% END %]
+[% IF status_description == 'run archived' %]
+Your data should now be available from iRODS (see http://scratchy.internal.sanger.ac.uk/wiki/index.php/IRODS_for_Sequencing_Users ). 
+[% END %]
+
+NPG page for the run:
+[% npg_tracking_url %]/run/[% id_run %]
+
+Analysis and QC information for this run will be/is available:
+[% seqqc_url %]/illumina/runs/[% id_run %]
+[% seqqc_url %]/checks/runs/[% id_run %]
+
+[% END %]

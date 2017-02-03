@@ -1,0 +1,7 @@
+[%
+  seqqc_url = 'http://sfweb.internal.sanger.ac.uk:1959';
+  npg_tracking_url = 'http://sfweb.internal.sanger.ac.uk:9000';
+-%]
+[% content %]
+
+NPG, DNA Pipelines Informatics

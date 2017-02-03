@@ -138,5 +138,31 @@ __PACKAGE__->belongs_to(
 
 our $VERSION = '0';
 
+sub id_run {
+  my $self = shift;
+  return $self->run_lane()->id_run();
+}
+
+sub position {
+  my $self = shift;
+  return $self->run_lane()->position();
+}
+
+sub summary {
+  my $self = shift;
+  return sprintf 'Run %i lane %i annotated by %s',
+    $self->id_run(),
+    $self->position(),
+    $self->annotation()->username();
+}
+
+sub information {
+  my $self = shift;
+  return sprintf '%s on %s: %s',
+    $self->summary(),
+    $self->annotation()->date_as_sting(),
+    $self->annotation()->comment();
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

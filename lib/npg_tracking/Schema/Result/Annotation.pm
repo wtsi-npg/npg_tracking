@@ -205,5 +205,15 @@ __PACKAGE__->belongs_to(
 
 our $VERSION = '0';
 
+sub username {
+  my $self = shift;
+  return $self->user()->username();
+}
+
+sub date_as_string {
+  my $self = shift;
+  return $self->date()->strftime('%F %T');
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

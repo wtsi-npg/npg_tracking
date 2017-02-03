@@ -1,0 +1,8 @@
+[% WRAPPER wrapper %] 
+[% event_entity.information %]
+
+NPG page for this instrument:
+
+[% npg_tracking_url %]/instrument/[% event_entity.name %]
+
+[% END %]

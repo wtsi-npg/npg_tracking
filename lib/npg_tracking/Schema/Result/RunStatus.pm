@@ -182,6 +182,8 @@ __PACKAGE__->belongs_to(
 
 # Created:       2010-04-08
 
+use List::MoreUtils qw/any/;
+
 our $VERSION = '0';
 
 =head2 status_dict
@@ -210,6 +212,32 @@ Helper method returns the description for this run status
 sub description {
   my ( $self ) = @_;
   return $self->run_status_dict->description();
+}
+
+sub summary {
+  my $self = shift;
+  return sprintf q[Run %i was assigned status "%s"],
+    $self->id_run,
+    $self->description(); 
+}
+
+sub information {
+  my $self = shift;
+  return sprintf q[%s on %s by %s],
+    $self->summary(),
+    $self->date()->strftime('%F %T'),
+    $self->user()->username();
+}
+
+sub event_report_types {
+  my $self = shift;
+  my @types = qw/LIMS/;
+  my $description = $self->description();
+  my @statuses = ('run complete', 'run archived');
+  if (any { $_ eq $description} @statuses) {
+    push @types, 'STUDY_FOLLOWERS';
+  }
+  return @types;
 }
 
 __PACKAGE__->meta->make_immutable;

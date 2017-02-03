@@ -221,5 +221,24 @@ __PACKAGE__->belongs_to(
 
 our $VERSION = '0';
 
+sub summary {
+  my $self = shift;
+  return sprintf 'Instrument %s status changed to "%s"',
+    $self->instrument()->name(),
+    $self->instrument_status_dict()->description();
+}
+
+sub information {
+  my $self = shift;
+  my $info = sprintf q[%s on %s by %s],
+    $self->summary(),
+    $self->date()->strftime('%F %T'),
+    $self->user()->username();
+  if ($self->comment()) {
+    $info .= ' Comment: ' . $self->comment();
+  }
+  return $info;
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
