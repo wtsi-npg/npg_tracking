@@ -1,7 +1,5 @@
 #!/usr/bin/env perl
 
-package event_notifications;
-
 use strict;
 use warnings;
 use FindBin qw($Bin);
@@ -18,14 +16,11 @@ npg_tracking::report::events->new_with_options()->process();
 
 __END__
 
-
 =head1 NAME
 
 event_notifications
 
-=head1 VERSION
-
-=head1 SYNOPSIS
+=head1 USAGE
 
   # Generate and send out reports, mark events as reported
   event_notifications
@@ -34,24 +29,41 @@ event_notifications
   # send out reports or mark events as reported
   event_notifications --dry_run
 
+=head1 REQUIRED ARGUMENTS
+
+=head1 OPTIONS
+
+ --dry-run to avoid sending out reports or marking events as reported.
+
 =head1 DESCRIPTION
 
-Attempts to report the events that have not been yet been reported
-and marks events as reported if successful. A number of different
-reports for different recipients can be generated for the same event.
+ Attempts to report the events that have not been yet been reported
+ and marks events as reported if successful. A number of different
+ reports for different recipients can be generated for the same event.
 
-=head1 SUBROUTINES/METHODS
+=head1 EXIT STATUS
 
-None.
+ 0
+
+=head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
+=head1 DEPENDENCIES
 
-=head1 INCOMPATIBILITIES
+=over
 
+=item strict
 
-=head1 BUGS AND LIMITATIONS
+=item warnings
 
+=item FindBin
+
+=item lib
+
+=item npg_tracking::report::events
+
+=back
 
 =head1 AUTHOR
 

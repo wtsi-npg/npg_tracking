@@ -78,3 +78,100 @@ sub _build_reports {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+npg_tracking::report::event2followers
+
+=head1 SYNOPSIS
+
+ npg_tracking::report::event2followers->new(event_entity => $some_row)->emit();
+ 
+=head1 DESCRIPTION
+
+ Reports new run statuses by email to NPG followers, the end-users who are either
+ study owners or managers or followers. The reports are generated for each study that
+ had samples on a run that changes status.
+
+ This class inherits from npg_tracking::report::event2subscribers and retains all
+ attributes and methods of the parent.
+
+=head1 SUBROUTINES/METHODS
+
+=head2 dry_run
+
+=head2 event_entity
+
+=head2 schema_mlwh
+
+=head2 lims
+
+=head2 reports
+
+=head2 emit
+
+=head2 template_name
+
+=head2 report_short
+
+=head2 report_full
+
+=head2 report_author
+
+=head2 usernames2email_address
+ 
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item MooseX::StrictConstructor
+
+=item namespace::autoclean
+
+=item List::MoreUtils
+
+=item Readonly
+
+=item Carp
+
+=item npg::util::mailer
+
+=item st::api::lims
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2017 GRL
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

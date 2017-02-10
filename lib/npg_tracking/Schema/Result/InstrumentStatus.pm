@@ -221,12 +221,24 @@ __PACKAGE__->belongs_to(
 
 our $VERSION = '0';
 
+=head2 summary
+
+Short status summary.
+
+=cut
+
 sub summary {
   my $self = shift;
   return sprintf 'Instrument %s status changed to "%s"',
     $self->instrument()->name(),
     $self->instrument_status_dict()->description();
 }
+
+=head2 information
+
+Information obout this status.
+
+=cut
 
 sub information {
   my $self = shift;

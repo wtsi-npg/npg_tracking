@@ -1,6 +1,8 @@
 package npg_tracking::report::event2lims;
 
 use Moose;
+use MooseX::StrictConstructor;
+use namespace::autoclean;
 use Carp;
 
 use st::api::event;
@@ -38,6 +40,7 @@ has 'reports' => (
   is         => 'ro',
   required   => 0,
   isa        => 'ArrayRef',
+  init_arg   => undef,
   lazy_build => 1,
 );
 sub _build_reports {
@@ -74,3 +77,93 @@ sub emit {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+npg_tracking::report::event2lims
+
+=head1 SYNOPSIS
+
+ npg_tracking::report::event2lims->new(event_entity => $run_status_row)->emit();
+ 
+=head1 DESCRIPTION
+
+ Reports a new run status to LIMs by sending an XML message. Retrieves LIMs identifies
+ from LIMs XML API fro a batch.
+
+=head1 SUBROUTINES/METHODS
+
+=head2 dry_run
+
+ An optional boolean flag. Set it to avoid sending out reports.
+
+=head2 event_entity
+
+ A DBIx row object for the run_status table of the tracking database.
+ A required attribute.
+
+=head2 lims
+
+ An array of lane-level st::api::lims type objects obtained using the xml driver type,
+ an optional attribute, will be built if not set.
+
+=head2 reports
+
+ An array of generated reports. This attribute cannot be set via a constructor.
+
+=head2 emit
+
+ Builds reports and either posts them or, if dry_run is true, prints short report
+ content. 
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item MooseX::StrictConstructor
+
+=item namespace::autoclean
+
+=item Carp
+
+=item st::api::event
+
+=item st::api::lims
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2017 GRL
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

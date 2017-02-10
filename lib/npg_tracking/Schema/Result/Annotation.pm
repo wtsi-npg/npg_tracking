@@ -205,11 +205,19 @@ __PACKAGE__->belongs_to(
 
 our $VERSION = '0';
 
+=head2 username
+
+Username corresponding to the object returned bu the user relationship.
+
+=cut
 sub username {
   my $self = shift;
   return $self->user()->username();
 }
 
+=head2 date_as_string
+
+=cut
 sub date_as_string {
   my $self = shift;
   return $self->date()->strftime('%F %T');

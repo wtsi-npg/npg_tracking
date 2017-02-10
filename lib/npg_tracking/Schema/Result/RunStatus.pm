@@ -205,7 +205,7 @@ __PACKAGE__->belongs_to(
 
 =head2 description
 
-Helper method returns the description for this run status
+Status description as in the run status dictionary.
 
 =cut
 
@@ -214,12 +214,24 @@ sub description {
   return $self->run_status_dict->description();
 }
 
+=head2 summary
+
+Short status summary.
+
+=cut
+
 sub summary {
   my $self = shift;
   return sprintf q[Run %i was assigned status "%s"],
     $self->id_run,
     $self->description(); 
 }
+
+=head2 information
+
+Information about this status
+
+=cut
 
 sub information {
   my $self = shift;
@@ -229,13 +241,20 @@ sub information {
     $self->user()->username();
 }
 
+=head2 event_report_types
+
+Additional ebent report types associated with creating a record
+in this table.
+
+=cut
+
 sub event_report_types {
   my $self = shift;
-  my @types = qw/LIMS/;
+  my @types = qw/lims/;
   my $description = $self->description();
   my @statuses = ('run complete', 'run archived');
   if (any { $_ eq $description} @statuses) {
-    push @types, 'STUDY_FOLLOWERS';
+    push @types, 'followers';
   }
   return @types;
 }

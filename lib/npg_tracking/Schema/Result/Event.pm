@@ -238,6 +238,13 @@ sub entity_obj {
          find( $self->entity_id() );
 }
 
+=head2 mark_as_reported
+
+ Marks the event as reported, ie updates notification_sent
+ column to current time.
+
+=cut
+  
 sub mark_as_reported {
   my $self = shift;
   $self->notification_sent( strftime( '%F %T', localtime ) );
