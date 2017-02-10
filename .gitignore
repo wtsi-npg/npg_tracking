@@ -2,4 +2,5 @@ Build*
 MYMETA*
 _build/
 blib/
+.DS_Store
 *~
