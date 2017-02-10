@@ -218,15 +218,21 @@ around 'insert' => sub {
 
 =head2 entity_obj
 
-Get the row corresponding to the event's entity.
+An event is created when a new record is inserted into
+one of the tables (run_annotation, run_status, etc).
+Each event record links back to the original database change
+via entity_id - the id of the record in a table pointed to
+by the id_event_type value.
+
+Returns a new database record that triggered this event creation.
 
 =cut
 
 sub entity_obj {
   my $self = shift;
 
-  my $obj_type = $self->description();
-  $obj_type =~ s/(?: ^ | _ ) ( [a-z] )/ uc $1 /egmsx;
+  my $obj_type = $self->event_type->entity_type->description();
+  $obj_type =~ s/(?: ^ | _ ) ( [a-z] )/ uc $1 /egmsx; 
 
   return $self->result_source->schema->resultset($obj_type)->
          find( $self->entity_id() );
