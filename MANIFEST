@@ -572,10 +572,6 @@ t/data/dbic_fixtures/400-RunRead.yml
 t/data/dbic_fixtures/400-RunStatus.yml
 t/data/dbic_fixtures/400-SensorInstrument.yml
 t/data/dbic_fixtures/400-TagRun.yml
-t/data/email/st/batches/4861.xml
-t/data/email/st/batches/5305.xml
-t/data/email/st/batches/9009.xml
-t/data/email/st/studies/391.xml
 t/data/fixtures/000-cost_group.yml
 t/data/fixtures/000-designation.yml
 t/data/fixtures/000-entity_type.yml
