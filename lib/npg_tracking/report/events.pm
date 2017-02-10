@@ -3,17 +3,17 @@ package npg_tracking::report::events;
 use Moose;
 use MooseX::Getopt;
 use namespace::autoclean;
-use Class::Load;
+use Class::Load qw/load_class/;
 use List::MoreUtils qw/any uniq/;
 use Readonly;
 use Carp;
 
 use npg_tracking::Schema;
-use WTSI::DNAP::Warehouse::Schema;
 
 our $VERSION = '0';
 
-Readonly::Array my @COMMON_REPORT_TYPES => qw/subscribers/;
+Readonly::Array  my @COMMON_REPORT_TYPES  => qw/subscribers/;
+Readonly::Scalar my $WH_SCHEMA_CLASS_NAME => q[WTSI::DNAP::Warehouse::Schema];
 
 has 'dry_run' => (
   isa       => 'Bool',
@@ -32,14 +32,21 @@ sub _build_schema_npg {
 }
 
 has 'schema_mlwh' => (
-  isa        => 'WTSI::DNAP::Warehouse::Schema',
+  isa        => "Maybe[$WH_SCHEMA_CLASS_NAME]",
   is         => 'ro',
   required   => 0,
   lazy_build => 1,
   traits     => [ 'NoGetopt' ],
 );
 sub _build_schema_mlwh {
-  return WTSI::DNAP::Warehouse::Schema->connect();
+  my $s;
+  try {
+    load_class($WH_SCHEMA_CLASS_NAME);
+    $s = $WH_SCHEMA_CLASS_NAME->connect();
+  } catch {
+    carp $_;
+  };
+  return $s;
 }
 
 sub process {
@@ -63,12 +70,12 @@ sub process {
       carp 'Do not know how to report ' . $entity->resultsource()->name();
       next;
     }
-    
+
     try {
       foreach my $report_type ($self->_report_types($entity)) {
         my $report = $self->_get_report_obj($report_type, $entity);
         $report->reports();
-        $report->send(); # should have provisions for dry_run
+        $report->emit(); # should have provisions for dry_run
         if (!$self->dry_run) {
           $event->mark_as_reported();
         }
@@ -107,7 +114,7 @@ sub _get_report_obj {
       event_entity => $entity,
       dry_run      => $self->dry_run() ? 1 : 0
   };
-  if ($report_type ne 'lims') {
+  if ($report_type ne 'lims' && $self->schema_mlwh()) {
     $ref->{'schema_mlwh'}  = $self->schema_mlwh();
   }
   return $class->new($ref);

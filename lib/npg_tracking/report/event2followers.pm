@@ -8,7 +8,7 @@ extends 'npg_tracking::report::event2subscribers';
 our $VERSION = '0';
 
 sub _build_template_name {
-  return 'run_status2followers'; 
+  return 'run_status2followers';
 }
 
 has '_study_info' => (

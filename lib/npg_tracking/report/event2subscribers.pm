@@ -1,31 +1,29 @@
 package npg_tracking::report::event2subscribers;
 
 use Moose;
+use namespace::autoclean;
 use List::MoreUtils qw/uniq/;
 use Readonly;
 use Carp;
 
 use st::api::lims;
-use WTSI::DNAP::Warehouse::Schema;
 use npg::util::mailer;
 
-extends 'npg_tracking::report::event2lims'; 
+extends 'npg_tracking::report::event2lims';
 
 our $VERSION = '0';
 
 Readonly::Scalar my $TEMPLATE_DIR            => q[data/npg_tracking_email/templates];
 Readonly::Scalar my $TEMPLATE_EXT            => q[.tt2];
-Readonly::Scalar my $DEFAULT_RECIPIENT_HOST  => q[sanger.ac.uk];
+Readonly::Scalar my $DEFAULT_RECIPIENT_HOST  => q[@sanger.ac.uk];
 Readonly::Scalar my $DEFAULT_AUTHOR          => q[srpipe];
 
 has 'schema_mlwh' => (
   isa        => 'WTSI::DNAP::Warehouse::Schema',
   is         => 'ro',
-  lazy_build => 1,
+  required   => 0,
+  predicate  => '_has_schema_mlwh',
 );
-sub _build_schema_mlwh {
-  return WTSI::DNAP::Warehouse::Schema->connect();
-}
 
 sub _build_lims {
   my $self = shift;
@@ -33,19 +31,27 @@ sub _build_lims {
   my @lims_list = ();
   if ($self->event_entity->can('id_run')) {
     my $id_run = $self->event_entity->id_run();
-    my $run_row = $self->event_entity->result_source()
-                ->schema()->resultset('Run')->find($id_run);
-    my $ref = {
-      id_run              => $id_run,
-      id_flowcell_lims    => $run_row->batch_id(),
-      id_flowcell_barcode => $run_row->flowcell_id(),
-      driver_type         => 'ml_warehouse_auto',
-      schema_mlwh         => $self->schema_mlwh
-    };
+    my $schema = $self->event_entity->result_source()->schema();
+    my $run_row = $schema->resultset('Run')->find($id_run);
+    my $ref = { id_run => $id_run };
     if ($self->event_entity->can('position')) {
       $ref->{'position'} = $self->event_entity->position();
     }
+    if ($self->_has_schema_mlwh()) {
+      $ref->{'id_flowcell_lims'}    = $run_row->batch_id();
+      $ref->{'id_flowcell_barcode'} = $run_row->flowcell_id();
+      $ref->{'driver_type'}         = 'ml_warehouse_auto';
+      $ref->{'schema_mlwh'}         = $self->schema_mlwh();
+    }
+    # Allow to fall back on some other driver type, for
+    # example, samplesheet. This will allow to test this
+    # utility in the absence of WTSI::DNAP::Warehouse::Schema
+    # and associated with this schema LIMs drivers.
     my $lims = st::api::lims->new($ref);
+    # Explicitly forbid using the xml driver.
+    if ($lims->driver_type() eq 'xml') {
+      croak 'XML driver type is not allowed';
+    }
     @lims_list =  $ref->{'position'} ? ($lims) : $lims->children();
   }
 
@@ -61,7 +67,7 @@ has '_is_instrument_event' => (
 sub _build__is_instrument_event {
   my $self = shift;
   my $table_name = $self->event_entity->result_source()->name();
-  return $table_name =~ /^instrument/;
+  return $table_name =~ /^instrument/xms;
 }
 
 has 'template_name' => (
@@ -72,7 +78,7 @@ has 'template_name' => (
 );
 sub _build_template_name {
   my $self = shift;
-  return $self->_is_instrument_event ? 'instrument' : 'run_or_lane2subscribers'; 
+  return $self->_is_instrument_event ? 'instrument' : 'run_or_lane2subscribers';
 }
 
 sub report_full {
@@ -105,8 +111,9 @@ sub report_author {
 
 sub usernames2email_address {
   my ($self, @users) = @_;
-  my @emails = uniq map {
-    $_ =~ /@/ ? $_ : join(q[@], $_, $DEFAULT_RECIPIENT_HOST)} @users;
+  my @emails = uniq
+               map { $_ =~ /@/xms ? $_ : $_ . $DEFAULT_RECIPIENT_HOST}
+               @users;
   @emails = sort @emails;
   return \@emails;
 }
@@ -144,7 +151,7 @@ sub _build_reports {
   return \@reports;
 }
 
-sub send {
+sub emit {
   my $self = shift;
   foreach my $report (@{$self->reports}) {
     if (!$self->dry_run) {

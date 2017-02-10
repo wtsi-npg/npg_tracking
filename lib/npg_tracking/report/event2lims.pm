@@ -61,7 +61,7 @@ sub _build_reports {
   return \@reports;
 }
 
-sub send {
+sub emit {
   my $self = shift;
   foreach my $report ( @{$self->reports()} ) {
     if ($self->dry_run) {
