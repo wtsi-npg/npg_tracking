@@ -1,3 +1,5 @@
+#!/bin/bash
+
 WTSI_NPG_GITHUB_URL=https://github.com/wtsi-npg
 WTSI_NPG_BUILD_BRANCH=${WTSI_NPG_BUILD_BRANCH:=$TRAVIS_BRANCH}
 
