@@ -27,11 +27,11 @@ data/gfx/HiSeqX.png
 data/gfx/HK.png
 data/gfx/HK_PE.png
 data/gfx/MiSeq.png
-data/npg_tracking_email/templates/instrument.tt
+data/npg_tracking_email/templates/instrument.tt2
 data/npg_tracking_email/templates/lane_detail.tt2
 data/npg_tracking_email/templates/run_or_lane2subscribers.tt2
 data/npg_tracking_email/templates/run_status2followers.tt2
-wrapper.tt2
+data/npg_tracking_email/templates/wrapper.tt2
 data/schema.txt
 data/templates/actions.tt2
 data/templates/administration_create_entity_type.tt2
