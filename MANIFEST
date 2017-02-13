@@ -564,9 +564,6 @@ t/data/dbic_fixtures/200-Instrument.yml
 t/data/dbic_fixtures/200-Sensor.yml
 t/data/dbic_fixtures/300-Run.yml
 t/data/dbic_fixtures/300-RunLane.yml
-t/data/dbic_fixtures/400-InstrumentAnnotation.yml
-t/data/dbic_fixtures/400-RunAnnotation.yml
-t/data/dbic_fixtures/400-RunLaneAnnotation.yml
 t/data/dbic_fixtures/400-RunLaneStatus.yml
 t/data/dbic_fixtures/400-RunRead.yml
 t/data/dbic_fixtures/400-RunStatus.yml
