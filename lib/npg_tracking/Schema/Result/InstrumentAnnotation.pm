@@ -163,9 +163,9 @@ Full annotation description.
 
 sub information {
   my $self = shift;
-  return sprintf '%s on %s: %s',
+  return sprintf '%s on %s - %s',
     $self->summary(),
-    $self->annotation()->date_as_sting(),
+    $self->annotation()->date_as_string(),
     $self->annotation()->comment();
 }
 

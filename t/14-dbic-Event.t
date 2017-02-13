@@ -1,21 +1,13 @@
 use strict;
 use warnings;
-
-use DBI;
-use English qw(-no_match_vars);
-
 use Test::More tests => 9;
 use Test::Exception;
-use Test::MockModule;
-
 use t::dbic_util;
 
 use_ok('npg_tracking::Schema::Result::Event');
 
-
 my $schema = t::dbic_util->new->test_schema();
 my $dbh    = $schema->storage->dbh();
-
 
 my $test;
 
@@ -27,7 +19,6 @@ lives_ok {
                           description       => 'Some text',
                           entity_id         => 6,
                           id_user           => 6,
-#                          notification_sent => undef,
                         }
            )
          }
@@ -62,7 +53,6 @@ lives_ok {
 
 is( $test->notification_sent()->datetime, '2010-09-21T11:19:25',
     'notification_sent returned correctly');
-
 
 $test = $schema->resultset('Event')->find(23);
 my $entity = $test->entity_obj();

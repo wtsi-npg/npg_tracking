@@ -449,9 +449,12 @@ t/14-dbic-EntityType.t
 t/14-dbic-Event.t
 t/14-dbic-EventType.t
 t/14-dbic-Instrument.t
+t/14-dbic-InstrumentAnnotation.t
 t/14-dbic-InstrumentStatusDict.t
 t/14-dbic-Run.t
+t/14-dbic-RunAnnotation.t
 t/14-dbic-RunLane.t
+t/14-dbic-RunLaneAnnotation.t
 t/14-dbic-RunLaneStatus.t
 t/14-dbic-RunLaneStatusDict.t
 t/14-dbic-RunStatus.t
