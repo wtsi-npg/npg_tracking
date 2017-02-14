@@ -190,7 +190,8 @@ __PACKAGE__->belongs_to(
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
 
-use POSIX qw(strftime);
+use Carp;
+with 'npg_tracking::Schema::Retriever';
 
 our $VERSION = '0';
 
@@ -247,8 +248,13 @@ sub entity_obj {
   
 sub mark_as_reported {
   my $self = shift;
-  $self->notification_sent( strftime( '%F %T', localtime ) );
-  return $self->update();
+  if ($self->notification_sent()) {
+    my $id = $self->id_event();
+    croak "Event with id $id is already marked as reported";
+  }
+  $self->notification_sent($self->get_time_now());
+  $self->update();
+  return;
 }
 
 __PACKAGE__->meta->make_immutable;

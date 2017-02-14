@@ -1,16 +1,15 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 14;
 use Test::Exception;
+use DateTime;
 use t::dbic_util;
 
 use_ok('npg_tracking::Schema::Result::Event');
 
 my $schema = t::dbic_util->new->test_schema();
-my $dbh    = $schema->storage->dbh();
 
 my $test;
-
 lives_ok {
            $test = $schema->resultset('Event')->create(
                         {
@@ -25,17 +24,17 @@ lives_ok {
          'Create test object - notification_sent not set';
 isa_ok( $test, 'npg_tracking::Schema::Result::Event', 'Correct class' );
 
-my $new_row_id = $test->id();
-
-
-my $sql = 'SELECT notification_sent'
-        . ' FROM event'
-        . " WHERE id_event = $new_row_id";
-my $blank_date = $dbh->selectrow_array($sql);
-
-is( $blank_date, '0000-00-00 00:00:00', 'Zeroed date written to db...' );
+is( $test->get_column('notification_sent'), '0000-00-00 00:00:00',
+  'Zeroed date written to db...' );
 is( $test->notification_sent(), undef, '  ...but undef is returned to DBIx');
 
+lives_ok { $test->mark_as_reported() } 'Row is marked as reported';
+my $date = $test->notification_sent();
+ok($date, 'Notification date is set');
+
+my $diff = $test->get_time_now()->subtract_datetime($date);
+ok($diff->is_zero || $diff->is_positive, 'Notification timestamp is not in future');
+ok($diff->minutes <= 1, 'Notification time is in the recent past');
 
 lives_ok {
            $test = $schema->resultset('Event')->create(
@@ -52,12 +51,16 @@ lives_ok {
          'Create test object - notification_sent is set';
 
 is( $test->notification_sent()->datetime, '2010-09-21T11:19:25',
-    'notification_sent returned correctly');
+    'Notification_sent returned correctly');
+my $id = $test->id_event();
+throws_ok { $test->mark_as_reported() }
+  qr/Event with id $id is already marked as reported/,
+  'Cannot mark as reported twice';
 
 $test = $schema->resultset('Event')->find(23);
 my $entity = $test->entity_obj();
 isa_ok( $entity, 'npg_tracking::Schema::Result::RunStatus',
-        'Recover entity from event' );
+        'Original entity' );
 is( $entity->id_run_status(), 4, 'The entity id matches' );
 
 1;
