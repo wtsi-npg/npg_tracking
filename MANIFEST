@@ -450,6 +450,7 @@ t/14-dbic-Event.t
 t/14-dbic-EventType.t
 t/14-dbic-Instrument.t
 t/14-dbic-InstrumentAnnotation.t
+t/14-dbic-InstrumentStatus.t
 t/14-dbic-InstrumentStatusDict.t
 t/14-dbic-Run.t
 t/14-dbic-RunAnnotation.t

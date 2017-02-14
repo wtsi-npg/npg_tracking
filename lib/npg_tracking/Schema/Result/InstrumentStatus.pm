@@ -247,7 +247,7 @@ sub information {
     $self->date()->strftime('%F %T'),
     $self->user()->username();
   if ($self->comment()) {
-    $info .= ' Comment: ' . $self->comment();
+    $info .= '. Comment: ' . $self->comment();
   }
   return $info;
 }

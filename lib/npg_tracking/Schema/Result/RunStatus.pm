@@ -243,7 +243,7 @@ sub information {
 
 =head2 event_report_types
 
-Additional ebent report types associated with creating a record
+Additional event report types associated with creating a record
 in this table.
 
 =cut
@@ -252,7 +252,7 @@ sub event_report_types {
   my $self = shift;
   my @types = qw/lims/;
   my $description = $self->description();
-  my @statuses = ('run complete', 'run archived');
+  my @statuses = ('qc review pending', 'qc complete');
   if (any { $_ eq $description} @statuses) {
     push @types, 'followers';
   }
