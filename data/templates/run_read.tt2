@@ -56,8 +56,8 @@
   <tr><th>Instrument / platform</th><td><a href="[% SCRIPT_NAME %]/instrument/[% model.id_instrument %]">[% model.instrument.name %]</a>[% IF model.hiseq_slot %] Slot [% model.hiseq_slot %][% END %] / [% model.instrument_format.model %]</td></tr>
   <tr><th>Cycle count actual / expected</th><td>[% model.actual_cycle_count %] / [% model.expected_cycle_count %]</td></tr>
   <tr><th>Current status</th><td>
-[%- 
-current_status = model.current_run_status.description; 
+[%-
+current_status = model.current_run_status.description;
 IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in progress') ) && requestor.is_member_of( 'manual_qc' ) -%]
 <form id="manual_qc" method="post" action="[% SCRIPT_NAME %]/run_status/;create"><div>
   <input type="hidden" name="id_run" value="[% model.id_run %]" />
@@ -155,7 +155,7 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 <tr>
  <td>[% run_lane.position %]</td>
  <td>[% IF requestor.is_member_of('manual_qc') -%]
-<a href="#" onclick="runLaneTagForm('[% run_lane.id_run_lane %]','[% run_lane.position %]','[% FOREACH tag = run_lane.tags %][% tag.tag %] [% END %]');return false;">Add</a> 
+<a href="#" onclick="runLaneTagForm('[% run_lane.id_run_lane %]','[% run_lane.position %]','[% FOREACH tag = run_lane.tags %][% tag.tag %] [% END %]');return false;">Add</a>
 [%- END %][% FOREACH tag = run_lane.tags %][% tag.tag | html %] [% END -%]
 </td>
  <td><a href="[% SCRIPT_NAME %]/run_lane/[% run_lane.id_run_lane %]">View Lane</a></td>
@@ -199,10 +199,9 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 
 <script type="text/javascript">
   document.title='[% model.name %] Run Details';
-  var rAndDCodes = [% model.ajax_array_cost_group_values('R&D') %];
   var id_run = [% model.id_run %];
   var batch_id = [% model.batch_id %];
-  Event.observe(window,'load',things_to_do_on_load(id_run, batch_id, rAndDCodes));
+  Event.observe(window,'load',things_to_do_on_load(id_run, batch_id));
 
   function runLaneTagForm(id_run_lane, position, existing_tags) {
     var form_div = $('run_lane_tag_form');
