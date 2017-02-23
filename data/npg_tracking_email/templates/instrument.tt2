@@ -1,4 +1,4 @@
-[% WRAPPER wrapper %] 
+[% WRAPPER wrapper.tt2 %] 
 [% event_entity.information %]
 
 NPG page for this instrument:

@@ -1,4 +1,4 @@
-[% WRAPPER wrapper %]
+[% WRAPPER wrapper.tt2 %]
 [% id_run = event_entity.id_run;
    status_description = event_entity.description;
    event_entity.information %]

@@ -4,6 +4,7 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::autoclean;
 use List::MoreUtils qw/uniq/;
+use Template;
 use Readonly;
 use Carp;
 
@@ -86,18 +87,21 @@ sub _build_template_name {
 
 sub report_full {
   my ($self, $lims) = @_;
+
   my $text;
-  Template->new(
+  my $t = Template->new(
     INCLUDE_PATH => [ $TEMPLATE_DIR ],
     INTERPOLATE  => 1,
-    OUTPUT       => $text,
-  )->process(
-    $self->template_name() . $TEMPLATE_EXT,
-    {
+    OUTPUT       => \$text,
+  )  || $self->logcroak($Template::ERROR);
+
+  $t->process(
+    $self->template_name() . $TEMPLATE_EXT, {
       lanes        => $lims,
-      event_entity => $self->event_entity(),
+      event_entity => $self->event_entity()
     }
-  );
+  ) || $self->logcroak($t->error());
+
   return $text;
 }
 
@@ -108,31 +112,33 @@ sub report_short {
 
 sub report_author {
   my $self = shift;
-  my $author = $ENV{'USER'} || $DEFAULT_AUTHOR;
-  return $self->username2email_address($author);
+  return ($self->username2email_address($ENV{'USER'} || $DEFAULT_AUTHOR))[0];
 }
 
-sub usernames2email_address {
+sub username2email_address {
   my ($self, @users) = @_;
   my @emails = uniq
                map { $_ =~ /@/xms ? $_ : $_ . $DEFAULT_RECIPIENT_HOST}
                @users;
   @emails = sort @emails;
-  return \@emails;
+  return @emails;
 }
 
 sub _subscribers {
   my $self = shift;
   my $group = $self->_is_instrument_event ? q[engineers] : q[events];
   my @subscribers = ();
-  my $schema = $self->event_entity->result_set->schema;
+  my $schema = $self->event_entity->result_source->schema;
   my $group_row = $schema->resultset('Usergroup')->search(
                   {groupname => $group, iscurrent => 1})->next();
   if (!$group_row) {
     croak "Group $group is not available in the db";
   }
-  push @subscribers, map {$_->user()->username()} $group_row->user2usergroups()->all();
-  return $self->usernames2email_address(@subscribers);
+  push @subscribers, map  { $_->username() }
+                     grep { $_->iscurrent() }
+                     map  { $_->user() }
+    $group_row->user2usergroups()->all();
+  return [ $self->username2email_address(@subscribers) ];
 }
 
 sub _build_reports {
@@ -141,7 +147,7 @@ sub _build_reports {
   my @reports = ();
   my @subscribers = $self->_subscribers();
   if (!@subscribers) {
-    carp 'Nobody to send to';
+    self->warn('Nobody to send report to');
   } else {
     push @reports, npg::util::mailer->new(
       from    => $self->report_author(),
@@ -158,7 +164,7 @@ sub emit {
   my $self = shift;
   foreach my $report (@{$self->reports}) {
     if (!$self->dry_run) {
-      carp $report->{'subject'};
+      $self->info('DRY RUN ' . $report->{'subject'});
     } else {
       $report->mail();
     }
@@ -232,7 +238,7 @@ npg_tracking::report::event2subscribers
 
  The e-mail address of the user from whom whose account the e-mail will be sent.
 
-=head2 usernames2email_address
+=head2 username2email_address
 
  Maps a list of username to email addresses.
  

@@ -31,6 +31,7 @@ data/npg_tracking_email/templates/instrument.tt2
 data/npg_tracking_email/templates/lane_detail.tt2
 data/npg_tracking_email/templates/run_or_lane2subscribers.tt2
 data/npg_tracking_email/templates/run_status2followers.tt2
+data/npg_tracking_email/templates/urls.tt2
 data/npg_tracking_email/templates/wrapper.tt2
 data/schema.txt
 data/templates/actions.tt2
