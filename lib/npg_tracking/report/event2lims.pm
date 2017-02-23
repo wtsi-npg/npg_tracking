@@ -8,6 +8,8 @@ use Carp;
 use st::api::event;
 use st::api::lims;
 
+with 'WTSI::DNAP::Utilities::Loggable';
+
 our $VERSION = '0';
 
 has 'dry_run' => (
@@ -68,7 +70,7 @@ sub emit {
   my $self = shift;
   foreach my $report ( @{$self->reports()} ) {
     if ($self->dry_run) {
-      carp $report->{'message'};
+      $self->info('DRY RUN ' . $report->{'message'});
     } else {
       $report->create();
     }
@@ -132,6 +134,8 @@ npg_tracking::report::event2lims
 =item namespace::autoclean
 
 =item Carp
+
+=item WTSI::DNAP::Utilities::Loggable
 
 =item st::api::event
 
