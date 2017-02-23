@@ -222,8 +222,6 @@ lib/npg/email/run/status_change.pm
 lib/npg/model.pm
 lib/npg/model/administration.pm
 lib/npg/model/annotation.pm
-lib/npg/model/cost_code.pm
-lib/npg/model/cost_group.pm
 lib/npg/model/designation.pm
 lib/npg/model/entity_type.pm
 lib/npg/model/event.pm
@@ -406,8 +404,6 @@ t/10-authentication-sanger_sso.t
 t/10-bait.t
 t/10-model-administration.t
 t/10-model-annotations.t
-t/10-model-cost_code.t
-t/10-model-cost_group.t
 t/10-model-designation.t
 t/10-model-entity_type.t
 t/10-model-event.t
@@ -597,7 +593,6 @@ t/data/email/st/batches/4861.xml
 t/data/email/st/batches/5305.xml
 t/data/email/st/batches/9009.xml
 t/data/email/st/studies/391.xml
-t/data/fixtures/000-cost_group.yml
 t/data/fixtures/000-designation.yml
 t/data/fixtures/000-entity_type.yml
 t/data/fixtures/000-ext_service.yml
@@ -609,7 +604,6 @@ t/data/fixtures/000-tag.yml
 t/data/fixtures/000-user.yml
 t/data/fixtures/000-usergroup.yml
 t/data/fixtures/100-annotation.yml
-t/data/fixtures/100-cost_code.yml
 t/data/fixtures/100-event_type.yml
 t/data/fixtures/100-instrument_format.yml
 t/data/fixtures/100-tag_frequency.yml
