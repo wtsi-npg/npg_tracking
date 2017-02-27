@@ -1,9 +1,5 @@
-#!/usr/local/bin/perl -T
-#########
-# Author:        rmp
-# Created:       2006-10-31
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/sflogin_web_apps/trunk/cgi-bin/locate_runfolder, r16013
-#
+#!/usr/bin/env perl -T
+
 use strict;
 use warnings;
 use English qw(-no_match_vars);
@@ -13,7 +9,7 @@ main();
 0;
 
 sub main {
-  my ($pathglob,$runfolder, $suffix) = $ENV{PATH_INFO} =~ m{\A((?:/\S+?/\*)?)/([^/?]+)(.*)}smx;
+  my ($pathglob,$runfolder, $suffix) = $ENV{'PATH_INFO'} =~ m{\A((?:/\S+?/\*)?)/([^/?]+)(.*)}smx;
   my ($id_run);
   my @folders;
   if(not $runfolder=~/\A\d+\z/smx){
