@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+release 86.0
+ - httpd config files for httpd v.2.4.23 and mod-perl v.2
  - simple uptime report for Illumina sequencing instruments
  - ClearPress library is pinned to v. 473.0.5
 
