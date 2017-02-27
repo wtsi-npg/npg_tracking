@@ -1,0 +1,323 @@
+#! /usr/bin/env perl
+
+use strict;
+use warnings; 
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use Carp;
+use Readonly;
+use Getopt::Long;
+use DateTime;
+use DateTime::Duration;
+use DateTime::Format::Strptime;
+use npg_tracking::Schema;
+
+our $VERSION = '0';
+
+Readonly::Scalar my $HUNDRED         => 100;
+Readonly::Scalar my $DURATION_MONTHS => 1;
+Readonly::Scalar my $DT_PARSER =>
+  DateTime::Format::Strptime->new(pattern => "%F %T", on_error  => 'croak');
+
+my $num_months = $DURATION_MONTHS;
+my $from_string;
+my $to_string;
+
+GetOptions ("from=s"     => \$from_string,
+            "to=s"       => \$to_string,
+            "nmonths=i"  => \$num_months)
+  or croak("Error in command line arguments\n");
+
+($num_months > 0 && $num_months < 12) ||
+  croak "Number of months $num_months failed validation";
+my $to   = $to_string     ? $DT_PARSER->parse_datetime($to_string)   : DateTime->now();
+my $from = $from_string ? $DT_PARSER->parse_datetime($from_string) :
+           $to->clone()->subtract_duration(DateTime::Duration->new(months => $num_months));
+$to->subtract_datetime_absolute($from)->is_positive() ||
+  croak q['to' time should be later than 'from' time];
+
+Readonly::Scalar my $ST => npg_tracking::Schema->connect()->storage();
+
+sub _was_down {
+  my ($id_instrument, $date)= @_;
+
+  my $s = qq{
+    select ist.date, isd.description
+    from instrument_status ist, instrument_status_dict isd
+    where ist.id_instrument_status_dict = isd.id_instrument_status_dict and
+          ist.id_instrument = $id_instrument and
+          ist.date < '$date'
+    order by ist.date asc
+  };
+
+  my $rows = $ST->dbh_do(
+    sub {
+      my ($storage, $dbh, @args) = @_; 
+      $dbh->selectall_arrayref($s, { Slice => {} });
+    }
+  );
+
+  # The instrument was down at the start of the interval
+  # if most recent preceeding status was (planned|down for) (repair/service)
+  return @{$rows} && ($rows->[-1]->{'description'} =~ /repair|service/);
+}
+
+sub _duration {
+  my ($start, $finish) = @_;
+  my $dur = $DT_PARSER->parse_datetime($finish)
+    ->subtract_datetime_absolute($DT_PARSER->parse_datetime($start));
+  if ($dur->is_negative()) {
+    croak 'Down time is negative';
+  }
+  return $dur->seconds();
+}
+
+sub _compute {
+  my ($head, $start, $finish) = @_;
+  $head->{'down_time'}  += _duration($start, $finish);
+  $head->{'down_count'} += 1;
+  return;
+}
+
+sub _uptime {
+  my ($down_time, $all_time) = @_;
+  
+  if ($all_time < $down_time) {
+    croak 'Suspected time swap';
+  }
+  my $up = $HUNDRED;
+  if ($down_time) {
+    $up = (($all_time - $down_time)/$all_time) * $HUNDRED;
+  }
+  return sprintf '%.2f', $up;
+}
+
+my $now          = $DT_PARSER->format_datetime($to);
+my $start_time   = $DT_PARSER->format_datetime($from);
+my $all_time     = _duration($start_time, $now);
+
+#### Report title ####
+print qq[# ILLUMINA SEQUENCING INSTRUMENTS UPTIME FROM $start_time TO $now\n\n];
+
+my $statement = qq{
+  select ifr.model, i.id_instrument, i.name, i.iscurrent, isd.description,
+         ist.date, ist.id_instrument_status
+  from instrument_format ifr, instrument i, instrument_status ist, instrument_status_dict isd
+  where ist.id_instrument=i.id_instrument and
+        ist.id_instrument_status_dict=isd.id_instrument_status_dict and
+        i.id_instrument_format=ifr.id_instrument_format and 
+        ifr.model not in ('Cluster Station', 'cBot') and
+        isd.description in ('down for repair', 'down for service', 'wash required') and
+        (ist.date > '$start_time' and ist.date < '$now')
+  order by ifr.model, i.name , ist.date, isd.description};
+
+my $rows = $ST->dbh_do(
+  sub {
+    my ($storage, $dbh, @args) = @_; 
+    $dbh->selectall_arrayref($statement, { Slice => {} });
+  }
+);
+
+if (!$rows || !@{$rows}) {
+  #### Early exit ####
+  print "# No data available\n";
+  exit 0;
+}
+
+my $num_statuses = scalar @{$rows};
+my @instruments = ();
+my $i = 0;
+
+while ($i < $num_statuses) {
+
+  # Get next result to consider.
+  my $row = $rows->[$i];
+
+  # Get the currently considered instrument.
+  my $head     = $instruments[-1];
+  my $old_head = $head;
+  if (!$head || ($row->{'name'} ne $head->{'name'})) {
+    # Create a new instrument entry.
+    my $instrument = {};
+    $instrument->{'name'}       = $row->{'name'};
+    $instrument->{'model'}      = $row->{'model'};
+    $instrument->{'iscurrent'}  = $row->{'iscurrent'};
+    $instrument->{'down_count'} = 0;
+    $instrument->{'down_time'}  = 0;
+    push @instruments,$instrument;
+    $head = $instrument;
+  }
+
+  if ($row->{'description'} eq 'wash required') {
+    if (!$old_head || $old_head->{'name'} ne $head->{'name'}) {
+      # First retrieved status for a given instrument is 'wash required'
+      # so it might have followed down time.
+      if (_was_down($row->{'id_instrument'}, $row->{'date'})) {
+        _compute($head, $start_time, $row->{'date'});
+      }
+    }
+  } else {
+    # One of down statuses.
+    # Move to the end of this down time or, if it's the last status
+    # for the instrument, use current time.
+    my $j = $i + 1;
+    my $next = ($j != $num_statuses) ? $rows->[$j] : undef;
+    my $start  = $row->{'date'};
+    my $finish = $now;
+    if ($next && $next->{'name'} eq $head->{'name'}) {
+      $i = $j; # Skip over the next row.
+      if ($next->{'description'} ne 'wash required') {
+        croak 'Wash required status is expected';
+      }
+      $finish = $next->{'date'};
+    }
+    _compute($head, $start, $finish);
+  }
+
+  $i++;
+}
+
+#### Report header ####
+print join qq[\t], 'Model', 'Name', 'Current', 'Uptime, %', 'Num. Times Down';
+print qq[\n];
+#### Report lines ####
+foreach my $in (@instruments) {
+  print join qq[\t], $in->{'model'},
+                     $in->{'name'},
+                     $in->{'iscurrent'},
+                     _uptime($in->{'down_time'}, $all_time),
+                     $in->{'down_count'};
+                    
+  print qq[\n];
+}
+
+1;
+
+
+=head1 NAME
+
+illumina_instruments_uptime
+
+=head1 USAGE
+  
+  # report for one month from the current time
+  illumina_instruments_uptime
+
+  # report for two months from the current time
+  illumina_instruments_uptime --nmonths 2
+
+  # report for one month leading to time given by the 'to' option
+  illumina_instruments_uptime --to '2016-11-01 00:00:00'
+
+  # report for three months leading to time given by the 'to' option
+  illumina_instruments_uptime --nmonths 3 --to '2016-11-01 00:00:00'
+
+  # report covering period from the current time back to time given
+  # by the 'from' option
+  illumina_instruments_uptime --from '2016-11-01 00:00:00'
+
+  # report for the duration of time between the times given by the
+  # 'from' and 'to' options
+  illumina_instruments_uptime --from '2016-11-01 00:00:00' \
+                              --to '2017-01-01 00:00:00'
+
+=head1 DESCRIPTION
+
+  Reports uptime (percent of time up) and number of times down for
+  Illumina sequencing instruments. The tab-separated report is output
+  to standard out. The first line is the name of the report, which also
+  includes the time interval covered, then the column headers follow,
+  then the data.
+  
+  The down time is calculated as the difference between timestamps when the
+  instrument is assigned one of down statuses ('down for service' or
+  'down for repair') and either the next 'wash required' status or the end
+  of reporting period, whatever is earlier. If at the start of the reporting
+  period the instrument is down, the start of the reporting period is taken
+  the start of the down time.
+
+  New types of sequencing instruments will be picked up automatically.
+  Uptime for instruments that came or went during the report period and had
+  down times will not be accurate since 100% will be the length of the report
+  period rather than the length of the period in service during the report
+  period. The number of times the instrument was down will still be accurate.
+
+  The instruments having 0 in the 'Current' column were taken out of service
+  during the report period. 
+
+=head1 REQUIRED ARGUMENTS
+
+  None
+
+=head1 OPTIONS
+
+=over
+
+=item to
+  
+=item from
+
+=item nmonths
+
+=back
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION
+
+=head1 DEPENDENCIES
+
+=over
+
+=item strict
+
+=item warnings
+
+=item FindBin
+
+=item lib
+
+=item Carp
+
+=item Readonly
+
+=item Getopt::Long
+
+=item DateTime
+
+=item DateTime::Duration
+
+=item DateTime::Format::Strptime
+
+=item npg_tracking::Schema
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2017 Genome Research Limited
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut
