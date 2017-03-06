@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - removed tables cost_code and cost_group
+
 release 86.0
  - httpd config files for httpd v.2.4.23 and mod-perl v.2
  - simple uptime report for Illumina sequencing instruments
