@@ -70,39 +70,7 @@ my $shell_user = $ENV{'USER'};
 
 my $id_run = 21915;
 
-subtest 'run status event' => sub {
-  plan tests => 11;
-  
-  my $status_row = $schema->resultset('RunStatus')->search({id_run => $id_run})->next();
-  my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
-                                                       event_entity => $status_row);
-  isa_ok ($e, 'npg_tracking::report::event2subscribers');
-  ok ($e->dry_run, 'dry_run mode');
-  is ($e->report_author(), $shell_user . '@sanger.ac.uk', 'report author');
-  is ($e->template_name(), 'run_or_lane2subscribers', 'template name');
-  is_deeply ($e->_subscribers(), [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk)],
-    'correct ordered list of subscribers');
-  is ($e->report_short(), 'Run 21915 was assigned status "run pending"', 'short report text');
-  warning_like {$e->lims} qr/XML driver type is not allowed/, 'XML driver is not allowed';
-  is (scalar @{$e->lims}, 0, 'Failed to get LIMs object');
-
-  my $report = <<REPORT;
-Run 21915 was assigned status "run pending" on 2017-02-08 11:49:39 by joe_events
-
-NPG page for this run:
-http://sfweb.internal.sanger.ac.uk:9000/run/21915
-
-NPG, DNA Pipelines Informatics
-REPORT
-  is ($e->report_full($e->lims()), $report, 'full report text');
-
-  local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
-  $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
-                                                    event_entity => $status_row);
-  is (scalar @{$e->lims}, 8, 'Retrieved LIMs object');
-
-  $report = <<REPORT1;
-Run 21915 was assigned status "run pending" on 2017-02-08 11:49:39 by joe_events
+my $lims_summary = <<LIMS;
 Lane 1: Samples
     QC1Hip-12209
     QC1Hip-12210
@@ -167,7 +135,42 @@ Lane 8: Samples
     CTTV0286207368
     ... 8 samples in total
 
+LIMS
 
+subtest 'run status event' => sub {
+  plan tests => 11;
+  
+  my $status_row = $schema->resultset('RunStatus')->search({id_run => $id_run})->next();
+  my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
+                                                       event_entity => $status_row);
+  isa_ok ($e, 'npg_tracking::report::event2subscribers');
+  ok ($e->dry_run, 'dry_run mode');
+  is ($e->report_author(), $shell_user . '@sanger.ac.uk', 'report author');
+  is ($e->template_name(), 'run_or_lane2subscribers', 'template name');
+  is_deeply ($e->_subscribers(), [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk)],
+    'correct ordered list of subscribers');
+  is ($e->report_short(), 'Run 21915 was assigned status "run pending"', 'short report text');
+  warning_like {$e->lims} qr/XML driver type is not allowed/, 'XML driver is not allowed';
+  is (scalar @{$e->lims}, 0, 'Failed to get LIMs object');
+
+  my $report = <<REPORT;
+Run 21915 was assigned status "run pending" on 2017-02-08 11:49:39 by joe_events
+
+NPG page for this run:
+http://sfweb.internal.sanger.ac.uk:9000/run/21915
+
+NPG, DNA Pipelines Informatics
+REPORT
+  is ($e->report_full($e->lims()), $report, 'full report text');
+
+  local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
+  $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
+                                                    event_entity => $status_row);
+  is (scalar @{$e->lims}, 8, 'Retrieved LIMs object');
+
+  $report = <<REPORT1;
+Run 21915 was assigned status "run pending" on 2017-02-08 11:49:39 by joe_events
+$lims_summary
 NPG page for this run:
 http://sfweb.internal.sanger.ac.uk:9000/run/21915
 
@@ -218,7 +221,7 @@ http://sfweb.internal.sanger.ac.uk:9000/instrument/6
 
 NPG, DNA Pipelines Informatics
 REPORT3
-  is ($e->report_full($e->lims()), $report, 'full report text');
+  is ($e->report_full($e->lims()), $report, 'full report text with a comment');
 };
 
 1;
