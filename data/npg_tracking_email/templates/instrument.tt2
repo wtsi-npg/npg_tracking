@@ -1,8 +1,5 @@
 [% WRAPPER wrapper.tt2 %] 
-[% event_entity.information %]
-
+[%- event_entity.information %]
 NPG page for this instrument:
-
-[% npg_tracking_url %]/instrument/[% event_entity.name %]
-
-[% END %]
+[% PROCESS urls.tt2 %][% npg_tracking_url %]/instrument/[% event_entity.id_instrument %]
+[% END -%]

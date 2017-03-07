@@ -2,12 +2,13 @@
    max_num_samples = 4;
    sample_names = lane.sample_names;
    num_samples = sample_names.size;
-   IF num_samples > max_num_samples
+   IF num_samples > max_num_samples;
      sample_names = sample_names.slice(0, max_num_samples-1);
    END;
 -%]
 Lane [% lane.position %]: Samples
-[%- FOREACH sample_name = sample_names -%]
-  [% sample_name %]
-[% END -%]
-[%- IF num_samples > max_num_samples %] ([% num_samples %] samples in total)[ % END -%]
+[% FOREACH sample_name = sample_names %]
+    [%- '    ' _ sample_name %]
+[% END %]
+[%- IF num_samples > max_num_samples; '    ... ' _ num_samples %] samples in total[% END %]
+

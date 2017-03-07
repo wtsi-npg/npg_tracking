@@ -5,6 +5,7 @@ use MooseX::StrictConstructor;
 use namespace::autoclean;
 use List::MoreUtils qw/uniq/;
 use Template;
+use Try::Tiny;
 use Readonly;
 use Carp;
 
@@ -33,30 +34,38 @@ sub _build_lims {
   my $self = shift;
 
   my @lims_list = ();
-  if ($self->event_entity->can('id_run')) {
+  # Instrument status has not affiliation with a run,
+  # report does not include LIMs information
+  if (!$self->_is_instrument_event()) {
+    # If non-instrument entity does not have id_run accessor,
+    # it's an error we do not want to catch.
     my $id_run = $self->event_entity->id_run();
-    my $schema = $self->event_entity->result_source()->schema();
-    my $run_row = $schema->resultset('Run')->find($id_run);
-    my $ref = { id_run => $id_run };
-    if ($self->event_entity->can('position')) {
-      $ref->{'position'} = $self->event_entity->position();
-    }
-    if ($self->_has_schema_mlwh()) {
-      $ref->{'id_flowcell_lims'}    = $run_row->batch_id();
-      $ref->{'id_flowcell_barcode'} = $run_row->flowcell_id();
-      $ref->{'driver_type'}         = 'ml_warehouse_auto';
-      $ref->{'schema_mlwh'}         = $self->schema_mlwh();
-    }
-    # Allow to fall back on some other driver type, for
-    # example, samplesheet. This will allow to test this
-    # utility in the absence of WTSI::DNAP::Warehouse::Schema
-    # and associated with this schema LIMs drivers.
-    my $lims = st::api::lims->new($ref);
-    # Explicitly forbid using the xml driver.
-    if ($lims->driver_type() eq 'xml') {
-      croak 'XML driver type is not allowed';
-    }
-    @lims_list =  $ref->{'position'} ? ($lims) : $lims->children();
+    try {
+      my $schema = $self->event_entity->result_source()->schema();
+      my $run_row = $schema->resultset('Run')->find($id_run);
+      my $ref = { id_run => $id_run };
+      if ($self->event_entity->can('position')) {
+        $ref->{'position'} = $self->event_entity->position();
+      }
+      if ($self->_has_schema_mlwh()) {
+        $ref->{'id_flowcell_lims'}    = $run_row->batch_id();
+        $ref->{'id_flowcell_barcode'} = $run_row->flowcell_id();
+        $ref->{'driver_type'}         = 'ml_warehouse_auto';
+        $ref->{'schema_mlwh'}         = $self->schema_mlwh();
+      }
+      # Fall back on some other driver type, for example,
+      # samplesheet. This will allow for testing this utility
+      # in the absence of WTSI::DNAP::Warehouse::Schema and
+      # associated with this schema LIMs drivers.
+      my $lims = st::api::lims->new($ref);
+      # Explicitly forbid using the xml driver.
+      if ($lims->driver_type() eq 'xml') {
+        $self->logcroak('XML driver type is not allowed');
+      }
+      @lims_list =  $ref->{'position'} ? ($lims) : $lims->children();
+    } catch {
+      $self->logcarp(qq[Failed to get LIMs data for run ${id_run}: $_]);
+    };
   }
 
   return \@lims_list;
@@ -257,6 +266,10 @@ npg_tracking::report::event2subscribers
 =item namespace::autoclean
 
 =item List::MoreUtils
+
+=item Template
+
+=item Try::Tiny
 
 =item Readonly
 
