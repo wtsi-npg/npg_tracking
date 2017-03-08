@@ -1,9 +1,8 @@
 use strict;
 use warnings;
-use Perl6::Slurp;
 use DateTime;
 use JSON;
-use Test::More tests => 5;
+use Test::More tests => 8;
 use Test::Exception;
 use Test::Warn;
 use Log::Log4perl qw(:levels);
@@ -23,19 +22,14 @@ Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
 use_ok ('npg_tracking::report::event2subscribers');
 
 my $schema = t::dbic_util->new()->test_schema();
+my $date           = DateTime->now();
+my $date_as_string = $date->strftime('%F %T');
+my $id_run         = 21915;
+my $id_instrument  = 67;
 
-foreach my $name (qw/Run RunStatus/) {
-  my $file = "t/data/report/fixtures/${name}.json";
-  my $data = from_json(slurp $file);
-  my $rs = $schema->resultset($name);
-  if ($name eq 'Run') {
-    $rs->create($data);
-  } else {
-    for my $d (@{$data}) {
-      $rs->create($d);
-    }
-  }
-}
+# create run
+my $run_json = qq[{"priority":"4","flowcell_id":"CAK4DANXX","batch_id":"51875","actual_cycle_count":"158","id_run":"$id_run","expected_cycle_count":"158","folder_path_glob":"/ILorHSany_sf46/*/","is_paired":"0","id_run_pair":null,"folder_name":"170208_HS32_21915_A_CAK4DANXX","id_instrument":"$id_instrument","team":"A","id_instrument_format":"10"}];
+$schema->resultset('Run')->create(from_json($run_json));
 
 my $events_ug = $schema->resultset('Usergroup')->search({groupname => 'events'})->next();
 ok( $events_ug, 'events usergroup exists');
@@ -67,8 +61,6 @@ $schema->resultset('User2usergroup')->create({id_user => $user->id_user(), id_us
 
 local $ENV{'USER'} = $ENV{'USER'} || 'unknown';
 my $shell_user = $ENV{'USER'};
-
-my $id_run = 21915;
 
 my $lims_summary = <<LIMS;
 Lane 1: Samples
@@ -138,14 +130,21 @@ Lane 8: Samples
 LIMS
 
 subtest 'run status event' => sub {
-  plan tests => 11;
-  
-  my $status_row = $schema->resultset('RunStatus')->search({id_run => $id_run})->next();
+  plan tests => 19;
+
+  my $report_author = $shell_user . '@sanger.ac.uk';
+  my $status_row = $schema->resultset('RunStatus')->create({
+    id_user            => 8,
+    id_run_status_dict => 1,
+    date               => '2017-02-08 11:49:39',
+    iscurrent          => 0,
+    id_run             => $id_run
+  });
   my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
                                                        event_entity => $status_row);
   isa_ok ($e, 'npg_tracking::report::event2subscribers');
   ok ($e->dry_run, 'dry_run mode');
-  is ($e->report_author(), $shell_user . '@sanger.ac.uk', 'report author');
+  is ($e->report_author(), $report_author, 'report author');
   is ($e->template_name(), 'run_or_lane2subscribers', 'template name');
   is_deeply ($e->_subscribers(), [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk)],
     'correct ordered list of subscribers');
@@ -177,15 +176,24 @@ http://sfweb.internal.sanger.ac.uk:9000/run/21915
 NPG, DNA Pipelines Informatics
 REPORT1
   is ($e->report_full($e->lims()), $report, 'full report text with LIMs data');
+
+  is (scalar @{$e->reports}, 1, 'One report generated');
+  my $m = $e->reports->[0];
+  isa_ok ($m, 'npg::util::mailer');
+  is ($m->get_from(), $report_author, 'email from field');
+  is ($m->get_subject(), $e->report_short(), 'email subject field');
+  is ($m->get_body(), $report, 'email body field');
+  is_deeply ($m->get_to(), $e->_subscribers(), 'email to field');
+  ok ($m->can('mail'), 'mail method available');
+
+  lives_ok { $e->emit() } 'report sent (dry run)';
 };
 
 subtest 'instrument status event' => sub {
-  plan tests => 9;
+  plan tests => 11;
 
-  my $date = DateTime->now();
-  my $date_as_string = $date->strftime('%F %T');
   my $status_row = $schema->resultset('InstrumentStatus')->create({
-    id_instrument             => 6,
+    id_instrument             => $id_instrument,
     id_instrument_status_dict => 4,
     id_user                   => 9,
     date                      => $date
@@ -198,14 +206,14 @@ subtest 'instrument status event' => sub {
   is ($e->template_name(), 'instrument', 'template name');
   is_deeply ($e->_subscribers(), [qw(acu4@some.com cu2@sanger.ac.uk cu3@sanger.ac.uk)],
     'correct ordered list of subscribers');
-  is ($e->report_short(), 'Instrument IL3 status changed to "wash performed"', 'short report text');
+  is ($e->report_short(), 'Instrument HS8 status changed to "wash performed"', 'short report text');
   warning_is {$e->lims} undef, 'no warning about LIMs driver';
   is (scalar @{$e->lims}, 0, 'LIMs object not required');
 
   my $report = <<REPORT2;
- Instrument IL3 status changed to "wash performed" on $date_as_string by joe_approver
+ Instrument HS8 status changed to "wash performed" on $date_as_string by joe_approver
 NPG page for this instrument:
-http://sfweb.internal.sanger.ac.uk:9000/instrument/6
+http://sfweb.internal.sanger.ac.uk:9000/instrument/HS8
 
 NPG, DNA Pipelines Informatics
 REPORT2
@@ -215,13 +223,138 @@ REPORT2
   $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
                                                     event_entity => $status_row);
   $report = <<REPORT3;
- Instrument IL3 status changed to "wash performed" on $date_as_string by joe_approver. Comment: my comment
+ Instrument HS8 status changed to "wash performed" on $date_as_string by joe_approver. Comment: my comment
 NPG page for this instrument:
-http://sfweb.internal.sanger.ac.uk:9000/instrument/6
+http://sfweb.internal.sanger.ac.uk:9000/instrument/HS8
 
 NPG, DNA Pipelines Informatics
 REPORT3
   is ($e->report_full($e->lims()), $report, 'full report text with a comment');
+  is (scalar @{$e->reports}, 1, 'One report generated');
+  lives_ok { $e->emit() } 'report sent (dry run)';
+};
+
+subtest 'run annotation event' => sub {
+  plan tests => 8;
+
+  # user is joe_loader
+  my $annotation = $schema->resultset('Annotation')->create({
+    id_user => 3,
+    comment => 'New run annotation',
+    date    => $date,
+  });
+  my $run_annotation = $schema->resultset('RunAnnotation')->create({
+    id_annotation => $annotation->id_annotation(),
+    id_run        => $id_run
+  });
+
+  local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
+  my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
+                                                       event_entity => $run_annotation);
+  isa_ok ($e, 'npg_tracking::report::event2subscribers');
+  ok ($e->dry_run, 'dry_run mode');
+  is ($e->report_author(), $shell_user . '@sanger.ac.uk', 'report author');
+  is ($e->template_name(), 'run_or_lane2subscribers', 'template name');
+  is_deeply ($e->_subscribers(), [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk)],
+    'correct ordered list of subscribers');
+  is ($e->report_short(), 'Run 21915 annotated by joe_loader', 'short report text');
+  is (scalar @{$e->lims}, 8, 'Retrieved LIMs object');
+
+  my $report = <<REPORT4;
+Run 21915 annotated by joe_loader on $date_as_string - New run annotation
+$lims_summary
+NPG page for this run:
+http://sfweb.internal.sanger.ac.uk:9000/run/21915
+
+NPG, DNA Pipelines Informatics
+REPORT4
+  is ($e->report_full($e->lims()), $report, 'full report text with LIMs data');
+};
+
+subtest 'runlane annotation event' => sub {
+  plan tests => 8;
+
+  my $runlane = $schema->resultset('RunLane')->create({
+    id_run     => $id_run,
+    position   => 2,
+    tile_count => 12,
+    tracks     => 4
+  });
+  # user is joe_loader
+  my $annotation = $schema->resultset('Annotation')->create({
+    id_user => 3,
+    comment => 'New runlane annotation',
+    date    => $date
+  });
+  my $runlane_annotation = $schema->resultset('RunLaneAnnotation')->create({
+    id_annotation => $annotation->id_annotation(),
+    id_run_lane   => $runlane->id_run_lane()
+  });
+
+  local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
+  my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
+                                                       event_entity => $runlane_annotation);
+  isa_ok ($e, 'npg_tracking::report::event2subscribers');
+  ok ($e->dry_run, 'dry_run mode');
+  is ($e->report_author(), $shell_user . '@sanger.ac.uk', 'report author');
+  is ($e->template_name(), 'run_or_lane2subscribers', 'template name');
+  is_deeply ($e->_subscribers(), [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk)],
+    'correct ordered list of subscribers');
+  is ($e->report_short(), 'Run 21915 lane 2 annotated by joe_loader', 'short report text');
+  is (scalar @{$e->lims}, 1, 'Retrieved LIMs object');
+
+  my $report = <<REPORT5;
+Run 21915 lane 2 annotated by joe_loader on $date_as_string - New runlane annotation
+Lane 2: Samples
+    QC1Hip-12209
+    QC1Hip-12210
+    QC1Hip-13615
+    QC1Hip-13616
+    QC1Hip-14336
+    ... 17 samples in total
+
+
+NPG page for this run:
+http://sfweb.internal.sanger.ac.uk:9000/run/21915
+
+NPG, DNA Pipelines Informatics
+REPORT5
+  is ($e->report_full($e->lims()), $report, 'full report text with LIMs data');
+};
+
+subtest 'instrument annotation event' => sub {
+  plan tests => 8;
+
+  # user is joe_loader
+  my $annotation = $schema->resultset('Annotation')->create({
+    id_user => 3,
+    comment => 'New instrument annotation',
+    date    => $date
+  });
+  my $instrument_annotation = $schema->resultset('InstrumentAnnotation')->create({
+    id_annotation => $annotation->id_annotation(),
+    id_instrument => $id_instrument
+  });
+
+  my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
+                                                       event_entity => $instrument_annotation);
+  isa_ok ($e, 'npg_tracking::report::event2subscribers');
+  is ($e->report_author(), $shell_user . '@sanger.ac.uk', 'report author');
+  is ($e->template_name(), 'instrument', 'template name');
+  is_deeply ($e->_subscribers(), [qw(acu4@some.com cu2@sanger.ac.uk cu3@sanger.ac.uk)],
+    'correct ordered list of subscribers');
+  is ($e->report_short(), 'Instrument HS8 annotated by joe_loader', 'short report text');
+  warning_is {$e->lims} undef, 'no warning about LIMs driver';
+  is (scalar @{$e->lims}, 0, 'LIMs object not required');
+
+  my $report = <<REPORT6;
+ Instrument HS8 annotated by joe_loader on $date_as_string - New instrument annotation
+NPG page for this instrument:
+http://sfweb.internal.sanger.ac.uk:9000/instrument/HS8
+
+NPG, DNA Pipelines Informatics
+REPORT6
+  is ($e->report_full($e->lims()), $report, 'full report text');
 };
 
 1;

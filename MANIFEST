@@ -943,8 +943,6 @@ t/data/rendered/search.html
 t/data/rendered/user.html
 t/data/rendered/user/1000.html
 t/data/report/samplesheet_21915.csv
-t/data/report/fixtures/Run.json
-t/data/report/fixtures/RunStatus.json
 t/data/report/st/batches/51875.xml
 t/data/repos/npg/run/1937.xml
 t/data/repos/npg/run/4140.xml

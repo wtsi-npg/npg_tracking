@@ -158,12 +158,12 @@ sub _build_reports {
   if (!@subscribers) {
     self->warn('Nobody to send report to');
   } else {
-    push @reports, npg::util::mailer->new(
+    push @reports, npg::util::mailer->new({
       from    => $self->report_author(),
       subject => $self->report_short(),
       body    => $self->report_full($self->lims()),
       to      => $self->_subscribers(),
-    );
+    });
   }
 
   return \@reports;
@@ -172,8 +172,8 @@ sub _build_reports {
 sub emit {
   my $self = shift;
   foreach my $report (@{$self->reports}) {
-    if (!$self->dry_run) {
-      $self->info('DRY RUN ' . $report->{'subject'});
+    if ($self->dry_run) {
+      $self->info('DRY RUN ' . $report->get_subject());
     } else {
       $report->mail();
     }

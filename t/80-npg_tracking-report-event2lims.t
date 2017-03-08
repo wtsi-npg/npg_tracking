@@ -1,8 +1,7 @@
 use strict;
 use warnings;
-use Perl6::Slurp;
 use JSON;
-use Test::More tests => 24;
+use Test::More tests => 23;
 use Test::Exception;
 use LWP::UserAgent;
 use Log::Log4perl qw(:levels);
@@ -30,22 +29,18 @@ local $ENV{'http_proxy'} = 'http://npgwibble.com'; #invalid proxy
 local $ENV{'NPG_WEBSERVICE_CACHE_DIR'} = 't/data/report';
 
 my $schema = t::dbic_util->new()->test_schema();
-foreach my $name (qw/Run RunStatus/) {
-  my $file = "t/data/report/fixtures/${name}.json";
-  my $data = from_json(slurp $file);
-  my $rs = $schema->resultset($name);
-  if ($name eq 'Run') {
-    $rs->create($data);
-  } else {
-    for my $d (@{$data}) {
-      $rs->create($d);
-    }
-  }
-}
-
 my $id_run = 21915;
-my $status_row = $schema->resultset('RunStatus')->search({id_run => $id_run})->next();
-ok ($status_row, 'run status row object defined');
+# create run
+my $run_json = qq[{"priority":"4","flowcell_id":"CAK4DANXX","batch_id":"51875","actual_cycle_count":"158","id_run":"$id_run","expected_cycle_count":"158","folder_path_glob":"/ILorHSany_sf46/*/","is_paired":"0","id_run_pair":null,"folder_name":"170208_HS32_21915_A_CAK4DANXX","id_instrument":"67","team":"A","id_instrument_format":"10"}];
+$schema->resultset('Run')->create(from_json($run_json));
+
+my $status_row = $schema->resultset('RunStatus')->create({
+    id_user            => 8,
+    id_run_status_dict => 1,
+    date               => '2017-02-08 11:49:39',
+    iscurrent          => 0,
+    id_run             => $id_run
+});
 my $status_desc = $status_row->description;
 my $message = "Run $id_run : $status_desc";
 
