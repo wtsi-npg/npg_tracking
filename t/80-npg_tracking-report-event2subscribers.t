@@ -1,10 +1,10 @@
 use strict;
 use warnings;
-use DateTime;
-use JSON;
 use Test::More tests => 8;
 use Test::Exception;
 use Test::Warn;
+use DateTime;
+use JSON;
 use Log::Log4perl qw(:levels);
 use File::Temp qw(tempdir);
 

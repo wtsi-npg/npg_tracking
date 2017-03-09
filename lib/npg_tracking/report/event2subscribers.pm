@@ -171,6 +171,11 @@ sub _build_reports {
 
 sub emit {
   my $self = shift;
+
+  if (scalar @{$self->reports} == 0) {
+    $self->info('No reports generated');
+  }
+
   foreach my $report (@{$self->reports}) {
     if ($self->dry_run) {
       $self->info('DRY RUN ' . $report->get_subject());

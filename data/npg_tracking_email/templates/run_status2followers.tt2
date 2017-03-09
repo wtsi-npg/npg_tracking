@@ -9,7 +9,7 @@ Study
 
 has samples in the following lanes of this run:
 
-[% FOREACH lane = lanes; PROCESS lane_details.tt2; END %]
+[% FOREACH lane = lanes; PROCESS lane_detail.tt2; END %]
 
 [% IF status_description == 'run complete' %] 
 The sequencing instrument has finished imaging. It will complete basecalling soon.

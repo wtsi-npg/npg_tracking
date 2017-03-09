@@ -1,7 +1,81 @@
 use strict;
 use warnings;
-use Test::More tests => 1;
+use Test::More tests => 2;
+use Test::Exception;
+use Test::Warn;
+use DateTime;
+use JSON;
+use Log::Log4perl qw(:levels);
+use File::Temp qw(tempdir);
+use List::MoreUtils qw/all/;
+
+use t::dbic_util;
+
+local $ENV{'http_proxy'} = 'http://npgwibble.com'; #invalid proxy
+
+my $logfile = join q[/], tempdir(CLEANUP => 1), 'logfile';
+note "Log file: $logfile";
+Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
+                          level  => $INFO,
+                          file   => $logfile,
+                          utf8   => 1});
 
 use_ok ('npg_tracking::report::event2followers');
+
+my $schema = t::dbic_util->new()->test_schema();
+my $date           = DateTime->now();
+my $date_as_string = $date->strftime('%F %T');
+my $id_run         = 21915;
+my $id_instrument  = 67;
+
+# create run
+my $run_json = qq[{"priority":"4","flowcell_id":"CAK4DANXX","batch_id":"51875","actual_cycle_count":"158","id_run":"$id_run","expected_cycle_count":"158","folder_path_glob":"/ILorHSany_sf46/*/","is_paired":"0","id_run_pair":null,"folder_name":"170208_HS32_21915_A_CAK4DANXX","id_instrument":"$id_instrument","team":"A","id_instrument_format":"10"}];
+$schema->resultset('Run')->create(from_json($run_json));
+
+my $qc_complete_status_desc       = 'qc complete';
+my $rsd_rs = $schema->resultset('RunStatusDict');
+my $qc_complete_status = $schema->resultset('RunStatus')->create({
+    id_user            => 8,
+    id_run_status_dict => $rsd_rs->search(
+      {description => $qc_complete_status_desc})->next()->id_run_status_dict(),
+    date               => '2017-02-09 10:00:31',
+    iscurrent          => 1,
+    id_run             => $id_run
+});
+
+subtest 'run status qc review pending event' => sub {
+  plan tests => 16;
+
+  my $qc_review_pending_status_desc = 'qc review pending';
+  my $qc_review_pending_status = $schema->resultset('RunStatus')->create({
+    id_user            => 8,
+    id_run_status_dict => $rsd_rs->search(
+      {description => $qc_review_pending_status_desc})->next()->id_run_status_dict(),
+    date               => '2017-02-08 11:49:39',
+    iscurrent          => 0,
+    id_run             => $id_run
+  });
+
+  my $e = npg_tracking::report::event2followers->new(dry_run      => 1,
+                                                     event_entity => $qc_review_pending_status);
+  isa_ok ($e, 'npg_tracking::report::event2followers');
+  ok ($e->dry_run, 'dry_run mode');
+  is ($e->template_name(), 'run_status2followers', 'template name');
+  is ($e->report_short(), 'Run 21915 was assigned status "qc review pending"', 'short report text');
+  warning_like {$e->lims} qr/XML driver type is not allowed/, 'XML driver is not allowed';
+  is (scalar @{$e->lims}, 0, 'Failed to get LIMs object');
+  lives_ok { $e->reports() } 'no error invoking reports accessor';
+  is (scalar @{$e->reports()}, 0, 'no reports will be generated');
+  lives_ok { $e->emit() } 'no error dealing with an empty report list';
+
+  local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
+  $e = npg_tracking::report::event2followers->new(dry_run      => 1,
+                                                  event_entity => $qc_review_pending_status);
+  is (scalar @{$e->lims}, 8, 'retrieved LIMs object');
+  is (scalar @{$e->reports()}, 5, 'five reports will be generated');
+  foreach my $r (@{$e->reports()}) {
+    isa_ok ($r, 'npg::util::mailer');
+  }
+};
 
 1;
