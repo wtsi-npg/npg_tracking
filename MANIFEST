@@ -943,6 +943,7 @@ t/data/rendered/search.html
 t/data/rendered/user.html
 t/data/rendered/user/1000.html
 t/data/report/report_text_1
+t/data/report/report_text_5
 t/data/report/samplesheet_21915.csv
 t/data/report/st/batches/51875.xml
 t/data/repos/npg/run/1937.xml

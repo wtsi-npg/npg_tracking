@@ -1,0 +1,49 @@
+
+Run 21915 was assigned status "qc complete" on 2017-02-09 10:00:31 by joe_events
+
+Study 'Cambrige Autumn' has samples in the following lanes of this run:
+
+Lane 4: Samples
+    QC1Hip-14329
+    QC1Hip-14330
+    QC1Hip-14361
+    QC1Hip-14362
+    QC1Hip-14573
+    ... 14 samples in total
+
+Lane 5: Samples
+    QC1Hip-14329
+    QC1Hip-14330
+    QC1Hip-14361
+    QC1Hip-14362
+    QC1Hip-14573
+    ... 14 samples in total
+
+Lane 6: Samples
+    QC1Hip-14329
+    QC1Hip-14330
+    QC1Hip-14361
+    QC1Hip-14362
+    QC1Hip-14573
+    ... 14 samples in total
+
+Lane 7: Samples
+    QC1Hip-15078
+    QC1Hip-15079
+    QC1Hip-15084
+    QC1Hip-15085
+    QC1Hip-15103
+    ... 6 samples in total
+
+
+The manual QC review is complete and your data should now be available from iRODS (see http://scratchy.internal.sanger.ac.uk/wiki/index.php/IRODS_for_Sequencing_Users ). 
+
+NPG page for the run:
+http://sfweb.internal.sanger.ac.uk:9000/run/21915
+
+Analysis and QC information for this run will be/is available:
+http://sfweb.internal.sanger.ac.uk:1959/illumina/runs/21915
+http://sfweb.internal.sanger.ac.uk:1959/checks/runs/21915
+
+NPG, DNA Pipelines Informatics
+
