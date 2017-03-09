@@ -30,10 +30,16 @@ sub _build__study_info {
         if (!$h->{$study_id}->{'people'}) {
           $h->{$study_id}->{'people'} = $cl->email_addresses();
         }
+        # Template Toolkit uses the same syntax for accessing methods of a
+        # class and keys in a hash. We are going to exploit this feature.
+        # For each position we create a hash which has the same keys as
+        # the names of the methods of the st::api::lims object the template
+        # will invoke.
         push @{$h->{$study_id}->{'lanes'}->{$cl->position()}->{'sample_names'}},
           $cl->sample_name() || q[unknown];
         $h->{$study_id}->{'lanes'}->{$cl->position()}->{'study_name'} =
           $cl->study_name() || q[unknown];
+        $h->{$study_id}->{'lanes'}->{$cl->position()}->{'position'} = $cl->position();
       }
     }
   }
@@ -47,11 +53,16 @@ sub _build_reports {
   my $study_info = $self->_study_info();
   my @reports = ();
 
-  foreach my $study_id (sort {$a == $b} keys %{$study_info}) {
+  # These reports are grouped by study. If all samples in a run belong to one
+  # study, one report is created.
+  foreach my $study_id (sort {$a <=> $b} keys %{$study_info}) {
     my @people = @{$study_info->{$study_id}->{'people'}};
     my @lims_list = ();
-    foreach my $position ( sort {$a == $b} keys %{$study_info->{$study_id}->{'lanes'}} ) {
-      push @lims_list, $study_info->{$study_id}->{'lanes'}->{$position};
+    # Create a sorted by position list of hashes that mimic st::api::lims objects.
+    foreach my $position ( sort {$a <=> $b} keys %{$study_info->{$study_id}->{'lanes'}} ) {
+      my $lims_mimic = $study_info->{$study_id}->{'lanes'}->{$position};
+      $lims_mimic->{'sample_names'} = [sort @{$lims_mimic->{'sample_names'}}];
+      push @lims_list, $lims_mimic;
     }
 
     if (@people && @lims_list) {
@@ -60,7 +71,7 @@ sub _build_reports {
         from    => $self->report_author(),
         subject => $subject,
         body    => $self->report_full(\@lims_list),
-        to      => $self->username2email_address(@people)
+        to      => [$self->username2email_address(@people)]
       });
     }
   }

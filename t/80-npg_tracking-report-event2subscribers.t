@@ -27,6 +27,9 @@ my $date_as_string = $date->strftime('%F %T');
 my $id_run         = 21915;
 my $id_instrument  = 67;
 
+my $shell_user = $ENV{'USER'} || 'unknown';
+my $report_author = $shell_user . '@sanger.ac.uk';
+
 # create run
 my $run_json = qq[{"priority":"4","flowcell_id":"CAK4DANXX","batch_id":"51875","actual_cycle_count":"158","id_run":"$id_run","expected_cycle_count":"158","folder_path_glob":"/ILorHSany_sf46/*/","is_paired":"0","id_run_pair":null,"folder_name":"170208_HS32_21915_A_CAK4DANXX","id_instrument":"$id_instrument","team":"A","id_instrument_format":"10"}];
 $schema->resultset('Run')->create(from_json($run_json));
@@ -58,9 +61,6 @@ $schema->resultset('User2usergroup')->create({id_user => $user->id_user(), id_us
 $user = $schema->resultset('User')->create({username => 'acu4@some.com', iscurrent => 1});
 $schema->resultset('User2usergroup')->create({id_user => $user->id_user(), id_usergroup => $events_ug_id});
 $schema->resultset('User2usergroup')->create({id_user => $user->id_user(), id_usergroup => $eng_ug_id});
-
-local $ENV{'USER'} = $ENV{'USER'} || 'unknown';
-my $shell_user = $ENV{'USER'};
 
 my $lims_summary = <<LIMS;
 Lane 1: Samples
@@ -132,7 +132,6 @@ LIMS
 subtest 'run status event' => sub {
   plan tests => 19;
 
-  my $report_author = $shell_user . '@sanger.ac.uk';
   my $status_row = $schema->resultset('RunStatus')->create({
     id_user            => 8,
     id_run_status_dict => 1,
@@ -202,7 +201,7 @@ subtest 'instrument status event' => sub {
   my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
                                                        event_entity => $status_row);
   isa_ok ($e, 'npg_tracking::report::event2subscribers');
-  is ($e->report_author(), $shell_user . '@sanger.ac.uk', 'report author');
+  is ($e->report_author(), $report_author, 'report author');
   is ($e->template_name(), 'instrument', 'template name');
   is_deeply ($e->_subscribers(), [qw(acu4@some.com cu2@sanger.ac.uk cu3@sanger.ac.uk)],
     'correct ordered list of subscribers');
@@ -253,7 +252,7 @@ subtest 'run annotation event' => sub {
                                                        event_entity => $run_annotation);
   isa_ok ($e, 'npg_tracking::report::event2subscribers');
   ok ($e->dry_run, 'dry_run mode');
-  is ($e->report_author(), $shell_user . '@sanger.ac.uk', 'report author');
+  is ($e->report_author(), $report_author, 'report author');
   is ($e->template_name(), 'run_or_lane2subscribers', 'template name');
   is_deeply ($e->_subscribers(), [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk)],
     'correct ordered list of subscribers');
@@ -296,7 +295,7 @@ subtest 'runlane annotation event' => sub {
                                                        event_entity => $runlane_annotation);
   isa_ok ($e, 'npg_tracking::report::event2subscribers');
   ok ($e->dry_run, 'dry_run mode');
-  is ($e->report_author(), $shell_user . '@sanger.ac.uk', 'report author');
+  is ($e->report_author(), $report_author, 'report author');
   is ($e->template_name(), 'run_or_lane2subscribers', 'template name');
   is_deeply ($e->_subscribers(), [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk)],
     'correct ordered list of subscribers');
@@ -339,7 +338,7 @@ subtest 'instrument annotation event' => sub {
   my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
                                                        event_entity => $instrument_annotation);
   isa_ok ($e, 'npg_tracking::report::event2subscribers');
-  is ($e->report_author(), $shell_user . '@sanger.ac.uk', 'report author');
+  is ($e->report_author(), $report_author, 'report author');
   is ($e->template_name(), 'instrument', 'template name');
   is_deeply ($e->_subscribers(), [qw(acu4@some.com cu2@sanger.ac.uk cu3@sanger.ac.uk)],
     'correct ordered list of subscribers');
