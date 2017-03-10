@@ -3,7 +3,7 @@ package npg_tracking::report::events;
 use Moose;
 use MooseX::Getopt;
 use namespace::autoclean;
-use Class::Load qw/try_load_class/;
+use Class::Load qw/try_load_class load_class/;
 use List::MoreUtils qw/any uniq/;
 use Try::Tiny;
 use Readonly;
@@ -67,10 +67,13 @@ sub process {
   while ( my $event = $unprocessed_events->next() ) {
 
     $count++;
-    my $entity = $event->entity_obj();
-
+    my $entity;
+    try {
+      $entity = $event->entity_obj();
+    } catch {
+      $self->info('Failed to retrieve event entity: ' . $_);
+    };
     if (!$entity) {
-      $self->info('Failed to retrieve event entity');
       next;
     }
     if (!$entity->can('information')) {
@@ -94,12 +97,12 @@ sub process {
   }
 
   $self->info("Successfully processed $scount events");
-  my $failed = $scount - $count;
+  my $failed = $count - $scount;
   if ($failed) {
     $self->info("Failed to process $failed events");
   }
 
-  return $scount;
+  return ($scount, $failed);
 }
 
 sub _report_types {
@@ -108,7 +111,7 @@ sub _report_types {
   if ($entity->can('event_report_types')) {
     push @report_types, $entity->event_report_types();
   }
-  @report_types = sort uniq @report_types;
+  @report_types = uniq sort @report_types;
   return @report_types;
 }
 
