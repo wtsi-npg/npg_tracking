@@ -3,12 +3,14 @@ package npg_tracking::report::events;
 use Moose;
 use MooseX::Getopt;
 use namespace::autoclean;
-use Class::Load qw/load_class/;
+use Class::Load qw/try_load_class/;
 use List::MoreUtils qw/any uniq/;
+use Try::Tiny;
 use Readonly;
-use Carp;
 
 use npg_tracking::Schema;
+
+with 'WTSI::DNAP::Utilities::Loggable';
 
 our $VERSION = '0';
 
@@ -39,17 +41,19 @@ has 'schema_mlwh' => (
   traits     => [ 'NoGetopt' ],
 );
 sub _build_schema_mlwh {
-  my $loaded = 0;
-  try {
-    load_class($WH_SCHEMA_CLASS_NAME);
-    $loaded = 1;
-  } catch {
-    carp $_;
-  };
-  if ($loaded) {
-    return $WH_SCHEMA_CLASS_NAME->connect();
+  my $self = shift;
+  my ($loaded, $error) = try_load_class($WH_SCHEMA_CLASS_NAME);
+  my $schema;
+  if (!$loaded) {
+    $self->info("Failed to load ${WH_SCHEMA_CLASS_NAME}: $error");
+  } else {
+    try {
+      $schema = $WH_SCHEMA_CLASS_NAME->connect();
+    } catch {
+      $self->info("Failed to connect: $_");
+    };
   }
-  return;
+  return $schema;
 }
 
 sub process {
@@ -66,11 +70,11 @@ sub process {
     my $entity = $event->entity_obj();
 
     if (!$entity) {
-      carp 'Failed to retrieve event entity for ';
+      $self->info('Failed to retrieve event entity');
       next;
     }
     if (!$entity->can('information')) {
-      carp 'Do not know how to report ' . $entity->resultsource()->name();
+      $self->info('Do not know how to report ' . $entity->resultsource()->name());
       next;
     }
 
@@ -85,14 +89,14 @@ sub process {
       }
       $scount++;
     } catch {
-      carp 'Error creating or sending report : ' . $_;
+      $self->info('Error creating or sending report : ' . $_);
     };
   }
 
-  carp "Successfully processed $scount events";
+  $self->info("Successfully processed $scount events");
   my $failed = $scount - $count;
   if ($failed) {
-    carp "Failed to process $failed events";
+    $self->info("Failed to process $failed events");
   }
 
   return $scount;
@@ -190,8 +194,6 @@ npg_tracking::report::events
 =item WTSI::DNAP::Warehouse::Schema
 
 =item Readonly
-
-=item Carp
 
 =back
 
