@@ -18,7 +18,7 @@ my $logfile = join q[/], tempdir(CLEANUP => 1), 'logfile';
 note "Log file: $logfile";
 Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
                           level  => $INFO,
-                          file   => $logfile,
+#                          file   => $logfile,
                           utf8   => 1});
 
 use_ok ('npg_tracking::report::events');
@@ -245,6 +245,7 @@ subtest 'process run and runlane events' => sub {
   plan tests => 2;
 
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
+  local $ENV{'NPG_WEBSERVICE_CACHE_DIR'}    = 't/data/report';
 
   my $event_rs      = $schema->resultset('Event');
   my $rsd_rs        = $schema->resultset('RunStatusDict');
