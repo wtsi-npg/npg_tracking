@@ -48,10 +48,10 @@ sub _build_lims {
         $ref->{'position'} = $self->event_entity->position();
       }
       if ($self->_has_schema_mlwh()) {
-        $ref->{'id_flowcell_lims'}    = $run_row->batch_id();
-        $ref->{'id_flowcell_barcode'} = $run_row->flowcell_id();
-        $ref->{'driver_type'}         = 'ml_warehouse_auto';
-        $ref->{'schema_mlwh'}         = $self->schema_mlwh();
+        $ref->{'id_flowcell_lims'} = $run_row->batch_id();
+        $ref->{'flowcell_barcode'} = $run_row->flowcell_id();
+        $ref->{'driver_type'}      = 'ml_warehouse_auto';
+        $ref->{'mlwh_schema'}      = $self->schema_mlwh();
       }
       # Fall back on some other driver type, for example,
       # samplesheet. This will allow for testing this utility

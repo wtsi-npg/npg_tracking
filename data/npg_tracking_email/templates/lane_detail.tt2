@@ -1,6 +1,6 @@
 [%-
    max_num_samples = 4;
-   sample_names = lane.sample_names;
+   sample_names = lane.sample_names(0);
    num_samples = sample_names.size;
    IF num_samples > max_num_samples;
      sample_names = sample_names.slice(0, max_num_samples-1);

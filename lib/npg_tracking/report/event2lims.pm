@@ -3,7 +3,6 @@ package npg_tracking::report::event2lims;
 use Moose;
 use MooseX::StrictConstructor;
 use namespace::autoclean;
-use Carp;
 
 use st::api::event;
 use st::api::lims;
@@ -132,8 +131,6 @@ npg_tracking::report::event2lims
 =item MooseX::StrictConstructor
 
 =item namespace::autoclean
-
-=item Carp
 
 =item WTSI::DNAP::Utilities::Loggable
 

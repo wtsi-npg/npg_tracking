@@ -1,6 +1,10 @@
 package npg_tracking::report::event2followers;
 
 use Moose;
+use MooseX::StrictConstructor;
+use namespace::autoclean;
+use List::MoreUtils qw/uniq/;
+
 use npg::util::mailer;
 
 extends 'npg_tracking::report::event2subscribers';
@@ -61,7 +65,7 @@ sub _build_reports {
     # Create a sorted by position list of hashes that mimic st::api::lims objects.
     foreach my $position ( sort {$a <=> $b} keys %{$study_info->{$study_id}->{'lanes'}} ) {
       my $lims_mimic = $study_info->{$study_id}->{'lanes'}->{$position};
-      $lims_mimic->{'sample_names'} = [sort @{$lims_mimic->{'sample_names'}}];
+      $lims_mimic->{'sample_names'} = [uniq sort @{$lims_mimic->{'sample_names'}}];
       push @lims_list, $lims_mimic;
     }
 
@@ -139,13 +143,7 @@ npg_tracking::report::event2followers
 
 =item List::MoreUtils
 
-=item Readonly
-
-=item Carp
-
 =item npg::util::mailer
-
-=item st::api::lims
 
 =back
 

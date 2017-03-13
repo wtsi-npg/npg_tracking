@@ -69,7 +69,7 @@ Lane 1: Samples
     QC1Hip-13615
     QC1Hip-13616
     QC1Hip-14336
-    ... 17 samples in total
+    ... 16 samples in total
 
 Lane 2: Samples
     QC1Hip-12209
@@ -77,7 +77,7 @@ Lane 2: Samples
     QC1Hip-13615
     QC1Hip-13616
     QC1Hip-14336
-    ... 17 samples in total
+    ... 16 samples in total
 
 Lane 3: Samples
     QC1Hip-12209
@@ -85,7 +85,7 @@ Lane 3: Samples
     QC1Hip-13615
     QC1Hip-13616
     QC1Hip-14336
-    ... 17 samples in total
+    ... 16 samples in total
 
 Lane 4: Samples
     QC1Hip-14329
@@ -93,7 +93,7 @@ Lane 4: Samples
     QC1Hip-14361
     QC1Hip-14362
     QC1Hip-14573
-    ... 17 samples in total
+    ... 16 samples in total
 
 Lane 5: Samples
     QC1Hip-14329
@@ -101,7 +101,7 @@ Lane 5: Samples
     QC1Hip-14361
     QC1Hip-14362
     QC1Hip-14573
-    ... 17 samples in total
+    ... 16 samples in total
 
 Lane 6: Samples
     QC1Hip-14329
@@ -109,7 +109,7 @@ Lane 6: Samples
     QC1Hip-14361
     QC1Hip-14362
     QC1Hip-14573
-    ... 17 samples in total
+    ... 16 samples in total
 
 Lane 7: Samples
     QC1Hip-14324
@@ -117,7 +117,7 @@ Lane 7: Samples
     QC1Hip-14582
     QC1Hip-14583
     QC1Hip-14821
-    ... 17 samples in total
+    ... 16 samples in total
 
 Lane 8: Samples
     CTTV0286207180
@@ -125,7 +125,7 @@ Lane 8: Samples
     CTTV0286207182
     CTTV0286207367
     CTTV0286207368
-    ... 8 samples in total
+    ... 7 samples in total
 
 LIMS
 
@@ -154,6 +154,7 @@ subtest 'run status event' => sub {
   my $report = <<REPORT;
 Run 21915 was assigned status "run pending" on 2017-02-08 11:49:39 by joe_events
 
+
 NPG page for this run:
 http://sfweb.internal.sanger.ac.uk:9000/run/21915
 
@@ -168,6 +169,7 @@ REPORT
 
   $report = <<REPORT1;
 Run 21915 was assigned status "run pending" on 2017-02-08 11:49:39 by joe_events
+
 $lims_summary
 NPG page for this run:
 http://sfweb.internal.sanger.ac.uk:9000/run/21915
@@ -210,7 +212,8 @@ subtest 'instrument status event' => sub {
   is (scalar @{$e->lims}, 0, 'LIMs object not required');
 
   my $report = <<REPORT2;
- Instrument HS8 status changed to "wash performed" on $date_as_string by joe_approver
+Instrument HS8 status changed to "wash performed" on $date_as_string by joe_approver
+
 NPG page for this instrument:
 http://sfweb.internal.sanger.ac.uk:9000/instrument/HS8
 
@@ -222,7 +225,8 @@ REPORT2
   $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
                                                     event_entity => $status_row);
   $report = <<REPORT3;
- Instrument HS8 status changed to "wash performed" on $date_as_string by joe_approver. Comment: my comment
+Instrument HS8 status changed to "wash performed" on $date_as_string by joe_approver. Comment: my comment
+
 NPG page for this instrument:
 http://sfweb.internal.sanger.ac.uk:9000/instrument/HS8
 
@@ -261,6 +265,7 @@ subtest 'run annotation event' => sub {
 
   my $report = <<REPORT4;
 Run 21915 annotated by joe_loader on $date_as_string - New run annotation
+
 $lims_summary
 NPG page for this run:
 http://sfweb.internal.sanger.ac.uk:9000/run/21915
@@ -304,13 +309,14 @@ subtest 'runlane annotation event' => sub {
 
   my $report = <<REPORT5;
 Run 21915 lane 2 annotated by joe_loader on $date_as_string - New runlane annotation
+
 Lane 2: Samples
     QC1Hip-12209
     QC1Hip-12210
     QC1Hip-13615
     QC1Hip-13616
     QC1Hip-14336
-    ... 17 samples in total
+    ... 16 samples in total
 
 
 NPG page for this run:
@@ -347,7 +353,8 @@ subtest 'instrument annotation event' => sub {
   is (scalar @{$e->lims}, 0, 'LIMs object not required');
 
   my $report = <<REPORT6;
- Instrument HS8 annotated by joe_loader on $date_as_string - New instrument annotation
+Instrument HS8 annotated by joe_loader on $date_as_string - New instrument annotation
+
 NPG page for this instrument:
 http://sfweb.internal.sanger.ac.uk:9000/instrument/HS8
 

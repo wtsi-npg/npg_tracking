@@ -4,15 +4,19 @@ use strict;
 use warnings;
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use Log::Log4perl qw(:levels);
 
 use npg_tracking::report::events;
 
 our $VERSION = '0';
 
+Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
+                          level  => $INFO,
+                          utf8   => 1});
+
 npg_tracking::report::events->new_with_options()->process();
 
 1;
-
 
 __END__
 
@@ -60,6 +64,8 @@ event_notifications
 =item FindBin
 
 =item lib
+
+=item Log::Log4perl
 
 =item npg_tracking::report::events
 

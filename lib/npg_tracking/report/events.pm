@@ -1,7 +1,7 @@
 package npg_tracking::report::events;
 
 use Moose;
-use MooseX::Getopt;
+use MooseX::StrictConstructor;
 use namespace::autoclean;
 use Class::Load qw/try_load_class load_class/;
 use List::MoreUtils qw/any uniq/;
@@ -10,7 +10,8 @@ use Readonly;
 
 use npg_tracking::Schema;
 
-with 'WTSI::DNAP::Utilities::Loggable';
+with qw/ MooseX::Getopt
+         WTSI::DNAP::Utilities::Loggable /;
 
 our $VERSION = '0';
 
@@ -86,9 +87,9 @@ sub process {
         my $report = $self->_get_report_obj($report_type, $entity);
         $report->reports();
         $report->emit(); # should have provisions for dry_run
-        if (!$self->dry_run) {
-          $event->mark_as_reported();
-        }
+      }
+      if (!$self->dry_run) {
+        $event->mark_as_reported();
       }
       $scount++;
     } catch {
@@ -184,6 +185,8 @@ npg_tracking::report::events
 
 =item Moose
 
+=item MooseX::StrictConstructor
+
 =item MooseX::Getopt
 
 =item namespace::autoclean
@@ -192,9 +195,9 @@ npg_tracking::report::events
 
 =item List::MoreUtils
 
-=item npg_tracking::Schema
+=item Try::Tiny
 
-=item WTSI::DNAP::Warehouse::Schema
+=item npg_tracking::Schema
 
 =item Readonly
 

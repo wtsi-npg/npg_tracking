@@ -11,6 +11,7 @@ use List::Util qw/max/;
 
 use t::dbic_util;
 
+local $ENV{'no_proxy'}   = q[];
 local $ENV{'http_proxy'} = 'http://npgwibble.com'; #invalid proxy
 local $ENV{'HOME'}       = 't'; # ensures we cannot read production
                                 # db credentials
@@ -18,7 +19,7 @@ my $logfile = join q[/], tempdir(CLEANUP => 1), 'logfile';
 note "Log file: $logfile";
 Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
                           level  => $INFO,
-#                          file   => $logfile,
+                          file   => $logfile,
                           utf8   => 1});
 
 use_ok ('npg_tracking::report::events');
