@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 8;
 use Test::Exception;
 use Class::Load qw/try_load_class/;
 use Log::Log4perl qw(:levels);
@@ -23,6 +23,8 @@ Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
                           utf8   => 1});
 
 use_ok ('npg_tracking::report::events');
+
+my ($mlwh_schema_loaded) = try_load_class('WTSI::DNAP::Warehouse::Schema');
 
 my $schema_factory = t::dbic_util->new();
 my $schema = $schema_factory->test_schema();
@@ -105,9 +107,8 @@ subtest 'can create an object' => sub {
                                       schema_mlwh => undef)
   } 'created object with mlwh schema set to undefined explicitly';
   my $e;
-  my ($loaded) = try_load_class('WTSI::DNAP::Warehouse::Schema');
   SKIP: {
-    skip 'WTSI::DNAP::Warehouse::Schema is available', 2 unless !$loaded;
+    skip 'WTSI::DNAP::Warehouse::Schema is available', 2 unless !$mlwh_schema_loaded;
     lives_ok {
       $e = npg_tracking::report::events->new(dry_run    => 1,
                                              schema_npg => $schema)
@@ -115,7 +116,7 @@ subtest 'can create an object' => sub {
     lives_and ( sub {is $e->schema_mlwh, undef}, 'mlwh schema is undefined');
   };
   SKIP: {
-    skip 'WTSI::DNAP::Warehouse::Schema is not available', 3 unless $loaded;
+    skip 'WTSI::DNAP::Warehouse::Schema is not available', 3 unless $mlwh_schema_loaded;
     lives_ok {
       $e = npg_tracking::report::events->new(dry_run    => 1,
                                              schema_npg => $schema)
@@ -245,7 +246,7 @@ subtest 'tolerance to failures' => sub {
 subtest 'process run and runlane events' => sub {
   plan tests => 2;
 
-  local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
+  local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} = 't/data/report/samplesheet_21915.csv';
   local $ENV{'NPG_WEBSERVICE_CACHE_DIR'}    = 't/data/report';
 
   my $event_rs      = $schema->resultset('Event');
@@ -335,6 +336,57 @@ subtest 'process run and runlane events' => sub {
   my @counts;
   lives_ok {@counts = $e->process()} 'no error processing four new events)';
   ok (($counts[0] == 4) && ($counts[1] == 0), 'four successes, zero failures');
+};
+
+subtest 'tests with mlwarehouse driver' => sub {
+  my $num_tests = 4;
+  plan tests => $num_tests;
+
+  SKIP: {
+    skip 'WTSI::DNAP::Warehouse::Schema is not available',
+      $num_tests unless $mlwh_schema_loaded;
+
+    my $mlwh_schema = $schema_factory->create_test_db('WTSI::DNAP::Warehouse::Schema');
+    local $ENV{'NPG_WEBSERVICE_CACHE_DIR'}    = 't/data/report';
+
+    # We created a test database, but there are no data there
+    my $e = npg_tracking::report::events->new(dry_run     => 1,
+                                              schema_npg  => $schema,
+                                              schema_mlwh => $mlwh_schema);
+    my @counts;
+    lives_ok {@counts = $e->process()} 'no error processing four new events';
+    ok (($counts[0] == 0) && ($counts[1] == 4),
+      'zero successes, four failures since no LIMs data available');
+
+    # Load LIMs data for the flowcell the test run is linked to
+    # only for one lane. Absence of data for lane 2 should cause
+    # an error.
+
+    my $study_row = '{"data_release_delay_period":null,"data_release_strategy":"open","remove_x_and_autosomes":0,"contains_human_dna":1,"uuid_study_lims":"5d526b00-38c6-11e4-bf88-68b59976a382","data_release_timing":"immediate","ega_policy_accession_number":null,"data_release_delay_reason":null,"separate_y_chromosome_data":0,"id_study_tmp":3265,"contaminated_human_dna":0,"name":"some name","study_title":"some title","prelim_id":null,"study_visibility":"Hold","ethically_approved":1,"data_destination":null,"id_lims":"SQSCP","id_study_lims":"3298","array_express_accession_number":null,"data_access_group":"hipsci","aligned":1,"ega_dac_accession_number":null,"state":"active","study_type":"Exome Sequencing","faculty_sponsor":"some person","data_release_sort_of_study":"genomic sequencing","last_updated":"2017-03-16 12:28:05","recorded_at":"2017-03-16 12:28:05"}';
+    $mlwh_schema->resultset('Study')->create(from_json($study_row));
+
+    my $sample_rows = '[
+      {"common_name":"Homo sapiens","id_sample_lims":"2703313","name":"QC1Hip-14355","sanger_sample_id":"QC1Hip-14355","control":0,"id_sample_tmp":2682748,"uuid_sample_lims":"f0b7b7a0-36d5-0134-b2a2-005056a878e4","public_name":"HPSI0614i-lirf_5","id_lims":"SQSCP","taxon_id":9606,"last_updated":"2017-03-16 12:28:05","recorded_at":"2017-03-16 12:28:05"},
+      {"taxon_id":9606,"id_lims":"SQSCP","control":0,"id_sample_tmp":2682749,"uuid_sample_lims":"f0b8f020-36d5-0134-b2a2-005056a878e4","public_name":"HPSI0614i-lirf_6","common_name":"Homo sapiens","id_sample_lims":"2703314","sanger_sample_id":"QC1Hip-14356","name":"QC1Hip-14356","last_updated":"2017-03-16 12:28:05","recorded_at":"2017-03-16 12:28:05"}
+    ]';
+   foreach my $entry (@{from_json($sample_rows)}) {
+     $mlwh_schema->resultset('Sample')->create($entry);
+   }
+    my $flowcell_rows = '[
+      {"tag_set_id_lims":"6","tag_sequence":"ATCACGTT","manual_qc":1,"entity_id_lims":"18515106","id_lims":"SQSCP","id_flowcell_lims":"51875","id_study_tmp":3265,"tag_set_name":"Sanger_168tags - 10 mer tags","id_library_lims":"DN474463P:A1","id_pool_lims":"NT898240N","id_sample_tmp":2682748,"legacy_library_id":18439946,"tag2_set_name":null,"priority":3,"team":"Illumina-HTP","flowcell_barcode":"CAK4DANXX","position":1,"is_spiked":1,"tag2_identifier":null,"forward_read_length":75,"is_r_and_d":0,"tag2_sequence":null,"pipeline_id_lims":"Agilent Pulldown","cost_code":"S0901","requested_insert_size_to":400,"external_release":1,"tag_index":1,"purpose":"standard","reverse_read_length":75,"bait_name":"Human all exon V5","tag2_set_id_lims":null,"entity_type":"library_indexed","requested_insert_size_from":100,"tag_identifier":"1","last_updated":"2017-03-16 12:28:05","recorded_at":"2017-03-16 12:28:05"},
+      {"pipeline_id_lims":"Agilent Pulldown","tag2_sequence":null,"forward_read_length":75,"tag2_identifier":null,"is_r_and_d":0,"position":1,"is_spiked":1,"requested_insert_size_from":100,"tag_identifier":"2","bait_name":"Human all exon V5","entity_type":"library_indexed","tag2_set_id_lims":null,"tag_index":2,"purpose":"standard","reverse_read_length":75,"cost_code":"S0901","requested_insert_size_to":400,"external_release":1,"id_lims":"SQSCP","entity_id_lims":"18515106","id_flowcell_lims":"51875","manual_qc":1,"tag_set_id_lims":"6","tag_sequence":"CGATGTTT","team":"Illumina-HTP","flowcell_barcode":"CAK4DANXX","priority":3,"id_pool_lims":"NT898240N","id_sample_tmp":2682749,"legacy_library_id":18439958,"tag2_set_name":null,"tag_set_name":"Sanger_168tags - 10 mer tags","id_study_tmp":3265,"id_library_lims":"DN474463P:B1","last_updated":"2017-03-16 12:28:05","recorded_at":"2017-03-16 12:28:05"}
+   ]';
+   foreach my $entry (@{from_json($flowcell_rows)}) {
+     $mlwh_schema->resultset('IseqFlowcell')->create($entry);
+   }
+
+    $e = npg_tracking::report::events->new(dry_run     => 1,
+                                           schema_npg  => $schema,
+                                           schema_mlwh => $mlwh_schema);
+    lives_ok {@counts = $e->process()} 'no error processing four new events';
+    ok (($counts[0] == 3) && ($counts[1] == 1),
+      'three successes, one failure with wh LIMs data available');
+  };
 };
 
 1;

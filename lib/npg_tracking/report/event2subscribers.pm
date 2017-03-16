@@ -64,7 +64,7 @@ sub _build_lims {
       }
       @lims_list =  $ref->{'position'} ? ($lims) : $lims->children();
     } catch {
-      $self->logcarp(qq[Failed to get LIMs data for run ${id_run}: $_]);
+      $self->logcroak(qq[Failed to get LIMs data for run ${id_run}: $_]);
     };
   }
 
