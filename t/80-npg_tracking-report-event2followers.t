@@ -57,7 +57,7 @@ my $expected = [
 ];
 
 subtest 'run status qc review pending event' => sub {
-  plan tests => 37;
+  plan tests => 34;
 
   my $qc_review_pending_status_desc = 'qc review pending';
   my $qc_review_pending_status = $schema->resultset('RunStatus')->create({
@@ -75,11 +75,8 @@ subtest 'run status qc review pending event' => sub {
   ok ($e->dry_run, 'dry_run mode');
   is ($e->template_name(), 'run_status2followers', 'template name');
   is ($e->report_short(), 'Run 21915 was assigned status "qc review pending"', 'short report text');
-  warning_like {$e->lims} qr/XML driver type is not allowed/, 'XML driver is not allowed';
-  is (scalar @{$e->lims}, 0, 'Failed to get LIMs object');
-  lives_ok { $e->reports() } 'no error invoking reports accessor';
-  is (scalar @{$e->reports()}, 0, 'no reports will be generated');
-  lives_ok { $e->emit() } 'no error dealing with an empty report list';
+  throws_ok {$e->lims} qr/XML driver type is not allowed/, 'XML driver is not allowed';
+  throws_ok { $e->emit() } qr/XML driver type is not allowed/, 'XML driver is not allowed';
 
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
   $e = npg_tracking::report::event2followers->new(dry_run      => 1,

@@ -130,7 +130,7 @@ Lane 8: Samples
 LIMS
 
 subtest 'run status event' => sub {
-  plan tests => 19;
+  plan tests => 18;
 
   my $status_row = $schema->resultset('RunStatus')->create({
     id_user            => 8,
@@ -148,8 +148,7 @@ subtest 'run status event' => sub {
   is_deeply ($e->_subscribers(), [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk)],
     'correct ordered list of subscribers');
   is ($e->report_short(), 'Run 21915 was assigned status "run pending"', 'short report text');
-  warning_like {$e->lims} qr/XML driver type is not allowed/, 'XML driver is not allowed';
-  is (scalar @{$e->lims}, 0, 'Failed to get LIMs object');
+  throws_ok {$e->lims} qr/XML driver type is not allowed/, 'XML driver is not allowed';
 
   my $report = <<REPORT;
 Run 21915 was assigned status "run pending" on 2017-02-08 11:49:39 by joe_events
@@ -160,7 +159,7 @@ http://sfweb.internal.sanger.ac.uk:9000/run/21915
 
 NPG, DNA Pipelines Informatics
 REPORT
-  is ($e->report_full($e->lims()), $report, 'full report text');
+  is ($e->report_full(), $report, 'full report text');
 
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
   $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
