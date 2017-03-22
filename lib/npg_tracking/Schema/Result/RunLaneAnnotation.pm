@@ -138,5 +138,55 @@ __PACKAGE__->belongs_to(
 
 our $VERSION = '0';
 
+=head2 id_run
+
+Run id this annotation relates to.
+
+=cut
+
+sub id_run {
+  my $self = shift;
+  return $self->run_lane()->id_run();
+}
+
+=head2 position
+
+Position (lane number) this annotation relates to.
+
+=cut
+
+sub position {
+  my $self = shift;
+  return $self->run_lane()->position();
+}
+
+=head2 summary
+
+Short annotation summary.
+
+=cut
+
+sub summary {
+  my $self = shift;
+  return sprintf 'Run %i lane %i annotated by %s',
+    $self->id_run(),
+    $self->position(),
+    $self->annotation()->username();
+}
+
+=head2 information
+
+Full annotation description.
+
+=cut
+
+sub information {
+  my $self = shift;
+  return sprintf '%s on %s - %s',
+    $self->summary(),
+    $self->annotation()->date_as_string(),
+    $self->annotation()->comment();
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

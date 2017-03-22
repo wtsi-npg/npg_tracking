@@ -1,0 +1,41 @@
+
+Run 21915 was assigned status "qc review pending" on 2017-02-08 11:49:39 by joe_events
+
+Study 'Cambrige Spring' has samples in the following lanes of this run:
+
+Lane 1: Samples
+    QC1Hip-14336
+    QC1Hip-14341
+    QC1Hip-14352
+    QC1Hip-14353
+    QC1Hip-14355
+    ... 9 samples in total
+
+Lane 2: Samples
+    QC1Hip-14336
+    QC1Hip-14341
+    QC1Hip-14352
+    QC1Hip-14353
+    QC1Hip-14355
+    ... 9 samples in total
+
+Lane 3: Samples
+    QC1Hip-14336
+    QC1Hip-14341
+    QC1Hip-14352
+    QC1Hip-14353
+    QC1Hip-14355
+    ... 9 samples in total
+
+
+Sequencing and default analysis for this run completed. Run is now pending manual QC review. Meanwhile, we will be loading analysis results into iRODS.
+
+NPG page for the run:
+http://sfweb.internal.sanger.ac.uk:9000/run/21915
+
+Analysis and QC information for this run will be/is available:
+http://sfweb.internal.sanger.ac.uk:1959/illumina/runs/21915
+http://sfweb.internal.sanger.ac.uk:1959/checks/runs/21915
+
+NPG, DNA Pipelines Informatics
+

@@ -1,8 +1,7 @@
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 18;
 use Test::Exception;
-
 use t::dbic_util;
 
 use_ok( q{npg_tracking::Schema::Result::RunStatus} );
@@ -22,5 +21,33 @@ my $row = $rs->next();
 isa_ok( $row, q{npg_tracking::Schema::Result::RunStatus});
 is( $row->id_run(), 1, q{id_run obtained correctly} );
 is( $row->description(), q{run pending}, q{description is correct} );
+is($row->summary(), 'Run 1 was assigned status "run pending"',
+  'correct summary string');
+is($row->information(),
+  'Run 1 was assigned status "run pending" on 2007-06-05 10:04:23 by joe_admin',
+  'correct information string');
+is_deeply([$row->event_report_types()], ['lims'], 'lims report only');
+
+my @followers_report_statuses = ('qc review pending', 'qc complete');
+my @followers_report_statuses_ids = map {$_->id_run_status_dict() }
+  $schema->resultset( q{RunStatusDict} )->search({
+  description => \@followers_report_statuses})->all();
+my $count = scalar @followers_report_statuses;
+is (scalar @followers_report_statuses_ids, $count, 'two ids');
+
+my $i = 0;
+while ($i < $count) {
+  my $id     = $followers_report_statuses_ids[$i];
+  my $status = $followers_report_statuses[$i];
+  lives_ok { $row->update({id_run_status_dict => $id}) } "status updated to $status";
+  is($row->summary(), qq{Run 1 was assigned status "$status"},
+    'correct summary string');
+  is($row->information(),
+    qq{Run 1 was assigned status "$status" on 2007-06-05 10:04:23 by joe_admin},
+    'correct information string');
+  is_deeply([$row->event_report_types()], [qw(lims followers)],
+    qq{lims and followers reports for status "$status"});
+  $i++;
+}
 
 1;
