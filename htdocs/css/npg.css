@@ -19,7 +19,7 @@ div#team_container {
 
 div.roundborder {
  border: 1px solid #a1a1a1;
- padding: 10px 30px; 
+ padding: 10px 30px;
  background-color: #dddddd;
  border-radius: 15px;
 }
@@ -70,7 +70,7 @@ div#team_container p {
 
 div.widgets_group {
  border:1px solid #a1a1a1;
- padding:5px 10px; 
+ padding:5px 10px;
  border-radius:15px;
  margin-bottom: 10px;
 }
@@ -113,21 +113,6 @@ a.npg_menu_highlight {
  padding-top: 5px;
 }
 
-.r_and_d_watermark_container {
- position: relative;
- z-index: 0;
-}
-
-.r_and_d_watermark {
-  position: absolute;
-  right: 0px;
-  top: -5px;
-  font-weight: bold;
-  font-size: 20px;
-  color: #EFC9BC;
-  z-index: -1;
-}
-
 div#flowcell_slots {
   margin: 5px 0 5px 0;
   font-weight: bold;
@@ -139,7 +124,7 @@ div#flowcell_slots {
 }
 
 .value_before_submit_button {
- padding-right: 5px; 
+ padding-right: 5px;
 }
 
 div.run_menu {
@@ -239,7 +224,7 @@ div#run_lane_tag_form{
   margin-left:10%;
   width:70%;
   border: 7px #788E4D;
-  padding: 10px 10px; 
+  padding: 10px 10px;
   background-color: #FFFFFF;
   border-radius: 15px;
   border-style: outset;
