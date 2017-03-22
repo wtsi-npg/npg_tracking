@@ -1,28 +1,12 @@
-#!/usr/local/bin/perl -T
-#########
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/sflogin_web_apps/trunk/cgi-bin/storage, r15717
-#
-
-my @npg_libs;
-BEGIN {
-  my $libs_string = $ENV{'NPG_PERL5LIB'};
-  if ($libs_string) {
-    my @libs = split /:/smx, $libs_string;
-    foreach my $l (@libs) {
-      my ($dtl) = $l =~ /([a-z0-9\/\._\-]+)/i;
-      if ($dtl) {push @npg_libs, $dtl;}
-    }
-  }
-}
+#!/usr/bin/env perl -T
 
 use strict;
-use lib @npg_libs;
 use warnings;
 use GD;
 use English qw(-no_match_vars);
 use Carp;
 
-my ($partition) = ($ENV{PATH_INFO} || q()) =~ /([a-z0-9]+)/smx;
+my ($partition) = ($ENV{'PATH_INFO'} || q()) =~ /([a-z0-9]+)/smx;
 
 local $ENV{'PATH'} = join q(:), qw(/bin /usr/bin);
 

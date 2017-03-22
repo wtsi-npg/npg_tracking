@@ -1,8 +1,8 @@
-#!/usr/local/bin/perl -wT
+#!/usr/bin/env perl -wT
+
 #########
 # Author:        dj3
 # Created:       2010-05-17
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/npg-tracking/trunk/cgi-bin/reflector, r16549
 #
 
 use strict;

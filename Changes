@@ -1,5 +1,11 @@
 LIST OF CHANGES
 
+ - update models, droping cost code and cost group
+ - updating templates to remove broken R&D watermark based on cost_code
+ - deleting fixtures and tests for cost code and cost group
+
+release 86.0
+ - httpd config files for httpd v.2.4.23 and mod-perl v.2
  - simple uptime report for Illumina sequencing instruments
  - reinmplementation of events reporting
  - timing of emails to followers is changed from statuses

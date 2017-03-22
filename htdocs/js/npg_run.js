@@ -1,4 +1,4 @@
-function things_to_do_on_load(id_run, batch_id, rAndDCodes) {
+function things_to_do_on_load(id_run, batch_id) {
 
   var p=['prephasing','phasing','signal_mean','noise'];
   for (var i=0;i<p.length;i++){
@@ -22,7 +22,7 @@ function things_to_do_on_load(id_run, batch_id, rAndDCodes) {
       if(response && batch_list.length > 0){
         $('ss_ajax_status').update('Retrieved batch data from Sequencescape.');
         var laneDataHashByPosition = _batch_XML_DOM_to_hash(response);
-        if( $('submit_manual_qc_finish') && 
+        if( $('submit_manual_qc_finish') &&
             $H(laneDataHashByPosition).values().findAll(function(n){return n.get('type') != 'control'}).all(function(n){var s = n.get('qc_state'); return s == 'pass' || s == 'fail';}) ){
           $('submit_manual_qc_finish').show();
         };
@@ -32,42 +32,37 @@ function things_to_do_on_load(id_run, batch_id, rAndDCodes) {
 	// now get name info missing from batch.xml
 	var url2name = new Hash();
 
-	$$('a.sequencescape_id').pluck('href').map(function(l){url2name.set(l)});
-	url2name.each(function(pair){
-	  new Ajax.Request(SCRIPT_NAME + '/../reflector', {
-            requestHeaders: {Accept: 'application/xml, text/xml'},
-	    parameters: { url: pair.key+'.xml' },
-            onSuccess: function(transport){
-	      var response = transport.responseXML;
-	      if(response){
-	        var name = _search_xml_element_by_name(response, 'name');
-		if (name){
-		  $$('a.sequencescape_id').findAll(function(e){return e.href == pair.key}).each(function(e){
-		    if (name.length > 30) {
-		      name = name.replace(/_/g, " ");
-		    }
-		    e.update(name);
-                    /* FIXME code bolow does not work on IE */
-		    var ena = _search_xml_propertydescriptor_value_for_name(response, /ENA \w+ Accession Number/);
-		    if(ena){ new Insertion.After(e,' <span class="smaller_font_85">('+ena+')</span>'); }
-		    var cost_code = _search_xml_propertydescriptor_value_for_name(response, /Project cost code/);
-		    if (cost_code && rAndDCodes.indexOf(cost_code) !== -1) {
-                      var pos = 'project_' + e.getAttribute('position');
-                      $(pos).update('<div class="r_and_d_watermark_container">' + $(pos).innerHTML + '<span class="r_and_d_watermark">R&amp;D</span></div>');
-		    }
-		    e.removeClassName('sequencescape_id');
-		  });
-		}
-	      }
-	    }
-          });
-	});
+  $$('a.sequencescape_id').pluck('href').map(function(l){url2name.set(l)});
+  url2name.each(function(pair){
+    new Ajax.Request(SCRIPT_NAME + '/../reflector', {
+        requestHeaders: {Accept: 'application/xml, text/xml'},
+      parameters: { url: pair.key+'.xml' },
+      onSuccess: function(transport){
+        var response = transport.responseXML;
+        if(response){
+          var name = _search_xml_element_by_name(response, 'name');
+          if (name){
+            $$('a.sequencescape_id').findAll(function(e){return e.href == pair.key}).each(function(e){
+              if (name.length > 30) {
+                name = name.replace(/_/g, " ");
+              }
+              e.update(name);
+              /* FIXME code bolow does not work on IE */
+              var ena = _search_xml_propertydescriptor_value_for_name(response, /ENA \w+ Accession Number/);
+              if(ena){ new Insertion.After(e,' <span class="smaller_font_85">('+ena+')</span>'); }
+              e.removeClassName('sequencescape_id');
+            });
+          }
+        }
+      }
+    });
+  });
       }else{
         _ss_ajax_warning('No batch data from Sequencescape!');
       }
     },
     onCreate: function(){ $('ss_ajax_status').update('<img style="height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />Getting Sequencescape batch data...') },
-    onFailure: function(){ _ss_ajax_warning('Something went wrong getting batch data from Sequencescape....') } 
+    onFailure: function(){ _ss_ajax_warning('Something went wrong getting batch data from Sequencescape....') }
    });
   }
 
