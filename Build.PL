@@ -218,6 +218,8 @@ my $builder = $class->new(
                 'XML::LibXML'                     => '1.70',
                 'XML::Simple'                     => '2.18',
                 'YAML'                            => '0.68',
+
+                'WTSI::DNAP::Utilities::Loggable' => '>= 0.5.3',
             },
          );
 

@@ -1,5 +1,20 @@
-The database reports the following lanes on this run:
-
-[% FOREACH lane = lanes -%]
-Lane - [% lane.position %]: Library - [% lane.library %]
+[%-
+   max_num_samples = 4;
+   # Variable 'lane' might be an st::api::lims object.
+   # We must pass a boolean false flag to the 'sample_names'
+   # to indicate that we do not want control samples listed.
+   # However, 'lane' might also be a hash reference
+   # with a 'sample_names' key. You'd think this
+   # notation will never work with a hash, but it does. 
+   sample_names = lane.sample_names(0);
+   num_samples = sample_names.size;
+   IF num_samples > max_num_samples;
+     sample_names = sample_names.slice(0, max_num_samples-1);
+   END;
+-%]
+Lane [% lane.position %]: Samples
+[% FOREACH sample_name = sample_names %]
+    [%- '    ' _ sample_name %]
 [% END %]
+[%- IF num_samples > max_num_samples; '    ... ' _ num_samples %] samples in total[% END %]
+

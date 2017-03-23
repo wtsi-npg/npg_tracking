@@ -182,6 +182,8 @@ __PACKAGE__->belongs_to(
 
 # Created:       2010-04-08
 
+use List::MoreUtils qw/any/;
+
 our $VERSION = '0';
 
 =head2 status_dict
@@ -203,13 +205,58 @@ __PACKAGE__->belongs_to(
 
 =head2 description
 
-Helper method returns the description for this run status
+Status description as in the run status dictionary.
 
 =cut
 
 sub description {
   my ( $self ) = @_;
   return $self->run_status_dict->description();
+}
+
+=head2 summary
+
+Short status summary.
+
+=cut
+
+sub summary {
+  my $self = shift;
+  return sprintf q[Run %i was assigned status "%s"],
+    $self->id_run,
+    $self->description(); 
+}
+
+=head2 information
+
+Information about this status
+
+=cut
+
+sub information {
+  my $self = shift;
+  return sprintf q[%s on %s by %s],
+    $self->summary(),
+    $self->date()->strftime('%F %T'),
+    $self->user()->username();
+}
+
+=head2 event_report_types
+
+Additional event report types associated with creating a record
+in this table.
+
+=cut
+
+sub event_report_types {
+  my $self = shift;
+  my @types = qw/lims/;
+  my $description = $self->description();
+  my @statuses = ('qc review pending', 'qc complete');
+  if (any { $_ eq $description} @statuses) {
+    push @types, 'followers';
+  }
+  return @types;
 }
 
 __PACKAGE__->meta->make_immutable;

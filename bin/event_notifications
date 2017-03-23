@@ -1,94 +1,83 @@
 #!/usr/bin/env perl
-#############
-# Created By: ajb
-# Created On: 2010-02-10
-#
-
-package event_notifications;
 
 use strict;
 use warnings;
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
-use Carp;
-use English qw(-no_match_vars);
+use Log::Log4perl qw(:levels);
 
-use npg_tracking::Schema;
-use npg::email;
-use npg::email::event;
+use npg_tracking::report::events;
 
 our $VERSION = '0';
 
-my $schema = npg_tracking::Schema->connect();
-my $templates = "$Bin/../$npg::email::DEFAULT_TEMPLATE_LOCATION";
+Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
+                          level  => $INFO,
+                          utf8   => 1});
 
-my $todo_rs = $schema->resultset('Event')
-    ->search( { notification_sent => '0000-00-00 00:00:00' } );
-
-while ( my $job = $todo_rs->next() ) {
-    eval {
-      my $notify = npg::email::event->new(
-        {
-          event_row                => $job,
-          schema_connection        => $schema,
-          email_templates_location => $templates,
-        }
-      );
-      $notify->run();
-      1;
-    }
-    or do {
-      carp q{Event } . $job->id_event() . qq{ not processed\n$EVAL_ERROR};
-    };
-}
+npg_tracking::report::events->new_with_options()->process();
 
 1;
 
-
 __END__
-
 
 =head1 NAME
 
-event_notifications -- send notifications for events
+event_notifications
 
-=head1 VERSION
+=head1 USAGE
 
-=head1 SYNOPSIS
+  # Generate and send out reports, mark events as reported
+  event_notifications
 
-    C<<event_notifications>>
+  # Generate reports, print the summary to console, do not
+  # send out reports or mark events as reported
+  event_notifications --dry_run
+
+=head1 REQUIRED ARGUMENTS
+
+=head1 OPTIONS
+
+ --dry-run to avoid sending out reports or marking events as reported.
 
 =head1 DESCRIPTION
 
-Check the database for events that have a blank notification field (actually
-'0000-00-00 00:00:00'). Send an email, and inform Sequencescape if appropriate,
-and update the field with the current date/time.
+ Attempts to report the events that have not been yet been reported
+ and marks events as reported if successful. A number of different
+ reports for different recipients can be generated for the same event.
 
-=head1 SUBROUTINES/METHODS
+=head1 EXIT STATUS
 
-None.
+ 0
+
+=head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-PERL5LIB should include the paths for npg::common and npg_tracking::Schema
+=head1 DEPENDENCIES
 
-Set $ENV{dev} to get the script to use a dev or test database.
+=over
 
-=head1 INCOMPATIBILITIES
+=item strict
 
-None known.
+=item warnings
 
-=head1 BUGS AND LIMITATIONS
+=item FindBin
 
-Please inform the author of any found.
+=item lib
+
+=item Log::Log4perl
+
+=item npg_tracking::report::events
+
+=back
 
 =head1 AUTHOR
 
-John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (C) 2011 GRL, by John O'Brien
+Copyright (C) 2017 Genome Research Limited
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
