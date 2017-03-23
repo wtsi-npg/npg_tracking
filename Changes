@@ -3,6 +3,11 @@ LIST OF CHANGES
  - update models, droping cost code and cost group
  - updating templates to remove broken R&D watermark based on cost_code
  - deleting fixtures and tests for cost code and cost group
+ - under modperl information about request url is not available in
+   env. variables; now getting it directy from the CGI module
+ - when possible, any subsequent requests should go to the server
+   from which the original page was served (makes sense in general
+   and helps to set up proper dev environment)
 
 release 86.0
  - httpd config files for httpd v.2.4.23 and mod-perl v.2
