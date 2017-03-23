@@ -35,6 +35,7 @@ if($EVAL_ERROR) {
  
  my @files = grep {$_ !~ /npg_tracking\/Schema/ && $_ !~ /Monitor/}
              Perl::Critic::Utils::all_perl_files(-e 'blib' ? 'blib/lib' : 'lib');
+ push @files, Perl::Critic::Utils::all_perl_files(-e 'blib' ? 'blib/cgi-bin' : 'cgi-bin');
  foreach my $file (sort @files) {
    critic_ok($file);
  }
