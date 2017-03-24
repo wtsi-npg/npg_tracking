@@ -16,19 +16,6 @@ BEGIN {
 use_ok('t::util');
 use_ok('t::request');
 
-{
-  my $default_urls = {'npg_tracking' => 'http://some.san.ac.uk:678',
-                      'seqqc'        => 'http://some.san.ac.uk:999'};
-  my $gs01_urls = {'npg_tracking' => 'http://gso1.san.ac.uk:678',
-                   'seqqc'        => 'http://gso1.san.ac.uk:999'};
-  is_deeply(npg::view::run->staging_urls(),  $default_urls,
-    'no args, default urls returned');
-  is_deeply(npg::view::run->staging_urls('host'),  $default_urls,
-    'no match args, default urls returned');
-  is_deeply(npg::view::run->staging_urls('gs01'),  $gs01_urls,
-    'matching host args, correct host-specific urls returned');
-}
-
 my $util = t::util->new({fixtures  => 1,});
 
 {
@@ -40,6 +27,16 @@ my $util = t::util->new({fixtures  => 1,});
                 }),
          });
   isa_ok($view, 'npg::view::run', 'isa npg::view::run');
+  my $default_urls = {'npg_tracking' => 'http://some.san.ac.uk:678',
+                      'seqqc'        => 'http://some.san.ac.uk:999'};
+  my $gs01_urls = {'npg_tracking' => 'http://gso1.san.ac.uk:678',
+                   'seqqc'        => 'http://gso1.san.ac.uk:999'};
+  is_deeply($view->staging_urls(),  $default_urls,
+    'no args, default urls returned');
+  is_deeply($view->staging_urls('host'),  $default_urls,
+    'no match args, default urls returned');
+  is_deeply($view->staging_urls('gs01'),  $gs01_urls,
+    'matching host args, correct host-specific urls returned');
 }
 
 {

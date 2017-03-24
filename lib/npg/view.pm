@@ -1,12 +1,9 @@
-#########
-# Author:        rmp
-# Created:       2007-03-28
-#
 package npg::view;
 
 use strict;
 use warnings;
 use POSIX qw(strftime);
+use URI::URL;
 use Carp;
 use English qw(-no_match_vars);
 
@@ -154,19 +151,52 @@ sub is_prod {
 sub staging_urls {
   my ($self, $staging_server) = @_;
 
-  my $default_key = 'default';
-  $staging_server ||= $default_key;
+  $staging_server ||= 'default';
   my $config = get_config();
-  $config = $config->{'staging_areas2webservers'} || {};
-  my $url = $config->{$staging_server} ||
-            $config->{$default_key} ||
-            {};
+  $config  = $config->{'staging_areas2webservers'} || {};
+  $config  = $config->{$staging_server} || $config->{'default'};
+  my $surl = $config->{'npg_tracking'};
+  $surl ||= q{};
+  # If the host that has access to a staging area and
+  # this host (the host this request went to) are located
+  # in the same cluster, this host is likely to have
+  # access to that staging area itself. Therefore, a
+  # separate url is not needed. It is important that the
+  # development servers serve all urls themselves and
+  # do not delegate some urls to production servers.
+  $surl = ($surl && $self->_colocated($surl)) ? q{} : $surl;
+  if (!$surl) {
+    # Config hash is a constant, so to delete a key we have
+    # to copy the whole hash but this key.
+    my $nconfig = {};
+    foreach my $key (grep {$_ ne 'npg_tracking'} keys %{$config}) {
+      $nconfig->{$key} = $config->{$key};
+    }
+    $config = $nconfig;
+  }
+  return $config;
+}
 
+sub _colocated {
+  my ($self, $staging_url) = @_;
+  my $request_cluster = $self->_cluster(
+    $self->util()->cgi()->url(-full => 1));
+  my $staging_cluster = $self->_cluster($staging_url);
+  return $request_cluster && $staging_cluster &&
+         ($request_cluster eq $staging_cluster);
+}
+
+sub _cluster {
+  my ($self, $url) = @_;
+  # Expect url to be host.cluster.sanger.ac.uk,
+  # but do not fail if it's something else.
+  # Return cluster name or the original url/IP address. 
+  $url = URI::URL->new($url)->host();
+  $url=~ s/\A[^\.]+\.//smx;
   return $url;
 }
 
 1;
-
 
 __END__
 
@@ -272,7 +302,7 @@ Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2007 GRL, by Roger Pettett
+Copyright (C) 2017 Genome Research Ltd
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.8 or,

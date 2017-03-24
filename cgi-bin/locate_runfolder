@@ -4,57 +4,86 @@ use strict;
 use warnings;
 use English qw(-no_match_vars);
 use Carp;
+use CGI qw/:standard/;
+use URI::Escape qw(uri_unescape);
 
 main();
-0;
+
+exit 0;
+
+sub _error {
+  my ($message, $path) = @_;
+  carp "$message for $path";
+  # Path might contain anything, do not write it to
+  # back to the page.
+  print "Content-type: text/html\n\n",
+        "<html><head></head><body>\n",
+        "<h2>NPG Tracking Server Error</h2>\n",
+        "<h3>$message</h3>\n",
+        "</body></html>\n"
+     or croak "Error printing: $ERRNO";
+  return;
+}
 
 sub main {
-  my ($pathglob,$runfolder, $suffix) = $ENV{'PATH_INFO'} =~ m{\A((?:/\S+?/\*)?)/([^/?]+)(.*)}smx;
+  my $cgi = CGI->new();
+  my $path_info = uri_unescape($cgi->url(-relative => 1, -path_info => 1));
+  # Not clear why we acquire an extra slash, but we do
+  $path_info =~ s{\A//}{/}smx;
+
+  my ($pathglob,$runfolder, $suffix) = $path_info =~ m{\A((?:/\S+?/\*)?)/([^/?]+)(.*)}smx;
   my ($id_run);
   my @folders;
-  if(not $runfolder=~/\A\d+\z/smx){
+  if (not $runfolder=~/\A\d+\z/smx) {
     ($id_run)  = $runfolder =~ /_(\d+)/smx;
     if ($pathglob) {
       @folders   = sort { -M $a <=> -M $b } glob "$pathglob/$runfolder";
     } else {
       @folders   = sort { -M $a <=> -M $b } glob "/staging/IL*/*/$runfolder";
     }
-  } else{
+  } else {
     ($id_run)  = $runfolder;
     @folders   = sort { -M $a <=> -M $b } glob "/staging/IL*/*/*_{,0}$id_run";
   }
 
-  if($ENV{QUERY_STRING} =~ /redir/msx) {
-    my ($uri)     = $folders[0]=~/([\/a-z0-9_-]+)/imsx; # detaint
-
-    my $rellink = readlink "$uri/Latest_Summary";
-
-    if($uri) {
-      if($ENV{PATH_INFO} =~ /latest|summary/msx) {
-	if($rellink =~ m/GERALD/smx){
-	  $uri .= q(/) . $rellink . q(/Summary.htm);
-        }else{
-          $rellink =~ s!((?:/B(?:ustard|aseCalls)|_basecalls)[^/]*)/.*!$1!xms;
-	  $uri .= q(/) . $rellink . q(/BustardSummary.xml);
-	}
-      } elsif($ENV{PATH_INFO} =~ /ivc/msix) {
-        $rellink =~ s!((?:/B(?:ustard|aseCalls)|_basecalls)[^/]*)/.*!$1!xms;
-	$uri .= q(/) . $rellink . q(/IVC.htm);
-      } elsif($ENV{PATH_INFO} =~ /error/msix) {
-	$uri .= q(/) . $rellink . q(/Error.htm);
-      } else {
-        if(defined $rellink) { $suffix =~ s{^/Latest_Summary}{/$rellink}smx; }
-	$uri .= q(/) . $suffix;
-      }
-    }
-
-    print "Content-type: text/html\n\n",
-          qq(<html><head><meta http-equiv="refresh" content="0;url=$uri" /></head></html>\n) or croak "Error printing: $ERRNO";
+  if (!@folders) {
+    _error('Run folder not found', $path_info);
     return;
   }
 
-  print "Content-type: text/xml\n\n",
-        qq(<run id_run="$id_run">@{[map { qq(<folder path="$_" />) } @folders]}</run>\n) or croak "Error printing: $ERRNO";
+  my ($uri)  = $folders[0]=~/([\/a-z0-9_-]+)/imsx; # detaint
+  if (!$uri) {
+    _error('Detainting has not left anything', $path_info);
+    return;
+  }
+
+  my $rellink = readlink "$uri/Latest_Summary";
+  if ($path_info =~ /latest|summary/msx) {
+    if ($rellink =~ m/GERALD/smx){
+      $uri .= q(/) . $rellink . q(/Summary.htm);
+    } else {
+      ## no critic (RegularExpressions::ProhibitUnusualDelimiters)
+      $rellink =~ s!((?:/B(?:ustard|aseCalls)|_basecalls)[^/]*)/.*!$1!xms;
+      ## use critic
+      $uri .= q(/) . $rellink . q(/BustardSummary.xml);
+    }
+  } elsif ($path_info =~ /ivc/msix) {
+    ## no critic (RegularExpressions::ProhibitUnusualDelimiters)
+    $rellink =~ s!((?:/B(?:ustard|aseCalls)|_basecalls)[^/]*)/.*!$1!xms;
+    ## use critic
+    $uri .= q(/) . $rellink . q(/IVC.htm);
+  } elsif ($path_info =~ /error/msix) {
+    $uri .= q(/) . $rellink . q(/Error.htm);
+  } else {
+    if (defined $rellink) {
+      $suffix =~ s{^/Latest_Summary}{/$rellink}smx;
+    }
+    $uri .= q(/) . $suffix;
+  }
+
+  print "Content-type: text/html\n\n",
+    qq(<html><head><meta http-equiv="refresh" content="0;url=$uri" /></head></html>\n)
+    or croak "Error printing: $ERRNO";
 
   return;
 }

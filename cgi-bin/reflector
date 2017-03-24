@@ -13,6 +13,10 @@ use HTTP::Request;
 use LWP::UserAgent;
 use CGI qw/:standard/;
 use URI;
+use Readonly;
+
+Readonly::Scalar my $INTERNAL_SERVER_ERROR => 500;
+Readonly::Scalar my $FORBIDDEN             => 403;
 
 my $requested_url = param('url');
 my $u = URI->new($requested_url);
@@ -26,8 +30,8 @@ eval {
     }
     1;
 } or do {
-    print header(-status => ($EVAL_ERROR=~/Cannot/smix ? 403 : 500), -type => q[text/xml]);
-    print q[<xml><error>] . $EVAL_ERROR . q[</error></xml>];
+    print header(-status => ($EVAL_ERROR=~/Cannot/smix ? $FORBIDDEN : $INTERNAL_SERVER_ERROR ), -type => q[text/xml]) or croak "Error printing: $ERRNO";
+    print q[<xml><error>] . $EVAL_ERROR . q[</error></xml>] or croak "Error printing: $ERRNO";
     exit 0;
 };
 
@@ -35,8 +39,8 @@ my $request = HTTP::Request->new( GET  => $requested_url);
 my $ua = LWP::UserAgent->new();
 $ua->agent(q[NPG_INTERACTIVE_TRACKING_REFLECTOR]);
 my $response = $ua->request($request);
-print header(-status => $response->code, -type => $response->header('Content-Type'));
-print $response->content;
+print header(-status => $response->code, -type => $response->header('Content-Type')) or croak "Error printing: $ERRNO";
+print $response->content or croak "Error printing: $ERRNO";
 
 exit 0;
 
