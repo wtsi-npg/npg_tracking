@@ -100,9 +100,6 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 [%- IF model.is_in_staging -%]
 <div class="run_menu rfloat">
 <ul class="inline">
-   [%- IF model.has_tag_with_value('rta') -%]
-   <li><a class="npg_menu" href="[% staging_url %]/cgi-bin/locate_runfolder/[% run_folder %]/Data/Status.htm?redir">RTA Status</a></li>
-   [%- END -%]
    <li><a class="npg_menu" href="[% staging_url %]/cgi-bin/locate_runfolder/[% run_folder %]?redir">Run Folder</a></li>
    [%- IF model.has_analysis_in_progress -%]
    <li><a class="npg_menu" href="[% staging_url %]/cgi-bin/locate_runfolder/[% run_folder %]/latest?redir">Latest Analysis</a></li>
