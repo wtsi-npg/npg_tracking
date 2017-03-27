@@ -3,11 +3,18 @@ package t::dbic_util;
 use Moose;
 with 'npg_testing::db';
 
+sub default_fixture_path {
+  return 't/data/dbic_fixtures';
+}
+
 has fixture_path => (
-    is      => 'ro',
-    isa     => 'Str',
-    default => 't/data/dbic_fixtures',
+    is         => 'ro',
+    isa        => 'Maybe[Str]',
+    lazy_build => 1,
 );
+sub _build_fixture_path {
+  return default_fixture_path();
+}
 
 sub test_schema {
     my ($self) = @_;

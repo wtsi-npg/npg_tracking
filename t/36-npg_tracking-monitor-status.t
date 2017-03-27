@@ -21,7 +21,19 @@ my @bam_basecall = ($runfolder_name, 'Data', 'Intensities', 'BAM_basecalls_20130
 
 my $now = DateTime->now(time_zone=> DateTime::TimeZone->new(name => q[local]));
 
-my $schema = t::dbic_util->new()->test_schema();
+my $util = t::dbic_util->new(fixture_path => undef);
+my $schema = $util->test_schema();
+
+# We are going to use MySQL datetime parser so that the DateTime
+# objects retrieved from the database have floating time zone and
+# not UTC zone as they would have had if the parser matching our
+# test db, DateTime::Format::SQLite, were used.
+# According to DateTime documentation
+# "Compare two DateTime objects... If one of the two DateTime objects has a floating time
+# zone, it will first be converted to the time zone of the other object."
+
+$schema->resultset('RunStatus')->result_source->storage->datetime_parser_type('DateTime::Format::MySQL');
+$util->load_fixtures($schema, $util->default_fixture_path());
 
 sub _staging_dir_tree {
   my $root = shift;
@@ -374,11 +386,9 @@ my $cb = sub {
      {prefetch => ['run_lane', 'run_lane_status_dict'],},
   )->all;
   is( scalar @rows, 8, 'duplicate lane statuses are not created');
-  TODO: {
-    local $TODO = 'Unresolved problem with dates in this test (SQLite)';
-    is($run->current_run_status_description, $lane_status,
-      'current run status has not changed');
-  };
+
+  is($run->current_run_status_description, $lane_status,
+    'current run status has not changed');
 
   is( $m->_notifier->poll(), 0, 'no further events');
 
