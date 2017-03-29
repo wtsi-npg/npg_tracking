@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 86.1
  - update models, droping cost code and cost group
  - updating templates to remove broken R&D watermark based on cost_code
  - deleting fixtures and tests for cost code and cost group
@@ -8,6 +9,7 @@ LIST OF CHANGES
  - when possible, any subsequent requests should go to the server
    from which the original page was served (makes sense in general
    and helps to set up proper dev environment)
+ - web pages - drop buttons linking to non-existing pages
 
 release 86.0
  - httpd config files for httpd v.2.4.23 and mod-perl v.2
