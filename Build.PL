@@ -211,12 +211,15 @@ my $builder = $class->new(
                 'Try::Tiny'                       => 0,
                 'URI'                             => '1.37',
                 'URI::Escape'                     => 0,
+                'URI::URL'                        => 0,
                 'utf8'                            => 0,
                 'warnings'                        => '1.05',
                 'XML::Generator'                  => '1.01',
                 'XML::LibXML'                     => '1.70',
                 'XML::Simple'                     => '2.18',
                 'YAML'                            => '0.68',
+
+                'WTSI::DNAP::Utilities::Loggable' => '>= 0.5.3',
             },
          );
 

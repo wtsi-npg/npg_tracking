@@ -1,0 +1,10 @@
+-- Proposed changes to schema.
+
+-- Dropping tables cost_code and cost_group from tracking database
+-- Waiting until we are sure no old servers will try to access
+-- these tables.
+SELECT * FROM `cost_code`;
+SELECT * FROM `cost_group`;
+
+DROP TABLE IF EXISTS `cost_code`;
+DROP TABLE IF EXISTS `cost_group`;

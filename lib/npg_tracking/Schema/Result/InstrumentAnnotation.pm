@@ -142,5 +142,32 @@ __PACKAGE__->belongs_to(
 
 our $VERSION = '0';
 
+=head2 summary
+
+Short annotation summary.
+
+=cut
+
+sub summary {
+  my $self = shift;
+  return sprintf 'Instrument %s annotated by %s',
+    $self->instrument()->name(),
+    $self->annotation()->username();
+}
+
+=head2 information
+
+Full annotation description.
+
+=cut
+
+sub information {
+  my $self = shift;
+  return sprintf '%s on %s - %s',
+    $self->summary(),
+    $self->annotation()->date_as_string(),
+    $self->annotation()->comment();
+}
+
 __PACKAGE__->meta->make_immutable;
 1;
