@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - remove models for db tables that are due to be dropped
+
 release 86.1
  - update models, droping cost code and cost group
  - updating templates to remove broken R&D watermark based on cost_code

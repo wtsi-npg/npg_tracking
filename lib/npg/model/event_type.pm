@@ -10,13 +10,10 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::event;
 use npg::model::entity_type;
-use npg::model::usergroup;
-use npg::model::event_type_subscriber;
 
 our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
-__PACKAGE__->has_many_through('usergroup|event_type_subscriber');
 __PACKAGE__->has_many('event');
 __PACKAGE__->has_a('entity_type');
 __PACKAGE__->has_all();
@@ -79,10 +76,6 @@ npg::model::event_type
 =head2 events - arrayref of npg::model::events with this event_type
 
   my $arEvents = $oEventType->events();
-
-=head2 usergroups - arrayref of npg::model::usergroups subscribed to notifications for this event_type
-
-  my $arUserGroups = $oEventType->usergroups();
 
 =head2 entity_type - npg::model::entity_type for which this event_type can be emitted
 

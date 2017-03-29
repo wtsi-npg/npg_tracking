@@ -223,21 +223,6 @@ __PACKAGE__->belongs_to(
   { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
-=head2 mail_run_project_follower
-
-Type: might_have
-
-Related object: L<npg_tracking::Schema::Result::MailRunProjectFollower>
-
-=cut
-
-__PACKAGE__->might_have(
-  "mail_run_project_follower",
-  "npg_tracking::Schema::Result::MailRunProjectFollower",
-  { "foreign.id_run" => "self.id_run" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
 =head2 run_annotations
 
 Type: has_many
@@ -329,8 +314,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-28 12:00:59
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:30KwQYdLD+H3KvJKLf9OxQ
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-03-29 17:02:05
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:T5Bt3yeyrr0HVBcwmlVzgA
 
 # Created:       2010-04-08
 

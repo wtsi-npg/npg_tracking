@@ -105,21 +105,6 @@ __PACKAGE__->set_primary_key("id_usergroup");
 
 =head1 RELATIONS
 
-=head2 event_type_subscribers
-
-Type: has_many
-
-Related object: L<npg_tracking::Schema::Result::EventTypeSubscriber>
-
-=cut
-
-__PACKAGE__->has_many(
-  "event_type_subscribers",
-  "npg_tracking::Schema::Result::EventTypeSubscriber",
-  { "foreign.id_usergroup" => "self.id_usergroup" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
 =head2 user2usergroups
 
 Type: has_many
@@ -136,8 +121,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07045 @ 2016-10-19 11:44:50
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:L20Y51wGH2tb6UvY2SGW5A
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-03-29 16:56:34
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:8eyTAW0P+xjoW2hhQosVdw
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
