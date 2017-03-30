@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 7;
 use t::util;
 
 use_ok('npg::model::user');
@@ -19,18 +19,6 @@ my $util  = t::util->new({
             });
   isa_ok($model->users(), 'ARRAY', 'users method');
   ok($model->is_member_of('administrators'), 'is a member of loaders');
-}
-{
-  my $model = npg::model::usergroup->new({
-             util     => $util,
-             id_usergroup  => 2000,
-             groupname => 'loaders',
-            });
-  my $event_types = $model->event_types();
-  isa_ok($event_types, 'ARRAY', 'event_types method');
-  my $event_type = $event_types->[0];
-  $event_types = $model->event_types();
-  is($event_types->[0], $event_type, 'event_types cached ok');
 }
 
 {
