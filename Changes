@@ -1,6 +1,9 @@
 LIST OF CHANGES
 
  - remove models for db tables that are due to be dropped
+ - replace image generation/manipulation routines by a stub
+   returning a simple static image (these routines are used
+   in npg_qc in web pages that are no longer used).
 
 release 86.1
  - update models, droping cost code and cost group

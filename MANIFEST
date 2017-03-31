@@ -240,7 +240,6 @@ lib/npg/samplesheet.pm
 lib/npg/samplesheet/auto.pm
 lib/npg/sensors.pm
 lib/npg/util.pm
-lib/npg/util/image/colourmap.pm
 lib/npg/util/image/graph.pm
 lib/npg/util/image/heatmap.pm
 lib/npg/util/image/image.pm
@@ -525,10 +524,6 @@ t/60-illumina-run-long_info.t
 t/60-illumina-run-short_info.t
 t/60-illumina-run.t
 t/60-util-image_graph.t
-t/60-util-image_heatmap.t
-t/60-util-image_map.t
-t/60-util-image_merge.t
-t/60-util-image_scale.t
 t/60-util-mailer.t
 t/70-bin-npg_status2file.t
 t/80-sensor.t
