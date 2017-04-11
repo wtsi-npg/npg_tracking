@@ -6,9 +6,11 @@ use File::Temp qw/tempdir/;
 use File::Slurp;
 use Cwd;
 
+use npg_tracking::util::abs_path qw(abs_path);
+
 use_ok('npg_tracking::daemon::jenkins');
 my $tmpdir = tempdir( CLEANUP => 1 );
-
+my $current_dir = abs_path getcwd();
 {
   local $ENV{'HOME'} = q[];
   my $j = npg_tracking::daemon::jenkins->new();
@@ -35,7 +37,7 @@ my $tmpdir = tempdir( CLEANUP => 1 );
   is_deeply($r->env_vars, {'http_proxy' => q[http://wwwcache.sanger.ac.uk:3128]},
       'http proxy environment variable set correctly');
   is(join(q[ ], @{$r->hosts}), q[sf2-farm-srv2], 'list of hosts');
-  is($r->command('host1'), qq[java -Xmx2g  -Dhttp.proxyHost=wwwcache.sanger.ac.uk -Dhttp.proxyPort=3128 -jar $jvar --httpPort=9960 --logfile=]. getcwd() .q[/logs/jenkins_host1_20130419-144441.log], 'command to run');
+  is($r->command('host1'), qq[java -Xmx2g  -Dhttp.proxyHost=wwwcache.sanger.ac.uk -Dhttp.proxyPort=3128 -jar $jvar --httpPort=9960 --logfile=${current_dir}/logs/jenkins_host1_20130419-144441.log], 'command to run');
   is($r->daemon_name, 'npg_jenkins', 'daemon name');
   is($r->ping, q[daemon --running -n npg_jenkins && ((if [ -w /tmp/npg_jenkins.pid ]; then touch -mc /tmp/npg_jenkins.pid; fi) && echo -n 'ok') || echo -n 'not ok'], 'ping command');
   is($r->stop, q[daemon --stop -n npg_jenkins], 'stop command');
@@ -56,6 +58,6 @@ my $tmpdir = tempdir( CLEANUP => 1 );
 
   local $ENV{'JENKINS_HOME'} = q{/does/not/exist};
 
-  is($r->command('host1'), qq[java -Xmx2g -Djava.io.tmpdir=/does/not/exist/tmp -Dhttp.proxyHost=wwwcache.sanger.ac.uk -Dhttp.proxyPort=3128 -jar $jvar --httpPort=9960 --logfile=]. getcwd() .q[/logs/jenkins_host1_20130419-144441.log], 'command to run');
+  is($r->command('host1'), qq[java -Xmx2g -Djava.io.tmpdir=/does/not/exist/tmp -Dhttp.proxyHost=wwwcache.sanger.ac.uk -Dhttp.proxyPort=3128 -jar $jvar --httpPort=9960 --logfile=${current_dir}/logs/jenkins_host1_20130419-144441.log], 'command to run');
 }
 1;

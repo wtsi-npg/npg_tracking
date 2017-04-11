@@ -1,17 +1,18 @@
 use strict;
 use warnings;
 use Test::More tests => 8;
-use Test::Deep;
 use Cwd;
+use npg_tracking::util::abs_path qw(abs_path);
 
 use_ok('npg_tracking::daemon::samplesheet');
+
 {
     my $r = npg_tracking::daemon::samplesheet->new();
     isa_ok($r, 'npg_tracking::daemon::samplesheet');
 }
 
 {
-    my $log_dir = join(q[/],getcwd(), 'logs');
+    my $log_dir = join(q[/], abs_path(getcwd()), 'logs');
     my $bash_command = qq([[ -d $log_dir && -w $log_dir ]] && );
     my $bash_error_command = qq( || echo Log directory $log_dir for staging host sf-1-1-01 cannot be written to);
 
