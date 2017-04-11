@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use HTTP::Headers;
 use Test::More tests => 17;
 use English qw(-no_match_vars);
 use t::util;
@@ -14,9 +15,8 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
                util   => $util,
                action => 'list',
                aspect => q{},
-               model  => npg::model::instrument_mod->new({
-                      util => $util,
-                           }),
+               model  => npg::model::instrument_mod->new({util => $util}),
+               headers => HTTP::Headers->new()
               });
   my $render;
   eval { $render = $view->render(); };
@@ -40,9 +40,8 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
                util   => $util,
                action => 'create',
                aspect => q{},
-               model  => npg::model::instrument_mod->new({
-                      util => $util,
-                           }),
+               model  => npg::model::instrument_mod->new({util => $util}),
+               headers => HTTP::Headers->new()
               });
   isa_ok($view, 'npg::view::instrument_mod');
   eval { $view->render(); };
@@ -70,9 +69,8 @@ my $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
                util   => $util,
                action => 'create',
                aspect => q{},
-               model  => npg::model::instrument_mod->new({
-                      util => $util,
-                           }),
+               model  => npg::model::instrument_mod->new({util => $util}),
+               headers => HTTP::Headers->new()
               });
   eval { $view->render(); };
   is($EVAL_ERROR, q{}, 'engineers authorised for create');
@@ -100,9 +98,8 @@ $util = t::util->new({ fixtures => 1, cgi => CGI->new() });
                util   => $util,
                action => 'create',
                aspect => 'update_mods',
-               model  => npg::model::instrument_mod->new({
-                      util => $util,
-                           }),
+               model  => npg::model::instrument_mod->new({util => $util}),
+               headers => HTTP::Headers->new()
               });
   my $render = $view->render();
   is($EVAL_ERROR, qq{}, 'no croak on batch update of mods');

@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use HTTP::Headers;
 use English qw(-no_match_vars);
 use t::util;
 use npg::model::administration;
@@ -12,11 +13,10 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
 {
   my $view = npg::view::administration->new({
                util   => $util,
-               model  => npg::model::administration->new({
-                      util => $util,
-                           }),
+               model  => npg::model::administration->new({util => $util}),
                action => q{list},
                aspect => q{},
+               headers => HTTP::Headers->new()
               });
 
   $util->requestor('public');
@@ -36,11 +36,10 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
 {
   my $view = npg::view::administration->new({
                util   => $util,
-               model  => npg::model::administration->new({
-                      util => $util,
-                           }),
+               model  => npg::model::administration->new({util => $util}),
                action => q{create},
                aspect => q{create_instrument_mod},
+               headers => HTTP::Headers->new()
               });
   $util->requestor('public');
   my $render;
@@ -59,11 +58,10 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
 
   my $view = npg::view::administration->new({
                util   => $util,
-               model  => npg::model::administration->new({
-                      util => $util,
-                           }),
+               model  => npg::model::administration->new({util => $util}),
                action => q{create},
                aspect => q{create_instrument_mod},
+               headers => HTTP::Headers->new()
               });
   $util->requestor('joe_engineer');
   my $render;
@@ -91,6 +89,7 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
     model => npg::model::administration->new({ util => $util }),
     action => q{create},
     aspect => q{create_instrument_mod},
+    headers => HTTP::Headers->new()
   });
   eval { $render = $view->render(); };
   like($EVAL_ERROR, qr{description\ \(\)\ and\/or\ revision\ \(rgb\)\ is\ missing}, 'croaked - missing description');
@@ -108,6 +107,7 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
     model => npg::model::administration->new({ util => $util }),
     action => q{create},
     aspect => q{create_instrument_status},
+    headers => HTTP::Headers->new()
   });
   $util->requestor('joe_engineer');
   my $render;
@@ -133,6 +133,7 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
     model => npg::model::administration->new({ util => $util }),
     action => q{create},
     aspect => q{create_user},
+    headers => HTTP::Headers->new()
   });
   $util->requestor('joe_admin');
   my $render;
@@ -160,6 +161,7 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
     model => npg::model::administration->new({ util => $util }),
     action => q{create},
     aspect => q{create_usergroup},
+    headers => HTTP::Headers->new()
   });
   $util->requestor('joe_admin');
   my $render;
@@ -173,6 +175,7 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
     model => npg::model::administration->new({ util => $util }),
     action => q{create},
     aspect => q{create_usergroup},
+    headers => HTTP::Headers->new()
   });
   eval { $render = $view->render(); };
   like($EVAL_ERROR, qr{No\ groupname\ and\/or\ group\ description\ given}, 'croaked - no description given');
@@ -184,6 +187,7 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
     model => npg::model::administration->new({ util => $util }),
     action => q{create},
     aspect => q{create_usergroup},
+    headers => HTTP::Headers->new()
   });
   eval { $render = $view->render(); };
   is($EVAL_ERROR, q{}, 'admin authorised for create_usergroup');
@@ -199,6 +203,7 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
     model => npg::model::administration->new({ util => $util }),
     action => q{create},
     aspect => q{create_entity_type},
+    headers => HTTP::Headers->new()
   });
   $util->requestor('joe_admin');
   my $render;
@@ -211,6 +216,7 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
     model => npg::model::administration->new({ util => $util }),
     action => q{create},
     aspect => q{create_entity_type},
+    headers => HTTP::Headers->new()
   });
   eval { $render = $view->render(); };
   is($EVAL_ERROR, q{}, 'admin authorised for create_entity_type');
@@ -225,6 +231,7 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
     model => npg::model::administration->new({ util => $util }),
     action => q{create},
     aspect => q{create_run_status},
+    headers => HTTP::Headers->new()
   });
   $util->requestor('joe_admin');
   my $render;
@@ -236,6 +243,7 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
     model => npg::model::administration->new({ util => $util }),
     action => q{create},
     aspect => q{create_run_status},
+    headers => HTTP::Headers->new()
   });
   eval { $render = $view->render(); };
   is($EVAL_ERROR, q{}, 'admin authorised for create_run_status');
@@ -249,11 +257,10 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
 
   my $view = npg::view::administration->new({
                util   => $util,
-               model  => npg::model::administration->new({
-                      util => $util,
-                           }),
+               model  => npg::model::administration->new({util => $util}),
                action => q{create},
                aspect => q{create_user_to_usergroup},
+               headers => HTTP::Headers->new()
               });
   $util->requestor('joe_admin');
 
@@ -267,6 +274,7 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
     model => npg::model::administration->new({ util => $util }),
     action => q{create},
     aspect => q{create_user_to_usergroup},
+    headers => HTTP::Headers->new()
   });
   eval { $render = $view->render(); };
   like($EVAL_ERROR, qr{No\ user\ and\/or\ usergroup\ given}, 'croaked - no usergroup given');
@@ -278,6 +286,7 @@ my $util  = t::util->new({fixtures => 1, cgi => CGI->new() });
     model => npg::model::administration->new({ util => $util }),
     action => q{create},
     aspect => q{create_user_to_usergroup},
+    headers => HTTP::Headers->new()
   });
   eval { $render = $view->render(); };
   is($EVAL_ERROR, q{}, 'admin authorised for create_usergroup');
