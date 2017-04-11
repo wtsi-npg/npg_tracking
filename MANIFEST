@@ -35,7 +35,6 @@ data/npg_tracking_email/templates/urls.tt2
 data/npg_tracking_email/templates/wrapper.tt2
 data/schema.txt
 data/templates/actions.tt2
-data/templates/administration_create_entity_type.tt2
 data/templates/administration_create_instrument_mod.tt2
 data/templates/administration_create_instrument_status.tt2
 data/templates/administration_create_run_status.tt2
@@ -854,7 +853,6 @@ t/data/npg_api/st/studies/546.xml
 t/data/npg_api/st/studies/578.xml
 t/data/npg_api_run/npg/run/604.xml
 t/data/npg_api_run/npg/run/636.xml
-t/data/rendered/20-view-administration_create_entity_type.html
 t/data/rendered/20-view-administration_create_instrument_mod.html
 t/data/rendered/20-view-administration_create_instrument_status.html
 t/data/rendered/20-view-administration_create_run_status.html
