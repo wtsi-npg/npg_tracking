@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - remove models for db tables that are due to be dropped
  - update apache conf so server run with 1 thread/child w/mpm_worker_module
    Config::IniFiles used by ClearPress::util does not seem to be thread safe
  - replace image generation/manipulation routines by a stub

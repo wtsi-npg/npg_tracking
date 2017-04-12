@@ -35,7 +35,6 @@ data/npg_tracking_email/templates/urls.tt2
 data/npg_tracking_email/templates/wrapper.tt2
 data/schema.txt
 data/templates/actions.tt2
-data/templates/administration_create_entity_type.tt2
 data/templates/administration_create_instrument_mod.tt2
 data/templates/administration_create_instrument_status.tt2
 data/templates/administration_create_run_status.tt2
@@ -206,7 +205,6 @@ lib/npg/model/designation.pm
 lib/npg/model/entity_type.pm
 lib/npg/model/event.pm
 lib/npg/model/event_type.pm
-lib/npg/model/event_type_subscriber.pm
 lib/npg/model/instrument.pm
 lib/npg/model/instrument_annotation.pm
 lib/npg/model/instrument_designation.pm
@@ -314,9 +312,6 @@ lib/npg_tracking/Schema/Result/Designation.pm
 lib/npg_tracking/Schema/Result/EntityType.pm
 lib/npg_tracking/Schema/Result/Event.pm
 lib/npg_tracking/Schema/Result/EventType.pm
-lib/npg_tracking/Schema/Result/EventTypeService.pm
-lib/npg_tracking/Schema/Result/EventTypeSubscriber.pm
-lib/npg_tracking/Schema/Result/ExtService.pm
 lib/npg_tracking/Schema/Result/Instrument.pm
 lib/npg_tracking/Schema/Result/InstrumentAnnotation.pm
 lib/npg_tracking/Schema/Result/InstrumentDesignation.pm
@@ -327,7 +322,6 @@ lib/npg_tracking/Schema/Result/InstrumentStatus.pm
 lib/npg_tracking/Schema/Result/InstrumentStatusAnnotation.pm
 lib/npg_tracking/Schema/Result/InstrumentStatusDict.pm
 lib/npg_tracking/Schema/Result/InstrumentUtilisation.pm
-lib/npg_tracking/Schema/Result/MailRunProjectFollower.pm
 lib/npg_tracking/Schema/Result/Manufacturer.pm
 lib/npg_tracking/Schema/Result/Run.pm
 lib/npg_tracking/Schema/Result/RunAnnotation.pm
@@ -565,7 +559,6 @@ t/data/dbic_fixtures/400-SensorInstrument.yml
 t/data/dbic_fixtures/400-TagRun.yml
 t/data/fixtures/000-designation.yml
 t/data/fixtures/000-entity_type.yml
-t/data/fixtures/000-ext_service.yml
 t/data/fixtures/000-instrument_mod_dict.yml
 t/data/fixtures/000-instrument_status_dict.yml
 t/data/fixtures/000-manufacturer.yml
@@ -579,8 +572,6 @@ t/data/fixtures/100-instrument_format.yml
 t/data/fixtures/100-tag_frequency.yml
 t/data/fixtures/100-user2usergroup.yml
 t/data/fixtures/200-event.yml
-t/data/fixtures/200-event_type_service.yml
-t/data/fixtures/200-event_type_subscriber.yml
 t/data/fixtures/200-instrument.yml
 t/data/fixtures/300-instrument_designation.yml
 t/data/fixtures/300-run.yml
@@ -862,7 +853,6 @@ t/data/npg_api/st/studies/546.xml
 t/data/npg_api/st/studies/578.xml
 t/data/npg_api_run/npg/run/604.xml
 t/data/npg_api_run/npg/run/636.xml
-t/data/rendered/20-view-administration_create_entity_type.html
 t/data/rendered/20-view-administration_create_instrument_mod.html
 t/data/rendered/20-view-administration_create_instrument_status.html
 t/data/rendered/20-view-administration_create_run_status.html

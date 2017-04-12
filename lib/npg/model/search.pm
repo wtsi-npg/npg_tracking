@@ -417,7 +417,6 @@ sub foreign_keys {
       annotation => ['user'],
       event => ['event_type', 'user'],
       event_type => ['entity_type'],
-      event_type_subscriber => ['event_type','usergroup'],
       instrument => ['instrument_format'],
       instrument_format => ['manufacturer'],
       run => ['instrument','run_pair'],

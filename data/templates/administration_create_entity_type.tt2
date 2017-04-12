@@ -1,8 +1,0 @@
-<!--begin $Id: administration_create_entity_type.tt2 2662 2008-08-06 12:23:37Z rmp $-->
-New entity type added.
-Please click <a href="[% SCRIPT_NAME %]/administration">here</a> to continue.
-
-<script type="text/javascript">
-  document.location.href = '[% SCRIPT_NAME %]/administration';
-</script>
-<!--end $Id: administration_create_entity_type.tt2 2662 2008-08-06 12:23:37Z rmp $-->

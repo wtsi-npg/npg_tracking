@@ -111,36 +111,6 @@ __PACKAGE__->belongs_to(
   { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
 );
 
-=head2 event_type_services
-
-Type: has_many
-
-Related object: L<npg_tracking::Schema::Result::EventTypeService>
-
-=cut
-
-__PACKAGE__->has_many(
-  "event_type_services",
-  "npg_tracking::Schema::Result::EventTypeService",
-  { "foreign.id_event_type" => "self.id_event_type" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
-=head2 event_type_subscribers
-
-Type: has_many
-
-Related object: L<npg_tracking::Schema::Result::EventTypeSubscriber>
-
-=cut
-
-__PACKAGE__->has_many(
-  "event_type_subscribers",
-  "npg_tracking::Schema::Result::EventTypeSubscriber",
-  { "foreign.id_event_type" => "self.id_event_type" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
 =head2 events
 
 Type: has_many
@@ -157,8 +127,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:41
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:BkRdBsUGse4wgTcpRHsS3A
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-03-29 16:56:34
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:zlzIuoXKksCuAnCVChRQlw
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08

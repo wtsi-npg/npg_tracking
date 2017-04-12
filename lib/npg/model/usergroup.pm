@@ -64,22 +64,6 @@ sub users {
   return $self->{'users'};
 }
 
-sub event_types {
-  my $self = shift;
-
-  if(!$self->{'event_types'}) {
-    my $pkg   = q(npg::model::event_type);
-    my $query = qq(SELECT @{[join q(, ), map { "et.$_" } $pkg->fields()]}
-                   FROM   @{[$pkg->table()]}    et,
-                          event_type_subscriber ets
-                   WHERE  ets.id_usergroup  = ?
-                   AND    ets.id_event_type = et.id_event_type);
-    $self->{'event_types'} = $self->gen_getarray($pkg, $query, $self->id_usergroup());
-  }
-
-  return $self->{'event_types'};
-}
-
 1;
 
 __END__
@@ -118,10 +102,6 @@ npg::model::usergroup - data model for user groups
 =head2 users - arrayref of npg::model::user members of this group
 
   my $arUsers = $oUsergroup->users();
-
-=head2 event_types - arrayref of npg::model::event_types to which this user group is subscribed
-
-  my $arEventTypes = $oUsergroup->event_types();
 
 =head1 DIAGNOSTICS
 
