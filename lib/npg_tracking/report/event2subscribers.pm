@@ -9,6 +9,7 @@ use Try::Tiny;
 use Readonly;
 use Carp;
 
+use npg_tracking::util::types;
 use st::api::lims;
 use npg::util::mailer;
 
@@ -16,12 +17,12 @@ extends 'npg_tracking::report::event2lims';
 
 our $VERSION = '0';
 
-Readonly::Scalar my $TEMPLATE_DIR            => q[data/npg_tracking_email/templates];
-Readonly::Scalar my $TEMPLATE_EXT            => q[.tt2];
+Readonly::Scalar my $TEMPLATE_EXT           => q[.tt2];
 ## no critic (ValuesAndExpressions::RequireInterpolationOfMetachars)
-Readonly::Scalar my $DEFAULT_RECIPIENT_HOST  => q[@sanger.ac.uk];
+Readonly::Scalar my $DEFAULT_RECIPIENT_HOST => q[@sanger.ac.uk];
 ## use critic
-Readonly::Scalar my $DEFAULT_AUTHOR          => q[srpipe];
+Readonly::Scalar my $DEFAULT_AUTHOR         => q[srpipe];
+Readonly::Scalar my $MLWH_DRIVER_TYPE       => q[ml_warehouse_fc_cache];
 
 has 'schema_mlwh' => (
   isa        => 'WTSI::DNAP::Warehouse::Schema',
@@ -50,7 +51,7 @@ sub _build_lims {
       if ($self->_has_schema_mlwh()) {
         $ref->{'id_flowcell_lims'} = $run_row->batch_id();
         $ref->{'flowcell_barcode'} = $run_row->flowcell_id();
-        $ref->{'driver_type'}      = 'ml_warehouse_auto';
+        $ref->{'driver_type'}      = $MLWH_DRIVER_TYPE;
         $ref->{'mlwh_schema'}      = $self->schema_mlwh();
       }
       # Fall back on some other driver type, for example,
@@ -94,12 +95,18 @@ sub _build_template_name {
   return $self->_is_instrument_event ? 'instrument' : 'run_or_lane2subscribers';
 }
 
+has 'template_dir_path' => (
+  isa        => 'NpgTrackingDirectory',
+  is         => 'ro',
+  required   => 1,
+);
+
 sub report_full {
   my ($self, $lims) = @_;
 
   my $text;
   my $t = Template->new(
-    INCLUDE_PATH => [ $TEMPLATE_DIR ],
+    INCLUDE_PATH => [ $self->template_dir_path ],
     INTERPOLATE  => 1,
     OUTPUT       => \$text,
   )  || $self->logcroak($Template::ERROR);
@@ -240,6 +247,10 @@ npg_tracking::report::event2subscribers
 
  Template name that should be used to generate a report.
 
+=head2 template_dir_path
+
+ Required attribute.
+
 =head2 report_short
 
  Short report, used when dry_run oprion is enabled.
@@ -279,6 +290,8 @@ npg_tracking::report::event2subscribers
 =item Readonly
 
 =item Carp
+
+=item npg_tracking::util::types
 
 =item npg::util::mailer
 

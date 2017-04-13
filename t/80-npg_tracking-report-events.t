@@ -8,7 +8,9 @@ use File::Temp qw(tempdir);
 use JSON;
 use DateTime;
 use List::Util qw/max/;
+use Cwd qw/cwd/;
 
+use npg_tracking::util::abs_path qw/abs_path/;
 use t::dbic_util;
 
 local $ENV{'no_proxy'}   = q[];
@@ -100,13 +102,15 @@ for my $name (@entity_types) {
 }
 
 subtest 'can create an object' => sub {
-  plan tests => 6;
+  plan tests => 7;
+  my $e;
   lives_ok {
-    npg_tracking::report::events->new(dry_run     => 1,
+    $e = npg_tracking::report::events->new(dry_run     => 1,
                                       schema_npg  => $schema,
                                       schema_mlwh => undef)
   } 'created object with mlwh schema set to undefined explicitly';
-  my $e;
+  is($e->_template_dir_path(), abs_path(join(q[/], cwd(), 'data', 'npg_tracking_email', 'templates' )),
+    'templates directory found');
   SKIP: {
     skip 'WTSI::DNAP::Warehouse::Schema is available', 2 unless !$mlwh_schema_loaded;
     lives_ok {

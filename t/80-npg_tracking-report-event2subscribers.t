@@ -21,6 +21,7 @@ Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
 
 use_ok ('npg_tracking::report::event2subscribers');
 
+my $template_dir = 'data/npg_tracking_email/templates';
 my $schema = t::dbic_util->new()->test_schema();
 my $date           = DateTime->now();
 my $date_as_string = $date->strftime('%F %T');
@@ -139,8 +140,9 @@ subtest 'run status event' => sub {
     iscurrent          => 0,
     id_run             => $id_run
   });
-  my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
-                                                       event_entity => $status_row);
+  my $e = npg_tracking::report::event2subscribers->new(dry_run           => 1,
+                                                       event_entity      => $status_row,
+                                                       template_dir_path => $template_dir);
   isa_ok ($e, 'npg_tracking::report::event2subscribers');
   ok ($e->dry_run, 'dry_run mode');
   is ($e->report_author(), $report_author, 'report author');
@@ -162,8 +164,9 @@ REPORT
   is ($e->report_full(), $report, 'full report text');
 
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
-  $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
-                                                    event_entity => $status_row);
+  $e = npg_tracking::report::event2subscribers->new(dry_run           => 1,
+                                                    event_entity      => $status_row,
+                                                    template_dir_path => $template_dir);
   is (scalar @{$e->lims}, 8, 'Retrieved LIMs object');
 
   $report = <<REPORT1;
@@ -199,8 +202,9 @@ subtest 'instrument status event' => sub {
     date                      => $date
   });
 
-  my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
-                                                       event_entity => $status_row);
+  my $e = npg_tracking::report::event2subscribers->new(dry_run           => 1,
+                                                       event_entity      => $status_row,
+                                                       template_dir_path => $template_dir);
   isa_ok ($e, 'npg_tracking::report::event2subscribers');
   is ($e->report_author(), $report_author, 'report author');
   is ($e->template_name(), 'instrument', 'template name');
@@ -221,8 +225,9 @@ REPORT2
   is ($e->report_full($e->lims()), $report, 'full report text');
 
   $status_row->update({comment => 'my comment'});
-  $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
-                                                    event_entity => $status_row);
+  $e = npg_tracking::report::event2subscribers->new(dry_run           => 1,
+                                                    event_entity      => $status_row,
+                                                    template_dir_path => $template_dir);
   $report = <<REPORT3;
 Instrument HS8 status changed to "wash performed" on $date_as_string by joe_approver. Comment: my comment
 
@@ -251,8 +256,9 @@ subtest 'run annotation event' => sub {
   });
 
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
-  my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
-                                                       event_entity => $run_annotation);
+  my $e = npg_tracking::report::event2subscribers->new(dry_run           => 1,
+                                                       event_entity      => $run_annotation,
+                                                       template_dir_path => $template_dir);
   isa_ok ($e, 'npg_tracking::report::event2subscribers');
   ok ($e->dry_run, 'dry_run mode');
   is ($e->report_author(), $report_author, 'report author');
@@ -295,8 +301,9 @@ subtest 'runlane annotation event' => sub {
   });
 
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
-  my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
-                                                       event_entity => $runlane_annotation);
+  my $e = npg_tracking::report::event2subscribers->new(dry_run           => 1,
+                                                       event_entity      => $runlane_annotation,
+                                                       template_dir_path => $template_dir);
   isa_ok ($e, 'npg_tracking::report::event2subscribers');
   ok ($e->dry_run, 'dry_run mode');
   is ($e->report_author(), $report_author, 'report author');
@@ -340,8 +347,9 @@ subtest 'instrument annotation event' => sub {
     id_instrument => $id_instrument
   });
 
-  my $e = npg_tracking::report::event2subscribers->new(dry_run      => 1,
-                                                       event_entity => $instrument_annotation);
+  my $e = npg_tracking::report::event2subscribers->new(dry_run           => 1,
+                                                       event_entity      => $instrument_annotation,
+                                                       template_dir_path => $template_dir);
   isa_ok ($e, 'npg_tracking::report::event2subscribers');
   is ($e->report_author(), $report_author, 'report author');
   is ($e->template_name(), 'instrument', 'template name');
