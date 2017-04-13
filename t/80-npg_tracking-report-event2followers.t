@@ -23,6 +23,7 @@ Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
 
 use_ok ('npg_tracking::report::event2followers');
 
+my $template_dir = 'data/npg_tracking_email/templates';
 my $schema = t::dbic_util->new()->test_schema();
 my $date           = DateTime->now();
 my $date_as_string = $date->strftime('%F %T');
@@ -69,8 +70,9 @@ subtest 'run status qc review pending event' => sub {
     id_run             => $id_run
   });
 
-  my $e = npg_tracking::report::event2followers->new(dry_run      => 1,
-                                                     event_entity => $qc_review_pending_status);
+  my $e = npg_tracking::report::event2followers->new(dry_run           => 1,
+                                                     event_entity      => $qc_review_pending_status,
+                                                     template_dir_path => $template_dir);
   isa_ok ($e, 'npg_tracking::report::event2followers');
   ok ($e->dry_run, 'dry_run mode');
   is ($e->template_name(), 'run_status2followers', 'template name');
@@ -79,8 +81,9 @@ subtest 'run status qc review pending event' => sub {
   throws_ok { $e->emit() } qr/XML driver type is not allowed/, 'XML driver is not allowed';
 
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
-  $e = npg_tracking::report::event2followers->new(dry_run      => 1,
-                                                  event_entity => $qc_review_pending_status);
+  $e = npg_tracking::report::event2followers->new(dry_run           => 1,
+                                                  event_entity      => $qc_review_pending_status,
+                                                  template_dir_path => $template_dir);
   is (scalar @{$e->lims}, 8, 'retrieved LIMs object');
   is (scalar @{$e->reports()}, 5, 'five reports will be generated');
 
@@ -117,8 +120,9 @@ subtest 'run status qc complete event' => sub {
   });
 
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
-  my $e = npg_tracking::report::event2followers->new(dry_run      => 1,
-                                                     event_entity => $qc_complete_status);
+  my $e = npg_tracking::report::event2followers->new(dry_run           => 1,
+                                                     event_entity      => $qc_complete_status,
+                                                     template_dir_path => $template_dir);
   isa_ok ($e, 'npg_tracking::report::event2followers');
   ok ($e->dry_run, 'dry_run mode');
   is ($e->template_name(), 'run_status2followers', 'template name');

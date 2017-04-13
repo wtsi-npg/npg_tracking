@@ -119,6 +119,10 @@ npg_tracking::report::event2followers
 
 =head2 template_name
 
+=head2 template_dir_path
+
+  Required attribute.
+
 =head2 report_short
 
 =head2 report_full

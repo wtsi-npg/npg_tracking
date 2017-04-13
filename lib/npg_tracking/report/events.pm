@@ -6,8 +6,11 @@ use namespace::autoclean;
 use Class::Load qw/try_load_class load_class/;
 use List::MoreUtils qw/any uniq/;
 use Try::Tiny;
+use FindBin qw($Bin);
 use Readonly;
 
+use npg_tracking::util::types;
+use npg_tracking::util::abs_path qw/abs_path/;
 use npg_tracking::Schema;
 
 with qw/ MooseX::Getopt
@@ -17,6 +20,7 @@ our $VERSION = '0';
 
 Readonly::Array  my @COMMON_REPORT_TYPES  => qw/subscribers/;
 Readonly::Scalar my $WH_SCHEMA_CLASS_NAME => q[WTSI::DNAP::Warehouse::Schema];
+Readonly::Scalar my $TEMPLATE_DIR         => q[data/npg_tracking_email/templates];
 
 has 'dry_run' => (
   isa       => 'Bool',
@@ -55,6 +59,16 @@ sub _build_schema_mlwh {
     };
   }
   return $schema;
+}
+
+has '_template_dir_path' => (
+  isa        => 'NpgTrackingDirectory',
+  is         => 'ro',
+  required   => 0,
+  lazy_build => 1,
+);
+sub _build__template_dir_path {
+  return abs_path "$Bin/../$TEMPLATE_DIR";
 }
 
 sub process {
@@ -125,8 +139,11 @@ sub _get_report_obj {
       event_entity => $entity,
       dry_run      => $self->dry_run() ? 1 : 0
   };
-  if ($report_type ne 'lims' && $self->schema_mlwh()) {
-    $ref->{'schema_mlwh'}  = $self->schema_mlwh();
+  if ($report_type ne 'lims') {
+    $ref->{'template_dir_path'} = $self->_template_dir_path();
+    if ($self->schema_mlwh()) {
+      $ref->{'schema_mlwh'}  = $self->schema_mlwh();
+    }
   }
   return $class->new($ref);
 }
@@ -196,6 +213,10 @@ npg_tracking::report::events
 =item List::MoreUtils
 
 =item Try::Tiny
+
+=item npg_tracking::util::types
+
+=item npg_tracking::util::abs_path
 
 =item npg_tracking::Schema
 
