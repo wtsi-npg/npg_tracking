@@ -3,6 +3,7 @@ LIST OF CHANGES
  - event notification:
      use faster ml warehouse st::api::lims driver (ml_warehouse_fc_cache)
      find templates directory relative to the running script bin
+     fix npg tracking server url in reports' text
  - remove models for db tables that are due to be dropped
  - update apache conf so server run with 1 thread/child w/mpm_worker_module
    Config::IniFiles used by ClearPress::util does not seem to be thread safe
