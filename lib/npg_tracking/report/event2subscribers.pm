@@ -134,7 +134,8 @@ sub report_author {
 sub username2email_address {
   my ($self, @users) = @_;
   my @emails = uniq
-               map { $_ =~ /@/xms ? $_ : $_ . $DEFAULT_RECIPIENT_HOST}
+               map  { $_ =~ /@/xms ? $_ : $_ . $DEFAULT_RECIPIENT_HOST}
+               grep { $_ }
                @users;
   @emails = sort @emails;
   return @emails;
@@ -161,15 +162,15 @@ sub _build_reports {
   my $self = shift;
 
   my @reports = ();
-  my @subscribers = $self->_subscribers();
+  my @subscribers = @{$self->_subscribers()};
   if (!@subscribers) {
-    self->warn('Nobody to send report to');
+    $self->warn('Nobody to send report to');
   } else {
     push @reports, npg::util::mailer->new({
       from    => $self->report_author(),
       subject => $self->report_short(),
       body    => $self->report_full($self->lims()),
-      to      => $self->_subscribers(),
+      to      => \@subscribers,
     });
   }
 
