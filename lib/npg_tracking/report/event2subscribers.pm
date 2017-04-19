@@ -162,18 +162,15 @@ sub _build_reports {
   my $self = shift;
 
   my @reports = ();
-  my @subscribers = @{$self->_subscribers()};
-  if (!@subscribers) {
-    $self->warn('Nobody to send report to');
-  } else {
+  my $subscribers = $self->_subscribers();
+  if ( @{$subscribers} ) {
     push @reports, npg::util::mailer->new({
       from    => $self->report_author(),
       subject => $self->report_short(),
       body    => $self->report_full($self->lims()),
-      to      => \@subscribers,
+      to      => $subscribers,
     });
   }
-
   return \@reports;
 }
 
