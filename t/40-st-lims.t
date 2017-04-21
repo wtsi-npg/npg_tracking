@@ -178,7 +178,7 @@ subtest 'Run-level object' => sub {
 };
 
 subtest 'Lane-level object' => sub {
-  plan tests => 101;
+  plan tests => 103;
 
   my @lims_list = ();
   push @lims_list, st::api::lims->new(id_run => 6551, position => 1);
@@ -216,6 +216,7 @@ subtest 'Lane-level object' => sub {
     is($lims->sample_supplier_name, undef, 'supplier sample name undefined');
     is($lims->sample_cohort, undef, 'supplier sample cohort undefined');
     is($lims->sample_donor_id, undef, 'supplier sample donor id undefined');
+    ok($lims->study_alignments_in_bam, 'alignment_in_bam is true');
 
     my $plexes_hash = $lims->children_ia();
     my $k1 = $lims->rpt_list ? '6551:1:1' : 1;

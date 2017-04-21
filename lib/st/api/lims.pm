@@ -641,8 +641,8 @@ sub _helper_over_pool_for_boolean_build_methods {
   my ($self,$method) = @_;
 
   my $cuh = 0;
-  if ($self->position) {
-    my @lims =  ($self->is_pool && !$self->tag_index) ? $self->children : ($self);
+  if ($self->position || $self->is_composition) {
+    my @lims =  (($self->is_pool && !$self->tag_index) || $self->is_composition) ? $self->children : ($self);
     foreach my $l (@lims) {
       $cuh = $l->$method;
       if ($cuh) {
@@ -1243,7 +1243,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2016 Genome Research Ltd
+Copyright (C) 2017 Genome Research Ltd
 
 This file is part of NPG.
 
