@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 13;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -8,7 +8,7 @@ use Moose::Meta::Class;
 
 my $mlwh_d      = 'st::api::lims::ml_warehouse';
 my $mlwh_auto_d = 'st::api::lims::ml_warehouse_auto';
-my $mlwh_alt_d      = 'st::api::lims::ml_warehouse_fc_cache';
+my $mlwh_alt_d  = 'st::api::lims::ml_warehouse_fc_cache';
 use_ok($mlwh_d);
 use_ok($mlwh_auto_d);
 use_ok($mlwh_alt_d);
@@ -197,7 +197,7 @@ subtest 'lane-level drivers' => sub {
     $schema_wh->resultset('IseqFlowcell')
       ->search({id_flowcell_lims => '4775', position => [4,6]})->
       update({tag_index => 1});
-    diag 'test one-tag pool that was sequenced without reading the index read';
+    note 'test one-tag pool that was sequenced without reading the index read';
     is( $schema_wh->resultset('IseqFlowcell')
       ->search({id_flowcell_lims => '4775', tag_index => 1})->count(),
       2, 'two tag indexes are set');
@@ -361,9 +361,9 @@ subtest 'lave and tag level drivers' => sub {
 
   my $count = 0;
         for my $d ($mlwh_d, $mlwh_auto_d, $mlwh_auto_d, $mlwh_alt_d) {
-
+  note "Driver $d";
   $count++;
-
+  
   my $query = {mlwh_schema      => $schema_wh};
   _add2query($query, $count, $lims_id, $id_run);
   my $lims = $d->new($query);
@@ -455,6 +455,26 @@ subtest 'lave and tag level drivers' => sub {
   is_deeply ($plexes[95]->email_addresses_of_followers,[],'no study - no email addresses');
   is_deeply ($plexes[95]->email_addresses_of_owners,[],'no study - no email addresses');
         };
+};
+
+subtest 'undefined tag index for a plex error' => sub {
+  plan tests => 3;
+
+  my $tag_index = 10;
+  my $row = $schema_wh->resultset('IseqFlowcell')
+    ->search({id_flowcell_lims => 22043, position => 1, tag_index => $tag_index})
+    ->next();
+  $row->update({'tag_index' => undef});
+
+  for my $d ($mlwh_d, $mlwh_auto_d, $mlwh_alt_d) {
+    my $lims = $d->new( mlwh_schema      => $schema_wh,
+                        id_flowcell_lims => 22043,
+                        position         => 1);
+    throws_ok { $lims->children() } qr/tag_index should be defined for a child of /,
+      'clear error if one of tag indexes is undefined';
+  }
+
+  $row->update({'tag_index' => $tag_index}); # Restore validity
 };
 
 subtest 'multiple flowcell identifies error' => sub {
