@@ -212,7 +212,6 @@ my $builder = $class->new(
                 'warnings'                        => '1.05',
                 'XML::Generator'                  => '1.01',
                 'XML::LibXML'                     => '1.70',
-                'XML::Simple'                     => '2.18',
                 'YAML'                            => '0.68',
 
                 'WTSI::DNAP::Utilities::Loggable' => '>= 0.5.3',

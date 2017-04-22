@@ -281,39 +281,9 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
-=head2 sensor_data_instruments
 
-Type: has_many
-
-Related object: L<npg_tracking::Schema::Result::SensorDataInstrument>
-
-=cut
-
-__PACKAGE__->has_many(
-  "sensor_data_instruments",
-  "npg_tracking::Schema::Result::SensorDataInstrument",
-  { "foreign.id_instrument" => "self.id_instrument" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
-=head2 sensor_instruments
-
-Type: has_many
-
-Related object: L<npg_tracking::Schema::Result::SensorInstrument>
-
-=cut
-
-__PACKAGE__->has_many(
-  "sensor_instruments",
-  "npg_tracking::Schema::Result::SensorInstrument",
-  { "foreign.id_instrument" => "self.id_instrument" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
-
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:F7mTaj060i1RggPpHSpfXw
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-04-22 11:28:19
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:E5Nz+9XPZcWU7mIsrGXHXw
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08

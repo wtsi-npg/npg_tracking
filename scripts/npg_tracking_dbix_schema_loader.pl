@@ -33,7 +33,8 @@ make_schema_at(
                                      cost_(code|group)               |
                                      mail_run_project_followers      |
                                      event_type_(subscriber|service) |
-                                     ext_service
+                                     ext_service |
+                                     sensor .*
                                   \Z/smx,
 
         rel_name_map        => sub {
