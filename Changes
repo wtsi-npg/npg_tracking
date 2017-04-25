@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 86.2
  - event notification:
      use faster ml warehouse st::api::lims driver (ml_warehouse_fc_cache)
      find templates directory relative to the running script bin
