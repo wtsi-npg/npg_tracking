@@ -15,6 +15,10 @@ Readonly::Scalar our $JENKINS_PORT     => 9960;
 Readonly::Scalar our $TIMEOUT_HOURS    => 6;
 Readonly::Scalar our $MINUTES_PER_HOUR => 60;
 
+Readonly::Scalar our $SSH_PK_FILENAME   => q[sfweb_key.pem];
+Readonly::Scalar our $SSH_CERT_FILENAME => q[sfweb_server.pem];
+
+
 has 'session_timeout' => ('is'        => 'ro',
                           'isa'       => 'NpgTrackingPositiveInt',
                           'required'  => 0,
@@ -29,6 +33,7 @@ has 'jenkins_war' => ('is'         => 'ro',
                       'isa'        => 'NpgTrackingReadableFile',
                       'required'   => 0,
                       'lazy_build' => 1, );
+
 sub _build_jenkins_war {
   my $sub = shift;
   my $home = $ENV{'HOME'};
@@ -42,13 +47,33 @@ sub _build_jenkins_war {
 override 'command'  => sub {
   my ($self, $host) = @_;
 
-  my $tmpdir = $ENV{'JENKINS_HOME'} ?  "-Djava.io.tmpdir=$ENV{'JENKINS_HOME'}/tmp" : q[];
-  my $command = sprintf 'java -Xmx2g %s -Dhttp.proxyHost=%s -Dhttp.proxyPort=%i -jar %s --httpPort=%i',
+  my $tmpdir = $ENV{'JENKINS_HOME'} ? "-Djava.io.tmpdir=$ENV{'JENKINS_HOME'}/tmp" : q[];
+  my $npg_ssl_home = $ENV{'NPG_SSL_HOME'};
+  if (!$npg_ssl_home) {
+    croak 'NPG SSL home is not defined';
+  }
+
+  my $https_cert_path = "$npg_ssl_home/$SSH_CERT_FILENAME";
+  if(! -f $https_cert_path) {
+    croak qq[Path to SSL certificate is not available $https_cert_path.];
+  }
+
+  my $https_key_path  = "$npg_ssl_home/$SSH_PK_FILENAME";
+  if(! -f $https_key_path) {
+    croak qq[Path to SSL private key is not available $https_key_path.];
+  }
+
+  my $socket_opts = sprintf '--httpPort=-1 --httpsPort=%i --httpsCertificate=%s --httpsPrivateKey=%s',
+    $JENKINS_PORT,
+    $https_cert_path,
+    $https_key_path;
+
+  my $command = sprintf 'java -Xmx2g %s -Dhttp.proxyHost=%s -Dhttp.proxyPort=%i -jar %s %s',
                         $tmpdir,
                         $PROXY_SERVER,
                         $PROXY_PORT,
                         $self->jenkins_war,
-                        $JENKINS_PORT;
+                        $socket_opts;
 
   my $log_name = join q[_], q[jenkins], $host, $self->timestamp();
   $log_name .=  q[.log];
@@ -128,7 +153,3 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-
-
-
-

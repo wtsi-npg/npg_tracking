@@ -3,6 +3,7 @@ LIST OF CHANGES
  - remove unused classes for image generation
  - set explicit dist to precise in travis yml
  - add dual configuration for apache mpm worker/event
+ - Jenkins' daemon with HTTPS as default configuration
 
 release 86.4
  - reference find role: remove unused 'subset' attribute and
