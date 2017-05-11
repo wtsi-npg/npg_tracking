@@ -126,7 +126,13 @@ sub _report_types {
   if ($entity->can('event_report_types')) {
     push @report_types, $entity->event_report_types();
   }
-  @report_types = uniq sort @report_types;
+  my $lims_type = 'lims';
+  my %types = map { $_ => 1 } @report_types;
+  my $lims = delete $types{$lims_type};
+  @report_types = sort keys %types;
+  if ($lims) {
+    unshift @report_types, $lims_type;
+  }
   return @report_types;
 }
 
