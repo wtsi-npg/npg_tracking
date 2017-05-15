@@ -9,7 +9,6 @@ bin/npg_status2file
 bin/npg_status_watcher
 bin/seq_instr_checker
 bin/staging_area_monitor
-bin/update_sensors
 Build.PL
 cgi-bin/locate_runfolder
 cgi-bin/npg
@@ -237,7 +236,6 @@ lib/npg_tracking/report/event2subscribers.pm
 lib/npg_tracking/report/events.pm
 lib/npg/samplesheet.pm
 lib/npg/samplesheet/auto.pm
-lib/npg/sensors.pm
 lib/npg/util.pm
 lib/npg/util/image/graph.pm
 lib/npg/util/image/heatmap.pm
@@ -332,10 +330,6 @@ lib/npg_tracking/Schema/Result/RunLaneStatusDict.pm
 lib/npg_tracking/Schema/Result/RunRead.pm
 lib/npg_tracking/Schema/Result/RunStatus.pm
 lib/npg_tracking/Schema/Result/RunStatusDict.pm
-lib/npg_tracking/Schema/Result/Sensor.pm
-lib/npg_tracking/Schema/Result/SensorData.pm
-lib/npg_tracking/Schema/Result/SensorDataInstrument.pm
-lib/npg_tracking/Schema/Result/SensorInstrument.pm
 lib/npg_tracking/Schema/Result/StCache.pm
 lib/npg_tracking/Schema/Result/Tag.pm
 lib/npg_tracking/Schema/Result/TagFrequency.pm
@@ -448,7 +442,6 @@ t/14-dbic-RunLaneStatus.t
 t/14-dbic-RunLaneStatusDict.t
 t/14-dbic-RunStatus.t
 t/14-dbic-RunStatusDict.t
-t/14-dbic-Sensor.t
 t/14-dbic-Tag.t
 t/14-dbic-User.t
 t/16-npg_tracking-daemon-jenkins.t
@@ -525,7 +518,6 @@ t/60-illumina-run.t
 t/60-util-image_graph.t
 t/60-util-mailer.t
 t/70-bin-npg_status2file.t
-t/80-sensor.t
 t/80-npg_tracking-report-events.t
 t/80-npg_tracking-report-event2lims.t
 t/80-npg_tracking-report-event2followers.t
@@ -549,13 +541,11 @@ t/data/dbic_fixtures/100-InstrumentFormat.yml
 t/data/dbic_fixtures/100-User2usergroup.yml
 t/data/dbic_fixtures/200-Event.yml
 t/data/dbic_fixtures/200-Instrument.yml
-t/data/dbic_fixtures/200-Sensor.yml
 t/data/dbic_fixtures/300-Run.yml
 t/data/dbic_fixtures/300-RunLane.yml
 t/data/dbic_fixtures/400-RunLaneStatus.yml
 t/data/dbic_fixtures/400-RunRead.yml
 t/data/dbic_fixtures/400-RunStatus.yml
-t/data/dbic_fixtures/400-SensorInstrument.yml
 t/data/dbic_fixtures/400-TagRun.yml
 t/data/fixtures/000-designation.yml
 t/data/fixtures/000-entity_type.yml

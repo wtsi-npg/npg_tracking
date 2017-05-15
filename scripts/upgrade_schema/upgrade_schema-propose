@@ -1,14 +1,18 @@
 -- Proposed changes to schema.
 
--- Dropping tables cost_code and cost_group from tracking database
--- Waiting until we are sure no old servers will try to access
--- these tables.
+-- Waiting until we are sure no deployed old versions of code
+-- access the database either from tracking server code or
+-- via DBIx binding.
+
+-- We'll save some data by executing the following statements
 
 SELECT * FROM `cost_code`;
 SELECT * FROM `cost_group`;
 SELECT * FROM `ext_service`;
 SELECT * FROM `event_type_service`;
 SELECT * FROM `event_type_subscriber`;
+
+-- Then we'll drop the tables
 
 DROP TABLE IF EXISTS `cost_code`;
 DROP TABLE IF EXISTS `cost_group`;
@@ -17,3 +21,7 @@ DROP TABLE IF EXISTS `ext_service`;
 DROP TABLE IF EXISTS `mail_run_project_followers`;
 DROP TABLE IF EXISTS `event_type_subscriber`;
 
+DROP TABLE IF EXISTS `sensor_instrument`;
+DROP TABLE IF EXISTS `sensor_data_instrument`;
+DROP TABLE IF EXISTS `sensor_data`;
+DROP TABLE IF EXISTS `sensor`;
