@@ -1760,7 +1760,6 @@ t/request.pm
 t/useragent.pm
 t/util.pm
 wtsi_local/httpd.conf
-wtsi_local/envvars
 wtsi_local/httpd_sfweb.conf
 wtsi_local/httpd_vm.conf
 
