@@ -1,6 +1,7 @@
 LIST OF CHANGES
 
- - run trackign server securely and redirect http requests to https URLs
+ - run tracking server on two ports - one accepting http traffic, another
+   one https only; the same set of URLs on both ports
 
 release 86.3
  - event notification - do LIMs notification first; if it fails and is run
