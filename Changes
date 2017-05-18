@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+ - tracking web GUI link to request LIMs page now changed to point to
+   a more useful lane page; request id will not be available if XML
+   LIMs feeds are discontinued
+
 release 86.3
  - event notification - do LIMs notification first; if it fails and is run
      multiple times as a consequence, users are not spammed

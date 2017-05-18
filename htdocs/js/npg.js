@@ -923,14 +923,19 @@ function _batch_XML_DOM_to_hash (response){
     var al = laneNode.attributes;
     for (var j=0;j<al.length;j++){ 
       var a=al[j];
-      laneData.set(a.name, a.value);
-     }
+      var name = a.name;
+      if (name === 'id') {
+        name = 'lane_id'; // save this value, since it might be overwritten
+                          // by some other id later
+      }
+      laneData.set(name, a.value);
+    }
     var childNode = laneNode.getElementsByTagName('*')[0];
     laneData.set('type', childNode.nodeName);
     al = childNode.attributes;
     for (var j=0;j<al.length;j++){
-       var a=al[j]; 
-       laneData.set(a.name, a.value);
+      var a=al[j];
+      laneData.set(a.name, a.value);
     }
     var sampleNode = childNode.getElementsByTagName('sample')[0];
     if(sampleNode) { 
