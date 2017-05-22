@@ -1,4 +1,6 @@
 LIST OF CHANGES
+ 
+ - increate http tmeout for event notification
 
 release 86.3
  - event notification - do LIMs notification first; if it fails and is run

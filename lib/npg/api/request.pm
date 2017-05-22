@@ -48,6 +48,7 @@ Readonly::Scalar our $SAVE2CACHE_VAR_NAME => q[SAVE2NPG_WEBSERVICE_CACHE];
 Readonly::Scalar our $MAX_RETRIES          => 10;
 Readonly::Scalar our $RETRY_DELAY          => 10;
 Readonly::Scalar our $LWP_TIMEOUT          => 60;
+Readonly::Scalar our $LWP_TIMEOUT_POST     => $LWP_TIMEOUT * 2;
 Readonly::Scalar our $DEFAULT_METHOD       => q[GET];
 Readonly::Scalar our $DEFAULT_CONTENT_TYPE => q[text/xml];
 
@@ -298,6 +299,7 @@ sub _from_web {
         $req = GET $uri, @{$args||[]};
     } else {
         $req = POST $uri, @{$args||[]};
+        $self->useragent()->timeout($LWP_TIMEOUT_POST);
     }
     if ($self->content_type) {
         $req->header('Accept' => $self->content_type);
