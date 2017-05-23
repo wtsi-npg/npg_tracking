@@ -360,7 +360,7 @@ function _add_columns_to_table (run_lanes_table, laneDataHashByPosition) {
       if(laneData){      
         new Insertion.After(secondcell,
           '<td>'+ _html_link('','assets', laneData.get('id'), laneData.get('name')) +'</td>'+
-          '<td>'+ _html_link('','requests', laneData.get('request_id'), laneData.get('type')) +'</td>'+
+          '<td>'+ _html_link('','assets', laneData.get('lane_id'), laneData.get('type')) +'</td>'+
           '<td>'+ _html_link('','samples', laneData.get('sample_id'), laneData.get('sample_name')) +'</td>'+
           '<td>'+ _html_link('','studies', laneData.get('study_id'), laneData.get('study_name')) +'</td>'+
           '<td>'+ _html_link('','projects', laneData.get('project_id'), laneData.get('project_name')) +'</td>'
