@@ -2,6 +2,7 @@ LIST OF CHANGES
 
  - run tracking server on two ports - one accepting http traffic, another
    one https only; the same set of URLs on both ports
+ - link to auth script residing in the same virtual host 
 
 release 86.3
  - event notification - do LIMs notification first; if it fails and is run
