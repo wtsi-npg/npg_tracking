@@ -118,17 +118,6 @@ sub _build_strain {
   return $STRAIN;
 }
 
-=head2 subset
-
-Subset (i.e., chromosome), defaults to all
-
-=cut
-has 'subset'=>    (isa             => 'Str',
-                   is              => 'ro',
-                   required        => 0,
-                   default         => $SUBSET,
-                  );
-
 =head2 aligner
 
 Aligner name, defaults to bwa
@@ -247,28 +236,6 @@ sub refs {
   return \@refs;
 }
 
-=head2 single_ref_found
-
-Returns true if only one reference has been found.
-Returns false if no references found or multiple references found.
-
-=cut
-sub single_ref_found {
-
-  my $self = shift;
-  carp 'This method is deprecated. Please use the refs method and evaluate the size of the returned array.';
-
-  my @refs;
-  eval {
-    @refs = @{$self->refs()};
-    1;
-  } or do {
-    return 0;
-  };
-  if (!@refs || scalar @refs > 1) { return 0; }
-  return 1;
-}
-
 
 =head2 reset_strain
 
@@ -345,15 +312,12 @@ sub _get_reference_path {
   $strain = $strain || $self->strain;
 
   # check that the directory for the chosen aligner exists
-  my $base_dir = catfile($self->ref_repository, $organism, $strain, $self->subset);
+  my $base_dir = catfile($self->ref_repository, $organism, $strain, $SUBSET);
   my $dir = catfile($base_dir, $self->aligner);
 
   if (!-e $dir) {
-    ##no critic (ProhibitInterpolationOfLiterals)
-    my $message = sprintf "Binary %s reference for %s, %s, %s does not exist; path tried %s",
-        $self->aligner, $organism, $strain, $self->subset, $dir;
-    ##use critic
-    croak $message;
+    croak sprintf 'Binary %s reference for %s, %s does not exist; path tried %s',
+        $self->aligner, $organism, $strain, $dir;
   }
 
   # read the fasta directory and get the file name with the reference
@@ -480,7 +444,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2016 GRL
+Copyright (C) 2017 GRL
 
 This file is part of NPG.
 

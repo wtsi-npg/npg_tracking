@@ -1,8 +1,6 @@
-package reference;
-
 use strict;
 use warnings;
-use Test::More tests => 49;
+use Test::More tests => 48;
 use Test::Exception;
 use File::Spec::Functions qw(catfile);
 use Cwd qw(cwd);
@@ -51,7 +49,7 @@ use_ok('npg_tracking::data::reference::find');
   throws_ok { $ruser->_get_reference_path() } qr/Organism\ should\ be\ defined/, 
            'croak on organism not defined';
   throws_ok { $ruser->_get_reference_path(q[PhiX]) } 
-    qr/Binary bwa reference for PhiX, some-strain, all does not exist/, 'error message when strain is not available';
+    qr/Binary bwa reference for PhiX, some-strain does not exist/, 'error message when strain is not available';
 
   $ruser = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::find/])
@@ -59,17 +57,13 @@ use_ok('npg_tracking::data::reference::find');
                          aligner => q[some],
                        });
   throws_ok { $ruser->_get_reference_path(q[PhiX]) } 
-    qr/Binary some reference for PhiX, default, all does not exist/, 'error message when aligner does not exist';
+    qr/Binary some reference for PhiX, default does not exist/, 'error message when aligner does not exist';
   throws_ok { $ruser->_get_reference_path(q[PhiX], q[my_strain]) } 
-    qr/Binary some reference for PhiX, my_strain, all does not exist/, 'error message when aligner does not exist';
+    qr/Binary some reference for PhiX, my_strain does not exist/, 'error message when aligner does not exist';
 
   $ruser = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::find/])
-          ->new_object({ repository => $central,
-                         subset => q[chr3]
-                       });
-  throws_ok { $ruser->_get_reference_path(q[PhiX]) } 
-    qr/Binary bwa reference for PhiX, default, chr3 does not exist/, 'error message for non-existing subset';
+          ->new_object({ repository => $central});
   throws_ok { $ruser->_get_reference_path(q[human]) } 
     qr/Binary\ bwa\ reference/, 'error message when the directory structure for the binary ref is missing';
 
@@ -109,8 +103,8 @@ use_ok('npg_tracking::data::reference::find');
   is ($ruser->_preset_ref2ref_path(q[ ]), q[], 'incorrect ref genome - return empty string');
   like ($ruser->messages->pop, qr/Incorrect reference genome format  /, 'incorrect ref genome format error logged');
 
-  throws_ok {$ruser->_preset_ref2ref_path(q[Human (dada) ])} qr/Binary bwa reference for Human, dada, all does not exist/, 'non-existing strain error';
-  throws_ok {$ruser->_preset_ref2ref_path(q[dodo (fna_strain) ])} qr/Binary bwa reference for dodo, fna_strain, all does not exist/, 'non-existing organism error';
+  throws_ok {$ruser->_preset_ref2ref_path(q[Human (dada) ])} qr/Binary bwa reference for Human, dada does not exist/, 'non-existing strain error';
+  throws_ok {$ruser->_preset_ref2ref_path(q[dodo (fna_strain) ])} qr/Binary bwa reference for dodo, fna_strain does not exist/, 'non-existing organism error';
 }
 
 {

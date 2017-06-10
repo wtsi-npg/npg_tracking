@@ -1,5 +1,7 @@
 LIST OF CHANGES
- 
+
+ - reference find role: remove unused 'subset' attribute and
+   previously deprecated 'single_ref_found' method 
  - increate http tmeout for event notification
  - run tracking server on two ports - one accepting http traffic, another
    one https only; the same set of URLs on both ports
