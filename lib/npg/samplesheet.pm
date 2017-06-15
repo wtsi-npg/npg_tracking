@@ -216,12 +216,14 @@ sub _build__limsreflist {
           $value = $self->id_run . q[_] . $tmpl->position;
           if($self->_index_read) {
             # add the tag sequences
+            ##no critic ( ControlStructures::ProhibitDeepNests)
             if ($tmpl->tag_sequences->[0]) {
               $value .= q[_] . $tmpl->tag_sequences->[0];
               if ($self->dual_index) {
                 $value .= $tmpl->tag_sequences->[1] || q[];
               }
             }
+            ##use critic
           }
         }
         push @row, $value;
