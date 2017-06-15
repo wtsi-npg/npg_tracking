@@ -78,6 +78,8 @@ sub _build_samplesheet_path {
 
 has 'extend' => ( 'isa' => 'Bool', 'is' => 'ro',);
 
+has 'mkfastq' => ( 'isa' => 'Bool', 'is' => 'ro',);
+
 has 'dual_index' => (
   'isa' => 'Bool',
   'is' => 'ro',
@@ -209,6 +211,21 @@ sub _build__limsreflist {
             $attr, $tmpl->position,
             defined $tmpl->tag_index ? 'tag index ' . $tmpl->tag_index : q[];
         }
+        if ($self->mkfastq) {
+          # when making a samplesheet for mkfastq, replace value by run_position
+          $value = $self->id_run . q[_] . $tmpl->position;
+          if($self->_index_read) {
+            # add the tag sequences
+            ##no critic ( ControlStructures::ProhibitDeepNests)
+            if ($tmpl->tag_sequences->[0]) {
+              $value .= q[_] . $tmpl->tag_sequences->[0];
+              if ($self->dual_index) {
+                $value .= $tmpl->tag_sequences->[1] || q[];
+              }
+            }
+            ##use critic
+          }
+        }
         push @row, $value;
       }
 
@@ -223,7 +240,16 @@ sub _build__limsreflist {
       if ($self->extend) {
         push @row, map { _csv_compatible_value($tmpl->$_) } @{$self->_additional_columns};
       }
-      push @lims, \@row;
+
+      if ($self->mkfastq) {
+        # when making a samplesheet for mkfastq skip controls
+        if (!$tmpl->is_control) {
+          push @lims, \@row;
+        }
+      } else {
+        push @lims, \@row;
+      }
+
     }
   }
   return \@lims;
@@ -251,7 +277,8 @@ sub _build__index_read {
 has _multiple_lanes => (isa => 'Bool', 'is'  => 'ro', 'lazy_build' => 1,);
 sub _build__multiple_lanes {
   my $self = shift;
-  return scalar(@{$self->lims}) > 1;
+  # when making a samplesheet for mkfastq we want the Lane column, so assume there are multiple lanes
+  return ($self->mkfastq || (scalar(@{$self->lims}) > 1));
 }
 
 has _additional_columns => ('isa' => 'ArrayRef', 'is'  => 'ro', 'lazy_build' => 1,);
