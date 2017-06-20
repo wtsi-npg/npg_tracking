@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 86.4
  - reference find role: remove unused 'subset' attribute and
    previously deprecated 'single_ref_found' method 
  - increate http tmeout for event notification
@@ -9,6 +10,8 @@ LIST OF CHANGES
    a more useful lane page; request id will not be available if XML
    LIMs feeds are discontinued
  - link to auth script residing in the same virtual host 
+ - sensor-related code removed
+ - mkfastq option added to make a samplesheet suitable for 10x mkfastq
 
 release 86.3
  - event notification - do LIMs notification first; if it fails and is run
