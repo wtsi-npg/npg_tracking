@@ -1,5 +1,15 @@
 LIST OF CHANGES
 
+ - reference find role: remove unused 'subset' attribute and
+   previously deprecated 'single_ref_found' method 
+ - increate http tmeout for event notification
+ - run tracking server on two ports - one accepting http traffic, another
+   one https only; the same set of URLs on both ports
+ - tracking web GUI link to request LIMs page now changed to point to
+   a more useful lane page; request id will not be available if XML
+   LIMs feeds are discontinued
+ - link to auth script residing in the same virtual host 
+
 release 86.3
  - event notification - do LIMs notification first; if it fails and is run
      multiple times as a consequence, users are not spammed

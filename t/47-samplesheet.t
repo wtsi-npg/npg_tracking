@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 58;
+use Test::More tests => 61;
 use Test::LongString;
 use Test::Exception;
 use File::Slurp;
@@ -312,6 +312,42 @@ RESULT_7825
   ok($ss->dual_index, 'dual index from two indexes in LIMs');
   lives_ok { $ss->process(); } 'sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/dual_index_extended.csv'));
+}
+
+{
+  # with the mkfastq option we get an extra leading column, Lane
+  my $ss;
+  my $result = q();
+  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7826, mkfastq => 1, output=>\$result); }
+    'sample sheet object mkfastq';
+  my $expected_result = << 'RESULT_mkfastq';
+[Header],,,,,
+Investigator Name,nh4,,,,
+Project Name,Mate Pair R%26D,,,,
+Experiment Name,7826,,,,
+Date,2012-04-03T16:39:48,,,,
+Workflow,LibraryQC,,,,
+Chemistry,Amplicon,,,,
+,,,,,
+[Reads],,,,,
+75,,,,,
+8,,,,,
+,,,,,
+[Settings],,,,,
+,,,,,
+[Manifests],,,,,
+,,,,,
+[Data],,,,,
+Lane,Sample_ID,Sample_Name,GenomeFolder,Index,Index2,
+1,7826_1_ATCACGTTATAAAAAA,7826_1_ATCACGTTATAAAAAA,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Mus_musculus\NCBIm37\all\fasta\,ATCACGTT,ATAAAAAA,
+1,7826_1_CGATGTTTATTTTTTT,7826_1_CGATGTTTATTTTTTT,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\PhiX\Illumina\all\fasta\,CGATGTTT,ATTTTTTT,
+1,7826_1_ACTTGATGATCCCCCC,7826_1_ACTTGATGATCCCCCC,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,ACTTGATG,ATCCCCCC,
+1,7826_1_GATCAGCGATGGGGGG,7826_1_GATCAGCGATGGGGGG,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,GATCAGCG,ATGGGGGG,
+1,7826_1_TAGCTTGTATACACGT,7826_1_TAGCTTGTATACACGT,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,TAGCTTGT,ATACACGT,
+RESULT_mkfastq
+  $expected_result =~ s/\n/\r\n/smg;
+  lives_ok { $ss->process(); } ' sample sheet generated';
+  is_string($result, $expected_result, 'mkfastq created');
 }
 
 1;
