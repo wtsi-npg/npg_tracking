@@ -151,7 +151,6 @@ my $builder = $class->new(
                 'File::Temp'                      => 0,
                 'File::chdir'                     => 0,
                 'GD'                              => '2.35',
-                'GD::Image'                       => 0,
                 'GD::Text'                        => 0,
                 'Getopt::Long'                    => '2.37',
                 'HTML::PullParser'                => '3.57',
