@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - set explicit dist to precise in travis yml
+
 release 86.4
  - reference find role: remove unused 'subset' attribute and
    previously deprecated 'single_ref_found' method 
