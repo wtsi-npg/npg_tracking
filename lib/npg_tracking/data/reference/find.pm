@@ -364,22 +364,29 @@ sub lims2ref {
 =head2 parse_reference_genome
 
 Parses LIMs notation for reference genome, returns a list containing
-an organism, strain (genome version) and, optionally,
-a transcriptome version or an empty list.
+an organism, strain (genome version) and, optionally, a transcriptome
+version and a delimiter used to determine the aligner to be used,
+or an empty list.
 
 =cut
 sub parse_reference_genome {
-  my ($self, $reference_genome) = @_;
-  $reference_genome ||= $self->reference_genome;
-  if ($reference_genome) {
-     ##also allows for transcriptome version e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75)'
-     my @a = $reference_genome  =~/  (\S+) \s+ [(]  (\S+) (?: \s+ \+ \s+ (\S+) )? [)]  /smx;
-     if (scalar @a >= 2 && $a[0] && $a[1]) {
-        if (! $a[2]) { $#a = 1; }
-        return @a;
-     }
-  }
-  return;
+    my ($self, $reference_genome) = @_;
+    $reference_genome ||= $self->reference_genome;
+    if ($reference_genome) {
+        ##also allows for transcriptome version e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75)'
+        my @a = $reference_genome  =~/ (?<organism> \S+ )  \s+  [(]  (?<strain> \S+ )  (?: \s+ (?<delim> \S+ )? \s+ (?<tversion> \S+ )? )?  [)] /smx;
+        if (scalar @a >= 2 && $a[0] && $a[1]) {
+            if ($a[2] && $a[3]) {
+                ## delimiter is used to determine the aligner: reorder list for backwards
+                ## compatibility so the delimiter goes after the transcriptome version
+                @a = ($+{organism}, $+{strain}, $+{tversion}, $+{delim});
+            } elsif (! $a[3]) { 
+                $#a = 1;
+            }
+            return @a;
+        }
+    }
+    return;
 }
 
 sub _preset_ref2ref_path {
