@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - remove unused classes for image generation
  - set explicit dist to precise in travis yml
 
 release 86.4
