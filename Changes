@@ -1,6 +1,7 @@
 LIST OF CHANGES
 
  - remove unused classes for image generation
+ - switch to the latest (475.3.3) ClearPress version
  - set explicit dist to precise in travis yml
 
 release 86.4
