@@ -365,22 +365,24 @@ sub lims2ref {
 
 Parses LIMs notation for reference genome, returns a list containing
 an organism, strain (genome version) and, optionally, a transcriptome
-version and a delimiter used to determine the aligner to be used,
-or an empty list.
+version and/or an aligner; or an empty list.
 
 =cut
 sub parse_reference_genome {
     my ($self, $reference_genome) = @_;
     $reference_genome ||= $self->reference_genome;
     if ($reference_genome) {
-        ##also allows for transcriptome version e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75)'
-        my @a = $reference_genome  =~/ (?<organism> \S+ )  \s+  [(]  (?<strain> \S+ )  (?: \s+ (?<delim> \S+ )? \s+ (?<tversion> \S+ )? )?  [)] /smx;
-        if (scalar @a >= 2 && $a[0] && $a[1]) {
-            if ($a[2] && $a[3]) {
-                ## delimiter is used to determine the aligner: reorder list for backwards
-                ## compatibility so the delimiter goes after the transcriptome version
-                @a = ($+{organism}, $+{strain}, $+{tversion}, $+{delim});
-            } elsif (! $a[3]) { 
+        ##also allows for transcriptome version and aligner
+        ##e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75) [star]'
+        my @a = $reference_genome  =~/(?<organism> \S+ ) \s+
+                                      [(] (?<strain> \S+ ) (?: \s+ \+ \s+ (?<tversion> \S+ ))? [)]
+                                      (?: \s+ [[] (?<aligner> \S+ ) []] )?
+                                     /smx;
+        if (scalar @a >= 3 && $a[0] && $a[1]) {
+            if (($a[2] && $a[3]) || (! $a[2] && $a[3]) || ($a[2] && !$a[3])) {
+                ## assure list contents and order (aligner is 4th)
+                @a = ($+{organism}, $+{strain}, $+{tversion} // q[], $+{aligner} // q[]);
+            } else {
                 $#a = 1;
             }
             return @a;
