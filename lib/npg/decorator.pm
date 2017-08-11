@@ -25,10 +25,6 @@ sub cgi {
   return $self->{cgi} || undef;
 }
 
-sub header {
-  return qq[Content-type: text/html\n\n];
-}
-
 sub footer {
   return qq[</div></body></html>\n];
 }
@@ -51,8 +47,6 @@ npg::decorator - NPG tracking decorator
 =head2 username - accessor for username, but which returns an empty string instead of undef by default
 
 =head2 cgi
-
-=head2 header
 
 =head2 footer
 
@@ -82,7 +76,7 @@ Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2009 GRL, by Andy Brown
+Copyright (C) 2009,2017 GRL, by Andy Brown, David K Jackson
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
