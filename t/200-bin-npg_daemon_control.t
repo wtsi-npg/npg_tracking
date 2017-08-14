@@ -16,9 +16,9 @@ mkdir $npg_dir;
 cp 't/.npg/npg_tracking', $npg_dir;
 
 local $ENV{'NPG_SSL_HOME'} = $tmpdir;
-my $cert = "${tmpdir}/sfweb_server.pem";
+my $cert = "${tmpdir}/server.pem";
 write_file( $cert, qw/some data/ );
-my $pk   = "${tmpdir}/sfweb_key.pem";
+my $pk   = "${tmpdir}/key.pem";
 write_file( $pk, qw/some data/ );
 
 my $command = 'bin/npg_daemon_control 2>&1';
