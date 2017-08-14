@@ -18,6 +18,7 @@ our $VERSION = '0';
 
 Readonly::Scalar our $NPG_DEFAULT_ALIGNER_OPTION => q{npg_default};
 Readonly::Scalar our $MINUS_ONE                  => -1;
+Readonly::Scalar our $THREE                      => 3;
 
 =head1 NAME
 
@@ -372,21 +373,23 @@ sub parse_reference_genome {
     my ($self, $reference_genome) = @_;
     $reference_genome ||= $self->reference_genome;
     if ($reference_genome) {
-        ##also allows for transcriptome version and aligner
-        ##e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75) [star]'
-        my @a = $reference_genome  =~/(?<organism> \S+ ) \s+
-                                      [(] (?<strain> \S+ ) (?: \s+ \+ \s+ (?<tversion> \S+ ))? [)]
-                                      (?: \s+ [[] (?<aligner> \S+ ) []] )?
-                                     /smx;
-        if (scalar @a >= 3 && $a[0] && $a[1]) {
-            if (($a[2] && $a[3]) || (! $a[2] && $a[3]) || ($a[2] && !$a[3])) {
+        ##also allows for transcriptome version and aligner e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75) [star]'
+        ## no critic (Variables::ProhibitPunctuationVars RegularExpressions::ProhibitComplexRegexes)
+        my @array = $reference_genome  =~ qr{
+                                              (?<organism> \S+ ) \s+
+                                              [(] (?<strain> \S+ ) (?: \s+ \+ \s+ (?<tversion> \S+ ))? [)]
+                                              (?: \s+ [[] (?<aligner> \S+ ) []] )?
+                                          }smx;
+        if (scalar @array >= $THREE && $+{organism} && $+{strain}) {
+            if ($+{tversion} || $+{aligner}) {
                 ## assure list contents and order (aligner is 4th)
-                @a = ($+{organism}, $+{strain}, $+{tversion} // q[], $+{aligner} // q[]);
+                @array = ($+{organism}, $+{strain}, $+{tversion} // q[], $+{aligner} // q[]);
             } else {
-                $#a = 1;
+                $#array = 1;
             }
-            return @a;
+            return @array;
         }
+        ## use critic
     }
     return;
 }
