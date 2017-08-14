@@ -3,6 +3,8 @@ package npg_tracking::daemon::jenkins;
 use Moose;
 use Carp;
 use Readonly;
+use FindBin qw($Bin);
+FindBin::again();
 
 use npg_tracking::util::types;
 extends 'npg_tracking::daemon';
@@ -15,8 +17,8 @@ Readonly::Scalar our $JENKINS_PORT     => 9960;
 Readonly::Scalar our $TIMEOUT_HOURS    => 6;
 Readonly::Scalar our $MINUTES_PER_HOUR => 60;
 
-Readonly::Scalar our $SSH_PK_FILENAME   => q[sfweb_key.pem];
-Readonly::Scalar our $SSH_CERT_FILENAME => q[sfweb_server.pem];
+Readonly::Scalar our $SSH_PK_FILENAME   => q[key.pem];
+Readonly::Scalar our $SSH_CERT_FILENAME => q[server.pem];
 
 
 has 'session_timeout' => ('is'        => 'ro',
@@ -28,6 +30,19 @@ has 'session_timeout' => ('is'        => 'ro',
 
 override '_build_hosts'    => sub { return ['sf2-farm-srv2']; };
 override '_build_env_vars' => sub { return {'http_proxy' => qq[http://$PROXY_SERVER:$PROXY_PORT]}; };
+
+has 'npg_ssl_home' => ('is'         => 'ro',
+                       'isa'        => 'NpgTrackingDirectory',
+                       'required'   => 0,
+                       'lazy_build' => 1, );
+sub _build_npg_ssl_home {
+  my $self = shift;
+  my $npg_ssl_home = $ENV{'NPG_SSL_HOME'};
+  if (!$npg_ssl_home) {
+    $npg_ssl_home = join q[/], $Bin, 'wtsi_local';
+  }
+  return $npg_ssl_home;
+}
 
 has 'jenkins_war' => ('is'         => 'ro',
                       'isa'        => 'NpgTrackingReadableFile',
@@ -48,11 +63,7 @@ override 'command'  => sub {
   my ($self, $host) = @_;
 
   my $tmpdir = $ENV{'JENKINS_HOME'} ? "-Djava.io.tmpdir=$ENV{'JENKINS_HOME'}/tmp" : q[];
-  my $npg_ssl_home = $ENV{'NPG_SSL_HOME'};
-  if (!$npg_ssl_home) {
-    croak 'NPG SSL home is not defined';
-  }
-
+  my $npg_ssl_home = $self->npg_ssl_home();
   my $https_cert_path = "$npg_ssl_home/$SSH_CERT_FILENAME";
   if(! -f $https_cert_path) {
     croak qq[Path to SSL certificate is not available $https_cert_path.];

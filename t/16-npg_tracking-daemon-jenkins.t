@@ -35,7 +35,7 @@ my $current_dir = abs_path getcwd();
   $r->clear_session_timeout;
 
   throws_ok { $r->command('host1') }
-    qr/NPG SSL home is not defined/,
+    qr/Attribute \(npg_ssl_home\) does not pass the type constraint/,
     'error if NPG_SSL_HOME is not defined';
 
   unlink [$jvar];
@@ -55,14 +55,14 @@ my $current_dir = abs_path getcwd();
     qr/Path to SSL certificate is not available/,
     'error if path to certificate is unavailable';
 
-  my $cert = "${tmpdir}/sfweb_server.pem";
+  my $cert = "${tmpdir}/server.pem";
   write_file( $cert, qw/some data/ );
 
   throws_ok { $r->command('host1') }
     qr/Path to SSL private key is not available/,
     'error if path to private key is unavailable';
 
-  my $pk   = "${tmpdir}/sfweb_key.pem";
+  my $pk   = "${tmpdir}/key.pem";
   write_file( $pk, qw/some data/ );
 
   unlink $jvar, $pk, $cert;
@@ -74,9 +74,9 @@ my $current_dir = abs_path getcwd();
   local $ENV{'NPG_SSL_HOME'} = $tmpdir;
   my $jvar = "${tmpdir}/jenkins.war";
   write_file( $jvar, qw/some data/ );
-  my $cert = "${tmpdir}/sfweb_server.pem";
+  my $cert = "${tmpdir}/server.pem";
   write_file( $cert, qw/some data/ );
-  my $pk   = "${tmpdir}/sfweb_key.pem";
+  my $pk   = "${tmpdir}/key.pem";
   write_file( $pk, qw/some data/ );
 
   my $r = npg_tracking::daemon::jenkins->new(timestamp => '20130419-144441');
