@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 17;
 use Test::Exception;
 use File::Temp qw/tempdir/;
 use File::Slurp;
@@ -27,9 +27,57 @@ my $current_dir = abs_path getcwd();
 
 {
   local $ENV{'HOME'}         = $tmpdir;
-  local $ENV{'JENKINS_HOME'} = q{};
+  local $ENV{'JENKINS_HOME'} = q[];
   my $jvar = "${tmpdir}/jenkins.war";
-  write_file( $jvar, qw/some data/ ) ;
+  write_file( $jvar, qw/some data/ );
+
+  my $r = npg_tracking::daemon::jenkins->new(timestamp => '20130419-144441');
+  $r->clear_session_timeout;
+
+  throws_ok { $r->command('host1') }
+    qr/Attribute \(npg_ssl_home\) does not pass the type constraint/,
+    'error if NPG_SSL_HOME is not defined';
+
+  unlink [$jvar];
+}
+
+{
+  local $ENV{'HOME'}         = $tmpdir;
+  local $ENV{'JENKINS_HOME'} = q[];
+  local $ENV{'NPG_SSL_HOME'} = $tmpdir;
+  my $jvar = "${tmpdir}/jenkins.war";
+  write_file( $jvar, qw/some data/ );
+
+  my $r = npg_tracking::daemon::jenkins->new(timestamp => '20130419-144441');
+  $r->clear_session_timeout;
+
+  throws_ok { $r->command('host1') }
+    qr/Path to SSL certificate is not available/,
+    'error if path to certificate is unavailable';
+
+  my $cert = "${tmpdir}/server.pem";
+  write_file( $cert, qw/some data/ );
+
+  throws_ok { $r->command('host1') }
+    qr/Path to SSL private key is not available/,
+    'error if path to private key is unavailable';
+
+  my $pk   = "${tmpdir}/key.pem";
+  write_file( $pk, qw/some data/ );
+
+  unlink $jvar, $pk, $cert;
+}
+
+{
+  local $ENV{'HOME'}         = $tmpdir;
+  local $ENV{'JENKINS_HOME'} = q{};
+  local $ENV{'NPG_SSL_HOME'} = $tmpdir;
+  my $jvar = "${tmpdir}/jenkins.war";
+  write_file( $jvar, qw/some data/ );
+  my $cert = "${tmpdir}/server.pem";
+  write_file( $cert, qw/some data/ );
+  my $pk   = "${tmpdir}/key.pem";
+  write_file( $pk, qw/some data/ );
 
   my $r = npg_tracking::daemon::jenkins->new(timestamp => '20130419-144441');
   $r->clear_session_timeout; # Unset the default timeout to test base command
@@ -37,12 +85,12 @@ my $current_dir = abs_path getcwd();
   is_deeply($r->env_vars, {'http_proxy' => q[http://wwwcache.sanger.ac.uk:3128]},
       'http proxy environment variable set correctly');
   is(join(q[ ], @{$r->hosts}), q[sf2-farm-srv2], 'list of hosts');
-  is($r->command('host1'), qq[java -Xmx2g  -Dhttp.proxyHost=wwwcache.sanger.ac.uk -Dhttp.proxyPort=3128 -jar $jvar --httpPort=9960 --logfile=${current_dir}/logs/jenkins_host1_20130419-144441.log], 'command to run');
+  is($r->command('host1'), qq[java -Xmx2g  -Dhttp.proxyHost=wwwcache.sanger.ac.uk -Dhttp.proxyPort=3128 -jar $jvar --httpPort=-1 --httpsPort=9960 --httpsCertificate=${cert} --httpsPrivateKey=${pk} --logfile=${current_dir}/logs/jenkins_host1_20130419-144441.log], 'command to run');
   is($r->daemon_name, 'npg_jenkins', 'daemon name');
   is($r->ping, q[daemon --running -n npg_jenkins && ((if [ -w /tmp/npg_jenkins.pid ]; then touch -mc /tmp/npg_jenkins.pid; fi) && echo -n 'ok') || echo -n 'not ok'], 'ping command');
   is($r->stop, q[daemon --stop -n npg_jenkins], 'stop command');
   my $start_command = $r->start('host1');
-  like($start_command, qr/jenkins.war --httpPort=9960/, 'the command contains jar file and port');
+  like($start_command, qr/jenkins.war --httpPort=-1 --httpsPort=9960/, 'the command contains jar file and port');
 
   # Test optional CLI arguments
   like(npg_tracking::daemon::jenkins->new
@@ -58,6 +106,6 @@ my $current_dir = abs_path getcwd();
 
   local $ENV{'JENKINS_HOME'} = q{/does/not/exist};
 
-  is($r->command('host1'), qq[java -Xmx2g -Djava.io.tmpdir=/does/not/exist/tmp -Dhttp.proxyHost=wwwcache.sanger.ac.uk -Dhttp.proxyPort=3128 -jar $jvar --httpPort=9960 --logfile=${current_dir}/logs/jenkins_host1_20130419-144441.log], 'command to run');
+  is($r->command('host1'), qq[java -Xmx2g -Djava.io.tmpdir=/does/not/exist/tmp -Dhttp.proxyHost=wwwcache.sanger.ac.uk -Dhttp.proxyPort=3128 -jar $jvar --httpPort=-1 --httpsPort=9960 --httpsCertificate=${cert} --httpsPrivateKey=${pk} --logfile=${current_dir}/logs/jenkins_host1_20130419-144441.log], 'command to run');
 }
 1;
