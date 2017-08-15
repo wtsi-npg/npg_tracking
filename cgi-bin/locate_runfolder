@@ -5,7 +5,10 @@ use warnings;
 use English qw(-no_match_vars);
 use Carp;
 use CGI qw/:standard/;
-use URI::Escape qw(uri_unescape);
+use URI::Escape qw(uri_unescape uri_escape);
+use Readonly;
+
+Readonly::Scalar my $UNSAFE => q[#];
 
 main();
 
@@ -78,7 +81,7 @@ sub main {
     if (defined $rellink) {
       $suffix =~ s{^/Latest_Summary}{/$rellink}smx;
     }
-    $uri .= q(/) . $suffix;
+    $uri .= q(/) . uri_escape($suffix,$UNSAFE);
   }
 
   print "Content-type: text/html\n\n",

@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - small fix in locate_runfolder for rna seqc links
  - remove unused classes for image generation
  - set explicit dist to precise in travis yml
  - add dual configuration for apache mpm worker/event
