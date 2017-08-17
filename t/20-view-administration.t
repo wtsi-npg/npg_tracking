@@ -2,6 +2,8 @@ use strict;
 use warnings;
 use Test::More tests => 33;
 use Test::Exception;
+use HTTP::Headers;
+use CGI;
 use t::util;
 
 use_ok('npg::model::administration');
@@ -11,10 +13,11 @@ my $cgi = $util->cgi();
 
 {
   my $view = npg::view::administration->new({
-               util   => $util,
-               model  => npg::model::administration->new({util => $util,}),
-               action => q{list},
-               aspect => q{},
+               util    => $util,
+               model   => npg::model::administration->new({util => $util,}),
+               action  => q{list},
+               aspect  => q{},
+               headers => HTTP::Headers->new()
               });
 
   $util->requestor('public');
@@ -36,10 +39,11 @@ my $cgi = $util->cgi();
 
 {
   my $view = npg::view::administration->new({
-               util   => $util,
-               model  => npg::model::administration->new({util => $util,}),
-               action => q{create},
-               aspect => q{create_instrument_mod},
+               util    => $util,
+               model   => npg::model::administration->new({util => $util,}),
+               action  => q{create},
+               aspect  => q{create_instrument_mod},
+               headers => HTTP::Headers->new(),
               });
   $util->requestor('public');
   throws_ok { $view->render() } qr{not\ authorised\ for\ this\ view },
@@ -55,95 +59,109 @@ my $cgi = $util->cgi();
   $cgi->param('revision', 'G');
 
   my $view = npg::view::administration->new({
-               util   => $util,
-               model  => npg::model::administration->new({util => $util,}),
-               action => q{create},
-               aspect => q{create_instrument_mod},
+               util    => $util,
+               model   => npg::model::administration->new({util => $util,}),
+               action  => q{create},
+               aspect  => q{create_instrument_mod},
+               headers => HTTP::Headers->new(),
               });
   $util->requestor('joe_engineer');
   my $render;
   lives_ok { $render = $view->render(); }
     'engineers and admin authorised for create_instrument_mod';
-  ok($util->test_rendered($render, 't/data/rendered/20-view-administration_create_instrument_mod.html'),
+  ok($util->test_rendered($render,
+    't/data/rendered/20-view-administration_create_instrument_mod.html'),
     'create_instrument_mod renders ok with description and revision');
 
   $cgi->param('description',q{});
   $cgi->param('new_description','filter');
   $cgi->param('revision', 'rgb');
   $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_instrument_mod},
+    util    => $util,
+    model   => npg::model::administration->new({ util => $util }),
+    action  => q{create},
+    aspect  => q{create_instrument_mod},
+    headers => HTTP::Headers->new()
   });
   lives_ok { $render = $view->render(); };
-  ok($util->test_rendered($render, 't/data/rendered/20-view-administration_create_instrument_mod.html'),
+  ok($util->test_rendered($render,
+    't/data/rendered/20-view-administration_create_instrument_mod.html'),
     'create_instrument_mod renders ok with new_description and revision');
 
   $cgi->param('description',q{});
   $cgi->param('new_description',q{});
   $cgi->param('revision', 'rgb');
   $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_instrument_mod},
+    util    => $util,
+    model   => npg::model::administration->new({ util => $util }),
+    action  => q{create},
+    aspect  => q{create_instrument_mod},
+    headers => HTTP::Headers->new(),
   });
-  throws_ok {$view->render() } qr{description\ \(\)\ and\/or\ revision\ \(rgb\)\ is\ missing},
+  throws_ok {$view->render() }
+    qr{description\ \(\)\ and\/or\ revision\ \(rgb\)\ is\ missing},
     'croaked - missing description';
 
   $cgi->param('description', 'present');
   $cgi->param('revision', q{});
-  throws_ok { $view->render() } qr{description\ \(present\)\ and\/or\ revision\ \(\)\ is\ missing},
+  throws_ok { $view->render() }
+    qr{description\ \(present\)\ and\/or\ revision\ \(\)\ is\ missing},
     'croaked - missing revision';
 }
 
 {
   $cgi->param('description',q{});
   my $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_instrument_status},
+    util    => $util,
+    model   => npg::model::administration->new({ util => $util }),
+    action  => q{create},
+    aspect  => q{create_instrument_status},
+    headers => HTTP::Headers->new()
   });
   $util->requestor('joe_engineer');
-  throws_ok { $view->render() } qr{No\ status\ given}, 'error - no status given';
+  throws_ok { $view->render() } qr{No\ status\ given},
+    'error - no status given';
 
   $cgi->param('description','new status');
   $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_instrument_status},
+    util    => $util,
+    model   => npg::model::administration->new({ util => $util }),
+    action  => q{create},
+    aspect  => q{create_instrument_status},
+    headers => HTTP::Headers->new(),
   });
   my $render;
   lives_ok { $render = $view->render() }
     'engineers and admin authorised for create_instrument_status';
-  ok($util->test_rendered($render, 't/data/rendered/20-view-administration_create_instrument_status.html'),
+  ok($util->test_rendered($render,
+    't/data/rendered/20-view-administration_create_instrument_status.html'),
     'create_instrument_status renders ok');
 }
 
 {
   $cgi->param('username',q{});
   my $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_user},
+    util    => $util,
+    model   => npg::model::administration->new({ util => $util }),
+    action  => q{create},
+    aspect  => q{create_user},
+    headers => HTTP::Headers->new()
   });
   $util->requestor('joe_admin');
   throws_ok { $view->render() } qr{No\ username\ given}, 'error - no username given';
 
   $cgi->param('username','test');
   $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_user},
+    util    => $util,
+    model   => npg::model::administration->new({ util => $util }),
+    action  => q{create},
+    aspect  => q{create_user},
+    headers => HTTP::Headers->new()
   });
   my $render;
   lives_ok { $render = $view->render() } 'admin authorised for create_user';
-  ok($util->test_rendered($render, 't/data/rendered/20-view-administration_create_user.html'),
+  ok($util->test_rendered($render,
+    't/data/rendered/20-view-administration_create_user.html'),
     'create_user renders ok');
 }
 
@@ -152,10 +170,11 @@ my $cgi = $util->cgi();
   $cgi->param('groupname',q{});
   $cgi->param('is_public', 0);
   my $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_usergroup},
+    util    => $util,
+    model   => npg::model::administration->new({ util => $util }),
+    action  => q{create},
+    aspect  => q{create_usergroup},
+    headers => HTTP::Headers->new()
   });
   $util->requestor('joe_admin');
   throws_ok { $view->render() } qr{No\ groupname\ and\/or\ group\ description\ given},
@@ -165,36 +184,41 @@ my $cgi = $util->cgi();
   $cgi->param('groupname','test');
   $cgi->param('is_public', 0);
   $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_usergroup},
+    util    => $util,
+    model   => npg::model::administration->new({ util => $util }),
+    action  => q{create},
+    aspect  => q{create_usergroup},
+    headers => HTTP::Headers->new()
   });
-  throws_ok { $view->render() } qr{No\ groupname\ and\/or\ group\ description\ given},
+  throws_ok { $view->render() }
+    qr{No\ groupname\ and\/or\ group\ description\ given},
     'error - no description given';
 
   $cgi->param('description','test');
   $cgi->param('groupname','test');
   $cgi->param('is_public', 0);
   $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_usergroup},
+    util    => $util,
+    model   => npg::model::administration->new({ util => $util }),
+    action  => q{create},
+    aspect  => q{create_usergroup},
+    headers => HTTP::Headers->new()
   });
   my $render;
   lives_ok { $render = $view->render() } 'admin authorised for create_usergroup';
-  ok($util->test_rendered($render, 't/data/rendered/20-view-administration_create_usergroup.html'),
+  ok($util->test_rendered($render,
+    't/data/rendered/20-view-administration_create_usergroup.html'),
     'create_usergroup renders ok');
 }
 
 {
   $cgi->param('description',q{});
   my $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_run_status},
+    util    => $util,
+    model   => npg::model::administration->new({ util => $util }),
+    action  => q{create},
+    aspect  => q{create_run_status},
+    headers => HTTP::Headers->new()
   });
   $util->requestor('joe_admin');
   throws_ok { $view->render() } qr{No\ status\ given}, 'error - no status given';
@@ -208,7 +232,8 @@ my $cgi = $util->cgi();
   });
   my $render;
   lives_ok { $render = $view->render() } 'admin authorised for create_run_status';
-  ok($util->test_rendered($render, 't/data/rendered/20-view-administration_create_run_status.html'),
+  ok($util->test_rendered($render,
+    't/data/rendered/20-view-administration_create_run_status.html'),
     'create_run_status renders ok');
 }
 
@@ -217,10 +242,11 @@ my $cgi = $util->cgi();
   $cgi->param('id_usergroup',1);
 
   my $view = npg::view::administration->new({
-               util   => $util,
-               model  => npg::model::administration->new({util => $util,}),
-               action => q{create},
-               aspect => q{create_user_to_usergroup},
+               util    => $util,
+               model   => npg::model::administration->new({util => $util,}),
+               action  => q{create},
+               aspect  => q{create_user_to_usergroup},
+               headers => HTTP::Headers->new()
               });
   $util->requestor('joe_admin');
   throws_ok { $view->render() } qr{No\ user\ and\/or\ usergroup\ given},
@@ -229,10 +255,11 @@ my $cgi = $util->cgi();
   $cgi->param('id_user',1);
   $cgi->param('id_usergroup',q{});
   $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_user_to_usergroup},
+    util    => $util,
+    model   => npg::model::administration->new({ util => $util }),
+    action  => q{create},
+    aspect  => q{create_user_to_usergroup},
+    headers => HTTP::Headers->new()
   });
   throws_ok { $view->render() } qr{No\ user\ and\/or\ usergroup\ given},
     'error - no usergroup given';
@@ -240,14 +267,16 @@ my $cgi = $util->cgi();
   $cgi->param('id_user',2);
   $cgi->param('id_usergroup',2);
   $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_user_to_usergroup},
+    util    => $util,
+    model   => npg::model::administration->new({ util => $util }),
+    action  => q{create},
+    aspect  => q{create_user_to_usergroup},
+    headers => HTTP::Headers->new()
   });
   my $render;
   lives_ok { $render = $view->render() } 'admin authorised for create_usergroup';
-  ok($util->test_rendered($render, 't/data/rendered/20-view-administration_create_usergroup.html'),
+  ok($util->test_rendered($render,
+    't/data/rendered/20-view-administration_create_usergroup.html'),
     'create_usergroup renders ok');
 }
 
