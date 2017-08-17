@@ -4,6 +4,19 @@ LIST OF CHANGES
  - set explicit dist to precise in travis yml
  - add dual configuration for apache mpm worker/event
  - Jenkins' daemon with HTTPS as default configuration
+ - drop or rename orphaned tables from db
+   - drop
+     cost_code
+     cost_group
+     sensor_data_instrument
+     sensor_data
+     sensor_instrument
+     sensor
+     mail_run_project_followers
+   - rename
+     event_type_service to todrop_event_type_service
+     ext_service to todrop_ext_service
+     event_type_subscriber to todrop_event_type_subscriber
 
 release 86.4
  - reference find role: remove unused 'subset' attribute and
