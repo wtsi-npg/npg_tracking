@@ -1,0 +1,16 @@
+-- drop orphaned tables
+DROP TABLE `cost_code`;
+DROP TABLE `cost_group`;
+DROP TABLE `sensor_data_instrument`;
+DROP TABLE `sensor_data`;
+DROP TABLE `sensor_instrument`;
+DROP TABLE `sensor`;
+DROP TABLE `mail_run_project_followers`;
+
+-- rename the rest so they can be dropped for next release 
+ALTER TABLE event_type_service
+  RENAME TO todrop_event_type_service;
+ALTER TABLE ext_service
+  RENAME TO todrop_ext_service;
+ALTER TABLE event_type_subscriber
+  RENAME TO todrop_event_type_subscriber;
