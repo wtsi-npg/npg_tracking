@@ -25,8 +25,8 @@ sub cgi {
   return $self->{cgi} || undef;
 }
 
-sub header {
-  return qq[Content-type: text/html\n\n];
+sub site_header {
+  return q[];
 }
 
 sub footer {
@@ -48,13 +48,21 @@ npg::decorator - NPG tracking decorator
 
 =head1 SUBROUTINES/METHODS
 
-=head2 username - accessor for username, but which returns an empty string instead of undef by default
+=head2 username
+  Accessor for username, returns an empty string by default.
 
 =head2 cgi
 
-=head2 header
+=head2 site_header
+  In the parent object this methods defines the start, including
+  the head part, of the HTML page. In this application the start
+  of the page is defined in the actions.tt2 template, which is
+  rendered by Clearpress before the template associated with a
+  particular HTML view. Therefore, in this application this
+  method returns an empty string.  
 
 =head2 footer
+  Closing HTML tags of NPG tracking HTML pages.
 
 =head1 DIAGNOSTICS
 
@@ -82,7 +90,7 @@ Andy Brown
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2009 GRL, by Andy Brown
+Copyright (C) 2009,2017 GRL, by Andy Brown, David K Jackson
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
