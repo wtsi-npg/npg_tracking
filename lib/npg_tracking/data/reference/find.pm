@@ -366,30 +366,32 @@ sub lims2ref {
 
 Parses LIMs notation for reference genome, returns a list containing
 an organism, strain (genome version) and, optionally, a transcriptome
-version and/or an aligner; or an empty list.
+version and/or a word indicating the type of analysis to be run.
 
 =cut
 sub parse_reference_genome {
     my ($self, $reference_genome) = @_;
     $reference_genome ||= $self->reference_genome;
     if ($reference_genome) {
-        ##also allows for transcriptome version and aligner e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75) [star]'
-        ## no critic (Variables::ProhibitPunctuationVars RegularExpressions::ProhibitComplexRegexes)
-        my @array = $reference_genome  =~ qr{
-                                              (?<organism> \S+ ) \s+
-                                              [(] (?<strain> \S+ ) (?: \s+ \+ \s+ (?<tversion> \S+ ))? [)]
-                                              (?: \s+ [[] (?<aligner> \S+ ) []] )?
-                                          }smx;
-        if (scalar @array >= $THREE && $+{organism} && $+{strain}) {
-            if ($+{tversion} || $+{aligner}) {
-                ## assure list contents and order (aligner is 4th)
-                @array = ($+{organism}, $+{strain}, $+{tversion} // q[], $+{aligner} // q[]);
+        my ($organism, $strain, $tversion, $analysis, $parsed, @array);
+        ## allows for transcriptome version and analysis e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75) [star]'
+        $organism = '(?<organism>\S+)\s+';
+        $strain = '(?<strain>\S+)';
+        $tversion = '(?:\s+\+\s+(?<tversion>\S+))?';
+        $analysis = '(?:\s+[[](?<analysis>\S+)[]])?';
+        $parsed = $reference_genome  =~ qr{$organism [(] $strain $tversion [)] $analysis}smx;
+        $organism = $LAST_PAREN_MATCH{organism};
+        $strain = $LAST_PAREN_MATCH{strain};
+        $tversion = $LAST_PAREN_MATCH{tversion};
+        $analysis = $LAST_PAREN_MATCH{analysis};
+        if ($organism && $strain) {
+            if ($tversion || $analysis) {
+                @array = ($organism, $strain, $tversion, $analysis);
             } else {
-                $#array = 1;
+                @array = ($organism, $strain);
             }
             return @array;
         }
-        ## use critic
     }
     return;
 }
