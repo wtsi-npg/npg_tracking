@@ -2,12 +2,79 @@ package npg_tracking::data::transcriptome::find;
 
 use Moose::Role;
 use Carp;
-
 use npg_tracking::util::abs_path qw(abs_path);
+
+Readonly::Scalar our $ALIGNER => q[tophat2];
+Readonly::Scalar our $QUANTIFIER => q[salmon];
 
 with qw/ npg_tracking::data::reference::find /;
 
 our $VERSION = '0';
+
+sub _find_path {
+    my $self = shift;
+    ## symbolic link to default resolved with abs_path
+    if ($self->_version_dir){
+        return abs_path($self->_version_dir . q[/] . $self->_subfolder);
+    }
+    return;
+}
+
+sub _find_file {
+    my $self = shift;
+    my @files;
+    my $file_type = $self->_file_type;
+    my $path = $self->_find_path;
+    if ($path) {
+        @files = glob $path . q[/*.] . $file_type;
+    }
+    if (scalar @files > 1) {
+        croak qq[More than one $file_type file in $path];
+    }
+    if (scalar @files == 0) {
+        if ($self->_organism_dir && -d $self->_organism_dir) {
+            $self->messages->push(q[Directory ] . $self->_organism_dir . q[ exists, but *.] . $file_type . q[ file(s) not found]);
+        }
+        return;
+    }
+    return $files[0];
+}
+
+sub _process_index_name {
+    my ($self, $index_name) = @_;
+    if ($self->analysis eq $ALIGNER) {
+        ## return up to prefix (remove everything after 'known')
+        $index_name =~ s/known(\S+)$/known/smxi;
+    } elsif ($self->analysis eq $QUANTIFIER) {
+        ## nothing to do for salmon as it requires only the folder
+        ## name so transcriptome_index_path should be used instead
+        return;
+    }
+    return $index_name;
+}
+
+has '_file_type' => (isa      => q{Maybe[Str]},
+                     is       => q{ro},
+                     required => 0,
+                     writer   => q{_set_file_type},);
+
+has '_subfolder' => (isa      => q{Maybe[Str]},
+                     is       => q{ro},
+                     required => 0,
+                     writer   => q{_set_subfolder},);
+
+has '_index_name_ext' => (isa      => q{Str},
+                          is       => q{ro},
+                          required => 0,
+                          lazy     => 1,
+                          builder  => q{_build_index_name_ext},);
+
+sub _build_index_name_ext {
+    my $self = shift;
+    my $ext = $self->analysis eq $ALIGNER ? q[bt2] :
+              $self->analysis eq $QUANTIFIER ? q[json] : return;
+    return $ext;
+}
 
 has '_organism_dir' => ( isa        => q{Maybe[Str]},
                          is         => q{ro},
@@ -42,6 +109,33 @@ sub _build__version_dir {
   return;
 }
 
+has 'fasta_path' => (isa           => q{Maybe[Str]},
+                     is            => q{ro},
+                     lazy          => 1,
+                     builder       => q{_build_fasta_path},
+                     documentation => 'Path to transcriptome fasta folder',
+                    );
+
+sub _build_fasta_path {
+    my $self = shift;
+    $self->_set_subfolder('fasta');
+    return $self->_find_path;
+}
+
+has 'fasta_file' => (isa           => q{Maybe[Str]},
+                     is            => q{ro},
+                     lazy          => 1,
+                     builder       => q{_build_fasta_file},
+                     documentation => 'Full name of transcriptome fasta file',
+                    );
+
+sub _build_fasta_file {
+  my $self = shift;
+  $self->_set_subfolder('fasta');
+  $self->_set_file_type('fa');
+  return $self->_find_file;
+}
+
 has 'rnaseqc_gtf_path'  => ( isa           => q{Maybe[Str]},
                              is            => q{ro},
                              lazy_build    => 1,
@@ -49,10 +143,8 @@ has 'rnaseqc_gtf_path'  => ( isa           => q{Maybe[Str]},
 
 sub _build_rnaseqc_gtf_path {
   my $self = shift;
-  if ($self->_version_dir){
-    return abs_path($self->_version_dir . '/RNA-SeQC');
-  }
-  return;
+  $self->_set_subfolder('RNA-SeQC');
+  return $self->_find_path;
 }
 
 has 'rnaseqc_gtf_file' => ( isa           => q{Maybe[Str]},
@@ -62,21 +154,9 @@ has 'rnaseqc_gtf_file' => ( isa           => q{Maybe[Str]},
 
 sub _build_rnaseqc_gtf_file {
   my $self = shift;
-  my @gtf_files;
-  if ($self->rnaseqc_gtf_path) {
-    @gtf_files = glob $self->rnaseqc_gtf_path . '/*.gtf';
-  }
-  if (scalar @gtf_files > 1) {
-    croak 'More than 1 gtf file in ' . $self->rnaseqc_gtf_path;
-  }
-
-  if (scalar @gtf_files == 0) {
-    if ($self->_organism_dir && -d $self->_organism_dir) {
-      $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but GTF file not found');
-    }
-    return;
-  }
-  return $gtf_files[0];
+  $self->_set_subfolder('RNA-SeQC');
+  $self->_set_file_type('gtf');
+  return $self->_find_file;
 }
 
 has 'gtf_path'     => ( isa           => q{Maybe[Str]},
@@ -86,11 +166,8 @@ has 'gtf_path'     => ( isa           => q{Maybe[Str]},
 
 sub _build_gtf_path {
   my $self = shift;
-  ## symbolic link to default resolved with abs_path
-  if ($self->_version_dir){
-    return abs_path($self->_version_dir . '/gtf');
-  }
-  return;
+  $self->_set_subfolder('gtf');
+  return $self->_find_path;
 }
 
 has 'gtf_file' => ( isa           => q{Maybe[Str]},
@@ -100,32 +177,22 @@ has 'gtf_file' => ( isa           => q{Maybe[Str]},
 
 sub _build_gtf_file {
   my $self = shift;
-  my @gtf_files;
-  if ($self->gtf_path) { @gtf_files = glob $self->gtf_path . '/*.gtf'; }
-  if (scalar @gtf_files > 1) { croak 'More than 1 gtf file in ' . $self->gtf_path; }
-
-  if (scalar @gtf_files == 0) {
-    if ($self->_organism_dir && -d $self->_organism_dir) {
-      $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but GTF file not found');
-    }
-    return;
-  }
-  return $gtf_files[0];
+  $self->_set_subfolder('gtf');
+  $self->_set_file_type('gtf');
+  return $self->_find_file;
 }
 
-#transcriptomes/Homo_sapiens/ensembl_75_transcriptome/1000Genomes_hs37d5/tophat2/
+#transcriptomes/Homo_sapiens/ensembl_75_transcriptome/1000Genomes_hs37d5/{tophat2,salmon}/
 has 'transcriptome_index_path' => ( isa           => q{Maybe[Str]},
                                     is            => q{ro},
                                     lazy_build    => 1,
-                                    documentation => 'Path to the tophat2 (bowtie2) indices folder',
+                                    documentation => 'Path to the aligner indices subfolder',
                                   );
 
 sub _build_transcriptome_index_path {
   my $self = shift;
-  if ( $self->_version_dir){
-     return abs_path($self->_version_dir . '/tophat2');
-  }
-  return;
+  $self->_set_subfolder($self->analysis);
+  return $self->_find_path;
 }
 
 #e.g. 1000Genomes_hs37d5.known (from 1000Genomes_hs37d5.known.1.bt2, 1000Genomes_hs37d5.known.2.bt2 ...)
@@ -137,22 +204,18 @@ has 'transcriptome_index_name' => ( isa           => q{Maybe[Str]},
 
 sub _build_transcriptome_index_name {
   my $self = shift;
-  my @indices;
+  my (@indices, $index_ext);
+  $index_ext = $self->_index_name_ext // return;
   if ($self->transcriptome_index_path) {
-    @indices = glob $self->transcriptome_index_path . '/*.bt2';
+    @indices = glob $self->transcriptome_index_path . q[/*.] . $index_ext;
   }
-
   if (scalar @indices == 0){
     if ($self->_organism_dir && -d $self->_organism_dir) {
-      $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but GTF file not found');
+      $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but index files not found');
     }
     return;
   }
-
-  ##return up to prefix (remove everything after 'known')
-  my $index_prefix = $indices[0];
-  $index_prefix =~ s/known(\S+)$/known/smxi;
-  return $index_prefix;
+  return $self->_process_index_name($indices[0]);
 }
 
 1;

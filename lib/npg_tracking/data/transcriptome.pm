@@ -1,13 +1,21 @@
 package npg_tracking::data::transcriptome;
 
 use Moose;
+use Readonly;
 
 our $VERSION = '0';
+
+Readonly::Scalar our $DEFAULT_ANALYSIS => q[tophat2];
 
 extends 'npg_tracking::data::reference';
 with    'npg_tracking::data::transcriptome::find';
 
+has 'analysis' => (default  => $DEFAULT_ANALYSIS,
+                   is       => 'ro',
+                   required => 0,);
+
 __PACKAGE__->meta->make_immutable;
+
 no Moose;
 
 1;
@@ -35,6 +43,10 @@ A wrapper class for finding the location of transcriptome files.
 
 =head2 rpt_list
 
+=head2 analysis
+
+An optional attribute used to find the path and files of transcriptome indices
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -44,6 +56,8 @@ A wrapper class for finding the location of transcriptome files.
 =over
 
 =item Moose
+
+=item Readonly
 
 =back
 
