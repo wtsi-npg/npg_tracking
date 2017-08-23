@@ -4,54 +4,17 @@ use Moose::Role;
 use Carp;
 use npg_tracking::util::abs_path qw(abs_path);
 
-Readonly::Scalar our $ALIGNER => q[tophat2];
-Readonly::Scalar our $QUANTIFIER => q[salmon];
+Readonly::Scalar our $DEFAULT_ALIGNER => q[tophat2];
+Readonly::Scalar our $DEFAULT_QUANTIFIER => q[salmon];
+Readonly::Scalar our $DEFAULT_ANALYSIS => $DEFAULT_ALIGNER;
 
 with qw/ npg_tracking::data::reference::find /;
 
 our $VERSION = '0';
 
-sub _find_path {
-    my $self = shift;
-    ## symbolic link to default resolved with abs_path
-    if ($self->_version_dir){
-        return abs_path($self->_version_dir . q[/] . $self->_subfolder);
-    }
-    return;
-}
-
-sub _find_file {
-    my $self = shift;
-    my @files;
-    my $file_type = $self->_file_type;
-    my $path = $self->_find_path;
-    if ($path) {
-        @files = glob $path . q[/*.] . $file_type;
-    }
-    if (scalar @files > 1) {
-        croak qq[More than one $file_type file in $path];
-    }
-    if (scalar @files == 0) {
-        if ($self->_organism_dir && -d $self->_organism_dir) {
-            $self->messages->push(q[Directory ] . $self->_organism_dir . q[ exists, but *.] . $file_type . q[ file(s) not found]);
-        }
-        return;
-    }
-    return $files[0];
-}
-
-sub _process_index_name {
-    my ($self, $index_name) = @_;
-    if ($self->analysis eq $ALIGNER) {
-        ## return up to prefix (remove everything after 'known')
-        $index_name =~ s/known(\S+)$/known/smxi;
-    } elsif ($self->analysis eq $QUANTIFIER) {
-        ## nothing to do for salmon as it requires only the folder
-        ## name so transcriptome_index_path should be used instead
-        return;
-    }
-    return $index_name;
-}
+has 'analysis' => (default  => $DEFAULT_ANALYSIS,
+                   is       => 'ro',
+                   required => 0,);
 
 has '_file_type' => (isa      => q{Maybe[Str]},
                      is       => q{ro},
@@ -71,8 +34,8 @@ has '_index_name_ext' => (isa      => q{Str},
 
 sub _build_index_name_ext {
     my $self = shift;
-    my $ext = $self->analysis eq $ALIGNER ? q[bt2] :
-              $self->analysis eq $QUANTIFIER ? q[json] : return;
+    my $ext = $self->analysis eq $DEFAULT_ALIGNER ? q[bt2] :
+              $self->analysis eq $DEFAULT_QUANTIFIER ? q[json] : return;
     return $ext;
 }
 
@@ -218,6 +181,48 @@ sub _build_transcriptome_index_name {
   return $self->_process_index_name($indices[0]);
 }
 
+sub _find_path {
+    my $self = shift;
+    ## symbolic link to default resolved with abs_path
+    if ($self->_version_dir){
+        return abs_path($self->_version_dir . q[/] . $self->_subfolder);
+    }
+    return;
+}
+
+sub _find_file {
+    my $self = shift;
+    my @files;
+    my $file_type = $self->_file_type;
+    my $path = $self->_find_path;
+    if ($path) {
+        @files = glob $path . q[/*.] . $file_type;
+    }
+    if (scalar @files > 1) {
+        croak qq[More than one $file_type file in $path];
+    }
+    if (scalar @files == 0) {
+        if ($self->_organism_dir && -d $self->_organism_dir) {
+            $self->messages->push(q[Directory ] . $self->_organism_dir . q[ exists, but *.] . $file_type . q[ file(s) not found]);
+        }
+        return;
+    }
+    return $files[0];
+}
+
+sub _process_index_name {
+    my ($self, $index_name) = @_;
+    if ($self->analysis eq $DEFAULT_ALIGNER) {
+        ## return up to prefix (remove everything after 'known')
+        $index_name =~ s/known(\S+)$/known/smxi;
+    } elsif ($self->analysis eq $DEFAULT_QUANTIFIER) {
+        ## nothing to do for salmon as it requires only the folder
+        ## name so transcriptome_index_path should be used instead
+        return;
+    }
+    return $index_name;
+}
+
 1;
 __END__
 
@@ -235,11 +240,25 @@ npg_tracking::data::transcriptome::find
 
 A Moose role for finding the location of transcriptome files.
 
-These are the gtf file and the tophat2 index file prefix (including paths).
+These include files such as gtf or transcriptome fasta and the index file (prefix or path)
 
-Documentation on GTF (GFF version2) format http://www.ensembl.org/info/website/upload/gff.html
+of a number of aligners and other analysis tools. Documentation on GTF (GFF version2) format
+
+http://www.ensembl.org/info/website/upload/gff.html
 
 =head1 SUBROUTINES/METHODS
+
+=head2 analysis
+
+ An optional attribute used to find the path and files of transcriptome indices
+
+=head2 fasta_path
+
+ Path to the transcriptome fasta folder
+
+=head2 fasta_file
+
+ Full path to the transcriptome fasta file
 
 =head2 gtf_path
  
@@ -285,7 +304,7 @@ Documentation on GTF (GFF version2) format http://www.ensembl.org/info/website/u
 
 =head1 AUTHOR
 
-Jillian Durham
+Jillian Durham and Ruben Bautista
 
 =head1 LICENSE AND COPYRIGHT
 
