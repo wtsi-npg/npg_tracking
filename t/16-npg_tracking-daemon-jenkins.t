@@ -35,8 +35,8 @@ my $current_dir = abs_path getcwd();
   $r->clear_session_timeout;
 
   throws_ok { $r->command('host1') }
-    qr/Attribute \(npg_ssl_home\) does not pass the type constraint/,
-    'error if NPG_SSL_HOME is not defined';
+    qr/Path to SSL certificate is not available .*\/wtsi_local\/server\.pem/,
+    'error if certificate is not available';
 
   unlink [$jvar];
 }
