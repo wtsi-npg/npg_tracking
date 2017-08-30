@@ -39,7 +39,7 @@ sub _build_npg_ssl_home {
   my $self = shift;
   my $npg_ssl_home = $ENV{'NPG_SSL_HOME'};
   if (!$npg_ssl_home) {
-    $npg_ssl_home = join q[/], $Bin, 'wtsi_local';
+    $npg_ssl_home = join q[/], $Bin, q[..], 'wtsi_local';
   }
   return $npg_ssl_home;
 }
