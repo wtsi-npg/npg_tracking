@@ -15,6 +15,8 @@ with 'npg_tracking::glossary::composition::factory::rpt' => {
   component_class => 'npg_tracking::glossary::composition::component::illumina'
 };
 
+1;
+
 =head1 NAME
 
 npg_tracking::glossary::composition::factory::rpt_list
