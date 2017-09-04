@@ -380,10 +380,10 @@ sub parse_reference_genome {
         $tversion = '(?:\s+\+\s+(?<tversion>\S+))?';
         $analysis = '(?:\s+[[](?<analysis>\S+)[]])?';
         $parsed = $reference_genome  =~ qr{$organism [(] $strain $tversion [)] $analysis}smx;
-        $organism = $LAST_PAREN_MATCH{organism};
-        $strain = $LAST_PAREN_MATCH{strain};
-        $tversion = $LAST_PAREN_MATCH{tversion};
-        $analysis = $LAST_PAREN_MATCH{analysis};
+        $organism = $LAST_PAREN_MATCH{'organism'};
+        $strain = $LAST_PAREN_MATCH{'strain'};
+        $tversion = $LAST_PAREN_MATCH{'tversion'};
+        $analysis = $LAST_PAREN_MATCH{'analysis'};
         if ($organism && $strain) {
             if ($tversion || $analysis) {
                 @array = ($organism, $strain, $tversion, $analysis);
