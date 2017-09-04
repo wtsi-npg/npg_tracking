@@ -16,17 +16,7 @@ has 'analysis' => (default  => $DEFAULT_ANALYSIS,
                    is       => 'ro',
                    required => 0,);
 
-has '_file_type' => (isa      => q{Maybe[Str]},
-                     is       => q{ro},
-                     required => 0,
-                     writer   => q{_set_file_type},);
-
-has '_subfolder' => (isa      => q{Maybe[Str]},
-                     is       => q{ro},
-                     required => 0,
-                     writer   => q{_set_subfolder},);
-
-has '_index_name_ext' => (isa      => q{Str},
+has '_index_name_ext' => (isa      => q{Maybe[Str]},
                           is       => q{ro},
                           required => 0,
                           lazy     => 1,
@@ -34,8 +24,9 @@ has '_index_name_ext' => (isa      => q{Str},
 
 sub _build_index_name_ext {
     my $self = shift;
+    ## which type of file to look for in the index folder based on the analysis
     my $ext = $self->analysis eq $DEFAULT_ALIGNER ? q[bt2] :
-              $self->analysis eq $DEFAULT_QUANTIFIER ? q[json] : return;
+              ($self->analysis eq $DEFAULT_QUANTIFIER ? q[json] : undef);
     return $ext;
 }
 
@@ -81,8 +72,7 @@ has 'fasta_path' => (isa           => q{Maybe[Str]},
 
 sub _build_fasta_path {
     my $self = shift;
-    $self->_set_subfolder('fasta');
-    return $self->_find_path;
+    return $self->_find_path('fasta');
 }
 
 has 'fasta_file' => (isa           => q{Maybe[Str]},
@@ -94,9 +84,7 @@ has 'fasta_file' => (isa           => q{Maybe[Str]},
 
 sub _build_fasta_file {
   my $self = shift;
-  $self->_set_subfolder('fasta');
-  $self->_set_file_type('fa');
-  return $self->_find_file;
+  return $self->_find_file('fasta', '{fa,fasta}');
 }
 
 has 'rnaseqc_gtf_path'  => ( isa           => q{Maybe[Str]},
@@ -106,8 +94,7 @@ has 'rnaseqc_gtf_path'  => ( isa           => q{Maybe[Str]},
 
 sub _build_rnaseqc_gtf_path {
   my $self = shift;
-  $self->_set_subfolder('RNA-SeQC');
-  return $self->_find_path;
+  return $self->_find_path('RNA-SeQC');
 }
 
 has 'rnaseqc_gtf_file' => ( isa           => q{Maybe[Str]},
@@ -117,9 +104,7 @@ has 'rnaseqc_gtf_file' => ( isa           => q{Maybe[Str]},
 
 sub _build_rnaseqc_gtf_file {
   my $self = shift;
-  $self->_set_subfolder('RNA-SeQC');
-  $self->_set_file_type('gtf');
-  return $self->_find_file;
+  return $self->_find_file('RNA-SeQC', 'gtf');
 }
 
 has 'gtf_path'     => ( isa           => q{Maybe[Str]},
@@ -129,8 +114,7 @@ has 'gtf_path'     => ( isa           => q{Maybe[Str]},
 
 sub _build_gtf_path {
   my $self = shift;
-  $self->_set_subfolder('gtf');
-  return $self->_find_path;
+  return $self->_find_path('gtf');
 }
 
 has 'gtf_file' => ( isa           => q{Maybe[Str]},
@@ -140,9 +124,7 @@ has 'gtf_file' => ( isa           => q{Maybe[Str]},
 
 sub _build_gtf_file {
   my $self = shift;
-  $self->_set_subfolder('gtf');
-  $self->_set_file_type('gtf');
-  return $self->_find_file;
+  return $self->_find_file('gtf', 'gtf');
 }
 
 #transcriptomes/Homo_sapiens/ensembl_75_transcriptome/1000Genomes_hs37d5/{tophat2,salmon}/
@@ -154,15 +136,15 @@ has 'transcriptome_index_path' => ( isa           => q{Maybe[Str]},
 
 sub _build_transcriptome_index_path {
   my $self = shift;
-  $self->_set_subfolder($self->analysis);
-  return $self->_find_path;
+  my $subfolder = $self->analysis;
+  return $self->_find_path($subfolder);
 }
 
 #e.g. 1000Genomes_hs37d5.known (from 1000Genomes_hs37d5.known.1.bt2, 1000Genomes_hs37d5.known.2.bt2 ...)
 has 'transcriptome_index_name' => ( isa           => q{Maybe[Str]},
                                     is            => q{ro},
                                     lazy_build    => 1,
-                                    documentation => 'Full path + prefix of files in the tophat2 (bowtie2) indices folder',
+                                    documentation => 'Full path + prefix of files in the aligner or other analysis indices folder',
                                    );
 
 sub _build_transcriptome_index_name {
@@ -174,7 +156,7 @@ sub _build_transcriptome_index_name {
   }
   if (scalar @indices == 0){
     if ($self->_organism_dir && -d $self->_organism_dir) {
-      $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but index files not found');
+      $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but index files not found (' . $self->analysis . ')');
     }
     return;
   }
@@ -182,19 +164,18 @@ sub _build_transcriptome_index_name {
 }
 
 sub _find_path {
-    my $self = shift;
+    my ($self, $subfolder) = @_;
     ## symbolic link to default resolved with abs_path
     if ($self->_version_dir){
-        return abs_path($self->_version_dir . q[/] . $self->_subfolder);
+        return abs_path($self->_version_dir . q[/] . $subfolder);
     }
     return;
 }
 
 sub _find_file {
-    my $self = shift;
+    my ($self, $subfolder, $file_type) = @_;
+    my $path = $self->_find_path($subfolder);
     my @files;
-    my $file_type = $self->_file_type;
-    my $path = $self->_find_path;
     if ($path) {
         @files = glob $path . q[/*.] . $file_type;
     }
@@ -258,7 +239,7 @@ http://www.ensembl.org/info/website/upload/gff.html
 
 =head2 fasta_file
 
- Full path to the transcriptome fasta file
+Full path to the transcriptome file in fasta format
 
 =head2 gtf_path
  
@@ -278,11 +259,11 @@ http://www.ensembl.org/info/website/upload/gff.html
 
 =head2 transcriptome_index_name
 
- Full path plus prefix of files in the tophat2 (bowtie2) indices folder
+ Full path plus prefix of files in the aligner or other analysis indices folder
 
 =head2 transcriptome_index_path
 
- Path to the tophat2 (bowtie2) indices folder
+ Path to the aligner or other analysis indices folder
 
 =head1 DIAGNOSTICS
 

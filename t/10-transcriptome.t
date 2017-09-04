@@ -189,7 +189,7 @@ throws_ok { $test6->gtf_file } qr/More than one gtf file/,
 'ok - croaks when more than 1 gtf file found - Mus_musculus (GRCm38 + ensembl_84_transcriptome)';
 
 my $prefix_path_84 = catfile($tmp_repos, q[transcriptomes/Mus_musculus/ensembl_84_transcriptome/GRCm38/tophat2/GRCm38.known]);
-my $re_no_idx_name = qr/^Directory.*exists.*index.*files.*not.*found$/msxi;
+my $re_no_idx_name = qr/^Directory.*exists.*index.*files.*not.*found.*$/msxi;
 my $empty_idx_name = $test6->transcriptome_index_name;
 lives_and { is $empty_idx_name, undef } "ok - returns undef for transcriptome_index_name if index files are not present - Mus_musculus (GRCm38 + ensembl_84_transcriptome)";
 my ($tmsg, $msg);

@@ -1,7 +1,6 @@
 package npg_tracking::data::transcriptome;
 
 use Moose;
-use Readonly;
 
 our $VERSION = '0';
 
@@ -46,8 +45,6 @@ A wrapper class for finding the location of transcriptome files.
 =over
 
 =item Moose
-
-=item Readonly
 
 =back
 
