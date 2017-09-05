@@ -16,6 +16,7 @@ with 'npg_tracking::glossary::composition::factory::rpt' => {
 };
 
 1;
+__END__
 
 =head1 NAME
 
