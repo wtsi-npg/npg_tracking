@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - a convenience factory class to transform rpt list strings
+   into a composition
+
 release 86.5
  - small fix in locate_runfolder for rna seqc links
  - remove unused classes for image generation
