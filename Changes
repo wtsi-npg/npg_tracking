@@ -1,5 +1,12 @@
 LIST OF CHANGES
 
+release 86.6
+ - unused db tables, which were renamed in the previous release,
+     are dropped; exclusions in teh DBIx class loader script removed
+ - Jenkins daemon - a bug in locating prod ssl server certificates fixed
+ - added a convenience factory class to transform rpt list strings
+   into a composition
+
 release 86.5
  - small fix in locate_runfolder for rna seqc links
  - remove unused classes for image generation

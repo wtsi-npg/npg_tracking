@@ -282,6 +282,7 @@ lib/npg_tracking/glossary/composition.pm
 lib/npg_tracking/glossary/composition/component.pm
 lib/npg_tracking/glossary/composition/component/illumina.pm
 lib/npg_tracking/glossary/composition/factory.pm
+lib/npg_tracking/glossary/composition/factory/rpt_list.pm
 lib/npg_tracking/glossary/composition/factory/attributes.pm
 lib/npg_tracking/glossary/composition/factory/rpt.pm
 lib/npg_tracking/glossary/composition/serializable.pm
@@ -406,6 +407,7 @@ t/10-npg_tracking-glossary-composition-component-illumina.t
 t/10-npg_tracking-glossary-composition-component.t
 t/10-npg_tracking-glossary-composition-factory-attributes.t
 t/10-npg_tracking-glossary-composition-factory-rpt.t
+t/10-npg_tracking-glossary-composition-factory-rpt_list.t
 t/10-npg_tracking-glossary-composition-factory.t
 t/10-npg_tracking-glossary-composition.t
 t/10-npg_tracking-glossary-rpt.t
