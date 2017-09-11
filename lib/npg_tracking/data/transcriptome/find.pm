@@ -4,31 +4,17 @@ use Moose::Role;
 use Carp;
 use npg_tracking::util::abs_path qw(abs_path);
 
-Readonly::Scalar our $DEFAULT_ALIGNER => q[tophat2];
-Readonly::Scalar our $DEFAULT_QUANTIFIER => q[salmon];
-Readonly::Scalar our $DEFAULT_ANALYSIS => $DEFAULT_ALIGNER;
+Readonly::Hash our %ANALYSES => ('tophat2' => { 'ext'  => 'bt2' },
+                                 'salmon'  => { 'ext'  => 'json' },
+                                 'default' => 'tophat2',);
 
 with qw/ npg_tracking::data::reference::find /;
 
 our $VERSION = '0';
 
-has 'analysis' => (default  => $DEFAULT_ANALYSIS,
+has 'analysis' => (default  => $ANALYSES{q{default}},
                    is       => 'ro',
                    required => 0,);
-
-has '_index_name_ext' => (isa      => q{Maybe[Str]},
-                          is       => q{ro},
-                          required => 0,
-                          lazy     => 1,
-                          builder  => q{_build_index_name_ext},);
-
-sub _build_index_name_ext {
-    my $self = shift;
-    ## which type of file to look for in the index folder based on the analysis
-    my $ext = $self->analysis eq $DEFAULT_ALIGNER ? q[bt2] :
-              ($self->analysis eq $DEFAULT_QUANTIFIER ? q[json] : undef);
-    return $ext;
-}
 
 has '_organism_dir' => ( isa        => q{Maybe[Str]},
                          is         => q{ro},
@@ -150,7 +136,7 @@ has 'transcriptome_index_name' => ( isa           => q{Maybe[Str]},
 sub _build_transcriptome_index_name {
   my $self = shift;
   my (@indices, $index_ext);
-  $index_ext = $self->_index_name_ext // return;
+  $index_ext = $ANALYSES{$self->analysis}->{'ext'} // return;
   if ($self->transcriptome_index_path) {
     @indices = glob $self->transcriptome_index_path . q[/*.] . $index_ext;
   }
@@ -193,10 +179,10 @@ sub _find_file {
 
 sub _process_index_name {
     my ($self, $index_name) = @_;
-    if ($self->analysis eq $DEFAULT_ALIGNER) {
+    if ($self->analysis eq q[tophat2]) {
         ## return up to prefix (remove everything after 'known')
         $index_name =~ s/known(\S+)$/known/smxi;
-    } elsif ($self->analysis eq $DEFAULT_QUANTIFIER) {
+    } elsif ($self->analysis eq q[salmon]) {
         ## nothing to do for salmon as it requires only the folder
         ## name so transcriptome_index_path should be used instead
         return;
