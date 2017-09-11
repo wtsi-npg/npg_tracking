@@ -372,7 +372,7 @@ sub parse_reference_genome {
     my ($self, $reference_genome) = @_;
     $reference_genome ||= $self->reference_genome;
     if ($reference_genome) {
-        my ($organism, $strain, $tversion, $analysis, $parsed, @array);
+        my ($organism, $strain, $tversion, $analysis, @array);
         ## allows for transcriptome version and analysis e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75) [star]'
         $organism = '(?<organism>\S+)\s+';
         $strain = '(?<strain>\S+)';
