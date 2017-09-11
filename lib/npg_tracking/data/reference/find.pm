@@ -18,7 +18,6 @@ our $VERSION = '0';
 
 Readonly::Scalar our $NPG_DEFAULT_ALIGNER_OPTION => q{npg_default};
 Readonly::Scalar our $MINUS_ONE                  => -1;
-Readonly::Scalar our $THREE                      => 3;
 
 =head1 NAME
 
@@ -379,7 +378,7 @@ sub parse_reference_genome {
         $strain = '(?<strain>\S+)';
         $tversion = '(?:\s+\+\s+(?<tversion>\S+))?';
         $analysis = '(?:\s+[[](?<analysis>\S+)[]])?';
-        $parsed = $reference_genome  =~ qr{$organism [(] $strain $tversion [)] $analysis}smx;
+        $reference_genome  =~ qr{$organism [(] $strain $tversion [)] $analysis}smx;
         $organism = $LAST_PAREN_MATCH{'organism'};
         $strain = $LAST_PAREN_MATCH{'strain'};
         $tversion = $LAST_PAREN_MATCH{'tversion'};
