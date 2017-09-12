@@ -4,15 +4,15 @@ use Moose::Role;
 use Carp;
 use npg_tracking::util::abs_path qw(abs_path);
 
+Readonly::Scalar our $DEFAULT_ANALYSIS => q[tophat2];
 Readonly::Hash our %ANALYSES => ('tophat2' => { 'ext'  => 'bt2' },
-                                 'salmon'  => { 'ext'  => 'json' },
-                                 'default' => 'tophat2',);
+                                 'salmon'  => { 'ext'  => 'json' },);
 
 with qw/ npg_tracking::data::reference::find /;
 
 our $VERSION = '0';
 
-has 'analysis' => (default  => $ANALYSES{q{default}},
+has 'analysis' => (default  => $DEFAULT_ANALYSIS,
                    is       => 'ro',
                    required => 0,);
 
