@@ -5,7 +5,7 @@ package transcriptome;
 
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 15;
 use File::Basename;
 use File::Spec::Functions qw(catfile);
 use Test::Exception;
@@ -37,16 +37,21 @@ foreach my $spp (keys %builds){
         
         my $rel_dir1 = join q[/],$dir,$spp,'ensembl_75_transcriptome';
         my $rel_dir2 = join q[/],$dir,$spp,'ensembl_74_transcriptome';
+        my $rel_dir3 = join q[/],$dir,$spp,'ensembl_84_transcriptome';
 
-        foreach my $rel_dir ($rel_dir1,$rel_dir2){
+        foreach my $rel_dir ($rel_dir1,$rel_dir2,$rel_dir3){
         
           foreach my $build (@{ $builds{$spp} }){
             my $gtf_dir    = join q[/],$rel_dir,$build,'gtf'; 
             my $rnaseq_dir = join q[/],$rel_dir,$build,'RNA-SeQC';
             my $tophat_dir = join q[/],$rel_dir,$build,'tophat2';
+            my $salmon_dir = join q[/],$rel_dir,$build,'salmon';
+            my $fasta_dir  = join q[/],$rel_dir,$build,'fasta';
             make_path($gtf_dir,
                       $rnaseq_dir,
                       $tophat_dir,
+                      $salmon_dir,
+                      $fasta_dir,
                       {verbose => 0});
           }
         }
@@ -82,7 +87,19 @@ foreach my $v ('ensembl_74_transcriptome','ensembl_75_transcriptome'){
         push @files, join(q[/], $vdir,'RNA-SeQC',$v . '-1000Genomes_hs37d5.gtf');
         push @files, join(q[/], $vdir,'tophat2','1000Genomes_hs37d5.known.1.bt2');
         push @files, join(q[/], $vdir,'tophat2','1000Genomes_hs37d5.known.ver');
-        
+        push @files, join(q[/], $vdir,'salmon','versionInfo.json');
+        push @files, join(q[/], $vdir,'salmon','refInfo.json');
+        push @files, join(q[/], $vdir,'salmon','header.json');
+        push @files, join(q[/], $vdir,'fasta','1000Genomes_hs37d5.fa');
+}
+
+#make directory structure with empty files and funny business (multiple files, missing files, etc)
+foreach my $v ('ensembl_84_transcriptome'){
+        my $vdir = join(q[/], $dir, 'Mus_musculus',$v, 'GRCm38',);
+        #more than 1 gtf present
+        push @files, join(q[/], $vdir,'gtf',$v . '-GRCm38.gtf');
+        push @files, join(q[/], $vdir,'gtf', 'GRCm38_sans_mt.gtf');
+        #the rest of the instances are missing
 }
 
 foreach my $file (@files){
@@ -141,6 +158,44 @@ lives_and { is $test3->transcriptome_index_path, catfile($tmp_repos, q[transcrip
 
 my $prefix_path_74 = catfile($tmp_repos, q[transcriptomes/Homo_sapiens/ensembl_74_transcriptome/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known]);
 lives_and { is $test3->transcriptome_index_name, $prefix_path_74 } "Correctly found transcriptome version index name path and prefix ";
+
+my $test4 = npg_tracking::data::transcriptome->new (id_run => 12161, position => 1, tag_index => 1, repository => $tmp_repos, aligner => 'tophat2', analysis => 'salmon');
+lives_and { is $test4->transcriptome_index_path, catfile($tmp_repos, q[transcriptomes/Homo_sapiens/ensembl_74_transcriptome/1000Genomes_hs37d5/salmon])
+} "correct path for salmon indices found";
+
+lives_and { is $test4->transcriptome_index_name, undef
+} "ok - returns undef when looking for index name for salmon";
+
+my $test5 = npg_tracking::data::transcriptome->new (id_run => 12161, position => 1, tag_index => 1, repository => $tmp_repos);
+lives_and { is basename($test5->fasta_file), '1000Genomes_hs37d5.fa'
+} "transcriptome fasta file 1000Genomes_hs37d5.fa found where reference = Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)";
+
+
+##update sample xml so that Reference Genome has a transcriptome version : Mus_musculus (GRCm38 + ensembl_84_transcriptome)
+copy("$tmp_repos/$samples_dir/1807468.xml", "$tmp_repos/$samples_dir/1807468.xml.1") or carp "Copy failed: $!";
+my $cpy_fh = IO::File->new("<$tmp_repos/$samples_dir/1807468.xml.1") or carp "cannot open $repos/$samples_dir/1807468.xml.1";
+my $mm_ver_fh = IO::File->new(">$tmp_repos/$samples_dir/1807468.xml") or carp "cannot open $repos/$samples_dir/1807468.xml";
+while(<$cpy_fh>){
+    if (/Mus_musculus\s+(\S+)/){
+        print $mm_ver_fh " " x 6 . "<value>Mus_musculus (GRCm38 + ensembl_84_transcriptome)</value>\n";
+    }
+    else { print $mm_ver_fh $_ }
+}
+$mm_ver_fh->close;
+$cpy_fh->close;
+
+my $test6 = npg_tracking::data::transcriptome->new (id_run => 12071, position => 4, tag_index => 2, repository => $tmp_repos);
+throws_ok { $test6->gtf_file } qr/More than one gtf file/,
+'ok - croaks when more than 1 gtf file found - Mus_musculus (GRCm38 + ensembl_84_transcriptome)';
+
+my $prefix_path_84 = catfile($tmp_repos, q[transcriptomes/Mus_musculus/ensembl_84_transcriptome/GRCm38/tophat2/GRCm38.known]);
+my $re_no_idx_name = qr/^Directory.*exists.*index.*files.*not.*found.*$/msxi;
+my $empty_idx_name = $test6->transcriptome_index_name;
+lives_and { is $empty_idx_name, undef } "ok - returns undef for transcriptome_index_name if index files are not present - Mus_musculus (GRCm38 + ensembl_84_transcriptome)";
+my ($tmsg, $msg);
+$tmsg = $test6->messages()->mlist;
+foreach my $m (@{$tmsg}){ $msg = $m; last if ($msg =~ /$re_no_idx_name/); }
+like($msg, $re_no_idx_name, 'ok - message stored when index files not found');
 
 }
 

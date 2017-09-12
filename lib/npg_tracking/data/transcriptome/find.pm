@@ -2,12 +2,19 @@ package npg_tracking::data::transcriptome::find;
 
 use Moose::Role;
 use Carp;
-
 use npg_tracking::util::abs_path qw(abs_path);
+
+Readonly::Scalar our $DEFAULT_ANALYSIS => q[tophat2];
+Readonly::Hash our %ANALYSES => ('tophat2' => { 'ext'  => 'bt2' },
+                                 'salmon'  => { 'ext'  => 'json' },);
 
 with qw/ npg_tracking::data::reference::find /;
 
 our $VERSION = '0';
+
+has 'analysis' => (default  => $DEFAULT_ANALYSIS,
+                   is       => 'ro',
+                   required => 0,);
 
 has '_organism_dir' => ( isa        => q{Maybe[Str]},
                          is         => q{ro},
@@ -42,6 +49,30 @@ sub _build__version_dir {
   return;
 }
 
+has 'fasta_path' => (isa           => q{Maybe[Str]},
+                     is            => q{ro},
+                     lazy          => 1,
+                     builder       => q{_build_fasta_path},
+                     documentation => 'Path to transcriptome fasta folder',
+                    );
+
+sub _build_fasta_path {
+    my $self = shift;
+    return $self->_find_path('fasta');
+}
+
+has 'fasta_file' => (isa           => q{Maybe[Str]},
+                     is            => q{ro},
+                     lazy          => 1,
+                     builder       => q{_build_fasta_file},
+                     documentation => 'Full name of transcriptome fasta file',
+                    );
+
+sub _build_fasta_file {
+  my $self = shift;
+  return $self->_find_file('fasta', '{fa,fasta}');
+}
+
 has 'rnaseqc_gtf_path'  => ( isa           => q{Maybe[Str]},
                              is            => q{ro},
                              lazy_build    => 1,
@@ -49,10 +80,7 @@ has 'rnaseqc_gtf_path'  => ( isa           => q{Maybe[Str]},
 
 sub _build_rnaseqc_gtf_path {
   my $self = shift;
-  if ($self->_version_dir){
-    return abs_path($self->_version_dir . '/RNA-SeQC');
-  }
-  return;
+  return $self->_find_path('RNA-SeQC');
 }
 
 has 'rnaseqc_gtf_file' => ( isa           => q{Maybe[Str]},
@@ -62,21 +90,7 @@ has 'rnaseqc_gtf_file' => ( isa           => q{Maybe[Str]},
 
 sub _build_rnaseqc_gtf_file {
   my $self = shift;
-  my @gtf_files;
-  if ($self->rnaseqc_gtf_path) {
-    @gtf_files = glob $self->rnaseqc_gtf_path . '/*.gtf';
-  }
-  if (scalar @gtf_files > 1) {
-    croak 'More than 1 gtf file in ' . $self->rnaseqc_gtf_path;
-  }
-
-  if (scalar @gtf_files == 0) {
-    if ($self->_organism_dir && -d $self->_organism_dir) {
-      $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but GTF file not found');
-    }
-    return;
-  }
-  return $gtf_files[0];
+  return $self->_find_file('RNA-SeQC', 'gtf');
 }
 
 has 'gtf_path'     => ( isa           => q{Maybe[Str]},
@@ -86,11 +100,7 @@ has 'gtf_path'     => ( isa           => q{Maybe[Str]},
 
 sub _build_gtf_path {
   my $self = shift;
-  ## symbolic link to default resolved with abs_path
-  if ($self->_version_dir){
-    return abs_path($self->_version_dir . '/gtf');
-  }
-  return;
+  return $self->_find_path('gtf');
 }
 
 has 'gtf_file' => ( isa           => q{Maybe[Str]},
@@ -100,59 +110,84 @@ has 'gtf_file' => ( isa           => q{Maybe[Str]},
 
 sub _build_gtf_file {
   my $self = shift;
-  my @gtf_files;
-  if ($self->gtf_path) { @gtf_files = glob $self->gtf_path . '/*.gtf'; }
-  if (scalar @gtf_files > 1) { croak 'More than 1 gtf file in ' . $self->gtf_path; }
-
-  if (scalar @gtf_files == 0) {
-    if ($self->_organism_dir && -d $self->_organism_dir) {
-      $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but GTF file not found');
-    }
-    return;
-  }
-  return $gtf_files[0];
+  return $self->_find_file('gtf', 'gtf');
 }
 
-#transcriptomes/Homo_sapiens/ensembl_75_transcriptome/1000Genomes_hs37d5/tophat2/
+#transcriptomes/Homo_sapiens/ensembl_75_transcriptome/1000Genomes_hs37d5/{tophat2,salmon}/
 has 'transcriptome_index_path' => ( isa           => q{Maybe[Str]},
                                     is            => q{ro},
                                     lazy_build    => 1,
-                                    documentation => 'Path to the tophat2 (bowtie2) indices folder',
+                                    documentation => 'Path to the aligner indices subfolder',
                                   );
 
 sub _build_transcriptome_index_path {
   my $self = shift;
-  if ( $self->_version_dir){
-     return abs_path($self->_version_dir . '/tophat2');
-  }
-  return;
+  my $subfolder = $self->analysis;
+  return $self->_find_path($subfolder);
 }
 
 #e.g. 1000Genomes_hs37d5.known (from 1000Genomes_hs37d5.known.1.bt2, 1000Genomes_hs37d5.known.2.bt2 ...)
 has 'transcriptome_index_name' => ( isa           => q{Maybe[Str]},
                                     is            => q{ro},
                                     lazy_build    => 1,
-                                    documentation => 'Full path + prefix of files in the tophat2 (bowtie2) indices folder',
+                                    documentation => 'Full path + prefix of files in the aligner or other analysis indices folder',
                                    );
 
 sub _build_transcriptome_index_name {
   my $self = shift;
-  my @indices;
+  my (@indices, $index_ext);
+  $index_ext = $ANALYSES{$self->analysis}->{'ext'} // return;
   if ($self->transcriptome_index_path) {
-    @indices = glob $self->transcriptome_index_path . '/*.bt2';
+    @indices = glob $self->transcriptome_index_path . q[/*.] . $index_ext;
   }
-
   if (scalar @indices == 0){
     if ($self->_organism_dir && -d $self->_organism_dir) {
-      $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but GTF file not found');
+      $self->messages->push('Directory ' . $self->_organism_dir . ' exists, but index files not found (' . $self->analysis . ')');
     }
     return;
   }
+  return $self->_process_index_name($indices[0]);
+}
 
-  ##return up to prefix (remove everything after 'known')
-  my $index_prefix = $indices[0];
-  $index_prefix =~ s/known(\S+)$/known/smxi;
-  return $index_prefix;
+sub _find_path {
+    my ($self, $subfolder) = @_;
+    ## symbolic link to default resolved with abs_path
+    if ($self->_version_dir){
+        return abs_path($self->_version_dir . q[/] . $subfolder);
+    }
+    return;
+}
+
+sub _find_file {
+    my ($self, $subfolder, $file_type) = @_;
+    my $path = $self->_find_path($subfolder);
+    my @files;
+    if ($path) {
+        @files = glob $path . q[/*.] . $file_type;
+    }
+    if (scalar @files > 1) {
+        croak qq[More than one $file_type file in $path];
+    }
+    if (scalar @files == 0) {
+        if ($self->_organism_dir && -d $self->_organism_dir) {
+            $self->messages->push(q[Directory ] . $self->_organism_dir . q[ exists, but *.] . $file_type . q[ file(s) not found]);
+        }
+        return;
+    }
+    return $files[0];
+}
+
+sub _process_index_name {
+    my ($self, $index_name) = @_;
+    if ($self->analysis eq q[tophat2]) {
+        ## return up to prefix (remove everything after 'known')
+        $index_name =~ s/known(\S+)$/known/smxi;
+    } elsif ($self->analysis eq q[salmon]) {
+        ## nothing to do for salmon as it requires only the folder
+        ## name so transcriptome_index_path should be used instead
+        return;
+    }
+    return $index_name;
 }
 
 1;
@@ -172,11 +207,25 @@ npg_tracking::data::transcriptome::find
 
 A Moose role for finding the location of transcriptome files.
 
-These are the gtf file and the tophat2 index file prefix (including paths).
+These include files such as gtf or transcriptome fasta and the index file (prefix or path)
 
-Documentation on GTF (GFF version2) format http://www.ensembl.org/info/website/upload/gff.html
+of a number of aligners and other analysis tools. Documentation on GTF (GFF version2) format
+
+http://www.ensembl.org/info/website/upload/gff.html
 
 =head1 SUBROUTINES/METHODS
+
+=head2 analysis
+
+ An optional attribute used to find the path and files of transcriptome indices
+
+=head2 fasta_path
+
+ Path to the transcriptome fasta folder
+
+=head2 fasta_file
+
+Full path to the transcriptome file in fasta format
 
 =head2 gtf_path
  
@@ -196,11 +245,11 @@ Documentation on GTF (GFF version2) format http://www.ensembl.org/info/website/u
 
 =head2 transcriptome_index_name
 
- Full path plus prefix of files in the tophat2 (bowtie2) indices folder
+ Full path plus prefix of files in the aligner or other analysis indices folder
 
 =head2 transcriptome_index_path
 
- Path to the tophat2 (bowtie2) indices folder
+ Path to the aligner or other analysis indices folder
 
 =head1 DIAGNOSTICS
 
@@ -222,7 +271,7 @@ Documentation on GTF (GFF version2) format http://www.ensembl.org/info/website/u
 
 =head1 AUTHOR
 
-Jillian Durham
+Jillian Durham and Ruben Bautista
 
 =head1 LICENSE AND COPYRIGHT
 

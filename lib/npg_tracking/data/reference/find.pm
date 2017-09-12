@@ -364,22 +364,35 @@ sub lims2ref {
 =head2 parse_reference_genome
 
 Parses LIMs notation for reference genome, returns a list containing
-an organism, strain (genome version) and, optionally,
-a transcriptome version or an empty list.
+an organism, strain (genome version) and, optionally, a transcriptome
+version and/or a word indicating the type of analysis to be run.
 
 =cut
 sub parse_reference_genome {
-  my ($self, $reference_genome) = @_;
-  $reference_genome ||= $self->reference_genome;
-  if ($reference_genome) {
-     ##also allows for transcriptome version e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75)'
-     my @a = $reference_genome  =~/  (\S+) \s+ [(]  (\S+) (?: \s+ \+ \s+ (\S+) )? [)]  /smx;
-     if (scalar @a >= 2 && $a[0] && $a[1]) {
-        if (! $a[2]) { $#a = 1; }
-        return @a;
-     }
-  }
-  return;
+    my ($self, $reference_genome) = @_;
+    $reference_genome ||= $self->reference_genome;
+    if ($reference_genome) {
+        my ($organism, $strain, $tversion, $analysis, @array);
+        ## allows for transcriptome version and analysis e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75) [star]'
+        $organism = '(?<organism>\S+)\s+';
+        $strain = '(?<strain>\S+)';
+        $tversion = '(?:\s+\+\s+(?<tversion>\S+))?';
+        $analysis = '(?:\s+[[](?<analysis>\S+)[]])?';
+        $reference_genome  =~ qr{$organism [(] $strain $tversion [)] $analysis}smx;
+        $organism = $LAST_PAREN_MATCH{'organism'};
+        $strain = $LAST_PAREN_MATCH{'strain'};
+        $tversion = $LAST_PAREN_MATCH{'tversion'};
+        $analysis = $LAST_PAREN_MATCH{'analysis'};
+        if ($organism && $strain) {
+            if ($tversion || $analysis) {
+                @array = ($organism, $strain, $tversion, $analysis);
+            } else {
+                @array = ($organism, $strain);
+            }
+            return @array;
+        }
+    }
+    return;
 }
 
 sub _preset_ref2ref_path {
