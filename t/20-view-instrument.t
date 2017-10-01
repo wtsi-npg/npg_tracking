@@ -134,9 +134,8 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 
   like($str, qr{image/png.*PNG}smx, 'instrument key graphical read');
   my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'key.png'));
-  my @lines = split "\n", $str;
-  shift @lines; shift @lines; shift @lines;
-  my $rendered = GD::Image->new(join "\n", @lines);
+  $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
+  my $rendered = GD::Image->new($str);
   ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'legend image'); 
 }
 
@@ -150,9 +149,8 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 
   like($str, qr{image/png.*PNG}smx, 'HiSeq instrument graphical read');
   my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'HS3.png'));
-  my @lines = split "\n", $str;
-  shift @lines; shift @lines; shift @lines;
-  my $rendered = GD::Image->new(join "\n", @lines);
+  $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
+  my $rendered = GD::Image->new($str);
   ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle HiSeq image'); 
 }
 
