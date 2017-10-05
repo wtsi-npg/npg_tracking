@@ -5,6 +5,9 @@ LIST OF CHANGES
    and transcriptome version, if present
  - refactor transcriptome::find to improve code reuse and add
    new find file/path/index attributes and functionalities
+ - when inflating rpt key, cast id_run, position and tag index
+   (if any) values to integers and raise an error if conversion
+   gives a warning
 
 release 86.6
  - unused db tables, which were renamed in the previous release,
