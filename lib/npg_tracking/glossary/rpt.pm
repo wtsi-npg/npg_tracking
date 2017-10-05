@@ -65,12 +65,23 @@ sub inflate_rpt {
   foreach my $key (qw(id_run position tag_index)) {
     my $v = shift @values;
     if (defined $v) {
-      $map->{$key} = $v;
+
+      # The value is a string at this point, which does not cause any
+      # visible problems downstream. However, if the resulting hash
+      # is used in a database query, the query will run twice slower
+      # (tested on MySQL v5.7) since DBIx does not cast the values
+      # before sending them to a database. We will convert to int here.
+      {
+        # We want an error if casting did not go well.
+        # The scope for this fatal warning is constrained.
+        use warnings FATAL => qw(numeric);
+        $map->{$key} = int $v;
+      }
     }
   }
 
   if (!$map->{'id_run'} || !$map->{'position'}) {
-    croak 'Both id_run and position should be available';
+    croak 'Both id_run and position should de defined non-zero values';
   }
 
   return $map;
