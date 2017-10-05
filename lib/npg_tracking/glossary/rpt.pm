@@ -81,7 +81,7 @@ sub inflate_rpt {
   }
 
   if (!$map->{'id_run'} || !$map->{'position'}) {
-    croak 'Both id_run and position should de defined non-zero values';
+    croak 'Both id_run and position should be defined non-zero values';
   }
 
   return $map;

@@ -16,7 +16,7 @@ subtest 'rpt string inflate' => sub {
     qr/rpt string should not contain \';\'/,
     'rpt list delimeter present - error';
   throws_ok {$package->inflate_rpt('456')}
-    qr/Both id_run and position should de defined non-zero values/,
+    qr/Both id_run and position should be defined non-zero values/,
     'no position - error';
   throws_ok {$package->inflate_rpt(':456')}
     qr/Argument \"\" isn't numeric/,
@@ -25,10 +25,10 @@ subtest 'rpt string inflate' => sub {
     qr/Argument \"\" isn't numeric/,
     'no position - error';
   throws_ok {$package->inflate_rpt('2:0')}
-    qr/Both id_run and position should de defined non-zero values/,
+    qr/Both id_run and position should be defined non-zero values/,
     'position sero - error';
   throws_ok {$package->inflate_rpt('0:2:4')}
-    qr/Both id_run and position should de defined non-zero values/,
+    qr/Both id_run and position should be defined non-zero values/,
     'run zero - error';  
   is_deeply($package->inflate_rpt('2:11'),
     {id_run=>2, position=>11}, 'correct output');
