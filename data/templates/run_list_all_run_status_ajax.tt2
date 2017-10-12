@@ -1,9 +1,0 @@
-<!--begin $Id: run_list_all_run_status_ajax.tt2 2662 2008-08-06 12:23:37Z rmp $-->
-<a href="javascript:void(selectEntities('run'));">select all</a> | <a href="javascript:void(toggleEntities('run'));">toggle all</a>
-<br />
-<select name="id_run_status_dict" id="id_run_status_dict">[% FOREACH rsd = model.current_run_status.run_status_dict.run_status_dicts %]
- <option value="[% rsd.id_run_status_dict %]">[% rsd.description %]</option>[% END %]
-</select>&nbsp;&nbsp;<label for="update_pairs">Update pairs</label><input type="checkbox" name="update_pair" value="1"/><br />
-<input type="hidden" name="type" value="group" />
-<input type="submit" value="update" />
-<!--end $Id: run_list_all_run_status_ajax.tt2 2662 2008-08-06 12:23:37Z rmp $-->

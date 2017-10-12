@@ -4,7 +4,7 @@ use t::util;
 use npg::model::instrument;
 use npg::model::user;
 use npg::model::annotation;
-use Test::More tests => 124;
+use Test::More tests => 105;
 use Test::Exception;
 
 use_ok('npg::model::run');
@@ -27,24 +27,6 @@ is((scalar @fields), 13, '$model->fields() size');
 
 isa_ok( $model->potentially_stuck_runs(), q{HASH}, q{potentially_stuck_runs} );
 
-my ($whole_v, $point_v) = $model->_parse_version('2.01');
-is($whole_v, 2, 'correct whole version number for 2.01');
-is($point_v, 1, 'correct point version number for 2.01');
-
-($whole_v, $point_v) = $model->_parse_version('2');
-is($whole_v, 2, 'correct whole version number for 2');
-is($point_v, 0, 'correct point version number for 2');
-
-($whole_v, $point_v) = $model->_parse_version('0.01');
-is($whole_v, 0, 'correct whole version number for 0.01');
-is($point_v, 1, 'correct point version number for 0.01');
-
-throws_ok {($whole_v, $point_v) = $model->_parse_version('dfasdf');} qr{Given version number is not valid:}, 'no valid version given';
-
-is($model->_cmp_version('2.01', '2.8'), -1, 'version 2.01 less than 2.8');
-is($model->_cmp_version('2.10', '2.8'), 1, 'version 2.10 greater than 2.8');
-is($model->_cmp_version('2.8', '2.8'), 0, 'version 2.8 equals to 2.8');
-
 my $runs_on_batch = $model->runs_on_batch();
 isa_ok($runs_on_batch, 'ARRAY', '$model->runs_on_batch()');
 is(scalar@{$runs_on_batch}, 0, '$model->runs_on_batch() is empty');
@@ -58,15 +40,8 @@ isa_ok($runs, 'ARRAY', '$model->runs()');
 my $run = $runs->[-1];
 isa_ok($run, 'npg::model::run', 'last of $model->runs()');
 
-
 my $name = $model;
-is($name->name(), 'UNKNOWN_00000', 'unknown name if no instrument name and no id_run - default');
-
-$model->instrument_format->model('HK');
 is($name->name(), 'UNKNOWN_0000', 'unknown name if no instrument name and no id_run - HK model');
-
-$model->{scs28} = 1;
-is($name->name(), 'UNKNOWN_00000', 'unknown name if no instrument name and no id_run - HK model, scs28 mod');
 
 
 is($model->attach_annotation('test annotation'), 1, '$model->attach_annotation() with annotation, but no $model->id_run()');
@@ -81,34 +56,25 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
    my $run2 = $runs->[1];
    my $got = $run2->id_run;
    is($got, 9950, 'correct id_run for the 2nd run');
-   ok(!$run2->scs28(), "run $got not with scs 2.8 or above");
-   is($run2->name(), 'HS1_09950', "correct run name for run $got");
+   is($run2->name(), 'HS1_9950', "correct run name for run $got");
    
    $run2 = $runs->[9];
    $got = $run2->id_run;
    is($got, 15, 'correct id_run for the 10th run');
-   ok($run2->scs28(), "run $got with scs 2.8 or above");
-   is($run2->name(), 'IL10_00015', "correct run name for run $got");
+   is($run2->name(), 'IL10_0015', "correct run name for run $got");
 }
 
 {
   my $runs_on_batch = $run->runs_on_batch();
   isnt($runs_on_batch->[0], undef, '$run->runs_on_batch() has found some runs');
 
-  my $loader_info = $run->loader_info();
-  isa_ok($loader_info, 'HASH', '$run->loader_info()');
-  is($run->loader_info(), $loader_info, 'loader_info cached');
-  is($loader_info->{loader}, 'joe_admin', 'loader name ok');
-  is($loader_info->{date}, '2007-06-05', 'loading date ok');
   my $instrument = $run->instrument();
   isa_ok($instrument, 'npg::model::instrument', '$run->instrument()');
-  $run->loader_info(1)->{date} = '2010-05-28 10:20:00';
-  ok($run->scs28, 'this run is on instrument with scs 2.8');
 
   my $name = $run->name();
-  is($name, 'IL1_00001', 'name generated ok from instrument name and id_run');
+  is($name, 'IL1_0001', 'name generated ok from instrument name and id_run');
   my $run_folder = $run->run_folder();
-  is($run_folder, '070605_IL1_00001', 'run_folder generated ok from loading date, instrument name and id_run');
+  is($run_folder, '070605_IL1_0001', 'run_folder generated ok from loading date, instrument name and id_run');
   my $flowcell_id = $run->flowcell_id();
   is($flowcell_id, undef, 'flowcell_id is not defined');
   my $tags = $run->tags();
@@ -415,7 +381,7 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a ne
            });
   lives_ok { $model->create(); } 'created run ok - fc_slotA tag passed';
   ok($model->has_tag_with_value('fc_slotA'), 'run has fc_slotA tag');
-  cmp_ok($model->run_folder, 'eq', DateTime->now()->strftime(q(%y%m%d)).'_HS3_09952_A', 'HiSeq run folder');
+  cmp_ok($model->run_folder, 'eq', DateTime->now()->strftime(q(%y%m%d)).'_HS3_9952_A', 'HiSeq run folder');
 }
 
 {
@@ -435,7 +401,7 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a ne
            });
   lives_ok { $model->create(); } 'created run ok - fc_slotB tag passed';
   ok($model->has_tag_with_value('fc_slotB'), 'run has fc_slotB tag');
-  cmp_ok($model->run_folder, 'eq', DateTime->now()->strftime(q(%y%m%d)).'_HS3_09953_B_20353ABXX', 'HiSeq run folder');
+  cmp_ok($model->run_folder, 'eq', DateTime->now()->strftime(q(%y%m%d)).'_HS3_9953_B_20353ABXX', 'HiSeq run folder');
 }
 
 {

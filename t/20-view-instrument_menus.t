@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 5;
 use t::util;
 use t::request;
 
@@ -49,15 +49,6 @@ my $util = t::util->new({fixtures => 1,});
               }); 
   ok($util->test_rendered($view->render(), 't/data/rendered/menus/instruments_make_change_mods.html'),
     'menu instruments>make_change>mods');
-
-  my $str = t::request->new({
-           PATH_INFO      => '/instrument/edit_statuses',
-           REQUEST_METHOD => 'GET',
-           username       => 'joe_loader',
-           util           => $util,
-          });
-  ok($util->test_rendered($str,  't/data/rendered/menus/instruments_make_change_statuses.html'),
-    'menu instruments>make_change>edit_statuses');
 }
 
 1;

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<run_status_dict id_run_status_dict="2" description="run in progress"><runs>
-<run id_run="16" batch_id="0" id_instrument="14" priority="1" actual_cycle_count="0" expected_cycle_count="35" is_paired="1" id_run_pair="" team="RAD" name="IL11_0016" id_run_status="19" date="2007-06-05 12:33:32" id_run_status_dict="2" id_user="1" username="joe_admin" description="run in progress" loader="" loading_date=""/>
-<run id_run="15" batch_id="0" id_instrument="13" priority="1" actual_cycle_count="0" expected_cycle_count="35" is_paired="1" id_run_pair="14" team="RAD" name="IL10_00015" id_run_status="18" date="2007-06-05 12:32:31" id_run_status_dict="2" id_user="1" username="joe_admin" description="run in progress" loader="" loading_date=""/>
-<run id_run="14" batch_id="0" id_instrument="13" priority="1" actual_cycle_count="0" expected_cycle_count="35" is_paired="1" id_run_pair="15" team="RAD" name="IL10_00014" id_run_status="17" date="2007-06-05 12:32:30" id_run_status_dict="2" id_user="1" username="joe_admin" description="run in progress" loader="" loading_date=""/>
-<run id_run="13" batch_id="0" id_instrument="4" priority="1" actual_cycle_count="0" expected_cycle_count="35" is_paired="1" id_run_pair="" team="RAD" name="IL2_0013" id_run_status="16" date="2007-06-05 12:32:29" id_run_status_dict="2" id_user="1" username="joe_admin" description="run in progress" loader="" loading_date=""/>
-</runs></run_status_dict>

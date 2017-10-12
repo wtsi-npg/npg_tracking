@@ -13,7 +13,9 @@
    END;  
 -%]
 </current_runs>[% END %]
-[% PROCESS run_list_xml_frag.tt2 %]
+<runs>[% FOREACH run = model.runs %]
+[% PROCESS run_list_row_xml.tt2 %]
+[% END %]</runs>
 <current_instrument_status id_instrument_status="[% model.current_instrument_status.id_instrument_status %]" id_instrument="[% model.current_instrument_status.id_instrument %]" date="[% model.current_instrument_status.date %]" id_instrument_status_dict="[% model.current_instrument_status.id_instrument_status_dict %]" id_user="[% model.current_instrument_status.id_user %]" username="[% model.current_instrument_status.user.username %]" iscurrent="[% model.current_instrument_status.iscurrent %]" description="[% model.current_instrument_status.instrument_status_dict.description %]" comment="[% model.current_instrument_status.comment %]" />
 <instrument_statuses>[% FOREACH instrument_status = model.instrument_statuses %]
  <instrument_status id_instrument_status="[% instrument_status.id_instrument_status %]" id_instrument="[% instrument_status.id_instrument %]" date="[% instrument_status.date %]" id_instrument_status_dict="[% instrument_status.id_instrument_status_dict %]" id_user="[% instrument_status.id_user %]" user="[% instrument_status.user.username %]" iscurrent="[% instrument_status.iscurrent %]" description="[% instrument_status.instrument_status_dict.description %]" comment="[% instrument_status.comment %]" />[% END %]

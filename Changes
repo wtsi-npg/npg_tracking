@@ -8,6 +8,14 @@ LIST OF CHANGES
  - when inflating rpt key, cast id_run, position and tag index
    (if any) values to integers and raise an error if conversion
    gives a warning
+ - unused tracking server features removed:
+     simultaneous status update for multiple runs;
+     simultaneous status update for multiple instruments;
+     XML feeds for individual run statuses with listing of
+       all runs at this status;
+     flowcell verification;
+     complex computation of width of padding id_run in run name
+       for display purposes 
 
 release 86.6
  - unused db tables, which were renamed in the previous release,
