@@ -53,15 +53,11 @@ data/templates/instrument_list_cluster_station.tt2
 data/templates/instrument_list_graphical.tt2
 data/templates/instrument_list_textual.tt2
 data/templates/instrument_list_xml.tt2
-data/templates/instrument_make_change_menu.tt2
 data/templates/instrument_mod_add_ajax.tt2
 data/templates/instrument_mod_create.tt2
-data/templates/instrument_mod_list.tt2
 data/templates/instrument_mod_list_xml.tt2
 data/templates/instrument_mod_read_xml.tt2
-data/templates/instrument_mod_table.tt2
 data/templates/instrument_mod_update.tt2
-data/templates/instrument_mod_update_mods.tt2
 data/templates/instrument_read.tt2
 data/templates/instrument_read_ajax.tt2
 data/templates/instrument_read_runs.tt2
@@ -838,7 +834,6 @@ t/data/rendered/20-view-administration_list_admin.html
 t/data/rendered/20-view-administration_list_engineers.html
 t/data/rendered/20-view-administration_list_public.html
 t/data/rendered/20-view-instrument_mod_add_ajax.html
-t/data/rendered/20-view-instrument_mod_batch_update.html
 t/data/rendered/20-view-instrument_status-1.html
 t/data/rendered/20-view-instrument_status-2.html
 t/data/rendered/20-view-instrument_status-cis3.html
@@ -867,12 +862,9 @@ t/data/rendered/instrument.xml
 t/data/rendered/instrument/11.html
 t/data/rendered/instrument/11;read_runs_ajax
 t/data/rendered/instrument/13.xml
-t/data/rendered/instrument_mod_list_engineer.html
-t/data/rendered/instrument_mod_list_public.html
 t/data/rendered/instrument_status_annotation;add-ajax.html
 t/data/rendered/map.html
 t/data/rendered/menus/instruments_formats.html
-t/data/rendered/menus/instruments_make_change_mods.html
 t/data/rendered/menus/instruments_status_graphical.html
 t/data/rendered/menus/instruments_status_textual.html
 t/data/rendered/run.html
