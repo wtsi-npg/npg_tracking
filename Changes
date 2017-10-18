@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - stop building on Travis under Perl 5.16,
+   see https://rt.cpan.org/Public/Bug/Display.html?id=123310
  - reference find role: when parsing a genome reference string 
    return the analysis, along with the organism, strain
    and transcriptome version, if present

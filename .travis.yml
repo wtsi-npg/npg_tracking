@@ -5,7 +5,6 @@ addons:
     - libgd2-xpm-dev
 language: perl
 perl:
-  - "5.16"
   - "5.22-shrplib"
 dist:
   - precise
@@ -36,7 +35,7 @@ deploy:
     - $SHA256_FILE
   skip_cleanup: true
   on:
-    perl: 5.16
+    perl: 5.22-shrplib
     tags: true
     all_branches: true
 
