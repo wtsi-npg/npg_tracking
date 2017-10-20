@@ -8,6 +8,7 @@ extends 'npg_tracking::data::reference';
 with    'npg_tracking::data::transcriptome::find';
 
 __PACKAGE__->meta->make_immutable;
+
 no Moose;
 
 1;

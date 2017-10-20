@@ -1,5 +1,17 @@
 LIST OF CHANGES
 
+release 86.7
+ - stop building on Travis under Perl 5.16,
+   see https://rt.cpan.org/Public/Bug/Display.html?id=123310
+ - reference find role: when parsing a genome reference string 
+   return the analysis, along with the organism, strain
+   and transcriptome version, if present
+ - refactor transcriptome::find to improve code reuse and add
+   new find file/path/index attributes and functionalities
+ - when inflating rpt key, cast id_run, position and tag index
+   (if any) values to integers and raise an error if conversion
+   gives a warning
+
 release 86.6
  - unused db tables, which were renamed in the previous release,
      are dropped; exclusions in teh DBIx class loader script removed
