@@ -1,12 +1,6 @@
 [% labels    = ['current status', 'formats'] -%]
 [% addresses = ['instrument/graphical', 'instrument_format'] -%]
 [% counts    = [0, 2] -%]
-[% IF requestor.is_member_of('engineers') || requestor.is_member_of('loaders') || requestor.is_member_of('annotators');
-     labels.push( 'make batch change');
-     addresses.push( 'instrument/edit_statuses');
-     counts.push(1);
-   END
--%]
 <p class="npgmenu1">
 <font class="npgmenu1-highlighted">Instruments:</font>
 [% FOREACH count IN counts -%]

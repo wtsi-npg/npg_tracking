@@ -1,20 +1,15 @@
-#########
-# Author:        ajb
-# Created:       2007-03-27
-#
 package npg::view::instrument_mod;
+
 use base qw(npg::view);
 use strict;
 use warnings;
 use Carp;
 use English qw(-no_match_vars);
+
 use npg::model::instrument_mod;
 use npg::model::instrument_mod_dict;
-use Readonly;
 
 our $VERSION = '0';
-
-Readonly::Scalar our $LIMIT_ATOM_ENTRIES => 40;
 
 sub authorised {
   my $self   = shift;
@@ -66,66 +61,6 @@ sub update {
   return $self->SUPER::update();
 }
 
-sub update_mods {
-  my $self = shift;
-  my $util = $self->util();
-  my $cgi = $util->cgi();
-  $cgi->param('remove',1);
-  my $model = $self->model();
-  my @id_instruments = $cgi->param('id_instrument');
-  my $iscurrent = $cgi->param('iscurrent');
-  my $id_instrument_mod_dict = $cgi->param('id_instrument_mod_dict');
-  my $id_user = $util->requestor->id_user();
-  my $tr_state = $util->transactions();
-  $util->transactions(0);
-  my $date = $model->dbh_datetime();
-
-  eval {
-    my $imd = npg::model::instrument_mod_dict->new({util => $util, id_instrument_mod_dict => $id_instrument_mod_dict});
-    my $im_description = $imd->description();
-    foreach my $id_instrument (@id_instruments) {
-      my $ins = npg::model::instrument->new({util => $util, id_instrument => $id_instrument});
-      my $mods = $ins->instrument_mods();
-      foreach my $mod (@{$mods}) {
-        if ($mod->instrument_mod_dict->description() eq $im_description && $mod->iscurrent()) {
-          $mod->iscurrent(0);
-          $mod->date_removed($date);
-          $mod->update();
-          last;
-        }
-      }
-      my $new_mod = npg::model::instrument_mod->new({
-                 util => $util,
-                 id_instrument => $id_instrument,
-                 id_instrument_mod_dict => $id_instrument_mod_dict,
-                 id_user    => $id_user,
-                 date_added => $date,
-                 iscurrent  => $iscurrent,
-                });
-      $new_mod->create();
-    }
-    1;
-
-  } or do {
-    $util->transactions($tr_state);
-    $util->dbh->rollback();
-    croak $EVAL_ERROR;
-  };
-
-  $util->transactions($tr_state);
-
-  eval {
-    $tr_state and $util->dbh->commit();
-    1;
-
-  } or do {
-    $util->dbh->rollback();
-    croak $EVAL_ERROR;
-  };
-
-  return 1;
-}
-
 1;
 
 __END__
@@ -149,8 +84,6 @@ npg::view::instrument_mod - view handling for instrument_mods
 =head2 create - from CGI inputs, create a mod entry for the instrument
 
 =head2 update - set a mod entry to removed and non-current
-
-=head2 update_mods - batch update instrument mods. Handles making the existing mod of that type which is current non-current, and then creates new mod
 
 =head1 DIAGNOSTICS
 
@@ -176,8 +109,6 @@ npg::view::instrument_mod - view handling for instrument_mods
 
 =item npg::model::instrument_mod_dict
 
-=item Readonly
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -190,7 +121,7 @@ Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Andy Brown
+Copyright (C) 2017 GRL
 
 This file is part of NPG.
 

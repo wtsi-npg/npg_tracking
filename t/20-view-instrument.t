@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 17;
 use Test::Exception;
 use t::util;
 use t::request;
@@ -87,30 +87,6 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
                  },
           });
   ok($util->test_rendered($str, 't/data/rendered/instrument/13.xml'), 'read_xml renders ok');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'POST',
-           PATH_INFO      => '/instrument/group;update_statuses',
-           username       => 'public',
-           util           => $util,
-          });
-
-  like($str, qr/not\ authorised/,
-    'public not authorised for group status update');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'POST',
-           PATH_INFO      => '/instrument/group;update_statuses',
-           username       => 'joe_engineer',
-           util           => $util,
-          });
-
-  unlike($str, qr/not\ authorised/, 'engineer authorised for group status update');
-  like($str, qr/no\ comment\ given/mix, 'no-comment warning');
 }
 
 {

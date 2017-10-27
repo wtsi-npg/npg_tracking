@@ -91,7 +91,7 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 
 <div id="team_container" class="rfloat team-[% USE String(model.team); String.lower %]">
 <p class="team_name">team '[% model.team %]'</p>
-<div class="roundborder">[% PROCESS run_verified.tt2 %]</div>
+<div class="roundborder">Loaded by [% model.loader_info.loader %]</div>
 </div>
 <br style="clear:right" />
 

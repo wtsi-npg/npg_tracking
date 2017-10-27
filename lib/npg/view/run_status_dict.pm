@@ -1,13 +1,8 @@
-#########
-# Author:        rmp
-# Created:       2007-03-28
-#
 package npg::view::run_status_dict;
+
 use base qw(npg::view);
 use strict;
 use warnings;
-use Carp;
-use English qw(-no_match_vars);
 
 our $VERSION = '0';
 
@@ -24,42 +19,6 @@ sub new {
   }
 
   return $self;
-}
-
-sub render {
-  my ($self, @args) = @_;
-  my $aspect = $self->aspect() || q();
-
-  if($aspect eq 'read_xml') {
-    $self->read_xml();
-    return q[];
-  }
-
-  return $self->SUPER::render(@args);
-}
-
-sub read_xml {
-  my $self  = shift;
-  my $model = $self->model();
-
-  $self->read();
-
-  print "Content-type: text/xml\n\n" or croak $OS_ERROR;
-
-  $self->process_template('run_status_dict_read_header_xml.tt2');
-
-  for my $row (@{$model->runs()}) {
-    $self->process_template('run_list_row_xml.tt2', {run=>$row});
-  }
-
-  $self->process_template('run_status_dict_read_footer_xml.tt2');
-
-  #########
-  # flush and close
-  #
-  $self->output_finished(1);
-
-  return 1;
 }
 
 1;
@@ -80,10 +39,6 @@ npg::view::run_status_dict - view handling for run_status_dicts
 
 =head2 new - extended support for loading npg::model::run_status_dicts by description as well as id
 
-=head2 render - header handling of read_xml response
-
-=head2 read_xml - streamed handling of read_xml response
-
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -100,10 +55,6 @@ npg::view::run_status_dict - view handling for run_status_dicts
 
 =item warnings
 
-=item Carp
-
-=item English
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -116,7 +67,7 @@ Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2017 GRL
 
 This file is part of NPG.
 
