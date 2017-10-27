@@ -38,8 +38,6 @@
 END -%]
 <tr><th>Latest annotation</th><td>[% model.latest_annotation.comment %]&nbsp;</td></tr>
 <tr><th>Annotated by</th><td><a href="https://helix.wtgc.org/people?uid=[% annotated_by %]">[% view.realname(annotated_by) %]</a>&nbsp;</td></tr>
-<tr><th>90 day uptime</th><td>[% SET value = current_status.instrument_percentage_uptimes.0 %][% IF value < 50 %]<font color="red">[% value %]</font>[% ELSE %][% value %][% END %]%</td></tr>
- <tr><th>30 day uptime</th><td>[% SET value = current_status.instrument_percentage_uptimes.1 %][% IF value < 50 %]<span style="color: #FF0000">[% value %]</span>[% ELSE %][% value %][% END %]%</td></tr>
 </table>
 </div>
 
