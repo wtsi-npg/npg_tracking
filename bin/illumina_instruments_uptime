@@ -79,6 +79,30 @@ sub _compute {
   return;
 }
 
+sub _end_of_down_time {
+  my ($i, $head, $rows) = @_;
+
+  my $skip = 0;
+  my $finish;
+  my $j = $i + 1;
+  my $next = ($j != scalar @{$rows}) ? $rows->[$j] : undef;
+
+  if ($next && $next->{'name'} eq $head->{'name'}) {
+    $skip = 1;
+    if ($next->{'description'} eq 'wash required') {
+      $finish = $next->{'date'};
+    } elsif ($next->{'description'} eq 'down for repair') {
+      (my $skip1, $finish) = _end_of_down_time($j, $head, $rows);
+      $skip += $skip1;
+    } else {
+      croak sprintf 'Wash required status is expected for %s, status id %i',
+        $next->{'name'}, $next->{'id_instrument_status'};
+    }
+  }
+
+  return ($skip, $finish);
+}
+
 sub _uptime {
   my ($down_time, $all_time) = @_;
   
@@ -160,17 +184,10 @@ while ($i < $num_statuses) {
     # One of down statuses.
     # Move to the end of this down time or, if it's the last status
     # for the instrument, use current time.
-    my $j = $i + 1;
-    my $next = ($j != $num_statuses) ? $rows->[$j] : undef;
     my $start  = $row->{'date'};
-    my $finish = $now;
-    if ($next && $next->{'name'} eq $head->{'name'}) {
-      $i = $j; # Skip over the next row.
-      if ($next->{'description'} ne 'wash required') {
-        croak 'Wash required status is expected';
-      }
-      $finish = $next->{'date'};
-    }
+    my ($skip, $finish) = _end_of_down_time($i, $head, $rows);
+    $i += $skip;
+    $finish ||= $now;
     _compute($head, $start, $finish);
   }
 
