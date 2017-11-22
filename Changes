@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - remove redundant script for reporting sequencing failures to RT
+
 release 86.7
  - stop building on Travis under Perl 5.16,
    see https://rt.cpan.org/Public/Bug/Display.html?id=123310
