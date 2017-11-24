@@ -1,8 +1,0 @@
-<!--begin $Id: run_update_statuses.tt2 2662 2008-08-06 12:23:37Z rmp $-->
-Updated statuses ok.
-Click <a href="[% SCRIPT_NAME %]/">here</a> to continue.
-
-<script type="text/javascript">
- document.location.href='[% SCRIPT_NAME %]/';
-</script>
-<!--end $Id: run_update_statuses.tt2 2662 2008-08-06 12:23:37Z rmp $-->

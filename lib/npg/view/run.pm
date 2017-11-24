@@ -360,11 +360,6 @@ sub update_tags {
   return 1;
 }
 
-sub list_all_run_status_ajax {
-  my $self = shift;
-  return 1;
-}
-
 sub update {
   my ($self, @args) = @_;
   my $util          = $self->util();
@@ -383,54 +378,6 @@ sub update {
   }
 
   return $self->SUPER::update(@args);
-}
-
-sub update_statuses {
-  my $self  = shift;
-  my $model = $self->model();
-  my $util  = $self->util();
-  my $cgi   = $util->cgi();
-
-  if($cgi->param('type') eq 'group') {
-    my @id_runs  = $cgi->param('id_runs');
-    my $irsd     = $cgi->param('id_run_status_dict');
-    my $id_user  = $util->requestor->id_user();
-    my $tr_state = $util->transactions();
-
-    eval {
-      for my $id_run (@id_runs) {
-        my $run_status = npg::model::run_status->new({
-                  util               => $util,
-                  id_run             => $id_run,
-                  id_run_status_dict => $irsd,
-                  id_user            => $id_user,
-                 });
-        $run_status->create();
-      }
-      1;
-
-    } or do {
-      $util->transactions($tr_state);
-      $util->dbh->rollback();
-      croak $EVAL_ERROR;
-    };
-
-    $util->transactions($tr_state);
-
-    eval {
-      $tr_state and $util->dbh->commit();
-      1;
-
-    } or do {
-      $util->dbh->rollback();
-      croak $EVAL_ERROR;
-    };
-
-  } else {
-    croak 'You have not provided a group type of status to update';
-  }
-
-  return 1;
 }
 
 sub list_stuck_runs {
@@ -476,10 +423,6 @@ npg::view::run - view handling for runs
 
 =head2 update_tags - handles incoming request to add/remove tags for the run. Wraps all in a single
        transaction so that all tags are done, or none at all
-
-=head2 list_all_run_status_ajax - creates an AJAX form for batch updating statuses on list runs
-
-=head2 update_statuses - handling for batch updating statuses
 
 =head2 update - handling for tile-layout updates
 
@@ -529,7 +472,7 @@ Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2017 GRL
 
 This file is part of NPG.
 

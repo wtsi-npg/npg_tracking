@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - remove redundant script for reporting sequencing failures to RT
+
 release 86.7
  - stop building on Travis under Perl 5.16,
    see https://rt.cpan.org/Public/Bug/Display.html?id=123310
@@ -11,6 +13,15 @@ release 86.7
  - when inflating rpt key, cast id_run, position and tag index
    (if any) values to integers and raise an error if conversion
    gives a warning
+ - unused tracking server features removed:
+     simultaneous status update for multiple runs;
+     simultaneous status update for multiple instruments;
+     simultaneous mod update for multiple instruments;
+     XML feeds for individual run statuses with listing of
+       all runs at this status;
+     flowcell verification;
+     complex computation of width of padding id_run in run name
+       for display purposes 
 
 release 86.6
  - unused db tables, which were renamed in the previous release,

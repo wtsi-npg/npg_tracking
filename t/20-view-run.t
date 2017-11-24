@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 35;
+use Test::More tests => 28;
 use Test::Exception;
 use Test::Deep;
 use CGI;
@@ -105,16 +105,6 @@ my $util = t::util->new({fixtures  => 1,});
 
 {
   my $str = t::request->new({
-           PATH_INFO      => '/run/16;update_statuses',
-           REQUEST_METHOD => 'POST',
-           username       => 'public',
-           util           => $util,
-          });
-  like($str, qr{not\ authorised}mx, 'public access to /run/x;update_statuses');
-}
-
-{
-  my $str = t::request->new({
            PATH_INFO      => '/run;add',
            REQUEST_METHOD => 'GET',
            username       => 'public',
@@ -205,34 +195,6 @@ my $util = t::util->new({fixtures  => 1,});
 
 {
   my $str = t::request->new({
-           PATH_INFO      => '/run/group;update_statuses',
-           REQUEST_METHOD => 'POST',
-           username       => 'joe_loader',
-           util           => $util,
-           cgi_params     => {
-            id_runs            => 1,
-            id_run_status_dict => 21,
-                 },
-          });
-  is($util->cgi->param('type'), 'group', 'type attribute set');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run/group;update_statuses',
-           REQUEST_METHOD => 'POST',
-           username       => 'joe_loader',
-           util           => $util,
-           cgi_params     => {
-            id_runs            => 1,
-            id_run_status_dict => 21,
-                 },
-          });
-  like($str, qr/updated\ statuses\ ok/mix, 'update_statuses');
-}
-
-{
-  my $str = t::request->new({
            PATH_INFO      => '/run/95',
            REQUEST_METHOD => 'GET',
            username       => 'public',
@@ -262,30 +224,7 @@ my $util = t::util->new({fixtures  => 1,});
            util           => $util,
           });
   like ($str, qr/team 'RAD'/, 'R&D team name displayed');
-  like ($str, qr/<th>Loaded\ by<\/th><td\ id=\"loader_username\">joe_admin<\/td>/, 'run loader username displayed');
-  like ($str, qr/<div\ id=\"verify_fc_div\"><img\ src=\"\/icons\/silk\/cross\.png\"/, 'flowcell marked as not verified');
-  
-  my $run = npg::model::run->new({id_run => $id_run, util => $util,});
-  my $user = npg::model::user->new({id_user => 3, util => $util,});
-  $run->save_tags(['verified_fc'], $user);
-  $str = t::request->new({
-           PATH_INFO      => $url,
-           REQUEST_METHOD => 'GET',
-           username       => 'public',
-           util           => $util,
-          });
-  like ($str, qr/<div\ id=\"verify_fc_div\">joe_loader/, 'flowcell verified by correct user');
-  like ($str, qr/<div\ id=\"verify_r1_div\"><img\ src=\"\/icons\/silk\/cross\.png\"/, 'reagents for read 1 marked as not verified');
-
-  $user = npg::model::user->new({id_user => 4, util => $util,});
-  $run->save_tags(['verified_r1'], $user);
-  $str = t::request->new({
-           PATH_INFO      => $url,
-           REQUEST_METHOD => 'GET',
-           username       => 'public',
-           util           => $util,
-          });
-  like ($str, qr/<div\ id=\"verify_r1_div\">joe_engineer/, 'read1 reagents verified by correct user');
+  like ($str, qr/Loaded\ by\ joe_admin/, 'run loader username displayed');
 }
 
 {
