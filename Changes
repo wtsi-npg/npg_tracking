@@ -1,7 +1,11 @@
 LIST OF CHANGES
 
- - remove redundant script for reporting sequencing failures to RT
  - use bash shell when executing system calls from Perl
+
+release 86.8
+ - remove redundant script for reporting sequencing failures to RT
+ - remove uptime info from instrument page - function no longer available
+ - correct handling of transition from 'down for service' to 'down for repair'
 
 release 86.7
  - stop building on Travis under Perl 5.16,
