@@ -76,7 +76,7 @@ sub checker_fork {
     append_file( $log, "$now\n" );
 
     eval {
-            system "$command 2>> $log";
+            system qq[/bin/bash -c '$command' 2>> $log];
             1;
          }
          or do {
