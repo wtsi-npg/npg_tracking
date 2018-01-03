@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - to account for ephemeral staging areas on Open Stack, extend staging
+   directory path match expression in Apache httpd config file
+
 release 86.8
  - remove redundant script for reporting sequencing failures to RT
  - remove uptime info from instrument page - function no longer available
