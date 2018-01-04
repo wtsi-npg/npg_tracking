@@ -13,8 +13,6 @@ use List::Util qw(first);
 
 our $VERSION = '0';
 
-## no critic (Documentation::RequirePodAtEnd)
-
 =head1 NAME
 
 npg_tracking::illumina::runfolder
