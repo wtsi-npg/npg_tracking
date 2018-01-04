@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+ - copied srpipe::runfolder module (from SVN data_handling package)
+   as npg_tracking::illumina::runfolder to this package, removed tests
+   that depended on test folder hierarchy in the data_handling package
+
 release 86.8
  - remove redundant script for reporting sequencing failures to RT
  - remove uptime info from instrument page - function no longer available
