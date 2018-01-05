@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - use bash shell when executing system calls from Perl
  - copied srpipe::runfolder module (from SVN data_handling package)
    as npg_tracking::illumina::runfolder to this package, removed tests
    that depended on test folder hierarchy in the data_handling package
