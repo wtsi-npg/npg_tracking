@@ -1,39 +1,47 @@
-#############
-# Created By: ajb
-# Created On: 2009-09-30
-
 package npg_tracking::illumina::run::short_info;
+
 use Moose::Role;
 use Moose::Util::TypeConstraints;
 use File::Spec::Functions qw(splitdir);
 use Carp;
-use English qw{-no_match_vars};
+use Try::Tiny;
 use Readonly;
 
 our $VERSION = '0';
 
-Readonly::Scalar our $INSTRUMENT_PATTERN => '(IL|HS|HX|HF|MS)';
-Readonly::Scalar our $NAME_PATTERN => $INSTRUMENT_PATTERN.'(\d+_)0*(\d+)';
-Readonly::Scalar our $LONG_FOLDER_NAME_SUFFIX_PATTERN => '_(A|B)_?([0-9A-Z]{9}(?:-\d{3}V\d)?)';
+Readonly::Scalar my $INSTRUMENT_PATTERN              => '(IL|HS|HX|HF|MS)';
+Readonly::Scalar my $NAME_PATTERN                    => $INSTRUMENT_PATTERN.'(\d+_)0*(\d+)';
+Readonly::Scalar my $LONG_FOLDER_NAME_SUFFIX_PATTERN => '_(A|B)_?([0-9A-Z]{9}(?:-\d{3}V\d)?)';
 
-# requires q{_build_run_folder}; Functionality not working in Moose
+has q{id_run}            => (
+  isa => q{Int},
+  is => q{ro},
+  lazy_build => 1,
+  documentation => 'Integer identifier for a sequencing run',
+);
 
-###############
-# public methods
+has q{name}              => (
+  isa => q{Str},
+  is => q{ro},
+  lazy_build => 1,
+  documentation => join q[ ],
+                   qw/String identifier for a sequencing run/, q[,],
+                   qw/usually contains a sequencing instrument
+                      identifer and the id_run attribute value/,
+);
 
-has q{id_run}            => ( isa => q{Int}, is => q{ro}, lazy_build => 1, writer => q{_set_id_run},
-                            documentation => 'Integer identifier for a sequencing run, (typically a suffix of the name and run_folder)',);
-has q{name}              => ( isa => q{Str}, is => q{ro}, lazy_build => 1,
-                            documentation => 'String identifier for a sequencing run, (typically containing a machine identifer and the id_run, being a suffix of the run_folder, and forming the prefix of the cluster identifier in final output sequence files)',);
-
-has q{instrument_string} => ( isa => q{Str}, is => q{ro}, lazy_build => 1,
-                            documentation => q{String of the instrument name, worked out from the run name}, );
+has q{instrument_string} => (
+  isa => q{Str},
+  is => q{ro},
+  lazy_build => 1,
+  init_arg => {},
+);
 
 has q{slot}              => (
   isa => q{Str},
   is  => q{ro},
   lazy_build => 1,
-  documentation => q{If the machine is a HS, the slot that is used for the flowcell (or A for a MS)},
+  init_arg => {},
   writer => q{_set_slot},
 );
 
@@ -41,7 +49,7 @@ has q{flowcell_id}       => (
   isa => q{Str},
   is  => q{ro},
   lazy_build => 1,
-  documentation => q{If the machine is a HS, the flowcell id that was used. If the machine is a MS, the reagent kit id that was used.},
+  init_arg => {},
   writer => q{_set_flowcell_id},
 );
 
@@ -51,8 +59,12 @@ subtype __PACKAGE__.q(::folder)
 coerce __PACKAGE__.q(::folder)
   => from 'Str'
   => via {first {$_ ne q()} reverse splitdir($_)};
-has q{run_folder}      => ( isa => __PACKAGE__.q(::folder), is => q{ro}, lazy_build => 1,
-                            documentation => 'Folder name used for the directory containing the information produced by the sequencing machine, (does not contain any path to the folder)',);
+has q{run_folder}        => (
+  isa => __PACKAGE__.q(::folder),
+  is => q{ro},
+  lazy_build => 1,
+  documentation => 'Directory name of the run folder',
+);
 
 sub short_reference {
   my ($self) = @_;
@@ -67,21 +79,29 @@ sub short_reference {
 # private methods
 
 ###############
-# builders
-
-
 
 sub _build_id_run {
   my ($self) = @_;
-  if ( !( $self->has_run_folder() || $self->has_name() ) ) {
-      eval {
-        $self->name();
-      } or do {
-        croak qq{Unable to obtain id_run from name : $EVAL_ERROR};
-      };
+
+  if ( !$self->has_run_folder() ) {
+    try {
+      $self->run_folder();
+    } catch {
+      croak qq{Unable to obtain id_run from run_folder : $_};
+    };
   }
 
-  my ($inst_t, $inst_i, $id_run) = $self->name() =~ /$NAME_PATTERN/gmsx;
+  my ($inst_t, $inst_i, $id_run) = $self->run_folder() =~ /$NAME_PATTERN/gmsx;
+
+  if ( !( $inst_t && $inst_i && $id_run ) ) {
+    if ($self->can(q(npg_tracking_schema)) and  $self->npg_tracking_schema()) {
+      my $rs = $self->npg_tracking_schema()->resultset('Run')
+               ->search({folder_name => $self->run_folder()});
+      if ($rs->count == 1) {
+        $id_run = $rs->next()->id_run();
+      }
+    }
+  }
 
   return $id_run;
 }
@@ -89,10 +109,10 @@ sub _build_id_run {
 sub _build_name {
   my ($self) = @_;
   if( !( $self->has_id_run() || $self->has_run_folder() ) ) {
-    eval {
+    try {
       $self->run_folder();
-    } or do {
-        croak qq{Unable to obtain name from run_folder : $EVAL_ERROR};
+    } catch {
+      croak qq{Unable to obtain name from run_folder : $_};
     };
   }
   my ($start, $middle, $end) = $self->run_folder() =~ /$NAME_PATTERN/xms;
@@ -140,6 +160,7 @@ sub _hs_info {
   return 1;
 }
 
+no Moose::Role;
 
 1;
 __END__
@@ -158,20 +179,30 @@ npg_tracking::illumina::run::short_info
 
 =head1 DESCRIPTION
 
-This role provides 4 methods for your Moose class object, id_run, name, run_folder and short_reference.
+This role provides three attributes for your Moose class object,
+id_run, name and run_folder. It encapsulates logic about relationship
+between these three attributes. If your class does not have npg_tracking_schema
+attribute or npg_tracking_schema attribute value is undefined, the ability
+to infer two of these values given a third one relies on run folder name
+following a certain string pattern. If access to a run tracking database is
+available and the database contains relevant records, any non-empty string
+can be used as a run folder name.
 
-You need to either always provide run_folder on construction, or provide a _build_run_folder method in your class.
-Failure to do this WILL cause a run_time error. The error will be along the lines of
+See npg_tracking::illumina::run::folder for an implementation of the
+npg_tracking_schema attribute.
+
+If your class consumes this role, you need either to provide the run_folder
+attribute value on construction or implement a _build_run_folder method in your
+class. Failure to do this WILL cause a run-time error along the lines of
 
   Mypackage does not support builder method '_build_run_folder' for attribute 'run_folder'
 
-It is probably worth wrapping calls in an eval block to trap any croaks which will happen should information
-be needed to work out something not provided be missing, or that there may be multiple paths to a run_folder
-discovered.
-
 =head1 SUBROUTINES/METHODS
 
-=head2 id_run - can be set in the constructor, or called assuming that name or run_folder was provided
+=head2 id_run
+
+An attribute, can be set in the constructor or built assuming that run_folder
+was provided or can be built.
 
   my $oPackage = Mypackage->new({
     id_run => $id_run, # 1234
@@ -179,7 +210,12 @@ discovered.
 
   my $iIdRun = $oPackage->id_run();
 
-=head2 name - can be set in the constructor, or called assuming that id_run or run_folder was provided
+=head2 name
+
+An attribute, can be set in the constructor.
+Currently it can also be built assuming that id_run or run_folder was provided.
+Ability to infer this attribute value without database support
+is not guaranteed in future releases.
 
   my $oPackage = Mypackage->new({
     name => $name, # ILx_1234
@@ -187,8 +223,12 @@ discovered.
 
   my $sName = $oPackage->name();
 
-=head2 run_folder - can be set in the constructor, or else you need to provide a _build_run_folder method. Failure to provide these WILL cause a run-time error
-Constrained to not contain file-system path - anything which looks like such a path will be coerced to the last component of the path.
+=head2 run_folder
+
+A lazily built attribute, can be set in the constructor. A class consuming this role
+should provide a _build_run_folder method. Failure to provide a builder WILL cause a
+run-time error. Constrained to not contain file-system path - anything which looks
+like such a path will be coerced to the last component of the path.
 
   my $oPackage = Mypackage->new({
     run_folder => $run_folder, # 123456_ILx_1234
@@ -196,15 +236,33 @@ Constrained to not contain file-system path - anything which looks like such a p
 
   my $sRunFolder = $oPackage->run_folder();
 
-=head2 short_reference - returns the first it finds from run_folder, id_run, name
+=head2 short_reference
+
+A method. Returns the first it finds from run_folder, id_run, name
 
   my $ShortReference = $oPackage->short_reference();
 
+No guarantee that this method is going to be supported in future releases.
+Deriving classes should not use it.
+
 =head2 instrument_string
 
-returns the name of the instrument found
+Attribute, the name of the instrument, worked out from the run folder name.
 
-  my $sInstrumentString = Mypackage->instrument_string();
+  my $sInstrumentString = $oPackage->instrument_string();
+
+=head2 slot
+
+Attribute, the name of the instrument slot, worked out from the run folder name.
+
+  my $slot = $oPackage->slot();
+
+=head2 flowcell_id
+
+Attribute. If the machine is a HiSeq, the flowcell id that was used.
+If the machine is a MiSeq, the reagent kit id that was used.
+
+  my $fid = $oPackage->flowcell_id();
 
 =head1 DIAGNOSTICS
 
@@ -216,9 +274,13 @@ returns the name of the instrument found
 
 =item Moose::Role
 
+=item Moose::Util::TypeConstraints
+
+=item File::Spec::Functions
+
 =item Carp
 
-=item English -no_match_vars
+=item Try::Tiny
 
 =item Readonly
 
@@ -231,10 +293,11 @@ returns the name of the instrument found
 =head1 AUTHOR
 
 Andy Brown
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2009 GRL by Andy Brown (ajb@sanger.ac.uk)
+Copyright (C) 2018 GRL
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
