@@ -28,14 +28,6 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
 
 {
   my $rf;
-  #throws_ok {
-  #  npg_tracking::illumina::runfolder->new( subpath=> catdir(qw(foo bar)))->runfolder_path;
-  #} qr/nothing looks like a run_folder in any given subpath/, 'none existant subpath';
- 
-  #{ my $is_rta;
-  #  lives_ok { $is_rta = $rf->is_rta; } 'check is_rta';
-  #  ok(!$is_rta, 'not RTA run');
-  #}
 
   lives_ok {
     $rf = npg_tracking::illumina::runfolder->new( runfolder_path => $testrundir);

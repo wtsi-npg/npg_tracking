@@ -7,23 +7,27 @@ use Carp;
 use Try::Tiny;
 use Readonly;
 
+use npg_tracking::util::types;
+
 our $VERSION = '0';
 
 Readonly::Scalar my $INSTRUMENT_PATTERN              => '(IL|HS|HX|HF|MS)';
 Readonly::Scalar my $NAME_PATTERN                    => $INSTRUMENT_PATTERN.'(\d+_)0*(\d+)';
 Readonly::Scalar my $LONG_FOLDER_NAME_SUFFIX_PATTERN => '_(A|B)_?([0-9A-Z]{9}(?:-\d{3}V\d)?)';
 
-has q{id_run}            => (
-  isa => q{Int},
-  is => q{ro},
-  lazy_build => 1,
+has q{id_run}           => (
+  isa           => q{NpgTrackingRunId},
+  is            => q{ro},
+  required      => 0,
+  lazy_build    => 1,
   documentation => 'Integer identifier for a sequencing run',
 );
 
 has q{name}              => (
-  isa => q{Str},
-  is => q{ro},
-  lazy_build => 1,
+  isa           => q{Str},
+  is            => q{ro},
+  required      => 0,
+  lazy_build    => 1,
   documentation => join q[ ],
                    qw/String identifier for a sequencing run/, q[,],
                    qw/usually contains a sequencing instrument
@@ -31,26 +35,23 @@ has q{name}              => (
 );
 
 has q{instrument_string} => (
-  isa => q{Str},
-  is => q{ro},
-  lazy_build => 1,
-  init_arg => {},
+  isa           => q{Str},
+  is            => q{ro},
+  lazy_build    => 1,
 );
 
 has q{slot}              => (
-  isa => q{Str},
-  is  => q{ro},
-  lazy_build => 1,
-  init_arg => {},
-  writer => q{_set_slot},
+  isa           => q{Str},
+  is            => q{ro},
+  lazy_build    => 1,
+  writer        => q{_set_slot},
 );
 
 has q{flowcell_id}       => (
-  isa => q{Str},
-  is  => q{ro},
-  lazy_build => 1,
-  init_arg => {},
-  writer => q{_set_flowcell_id},
+  isa           => q{Str},
+  is            => q{ro},
+  lazy_build    => 1,
+  writer        => q{_set_flowcell_id},
 );
 
 subtype __PACKAGE__.q(::folder)
@@ -60,9 +61,9 @@ coerce __PACKAGE__.q(::folder)
   => from 'Str'
   => via {first {$_ ne q()} reverse splitdir($_)};
 has q{run_folder}        => (
-  isa => __PACKAGE__.q(::folder),
-  is => q{ro},
-  lazy_build => 1,
+  isa           => __PACKAGE__.q(::folder),
+  is            => q{ro},
+  lazy_build    => 1,
   documentation => 'Directory name of the run folder',
 );
 
@@ -116,7 +117,7 @@ sub _build_name {
     };
   }
   my ($start, $middle, $end) = $self->run_folder() =~ /$NAME_PATTERN/xms;
-  croak 'Unrecognised format for run folder name: ' . $self->run_folder()
+  croak q{Unrecognised format for run folder name: } . $self->run_folder()
     if !( $start && $middle && $end );
 
   return $start.$middle.$end;
@@ -124,10 +125,7 @@ sub _build_name {
 
 sub _build_instrument_string {
   my ( $self ) = @_;
-  my $name = $self->name();
-
-  my ( $start, $end ) = $name =~ /$INSTRUMENT_PATTERN(\d+)/xms;
-
+  my ( $start, $end ) = $self->name() =~ /$INSTRUMENT_PATTERN(\d+)/xms;
   return $start . $end;
 }
 
@@ -146,17 +144,12 @@ sub _build_flowcell_id {
 sub _hs_info {
   my ( $self ) = @_;
 
-  $self->_set_slot( q{} );
-  $self->_set_flowcell_id( q{} );
-
-  my $run_folder = $self->run_folder();
-
-  my @parts = $run_folder =~ m/${NAME_PATTERN}$LONG_FOLDER_NAME_SUFFIX_PATTERN/xms;
-
+  my @parts = $self->run_folder() =~ m/${NAME_PATTERN}$LONG_FOLDER_NAME_SUFFIX_PATTERN/xms;
   my $flowcell_id = pop @parts;
+  $self->_set_flowcell_id( $flowcell_id || q{});
   my $slot = pop @parts;
-  if(defined $slot){ $self->_set_slot( $slot );}
-  if(defined $flowcell_id){ $self->_set_flowcell_id( $flowcell_id );}
+  $self->_set_slot( $slot || q{});
+
   return 1;
 }
 
@@ -179,16 +172,18 @@ npg_tracking::illumina::run::short_info
 
 =head1 DESCRIPTION
 
-This role provides three attributes for your Moose class object,
-id_run, name and run_folder. It encapsulates logic about relationship
-between these three attributes. If your class does not have npg_tracking_schema
-attribute or npg_tracking_schema attribute value is undefined, the ability
-to infer two of these values given a third one relies on run folder name
-following a certain string pattern. If access to a run tracking database is
-available and the database contains relevant records, any non-empty string
-can be used as a run folder name.
+This Moose role ties together three attributes, id_run, name and run_folder,
+which are central to tracking Illumina sequencing runs at the institute and
+processing sequencing data.
 
-See npg_tracking::illumina::run::folder for an implementation of the
+The ability to infer two of these values given a third one relies on run folder
+name following a certain string pattern. If access to a run tracking database
+is available and the database contains relevant records, any non-empty string
+can be used as a run folder name. Access to a run tracking database is made via
+the npg_tracking_schema attribute, which can be provided by a class which
+consumes this role.
+
+See npg_tracking::illumina::run::folder for an example implementation of the
 npg_tracking_schema attribute.
 
 If your class consumes this role, you need either to provide the run_folder
@@ -201,8 +196,8 @@ class. Failure to do this WILL cause a run-time error along the lines of
 
 =head2 id_run
 
-An attribute, can be set in the constructor or built assuming that run_folder
-was provided or can be built.
+An attribute, can be set in the constructor or lazy-built assuming that the
+run_folder attribute value is available or can be built.
 
   my $oPackage = Mypackage->new({
     id_run => $id_run, # 1234
@@ -212,10 +207,9 @@ was provided or can be built.
 
 =head2 name
 
-An attribute, can be set in the constructor.
-Currently it can also be built assuming that id_run or run_folder was provided.
-Ability to infer this attribute value without database support
-is not guaranteed in future releases.
+An attribute, can be set in the constructor. It can also be lazy-built assuming
+that id_run or run_folder was provided attribute value is available.
+The ability to build this attribute without database support is not guaranteed.
 
   my $oPackage = Mypackage->new({
     name => $name, # ILx_1234
@@ -225,10 +219,10 @@ is not guaranteed in future releases.
 
 =head2 run_folder
 
-A lazily built attribute, can be set in the constructor. A class consuming this role
-should provide a _build_run_folder method. Failure to provide a builder WILL cause a
-run-time error. Constrained to not contain file-system path - anything which looks
-like such a path will be coerced to the last component of the path.
+An attribute, can be set in the constructor or lazy-built. A class consuming
+this role should provide a _build_run_folder method. Failure to provide a builder
+will cause a run-time error. Constrained to not contain file-system path -
+anything which looks like such a path will be coerced to the last component of the path.
 
   my $oPackage = Mypackage->new({
     run_folder => $run_folder, # 123456_ILx_1234
@@ -238,7 +232,7 @@ like such a path will be coerced to the last component of the path.
 
 =head2 short_reference
 
-A method. Returns the first it finds from run_folder, id_run, name
+A method. Returns the first it finds from run_folder, id_run, name.
 
   my $ShortReference = $oPackage->short_reference();
 
@@ -247,19 +241,23 @@ Deriving classes should not use it.
 
 =head2 instrument_string
 
-Attribute, the name of the instrument, worked out from the run folder name.
+An attribute, the name of the instrument, will be lazy-built,
+usually no need to set it via a constructor.
 
   my $sInstrumentString = $oPackage->instrument_string();
 
 =head2 slot
 
-Attribute, the name of the instrument slot, worked out from the run folder name.
+An attribute, the name of the instrument slot, will be lazy-built,
+usually no need to set it via a constructor.
 
   my $slot = $oPackage->slot();
 
 =head2 flowcell_id
 
-Attribute. If the machine is a HiSeq, the flowcell id that was used.
+An attribute, will be lazy-built, usually no need to set it
+via a constructor.
+If the machine is a HiSeq, the flowcell id that was used.
 If the machine is a MiSeq, the reagent kit id that was used.
 
   my $fid = $oPackage->flowcell_id();
@@ -275,6 +273,8 @@ If the machine is a MiSeq, the reagent kit id that was used.
 =item Moose::Role
 
 =item Moose::Util::TypeConstraints
+
+=item MooseX::Getopt::Meta::Attribute::NoGetopt
 
 =item File::Spec::Functions
 
