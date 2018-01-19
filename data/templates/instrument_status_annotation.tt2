@@ -6,7 +6,7 @@
       <a id="instrument_status_annotation_[% id_status %]_update" href="#" onClick="instrument_status_annotation_form('instrument_status_annotation', [% id_status %]); return false;">
         <img src="/icons/silk/pencil_add.png" style="height:16px;width:16px;" alt="add instrument status annotation" title="add instrument status annotation - [% status %]" />
       </a>
-      <img id="instrument_status_annotation_[% id_status %]_spinner" style="display:none;height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" /> 
+      <img id="instrument_status_annotation_[% id_status %]_spinner" style="display:none;height:16px;width:16px;" src="/gfx/spinner.gif" alt="spinner" /> 
        <a style="display:none;" id="instrument_status_annotation_[% id_status %]_cancel" href="#" onClick="cancel_form('instrument_status_annotation_[% id_status %]'); return false;">
         <img src="/icons/silk/cancel.png" style="height:16px;width:16px;" alt="cancel" title="cancel" />
       </a>
