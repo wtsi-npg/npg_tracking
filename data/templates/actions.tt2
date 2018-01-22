@@ -10,12 +10,13 @@
     id = key ? model.$key : 0;
     run_read = (entity == 'run' && view.method_name == 'read' && id && id > 0) ? 1 : 0;
     rfid = (model.location_is_instrument && requestor.username == 'public') ? 1 : 0;
+    icon_prefix = HTTP_HOST.match('(\.sanger\.ac\.uk)') ? 'sanger-' : '';
  -%]
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <title>[% npg_title %]</title>
   <script type="text/javascript">function addEvent(e,t,fn,c){if(e.addEventListener){e.addEventListener(t,fn,c);return true;}else if(e.attachEvent){var r=e.attachEvent("on"+t,fn);return r;}} var SCRIPT_NAME="[% SCRIPT_NAME  %]";</script>
-  <link rel="icon" type="image/png" href="/icons/sanger-ico.png" />
+  <link rel="icon" type="image/x-icon" href="/icons/[% icon_prefix %]favicon.ico" />
   <link rel="stylesheet" type="text/css" href="/css/wtsi.css" />
   <link rel="stylesheet" type="text/css" href="/css/npg.css" />
   <script type="text/javascript" src="/js/wtsi/zebra.js" ></script>
@@ -33,7 +34,7 @@
 <body><div id="main" class="expanded" >
 [% IF !view.no_main_menu %]
 <div id="banner">
-  <div class="lfloat"><img src="/icons/sanger-logo.png" alt="WTSI logo" /></div>
+  <div class="lfloat"><img src="/icons/[% icon_prefix %]logo.png" alt="[% icon_prefix ? 'Welcome Sanger Institute' : 'Organisation' %] logo" /></div>
   <div class="rfloat">
     <div class="npg_title [% dev ? 'dev_highlight' : '' %]">[% npg_title %]</div>
     <div><a href="/perl/enigmatic.cgi"><img src="/icons/navigation/[% image %].gif" alt="[% image == 'logout' ? 'Logout' : 'Login';  %] button" /></a>
