@@ -279,6 +279,7 @@ lib/npg_tracking/glossary/run.pm
 lib/npg_tracking/glossary/subset.pm
 lib/npg_tracking/glossary/tag.pm
 lib/npg_tracking/illumina/run.pm
+lib/npg_tracking/illumina/runfolder.pm
 lib/npg_tracking/illumina/run/folder.pm
 lib/npg_tracking/illumina/run/folder/location.pm
 lib/npg_tracking/illumina/run/folder/validation.pm
@@ -490,6 +491,7 @@ t/47-samplesheet-auto.t
 t/47-samplesheet.t
 t/50-controller.t
 t/50-decorator.t
+t/60-illumina-runfolder.t
 t/60-illumina-run-folder-location.t
 t/60-illumina-run-folder-validation.t
 t/60-illumina-run-folder.t
@@ -503,6 +505,7 @@ t/80-npg_tracking-report-event2lims.t
 t/80-npg_tracking-report-event2followers.t
 t/80-npg_tracking-report-event2subscribers.t
 t/90-reference.t
+t/data/090414_IL24_2726.tar.bz2
 t/data/cbot/cBot1/GetRunList.xml
 t/data/cbot/cBot1/InstrumentStatus.xml
 t/data/cbot/cBot1/RunInfo/091111_OEM-0B6VO7E14KH_0001.xml
@@ -1735,7 +1738,6 @@ t/useragent.pm
 t/util.pm
 wtsi_local/httpd.conf
 wtsi_local/httpd_sfweb.conf
-wtsi_local/httpd_vm.conf
 
 META.yml
 META.json
