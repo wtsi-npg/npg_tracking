@@ -1,6 +1,8 @@
 LIST OF CHANGES
  
  - remove unnecessary aliasing of urls
+
+release 86.9
  - to account for ephemeral staging areas on OpenStack, extend staging
    directory path match expression in Apache httpd config file
  - use bash shell when executing system calls from Perl
