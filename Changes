@@ -1,5 +1,10 @@
 LIST OF CHANGES
 
+ - use icons from the lates set of brand images
+ - display institute's logo and favicon only if pages are servered
+     from institute's servers
+ - remove unnecessary aliasing of urls
+
 release 86.9
  - to account for ephemeral staging areas on OpenStack, extend staging
    directory path match expression in Apache httpd config file

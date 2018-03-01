@@ -57,7 +57,7 @@
     </div>
   </fieldset>
   <input type="submit" value="Search" />&nbsp;&nbsp;<input type="reset" value="Reset Form" />
-  <img id="spinner" style="display:none;height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />
+  <img id="spinner" style="display:none;height:16px;width:16px;" src="/gfx/spinner.gif" alt="spinner" />
  </form>
 </fieldset>
 <br />

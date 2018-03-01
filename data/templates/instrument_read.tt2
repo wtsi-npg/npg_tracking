@@ -108,7 +108,7 @@ END -%]
    <td style="text-align:right;" colspan="5"><div id="new_instrument_mod"></div></td>
    <td id="instrument_mod_actions">
     <a id="instrument_mod_update" href="#" onClick="instrument_form('instrument_mod'); return false;"><img src="/icons/silk/pencil_add.png" style="height:16px;width:16px;" alt="add mod" title="add mod" /></a>
-    <img id="instrument_mod_spinner" style="display:none;height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />
+    <img id="instrument_mod_spinner" style="display:none;height:16px;width:16px;" src="/gfx/spinner.gif" alt="spinner" />
     <a style="display:none;" id="instrument_mod_cancel" href="#" onClick="cancel_form('instrument_mod'); return false;"><img src="/icons/silk/cancel.png" style="height:16px;width:16px;" alt="cancel" title="cancel" /></a>
     <a style="display:none;" id="instrument_mod_update_extra" href="#" onClick="new_form_extra('instrument_mod'); return false;"><img src="/icons/silk/pencil_add.png" style="height:16px;width:16px;" alt="add mod" title="add mod" /></a>
    </td>
@@ -136,7 +136,7 @@ END -%]
   <tr>
    <td style="text-align:right;" colspan="3"><div id="new_instrument_annotation" style="display:none;">[% PROCESS instrument_annotation_add_ajax.tt2 %]</div></td>
    <td id="instrument_annotation_actions">
-    <img id="instrument_annotation_spinner" style="display:none;height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />
+    <img id="instrument_annotation_spinner" style="display:none;height:16px;width:16px;" src="/gfx/spinner.gif" alt="spinner" />
     <a style="display:none;" id="instrument_annotation_cancel" href="#" onClick="cancel_form('instrument_annotation'); return false;"><img src="/icons/silk/cancel.png" style="height:16px;width:16px;" alt="cancel" title="cancel" /></a>
     <a id="instrument_annotation_update_extra" href="#" onClick="new_form_extra('instrument_annotation'); return false;"><img src="/icons/silk/pencil_add.png" style="height:16px;width:16px;" alt="add annotation" title="add annotation" /></a>
    </td>
