@@ -38,6 +38,7 @@ has q{instrument_string} => (
   isa           => q{Str},
   is            => q{ro},
   lazy_build    => 1,
+  documentation => q{Instrument name},
 );
 
 has q{slot}              => (
@@ -45,6 +46,7 @@ has q{slot}              => (
   is            => q{ro},
   lazy_build    => 1,
   writer        => q{_set_slot},
+  documentation => q{Instrument slot},
 );
 
 has q{flowcell_id}       => (
@@ -52,6 +54,7 @@ has q{flowcell_id}       => (
   is            => q{ro},
   lazy_build    => 1,
   writer        => q{_set_flowcell_id},
+  documentation => q{Flowcell identifier},
 );
 
 subtype __PACKAGE__.q(::folder)
@@ -199,10 +202,7 @@ class. Failure to do this WILL cause a run-time error along the lines of
 An attribute, can be set in the constructor or lazy-built assuming that the
 run_folder attribute value is available or can be built.
 
-  my $oPackage = Mypackage->new({
-    id_run => $id_run, # 1234
-  });
-
+  my $oPackage = Mypackage->new(id_run => $id_run);
   my $iIdRun = $oPackage->id_run();
 
 =head2 name
@@ -211,10 +211,7 @@ An attribute, can be set in the constructor. It can also be lazy-built assuming
 that id_run or run_folder was provided attribute value is available.
 The ability to build this attribute without database support is not guaranteed.
 
-  my $oPackage = Mypackage->new({
-    name => $name, # ILx_1234
-  });
-
+  my $oPackage = Mypackage->new(name => $name);
   my $sName = $oPackage->name();
 
 =head2 run_folder
@@ -224,10 +221,7 @@ this role should provide a _build_run_folder method. Failure to provide a builde
 will cause a run-time error. Constrained to not contain file-system path -
 anything which looks like such a path will be coerced to the last component of the path.
 
-  my $oPackage = Mypackage->new({
-    run_folder => $run_folder, # 123456_ILx_1234
-  });
-
+  my $oPackage = Mypackage->new(run_folder => $run_folder);
   my $sRunFolder = $oPackage->run_folder();
 
 =head2 short_reference
@@ -274,8 +268,6 @@ If the machine is a MiSeq, the reagent kit id that was used.
 
 =item Moose::Util::TypeConstraints
 
-=item MooseX::Getopt::Meta::Attribute::NoGetopt
-
 =item File::Spec::Functions
 
 =item Carp
@@ -292,8 +284,13 @@ If the machine is a MiSeq, the reagent kit id that was used.
 
 =head1 AUTHOR
 
-Andy Brown
-Marina Gourtovaia
+=over
+
+=item Andy Brown
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
