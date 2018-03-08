@@ -113,7 +113,7 @@ my $run_folder = q{123456_IL2_1234};
             } q{object directly from the role ok};
 
   throws_ok { $short_info->run_folder(); }
-    qr{does[ ]not[ ]support[ ]builder[ ]method[ ]'_build_run_folder'[ ]for[ ]attribute[ ]'run_folder'},
+    qr{does not support builder method '_build_run_folder' for attribute 'run_folder'},
     q{Error thrown as no _build_run_folder method in class};
 }
 
@@ -121,19 +121,19 @@ my $run_folder = q{123456_IL2_1234};
   my $short_info;
   lives_ok  { $short_info = test::short_info->new({}); } q{no error creating no-arg test object};
   throws_ok { $short_info->id_run();          }
-    qr{Unable[ ]to[ ]obtain[ ]id_run[ ]from name[ ]:[ ]Unable[ ]to[ ]obtain[ ]name[ ]from[ ]run_folder},
-    q{As no name or run_folder, can't obtain id_run};
+    qr{Need an id_run or name to generate the run_folder},
+    q{As run_folder, can't obtain id_run};
   throws_ok { $short_info->name();            }
-    qr{Unable[ ]to[ ]obtain[ ]name[ ]from[ ]run_folder},
+    qr{Unable to obtain name from run_folder},
     q{As no id_run or run_folder, can't obtain name};
   throws_ok { $short_info->run_folder();      }
-    qr{Need[ ]an[ ]id_run[ ]or[ ]name[ ]to[ ]generate[ ]the[ ]run_folder},
+    qr{Need an id_run or name to generate the run_folder},
     q{As no name or id_run, can't obtain run_folder};
   throws_ok { $short_info->_short_path();     }
-    qr{No[ ]run_folder,[ ]name[ ]or[ ]id_run[ ]provided},
+    qr{No run_folder, name or id_run provided},
     q{As no attributes, cannot get short path};
   throws_ok { $short_info->short_reference(); }
-    qr{Unable[ ]to[ ]obtain[ ]name[ ]from[ ]run_folder},
+    qr{Unable to obtain name from run_folder},
     q{As no id_run or run_folder, can't obtain name};
 }
 
@@ -199,7 +199,7 @@ my $run_folder = q{123456_IL2_1234};
   });
   is($short_info->short_reference(), $name, q{short_reference returns name});
   is($short_info->id_run(), $id_run, q{id_run worked out correctly});
-  is($short_info->short_reference(), $id_run, q{short_reference returns id_run});
+  is($short_info->short_reference(), $run_folder, q{short_reference returns run_folder});
   is($short_info->run_folder(), $run_folder, q{run_folder worked out correctly});
   is($short_info->short_reference(), $run_folder, q{short_reference returns run_folder});
 }

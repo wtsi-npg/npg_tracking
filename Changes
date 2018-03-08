@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+ - npg_tracking::illumina::runfolder is simplified at a cost of loosing
+   ability to pass to the constructor an arbitrary path
+ - npg_tracking::illumina::run::short_info role - added database
+   look-up aided ability to deal with arbitrary run folder names
  - use icons from the lates set of brand images
  - display institute's logo and favicon only if pages are servered
      from institute's servers
