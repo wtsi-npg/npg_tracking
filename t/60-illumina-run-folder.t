@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Carp;
-use Test::More tests => 61;
+use Test::More tests => 59;
 use Test::Exception;
 use File::Temp qw(tempdir);
 use Cwd;
@@ -104,7 +104,6 @@ sub _create_staging_PB_cal {
   is($path_info->run_folder(), $run_folder, q{run_folder worked out from runfolder_path});
   is($path_info->bustard_path(), $bustard_subpath, q{found a recalibrated directory, so able to work out bustard_path});
   is($path_info->analysis_path(), $bustard_subpath, q{found a recalibrated directory, so able to work out analysis_path});
-  is($path_info->pb_cal_path(), $pb_cal_subpath, q{found a recalibrated directory, so able to work out bustard_path, and therefore pb_cal_path});
 }
 
 {
@@ -199,7 +198,6 @@ sub _create_staging_PB_cal {
   my $path_info = test::run::folder->new({ id_run => $id_run, run_folder => $run_folder, });
   is( $path_info->recalibrated_path(), qq{$bustard_subpath/PB_cal}, q{recalibrated_path points to PB_cal} );
   is( $path_info->analysis_path(), $bustard_subpath, q{analysis path inferred} );
-  is( $path_info->pb_cal_path(), $path_info->recalibrated_path() , q{pb_cal_path and recalibrated_path are the same} );
   $path_info = test::run::folder->new({ id_run => $id_run, run_folder => $run_folder, });
 
   _create_staging_no_recalibrated($bustard_subpath, $basecalls_subpath, $config_path);
