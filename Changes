@@ -7,7 +7,8 @@ LIST OF CHANGES
  - use icons from the lates set of brand images
  - display institute's logo and favicon only if pages are servered
      from institute's servers
- - remove unnecessary aliasing of urls
+ - removed unnecessary aliasing of urls
+ - deleted unused (dif_files_path and pb_cal_path) runfolder accessors
 
 release 86.9
  - to account for ephemeral staging areas on OpenStack, extend staging
