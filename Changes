@@ -1,5 +1,10 @@
 LIST OF CHANGES
 
+ - the bug in paged run views where a particular instrument was selected
+     is fixed
+ - the frame hight for displaying runs on an instrument page is increased
+ - displayed instrument statuses in the instrument view are limited
+     to most recent (created within a year from the current date)
  - npg_tracking::illumina::runfolder is simplified at a cost of loosing
    ability to pass to the constructor an arbitrary path
  - npg_tracking::illumina::run::short_info role - added database

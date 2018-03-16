@@ -70,7 +70,7 @@ END -%]
  </thead>
  <tbody>
 [% PROCESS instrument_status_add.tt2 %]
-[% FOREACH instrument_status = model.instrument_statuses %]
+[% FOREACH instrument_status = model.recent_instrument_statuses %]
   <tr>
    <td>[% instrument_status.date %]</td>
    <td>[% instrument_status.description %]</td>
@@ -81,7 +81,6 @@ END -%]
         [% annotation.comment %] ( [% annotation.user.username %]-[% annotation.date %])<br/>
      [% END %]
    </td>
-   [% PROCESS instrument_status_annotation.tt2 %]
   </tr>[% END %]
  </tbody>
 </table>
@@ -145,7 +144,7 @@ END -%]
 </div>
 
 <div id="selector_runs" style="display:none">
-<iframe width="100%" name="runs_on_instrument" height="300px" frameborder="0"  src="[% SCRIPT_NAME %]/run/?id_run_status_dict=all&id_instrument=[% model.id_instrument %]"></iframe>
+<iframe width="100%" name="runs_on_instrument" height="400px" frameborder="0"  src="[% SCRIPT_NAME %]/run/?id_run_status_dict=all&id_instrument=[% model.id_instrument %]"></iframe>
 </div>
 
 </div>
