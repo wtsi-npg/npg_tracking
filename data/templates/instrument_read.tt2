@@ -81,6 +81,7 @@ END -%]
         [% annotation.comment %] ( [% annotation.user.username %]-[% annotation.date %])<br/>
      [% END %]
    </td>
+   [% PROCESS instrument_status_annotation.tt2 %]
   </tr>[% END %]
  </tbody>
 </table>
