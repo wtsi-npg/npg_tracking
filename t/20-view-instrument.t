@@ -6,6 +6,7 @@ use t::util;
 use t::request;
 use GD qw(:DEFAULT :cmp);
 use File::Spec;
+use DateTime();
 
 use_ok('npg::view::instrument');
 
@@ -67,6 +68,13 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 }
 
 {
+  my $now = DateTime->now() . q[];
+  my $sql = "update instrument_status set date='$now'";
+  if (!$util->dbh->do($sql)) {
+    die 'Failed to update date';
+  }
+  $util->dbh->commit();
+
   my $str = t::request->new({
            REQUEST_METHOD => 'GET',
            PATH_INFO      => '/instrument/11',

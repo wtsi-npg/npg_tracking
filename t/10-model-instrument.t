@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use t::util;
-use Test::More tests => 119;
+use Test::More tests => 125;
 use Test::Deep;
 use Test::Exception;
 
@@ -380,6 +380,26 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
   is(join(q[,], @{$model->possible_next_statuses4status('wash in progress')}),
     'wash performed,planned repair,planned service,down for repair', 
     'possible_next_statuses for "wash in progress" called as an object method');
+}
+
+{
+  my $model = npg::model::instrument->new({
+             util          => $util,
+             id_instrument => 4,
+            });
+  my $recent_is = $model->recent_instrument_statuses();
+  isa_ok($recent_is, 'ARRAY');
+  ok (!@{$recent_is}, 'no statuses within last year');
+  is( scalar @{$model->instrument_statuses()}, 2, 'two statuses in total');
+
+  lives_ok { $model->status_reset('wash required') } 'new status added';
+
+  $model = npg::model::instrument->new({
+             util          => $util,
+             id_instrument => 4,
+            });
+  is( scalar @{$model->recent_instrument_statuses()}, 1, 'one recent status');
+  is (scalar @{$model->instrument_statuses()}, 3, 'number of statuses in total');
 }
 
 1;
