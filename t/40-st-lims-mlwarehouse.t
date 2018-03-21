@@ -48,7 +48,7 @@ if (!$available) {
   };
 
   subtest 'family tree, product table entries are present' => sub {
-    plan tests => 29;
+    plan tests => 31;
     
     my $id_run = 15440;
     my $l = st::api::lims->new(
@@ -73,6 +73,8 @@ if (!$available) {
       is($plex->tag_index, $tag_index, "tag index is $tag_index");
       is($plex->position, $count, "plex position is $count");
       is($plex->id_run, $id_run, 'id_run is propagated');
+      is($plex->gbs_plex_name, undef, 'gbs_plex_name is undefined');
+
       is(join(q[ ],
         map {join q[:], $_->tag_index, defined $_->qc_state ? $_->qc_state : q[undef]}
              @plexes),
