@@ -124,4 +124,28 @@
   tags_decode_cv: 16.86
   tags_decode_percent: 99.35
   unexpected_tags_percent: 12.54
-
+- cancelled: 0
+  cycles: 300
+  flowcell_barcode: MS5476963-300V2
+  id_run: 24135
+  instrument_model: MiSeq
+  instrument_name: HS31
+  paired_read: 1
+  pf_bases: ~
+  pf_cluster_count: ~
+  pf_cluster_density: ~
+  position: 1
+  q20_yield_kb_forward_read: ~
+  q20_yield_kb_reverse_read: ~
+  q30_yield_kb_forward_read: ~
+  q30_yield_kb_reverse_read: ~
+  q40_yield_kb_forward_read: ~
+  q40_yield_kb_reverse_read: ~
+  qc_complete: 2017-11-12 15:28:11
+  raw_cluster_count: ~
+  raw_cluster_density: ~
+  run_complete: 2017-10-21 15:50:55
+  run_pending: 2017-10-20 14:38:31
+  tags_decode_cv: 31.78
+  tags_decode_percent: 99.35
+  unexpected_tags_percent: 96.36
