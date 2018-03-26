@@ -86,6 +86,7 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
                            required_insert_size_range
                            qc_state
                            purpose
+                           gbs_plex_name
                       /],
 
     'lane'         => [qw/ lane_id

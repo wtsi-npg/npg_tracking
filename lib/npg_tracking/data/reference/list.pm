@@ -45,6 +45,7 @@ Readonly::Scalar our $REFERENCES_DIR     => q[references];
 Readonly::Scalar our $ADAPTERS_DIR       => q[adapters];
 Readonly::Scalar our $GENOTYPES_DIR      => q[genotypes];
 Readonly::Scalar our $BAITS_DIR          => q[baits];
+Readonly::Scalar our $GBS_PLEX_DIR       => q[gbs_plex];
 Readonly::Scalar our $TAG_SETS_DIR       => q[tag_sets];
 Readonly::Scalar our $TAXON_IDS_DIR      => q[taxon_ids];
 Readonly::Scalar our $BIN_DIR            => q[bin];
@@ -144,6 +145,19 @@ has 'bait_repository' => (isa        => 'NPG_TRACKING_REFERENCE_REPOSITORY',
 sub _build_bait_repository {
     my $self = shift;
     return catdir($self->repository, $BAITS_DIR);
+}
+
+=head2 gbs_plex_repository
+
+=cut
+has 'gbs_plex_repository' => (isa        => 'NPG_TRACKING_REFERENCE_REPOSITORY',
+                              is         => 'ro',
+                              required   => 0,
+                              lazy_build => 1,
+);
+sub _build_gbs_plex_repository {
+    my $self = shift;
+    return catdir($self->repository, $GBS_PLEX_DIR);
 }
 
 =head2 tag_sets_repository

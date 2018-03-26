@@ -101,4 +101,36 @@
   study_type: Whole Genome Sequencing
   study_visibility: Hold
   uuid_study_lims: 146f0ac0-a3b0-11e3-b2a7-68b59976a382
-
+- abbreviation: mxPCR
+  accession_number: EGAS00001002541
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 1
+  contaminated_human_dna: 0
+  created: 2017-06-26 12:54:09
+  data_access_group: team51
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genomic sequencing
+  data_release_strategy: open
+  data_release_timing: standard
+  deleted_at: ~
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: 1
+  faculty_sponsor: TC
+  id_lims: SQSCP
+  id_study_lims: 4825
+  id_study_tmp: 4747
+  last_updated: 2017-06-26 12:54:09
+  name: Multiplex PCR R&D for Agena/Fluidigm replacement
+  recorded_at: 2017-06-26 12:54:09
+  reference_genome: Homo_sapiens (GRCh38_15)
+  remove_x_and_autosomes: 0
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: Flexible multiplex PCR for genotyping-by-sequencing
+  study_type: Resequencing
+  study_visibility: Hold
+  uuid_study_lims: 8bedafde-5a6e-11e7-aeaa-68b59976a384

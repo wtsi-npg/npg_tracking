@@ -6,7 +6,7 @@ use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
 
-my $num_delegated_methods = 45;
+my $num_delegated_methods = 46;
 
 local $ENV{'http_proxy'} = 'http://wibble.com';
 
@@ -17,6 +17,7 @@ subtest 'Class methods' => sub {
 
   is(st::api::lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
     'correct name of the cached samplesheet env var');
+
   is(scalar st::api::lims->driver_method_list(), $num_delegated_methods, 'driver method list length');
   is(scalar st::api::lims::driver_method_list_short(), $num_delegated_methods, 'short driver method list length');
   is(scalar st::api::lims->driver_method_list_short(), $num_delegated_methods, 'short driver method list length');
@@ -433,7 +434,7 @@ subtest 'Object for a tag' => sub {
 };
 
 subtest 'Object for a non-pool lane' => sub {
-  plan tests => 96;
+  plan tests => 97;
 
   my $lims = st::api::lims->new(id_run => 6607, position => 1);
   isa_ok($lims, 'st::api::lims');
