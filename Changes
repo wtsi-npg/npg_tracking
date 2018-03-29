@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - When parsing RunInfo.xml look for FlowcellLayout rather than version
+
  - the bug in paged run views where a particular instrument was selected
      is fixed
  - the frame hight for displaying runs on an instrument page is increased
