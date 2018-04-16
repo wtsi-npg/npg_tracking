@@ -1,5 +1,22 @@
 LIST OF CHANGES
 
+ - the bug in paged run views where a particular instrument was selected
+     is fixed
+ - the frame hight for displaying runs on an instrument page is increased
+ - displayed instrument statuses in the instrument view are limited
+     to most recent (created within a year from the current date)
+ - npg_tracking::illumina::runfolder is simplified at a cost of loosing
+   ability to pass to the constructor an arbitrary path
+ - npg_tracking::illumina::run::short_info role - added database
+   look-up aided ability to deal with arbitrary run folder names
+ - use icons from the lates set of brand images
+ - display institute's logo and favicon only if pages are servered
+     from institute's servers
+ - removed unnecessary aliasing of urls
+ - deleted unused (dif_files_path and pb_cal_path) runfolder accessors
+ - method to find file with globin genes inside transcriptome repo added
+ - changes to support gbs_plex repository
+ 
 release 86.9
  - to account for ephemeral staging areas on OpenStack, extend staging
    directory path match expression in Apache httpd config file

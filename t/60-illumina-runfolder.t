@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 36;
+use Test::More tests => 43;
 use Test::Exception;
 use Carp;
 use Archive::Tar;
@@ -9,6 +9,8 @@ use File::Temp qw(tempdir);
 use File::Basename qw(dirname);
 use File::Spec::Functions qw(catfile rel2abs catdir);
 use Cwd;
+
+use t::dbic_util;
 
 use_ok('npg_tracking::illumina::runfolder');
 
@@ -26,23 +28,10 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
 
 {
   my $rf;
-  throws_ok {
-    npg_tracking::illumina::runfolder->new( subpath=> catdir(qw(foo bar)))->runfolder_path;
-  } qr/nothing looks like a run_folder in any given subpath/, 'none existant subpath';
-  { my $derivedpath;
-    lives_ok {
-      $rf = npg_tracking::illumina::runfolder->new( subpath=> catdir($testrundir,q(Images)));
-      $derivedpath = $rf->runfolder_path();
-    } 'runfolder from valid subpath';
-    is($derivedpath,$testrundir, 'path from subpath');
-  }
-  { my $is_rta;
-    lives_ok { $is_rta = $rf->is_rta; } 'check is_rta';
-    ok(!$is_rta, 'not RTA run');
-  }
+
   lives_ok {
-    $rf = npg_tracking::illumina::runfolder->new( path=> $testrundir);
-  } 'runfolder from valid path';
+    $rf = npg_tracking::illumina::runfolder->new( runfolder_path => $testrundir);
+  } 'runfolder from valid runfolder_path';
   { my $id_run;
     lives_ok { $id_run = $rf->id_run; } 'id_run parsed';
     is($id_run, 2726, 'id_run correct');
@@ -51,9 +40,15 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
     lives_ok { $name = $rf->name; } 'name parsed';
     is($name, q(IL24_2726), 'name correct');
   }
+  { my $is_rta;
+    lives_ok { $is_rta = $rf->is_rta; } 'check is_rta';
+    ok(!$is_rta, 'not RTA run');
+  }
+
   mkdir catdir($testrundir,qw(Data));
   mkdir catdir($testrundir,qw(Data Intensities));
   { my $is_rta;
+    $rf = npg_tracking::illumina::runfolder->new( runfolder_path => $testrundir);
     lives_ok { $is_rta = $rf->is_rta; } 'check is_rta';
     ok($is_rta, 'RTA run - when Intensities directory added');
   }
@@ -64,28 +59,29 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
     } 'runfolder from valid id_run';
     is($name, q(IL24_2726), 'name parsed');
   }
-  mkdir catdir($testdir,q(090414_IL99_2726));
+  my $rfpath =  catdir($testdir,q(090414_IL99_2726));
+  mkdir $rfpath;
   throws_ok {
     $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, id_run=> 2726, npg_tracking_schema => undef);
-    $rf->path;
+    $rf->runfolder_path;
   } qr/Ambiguous paths/, 'throws when ambiguous run folders found for id_run';
   rmdir catdir($testdir,q(090414_IL99_2726));
   symlink $testrundir, catdir($testdir,q(superfoo_r2726));
   lives_ok {
     $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, id_run=> 2726, npg_tracking_schema => undef);
-    $rf->path;
+    $rf->runfolder_path;
   } 'lives when ambiguous run folders found for id_run but they correspond, via links or such, to the same folder';
   unlink catdir($testdir,q(superfoo_r2726));
   throws_ok {
     $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, id_run=> 2, npg_tracking_schema => undef);
-    $rf->path;
+    $rf->run_folder;
   } qr/No path/, 'throws when no run folders found for id_run';
   my $path;
   lives_ok {
     $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, name=> q(IL24_2726), npg_tracking_schema => undef);
-    $path = $rf->path;
+    $path = $rf->runfolder_path;
   } 'runfolder from valid name';
-  is($path, $testrundir, 'path found');
+  is($path, catdir($testdir,q(090414_IL24_2726)), 'runfolder path found');
   IO::File->new(catfile($testrundir,q(Recipe_foo.xml)), q(w));
   throws_ok {
     $rf->expected_cycle_count;
@@ -129,15 +125,79 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
     $test_runfolder_path = npg_tracking::illumina::runfolder->new(
       runfolder_path=> $testrundir, npg_tracking_schema => undef);
   } 'runfolder from valid runfolder_path';
-  is($test_runfolder_path->path(), $testrundir,
-    q{path obtained ok when runfolder_path used in construction});
+  is($test_runfolder_path->run_folder(), '090414_IL24_2726',
+    q{run folder obtained ok when runfolder_path used in construction});
+}
 
-  lives_ok {
-    $test_runfolder_path = npg_tracking::illumina::runfolder->new(
-      path=> $testrundir, npg_tracking_schema => undef);
-  } 'runfolder from valid path';
-  is($test_runfolder_path->runfolder_path(), $testrundir,
-    q{runfolder_path obtained ok when path used in construction});
+{
+  my $new_name = q(4567XXTT98);
+  my $testrundir_new = catdir($testdir, $new_name);
+  rename $testrundir, $testrundir_new;
+  my $schema = t::dbic_util->new->test_schema();
+  my $id_run = 33333;
+  my $data = {
+    actual_cycle_count   => 30,
+    batch_id             => 939,
+    expected_cycle_count => 37,
+    id_instrument        => 3,
+    id_run               => $id_run,
+    id_run_pair          => 0,
+    team                 => 'RAD',
+    is_paired            => 0,
+    priority             => 1,
+    flowcell_id          => 'someid', 
+    id_instrument_format => 1,
+    folder_name          => $new_name,
+    folder_path_glob     => $testdir
+  };
+  
+  my $run_row = $schema->resultset('Run')->create($data);
+  $run_row->set_tag(1, 'staging');
+
+  my $rf;
+
+  $rf = npg_tracking::illumina::runfolder->new(
+    id_run              => 33333, 
+    npg_tracking_schema => undef);
+  throws_ok { $rf->run_folder } qr/No paths to run folder found/,
+   'error - not able to find a runfolder without db help';
+  throws_ok { $rf->runfolder_path } qr/No paths to run folder found/,
+   'error - not able to find a runfolder without db help';
+
+  $rf = npg_tracking::illumina::runfolder->new(
+      id_run              => 33333, 
+      npg_tracking_schema => $schema);
+  is ($rf->run_folder, $new_name, 'runfolder name with db helper');
+  is ($rf->runfolder_path,  $testrundir_new, 'runfolder path with db helper');
+
+  $rf = npg_tracking::illumina::runfolder->new(
+    run_folder          => $new_name,  
+    npg_tracking_schema => undef);
+  throws_ok { $rf->id_run } qr/Attribute \(id_run\) does not pass the type constraint/,
+    'error - not able to infer run id without db help';
+  throws_ok { $rf->runfolder_path } qr/No paths to run folder found/,
+    'error - not able to find a runfolder without db help';
+
+  $rf = npg_tracking::illumina::runfolder->new(
+      run_folder          => $new_name, 
+      npg_tracking_schema => $schema);
+  is ($rf->id_run, 33333, 'id_run with db helper');
+  is ($rf->runfolder_path,  $testrundir_new, 'runfolder path with db helper');
+
+  $rf = npg_tracking::illumina::runfolder->new(
+    runfolder_path      => $testrundir_new,
+    npg_tracking_schema => undef);
+  throws_ok { $rf->id_run } qr/Attribute \(id_run\) does not pass the type constraint/,
+    'error - not able to infer run id without db help';
+  is ($rf->run_folder, $new_name, 'runfolder name without db help');
+
+  $rf = npg_tracking::illumina::runfolder->new(
+      runfolder_path      => $testrundir_new, 
+      npg_tracking_schema => $schema);
+  is ($rf->id_run, 33333, 'id_run with db helper');
+  is ($rf->run_folder, $new_name, 'runfolder with db helper');
+
+  rename $testrundir_new, $testrundir; 
 }
 
 1;

@@ -5,7 +5,7 @@ package transcriptome;
 
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 16;
 use File::Basename;
 use File::Spec::Functions qw(catfile);
 use Test::Exception;
@@ -47,11 +47,13 @@ foreach my $spp (keys %builds){
             my $tophat_dir = join q[/],$rel_dir,$build,'tophat2';
             my $salmon_dir = join q[/],$rel_dir,$build,'salmon';
             my $fasta_dir  = join q[/],$rel_dir,$build,'fasta';
+            my $globin_dir  = join q[/],$rel_dir,$build,'globin';
             make_path($gtf_dir,
                       $rnaseq_dir,
                       $tophat_dir,
                       $salmon_dir,
                       $fasta_dir,
+                      $globin_dir,
                       {verbose => 0});
           }
         }
@@ -91,6 +93,7 @@ foreach my $v ('ensembl_74_transcriptome','ensembl_75_transcriptome'){
         push @files, join(q[/], $vdir,'salmon','refInfo.json');
         push @files, join(q[/], $vdir,'salmon','header.json');
         push @files, join(q[/], $vdir,'fasta','1000Genomes_hs37d5.fa');
+        push @files, join(q[/], $vdir,'globin','globin_genes.csv');
 }
 
 #make directory structure with empty files and funny business (multiple files, missing files, etc)
@@ -155,6 +158,8 @@ lives_and { is basename($test3->rnaseqc_gtf_file), 'ensembl_74_transcriptome-100
 
 lives_and { is $test3->transcriptome_index_path, catfile($tmp_repos, q[transcriptomes/Homo_sapiens/ensembl_74_transcriptome/1000Genomes_hs37d5/tophat2])
 } "correct path for bowtie2 indices found";
+
+lives_and { is basename($test3->globin_file), 'globin_genes.csv' } 'globin genes csv file found where reference = Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)';
 
 my $prefix_path_74 = catfile($tmp_repos, q[transcriptomes/Homo_sapiens/ensembl_74_transcriptome/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known]);
 lives_and { is $test3->transcriptome_index_name, $prefix_path_74 } "Correctly found transcriptome version index name path and prefix ";

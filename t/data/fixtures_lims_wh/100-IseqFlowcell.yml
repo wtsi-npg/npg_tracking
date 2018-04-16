@@ -18,6 +18,7 @@
   manual_qc: 0
   pipeline_id_lims: Standard
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2014-11-19 17:22:34
   requested_insert_size_from: 400
@@ -48,6 +49,7 @@
   manual_qc: 1
   pipeline_id_lims: ~
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-04 11:16:10
   requested_insert_size_from: ~
@@ -108,6 +110,7 @@
   manual_qc: 1
   pipeline_id_lims: Standard
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-04 11:16:11
   requested_insert_size_from: 400
@@ -138,6 +141,7 @@
   manual_qc: 1
   pipeline_id_lims: Standard
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-04 11:16:11
   requested_insert_size_from: 400
@@ -168,6 +172,7 @@
   manual_qc: 1
   pipeline_id_lims: Standard
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-04 11:16:11
   requested_insert_size_from: 400
@@ -198,6 +203,7 @@
   manual_qc: 1
   pipeline_id_lims: ~
   position: 2
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-04 11:16:11
   requested_insert_size_from: ~
@@ -228,6 +234,7 @@
   manual_qc: 1
   pipeline_id_lims: Standard
   position: 2
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-04 11:16:11
   requested_insert_size_from: 400
@@ -258,6 +265,7 @@
   manual_qc: 1
   pipeline_id_lims: Standard
   position: 2
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-04 11:16:11
   requested_insert_size_from: 400
@@ -288,6 +296,7 @@
   manual_qc: 1 
   pipeline_id_lims: Standard
   position: 2
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-04 11:16:11
   requested_insert_size_from: 400
@@ -318,6 +327,7 @@
   manual_qc: 1 
   pipeline_id_lims: Standard
   position: 2
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-04 11:16:11
   requested_insert_size_from: 400
@@ -348,6 +358,7 @@
   manual_qc: 1
   pipeline_id_lims: Custom
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-05 14:05:41
   requested_insert_size_from: 100
@@ -378,6 +389,7 @@
   manual_qc: 1
   pipeline_id_lims: Custom
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-05 14:05:41
   requested_insert_size_from: 100
@@ -408,6 +420,7 @@
   manual_qc: 1
   pipeline_id_lims: Custom
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-05 14:05:41
   requested_insert_size_from: 100
@@ -438,6 +451,7 @@
   manual_qc: 1
   pipeline_id_lims: Custom
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-05 14:05:41
   requested_insert_size_from: 100
@@ -468,6 +482,7 @@
   manual_qc: 1
   pipeline_id_lims: Custom
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-05 14:05:41
   requested_insert_size_from: 100
@@ -498,6 +513,7 @@
   manual_qc: 1
   pipeline_id_lims: Custom
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-05 14:05:41
   requested_insert_size_from: 100
@@ -528,6 +544,7 @@
   manual_qc: 1
   pipeline_id_lims: Custom
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-05 14:05:41
   requested_insert_size_from: 100
@@ -558,6 +575,7 @@
   manual_qc: 1
   pipeline_id_lims: Custom
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-05 14:05:41
   requested_insert_size_from: 100
@@ -588,6 +606,7 @@
   manual_qc: 1
   pipeline_id_lims: Custom
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-05 14:05:41
   requested_insert_size_from: 100
@@ -618,6 +637,7 @@
   manual_qc: 1
   pipeline_id_lims: Custom
   position: 1
+  primer_panel: ~
   priority: 0
   recorded_at: 2015-02-05 14:05:41
   requested_insert_size_from: 100
@@ -627,4 +647,128 @@
   tag_sequence: TAAGGCGAGTAAGGAG
   tag_set_id_lims: 78
   tag_set_name: 'Nextera v3 - 96 tags - 16mer'
+- bait_name: ~
+  cost_code: S0910
+  entity_id_lims: 20315681
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: MS5476963-300V2
+  forward_read_length: 150
+  id_flowcell_lims: 57543
+  id_iseq_flowcell_tmp: 5635097
+  id_library_lims: NT597908M
+  id_lims: SQSCP
+  id_pool_lims: NT1197047N
+  id_sample_tmp: 3325763
+  id_study_tmp: 4747
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2017-10-20 13:30:34
+  legacy_library_id: 20314922
+  manual_qc: 1
+  pipeline_id_lims: Custom
+  position: 1
+  primer_panel: Hs_MajorQC
+  priority: 0
+  recorded_at: 2017-10-20 13:30:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 1000
+  reverse_read_length: 150
+  tag_index: 1
+  tag_sequence: ATCACGTT
+  tag_set_id_lims: 142
+  tag_set_name: 'Magic Tag Group'
+- bait_name: ~
+  cost_code: S0910
+  entity_id_lims: 20315681
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: MS5476963-300V2
+  forward_read_length: 150
+  id_flowcell_lims: 57543
+  id_iseq_flowcell_tmp: 5635101
+  id_library_lims: NT1196664F
+  id_lims: SQSCP
+  id_pool_lims: NT1197047N
+  id_sample_tmp: 3325764
+  id_study_tmp: 4747
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2017-10-20 13:30:34
+  legacy_library_id: 20314923
+  manual_qc: 1
+  pipeline_id_lims: Custom
+  position: 1
+  primer_panel: Pf_GRC1
+  priority: 0
+  recorded_at: 2017-10-20 13:30:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 1000
+  reverse_read_length: 150
+  tag_index: 2
+  tag_sequence: CGATGTTT
+  tag_set_id_lims: 142
+  tag_set_name: 'Magic Tag Group'
+- bait_name: ~
+  cost_code: S0910
+  entity_id_lims: 20315681
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: MS5476963-300V2
+  forward_read_length: 150
+  id_flowcell_lims: 57543
+  id_iseq_flowcell_tmp: 5635105
+  id_library_lims: NT1196664G
+  id_lims: SQSCP
+  id_pool_lims: NT1197047N
+  id_sample_tmp: 3325765
+  id_study_tmp: 4747
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2017-10-20 13:30:34
+  legacy_library_id: 20314924
+  manual_qc: 1
+  pipeline_id_lims: Custom
+  position: 1
+  primer_panel: Pf_GRC2
+  priority: 0
+  recorded_at: 2017-10-20 13:30:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 1000
+  reverse_read_length: 150
+  tag_index: 3
+  tag_sequence: TTAGGCAT
+  tag_set_id_lims: 142
+  tag_set_name: 'Magic Tag Group'
+- bait_name: ~
+  cost_code: S0910
+  entity_id_lims: 20315681
+  entity_type: library_indexed
+  external_release: ~
+  flowcell_barcode: MS5476963-300V2
+  forward_read_length: 150
+  id_flowcell_lims: 57543
+  id_iseq_flowcell_tmp: 5635109
+  id_library_lims: NT1196664H
+  id_lims: SQSCP
+  id_pool_lims: NT1197047N
+  id_sample_tmp: 3325766
+  id_study_tmp: 4747
+  is_r_and_d: 0
+  is_spiked: 0
+  last_updated: 2017-10-20 13:30:34
+  legacy_library_id: 20314925
+  manual_qc: 1
+  pipeline_id_lims: Custom
+  position: 1
+  primer_panel: ~
+  priority: 0
+  recorded_at: 2017-10-20 13:30:34
+  requested_insert_size_from: 100
+  requested_insert_size_to: 1000
+  reverse_read_length: 150
+  tag_index: 4
+  tag_sequence: TGACCACT
+  tag_set_id_lims: 142
+  tag_set_name: 'Magic Tag Group'
 

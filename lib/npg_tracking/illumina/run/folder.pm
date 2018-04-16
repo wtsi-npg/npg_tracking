@@ -33,7 +33,7 @@ Readonly::Array  my  @INTENSITY_DIR_MATCH     => qw( Intensities );
 
 Readonly::Array our @ORDER_TO_ASSESS_SUBPATH_ASSIGNATION => qw(
       recalibrated_path basecall_path bustard_path intensity_path
-      pb_cal_path qc_path archive_path runfolder_path
+      qc_path archive_path runfolder_path
   );
 
 Readonly::Hash my %NPG_PATH  => (
@@ -43,7 +43,6 @@ Readonly::Hash my %NPG_PATH  => (
   q{bustard_path}      => 'Path to the Bustard directory',
   q{basecall_path}     => 'Path to the "Basecalls" directory',
   q{recalibrated_path} => 'Path to the recalibrated qualities directory',
-  q{pb_cal_path}       => 'Path to the "PB_cal" directory',
   q{archive_path}      => 'Path to the directory with data ready for archiving',
   q{qc_path}           => 'Path directory with top level QC data',
 );
@@ -56,19 +55,6 @@ foreach my $path_attr ( keys %NPG_PATH ) {
     writer        => q{_set_} . $path_attr,
     documentation => $NPG_PATH{$path_attr},
   );
-}
-
-has q{dif_files_path} => (
-  isa           => q{Str},
-  is            => q{ro},
-  predicate     => q{has_dif_files_path},
-  writer        => q{set_dif_files_path},
-  documentation => 'Path to the dif files directory',
-);
-sub _set_dif_files_path { #retained for compatibility with the pipeline
-  my ($self, $path) = @_;
-  $self->set_dif_files_path($path);
-  return;
 }
 
 has q{bam_basecall_path}  => (
@@ -184,12 +170,6 @@ sub _build_recalibrated_path {
   return $self->recalibrated_path();
 }
 
-sub _build_pb_cal_path {
-  my ($self) = @_;
-  $self->_populate_directory_paths();
-  return $self->pb_cal_path();
-}
-
 sub _build_reports_path {
   my ($self) = @_;
   return catdir($self->runfolder_path(), $DATA_DIR, q{reports});
@@ -280,11 +260,10 @@ sub _process_path {
   if (!$self->has_intensity_path())    { $self->_set_intensity_path($intensity_path); };
   if (!$self->has_bustard_path())      { $self->_set_bustard_path($bustard_path); };
   if (!$self->has_basecall_path())     { $self->_set_basecall_path($basecall_path); };
-  if (!$self->has_pb_cal_path())       { $self->_set_pb_cal_path($bustard_path . q{/PB_cal}); };
   if (!$self->has_recalibrated_path()) { $self->_set_recalibrated_path($recalibrated_path); };
 
   if ($self->can(q{verbose}) && $self->verbose()) {
-    foreach my $dir (qw{intensity bustard basecall recalibrated pb_cal}) {
+    foreach my $dir (qw{intensity bustard basecall recalibrated}) {
       my $subpath_dir = $dir . q{_path};
       carp qq{$dir : } . $self->$subpath_dir();
     }
@@ -601,11 +580,17 @@ selecting the first which has directories which should be present in a runfolder
 
 =head1 AUTHOR
 
-Andy Brown
+=over
+
+=item Andy Brown
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 GRL by Andy Brown and Marina Gourtovaia
+Copyright (C) 2018 GRL
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

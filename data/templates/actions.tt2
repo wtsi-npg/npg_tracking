@@ -10,33 +10,34 @@
     id = key ? model.$key : 0;
     run_read = (entity == 'run' && view.method_name == 'read' && id && id > 0) ? 1 : 0;
     rfid = (model.location_is_instrument && requestor.username == 'public') ? 1 : 0;
+    icon_prefix = HTTP_HOST.match('(\.sanger\.ac\.uk)') ? 'sanger-' : '';
  -%]
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <title>[% npg_title %]</title>
   <script type="text/javascript">function addEvent(e,t,fn,c){if(e.addEventListener){e.addEventListener(t,fn,c);return true;}else if(e.attachEvent){var r=e.attachEvent("on"+t,fn);return r;}} var SCRIPT_NAME="[% SCRIPT_NAME  %]";</script>
-  <link rel="icon" type="image/png" href="/prodsoft/npg/icons/sanger-ico.png" />
-  <link rel="stylesheet" type="text/css" href="/prodsoft/npg/css/wtsi.css" />
-  <link rel="stylesheet" type="text/css" href="/prodsoft/npg/css/npg.css" />
-  <script type="text/javascript" src="/prodsoft/npg/js/wtsi/zebra.js" ></script>
-  <script type="text/javascript" src="/prodsoft/npg/js/wtsi/prototype-1.6.0.3.js" ></script>
-  <script type="text/javascript" src="/prodsoft/npg/js/scriptaculous/scriptaculous.js" ></script>
-  <script type="text/javascript" src="/prodsoft/npg/js/wtsi/sorttable.js" ></script>
+  <link rel="icon" type="image/x-icon" href="/icons/[% icon_prefix %]favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="/css/wtsi.css" />
+  <link rel="stylesheet" type="text/css" href="/css/npg.css" />
+  <script type="text/javascript" src="/js/wtsi/zebra.js" ></script>
+  <script type="text/javascript" src="/js/wtsi/prototype-1.6.0.3.js" ></script>
+  <script type="text/javascript" src="/js/scriptaculous/scriptaculous.js" ></script>
+  <script type="text/javascript" src="/js/wtsi/sorttable.js" ></script>
   [% PROCESS urls.tt2 -%]
-  <script type="text/javascript" src="/prodsoft/npg/js/npg.js" ></script>
+  <script type="text/javascript" src="/js/npg.js" ></script>
   <script type="text/javascript">var lims_batches_url='[% lims_batches_url %]';</script>
-  [% IF run_read %] <script type="text/javascript" src="/prodsoft/npg/js/npg_run.js" ></script>[% END %]
-  [% IF rfid %] <script type="text/javascript" src="/prodsoft/npg/js/npg_rfid.js" ></script>[% END %]
+  [% IF run_read %] <script type="text/javascript" src="/js/npg_run.js" ></script>[% END %]
+  [% IF rfid %] <script type="text/javascript" src="/js/npg_rfid.js" ></script>[% END %]
   [%- IF view.no_main_menu %]<base target="_parent" />[% END -%]
 </head>
 
 <body><div id="main" class="expanded" >
 [% IF !view.no_main_menu %]
 <div id="banner">
-  <div class="lfloat"><img src="/prodsoft/npg/icons/sanger-logo.png" alt="WTSI logo" /></div>
+  <div class="lfloat"><img src="/icons/[% icon_prefix %]logo.png" alt="[% icon_prefix ? 'Welcome Sanger Institute' : 'Organisation' %] logo" /></div>
   <div class="rfloat">
     <div class="npg_title [% dev ? 'dev_highlight' : '' %]">[% npg_title %]</div>
-    <div><a href="/perl/enigmatic.cgi"><img src="/prodsoft/npg/icons/navigation/[% image %].gif" alt="[% image == 'logout' ? 'Logout' : 'Login';  %] button" /></a>
+    <div><a href="/perl/enigmatic.cgi"><img src="/icons/navigation/[% image %].gif" alt="[% image == 'logout' ? 'Logout' : 'Login';  %] button" /></a>
    [%- IF image == 'logout' %]Logged in as <a href="[% SCRIPT_NAME %]/user/[% requestor.username %]">[% view.realname(requestor.username);%]</a>[% ELSE %]&nbsp;<a href="/perl/enigmatic.cgi">Log in</a>[% END -%]
 <div>Group[% IF requestor.usergroups.size > 1; 's'; END; %]:[% FOREACH usergroup = requestor.usergroups %]&nbsp;[% usergroup.groupname %][% END %]</div>
     </div>
@@ -89,6 +90,6 @@
 <div class="clearfloats"></div>
 <hr class="main_menu_footer" />
 
-<div id="spinner" style="display:none;"><img src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" /></div>
+<div id="spinner" style="display:none;"><img src="/gfx/spinner.gif" alt="spinner" /></div>
 
 [%-END %]

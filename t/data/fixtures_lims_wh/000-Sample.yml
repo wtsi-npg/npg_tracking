@@ -458,4 +458,153 @@
   supplier_name: ~
   taxon_id: ~
   uuid_sample_lims: 6102dad0-ad30-11e4-82e0-68b59976a382
-
+- accession_number: ~
+  cohort: ~
+  common_name: ~
+  consent_withdrawn: 0
+  control: ~
+  country_of_origin: ~
+  created: 2017-10-19 13:30:14
+  deleted_at: ~
+  description: ~
+  donor_id: ~
+  ethnicity: ~
+  father: ~
+  gender: ~
+  geographical_region: ~
+  id_lims: SQSCP
+  id_sample_lims: 3373451
+  id_sample_tmp: 3325763
+  last_updated: 2017-10-19 13:30:14
+  mother: ~
+  organism: ~
+  public_name: ~
+  recorded_at: 2017-10-19 13:30:14
+  reference_genome: ~
+  replicate: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  strain: ~
+  supplier_name: ~
+  taxon_id: ~
+  uuid_sample_lims: 77013044-b4cf-11e7-abfd-68b599768938
+- accession_number: ~
+  cohort: ~
+  common_name: ~
+  consent_withdrawn: 0
+  control: ~
+  country_of_origin: ~
+  created: 2017-10-19 13:30:14
+  deleted_at: ~
+  description: ~
+  donor_id: ~
+  ethnicity: ~
+  father: ~
+  gender: ~
+  geographical_region: ~
+  id_lims: SQSCP
+  id_sample_lims: 3373452
+  id_sample_tmp: 3325764
+  last_updated: 2017-10-19 13:30:14
+  mother: ~
+  organism: ~
+  public_name: ~
+  recorded_at: 2017-10-19 13:30:14
+  reference_genome: ~
+  replicate: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  strain: ~
+  supplier_name: ~
+  taxon_id: ~
+  uuid_sample_lims: 77060b5a-b4cf-11e7-abfd-68b599768938
+- accession_number: ~
+  cohort: ~
+  common_name: ~
+  consent_withdrawn: 0
+  control: ~
+  country_of_origin: ~
+  created: 2017-10-19 13:30:14
+  deleted_at: ~
+  description: ~
+  donor_id: ~
+  ethnicity: ~
+  father: ~
+  gender: ~
+  geographical_region: ~
+  id_lims: SQSCP
+  id_sample_lims: 3373453
+  id_sample_tmp: 3325765
+  last_updated: 2017-10-19 13:30:14
+  mother: ~
+  organism: ~
+  public_name: ~
+  recorded_at: 2017-10-19 13:30:14
+  reference_genome: ~
+  replicate: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  strain: ~
+  supplier_name: ~
+  taxon_id: ~
+  uuid_sample_lims: 770ac014-b4cf-11e7-abfd-68b599768938
+- accession_number: ~
+  cohort: ~
+  common_name: ~
+  consent_withdrawn: 0
+  control: ~
+  country_of_origin: ~
+  created: 2017-10-19 13:30:14
+  deleted_at: ~
+  description: ~
+  donor_id: ~
+  ethnicity: ~
+  father: ~
+  gender: ~
+  geographical_region: ~
+  id_lims: SQSCP
+  id_sample_lims: 3373454
+  id_sample_tmp: 3325766
+  last_updated: 2017-10-19 13:30:14
+  mother: ~
+  organism: ~
+  public_name: ~
+  recorded_at: 2017-10-19 13:30:14
+  reference_genome: ~
+  replicate: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  strain: ~
+  supplier_name: ~
+  taxon_id: ~
+  uuid_sample_lims: 770f95a8-b4cf-11e7-abfd-68b599768938
+- accession_number: ~
+  cohort: ~
+  common_name: ~
+  consent_withdrawn: 0
+  control: ~
+  country_of_origin: ~
+  created: 2017-10-19 13:30:14
+  deleted_at: ~
+  description: ~
+  donor_id: ~
+  ethnicity: ~
+  father: ~
+  gender: ~
+  geographical_region: ~
+  id_lims: SQSCP
+  id_sample_lims: 3373455
+  id_sample_tmp: 3325767
+  last_updated: 2017-10-19 13:30:14
+  mother: ~
+  organism: ~
+  public_name: ~
+  recorded_at: 2017-10-19 13:30:14
+  reference_genome: ~
+  replicate: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  strain: ~
+  supplier_name: ~
+  taxon_id: ~
+  uuid_sample_lims: 77145e3a-b4cf-11e7-abfd-68b599768938

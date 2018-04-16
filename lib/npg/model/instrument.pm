@@ -19,6 +19,8 @@ use npg::model::annotation;
 use npg::model::instrument_designation;
 use npg::model::designation;
 use DateTime;
+use DateTime::Duration;
+use DateTime::Format::MySQL;
 use List::MoreUtils qw/any/;
 
 our $VERSION = '0';
@@ -274,6 +276,20 @@ sub instrument_statuses {
                    ORDER BY rs.id_instrument_status DESC);
   $self->{'instrument_statuses'} = $self->gen_getarray($pkg, $query, $self->id_instrument());
   return $self->{'instrument_statuses'};
+}
+
+sub recent_instrument_statuses {
+  my $self = shift;
+
+  my $earliest = DateTime->now()->subtract(DateTime::Duration->new(years => 1));
+  my @recent = ();
+  foreach my $is (@{$self->instrument_statuses()}) {
+    if (DateTime::Format::MySQL->parse_datetime($is->date()) < $earliest) {
+      last;
+    }
+    push @recent, $is;
+  }
+  return \@recent;
 }
 
 sub current_instrument_mods {
@@ -659,6 +675,8 @@ Has a side-effect of updating an instrument's current instrument_status to 'wash
 
   my $arInstrumentStatuses = $oInstrument->instrument_statuses();
 
+=head2 recent_instrument_statuses - arrayref of recent (within a year) npg::model::instrument_statuses for this instrument 
+
 =head2 current_instrument_status - npg::model::instrument_status with iscurrent=1 for this instrument
 
   my $oInstrumentStatus = $oInstrument->current_instrument_status();
@@ -680,6 +698,7 @@ Has a side-effect of updating an instrument's current instrument_status to 'wash
   my $oAnnotation = $oInstrument->latest_annotation();
 
 =head2 fc_slots2current_runs - a hash reference mapping instrument flowcell slots to current runs; tags for slots are used as keys
+
 =head2 fc_slots2blocking_runs - a hash reference mapping instrument flowcell slots to blocking runs; tags for slots are used as keys
 
 =head2 does_sequencing - returns true is the instrument does sequencing, false otherwise

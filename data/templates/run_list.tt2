@@ -26,7 +26,7 @@
 <span class="medium_header ">Page: </span>
 [% i = 0 %]
 [% WHILE i * model.len < model.count_runs %]
-&middot;<a [% target %][% IF i == model.start / model.len%]class="active" [% END %] href="[% SCRIPT_NAME %]/[% model.table %][% IF model.id_instrument %]/[% model.id_instrument %][% END %]?id_run_status_dict=[% model.id_run_status_dict %]&len=[% model.len %]&start=[% i * model.len %]&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[% id_instrument %]" id="pagination_[% i+1 %]">[% i+1 %]</a>&middot;
+&middot;<a [% target %][% IF i == model.start / model.len%]class="active" [% END %] href="[% SCRIPT_NAME %]/[% model.table %]?id_run_status_dict=[% model.id_run_status_dict %]&len=[% model.len %]&start=[% i * model.len %]&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[% id_instrument %]" id="pagination_[% i+1 %]">[% i+1 %]</a>&middot;
 [% i = i + 1 %]
 [% END %]
 </div>

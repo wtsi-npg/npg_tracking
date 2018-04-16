@@ -14,7 +14,8 @@ our $VERSION = '0';
 
 has 'analysis' => (default  => $DEFAULT_ANALYSIS,
                    is       => 'ro',
-                   required => 0,);
+                   required => 0,
+                  );
 
 has '_organism_dir' => ( isa        => q{Maybe[Str]},
                          is         => q{ro},
@@ -111,6 +112,30 @@ has 'gtf_file' => ( isa           => q{Maybe[Str]},
 sub _build_gtf_file {
   my $self = shift;
   return $self->_find_file('gtf', 'gtf');
+}
+
+has 'globin_path' => (isa           => q{Maybe[Str]},
+                     is            => q{ro},
+                     lazy          => 1,
+                     builder       => q{_build_globin_path},
+                     documentation => 'Path to directory of file with list of globin genes',
+                    );
+
+sub _build_globin_path {
+    my $self = shift;
+    return $self->_find_path('globin');
+}
+
+has 'globin_file' => (isa           => q{Maybe[Str]},
+                     is            => q{ro},
+                     lazy          => 1,
+                     builder       => q{_build_globin_file},
+                     documentation => 'Full name of transcriptome fasta file',
+                    );
+
+sub _build_globin_file {
+  my $self = shift;
+  return $self->_find_file('globin', 'csv');
 }
 
 #transcriptomes/Homo_sapiens/ensembl_75_transcriptome/1000Genomes_hs37d5/{tophat2,salmon}/

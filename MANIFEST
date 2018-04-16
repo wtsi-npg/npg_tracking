@@ -127,7 +127,7 @@ htdocs/css/wtsi.css
 htdocs/gfx/spinner.gif
 htdocs/icons/navigation/key.gif
 htdocs/icons/navigation/logout.gif
-htdocs/icons/sanger-ico.png
+htdocs/icons/sanger-favicon.ico
 htdocs/icons/sanger-logo.png
 htdocs/icons/silk/add.png
 htdocs/icons/silk/arrow_out.png
@@ -256,6 +256,8 @@ lib/npg_tracking/daemon/staging_local.pm
 lib/npg_tracking/daemon/status.pm
 lib/npg_tracking/data/bait.pm
 lib/npg_tracking/data/bait/find.pm
+lib/npg_tracking/data/gbs_plex.pm
+lib/npg_tracking/data/gbs_plex/find.pm
 lib/npg_tracking/data/reference.pm
 lib/npg_tracking/data/reference/find.pm
 lib/npg_tracking/data/reference/info.pm
@@ -353,6 +355,7 @@ t/00-scripts_compile.t
 t/10-authentication-sanger_ldap.t
 t/10-authentication-sanger_sso.t
 t/10-bait.t
+t/10-gbs_plex.t
 t/10-model-administration.t
 t/10-model-annotations.t
 t/10-model-designation.t
@@ -953,6 +956,10 @@ t/data/repos/st/studies/334.xml
 t/data/repos/st/studies/397.xml
 t/data/repos1/baits/Human_all_exon_50MB/1000Genomes_hs37d5/S02972011-GRCh37_hs37d5-CTR.interval_list
 t/data/repos1/baits/Human_all_exon_50MB/1000Genomes_hs37d5/S02972011-GRCh37_hs37d5-PTR.interval_list
+t/data/repos1/gbs_plex/Hs_W30467/default/all/fasta/Hs_W30467.fa
+t/data/repos1/gbs_plex/Hs_W30467/default/all/bcftools/Hs_W30467.annotation.vcf
+t/data/repos1/gbs_plex/Hs_W30467/default/all/bcftools/Hs_W30467.info.json
+t/data/repos1/gbs_plex/Hs_W30467/default/all/bcftools/Hs_W30467.ploidy
 t/data/repos1/npg/run/12071.xml
 t/data/repos1/npg/run/12161.xml
 t/data/repos1/npg/run/7753.xml

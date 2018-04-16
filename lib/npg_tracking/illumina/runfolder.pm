@@ -22,7 +22,8 @@ npg_tracking::illumina::runfolder
   my $oRunfolder = npg_tracking::illumina::runfolder->new(id_run => 3220);
   chdir $oRunfolder->runfolder_path;
 
-  my $oRunfolder = npg_tracking::illumina::runfolder->new(runfolder_path => '/staging/IL29/incoming/090721_IL29_3379/');
+  my $oRunfolder = npg_tracking::illumina::runfolder->new(
+    runfolder_path => '/staging/IL29/incoming/090721_IL29_3379/');
   my $name = $oRunfolder->name; # 090721_IL29_3379
   my $id = $oRunfolder->id_run; # 3379
 
@@ -35,37 +36,16 @@ directory heirarchy and from the files within it.
 
 =cut
 
-with 'npg_tracking::illumina::run::short_info';
-with 'npg_tracking::illumina::run::folder';
+with qw/npg_tracking::illumina::run::folder
+        npg_tracking::illumina::run::short_info/;
 with 'npg_tracking::illumina::run::long_info';
 
 sub _build_run_folder {
   my $self = shift;
   ($self->_given_path or $self->has_id_run or $self->has_name)
-      or croak 'Need a path to work out a run_folder';
+      or croak 'Need a path or id_run to work out a run_folder';
   return first {$_ ne q()} reverse File::Spec->splitdir($self->runfolder_path);
 }
-
-=head2 path
-
-Alias for runfolder_path
-
-=cut
-
-*path = \&runfolder_path;
-
-around BUILDARGS => sub {
-  my $orig  = shift;
-  my $class = shift;
-
-  my %h = ref $_[0] eq q{HASH} ? %{$_[0]} : @_;
-  if ( exists $h{path} ) {
-    $h{runfolder_path}=$h{path};
-    return $class->$orig(\%h);
-  } else {
-    return $class->$orig(@_);
-  }
-};
 
 __PACKAGE__->meta->make_immutable;
 
@@ -92,9 +72,6 @@ __PACKAGE__->meta->make_immutable;
 =back
 
 =head1 INCOMPATIBILITIES
-
-The Moose builder and before constructs used here may not be particularly
-appropriate for inheritance - review required should you subclass.
 
 =head1 BUGS AND LIMITATIONS
 
