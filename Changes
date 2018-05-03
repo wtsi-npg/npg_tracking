@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - use bwa0_6 as default aligner when searching for references
+
 release 86.10
  - the bug in paged run views where a particular instrument was selected
      is fixed
