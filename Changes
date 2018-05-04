@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - When parsing RunInfo.xml look for FlowcellLayout rather than version
+
 release 86.10
  - the bug in paged run views where a particular instrument was selected
      is fixed

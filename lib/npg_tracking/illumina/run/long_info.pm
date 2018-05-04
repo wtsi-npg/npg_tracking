@@ -254,8 +254,8 @@ sub _build__runinfo_store {
   #Now parse runinfo and record useful info...:
   my $doc = XML::LibXML->new()->parse_string($runinfo);
 
-  my $formatversion=$doc->getElementsByTagName('RunInfo')->[0]->getAttribute('Version');
-  if(not defined $formatversion){
+  my $fcl_el = $doc->getElementsByTagName('FlowcellLayout')->[0];
+  if(not defined $fcl_el) {
     $self->_set_lane_count($doc->getElementsByTagName('Lane')->size);
     $self->_set_expected_cycle_count($doc->getElementsByTagName('Cycles')->[0]->getAttribute('Incorporation'));
 
@@ -282,9 +282,7 @@ sub _build__runinfo_store {
       $self->_set_values_at_end_of_read($rc);
     }
 
-  ## no critic (ValuesAndExpressions::ProhibitMagicNumbers)
-  }elsif($formatversion == 2 || $formatversion == 3 || $formatversion == 4){
-    my $fcl_el = $doc->getElementsByTagName('FlowcellLayout')->[0];
+  }else{
     $self->_set_lane_count($fcl_el->getAttribute('LaneCount'));
     my $ncol = $fcl_el->getAttribute('SurfaceCount') * $fcl_el->getAttribute('SwathCount');
     my $nrow = $fcl_el->getAttribute('TileCount'); #informatic split on HiSeq
@@ -314,9 +312,6 @@ sub _build__runinfo_store {
       }
       $self->_set_values_at_end_of_read($rc);
     }
-
-  }else{
-    croak "unknown RunInfo.xml Version $formatversion";
   }
 
   return $runinfo;
