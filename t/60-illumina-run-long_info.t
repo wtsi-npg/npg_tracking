@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 63;
+use Test::More tests => 71;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
@@ -150,6 +150,25 @@ note($long_info->runfolder_path);
   cmp_ok($long_info->lane_tilecount->{2}, '==', 63, 'correct lane 2 tile count');
 note($long_info->runfolder_path);
   
+
+}
+
+#Now let's test a NovaSeq directory....
+$ENV{TEST_DIR} = 't/data/long_info';
+{
+  my $long_info;
+
+  lives_ok  { $long_info = test::long_info->new({id_run => 25723}); } q{created role_test object ok};
+  is($long_info->tilelayout_columns(), 12, q{correct number of tilelayout_columns});
+  lives_ok  { $long_info = test::long_info->new({id_run => 25723}); } q{created role_test object ok};
+  is($long_info->tilelayout_rows(), 78, q{correct number of tilelayout_rows});
+  lives_ok  { $long_info = test::long_info->new({id_run => 25723}); } q{created role_test object ok};
+  is($long_info->tile_count(), 936, q{correct number of tiles});
+
+  $long_info=undef;
+  lives_ok  { $long_info = test::long_info->new({id_run => 25723}); } q{created role_test (HiSeq run 19395, RunInfo.xml) object ok};
+  cmp_ok($long_info->lane_tilecount->{1}, '==', 936, 'correct lane 1 tile count');
+note($long_info->runfolder_path);
 
 }
 
