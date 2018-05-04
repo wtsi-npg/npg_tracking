@@ -16,7 +16,7 @@ my $current_dir = cwd();
 my $central = catfile($current_dir, q[t/data/repos]);
 my $repos = catfile($current_dir, q[t/data/repos/references]);
 my $transcriptome_repos = catfile($current_dir, q[t/data/repos1]);
-my $bwa_human_ref = q[Human/NCBI36/all/bwa/someref.fa];
+my $bwa_human_ref = q[Human/NCBI36/all/bwa0_6/someref.fa];
 
 my $new = tempdir(UNLINK => 1);
 
@@ -49,7 +49,7 @@ use_ok('npg_tracking::data::reference::find');
   throws_ok { $ruser->_get_reference_path() } qr/Organism\ should\ be\ defined/, 
            'croak on organism not defined';
   throws_ok { $ruser->_get_reference_path(q[PhiX]) } 
-    qr/Binary bwa reference for PhiX, some-strain does not exist/, 'error message when strain is not available';
+    qr/Binary bwa0_6 reference for PhiX, some-strain does not exist/, 'error message when strain is not available';
 
   $ruser = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::find/])
@@ -65,16 +65,16 @@ use_ok('npg_tracking::data::reference::find');
           roles => [qw/npg_tracking::data::reference::find/])
           ->new_object({ repository => $central});
   throws_ok { $ruser->_get_reference_path(q[human]) } 
-    qr/Binary\ bwa\ reference/, 'error message when the directory structure for the binary ref is missing';
+    qr/Binary\ bwa0_6\ reference/, 'error message when the directory structure for the binary ref is missing';
 
   $ruser = Moose::Meta::Class->create_anon_class(
           roles => [qw/npg_tracking::data::reference::find/])
           ->new_object({ repository => $central,});
-  is ($ruser->_get_reference_path(q[Human]), catfile($repos, q[Human/default/all/bwa/someref.fa]), 
+  is ($ruser->_get_reference_path(q[Human]), catfile($repos, q[Human/default/all/bwa0_6/someref.fa]), 
            'correct reference path'); 
   throws_ok { $ruser->_get_reference_path(q[Human], q[no_ref_strain]) } 
     qr/Reference file with .fa or .fasta or .fna extension not found in/, 'error message when no genome ref is found in the fasta directory';
-  is ($ruser->_get_reference_path(q[Human], q[fna_strain]), catfile($repos, q[Human/fna_strain/all/bwa/someref.fna]), 
+  is ($ruser->_get_reference_path(q[Human], q[fna_strain]), catfile($repos, q[Human/fna_strain/all/bwa0_6/someref.fna]), 
     'genome reference with .fna extension is found');
 
   $ruser = Moose::Meta::Class->create_anon_class(
@@ -103,8 +103,8 @@ use_ok('npg_tracking::data::reference::find');
   is ($ruser->_preset_ref2ref_path(q[ ]), q[], 'incorrect ref genome - return empty string');
   like ($ruser->messages->pop, qr/Incorrect reference genome format  /, 'incorrect ref genome format error logged');
 
-  throws_ok {$ruser->_preset_ref2ref_path(q[Human (dada) ])} qr/Binary bwa reference for Human, dada does not exist/, 'non-existing strain error';
-  throws_ok {$ruser->_preset_ref2ref_path(q[dodo (fna_strain) ])} qr/Binary bwa reference for dodo, fna_strain does not exist/, 'non-existing organism error';
+  throws_ok {$ruser->_preset_ref2ref_path(q[Human (dada) ])} qr/Binary bwa0_6 reference for Human, dada does not exist/, 'non-existing strain error';
+  throws_ok {$ruser->_preset_ref2ref_path(q[dodo (fna_strain) ])} qr/Binary bwa0_6 reference for dodo, fna_strain does not exist/, 'non-existing organism error';
 }
 
 {

@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - use bwa0_6 as default aligner when searching for references
  - When parsing RunInfo.xml look for FlowcellLayout rather than version
 
 release 86.10
