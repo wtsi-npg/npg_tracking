@@ -5,7 +5,8 @@ use warnings;
 use POSIX qw(strftime);
 use URI::URL;
 use Carp;
-use English qw(-no_match_vars);
+use Try::Tiny;
+use HTTP::Headers;
 
 use npg::util;
 use npg::model::user;
@@ -46,7 +47,7 @@ sub new {
   # Force load (and cache) of requestor's memberships
   # and tack on the virtual 'public' group if it's not there already
   #
-  if(!scalar grep { $_->groupname() eq 'public' } @{$requestor->usergroups()||[]}) {
+  if(!scalar grep { $_->groupname() eq 'public' } @{$requestor->usergroups() || []}) {
     push @{ $requestor->{usergroups} }, npg::model::usergroup->new({
       util         => $util,
       groupname    => 'public',
@@ -74,12 +75,27 @@ sub new {
   return $self;
 }
 
+sub init {
+  my $self = shift;
+
+  my $lims_url = $self->util()->lims_url();
+  if ($lims_url) {
+    $self->{'headers'} ||= HTTP::Headers->new;
+    #$self->headers->header('Vary', 'Origin');
+    #$self->headers->header('Access-Control-Allow-Origin', $lims_url);
+    #$self->headers->header('Access-Control-Allow-Methods', 'GET,OPTIONS');
+    #$self->headers->header('Access-Control-Allow-Headers', 'TE,X-Remote-User,withcredentials');
+    #$self->headers->header('Access-Control-Max-Age', '1800'); #30 minutes
+  }
+  return 1;
+}
+
 sub get_inst_format {
-  my ( $self ) = @_;
+  my $self = shift;
 
   my $inst_format = $self->util->cgi->param( q{inst_format} ) || q{HK};
-  $self->model->{inst_format} = $self->model->sanitise_input( $inst_format );
-  return $self->model->{inst_format};
+  $self->model->{'inst_format'} = $self->model->sanitise_input( $inst_format );
+  return $self->model->{'inst_format'};
 }
 
 sub authorised {
@@ -96,39 +112,34 @@ sub authorised {
 
 sub realname {
   my ($self, $username) = @_;
-  if (!$username) {
-    $username = $self->util->requestor->username();
-  }
+
+  $username ||= $self->util->requestor->username();
+
   if (!$username || $username eq q[pipeline] || $username eq q[public]) {
     return $username;
   }
 
   my $realname;
-  eval {
-    my $ph = $self->person($username);
-    $realname = $ph->{name};
-    1;
-  } or do {
-    carp $EVAL_ERROR;
+  try {
+    $realname = $self->person($username)->{'name'};
+  } catch {
+    carp $_;
   };
-  if (!$realname) {
-    $realname = $username;
-  }
+  $realname ||= $username;
+
   return $realname ;
 }
 
 sub person {
   my ($self, $username) = @_;
-  if (!$username) {
-    $username = $self->util->requestor->username();
-  }
+
+  $username ||= $self->util->requestor->username();
 
   my $info = {};
-  eval {
+  try {
     $info = person_info($username);
-    1;
-  } or do {
-    carp $EVAL_ERROR;
+  } catch {
+    carp $_;
   };
   return $info;
 }
@@ -138,8 +149,7 @@ sub app_version {
 }
 
 sub time_rendered {
-  my $time = strftime '%Y-%m-%dT%H:%M:%S', localtime;
-  return $time;
+  return strftime '%Y-%m-%dT%H:%M:%S', localtime;
 }
 
 sub is_prod {
@@ -230,6 +240,8 @@ View superclass for the NPG MVC application
 
   my $oView = npg::view::<subclass>->new({'util' => $oUtil, ...});
 
+=head2 init - additional post-constructor hook
+
 =head2 get_inst_format
 
 returns inst_format from cgi params, sanitised
@@ -286,7 +298,15 @@ residing on staging areas.
 
 =item Carp
 
-=item English
+=item Try::Tiny
+
+=item URI::URL
+
+=item strict
+
+=item warnings
+
+=item HTTP::Headers
 
 =item POSIX qw(strftime)
 
@@ -298,11 +318,12 @@ residing on staging areas.
 
 =head1 AUTHOR
 
-Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+Roger Pettett
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017 Genome Research Ltd
+Copyright (C) 2018 Genome Research Ltd
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.8 or,
