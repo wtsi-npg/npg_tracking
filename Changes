@@ -2,11 +2,11 @@ LIST OF CHANGES
 
 release 86.10.1
  - following changes to npg_tracking::illumina::run::short_info role,
-   patche staging monitor, which started to fail if run id could
+   patch staging monitor, which started to fail if run id could
    not be retrieved
  - other changes to staging monitor:
      improve reporting
-     change the order when validating run folders, willtry
+     change the order when validating run folders, will try
        to retrieve run id first, then validate the name
      propagate db schema handle
      use db schema accessor that is used by npg_tracking::illumina::runfolder
