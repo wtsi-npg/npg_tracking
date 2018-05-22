@@ -178,7 +178,7 @@ sub check_tiles {
 sub mark_as_mirrored {
     my ($self) = @_;
 
-    $self->run_db_row->update_run_status( 'run mirrored', $self->username() );
+    $self->tracking_run()->update_run_status( 'run mirrored', $self->username() );
 
     my $mirrored_flag = $self->runfolder_path() . q{/Mirror.completed};
 
@@ -208,7 +208,7 @@ sub move_to_analysis {
             push @ms, "Changed group to $group";
         }
         my $status = 'analysis pending';
-        $self->run_db_row->update_run_status($status, $self->username() );
+        $self->tracking_run()->update_run_status($status, $self->username() );
         push @ms, "Updated run status to $status";
     }
 
@@ -236,7 +236,7 @@ sub move_to_outgoing {
     if (any { -e join(q[/], $rf, $_) }  @NO_MOVE_NAMES) {
         $m = "$rf flagged not to be moved to outgoing"
     } else {
-        my $id = $self->run_db_row->id_run;
+        my $id = $self->tracking_run()->id_run;
         my $status = $self->current_run_status_description();
         if ($status eq 'qc complete') {
             my $destination = $self->_destination_path('analysis', 'outgoing');
@@ -311,7 +311,7 @@ sub _get_folder_path_glob {
 
 sub update_folder {
     my ($self) = @_;
-    my $run_db = $self->run_db_row();
+    my $run_db = $self->tracking_run();
     $run_db->folder_name($self->run_folder);
     my $glob = $self->_get_folder_path_glob;
     if ( $glob ) { $run_db->folder_path_glob($glob); }

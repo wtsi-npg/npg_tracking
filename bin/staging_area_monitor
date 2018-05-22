@@ -14,7 +14,6 @@ use Try::Tiny;
 
 use Monitor::Staging;
 use Monitor::RunFolder::Staging;
-use npg_tracking::Schema;
 
 our $VERSION = '0';
 
@@ -52,8 +51,9 @@ while (1) {
         foreach my $run_path ( $monitor->find_live($area) ) {
             _log_noindent("Considering $run_path");
 
-            my $folder = Monitor::RunFolder::Staging->
-                           new( runfolder_path => $run_path );
+            my $folder = Monitor::RunFolder::Staging->new(
+                           runfolder_path      => $run_path,
+                           npg_tracking_schema => $monitor->schema);
             my $run_status = $folder->current_run_status_description();
             _log("Run status $run_status");
 
@@ -76,7 +76,7 @@ while (1) {
             # If we don't remember seeing it before set the staging tag, folder name and glob;
             if ( not defined $previous_size_of{$run_path} ) {
                 $folder->update_folder();
-                $folder->run_db_row->set_tag( $folder->username(), 'staging' );
+                $folder->tracking_run()->set_tag( $folder->username(), 'staging' );
                 _log('Set staging tag');
                 $previous_size_of{$run_path} = 0;
             }
@@ -90,16 +90,16 @@ while (1) {
             }
 
             if ( $run_status eq 'run in progress' ) {
-                $folder->cycle_lag($run_path) ? $folder->run_db_row->set_tag( $folder->username(), 'copying_problem' )
-                                              : $folder->run_db_row->unset_tag( $folder->username(), 'copying_problem' );
+                $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
+                                              : $folder->tracking_run()->unset_tag( $folder->username(), 'copying_problem' );
                 $folder->fallback_update();
                 next;
             }
 
             if ( $run_status eq 'run complete' ) {
 
-                $folder->cycle_lag($run_path) ? $folder->run_db_row->set_tag( $folder->username(), 'copying_problem' )
-                                              : $folder->run_db_row->unset_tag( $folder->username(), 'copying_problem' );
+                $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
+                                              : $folder->tracking_run()->unset_tag( $folder->username(), 'copying_problem' );
 
                 # Integrity check - got everything.
                 next if $folder->cycle_lag($run_path);

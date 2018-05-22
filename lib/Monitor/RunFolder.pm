@@ -1,56 +1,18 @@
-#########
-# Author:        jo3
-# Created:       19/10/2010
-
 package Monitor::RunFolder;
 
 use Moose;
-use Monitor::SRS::File;
-with 'Monitor::Roles::Cycle';
-with 'Monitor::Roles::Schema';
-with 'Monitor::Roles::Username';
-with 'npg_tracking::illumina::run::short_info';    # id_run
-
 use Carp;
-use English qw(-no_match_vars);
 use Readonly;
+use Monitor::SRS::File;
+
+extends 'npg_tracking::illumina::runfolder';
+
+with qw/ Monitor::Roles::Cycle
+         Monitor::Roles::Username /;
 
 our $VERSION = '0';
 
 Readonly::Scalar our $ACCEPTABLE_CYCLE_DELAY => 6;
-
-# short_info's documentation says that run_folder will be constrained to the
-# last element of the path, so remember the input.
-has runfolder_path => (
-  is         => 'ro',
-  isa        => 'Str',
-  required   => 1,
-);
-with 'npg_tracking::illumina::run::long_info';   # lane, tile, cycle counts, is_rta
-
-has run_folder => (
-  is         => 'ro',
-  isa        => 'Str',
-  lazy_build => 1,
-);
-sub _build_run_folder {
-  my ($self) = @_;
-  my $path = $self->runfolder_path();
-  return substr $path, 1 + rindex( $path, q{/} );
-}
-
-has run_db_row => (
-  is         => 'ro',
-  isa        => 'Maybe[npg_tracking::Schema::Result::Run]',
-  lazy_build => 1,
-);
-sub _build_run_db_row {
-  my ($self) = @_;
-  my $id     = $self->id_run();
-  my $run_rs = $self->schema->resultset('Run')->find($id);
-  croak "Problem retrieving record for id_run => $id" if !defined $run_rs;
-  return $run_rs;
-}
 
 has file_obj => (
   is         => 'ro',
@@ -60,24 +22,7 @@ has file_obj => (
 
 sub current_run_status_description {
   my ($self) = @_;
-
-  my $run_status_rs = $self->schema->resultset('RunStatus')->search(
-        {
-          id_run    => $self->id_run(),
-          iscurrent => 1,
-        }
-  );
-
-  croak 'Error getting current run status for run ' . $self->id_run()
-    if $run_status_rs->count() != 1;
-
-  return $run_status_rs->next->run_status_dict->description();
-}
-
-sub current_run_status {
-  my ($self) = @_;
-  carp 'DO NOT USE THIS Monitor::RunFolder::current_run_status METHOD - IMPENDING RETURN VALUE CHANGE';
-  return $self->current_run_status_description();
+  return $self->tracking_run()->current_run_status_description();
 }
 
 sub _build_file_obj {
@@ -94,7 +39,7 @@ sub check_cycle_count {
   croak 'Latest cycle count not supplied'   if !defined $latest_cycle;
   croak 'Run complete Boolean not supplied' if !defined $run_complete;
 
-  my $run_db = $self->run_db_row();
+  my $run_db = $self->tracking_run();
 
   $latest_cycle
     && ( $self->current_run_status_description() eq 'run pending' )
@@ -115,7 +60,7 @@ sub read_long_info {
   my $self = shift;
 
   my $recipe   = $self->file_obj();
-  my $run_db   = $self->run_db_row();
+  my $run_db   = $self->tracking_run();
   my $username = $self->username();
 
   $recipe->expected_cycle_count();
@@ -165,7 +110,7 @@ sub check_delay {
 sub delay {
   my ( $self, $exclude_missing_cycles ) = @_;
 
-  my $run_actual_cycles = $self->run_db_row()->actual_cycle_count();
+  my $run_actual_cycles = $self->tracking_run()->actual_cycle_count();
 
   my $latest_cycle = $self->get_latest_cycle();
 
@@ -188,7 +133,7 @@ sub delay {
 sub _delete_lanes {
   my $self = shift;
   
-  my $run_lanes = $self->run_db_row()->run_lanes;
+  my $run_lanes = $self->tracking_run()->run_lanes;
   if ( $self->lane_count && ($self->lane_count < $run_lanes->count()) ) {
     while ( my $lane = $run_lanes->next ) {
       my $position = $lane->position;
@@ -277,16 +222,11 @@ The number of cycles that are delayed coming across from the instrument
 
 =item Carp
 
-=item English
-
 =item Readonly
 
 =back
 
-
-
 =head1 INCOMPATIBILITIES
-
 
 =head1 BUGS AND LIMITATIONS
 
@@ -294,11 +234,17 @@ Please inform the author of any found.
 
 =head1 AUTHOR
 
-John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+=over
+
+=item John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by John O'Brien
+Copyright (C) 2018 GRL
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

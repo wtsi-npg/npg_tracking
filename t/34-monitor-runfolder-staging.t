@@ -28,8 +28,8 @@ my $schema = t::dbic_util->new->test_schema();
 
     lives_ok {
            $test = Monitor::RunFolder::Staging->new(
-                    runfolder_path => $mock_path,
-                    _schema        => $schema, )
+                    runfolder_path      => $mock_path,
+                    npg_tracking_schema => $schema)
          }
          'Object creation ok';
     is($test->rta_complete_wait, 600, 'default rta complete wait time');
@@ -37,60 +37,58 @@ my $schema = t::dbic_util->new->test_schema();
 
 {
     my $mock_path = $MOCK_STAGING . '/IL3/incoming/100622_IL3_01234';
-    my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+                                                npg_tracking_schema => $schema);
 
     is( $test->_get_folder_path_glob, $MOCK_STAGING . '/IL3/*/',
         'internal glob correct' );
     lives_ok { $test->update_folder } 'update folder name and glob in DB';
-    is( $test->run_db_row->folder_name(), '100622_IL3_01234',
+    is( $test->tracking_run()->folder_name(), '100622_IL3_01234',
         '  folder name updated' );
-    is( $test->run_db_row->folder_path_glob(), $MOCK_STAGING . '/IL3/*/',
+    is( $test->tracking_run()->folder_path_glob(), $MOCK_STAGING . '/IL3/*/',
         '  folder path glob updated' );
 
     is( $test->cycle_lag(), 1, 'Mirroring is lagging' );
 
     $mock_path = $MOCK_STAGING . '/IL999/incoming/100622_IL3_01234';
-    $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+    $test = Monitor::RunFolder::Staging->new(runfolder_path => $mock_path,
+                                              npg_tracking_schema => $schema);
 
     is( $test->cycle_lag(), 0, 'Mirroring is not lagging' );
 }
 
 {
     my $mock_path = $MOCK_STAGING . '/IL3/incoming/100622_IL3_01234';
-    my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+                                                npg_tracking_schema => $schema);
 
     is( $test->validate_run_complete(), 0,
         'Called validate_run_complete before Events.log is complete' );
 
     $mock_path = $MOCK_STAGING . '/IL5/incoming/100708_IL3_04999';
-    $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+    $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+                                             npg_tracking_schema => $schema);
     is( $test->validate_run_complete(), 1,
         '\'run complete\' status is valid' );
 }
 
 {
     my $mock_path = $MOCK_STAGING . '/IL5/incoming/100621_IL5_01204';
-    my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+                                                npg_tracking_schema => $schema);
     lives_ok { $test->mirroring_complete() }
              'Don\'t croak if the Events.log file is missing';
 
 
     $mock_path = $MOCK_STAGING . '/IL3/incoming/100622_IL3_01234';
-    $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
-
+    $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+                                             npg_tracking_schema => $schema);
     is( $test->mirroring_complete(), 0, 'Mirroring is not complete' );
 
 
     $mock_path = $MOCK_STAGING . '/IL5/incoming/100708_IL3_04999';
-    $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
-
+    $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+                                             npg_tracking_schema => $schema);
     is( $test->mirroring_complete(), 1, 'Mirroring is complete' );
 }
 
@@ -102,9 +100,9 @@ my $schema = t::dbic_util->new->test_schema();
  
     my $mock_path = $tmpdir . '/100914_HS3_05281_A_205MBABXX';
 
-    my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema,
-                                              rta_complete_wait => 15);
+    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+                                                npg_tracking_schema => $schema,
+                                                rta_complete_wait   => 15);
 
     rename "$mock_path/RTAComplete.txt", "$mock_path/RTA_renamed_Complete.txt";
 
@@ -119,8 +117,8 @@ my $schema = t::dbic_util->new->test_schema();
 
 {
     my $mock_path = $MOCK_STAGING . '/IL12/incoming/100721_IL12_05222';
-    my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+                                                npg_tracking_schema => $schema);
 
     warning_like { $test->check_tiles() }
                  { carped => qr/Missing[ ]lane[(]s[)]/msx },
@@ -128,8 +126,8 @@ my $schema = t::dbic_util->new->test_schema();
 
 
     $mock_path = $MOCK_STAGING . '/IL3/incoming/100622_IL3_01234';
-    $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+    $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+                                             npg_tracking_schema => $schema);
 
     warning_like { $test->check_tiles() }
                  { carped => qr/Missing[ ]cycle[(]s[)]/msx },
@@ -137,8 +135,8 @@ my $schema = t::dbic_util->new->test_schema();
 
 
     $mock_path = $MOCK_STAGING . '/IL5/incoming/100621_IL5_01204';
-    $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+    $test = Monitor::RunFolder::Staging->new(runfolder_path => $mock_path,
+                                             npg_tracking_schema => $schema);
 
     warning_like { $test->check_tiles() }
                  { carped => qr/Missing[ ]tile[(]s[)]/msx },
@@ -146,8 +144,8 @@ my $schema = t::dbic_util->new->test_schema();
 
 
     $mock_path = $MOCK_STAGING . '/IL5/incoming/100708_IL3_04999';
-    $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+    $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+                                             npg_tracking_schema => $schema);
 
     lives_ok { $test->check_tiles() } 'All cif files present';
 }
@@ -155,7 +153,7 @@ my $schema = t::dbic_util->new->test_schema();
 {
     my $mock_path = $MOCK_STAGING . '/IL5/incoming/100708_IL3_04999';
     my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+                                              npg_tracking_schema        => $schema, );
 
 
     # Make sure that our initial set up is ok, and that any changes are made
@@ -196,21 +194,21 @@ my $schema = t::dbic_util->new->test_schema();
 
 {
     my $test = Monitor::RunFolder::Staging->new(
-      runfolder_path => $MOCK_STAGING . '/IL3/skip_this_one/090810_IL12_3289',
-      _schema        => $schema);
+      runfolder_path      => $MOCK_STAGING . '/IL3/skip_this_one/090810_IL12_3289',
+      npg_tracking_schema => $schema);
     throws_ok { $test->move_to_analysis() } qr/is\ not\ in\ incoming/msx,
               'Runfolder should be in incoming';
 
     $test = Monitor::RunFolder::Staging->new(
-      runfolder_path => $MOCK_STAGING . '/IL3/incoming/incoming/090810_IL12_3289',
-      _schema        => $schema);
+      runfolder_path      => $MOCK_STAGING . '/IL3/incoming/incoming/090810_IL12_3289',
+      npg_tracking_schema => $schema);
     throws_ok { $test->move_to_analysis() } qr/contains\ multiple\ upstream\ incoming\ directories/msx,
               'Runfolder path should not contain multiple incoming directories';
 
     my $tmpdir = tempdir( CLEANUP => 1 );
     $test = Monitor::RunFolder::Staging->new(
-      runfolder_path => $tmpdir . '/incoming/090810_IL12_3289',
-      _schema        => $schema);
+      runfolder_path      => $tmpdir . '/incoming/090810_IL12_3289',
+      npg_tracking_schema => $schema);
     make_path $tmpdir . '/analysis/090810_IL12_3289';
     throws_ok { $test->move_to_analysis() } qr/already\ exists/msx,
               'Refuse to overwrite an existing directory';
@@ -226,7 +224,7 @@ my $schema = t::dbic_util->new->test_schema();
     ok( !-e $analysis_dir, 'analysis dir does not exist - test prerequisite');
     $schema->resultset('Run')->find(5222)->update_run_status('qc complete');
     my $test = Monitor::RunFolder::Staging->new( runfolder_path => $test_source,
-                                                 _schema        => $schema, );
+                                                 npg_tracking_schema        => $schema, );
 
     isnt( $test->current_run_status_description(), 'analysis pending',
       'run status is not analysis pending');
@@ -251,7 +249,7 @@ my $schema = t::dbic_util->new->test_schema();
     $test_target = $outgoing_dir . '/100721_IL12_05222';
     ok( !-e $outgoing_dir, 'outgoing dir does not exist - test prerequisite');
     $test = Monitor::RunFolder::Staging->new( runfolder_path => $test_source,
-                                                 _schema     => $schema, );
+                                                 npg_tracking_schema     => $schema, );
     my $m;
     lives_ok { $m = $test->move_to_outgoing() } 'Move to outgoing lives';
     ok( !-e $test_target, 'not in outgoing' );
@@ -259,21 +257,21 @@ my $schema = t::dbic_util->new->test_schema();
       'not moved since the run status does not fit');
    
     sleep 1; 
-    $test->run_db_row->update_run_status('qc complete');
+    $test->tracking_run()->update_run_status('qc complete');
 
-    $test = Monitor::RunFolder::Staging->new( runfolder_path => $tmpdir . '/IL12/incoming/100721_IL12_05222',
-                                                 _schema     => $schema, );
+    $test = Monitor::RunFolder::Staging->new(runfolder_path      => $tmpdir . '/IL12/incoming/100721_IL12_05222',
+                                             npg_tracking_schema => $schema, );
     throws_ok { $test->move_to_outgoing() } qr/is\ not\ in\ analysis/msx,
               'Runfolder should be in analysis';
 
     $test = Monitor::RunFolder::Staging->new(
-      runfolder_path => $tmpdir . '/IL12/analysis/some/analysis/100721_IL12_05222',
-      _schema        => $schema);
+      runfolder_path      => $tmpdir . '/IL12/analysis/some/analysis/100721_IL12_05222',
+      npg_tracking_schema => $schema);
     throws_ok { $test->move_to_outgoing() } qr/contains\ multiple\ upstream\ analysis\ directories/msx,
               'Runfolder path should not contain multiple upstream analysis directories';
 
     $test = Monitor::RunFolder::Staging->new( runfolder_path => $test_source,
-                                                 _schema     => $schema, );
+                                                 npg_tracking_schema     => $schema, );
     ok( $test->is_in_analysis(), 'run folder is in analysis');
     lives_ok { $m = $test->move_to_outgoing() } 'Move to outgoing lives';
     ok( !-e $test_target, 'is not in outgoing');
@@ -311,8 +309,8 @@ my $schema = t::dbic_util->new->test_schema();
     system('cp',  '-rp', $MOCK_STAGING . '/IL5/incoming/100621_IL5_01204', $tmpdir);
     my $mock_path = $tmpdir . '/100621_IL5_01204';
 
-    my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              _schema        => $schema, );
+    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+                                                npg_tracking_schema => $schema );
 
     find( sub { utime time, time, $_ }, $mock_path );
 
