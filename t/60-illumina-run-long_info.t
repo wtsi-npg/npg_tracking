@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 71;
+use Test::More tests => 61;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
@@ -68,10 +68,6 @@ my $orig_dir = getcwd();
 
   create_staging();
 
-  is($long_info->use_bases(), q{Y76,I8,y76}, q{use_bases string is correct});
-  lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
-  is($long_info->read_config_string(), q{Y76,I8,y76}, q{read_config_string returns same as use_bases});
-
   lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
   is($long_info->is_paired_read(), 1, q{Read is paired});
   lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
@@ -91,9 +87,6 @@ my $orig_dir = getcwd();
   is($long_info->tilelayout_rows(), 60, q{correct number of tilelayout_rows});
   lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
   is($long_info->tile_count(), 120, q{correct number of tiles});
-
-  lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
-  is($long_info->is_rta(), 1, q{run is rta});
 }
 
 chdir $orig_dir; #need to leave directories before you can delete them....
@@ -109,9 +102,6 @@ $ENV{TEST_DIR} = 't/data/long_info';
   cmp_ok($long_info->lane_count, '==', 8, 'correct lane count');
   lives_ok  { $long_info = test::long_info->new({id_run => 5281}); } q{created role_test (HiSeq run 5281, RunInfo.xml) object ok};
   cmp_ok($long_info->cycle_count, '==', 200, 'correct cycle count');
-  lives_ok  { $long_info = test::long_info->new({id_run => 5281}); } q{created role_test (HiSeq run 5281, RunInfo.xml) object ok};
-  cmp_ok($long_info->use_bases, 'eq', 'Y100,y100', 'correct use_bases string');
-note($long_info->runfolder_path);
 
   lives_ok  { $long_info = test::long_info->new({id_run => 5281}); } q{created role_test (HiSeq run 5281, RunInfo.xml) object ok};
   my $test_lane_tile_clustercount = {};
@@ -123,18 +113,12 @@ note($long_info->runfolder_path);
     }
   }
 
-  is_deeply( $long_info->lane_tile_clustercount(), $test_lane_tile_clustercount, q{lane_tile_clustercount as expected} );
-
-  $long_info=undef;
   lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
   cmp_ok($long_info->tile_count, '==', 48, 'correct tile count');
   lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
   cmp_ok($long_info->lane_count, '==', 8, 'correct lane count');
   lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
   cmp_ok($long_info->cycle_count, '==', 202, 'correct cycle count');
-  lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
-  cmp_ok($long_info->use_bases, 'eq', 'Y101,y101', 'correct use_bases string');
-note($long_info->runfolder_path);
 
   my $tilelayout_columns;
   lives_ok  { 

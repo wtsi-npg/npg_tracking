@@ -100,7 +100,7 @@ lives_ok {
                                      _schema        => $schema, );
 
 
-    throws_ok { $test->read_long_info() } qr{No recipe file found}ms, 
+    throws_ok { $test->read_long_info() } qr{File not found}ms, 
               'Croak if no recipe file is found';    
 
 
