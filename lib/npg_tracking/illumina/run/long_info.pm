@@ -374,9 +374,236 @@ foreach my $f ( qw(tilelayout_rows
 # End of 'before' attribute modifiers definitions       #
 #########################################################
 
+##no critic (NamingConventions::Capitalization)
+
+=head2 platform_HiSeq
+
+Method returns true if sequencing was performed on an Illumina
+instrument belonging to HiSeq platform.
+
+=cut
+
+sub platform_HiSeq {
+  my $self = shift;
+  return $self->_software_application_name() =~ /HiSeq/xms;
+}
+
+=head2 platform_HiSeq4000
+
+Method returns true if sequencing was performed on an Illumina
+instrument belonging to HiSeq 3000 or HiSeq 4000 platform.
+
+=cut
+
+sub platform_HiSeq4000 {
+  my $self = shift;
+  return $self->_flowcell_description() =~ /HiSeq\ 3000\/4000/xms;
+}
+
+=head2 platform_HiSeqX
+
+Method returns true if sequencing was performed on an Illumina
+instrument belonging to HiSeq X platform.
+
+=cut
+
+sub platform_HiSeqX {
+  my $self = shift;
+  return $self->_flowcell_description() =~ /HiSeq\ X/xms;
+}
+
+=head2 platform_MiniSeq
+
+Method returns true if sequencing was performed on an Illumina
+instrument belonging to MiniSeq platform.
+
+=cut
+
+sub platform_MiniSeq {
+  my $self = shift;
+  return $self->_run_params_version() =~ /MiniSeq/xms;
+}
+
+=head2 platform_MiSeq
+
+Method returns true if sequencing was performed on an Illumina
+instrument belonging to MiSeq platform.
+
+=cut
+
+sub platform_MiSeq {
+  my $self = shift;
+  return $self->_software_application_name() =~ /MiSeq/xms;
+}
+
+=head2 platform_NextSeq
+
+Method returns true if sequencing was performed on an Illumina
+instrument belonging to NextSeq platform.
+
+=cut
+
+sub platform_NextSeq {
+  my $self = shift;
+  return $self->_software_application_name() =~ /NextSeq/xms;
+}
+
+=head2 platform_NovaSeq
+
+Method returns true if sequencing was performed on an Illumina
+instrument belonging to NovaSeq platform.
+
+=cut
+
+sub platform_NovaSeq {
+  my $self = shift;
+  return $self->_software_application_name() =~ /NovaSeq/xms;
+}
+
+##use critic
+
+=head2 all_lanes_mergeable
+
+Method returns true if all lanes on the flowcell contain the
+same library and the sequencing data are thus mergeable across
+all lanes.
+  
+=cut
+
+sub all_lanes_mergeable {
+  my $self = shift;
+  return (($self->platform_NovaSeq() and $self->_flowcell_mode() =~ /S[1|2|4]/xms)
+           or $self->is_rapid_run());
+} 
+
+=head2 is_rapid_run
+
+Method returns true if RapidRun mode was used.
+  
+=cut
+
+sub is_rapid_run {
+  my $self = shift;
+  return $self->_run_mode() =~ /RapidRun/xms; 
+}
+
+=head2 is_rapid_run_v1
+
+Method returns true if Rapid Run Chemistry v1 was used.
+  
+=cut
+
+sub is_rapid_run_v1 {
+  my $self = shift;
+  return $self->_flowcell_description() =~ /Rapid\ Flow\ Cell\ v1/xms;
+}
+
+=head2 is_rapid_run_v2
+
+Method returns true if Rapid Run Chemistry v2 was used.
+  
+=cut
+
+sub is_rapid_run_v2 {
+  my $self = shift;
+  return $self->_flowcell_description() =~ /Rapid\ Flow\ Cell\ v2/xms; 
+}
+
+=head2 is_rapid_run_abovev2
+
+Method returns true if Rapid Run Chemistry higher than v2 was used.
+  
+=cut
+
+sub is_rapid_run_abovev2 {
+  my $self = shift;
+  my ($version) = $self->_flowcell_description() =~ /Rapid\ Flow\ Cell\ v(\d)/xms;
+  return $version && ($version > 2); 
+}
+
+=head2 is_i5opposite
+
+A dual-indexed sequencing run on the MiniSeq, NextSeq, HiSeq 4000, or HiSeq 3000
+performs the Index 2 Read after the Read 2 resynthesis step. This workflow
+requires a reverse complement of the Index 2 (i5) primer sequence compared to
+the primer sequence used on other Illumina platform, see
+https://support.illumina.com/content/dam/illumina-support/documents/documentation/system_documentation/miseq/indexed-sequencing-overview-guide-15057455-04.pdf
+
+Method returns true if this is the case.
+
+=cut
+
+sub is_i5opposite {
+  my $self = shift;
+  return ($self->platform_HiSeqX()  or $self->platform_HiSeq4000() or
+          $self->platform_MiniSeq() or $self->platform_NextSeq()); 
+}
+
 #########################################################
 #       Private attributes                              #
 #########################################################
+
+has q{_run_params} => (
+  is         => 'ro',
+  isa        => 'XML::LibXML::Document',
+  lazy_build => 1,
+);
+sub _build__run_params {
+  my $self = shift;
+  return $self->_get_xml_document(qr/[R|r]unParameters[.]xml/smx, $self->runfolder_path());
+}
+
+has q{_flowcell_description} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build__flowcell_description {
+  my $self = shift;
+  return _get_single_element_text($self->_run_params(), 'Flowcell');
+}
+
+has q{_software_application_name} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build__software_application_name {
+  my $self = shift;
+  return (_get_single_element_text($self->_run_params(), 'ApplicationName') or
+          _get_single_element_text($self->_run_params(), 'Application'));
+}
+
+has q{_run_params_version} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build__run_params_version {
+  my $self = shift;
+  return _get_single_element_text($self->_run_params(), 'RunParametersVersion');
+}
+
+has q{_run_mode} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build__run_mode {
+  my $self = shift;
+  return _get_single_element_text($self->_run_params(), 'RunMode');
+}
+
+has q{_flowcell_mode} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build__flowcell_mode {
+  my $self = shift;
+  return _get_single_element_text($self->_run_params(), 'FlowCellMode');
+}
+
 
 has q{_recipe_store} => (
   is         => 'ro',
@@ -387,8 +614,7 @@ has q{_recipe_store} => (
 sub _build__recipe_store {
   my $self = shift;
 
-  my $doc = $self->_get_xml_document( qr/Recipe\S*?[.]xml/smx );
-
+  my $doc = $self->_get_xml_document(qr/Recipe\S*?[.]xml/smx, $self->runfolder_path());
   my @nodelist = $doc->getElementsByTagName('Protocol');
 
   $self->_set_lane_count($doc->getElementsByTagName('Lane')->size);
@@ -449,7 +675,7 @@ has q{_runinfo_store} => (
 sub _build__runinfo_store {
   my $self = shift;
 
-  my $doc = $self->_get_xml_document( qr/RunInfo[.]xml/smx );
+  my $doc = $self->_get_xml_document(qr/RunInfo[.]xml/smx, $self->runfolder_path());
 
   my $fcl_el = $doc->getElementsByTagName('FlowcellLayout')->[0];
   if(not defined $fcl_el) {
@@ -555,18 +781,33 @@ sub _get_xml_document {
   if (!$reg_expr) {
     croak 'Regular expression for name required';
   }
-
-  $dir ||= $self->runfolder_path();
+  if (!$dir) {
+    croak 'Directory path required';
+  }
 
   my @files = grep { m/\/$reg_expr\Z/xms } io($dir)->all;
   if (@files < 1) {
-    croak 'File not found';
+    croak qq{File not found for $reg_expr in $dir};
   }
   if (@files > 1) {
     croak 'Multiple files found: ' . join q(,) , @files;
   }
 
   return XML::LibXML->load_xml(location => $files[0]);
+}
+
+sub _get_single_element_text {
+  my ($doc, $tag_name) = @_;
+  my $nl = $doc->getElementsByTagName($tag_name);
+  my $list_size = $nl->size();
+  if ($list_size > 1) {
+    croak qq{Multiple $tag_name tags};
+  }
+  my $text = q[];
+  if ($list_size == 1) {
+    $text = $nl->pop()->textContent() // q[];
+  }
+  return $text;
 }
 
 sub _set_values_at_end_of_read {
