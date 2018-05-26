@@ -126,12 +126,8 @@ Aligner name, defaults to bwa
 has 'aligner'  => (isa             => 'Str',
                    is              => 'ro',
                    required        => 0,
-                   builder         => '_build_aligner',
+                   default         => $ALIGNER,
                   );
-
-sub _build_aligner {
-  return $ALIGNER;
-}
 
 =head2 messages
 
