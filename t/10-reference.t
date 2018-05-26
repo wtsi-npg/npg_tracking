@@ -103,11 +103,11 @@ use_ok('npg_tracking::data::reference');
 }
 
 {
-  my $ruser = npg_tracking::data::reference->new(position => 8, id_run => 1937, repository => $repos);
+  my $ruser = npg_tracking::data::reference->new(aligner=>q[bwa0_6], position => 8, id_run => 1937, repository => $repos);
   is( pop @{$ruser->refs}, catfile($repos, 'references/PhiX/default/all/bwa0_6/phix-illumina.fa'),
     'phix reference for lane 8');
   is( $ruser->messages->count, 0, 'no messages');
-  $ruser = npg_tracking::data::reference->new(position => 4, id_run => 1937, repository => $repos);
+  $ruser = npg_tracking::data::reference->new(aligner=>q[bwa0_6], position => 4, id_run => 1937, repository => $repos);
   is( pop @{$ruser->refs}, catfile($repos, 'references/PhiX/default/all/bwa0_6/phix-illumina.fa'),
     'phix reference for lane 4');
   is( $ruser->messages->count, 0, 'no messages' );
@@ -175,6 +175,7 @@ use_ok('npg_tracking::data::reference');
 
   $ruser = npg_tracking::data::reference->new(
                          repository => $repos,
+                         aligner    => q[bwa0_6],
                          id_run     => 4254,
                          position   => 8,
                          for_spike  => 1     );
@@ -184,6 +185,7 @@ use_ok('npg_tracking::data::reference');
 
   $ruser = npg_tracking::data::reference->new(
                          repository => $repos,
+                         aligner    => q[bwa0_6],
                          id_run     => 6993,
                          position   => 8,
                          tag_index  => 168   );
@@ -197,6 +199,7 @@ use_ok('npg_tracking::data::reference');
 
   $ruser = npg_tracking::data::reference->new(
                          repository => $repos,
+                         aligner    => q[bwa0_6],
                          id_run     => 4140,
                          position   => 8,
                          for_spike  => 1     );
