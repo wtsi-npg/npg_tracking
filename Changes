@@ -2,7 +2,9 @@ LIST OF CHANGES
 
  - gseq cluster hoop jumping for test 10-gbs_plex.t
  - use bwa0_6 as default aligner when searching for references
- - When parsing RunInfo.xml look for FlowcellLayout rather than version
+ - when parsing RunInfo.xml look for FlowcellLayout rather than version
+ - remove unused methods and attributes (use_bases, read_config_string,
+     is_rta, lane_tile_clustercount) from long_info role
 
 release 86.10.1
  - following changes to npg_tracking::illumina::run::short_info role,
