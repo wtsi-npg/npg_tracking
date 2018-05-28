@@ -23,7 +23,7 @@ npg_tracking::illumina::run::long_info
 
   package Mypackage;
   use Moose;
-  
+
   ... before consuming this role, you need to provide runfolder_path methods ...
 
   with q{npg_tracking::illumina::run::long_info};
@@ -339,7 +339,7 @@ foreach my $f ( qw(expected_cycle_count
                    lane_count
                    read_cycle_counts
                    indexing_cycle_range
-                   read1_cycle_range 
+                   read1_cycle_range
                    read2_cycle_range) ) {
    before $f => sub {
      my $self = shift;
@@ -467,30 +467,30 @@ sub platform_NovaSeq {
 Method returns true if all lanes on the flowcell contain the
 same library and the sequencing data are thus mergeable across
 all lanes.
-  
+
 =cut
 
 sub all_lanes_mergeable {
   my $self = shift;
   return (($self->platform_NovaSeq() and $self->_flowcell_mode() =~ /S[1|2|4]/xms)
            or $self->is_rapid_run());
-} 
+}
 
 =head2 is_rapid_run
 
 Method returns true if RapidRun mode was used.
-  
+
 =cut
 
 sub is_rapid_run {
   my $self = shift;
-  return $self->_run_mode() =~ /RapidRun/xms; 
+  return $self->_run_mode() =~ /RapidRun/xms;
 }
 
 =head2 is_rapid_run_v1
 
 Method returns true if Rapid Run Chemistry v1 was used.
-  
+
 =cut
 
 sub is_rapid_run_v1 {
@@ -501,24 +501,24 @@ sub is_rapid_run_v1 {
 =head2 is_rapid_run_v2
 
 Method returns true if Rapid Run Chemistry v2 was used.
-  
+
 =cut
 
 sub is_rapid_run_v2 {
   my $self = shift;
-  return $self->_flowcell_description() =~ /Rapid\ Flow\ Cell\ v2/xms; 
+  return $self->_flowcell_description() =~ /Rapid\ Flow\ Cell\ v2/xms;
 }
 
 =head2 is_rapid_run_abovev2
 
 Method returns true if Rapid Run Chemistry higher than v2 was used.
-  
+
 =cut
 
 sub is_rapid_run_abovev2 {
   my $self = shift;
   my ($version) = $self->_flowcell_description() =~ /Rapid\ Flow\ Cell\ v(\d)/xms;
-  return $version && ($version > 2); 
+  return $version && ($version > 2);
 }
 
 =head2 is_i5opposite
@@ -536,7 +536,7 @@ Method returns true if this is the case.
 sub is_i5opposite {
   my $self = shift;
   return ($self->platform_HiSeqX()  or $self->platform_HiSeq4000() or
-          $self->platform_MiniSeq() or $self->platform_NextSeq()); 
+          $self->platform_MiniSeq() or $self->platform_NextSeq());
 }
 
 #########################################################
