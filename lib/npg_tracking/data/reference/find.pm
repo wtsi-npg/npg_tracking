@@ -54,7 +54,7 @@ a list of samples.
 =cut
 
 
-Readonly::Scalar our $ALIGNER          => q[bwa0_6];
+Readonly::Scalar our $ALIGNER          => q[fasta]; # so default is fasta and not one particular aligner's reference 
 Readonly::Scalar our $STRAIN           => q[default];
 Readonly::Scalar our $SUBSET           => q[all];
 Readonly::Scalar our $PHIX             => q[PhiX];
