@@ -28,7 +28,7 @@ package main;
 my $basedir = tempdir( CLEANUP => 1 );
 
 subtest 'retrieving information from runParameters.xml' => sub {
-  plan tests => 133;
+  plan tests => 143;
 
   my $rf = join q[/], $basedir, 'runfolder';
   mkdir $rf;
@@ -49,6 +49,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
     runParameters.miseq.xml
     RunParameters.nextseq.xml
     RunParameters.novaseq.xml
+    RunParameters.novaseq.xp.xml
     runParameters.hiseq.truseq.rr.xml
                   /;
   my $dir = 't/data/run_params';
@@ -92,7 +93,11 @@ subtest 'retrieving information from runParameters.xml' => sub {
     } else {
       ok (!$li->is_rapid_run(), 'is not rapid run');
       if ($f =~ /\.novaseq\./) {
-        ok ($li->all_lanes_mergeable(), 'all lanes meargeable');
+        if ($f =~ /\.xp\./) {
+         ok (!$li->all_lanes_mergeable(), 'lanes are not meargeable');
+        } else {
+         ok ($li->all_lanes_mergeable(), 'all lanes meargeable');
+        }
       }
     }
 

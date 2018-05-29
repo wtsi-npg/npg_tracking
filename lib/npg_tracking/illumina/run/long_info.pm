@@ -24,7 +24,7 @@ npg_tracking::illumina::run::long_info
   package Mypackage;
   use Moose;
 
-  ... before consuming this role, you need to provide runfolder_path methods ...
+  ... before consuming this role, you need to provide runfolder_path methods
 
   with q{npg_tracking::illumina::run::long_info};
 
@@ -472,8 +472,11 @@ all lanes.
 
 sub all_lanes_mergeable {
   my $self = shift;
-  return (($self->platform_NovaSeq() and $self->_flowcell_mode() =~ /S[1|2|4]/xms)
-           or $self->is_rapid_run());
+  return (
+    ($self->_workflow_type() =~ /NovaSeqStandard/xms) # ie not NovaSeqXp
+     or $self->is_rapid_run() # In our practice Rapid Runs always had the same
+                              # library on both lanes.
+         );
 }
 
 =head2 is_rapid_run
@@ -594,14 +597,14 @@ sub _build__run_mode {
   return _get_single_element_text($self->_run_params(), 'RunMode');
 }
 
-has q{_flowcell_mode} => (
+has q{_workflow_type} => (
   isa        => 'Str',
   is         => 'ro',
   lazy_build => 1,
 );
-sub _build__flowcell_mode {
+sub _build__workflow_type {
   my $self = shift;
-  return _get_single_element_text($self->_run_params(), 'FlowCellMode');
+  return _get_single_element_text($self->_run_params(), 'WorkflowType');
 }
 
 
