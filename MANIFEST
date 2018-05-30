@@ -1006,7 +1006,7 @@ t/data/run_params/RunParameters.novaseq.xml
 t/data/run_params/runParameters.hiseq.rr.single.xml
 t/data/run_params/runParameters.hiseq.rr.twoind.xml
 t/data/run_params/runParameters.hiseq.rr.xml
-t/data/run_params/runParameters.hiseq.truseq.rr.xml
+t/data/run_params/runParameters.hiseq.rr.truseq.xml
 t/data/run_params/runParameters.hiseq.xml
 t/data/run_params/runParameters.hiseq4000.xml
 t/data/run_params/runParameters.hiseqx.upgraded.xml

@@ -28,7 +28,7 @@ package main;
 my $basedir = tempdir( CLEANUP => 1 );
 
 subtest 'retrieving information from runParameters.xml' => sub {
-  plan tests => 143;
+  plan tests => 135;
 
   my $rf = join q[/], $basedir, 'runfolder';
   mkdir $rf;
@@ -50,23 +50,23 @@ subtest 'retrieving information from runParameters.xml' => sub {
     RunParameters.nextseq.xml
     RunParameters.novaseq.xml
     RunParameters.novaseq.xp.xml
-    runParameters.hiseq.truseq.rr.xml
+    runParameters.hiseq.rr.truseq.xml
                   /;
   my $dir = 't/data/run_params';
 
   my @platforms = qw/MiniSeq HiSeq HiSeq4000 HiSeqX
                      MiSeq NextSeq NovaSeq/;
-  my @i5opp_platforms = qw/MiniSeq HiSeq4000 HiSeqX NextSeq/;
+  my @i5opp_platforms = map {lc $_} qw/MiniSeq HiSeq4000 HiSeqX NextSeq/;
 
   for my $f (@rp_files) {
     note $f;
-    my ($name, $pl) = $f =~ /([r|R]unParameters)\.([\w\d]+)\./;
+    my ($name, $pl) = $f =~ /([r|R]unParameters)\.(.+\.xml)\Z/;
     $name = join q[/], $rf, $name . '.xml';
-    copy join(q[/],$dir,$f), $name;
+    copy(join(q[/],$dir,$f), $name) or die 'Failed to copy file';
 
     my $li = $class->new_object();
     
-    foreach my $p (@platforms) {
+    foreach my $p ( grep {$_ ne 'HiSeq'} @platforms) {
       my $method = join q[_], 'platform', $p;
       if ($pl =~ /$p/i ) {
         ok ($li->$method(), "platform is $p");
@@ -75,8 +75,10 @@ subtest 'retrieving information from runParameters.xml' => sub {
       }
     }
 
-    if ($pl =~ 'hiseq') {
-      ok ($li->platform_HiSeq(), 'HiSeq platform');
+    if ($pl =~ /hiseq\.(?:xml|rr)/ ) {
+      ok ($li->platform_HiSeq(), 'platform is HiSeq');
+    } else {
+      ok (!$li->platform_HiSeq(), 'platform is not HiSeq');
     }
 
     if ($f =~ /\.rr\./) {
@@ -101,7 +103,9 @@ subtest 'retrieving information from runParameters.xml' => sub {
       }
     }
 
-    if (grep {lc($_) eq $pl} @i5opp_platforms) {
+    my @i5 = grep { $pl =~ /\A$_/ } @i5opp_platforms;
+    if (scalar @i5 > 1) {die 'Too many matches'};
+    if (@i5) {
       ok ($li->is_i5opposite(), 'i5opposite');
     } else {
       ok (!$li->is_i5opposite(), 'not i5opposite');
