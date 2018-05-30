@@ -6,7 +6,6 @@ use POSIX qw(strftime);
 use URI::URL;
 use Carp;
 use Try::Tiny;
-use HTTP::Headers;
 
 use npg::util;
 use npg::model::user;
@@ -73,21 +72,6 @@ sub new {
   }
 
   return $self;
-}
-
-sub init {
-  my $self = shift;
-
-  my $lims_url = $self->util()->lims_url();
-  if ($lims_url) {
-    $self->{'headers'} ||= HTTP::Headers->new;
-    #$self->headers->header('Vary', 'Origin');
-    #$self->headers->header('Access-Control-Allow-Origin', $lims_url);
-    #$self->headers->header('Access-Control-Allow-Methods', 'GET,OPTIONS');
-    #$self->headers->header('Access-Control-Allow-Headers', 'TE,X-Remote-User,withcredentials');
-    #$self->headers->header('Access-Control-Max-Age', '1800'); #30 minutes
-  }
-  return 1;
 }
 
 sub get_inst_format {
@@ -200,7 +184,7 @@ sub _cluster {
   my ($self, $url) = @_;
   # Expect url to be host.cluster.sanger.ac.uk,
   # but do not fail if it's something else.
-  # Return cluster name or the original url/IP address. 
+  # Return cluster name or the original url/IP address.
   $url = URI::URL->new($url)->host();
   $url=~ s/\A[^\.]+\.//smx;
   return $url;
@@ -240,8 +224,6 @@ View superclass for the NPG MVC application
 
   my $oView = npg::view::<subclass>->new({'util' => $oUtil, ...});
 
-=head2 init - additional post-constructor hook
-
 =head2 get_inst_format
 
 returns inst_format from cgi params, sanitised
@@ -257,7 +239,7 @@ returns inst_format from cgi params, sanitised
   my $sRealName = $oViewer->realname();
 
 =head2 person
- 
+
   returns hash containing name and team of the user
 
   my $person = $oViewer->person();
@@ -305,8 +287,6 @@ residing on staging areas.
 =item strict
 
 =item warnings
-
-=item HTTP::Headers
 
 =item POSIX qw(strftime)
 
