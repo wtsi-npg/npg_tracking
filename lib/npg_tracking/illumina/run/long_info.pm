@@ -379,13 +379,14 @@ foreach my $f ( qw(tilelayout_rows
 =head2 platform_HiSeq
 
 Method returns true if sequencing was performed on an Illumina
-instrument belonging to HiSeq platform.
+instrument belonging to an 'older' HiSeq platform (1000, 1500, 2000 and 2500).
 
 =cut
 
 sub platform_HiSeq {
   my $self = shift;
-  return $self->_software_application_name() =~ /HiSeq/xms;
+  return ( ($self->_software_application_name() =~ /HiSeq/xms) and
+       not ($self->platform_HiSeqX() or $self->platform_HiSeq4000()) );
 }
 
 =head2 platform_HiSeq4000
