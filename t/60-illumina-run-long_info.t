@@ -1,11 +1,13 @@
 use strict;
 use warnings;
-use Test::More tests => 61;
+use Test::More tests => 62;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
+use Moose::Meta::Class;
 use Cwd;
 use Carp;
+use File::Copy;
 
 BEGIN {
   local $ENV{'HOME'} = getcwd() . '/t';
@@ -14,7 +16,8 @@ BEGIN {
   # package creation within BEGIN block to ensure after HOME is reset
   package test::long_info;
   use Moose;
-  with qw{npg_tracking::illumina::run::short_info npg_tracking::illumina::run::folder};
+  with qw{npg_tracking::illumina::run::short_info
+          npg_tracking::illumina::run::folder};
   with qw{npg_tracking::illumina::run::long_info};
   no Moose;
   1;
@@ -23,8 +26,93 @@ BEGIN {
 package main;
 
 my $basedir = tempdir( CLEANUP => 1 );
-$ENV{dev} = qw{non_existant_dev_enviroment}; #prevent pickup of user's config
-$ENV{TEST_DIR} = $basedir; #so when npg_tracking::illumina::run::folder globs the test directory
+
+subtest 'retrieving information from runParameters.xml' => sub {
+  plan tests => 143;
+
+  my $rf = join q[/], $basedir, 'runfolder';
+  mkdir $rf;
+
+  my $class = Moose::Meta::Class->create_anon_class(
+    methods => {"runfolder_path" => sub {$rf}},
+    roles   => [qw/npg_tracking::illumina::run::long_info/]); 
+
+  my @rp_files = qw/
+    runParameters.hiseq4000.xml
+    runParameters.hiseq.rr.single.xml
+    runParameters.hiseq.rr.twoind.xml
+    runParameters.hiseq.rr.xml
+    runParameters.hiseq.xml
+    runParameters.hiseqx.upgraded.xml
+    runParameters.hiseqx.xml
+    RunParameters.miniseq.xml
+    runParameters.miseq.xml
+    RunParameters.nextseq.xml
+    RunParameters.novaseq.xml
+    RunParameters.novaseq.xp.xml
+    runParameters.hiseq.truseq.rr.xml
+                  /;
+  my $dir = 't/data/run_params';
+
+  my @platforms = qw/MiniSeq HiSeq HiSeq4000 HiSeqX
+                     MiSeq NextSeq NovaSeq/;
+  my @i5opp_platforms = qw/MiniSeq HiSeq4000 HiSeqX NextSeq/;
+
+  for my $f (@rp_files) {
+    note $f;
+    my ($name, $pl) = $f =~ /([r|R]unParameters)\.([\w\d]+)\./;
+    $name = join q[/], $rf, $name . '.xml';
+    copy join(q[/],$dir,$f), $name;
+
+    my $li = $class->new_object();
+    
+    foreach my $p (@platforms) {
+      my $method = join q[_], 'platform', $p;
+      if ($pl =~ /$p/i ) {
+        ok ($li->$method(), "platform is $p");
+      } else {
+        ok (!$li->$method(), "platform is not $p");
+      }
+    }
+
+    if ($pl =~ 'hiseq') {
+      ok ($li->platform_HiSeq(), 'HiSeq platform');
+    }
+
+    if ($f =~ /\.rr\./) {
+      ok ($li->is_rapid_run(), 'is rapid run');
+      ok ($li->all_lanes_mergeable(), 'all lanes meargeable');
+      if ($f =~ /\.truseq\./) {
+        ok (!$li->is_rapid_run_v2(), 'rapid run version is not 2');
+        ok ($li->is_rapid_run_v1(), 'rapid run version is 1');
+      } else {
+        ok ($li->is_rapid_run_v2(), 'rapid run version is 2');
+        ok (!$li->is_rapid_run_v1(), 'rapid run version is not 1');
+      }
+       ok (!$li->is_rapid_run_abovev2(), 'rapid run version is not above 2');
+    } else {
+      ok (!$li->is_rapid_run(), 'is not rapid run');
+      if ($f =~ /\.novaseq\./) {
+        if ($f =~ /\.xp\./) {
+         ok (!$li->all_lanes_mergeable(), 'lanes are not meargeable');
+        } else {
+         ok ($li->all_lanes_mergeable(), 'all lanes meargeable');
+        }
+      }
+    }
+
+    if (grep {lc($_) eq $pl} @i5opp_platforms) {
+      ok ($li->is_i5opposite(), 'i5opposite');
+    } else {
+      ok (!$li->is_i5opposite(), 'not i5opposite');
+    }
+
+    unlink $name;
+  }
+};
+
+local $ENV{'TEST_DIR'} = $basedir; #so when npg_tracking::illumina::run::folder globs the test directory
+local $ENV{'dev'} = 'none';
 
 my $id_run = q{1234};
 my $name = q{IL2_1234};
