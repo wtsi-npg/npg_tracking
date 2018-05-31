@@ -61,7 +61,7 @@ function things_to_do_on_load(id_run, batch_id) {
         _ss_ajax_warning('No batch data from Sequencescape!');
       }
     },
-    onCreate: function(){ $('ss_ajax_status').update('<img style="height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />Getting Sequencescape batch data...') },
+    onCreate: function(){ $('ss_ajax_status').update('<img style="height:16px;width:16px;" src="/gfx/spinner.gif" alt="spinner" />Getting Sequencescape batch data...') },
     onFailure: function(){ _ss_ajax_warning('Something went wrong getting batch data from Sequencescape....') }
    });
   }
