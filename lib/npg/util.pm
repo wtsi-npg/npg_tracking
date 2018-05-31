@@ -8,6 +8,7 @@ use strict;
 use warnings;
 use base qw(ClearPress::util Exporter);
 use Readonly;
+use Carp;
 
 our $VERSION = '0';
 
@@ -52,6 +53,12 @@ sub dbsection {
 sub decription_key {
   my $self = shift;
   return $self->config->val($self->dbsection(), 'decription_key');
+}
+
+sub lims_url {
+  my $self = shift;
+  my $url = $self->config->val($self->dbsection(), 'lims_url') || q[];
+  return $url;
 }
 
 sub mail_domain {
@@ -112,6 +119,8 @@ npg::util - A database handle and utility object
 
   my $yearmonthday = $oUtil->yearmonthday();
 
+=head2 lims_url - LIMs URL if configured, empty string otherwise
+
 =head2 cleanup - post-request cleanup (database disconnection)
 
   $oUtil->cleanup();
@@ -134,6 +143,8 @@ npg::util - A database handle and utility object
 
 =item Exporter
 
+=item Carp
+
 =item Readonly
 
 =back
@@ -144,11 +155,12 @@ npg::util - A database handle and utility object
 
 =head1 AUTHOR
 
-Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+Roger Pettett
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013 GRL, by Roger Pettett
+Copyright (C) 2018 GRL
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

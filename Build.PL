@@ -206,7 +206,6 @@ my $builder = $class->new(
                 'Sys::Hostname'                   => '1.11',
                 'Template'                        => '2.19',
                 'Try::Tiny'                       => 0,
-                'URI'                             => '1.37',
                 'URI::Escape'                     => 0,
                 'URI::URL'                        => 0,
                 'utf8'                            => 0,
