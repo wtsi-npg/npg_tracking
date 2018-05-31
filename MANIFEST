@@ -108,7 +108,6 @@ data/templates/search_list_advanced.tt2
 data/templates/search_list_advanced_ajax.tt2
 data/templates/search_read.tt2
 data/templates/tag_form_ajax.tt2
-data/templates/urls.tt2
 data/templates/usage_list.tt2
 data/templates/user2usergroup_create.tt2
 data/templates/user2usergroup_delete.tt2

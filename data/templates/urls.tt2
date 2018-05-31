@@ -1,1 +1,0 @@
-[%- lims_batches_url = view.util.lims_url _ '/batches/' %]

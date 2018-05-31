@@ -18,7 +18,6 @@
     staging_url  = staging_urls.npg_tracking ? staging_urls.npg_tracking : '';
     seqqc_url    = staging_urls.seqqc ? staging_urls.seqqc : '';
  -%]
-[% PROCESS urls.tt2 -%]
 <div>
 <div class="lfloat roundborder">
 <div class="page_title"[% IF model.current_run_status.description == 'run pending'; st = ' style="color: #FF0000"'; st; END; %]>[% model.run_folder %]</div>
@@ -37,7 +36,7 @@
 [%- IF batch_id >= 1000000000000 -%]
 <th>QC tube EAN13</th><td>[% batch_id %]</td>
 [%- ELSE -%]
-<th>Batch id</th><td>[% IF batch_id %]<a href="[% lims_batches_url _ batch_id %]">[% batch_id %]</a>[% ELSE %]unknown[% END %]</td>
+<th>Batch id</th><td>[% IF batch_id %]<a href="[% view.lims_batches_url _ batch_id %]">[% batch_id %]</a>[% ELSE %]unknown[% END %]</td>
 [%- END -%]
 </tr>
 [% IF model.flowcell_id %]<tr><th>[% flabel %]</th><td>[% model.flowcell_id %]</td></tr>[% END -%]

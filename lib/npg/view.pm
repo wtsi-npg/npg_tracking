@@ -171,6 +171,11 @@ sub staging_urls {
   return $config;
 }
 
+sub lims_batches_url {
+  my $self = shift;
+  return $self->util->lims_url . '/batches/';
+}
+
 sub _colocated {
   my ($self, $staging_url) = @_;
   my $request_cluster = $self->_cluster(
@@ -257,6 +262,12 @@ returns inst_format from cgi params, sanitised
 Returns a hash containing urls of a tracking and seqqc servers that
 potentially run on a different host where they can access run folders
 residing on staging areas.
+
+=head2 lims_batches_url
+
+  Returns a string with the prefix for LIMs batch URL up to /batches/, e.g.
+
+    http://limsserver.net:8080/batches/
 
 =head1 DIAGNOSTICS
 

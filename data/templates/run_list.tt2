@@ -1,6 +1,5 @@
 [% id_instrument = model.id_instrument ? model.id_instrument : '';
    target = (model.id_instrument && view.no_main_menu) ? 'target="runs_on_instrument" ' : '';
-   PROCESS urls.tt2;
 %]
 <div class="roundborder">
 <div>
@@ -60,7 +59,7 @@
  [% IF loader %]<th><input type="checkbox" class="id_run_checkbox" name="run_ids" value="[% run.id_run %]" /></th>[% END %]
  <td><span style="display:none">[% USE String(run.id_run); String.format('%04d') %]</span><a href="[% SCRIPT_NAME %]/run/[% run.id_run %]">[% run.name %]</a></td>
  <td><a href="[% SCRIPT_NAME %]/instrument/[% run.id_instrument %]">[% run.instrument.name %]</a>[% IF run.hiseq_slot %]  Slot [% run.hiseq_slot %][% END %]</td>
- <td>[% IF run.batch_id < 1000000000000 %]<a href="[% lims_batches_url _ run.batch_id %]">[% run.batch_id %]</a>[% ELSE; run.batch_id; END %]</td>
+ <td>[% IF run.batch_id < 1000000000000 %]<a href="[% view.lims_batches_url _ run.batch_id %]">[% run.batch_id %]</a>[% ELSE; run.batch_id; END %]</td>
  <td class="npg_nbsp">[% run.actual_cycle_count %] / [% run.expected_cycle_count %]</td>
  <td>[% run.run_lanes.size %]</td>
  <td>[% run.priority %]</td>
@@ -99,5 +98,3 @@
 </div>
 </form>
 [%- END -%]
-
-
