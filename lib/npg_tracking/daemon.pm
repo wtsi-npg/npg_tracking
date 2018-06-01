@@ -119,7 +119,7 @@ sub start {
         $action .= qq[ --env=\"PERL5LIB=$perl5lib\"];
     }
     if ($self->env_vars) {
-        while ((my $var, my $value) = each %{$self->env_vars}) {
+        while (my ($var, $value) = each %{$self->env_vars}) {
             $action .= qq[ --env=\"$var=$value\"];
         }
     }
