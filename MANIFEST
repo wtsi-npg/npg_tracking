@@ -24,6 +24,7 @@ data/gfx/HiSeqX.png
 data/gfx/HK.png
 data/gfx/HK_PE.png
 data/gfx/MiSeq.png
+data/gfx/NovaSeq.png
 data/npg_tracking_email/templates/instrument.tt2
 data/npg_tracking_email/templates/lane_detail.tt2
 data/npg_tracking_email/templates/run_or_lane2subscribers.tt2

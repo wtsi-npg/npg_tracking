@@ -119,11 +119,9 @@ sub start {
         $action .= qq[ --env=\"PERL5LIB=$perl5lib\"];
     }
     if ($self->env_vars) {
-        ##no critic (Variables::ProhibitUnusedVariables)
         while ((my $var, my $value) = each %{$self->env_vars}) {
             $action .= qq[ --env=\"$var=$value\"];
         }
-        ##use critic
     }
 
     my $script_call = $self->command($host);

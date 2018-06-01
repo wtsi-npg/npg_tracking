@@ -115,6 +115,7 @@ sub is_used_sequencer_type {
                'MiSeq'      => 'MiSeq',
                'HiSeqX'     => 'HiSeqX',
                'HiSeq 4000' => 'HiSeq 4000',
+               'NovaSeq'    => 'NovaSeq',
                'HK'         => 'GAII',
               };
   return $types->{$self->model()};
