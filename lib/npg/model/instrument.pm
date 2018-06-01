@@ -26,10 +26,12 @@ use List::MoreUtils qw/any/;
 our $VERSION = '0';
 
 use Readonly;
-Readonly::Scalar our $HISEQ_INSTR_MODEL => 'HiSeq';
-Readonly::Scalar our $MISEQ_INSTR_MODEL => 'MiSeq';
-Readonly::Scalar our $CBOT_INSTR_MODEL  => 'cBot';
-Readonly::Array  our @FC_SLOT_TAGS    => qw/fc_slotA fc_slotB/;
+
+Readonly::Scalar our $NOVASEQ_INSTR_MODEL => 'NovaSeq';
+Readonly::Scalar our $HISEQ_INSTR_MODEL   => 'HiSeq';
+Readonly::Scalar our $MISEQ_INSTR_MODEL   => 'MiSeq';
+Readonly::Scalar our $CBOT_INSTR_MODEL    => 'cBot';
+Readonly::Array  our @FC_SLOT_TAGS        => qw/fc_slotA fc_slotB/;
 
 Readonly::Array  our @CURRENT_RUNS    => ('run pending', 'run in progress', 'run on hold', 'run complete');
 Readonly::Array  our @BLOCKING_RUNS   => ('run pending', 'run in progress', 'run on hold');
@@ -367,22 +369,23 @@ sub latest_annotation {
 
 sub does_sequencing {
   my $self = shift;
-  return ($self->instrument_format->model && $self->instrument_format->model ne $CBOT_INSTR_MODEL);
+  return ($self->instrument_format->model && ($self->instrument_format->model ne $CBOT_INSTR_MODEL));
 }
 
 sub is_two_slot_instrument {
   my $self = shift;
-  return ($self->instrument_format->model && $self->instrument_format->model =~ /\A$HISEQ_INSTR_MODEL/smx);
+  return ($self->instrument_format->model &&
+         ($self->instrument_format->model =~ /$HISEQ_INSTR_MODEL|$NOVASEQ_INSTR_MODEL/smx));
 }
 
 sub is_cbot_instrument {
   my $self = shift;
-  return ($self->instrument_format->model && $self->instrument_format->model eq $CBOT_INSTR_MODEL);
+  return ($self->instrument_format->model && ($self->instrument_format->model eq $CBOT_INSTR_MODEL));
 }
 
 sub is_miseq_instrument {
   my $self = shift;
-  return ($self->instrument_format->model && $self->instrument_format->model eq $MISEQ_INSTR_MODEL);
+  return ($self->instrument_format->model && ($self->instrument_format->model eq $MISEQ_INSTR_MODEL));
 }
 
 sub current_run_by_id {

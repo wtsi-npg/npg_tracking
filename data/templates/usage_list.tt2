@@ -7,11 +7,7 @@ Sequencing Farm:
 [% END -%]
 </ul>
 </p>
-<p>
-<a href="http://intweb.sanger.ac.uk/cgi-bin/Sysman/ISG/Global_Disc_Space_3/graphs?nas_id=1776"><img src="http://isg-disc-mon-04.internal.sanger.ac.uk/cgi-bin/Disc_Space_2_Graph?graph_location=/nfs/disk_monitoring/data_2/server_1776.rrd&title=irods-g2&zoom=090&max_size=1%3E" alt="iRODs storage"/></img>
-</p>
 <br style="clear:left"/>
-<p>
+<br>
 <a href="http://scratchy.internal.sanger.ac.uk/wiki/index.php/Illumina_sequencing_instrument_to_staging_area_mapping">Illumina sequencing instrument to staging area mapping</a>
-</p>
-<br style="clear:left"/>
+

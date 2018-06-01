@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - make NovaSeq instruments represented on web pages
  - removing reflector allow client side JS to request XML feed directly from PSD
  - use lims_url config file entry to set PSD server location
  - gseq cluster hoop jumping for test 10-gbs_plex.t
