@@ -1,0 +1,75 @@
+#!/usr/bin/env perl
+#########
+# Author:        js10
+# Created:       2018-05-30
+#
+
+use strict;
+use warnings;
+
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use Carp;
+use autodie qw(:all);
+
+use Monitor::Staging;
+use Monitor::RunFolder::Staging;
+
+our $VERSION = '0';
+
+use Readonly;
+
+my $mon = Monitor::RunFolder::Staging->new_with_options(status_update => 0);
+my @ms = $mon->move_to_analysis();
+print join "\n", @ms;
+
+1;
+
+__END__
+
+
+=head1 NAME
+
+npg_move_runfolder - move 'incoming' to 'analysis' and change group.
+
+=head1 VERSION
+
+=head1 SYNOPSIS
+
+    C<npg_move_runfolder --runfolder_path path>
+
+=head1 DESCRIPTION
+
+This script moves 'incoming' to 'analysis' for a given runfolder,
+and changes the group name to that found in the staging configuration.
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+Depends on the presence of the npg tracking system.
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Jennifer Liddle, E<lt>js10@sanger.ac.ukE<gt>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (C) 2018 GRL, by Jennifer Liddle
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

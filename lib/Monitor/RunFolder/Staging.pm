@@ -17,6 +17,7 @@ use Fcntl qw/S_ISGID/;
 use npg_tracking::util::config qw(get_config_staging_areas);
 
 extends 'Monitor::RunFolder';
+with 'MooseX::Getopt';
 
 our $VERSION = '0';
 
@@ -32,6 +33,11 @@ has 'rta_complete_wait' => (isa          => 'Int',
                             is           => 'ro',
                             default      => $RTA_COMPLETE,
                            );
+
+has 'status_update' => (isa          => 'Bool',
+                        is           => 'ro',
+                        default      => 1,
+                       );
 
 sub cycle_lag {
     my ($self) = @_;
@@ -112,7 +118,7 @@ sub check_tiles {
     my $expected_tiles  = $self->lane_tilecount();
     my $path            = $self->runfolder_path();
 
-    print {*STDERR} "\tChecking lanes, cycles, tiles...\n" or carp $OS_ERROR;
+    print {*STDERR} "\tChecking Lanes, Cycles, Tiles...\n" or carp $OS_ERROR;
 
     my @lanes   = glob "$path/$INTENSITIES_DIR_PATH/L*";
     @lanes      = grep { m/ L \d+ $ /msx } @lanes;
@@ -207,9 +213,11 @@ sub move_to_analysis {
             _change_group($group, $destination . "/$INTENSITIES_DIR_PATH");
             push @ms, "Changed group to $group";
         }
-        my $status = 'analysis pending';
-        $self->tracking_run()->update_run_status($status, $self->username() );
-        push @ms, "Updated run status to $status";
+        if ($self->status_update) {
+            my $status = 'analysis pending';
+            $self->tracking_run()->update_run_status($status, $self->username() );
+            push @ms, "Updated Run Status to $status";
+        }
     }
 
     return @ms;
@@ -323,7 +331,7 @@ sub _change_group {
     my ($group, $directory) = @_;
   
     my $temp = $directory . '.original';
-    move($directory, $temp) or croak "move error: $ERRNO";
+    move($directory, $temp) or croak "move error: '$directory to $temp' : $ERRNO";
     mkdir $directory or croak "mkdir error: $ERRNO";
     for my $file (glob "$temp/*") {
         my $dest = $directory . q{/} . basename($file);
