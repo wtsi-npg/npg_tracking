@@ -120,14 +120,17 @@ sub _build_strain {
 
 =head2 aligner
 
-Aligner name, defaults to bwa
+Aligner name, defaults to "fasta"
 
 =cut
 has 'aligner'  => (isa             => 'Str',
                    is              => 'ro',
                    required        => 0,
-                   default         => $ALIGNER,
+                   lazy_build      => 1,
                   );
+sub _build_aligner {
+  return $ALIGNER;
+}
 
 =head2 messages
 
