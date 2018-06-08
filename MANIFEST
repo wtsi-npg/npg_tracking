@@ -276,6 +276,7 @@ lib/npg_tracking/glossary/composition/factory/rpt.pm
 lib/npg_tracking/glossary/composition/serializable.pm
 lib/npg_tracking/glossary/flowcell.pm
 lib/npg_tracking/glossary/lane.pm
+lib/npg_tracking/glossary/moniker.pm
 lib/npg_tracking/glossary/rpt.pm
 lib/npg_tracking/glossary/run.pm
 lib/npg_tracking/glossary/subset.pm
@@ -399,6 +400,7 @@ t/10-npg_tracking-glossary-composition-factory-rpt.t
 t/10-npg_tracking-glossary-composition-factory-rpt_list.t
 t/10-npg_tracking-glossary-composition-factory.t
 t/10-npg_tracking-glossary-composition.t
+t/10-npg_tracking-glossary-moniker.t
 t/10-npg_tracking-glossary-rpt.t
 t/10-npg_tracking-status.t
 t/10-npg_tracking-util-config.t
