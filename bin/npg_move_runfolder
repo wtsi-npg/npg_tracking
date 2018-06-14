@@ -40,8 +40,9 @@ npg_move_runfolder - move 'incoming' to 'analysis' and change group.
 
 =head1 DESCRIPTION
 
-This script moves 'incoming' to 'analysis' for a given runfolder,
+This script moves a given run folder from 'incoming' directory to 'analysis' directory
 and changes the group name to that found in the staging configuration.
+By default it does not change the run status.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - added bin/npg_move_runfolder
  - gseq cluster hoop jumping for test 10-gbs_plex.t
  - use bwa0_6 as default aligner when searching for references
  - long_info role:
