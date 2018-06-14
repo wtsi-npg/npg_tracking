@@ -1,6 +1,9 @@
 LIST OF CHANGES
 
  - added bin/npg_move_runfolder
+ - make NovaSeq instruments represented on web pages
+ - removing reflector allow client side JS to request XML feed directly from PSD
+ - use lims_url config file entry to set PSD server location
  - gseq cluster hoop jumping for test 10-gbs_plex.t
  - use bwa0_6 as default aligner when searching for references
  - long_info role:
@@ -38,7 +41,7 @@ release 86.10
  - deleted unused (dif_files_path and pb_cal_path) runfolder accessors
  - method to find file with globin genes inside transcriptome repo added
  - changes to support gbs_plex repository
- 
+
 release 86.9
  - to account for ephemeral staging areas on OpenStack, extend staging
    directory path match expression in Apache httpd config file
@@ -55,7 +58,7 @@ release 86.8
 release 86.7
  - stop building on Travis under Perl 5.16,
    see https://rt.cpan.org/Public/Bug/Display.html?id=123310
- - reference find role: when parsing a genome reference string 
+ - reference find role: when parsing a genome reference string
    return the analysis, along with the organism, strain
    and transcriptome version, if present
  - refactor transcriptome::find to improve code reuse and add
@@ -71,7 +74,7 @@ release 86.7
        all runs at this status;
      flowcell verification;
      complex computation of width of padding id_run in run name
-       for display purposes 
+       for display purposes
 
 release 86.6
  - unused db tables, which were renamed in the previous release,
@@ -103,14 +106,14 @@ release 86.5
 
 release 86.4
  - reference find role: remove unused 'subset' attribute and
-   previously deprecated 'single_ref_found' method 
+   previously deprecated 'single_ref_found' method
  - increate http tmeout for event notification
  - run tracking server on two ports - one accepting http traffic, another
    one https only; the same set of URLs on both ports
  - tracking web GUI link to request LIMs page now changed to point to
    a more useful lane page; request id will not be available if XML
    LIMs feeds are discontinued
- - link to auth script residing in the same virtual host 
+ - link to auth script residing in the same virtual host
  - sensor-related code removed
  - mkfastq option added to make a samplesheet suitable for 10x mkfastq
 
@@ -195,7 +198,7 @@ release 85.4
  - Limit menu for changing run status, when not analyst, to those on instrument
  - Composition framework - the composition object becomes immutable as long
    as its components are immutable.
-     - Functionality for an incremental assembly of a composition moved to 
+     - Functionality for an incremental assembly of a composition moved to
        a generic composition factory.
      - Empty compositions are not allowed.
      - Composition constructor returns a sorted composition.
@@ -220,15 +223,15 @@ release 85.2
 release 85.1
  - Added 'purpose' to lims shim
  - utf8 option for test sqlite db
- 
+
 release 85.0
  - lims shim
    - endeavours to ensure consistency of primary info (e.g. id_run, position)
      with drivers
    - will pass through arguments to driver constructor if it takes them
 
-release 84.12 
- - composition and component serialization to rpt 
+release 84.12
+ - composition and component serialization to rpt
 
 release 84.11
  - Operations (inflation and deflation) on rpt strings and their hash
@@ -243,7 +246,7 @@ release 84.10
  - removed potential warnings in event notification RT#495946
 
 release 84.9
- - transcriptome find updated for RNA-SeQC directory and its gtf file 
+ - transcriptome find updated for RNA-SeQC directory and its gtf file
  - generic serializable sequence composition framework and illumina
    sequencing specific component
  - lims shim now works out driver type from a given driver
@@ -290,7 +293,7 @@ release 84.4
    explicitly
 
 release 81.3
- - accessor methods for frequently used configuration file entries 
+ - accessor methods for frequently used configuration file entries
  - status monitor script and staging area daemon definition - allow for
    farm-specific variations of path prefixes for staging areas
  - staging area and status daemons use common log directory /nfs/{gs|sf}XX/log
@@ -386,8 +389,8 @@ release 80.0
      of the new record is earlier that the current status date
  - status monitor bug fixes
  - daemon for status monitor watcher
- - propagate child/plex library level study data "alignment_in_bam" and 
-   "separate_y_chromosome" to parent lane level as is done with 
+ - propagate child/plex library level study data "alignment_in_bam" and
+   "separate_y_chromosome" to parent lane level as is done with
    "contains_nonconsented_human" data
 
 release 77.9
@@ -427,7 +430,7 @@ release 77.5
  - added new version value for HiSeqX RunInfo.xml
 
 release 77.4
- - changed list of top level directories for HiSeqX 
+ - changed list of top level directories for HiSeqX
 
 release 77.3
  - samplesheet creation now supports dual indexes
@@ -455,9 +458,9 @@ release 77.2
      definitions of most paths placed together
      public write accessors for bam_basecall and dif_files paths since they are used from the pipeline,
        old private accessors retained for backwards compatibility
-   
+
 release 77.1
- - transcriptome changed so that a default is not used if not supplied 
+ - transcriptome changed so that a default is not used if not supplied
  - transcriptome version directory changed so tests changed accordingly
  - reference find changed to handle transcriptome version parsing
  - unused templates removed
@@ -497,7 +500,7 @@ release 76.4
  - some unused code removed
  - some small test scripts merged into related larger test scripts
  - VERSION variable and headers with SVN properties removed from test files
- - all test scripts are given .t extension 
+ - all test scripts are given .t extension
  - unnecessary 'use' statements removed from tests
  - server-wide definition for modperl custom perl libraries location in order
    to provide consistent perl environment for all scripts at server start-up
@@ -525,8 +528,8 @@ release 76.0
      wider tests to be performed if NULL needs to be used
  - id_run_pair defaults to null; examining and setting this field removed
      from the code, the concept of run-pair has not been used for a long time
- - use ${JENKINS_HOME}/tmp instead of /tmp for jenkins tmpdir 
- - add perlcritic policy to prohibit tabs, convert tab to two white space, correct 
+ - use ${JENKINS_HOME}/tmp instead of /tmp for jenkins tmpdir
+ - add perlcritic policy to prohibit tabs, convert tab to two white space, correct
    indentation issues
  - old and unused apache configuration files removed
  - IL instruments removed from instrument utilisation menu (we do not have them any more)
@@ -550,7 +553,7 @@ release 75.6
  - fixed occasional authentication problem (inability of a particular thread to load
    additional modules due to the fact that on a second invocation of npg script in the
    same server thread @INC array is not extended since BEGIN block is not run) when
-   running under apache2.2 by extending the server @INC array at server start up time 
+   running under apache2.2 by extending the server @INC array at server start up time
  - bam, cram, etc files access is prohibited from the runfolder directories listings,
    however, these files are visible in listings
  - more convenient sorting order of directories and files in the runfolder directories
@@ -637,7 +640,7 @@ release 74.8
  - switch to scratch110 for references while scratch109 is down
 
 release 74.7
- - deal with EAN13 barcode - put in batch_id field for now and allow creation of 
+ - deal with EAN13 barcode - put in batch_id field for now and allow creation of
    samplesheet using warehouse lims driver
  - separate_y_chromosone_data available in lims
  - samplesheet driver for lims object
@@ -651,7 +654,7 @@ release 74.6
  - add new staging area (51)
 
 release 74.5
-- order run_status_dict by temporal_index to display in Runs horizontal panel.  
+- order run_status_dict by temporal_index to display in Runs horizontal panel.
 - restrict statuses in menu for status editing to the statuses after the current status for all users
   other than those in the new analyst group, who can see all statuses.
 
@@ -789,10 +792,10 @@ release 72.4
 - Makefile.PL file replaced with Build.PL that can build all dependencies from scratch
 - db fixtures updated (NULLs removed)
 - possible to use local mysql test database without having socket specified in the
-  mysql configuration file 
+  mysql configuration file
 
 release 72.3
-- a fix to instrument uptime as exposed in xml feeds RT#301282: npg uptime numbers correct? 
+- a fix to instrument uptime as exposed in xml feeds RT#301282: npg uptime numbers correct?
 
 release 72.2
 - illumina sequencing failures ticket figures out what to do if no id_run option is given RT#161876
@@ -805,7 +808,7 @@ release 72.0
 - decription key is taken from the relevant portion of the config. file
   rather than from the live section
 - changes to run under perl 5.14.2 and updated Moose, in particular, coping with variations in Moose error messages
-- staging monitor bug fix for getting file modification time    
+- staging monitor bug fix for getting file modification time
 - iscurrent flag for both instrument and run statuses
 - four new statuses for instrument, 'planned repair', 'down for repair',
   'planned service', 'down for service', replacing 'down' and 'planned maintenance'
@@ -844,13 +847,13 @@ release 71.0
 
 release 70.4
 - cope with V2 MiSeq reagent kits in samplesheet generation
- 
+
 release 70.3
 - typo fix - space between batch id and .xml extension in javascript
 
 release 70.2
 - npg tracking test server config and README removed; see the configuration in sflogin svn project
- 
+
 release 70.1
 - sample consent_withdrawn method added
 - svn::executable ON property set for scripts in cgi-bin pending tracking server deployment on sfweb
@@ -893,12 +896,12 @@ release 69.0
 
 release 68.2
 - Unused npg tracking db tables deleted: entity2reference_sequence, reference_sequence, project;
-- Unused columns deleted from the run_lane npg tracking db: auto_analyse, id_project; 
+- Unused columns deleted from the run_lane npg tracking db: auto_analyse, id_project;
 - Run table changes: column 'is_dev' is dropped, a new column 'team' is created to associate teams with a run. Where id_dev column had 1, the 'team' column has 'RAD', otherwise the value is 'joint';
 - DBIx binding, ClearPress models, views and templates and npg::api updated accordingly
 - DBIx binding: create and search cbot runs removed
 - new run page redesigned; instrument type detection by javascript on this page improved
-- team selection drop-down list on a new page list 
+- team selection drop-down list on a new page list
 
 release 68.1
 - create run page javascript bug fix
@@ -948,10 +951,10 @@ release 65.0
     some additional methods deprecated
 - npg tracking web app:
     npg::util - st_cache and useragent accessors removed
-    deprecated module npg::graph removed 
+    deprecated module npg::graph removed
     own decorator object is used instead of SangerWeb; no dependency on SangerPath
     app version number is taken from npg::view instead of npg::controller
-    /nfs/WWWdev/SHARED_docs/lib/core dependency retained in npg::view object for SSO and LDAP access, but the code runs OK if any of these modules is unaccessible 
+    /nfs/WWWdev/SHARED_docs/lib/core dependency retained in npg::view object for SSO and LDAP access, but the code runs OK if any of these modules is unaccessible
 - documentation and files for running stand-alone apache tracking service are in t/test_server
 - dependency on SangerPath and SangerWeb removed from tests
 - npg::email tests that were sending live updates fixed
@@ -1134,7 +1137,7 @@ release-54.2
 - tests for phix reference that use a deprecated method removed from 45 test
 - some tests that compare DateTime object to a string data fixed by stringifying the object explicitly
 - added blocking_runs method and  mapping of hiseq slots to blocking runs for the instrument model
-- possible to create a new hiseq run if there is a run-complete run in a slot 
+- possible to create a new hiseq run if there is a run-complete run in a slot
 
 release-54.1
 - spiked tag part of batch xml parsing extended to allow for reference finder to deal with it

@@ -12,7 +12,6 @@ bin/staging_area_monitor
 Build.PL
 cgi-bin/locate_runfolder
 cgi-bin/npg
-cgi-bin/reflector
 cgi-bin/storage
 Changes
 data/config.ini
@@ -26,6 +25,7 @@ data/gfx/HiSeqX.png
 data/gfx/HK.png
 data/gfx/HK_PE.png
 data/gfx/MiSeq.png
+data/gfx/NovaSeq.png
 data/npg_tracking_email/templates/instrument.tt2
 data/npg_tracking_email/templates/lane_detail.tt2
 data/npg_tracking_email/templates/run_or_lane2subscribers.tt2
@@ -110,7 +110,6 @@ data/templates/search_list_advanced.tt2
 data/templates/search_list_advanced_ajax.tt2
 data/templates/search_read.tt2
 data/templates/tag_form_ajax.tt2
-data/templates/urls.tt2
 data/templates/usage_list.tt2
 data/templates/user2usergroup_create.tt2
 data/templates/user2usergroup_delete.tt2
@@ -1007,7 +1006,7 @@ t/data/run_params/RunParameters.novaseq.xml
 t/data/run_params/runParameters.hiseq.rr.single.xml
 t/data/run_params/runParameters.hiseq.rr.twoind.xml
 t/data/run_params/runParameters.hiseq.rr.xml
-t/data/run_params/runParameters.hiseq.truseq.rr.xml
+t/data/run_params/runParameters.hiseq.rr.truseq.xml
 t/data/run_params/runParameters.hiseq.xml
 t/data/run_params/runParameters.hiseq4000.xml
 t/data/run_params/runParameters.hiseqx.upgraded.xml
