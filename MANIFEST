@@ -4,6 +4,7 @@ bin/generate_samplesheet
 bin/illumina_instruments_uptime
 bin/InstrumentPoller
 bin/npg_daemon_control
+bin/npg_move_runfolder
 bin/npg_status2file
 bin/npg_status_watcher
 bin/seq_instr_checker

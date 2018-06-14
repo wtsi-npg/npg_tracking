@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 76;
+use Test::More tests => 80;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -304,6 +304,26 @@ my $schema = t::dbic_util->new->test_schema();
     is( $m, $expected, 'not moved since the runfolder has a flag');
 }
 
+{
+    my $tmpdir = tempdir( CLEANUP => 1 );
+    my $test_source  = $tmpdir . '/IL12/incoming/100721_IL12_05222';
+    my $analysis_dir = $tmpdir . '/IL12/analysis';
+    my $test_target  = $analysis_dir . '/100721_IL12_05222';
+    make_path $test_source;
+    make_path( $analysis_dir );
+
+    $schema->resultset('Run')->find(5222)->update_run_status('run pending');
+    my $test = Monitor::RunFolder::Staging->new( runfolder_path => $test_source,
+                                                 status_update => 0,
+                                                 npg_tracking_schema        => $schema, );
+
+    lives_ok { $test->move_to_analysis() } 'Move to analysis';
+    ok( !-e $test_source, 'runfolder is gone from incoming' );
+    ok(  -e $test_target, 'runfolder is present in analysis' );
+    is( $test->current_run_status_description(), 'run pending',
+          'run status is unchanged' );
+}
+ 
 {
     my $tmpdir = tempdir( CLEANUP => 1 );
     system('cp',  '-rp', $MOCK_STAGING . '/IL5/incoming/100621_IL5_01204', $tmpdir);
