@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - new role - file and directory naming factory
  - added bin/npg_move_runfolder
  - make NovaSeq instruments represented on web pages
  - removing reflector allow client side JS to request XML feed directly from PSD
