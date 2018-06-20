@@ -1,7 +1,6 @@
 use strict;
 use warnings;
-
-use Test::More tests => 25;
+use Test::More tests => 28;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -935,5 +934,216 @@ sub _test_di {
   is($plex->tag_sequence, 'GTCTTGGCGGGGGGGG', 'combined tag sequence');
   is($plex->purpose, 'standard', 'purpose');
 }
+
+subtest 'aggregation across lanes for pools' => sub {
+  plan tests => 79;
+  
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/test40_lims/samplesheet_novaseq4lanes.csv';
+
+  my $l = st::api::lims->new(rpt_list => '25846:1:3');
+  throws_ok { $l->aggregate_xlanes() } qr/Not run-level object/,
+    'method cannot be run for a composition';
+  $l = st::api::lims->new(id_run => 25846, position => 1);
+  throws_ok { $l->aggregate_xlanes() } qr/Not run-level object/,
+    'method cannot be run for a lane-level object';
+  $l = st::api::lims->new(id_run => 25846, position => 1, tag_index => 4);
+  throws_ok { $l->aggregate_xlanes() } qr/Not run-level object/,
+    'method cannot be run for a plex-level object';
+
+  $l = st::api::lims->new(id_run => 25846);
+  
+  throws_ok { $l->aggregate_xlanes(qw/2 10/) }
+    qr/Requested position 10 does not exists in /,
+    'error if requested position does not exist';
+
+  my @merged = $l->aggregate_xlanes();
+  is (scalar @merged, 23, 'number of aggregates is number of tags plus two');
+  my $tag_zero = pop @merged;
+  my $tag_spiked = pop @merged;
+  my $tag_last = pop @merged;
+  my $tag_first = shift @merged;
+  is ($tag_zero->rpt_list, '25846:1:0;25846:2:0;25846:3:0;25846:4:0',
+    'rpt list for tag zero object');
+  is ($tag_spiked->rpt_list, '25846:1:888;25846:2:888;25846:3:888;25846:4:888',
+    'rpt list for spiked in tag object');
+  is ($tag_last->rpt_list, '25846:1:21;25846:2:21;25846:3:21;25846:4:21',
+    'rpt list for tag 21 object');
+  is ($tag_first->rpt_list, '25846:1:1;25846:2:1;25846:3:1;25846:4:1',
+    'rpt list for tag 1 object');
+
+  @merged = $l->aggregate_xlanes(qw/1 4/);
+  is (scalar @merged, 23, 'number of aggregates is number of tags plus two');
+  $tag_zero = pop @merged;
+  $tag_spiked = pop @merged;
+  $tag_last = pop @merged;
+  $tag_first = shift @merged;
+  is ($tag_zero->rpt_list, '25846:1:0;25846:4:0',
+    'rpt list for tag zero object');
+  is ($tag_spiked->rpt_list, '25846:1:888;25846:4:888',
+    'rpt list for spiked in tag object');
+  is ($tag_last->rpt_list, '25846:1:21;25846:4:21',
+    'rpt list for tag 21 object');
+  is ($tag_first->rpt_list, '25846:1:1;25846:4:1',
+    'rpt list for tag 1 object');
+
+  @merged = $l->aggregate_xlanes(qw/1/);
+  is (scalar @merged, 23, 'number of aggregates is number of tags plus two');
+  $tag_zero = pop @merged;
+  $tag_spiked = pop @merged;
+  $tag_last = pop @merged;
+  $tag_first = shift @merged;
+  is ($tag_zero->rpt_list, '25846:1:0', 'rpt list for tag zero object');
+  is ($tag_spiked->rpt_list, '25846:1:888', 'rpt list for spiked in tag object');
+  is ($tag_last->rpt_list, '25846:1:21', 'rpt list for tag 21 object');
+  is ($tag_first->rpt_list, '25846:1:1', 'rpt list for tag 1 object');
+
+  @merged = $l->aggregate_xlanes();
+  is (scalar @merged, 23, 'number of aggregates is number of tags plus two');
+  $tag_zero = pop @merged;
+  $tag_spiked = pop @merged;
+  $tag_last = pop @merged;
+  $tag_first = shift @merged;
+  is ($tag_zero->rpt_list, '25846:1:0;25846:2:0;25846:3:0;25846:4:0',
+    'rpt list for tag zero object');
+  is ($tag_spiked->rpt_list, '25846:1:888;25846:2:888;25846:3:888;25846:4:888',
+    'rpt list for spiked in tag object');
+  is ($tag_last->rpt_list, '25846:1:21;25846:2:21;25846:3:21;25846:4:21',
+    'rpt list for tag 21 object');
+  is ($tag_first->rpt_list, '25846:1:1;25846:2:1;25846:3:1;25846:4:1',
+    'rpt list for tag 1 object');
+
+  my $expected = {
+    '25846:1:0;25846:2:0;25846:3:0;25846:4:0' => {
+      'sample_id' => undef,
+      'sample_name' => undef,
+      'sample_common_name' => 'Homo sapiens',
+      'study_id' => 5318,
+      'study_name' => 'NovaSeq testing',
+      'reference_genome' => 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_75_transcriptome)',
+      'library_id' => undef,
+      'library_name' => undef,
+      'library_type' => 'Standard',
+      'default_tag_sequence' => undef,
+      'study_alignments_in_bam' => 1,
+      'study_contains_nonconsented_human' => 0
+    },
+    '25846:1:888;25846:2:888;25846:3:888;25846:4:888' => {
+      'sample_id' => '1255141',
+      'sample_name' => 'phiX_for_spiked_buffers',
+      'sample_common_name' => undef,
+      'study_id' => 198,
+      'study_name' => 'Illumina Controls',
+      'reference_genome' => undef,
+      'library_id' => '17883061',
+      'library_name' => '17883061',
+      'library_type' => undef,
+      'default_tag_sequence' => 'ACAACGCAATC',
+      'study_alignments_in_bam' => 1,
+      'study_contains_nonconsented_human' => 0
+    },
+    '25846:1:21;25846:2:21;25846:3:21;25846:4:21' => {
+      'sample_id' => '3681772',
+      'sample_name' => '5318STDY7462477',
+      'sample_common_name' => 'Homo sapiens',
+      'study_id' => 5318,
+      'study_name' => 'NovaSeq testing',
+      'reference_genome' => 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_75_transcriptome)',
+      'library_id' => '21059089',
+      'library_name' => '21059089',
+      'library_type' => 'Standard',
+      'default_tag_sequence' => 'TCGAGCGT',
+      'study_alignments_in_bam' => 1,
+      'study_contains_nonconsented_human' => 0
+    },
+    '25846:1:1;25846:2:1;25846:3:1;25846:4:1' => {
+      'sample_id' => '3681752',
+      'sample_name' => '5318STDY7462457',
+      'sample_common_name' => 'Homo sapiens',
+      'study_id' => 5318,
+      'study_name' => 'NovaSeq testing',
+      'reference_genome' => 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_75_transcriptome)',
+      'library_id' => '21059039',
+      'library_name' => '21059039',
+      'library_type' => 'Standard',
+      'default_tag_sequence' => 'ATCACGTT',
+      'study_alignments_in_bam' => 1,
+      'study_contains_nonconsented_human' => 0
+    } 
+  };
+
+  for my $o (($tag_zero, $tag_spiked, $tag_first, $tag_last)) {
+    my $rpt_list = $o->rpt_list;
+    ok (!defined $o->id_run, "id_run not defined for $rpt_list");
+    for my $method ( qw/
+                         sample_id sample_name sample_common_name
+                         study_id study_name reference_genome
+                         library_id library_name library_type
+                         default_tag_sequence
+                       /) {
+      is ($o->$method, $expected->{$rpt_list}->{$method}, "$method for $rpt_list");
+    }
+    ok ($o->study_alignments_in_bam, "alignment true for $rpt_list");
+    ok (!$o->study_contains_nonconsented_human, "nonconsented_human false for $rpt_list");
+  }
+  
+  ok ($tag_spiked->is_phix_spike, 'is phix spike');
+  ok (!$tag_first->is_phix_spike, 'is not phix spike');
+  ok (!$tag_zero->is_phix_spike, 'is not phix spike');
+};
+
+subtest 'aggregation across lanes for non-pools' => sub {
+  plan tests => 13;
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/test40_lims/samplesheet_rapidrun_nopool.csv';
+  my @merged = st::api::lims->new(id_run => 22672)->aggregate_xlanes();
+
+  my $l = $merged[0];
+  is (scalar @merged, 1, 'one object returned');
+  is ($l->rpt_list, '22672:1;22672:2', 'correct rpt_list');
+  ok (!defined $l->id_run, "id_run not defined");
+  ok (!$l->is_phix_spike, 'is not phix spike');
+
+  my $expected = {
+    'sample_id' => '2917461',
+    'sample_name' => '4600STDY6702635',
+    'sample_common_name' => 'Homo sapiens',
+    'study_id' => 4600,
+    'study_name' => 'Osteosarcoma_WGBS',
+    'reference_genome' => 'Not suitable for alignment',
+    'library_id' => '18914827',
+    'library_name' => '18914827',
+    'library_type' => 'Bisulphite pre quality controlled',
+    'study_alignments_in_bam' => 1,
+    'study_contains_nonconsented_human' => 0 
+  };
+
+  for my $method ( qw/
+                       sample_id sample_name sample_common_name
+                       study_id study_name reference_genome
+                       library_id library_name library_type
+                     /) {
+    is ($l->$method, $expected->{$method}, "$method");
+  }
+};
+
+subtest 'creating tag zero object' => sub {
+  plan tests => 4;
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/test40_lims/samplesheet_novaseq4lanes.csv';
+
+  my $l = st::api::lims->new(id_run => 25846);
+  throws_ok { $l->create_tag_zero_object() } qr/Position should be defined/,
+    'method cannot be called on run-level object';
+  $l = st::api::lims->new(rpt_list => '25846:2:1');
+  throws_ok { $l->create_tag_zero_object() } qr/Position should be defined/,
+    'method cannot be called on an object for a composition';
+
+  my $description = 'st::api::lims object, driver - samplesheet, id_run 25846, ' .
+    'path t/data/test40_lims/samplesheet_novaseq4lanes.csv, position 3, tag_index 0';
+  $l = st::api::lims->new(id_run => 25846, position => 3);
+  is ($l->create_tag_zero_object()->to_string(), $description, 'created from lane-level object');
+  $l = st::api::lims->new(id_run => 25846, position => 3, tag_index => 5);
+  is ($l->create_tag_zero_object()->to_string(), $description, 'created from plex-level object');
+};
 
 1;

@@ -1497,6 +1497,8 @@ t/data/tag_from_sample_description/st/samples/1503351.xml
 t/data/tag_from_sample_description/st/samples/1503352.xml
 t/data/tag_from_sample_description/st/samples/1503353.xml
 t/data/tag_from_sample_description/st/samples/1503354.xml
+t/data/test40_lims/samplesheet_novaseq4lanes.csv
+t/data/test40_lims/samplesheet_rapidrun_nopool.csv
 t/data/test40_lims_edited/st/batches/14706.xml
 t/data/test40_lims_edited/st/batches/4775.xml
 t/data/test40_lims_edited/st/samples/1093818.xml
