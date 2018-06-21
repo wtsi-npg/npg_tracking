@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 87.0
  - new role - file and directory naming factory
  - added bin/npg_move_runfolder
  - make NovaSeq instruments represented on web pages
