@@ -428,7 +428,7 @@ sub read_png { ## no critic (Subroutines::ProhibitExcessComplexity)
   }
 
    # display instrument model name
-   my $instr_annot_x = $is2slot ? 45 : $is_ms ? -10 : 0;
+   my $instr_annot_x = $is2slot ? 36 : $is_ms ? -10 : 0;
    $instr_annot_x += $INS_NAME_VALUE_ONE;
    my $instr_annot_y = $is2slot ? -7 : $is_ms ? -7 : 0;
    $instr_annot_y += $INS_NAME_VALUE_TWO;

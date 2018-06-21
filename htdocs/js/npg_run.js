@@ -9,9 +9,9 @@ function things_to_do_on_load(id_run, batch_id) {
 
   var lims_str = '' + batch_id;
   if(batch_id && ! (lims_str.match(/^\d{13}$/))) {
-   new Ajax.Request(SCRIPT_NAME + '/../reflector', {
+   new Ajax.Request(lims_batches_url + batch_id + '.xml', {
     requestHeaders: {Accept: 'application/xml, text/xml'},
-    parameters: { url: lims_batches_url + batch_id + '.xml' },
+    method: 'get',
     onSuccess: function(transport){
       var response = transport.responseXML;
       if(!response){
@@ -34,9 +34,9 @@ function things_to_do_on_load(id_run, batch_id) {
 
   $$('a.sequencescape_id').pluck('href').map(function(l){url2name.set(l)});
   url2name.each(function(pair){
-    new Ajax.Request(SCRIPT_NAME + '/../reflector', {
-        requestHeaders: {Accept: 'application/xml, text/xml'},
-      parameters: { url: pair.key+'.xml' },
+    new Ajax.Request(pair.key+'.xml', {
+      requestHeaders: {Accept: 'application/xml, text/xml'},
+      method: 'get',
       onSuccess: function(transport){
         var response = transport.responseXML;
         if(response){
@@ -61,7 +61,7 @@ function things_to_do_on_load(id_run, batch_id) {
         _ss_ajax_warning('No batch data from Sequencescape!');
       }
     },
-    onCreate: function(){ $('ss_ajax_status').update('<img style="height:16px;width:16px;" src="/prodsoft/npg/gfx/spinner.gif" alt="spinner" />Getting Sequencescape batch data...') },
+    onCreate: function(){ $('ss_ajax_status').update('<img style="height:16px;width:16px;" src="/gfx/spinner.gif" alt="spinner" />Getting Sequencescape batch data...') },
     onFailure: function(){ _ss_ajax_warning('Something went wrong getting batch data from Sequencescape....') }
    });
   }

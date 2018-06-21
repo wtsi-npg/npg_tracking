@@ -118,7 +118,7 @@ is($model->id_user(), undef, 'id_user not found by model or current run status')
   is($run->recent_mirrored_runs(), $recent_mirrored_runs, 'recent_mirrored_runs cached');
   is($recent_mirrored_runs->[0], undef, 'no recent mirrored runs');
   $run->{recent_mirrored_runs} = undef;
-  $run->{'days'} = '4000';
+  $run->{'days'} = '40000';
   $recent_runs = $run->recent_runs();
   ok($recent_runs->[0], 'recent runs found');
   $recent_mirrored_runs = $run->recent_mirrored_runs();

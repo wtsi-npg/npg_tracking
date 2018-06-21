@@ -1,8 +1,7 @@
 use strict;
 use warnings;
-use Test::More tests => 43;
+use Test::More tests => 39;
 use Test::Exception;
-use Carp;
 use Archive::Tar;
 use IO::File;
 use File::Temp qw(tempdir);
@@ -20,7 +19,7 @@ my $testrundata = catfile(rel2abs(dirname(__FILE__)),q(data),q(090414_IL24_2726.
 
 my $origdir = getcwd;
 my $testdir = catfile(tempdir( CLEANUP => $CLEANUP ), q()); #we need a trailing slash after our directory for the globbing later
-chdir $testdir or croak "Cannot change to temporary directory $testdir";
+chdir $testdir or die "Cannot change to temporary directory $testdir";
 diag ("Extracting $testrundata to $testdir");
 system('tar','xjf',$testrundata) == 0 or Archive::Tar->extract_archive($testrundata, 1);
 chdir $origdir; #so cleanup of testdir can go ahead
@@ -40,18 +39,9 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
     lives_ok { $name = $rf->name; } 'name parsed';
     is($name, q(IL24_2726), 'name correct');
   }
-  { my $is_rta;
-    lives_ok { $is_rta = $rf->is_rta; } 'check is_rta';
-    ok(!$is_rta, 'not RTA run');
-  }
 
   mkdir catdir($testrundir,qw(Data));
   mkdir catdir($testrundir,qw(Data Intensities));
-  { my $is_rta;
-    $rf = npg_tracking::illumina::runfolder->new( runfolder_path => $testrundir);
-    lives_ok { $is_rta = $rf->is_rta; } 'check is_rta';
-    ok($is_rta, 'RTA run - when Intensities directory added');
-  }
   {  my $name;
     lives_ok {
       $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, id_run=> 2726, npg_tracking_schema => undef);
@@ -85,7 +75,7 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
   IO::File->new(catfile($testrundir,q(Recipe_foo.xml)), q(w));
   throws_ok {
     $rf->expected_cycle_count;
-  } qr/Multiple recipe files found:/, 'throws when multiple recipes found';
+  } qr/Multiple files found:/, 'throws when multiple recipes found';
   unlink catfile($testrundir,q(Recipe_foo.xml));
   my $expected_cycle_count;
   my (@read_cycle_counts, @indexing_cycle_range, @read1_cycle_range, @read2_cycle_range);
@@ -110,7 +100,7 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
   rename catfile($testrundir,q(Config),q(TileLayout.xml)), catfile($testrundir,q(Config),q(gibber_TileLayout.xml));
   throws_ok {
     $rf->tile_count;
-  } qr/Can't open/, 'throws on no TileLayout.xml';
+  } qr/File not found/, 'throws on no TileLayout.xml';
   rename catfile($testrundir,q(Config),q(gibber_TileLayout.xml)), catfile($testrundir,q(Config),q(TileLayout.xml));
   my $tile_count;
   lives_ok {

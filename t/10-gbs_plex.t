@@ -4,14 +4,33 @@ use Test::More tests => 13;
 use Test::Exception;
 use Moose::Meta::Class;
 use File::Spec::Functions qw(catdir);
+use File::Temp qw(tempdir);
+use File::Path qw(make_path);
 use Cwd qw(cwd);
-use Data::Dump qw(pp);
-
+use File::Copy;
+use File::Find;
 
 my $current_dir = cwd();
 my $repos = catdir($current_dir, q[t/data/repos1]);
 my $gbs_repos = catdir($repos, q[gbs_plex]);
 
+my $new = tempdir(CLEANUP => 1);
+
+sub _copy_ref_rep {
+  my $n = $File::Find::name;
+  if (-d $n || -l $n) {
+    return;
+  }
+  my ($volume,$directories,$file_name) = File::Spec->splitpath($n);
+  $directories =~ s/\Q$repos\E//smx;
+  $directories = $new . $directories;
+  make_path $directories;
+  copy $n, $directories;
+}
+
+find({'wanted' => \&_copy_ref_rep, 'follow' => 0, 'no_chdir' => 1}, $gbs_repos);
+$repos = $new;
+$gbs_repos = catdir($repos, q[gbs_plex]);
 
 {
   local $ENV{http_proxy} = 'wibble';
@@ -67,15 +86,12 @@ my $gbs_repos = catdir($repos, q[gbs_plex]);
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/repos1];
 use_ok('npg_tracking::data::gbs_plex');
 
-{ # There is no bait name or files for this run
+{ # There is no gbs plex name or files for this run
   my $test =npg_tracking::data::gbs_plex->new( repository => $repos, id_run => 7754, position => 1, tag_index => 2);
   lives_and { is $test->gbs_plex_path, undef } 'plex path found';
   is($test->gbs_plex_name, undef, 'plex name found');
 
 }
-
-
-
 
 1;
 

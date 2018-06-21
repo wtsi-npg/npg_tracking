@@ -1,11 +1,13 @@
 use strict;
 use warnings;
-use Test::More tests => 63;
+use Test::More tests => 62;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
+use Moose::Meta::Class;
 use Cwd;
 use Carp;
+use File::Copy;
 
 BEGIN {
   local $ENV{'HOME'} = getcwd() . '/t';
@@ -14,7 +16,8 @@ BEGIN {
   # package creation within BEGIN block to ensure after HOME is reset
   package test::long_info;
   use Moose;
-  with qw{npg_tracking::illumina::run::short_info npg_tracking::illumina::run::folder};
+  with qw{npg_tracking::illumina::run::short_info
+          npg_tracking::illumina::run::folder};
   with qw{npg_tracking::illumina::run::long_info};
   no Moose;
   1;
@@ -23,8 +26,97 @@ BEGIN {
 package main;
 
 my $basedir = tempdir( CLEANUP => 1 );
-$ENV{dev} = qw{non_existant_dev_enviroment}; #prevent pickup of user's config
-$ENV{TEST_DIR} = $basedir; #so when npg_tracking::illumina::run::folder globs the test directory
+
+subtest 'retrieving information from runParameters.xml' => sub {
+  plan tests => 135;
+
+  my $rf = join q[/], $basedir, 'runfolder';
+  mkdir $rf;
+
+  my $class = Moose::Meta::Class->create_anon_class(
+    methods => {"runfolder_path" => sub {$rf}},
+    roles   => [qw/npg_tracking::illumina::run::long_info/]); 
+
+  my @rp_files = qw/
+    runParameters.hiseq4000.xml
+    runParameters.hiseq.rr.single.xml
+    runParameters.hiseq.rr.twoind.xml
+    runParameters.hiseq.rr.xml
+    runParameters.hiseq.xml
+    runParameters.hiseqx.upgraded.xml
+    runParameters.hiseqx.xml
+    RunParameters.miniseq.xml
+    runParameters.miseq.xml
+    RunParameters.nextseq.xml
+    RunParameters.novaseq.xml
+    RunParameters.novaseq.xp.xml
+    runParameters.hiseq.rr.truseq.xml
+                  /;
+  my $dir = 't/data/run_params';
+
+  my @platforms = qw/MiniSeq HiSeq HiSeq4000 HiSeqX
+                     MiSeq NextSeq NovaSeq/;
+  my @i5opp_platforms = map {lc $_} qw/MiniSeq HiSeq4000 HiSeqX NextSeq/;
+
+  for my $f (@rp_files) {
+    note $f;
+    my ($name, $pl) = $f =~ /([r|R]unParameters)\.(.+\.xml)\Z/;
+    $name = join q[/], $rf, $name . '.xml';
+    copy(join(q[/],$dir,$f), $name) or die 'Failed to copy file';
+
+    my $li = $class->new_object();
+    
+    foreach my $p ( grep {$_ ne 'HiSeq'} @platforms) {
+      my $method = join q[_], 'platform', $p;
+      if ($pl =~ /$p/i ) {
+        ok ($li->$method(), "platform is $p");
+      } else {
+        ok (!$li->$method(), "platform is not $p");
+      }
+    }
+
+    if ($pl =~ /hiseq\.(?:xml|rr)/ ) {
+      ok ($li->platform_HiSeq(), 'platform is HiSeq');
+    } else {
+      ok (!$li->platform_HiSeq(), 'platform is not HiSeq');
+    }
+
+    if ($f =~ /\.rr\./) {
+      ok ($li->is_rapid_run(), 'is rapid run');
+      ok ($li->all_lanes_mergeable(), 'all lanes meargeable');
+      if ($f =~ /\.truseq\./) {
+        ok (!$li->is_rapid_run_v2(), 'rapid run version is not 2');
+        ok ($li->is_rapid_run_v1(), 'rapid run version is 1');
+      } else {
+        ok ($li->is_rapid_run_v2(), 'rapid run version is 2');
+        ok (!$li->is_rapid_run_v1(), 'rapid run version is not 1');
+      }
+       ok (!$li->is_rapid_run_abovev2(), 'rapid run version is not above 2');
+    } else {
+      ok (!$li->is_rapid_run(), 'is not rapid run');
+      if ($f =~ /\.novaseq\./) {
+        if ($f =~ /\.xp\./) {
+         ok (!$li->all_lanes_mergeable(), 'lanes are not meargeable');
+        } else {
+         ok ($li->all_lanes_mergeable(), 'all lanes meargeable');
+        }
+      }
+    }
+
+    my @i5 = grep { $pl =~ /\A$_/ } @i5opp_platforms;
+    if (scalar @i5 > 1) {die 'Too many matches'};
+    if (@i5) {
+      ok ($li->is_i5opposite(), 'i5opposite');
+    } else {
+      ok (!$li->is_i5opposite(), 'not i5opposite');
+    }
+
+    unlink $name;
+  }
+};
+
+local $ENV{'TEST_DIR'} = $basedir; #so when npg_tracking::illumina::run::folder globs the test directory
+local $ENV{'dev'} = 'none';
 
 my $id_run = q{1234};
 my $name = q{IL2_1234};
@@ -68,10 +160,6 @@ my $orig_dir = getcwd();
 
   create_staging();
 
-  is($long_info->use_bases(), q{Y76,I8,y76}, q{use_bases string is correct});
-  lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
-  is($long_info->read_config_string(), q{Y76,I8,y76}, q{read_config_string returns same as use_bases});
-
   lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
   is($long_info->is_paired_read(), 1, q{Read is paired});
   lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
@@ -91,9 +179,6 @@ my $orig_dir = getcwd();
   is($long_info->tilelayout_rows(), 60, q{correct number of tilelayout_rows});
   lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
   is($long_info->tile_count(), 120, q{correct number of tiles});
-
-  lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
-  is($long_info->is_rta(), 1, q{run is rta});
 }
 
 chdir $orig_dir; #need to leave directories before you can delete them....
@@ -109,9 +194,6 @@ $ENV{TEST_DIR} = 't/data/long_info';
   cmp_ok($long_info->lane_count, '==', 8, 'correct lane count');
   lives_ok  { $long_info = test::long_info->new({id_run => 5281}); } q{created role_test (HiSeq run 5281, RunInfo.xml) object ok};
   cmp_ok($long_info->cycle_count, '==', 200, 'correct cycle count');
-  lives_ok  { $long_info = test::long_info->new({id_run => 5281}); } q{created role_test (HiSeq run 5281, RunInfo.xml) object ok};
-  cmp_ok($long_info->use_bases, 'eq', 'Y100,y100', 'correct use_bases string');
-note($long_info->runfolder_path);
 
   lives_ok  { $long_info = test::long_info->new({id_run => 5281}); } q{created role_test (HiSeq run 5281, RunInfo.xml) object ok};
   my $test_lane_tile_clustercount = {};
@@ -123,18 +205,12 @@ note($long_info->runfolder_path);
     }
   }
 
-  is_deeply( $long_info->lane_tile_clustercount(), $test_lane_tile_clustercount, q{lane_tile_clustercount as expected} );
-
-  $long_info=undef;
   lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
   cmp_ok($long_info->tile_count, '==', 48, 'correct tile count');
   lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
   cmp_ok($long_info->lane_count, '==', 8, 'correct lane count');
   lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
   cmp_ok($long_info->cycle_count, '==', 202, 'correct cycle count');
-  lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
-  cmp_ok($long_info->use_bases, 'eq', 'Y101,y101', 'correct use_bases string');
-note($long_info->runfolder_path);
 
   my $tilelayout_columns;
   lives_ok  { 
@@ -150,6 +226,25 @@ note($long_info->runfolder_path);
   cmp_ok($long_info->lane_tilecount->{2}, '==', 63, 'correct lane 2 tile count');
 note($long_info->runfolder_path);
   
+
+}
+
+#Now let's test a NovaSeq directory....
+$ENV{TEST_DIR} = 't/data/long_info';
+{
+  my $long_info;
+
+  lives_ok  { $long_info = test::long_info->new({id_run => 25723}); } q{created role_test object ok};
+  is($long_info->tilelayout_columns(), 12, q{correct number of tilelayout_columns});
+  lives_ok  { $long_info = test::long_info->new({id_run => 25723}); } q{created role_test object ok};
+  is($long_info->tilelayout_rows(), 78, q{correct number of tilelayout_rows});
+  lives_ok  { $long_info = test::long_info->new({id_run => 25723}); } q{created role_test object ok};
+  is($long_info->tile_count(), 936, q{correct number of tiles});
+
+  $long_info=undef;
+  lives_ok  { $long_info = test::long_info->new({id_run => 25723}); } q{created role_test (HiSeq run 19395, RunInfo.xml) object ok};
+  cmp_ok($long_info->lane_tilecount->{1}, '==', 936, 'correct lane 1 tile count');
+note($long_info->runfolder_path);
 
 }
 

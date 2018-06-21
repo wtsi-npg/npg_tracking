@@ -3,9 +3,10 @@
            index=0
 %]
 
-[%- reqd_order_of_inst_type = ['MiSeq','HiSeqX','HiSeq 4000','HiSeq','cBot'] -%]
+[%- reqd_order_of_inst_type = ['MiSeq','NovaSeq','HiSeqX','HiSeq 4000','HiSeq','cBot'] -%]
 <ul class="instrument_by_type">
-[% FOREACH ins IN reqd_order_of_inst_type ; instruments = model.instruments.0.instrument_format.current_instruments_by_format.$ins -%]
+[% FOREACH ins IN reqd_order_of_inst_type ;
+   instruments = model.instruments.0.instrument_format.current_instruments_by_format.$ins -%]
 [% NEXT IF ! instruments.0 -%]
 
   <li>Instrument Type: [% ins %]
