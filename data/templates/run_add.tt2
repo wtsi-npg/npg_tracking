@@ -215,13 +215,12 @@ function fetch_batch(e){
    return;
  }
  var url = lims_batches_url;
-
  if(flowcell_id && ! _instrument_is_miseq()){
    url = url + 'find_batch_by_barcode/' + flowcell_id + '.xml';
  }else if(batch_id){
    url = url + batch_id + '.xml';
  }
- 
+
  if(batch_id.match(/^\d{13}$/)){
   $('multiplex_run').checked = true;
   $('paired_read').checked=true;
@@ -237,9 +236,9 @@ function fetch_batch(e){
     _ss_ajax_warning('Dodgy EAN13 barcode!');
   }
  }else{
-  new Ajax.Request('[% SCRIPT_NAME %]/../reflector', {
+  new Ajax.Request(url, {
     requestHeaders: {Accept: 'application/xml, text/xml'},
-    parameters: { url: url },
+    method: 'get',
     onSuccess: function(transport){
       var response = transport.responseXML;
       if(!response){
@@ -274,9 +273,9 @@ function fetch_batch(e){
 	     var study_names = new Hash();
 	     $$('a.sequencescape_id').pluck('href').map(function(l){url2name.set(l)});
 	     url2name.each(function(pair){
-	         new Ajax.Request('[% SCRIPT_NAME %]/../reflector', {
+	         new Ajax.Request(pair.key+'.xml', {
               requestHeaders: {Accept: 'application/xml, text/xml'},
-	           parameters: { url: pair.key+'.xml' },
+              method: 'get',
               onSuccess: function(transport){
 	             var response = transport.responseXML;
 	             if(response){
@@ -529,10 +528,10 @@ function _get_read_length_paired_by_request(request_id, index_length){
    var url = lims_batches_url;
    url=url.replace(/batches\//, '');
    url = url+'requests/'+ request_id +'.xml'
-   new Ajax.Request('[% SCRIPT_NAME %]/../reflector', {
+   new Ajax.Request(url, {
        requestHeaders: {Accept: 'application/xml, text/xml'},
-	    parameters: { url: url},
-         onSuccess: function(transport){
+       method: 'get',
+       onSuccess: function(transport){
 	        var response = transport.responseXML;
 	        var request_list = response.getElementsByTagName('request');
 	        if(response && request_list.length > 0){
