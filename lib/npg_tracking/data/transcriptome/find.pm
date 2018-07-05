@@ -115,11 +115,10 @@ sub _build_gtf_file {
 }
 
 has 'globin_path' => (isa           => q{Maybe[Str]},
-                     is            => q{ro},
-                     lazy          => 1,
-                     builder       => q{_build_globin_path},
-                     documentation => 'Path to directory of file with list of globin genes',
-                    );
+                      is            => q{ro},
+                      lazy_build    => 1,
+                      documentation => 'Path to directory of file with list of globin genes',
+                     );
 
 sub _build_globin_path {
     my $self = shift;
@@ -127,15 +126,36 @@ sub _build_globin_path {
 }
 
 has 'globin_file' => (isa           => q{Maybe[Str]},
-                     is            => q{ro},
-                     lazy          => 1,
-                     builder       => q{_build_globin_file},
-                     documentation => 'Full name of transcriptome fasta file',
-                    );
+                      is            => q{ro},
+                      lazy_build    => 1,
+                      documentation => 'Full name of globin genes list file',
+                     );
 
 sub _build_globin_file {
   my $self = shift;
   return $self->_find_file('globin', 'csv');
+}
+has 'mt_path' => (isa           => q{Maybe[Str]},
+                  is            => q{ro},
+                  lazy_build    => 1,
+                  documentation => 'Path to directory of file with list of mitochondrial genes',
+                 );
+
+sub _build_mt_path {
+    my $self = shift;
+    return $self->_find_path('mt');
+}
+
+has 'mt_file' => (isa           => q{Maybe[Str]},
+                  is            => q{ro},
+                  lazy          => 1,
+                  builder       => q{_build_mt_file},
+                  documentation => 'Full name of mitochondrial genes list file',
+                 );
+
+sub _build_mt_file {
+  my $self = shift;
+  return $self->_find_file('mt', 'csv');
 }
 
 #transcriptomes/Homo_sapiens/ensembl_75_transcriptome/1000Genomes_hs37d5/{tophat2,salmon}/
