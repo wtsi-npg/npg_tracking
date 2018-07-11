@@ -76,7 +76,8 @@ sub _build_fasta_file {
 
 has 'rnaseqc_gtf_path'  => ( isa           => q{Maybe[Str]},
                              is            => q{ro},
-                             lazy_build    => 1,
+                             lazy          => 1,
+                             builder       => q{_build_rnaseqc_gtf_path},
                              documentation => 'Path to the transcriptome GTF (GFF2) folder used by RNA-SeQC',);
 
 sub _build_rnaseqc_gtf_path {
@@ -86,7 +87,8 @@ sub _build_rnaseqc_gtf_path {
 
 has 'rnaseqc_gtf_file' => ( isa           => q{Maybe[Str]},
                             is            => q{ro},
-                            lazy_build    => 1,
+                            lazy          => 1,
+                            builder       => q{_build_rnaseqc_gtf_file},
                             documentation => 'Full name of GTF file used by RNA-SeQC',);
 
 sub _build_rnaseqc_gtf_file {
@@ -96,7 +98,8 @@ sub _build_rnaseqc_gtf_file {
 
 has 'gtf_path'     => ( isa           => q{Maybe[Str]},
                         is            => q{ro},
-                        lazy_build    => 1,
+                        lazy          => 1,
+                        builder       => q{_build_gtf_path},
                         documentation => 'Path to the transcriptome GTF (GFF2) folder',);
 
 sub _build_gtf_path {
@@ -106,7 +109,8 @@ sub _build_gtf_path {
 
 has 'gtf_file' => ( isa           => q{Maybe[Str]},
                     is            => q{ro},
-                    lazy_build    => 1,
+                    lazy          => 1,
+                    builder       => q{_build_gtf_file},
                     documentation => 'Full name of GTF file',);
 
 sub _build_gtf_file {
@@ -116,7 +120,8 @@ sub _build_gtf_file {
 
 has 'globin_path' => (isa           => q{Maybe[Str]},
                       is            => q{ro},
-                      lazy_build    => 1,
+                      lazy          => 1,
+                      builder       => q{_build_globin_path},
                       documentation => 'Path to directory of file with list of globin genes',
                      );
 
@@ -127,7 +132,8 @@ sub _build_globin_path {
 
 has 'globin_file' => (isa           => q{Maybe[Str]},
                       is            => q{ro},
-                      lazy_build    => 1,
+                      lazy          => 1,
+                      builder       => q{_build_globin_file},
                       documentation => 'Full name of globin genes list file',
                      );
 
@@ -137,7 +143,8 @@ sub _build_globin_file {
 }
 has 'mt_path' => (isa           => q{Maybe[Str]},
                   is            => q{ro},
-                  lazy_build    => 1,
+                  lazy          => 1,
+                  builder       => q{_build_mt_path},
                   documentation => 'Path to directory of file with list of mitochondrial genes',
                  );
 
@@ -161,7 +168,8 @@ sub _build_mt_file {
 #transcriptomes/Homo_sapiens/ensembl_75_transcriptome/1000Genomes_hs37d5/{tophat2,salmon}/
 has 'transcriptome_index_path' => ( isa           => q{Maybe[Str]},
                                     is            => q{ro},
-                                    lazy_build    => 1,
+                                    lazy          => 1,
+                                    builder       => q{_build_transcriptome_index_path},
                                     documentation => 'Path to the aligner indices subfolder',
                                   );
 
@@ -174,7 +182,8 @@ sub _build_transcriptome_index_path {
 #e.g. 1000Genomes_hs37d5.known (from 1000Genomes_hs37d5.known.1.bt2, 1000Genomes_hs37d5.known.2.bt2 ...)
 has 'transcriptome_index_name' => ( isa           => q{Maybe[Str]},
                                     is            => q{ro},
-                                    lazy_build    => 1,
+                                    lazy          => 1,
+                                    builder       => q{_build_transcriptome_index_name},
                                     documentation => 'Full path + prefix of files in the aligner or other analysis indices folder',
                                    );
 
