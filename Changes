@@ -1,5 +1,14 @@
 LIST OF CHANGES
 
+release 87.2
+ - added method to find file with MT genes inside transcriptome repository
+ - change attributes in transcriptome-find to use lazy and builder rather than
+   lazy_build to conform with Moose's best practices
+ - sequencing instrument checker:
+     treat error reading a recipe file as non-fatal;
+     adjust warning message generation to use methods supported by the poller
+     object instance
+
 release 87.1
  - bug fix in JavaScript for run creation - the reflector cannot
    be used any longer, allow client side JS to request XML feeds

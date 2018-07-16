@@ -60,8 +60,11 @@ sub main {
     } catch {
         croak "Failed to get run directory list\n$_";
     };
-
-    carp 'Empty run directory list for '.$poll->top_dir if scalar @run_paths == 0;
+    
+    if (scalar @run_paths == 0) {
+        carp 'Empty run directory list' . 
+             $poll->can('top_dir') ? ' for ' . $poll->top_dir : q[];
+    }
 
     ##
     # Loop through each of them and extract the information we need.
@@ -73,7 +76,6 @@ sub main {
         next if $directory->current_run_status_description()
                     !~ m/^ run[ ] (?: pending | in[ ]progress ) $/imsx;
 
-
         my $latest_cycle = $poll->get_latest_cycle($address);
 
         my $run_complete = $poll->is_run_completed($address);
@@ -82,11 +84,7 @@ sub main {
         try {
             $directory->read_long_info();
         } catch {
-            if ( $_ =~ m/(Multiple|No) recipe file(?:s?) found/ms ) {
-                carp "Single recipe file not found in $address";
-            } else {
-                croak $_;
-            }
+            carp "WARNING: $_";
         };
     }
 }
