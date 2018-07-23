@@ -331,6 +331,34 @@ sub _build_lane_tilecount {
   return $lane_tilecount;
 }
 
+=head2 run_flowcell
+
+flowcell loaded from RunInfo.xml for platforms HiSeq and NovaSeq and
+ReagentKitBarcode from runParameters.xml for platform MiSeq
+
+=cut
+
+has q{run_flowcell} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build_run_flowcell {
+  my $self = shift;
+
+  my $flowcell;
+
+  if ($self->platform_MiSeq()) {
+    my $doc = $self->_run_params;
+    $flowcell = _get_single_element_text($doc, 'ReagentKitBarcode');
+  } else {
+    my $doc = $self->_runinfo_document;
+    $flowcell = _get_single_element_text($doc, 'Flowcell');
+  }
+
+  return $flowcell;
+}
+
 #########################################################
 # 'before' attribute modifiers definitions              #
 #########################################################
@@ -557,6 +585,17 @@ sub _build__run_params {
   return $self->_get_xml_document(qr/[R|r]unParameters[.]xml/smx, $self->runfolder_path());
 }
 
+has q{_runinfo_document} => (
+  is         => 'ro',
+  isa        => 'XML::LibXML::Document',
+  lazy_build => 1,
+);
+sub _build__runinfo_document {
+  my $self = shift;
+
+  return $self->_get_xml_document(qr/RunInfo[.]xml/smx, $self->runfolder_path());
+};
+
 has q{_flowcell_description} => (
   isa        => 'Str',
   is         => 'ro',
@@ -672,14 +711,13 @@ sub _build__recipe_store {
 
 has q{_runinfo_store} => (
   is         => 'ro',
-  isa        => 'XML::LibXML::Document',
+  isa        => 'Bool',
   lazy_build => 1,
-  init_arg   => undef,
 );
 sub _build__runinfo_store {
   my $self = shift;
 
-  my $doc = $self->_get_xml_document(qr/RunInfo[.]xml/smx, $self->runfolder_path());
+  my $doc = $self->_runinfo_document;
 
   my $fcl_el = $doc->getElementsByTagName('FlowcellLayout')->[0];
   if(not defined $fcl_el) {
@@ -741,7 +779,7 @@ sub _build__runinfo_store {
     }
   }
 
-  return $doc;
+  return 1; # So builder runs only once
 }
 
 has q{_tilelayout_store}  => (

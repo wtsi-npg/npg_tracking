@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 62;
+use Test::More tests => 63;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
@@ -112,6 +112,50 @@ subtest 'retrieving information from runParameters.xml' => sub {
     }
 
     unlink $name;
+  }
+};
+
+subtest 'getting flowcell for run' => sub {
+  plan tests => 10;
+
+  my $rf = join q[/], $basedir, 'run_info';
+  mkdir $rf;
+
+  my $class = Moose::Meta::Class->create_anon_class(
+    methods => {"runfolder_path" => sub {$rf}},
+    roles   => [qw/npg_tracking::illumina::run::long_info/]);
+
+  my %data = (
+    'runInfo.hiseq4000.xml'       => { 'rpf' => 'runParameters', 'fc' => 'HLG55BBXX' },
+    'runInfo.hiseq.rr.single.xml' => { 'rpf' => 'runParameters', 'fc' => 'HGM3FBCX2' },
+    'runInfo.hiseq.rr.truseq.xml' => { 'rpf' => 'runParameters', 'fc' => 'HFK5KADXY' },
+    'runInfo.hiseq.rr.twoind.xml' => { 'rpf' => 'runParameters', 'fc' => 'HGF72BCX2' },
+    'runInfo.hiseq.rr.xml'        => { 'rpf' => 'runParameters', 'fc' => 'H2JG5BCX2' },
+    'runInfo.hiseq.xml'           => { 'rpf' => 'runParameters', 'fc' => 'H7TM5CCXY' },
+    'runInfo.hiseqx.upgraded.xml' => { 'rpf' => 'runParameters', 'fc' => 'HFFC5CCXY' },
+    'runInfo.hiseqx.xml'          => { 'rpf' => 'runParameters', 'fc' => 'HCW7MCCXY' },
+    'runInfo.miseq.xml'           => { 'rpf' => 'runParameters', 'fc' => 'MS5534842-300V2' },
+    'runInfo.novaseq.xml'         => { 'rpf' => 'RunParameters', 'fc' => 'H3WCVDSXX' },
+  );
+
+  my $ri_data = \%data;
+  my $run_info_dir = 't/data/run_info';
+  my $run_param_dir = 't/data/run_params';
+
+  for my $file_name (sort keys % $ri_data) {
+    note $file_name;
+    my $expected_flowcell = $ri_data->{$file_name}->{'fc'};
+    my $param_prefix =  $ri_data->{$file_name}->{'rpf'};
+    my $run_params_file_name = $file_name =~ s/runInfo/$param_prefix/r;
+    my $run_params_file_path = qq[$rf/$param_prefix.xml];
+
+    copy(join(q[/],$run_info_dir,$file_name), qq[$rf/RunInfo.xml]) or die 'Failed to copy file';
+    copy(join(q[/],$run_param_dir,$run_params_file_name), $run_params_file_path) or die 'Failed to copy file';
+
+    my $li = $class->new_object();
+
+    is($li->run_flowcell, $expected_flowcell, q[Expected run flowcell matches loaded run flowcell]);
+    `rm $run_params_file_path`
   }
 };
 
