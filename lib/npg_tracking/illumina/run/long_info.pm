@@ -331,6 +331,34 @@ sub _build_lane_tilecount {
   return $lane_tilecount;
 }
 
+=head2 experiment_name
+
+For platforms HiSeq, HiSeqX, Hiseq4000 and NovaSeq experiment name loaded from
+runParameters.xml.
+
+=cut
+
+has q{experiment_name} => (
+  isa        => 'Maybe[Str]',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build_experiment_name {
+  my $self = shift;
+
+  my $experiment_name;
+
+  if ( $self->platform_HiSeq() ||
+       $self->platform_HiSeqX() ||
+       $self->platform_HiSeq4000() ||
+       $self->platform_NovaSeq() ) {
+    my $doc = $self->_run_params;
+    $experiment_name = _get_single_element_text($doc, 'ExperimentName');
+  }
+
+  return $experiment_name;
+}
+
 =head2 run_flowcell
 
 flowcell loaded from RunInfo.xml for platforms HiSeq and NovaSeq and

@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 63;
+use Test::More tests => 64;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
@@ -118,6 +118,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
 subtest 'getting flowcell for run' => sub {
   plan tests => 10;
 
+  $basedir = tempdir( CLEANUP => 1 );
   my $rf = join q[/], $basedir, 'run_info';
   mkdir $rf;
 
@@ -155,6 +156,48 @@ subtest 'getting flowcell for run' => sub {
     my $li = $class->new_object();
 
     is($li->run_flowcell, $expected_flowcell, q[Expected run flowcell matches loaded run flowcell]);
+    `rm $run_params_file_path`
+  }
+};
+
+subtest 'getting experiment name from runParameters' => sub {
+  plan tests => 10;
+
+  $basedir = tempdir( CLEANUP => 1 );
+  my $rf = join q[/], $basedir, 'runfolder_id_run';
+  mkdir $rf;
+
+  my $class = Moose::Meta::Class->create_anon_class(
+    methods => {"runfolder_path" => sub {$rf}},
+    roles   => [qw/npg_tracking::illumina::run::long_info/]);
+
+  my %data = (
+    'runParameters.hiseq4000.xml'       => { 'rpf' => 'runParameters', 'expname' => '24359' },
+    'runParameters.hiseq.rr.single.xml' => { 'rpf' => 'runParameters', 'expname' => '25835' },
+    'runParameters.hiseq.rr.truseq.xml' => { 'rpf' => 'runParameters', 'expname' => '21604' },
+    'runParameters.hiseq.rr.twoind.xml' => { 'rpf' => 'runParameters', 'expname' => '25689' },
+    'runParameters.hiseq.rr.xml'        => { 'rpf' => 'runParameters', 'expname' => '24409' },
+    'runParameters.hiseq.xml'           => { 'rpf' => 'runParameters', 'expname' => '24235' },
+    'runParameters.hiseqx.upgraded.xml' => { 'rpf' => 'runParameters', 'expname' => '24420' },
+    'runParameters.hiseqx.xml'          => { 'rpf' => 'runParameters', 'expname' => '24422' },
+    'runParameters.miseq.xml'           => { 'rpf' => 'runParameters', 'expname' => undef },
+    'RunParameters.novaseq.xml'         => { 'rpf' => 'RunParameters', 'expname' => 'Coriell_24PF_auto_PoolF_NEBreagents_TruseqAdap_500pM_NV7B' },
+  );
+
+  my $expname_data = \%data;
+  my $run_param_dir = 't/data/run_params';
+
+  for my $file_name (sort keys % $expname_data) {
+    note $file_name;
+    my $expected_experiment_name = $expname_data->{$file_name}->{'expname'};
+    my $param_prefix = $expname_data->{$file_name}->{'rpf'};
+    my $run_params_file_path = qq[$rf/$param_prefix.xml];
+
+    copy(join(q[/],$run_param_dir,$file_name), $run_params_file_path) or die 'Failed to copy file';
+
+    my $li = $class->new_object();
+
+    is($li->experiment_name, $expected_experiment_name, q[Expected experiment name matches loaded from run params]);
     `rm $run_params_file_path`
   }
 };

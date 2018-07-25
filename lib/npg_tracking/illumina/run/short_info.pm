@@ -107,6 +107,10 @@ sub _build_id_run {
     }
   }
 
+  if ( !$id_run && $self->has_experiment_name() ) {
+    $id_run =~ /\A \d+ \Z/xms;
+  }
+
   return $id_run;
 }
 
