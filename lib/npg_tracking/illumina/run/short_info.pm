@@ -90,8 +90,6 @@ sub _build_id_run {
   if ( !$self->has_run_folder() ) {
     try {
       $self->run_folder();
-    } catch {
-      croak qq{Unable to obtain id_run from run_folder : $_};
     };
   }
 
