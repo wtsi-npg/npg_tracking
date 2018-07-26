@@ -8,6 +8,10 @@ release 87.2
      treat error reading a recipe file as non-fatal;
      adjust warning message generation to use methods supported by the poller
      object instance
+ - a new factory method, create_tag_zero_object, to create st::api::lims object
+   for tag zero
+ - a new factory method, aggregate_xlanes, to create a list  of st::api::lims
+    objects for merges across lanes
 
 release 87.1
  - bug fix in JavaScript for run creation - the reflector cannot

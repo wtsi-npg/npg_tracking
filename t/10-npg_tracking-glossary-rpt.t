@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 use Test::Exception;
 
 my $package = 'npg_tracking::glossary::rpt';
@@ -142,6 +142,14 @@ subtest 'deflate to rpt list string' => sub {
   is($package->deflate_rpts(
     [{id_run=>1, position=>2, tag_index=>3}, {id_run=>5, position=>6}]),
     '1:2:3;5:6', 'correct output for two rpt components');
+};
+
+subtest 'tag_zero_rpt_list' => sub {
+  plan tests => 3;
+
+  is($package->tag_zero_rpt_list('1:2:3;1:3:3'), '1:2:0;1:3:0', 'correct output');
+  is($package->tag_zero_rpt_list('1:2;1:3'), '1:2:0;1:3:0', 'correct output');
+  is($package->tag_zero_rpt_list('1:2:4;1:3'), '1:2:0;1:3:0', 'correct output');
 };
 
 1;

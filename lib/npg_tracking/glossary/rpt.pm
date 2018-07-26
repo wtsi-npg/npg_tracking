@@ -207,6 +207,28 @@ sub deflate_rpts {
   return __PACKAGE__->join_rpts(map { $self->deflate_rpt($_) } @{$rpts});
 }
 
+=head2 tag_zero_rpt_list
+
+Converts the argument rpt_list into an rpt_list for tag zero components
+
+  my $s = __PACKAGE__->tag_zero_rpt_list('1:2:3;1:3:3');
+  print $s; # 1:2:0;1:3:0
+
+  $s = __PACKAGE__->tag_zero_rpt_list('1:2;1:3');
+  print $s; # 1:2:0;1:3:0
+
+  $s = __PACKAGE__->tag_zero_rpt_list('1:2;1:2:6');
+  print $s; # 1:2:0;1:2:0 - Be warned!
+
+=cut
+sub tag_zero_rpt_list {
+  my ($self, $rpt_list) = @_;
+  ##no critic (BuiltinFunctions::ProhibitComplexMappings)
+  return __PACKAGE__->join_rpts(map { __PACKAGE__->deflate_rpt($_) }
+                                map { $_->{'tag_index'} = 0; $_ }
+                                @{__PACKAGE__->inflate_rpts($rpt_list)} );
+}
+
 no Moose;
 
 1;
