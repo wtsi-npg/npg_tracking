@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 44;
+use Test::More tests => 45;
 use Test::Exception;
 use File::Temp qw/ tempdir /;
 use Moose::Meta::Class;
@@ -251,5 +251,18 @@ my $run_folder = q{123456_IL2_1234};
     is($name, q(MS1_7362), q(name okay));
     is($flowcell_id, q(MS0002061-300V2), q(flowcell_id (kit id) okay));
 }
+
+subtest 'process run_folder when no id_run present' => sub {
+  plan tests => 2;
+  my $run_folder = q{180517_A00512_0010_BH3WCVDSXX}; #NovaSeq folder pattern
+  my $short_info;
+
+  lives_ok {
+    $short_info = test::short_info->new({ run_folder => $run_folder });
+  } q[Can create object];
+  throws_ok  {
+    $short_info->id_run();
+  }  qr[Unable to identify id_run], q[Throws when it obtain id_run];
+};
 
 1;

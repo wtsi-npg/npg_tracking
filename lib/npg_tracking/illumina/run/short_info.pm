@@ -105,8 +105,12 @@ sub _build_id_run {
     }
   }
 
-  if ( !$id_run && $self->has_experiment_name() ) {
-    $id_run =~ /\A \d+ \Z/xms;
+  if ( !$id_run && $self->can('experiment_name') && $self->experiment_name() ) {
+    ($id_run) = $self->experiment_name() =~ /\A[\s]*([\d]+)[\s]*\Z/xms;
+  }
+
+  if( !$id_run ) {
+    croak q[Unable to identify id_run with data provided];
   }
 
   return $id_run;
