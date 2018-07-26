@@ -220,6 +220,7 @@ subtest 'getting id_run from experiment name in run parameters' => sub {
     my $param_prefix = $expname_data->{$file_name}->{'rpf'};
     my $run_params_file_path = qq[$rf/$param_prefix.xml];
 
+    use File::Copy;
     copy(join(q[/],$run_param_dir,$file_name), $run_params_file_path) or die 'Failed to copy file';
 
     use npg_tracking::illumina::runfolder;
