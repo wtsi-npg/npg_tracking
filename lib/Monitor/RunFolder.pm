@@ -3,7 +3,6 @@ package Monitor::RunFolder;
 use Moose;
 use Carp;
 use Readonly;
-use Monitor::SRS::File;
 
 extends 'npg_tracking::illumina::runfolder';
 
@@ -14,23 +13,9 @@ our $VERSION = '0';
 
 Readonly::Scalar our $ACCEPTABLE_CYCLE_DELAY => 6;
 
-has file_obj => (
-  is         => 'ro',
-  isa        => 'Monitor::SRS::File',
-  lazy_build => 1,
-);
-
 sub current_run_status_description {
   my ($self) = @_;
   return $self->tracking_run()->current_run_status_description();
-}
-
-sub _build_file_obj {
-  my ($self) = @_;
-  return Monitor::SRS::File->new(
-           run_folder     => $self->run_folder(),
-           runfolder_path => $self->runfolder_path(),
-  );
 }
 
 sub check_cycle_count {
@@ -59,16 +44,13 @@ sub check_cycle_count {
 sub read_long_info {
   my $self = shift;
 
-  my $recipe   = $self->file_obj();
   my $run_db   = $self->tracking_run();
   my $username = $self->username();
 
-  $recipe->expected_cycle_count();
-
   # Extract the relevant details.
-  my $expected_cycle_count = $recipe->expected_cycle_count();
-  my $run_is_indexed       = $recipe->is_indexed();
-  my $run_is_paired_read   = $recipe->is_paired_read();
+  my $expected_cycle_count = $self->expected_cycle_count();
+  my $run_is_indexed       = $self->is_indexed();
+  my $run_is_paired_read   = $self->is_paired_read();
 
   # Update the expected_cycle_count field and run tags.
   $run_db->expected_cycle_count( $expected_cycle_count );
@@ -169,9 +151,7 @@ Monitor::RunFolder - provide methods to get run details from a folder path
 =head1 DESCRIPTION
 
 When supplied a path in the constructor the class calls on various roles to
-work out various bits of information about the run. It should work on both an
-FTP url and on a local path, and is called by Monitor::SRS::FTP and
-Monitor::SRS::Local
+work out various bits of information about the run.
 
 Based on these, and supplied arguments, it updates run status, run tags, etc.
 for the run, creating a DBIx record object to do that.
