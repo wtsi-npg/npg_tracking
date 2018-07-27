@@ -161,7 +161,6 @@ lib/Monitor/Roles/Schema.pm
 lib/Monitor/Roles/Username.pm
 lib/Monitor/RunFolder.pm
 lib/Monitor/RunFolder/Staging.pm
-lib/Monitor/SRS/File.pm
 lib/Monitor/SRS/FTP.pm
 lib/Monitor/SRS/Local.pm
 lib/Monitor/Staging.pm
