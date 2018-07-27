@@ -474,7 +474,6 @@ t/34-monitor-cbot.t
 t/34-monitor-instrument.t
 t/34-monitor-runfolder-staging.t
 t/34-monitor-runfolder.t
-t/34-monitor-srs-file.t
 t/34-monitor-srs-ftp.t
 t/34-monitor-srs-local.t
 t/34-monitor-staging.t
