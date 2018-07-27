@@ -21,14 +21,6 @@ sub get_latest_cycle {
     if ( $self->can( q{runfolder_path} ) ) {
       $run_path ||= $self->runfolder_path();
     }
-    my $status_xml = "$run_path/Data/reports/StatusUpdate.xml";
-    if ( -e $status_xml ) {
-        my $status_text = slurp($status_xml);
-
-        if ( $status_text =~ m{ <ImgCycle> (\d+) </ImgCycle> }msx ) {
-            $status_latest = $1;
-        }
-    }
 
     $self->_cycle_numbers( $run_path, 1 );
 
