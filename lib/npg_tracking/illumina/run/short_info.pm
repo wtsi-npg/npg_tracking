@@ -87,15 +87,16 @@ sub short_reference {
 sub _build_id_run {
   my ($self) = @_;
 
+  my $inst_t;
+  my $inst_i;
+  my $id_run;
+
   if ( !$self->has_run_folder() ) {
-    try {
-      $self->run_folder();
-    };
+    $self->run_folder();
+    ($inst_t, $inst_i, $id_run) = $self->run_folder() =~ /$NAME_PATTERN/gmsx;
   }
-
-  my ($inst_t, $inst_i, $id_run) = $self->run_folder() =~ /$NAME_PATTERN/gmsx;
-
-  if ( !( $inst_t && $inst_i && $id_run ) ) {
+  
+  if ( !$id_run ) {
     if ($self->can(q(npg_tracking_schema)) and  $self->npg_tracking_schema()) {
       my $rs = $self->npg_tracking_schema()->resultset('Run')
                ->search({folder_name => $self->run_folder()});
