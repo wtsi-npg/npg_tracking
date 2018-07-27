@@ -81,18 +81,24 @@ sub find_live {
                 warn "Skipping $run_dir - error retrieving id_run\n";
             };
 
-            if ($id_run) {
-                if ( npg_tracking::illumina::run::folder::validation->new(
-                         run_folder          => $run_folder,
-                         id_run              => $id_run,
-                         npg_tracking_schema => $self->schema )->check() ) {
-              
-                    $path_for{$id_run} = $run_dir;
-                    warn "Cached $run_dir for run $id_run\n";
-                } else {
-                    warn "Skipping $run_dir - not valid\n";
+            my $run_row = $self->schema->resultset('Run')->find({ id_run => $id_run });
+            if (! $run_row ) {
+                warn qq[Id Run '$id_run' not found in database, skipping\n];
+            } else {
+                if ($id_run) {
+                    if ( npg_tracking::illumina::run::folder::validation->new(
+                             run_folder          => $run_folder,
+                             id_run              => $id_run,
+                             npg_tracking_schema => $self->schema )->check() ) {
+
+                        $path_for{$id_run} = $run_dir;
+                        warn "Cached $run_dir for run $id_run\n";
+                    } else {
+                        warn "Skipping $run_dir - not valid\n";
+                    }
                 }
             }
+
         } else {
           warn "Skipping $run_dir - is not a directory\n";
         }
