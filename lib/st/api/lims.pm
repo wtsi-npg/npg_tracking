@@ -916,7 +916,7 @@ sub aggregate_xlanes {
   #
   my @pools = grep {$_} map { $_->is_pool ? 1 : 0 } @lanes;
   if (@pools != 0 && @pools != @lanes) {
-    croak sprintf 'Both pools and libraries in lanes %s in %s'.
+    croak sprintf 'Both pools and libraries in lanes %s in %s',
                   join(q[, ], @positions),
                   $self->to_string();
   }
