@@ -316,7 +316,7 @@ sub _get_folder_path_glob {
 sub update_folder {
     my ($self) = @_;
     my $run_db = $self->tracking_run();
-    $run_db->folder_name($self->run_folder);
+    # $run_db->folder_name($self->run_folder);
     my $glob = $self->_get_folder_path_glob;
     if ( $glob ) { $run_db->folder_path_glob($glob); }
     $run_db->update();
