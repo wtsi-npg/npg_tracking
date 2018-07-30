@@ -92,12 +92,9 @@ while (1) {
             # Could delete the directory here. Leave it for now.
             next if $run_status eq 'data discarded';
 
-            if ( $run_status eq 'run pending' ) {
-                $folder->fallback_update();
-                next;
-            }
-
-            if ( $run_status eq 'run in progress' ) {
+            if ( $run_status eq 'run in progress' || $run_status eq 'run pending' ) {
+                my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
+                $folder->check_cycle_count($latest_cycle, 0);
                 $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
                                               : $folder->tracking_run()->unset_tag( $folder->username(), 'copying_problem' );
                 $folder->fallback_update();
