@@ -87,13 +87,8 @@ sub find_live {
             } else {
                 if (! $run_row->folder_name ) {
                   warn qq[Folder name in db not available will try to update with '$run_folder'.];
-                  $run_row->update({'folder_name' => $run_folder});
+                  $run_row->update({'folder_name' => $run_folder}); # or validation will fail
                 }
-                if ( $run_row->folder_name cmp $run_folder ) {
-                  warn q[Folder name in db '' different from actual run folder ''. Will try to update.];
-                  $run_row->update({'folder_name' => $run_folder});
-                }
-                # TODO check for globs
 
                 if ( npg_tracking::illumina::run::folder::validation->new(
                          run_folder          => $run_folder,
@@ -105,7 +100,6 @@ sub find_live {
                     warn "Skipping $run_dir - not valid\n";
                 }
             }
-
         } else {
           warn "Skipping $run_dir - is not a directory\n";
         }
