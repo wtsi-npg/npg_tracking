@@ -246,13 +246,9 @@ sub move_to_outgoing {
     } else {
         my $id = $self->tracking_run()->id_run;
         my $status = $self->current_run_status_description();
-        if ($status eq 'qc complete') {
-            my $destination = $self->_destination_path('analysis', 'outgoing');
-            my $moved;
-            ($moved, $m) = $self->_move_folder($destination);
-        } else {
-            $m = "Run $id status $status is not qc complete, not moving to outgoing";
-        }
+        my $destination = $self->_destination_path('analysis', 'outgoing');
+        my $moved;
+        ($moved, $m) = $self->_move_folder($destination);
     }
 
     return $m;
