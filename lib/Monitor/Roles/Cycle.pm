@@ -76,7 +76,10 @@ sub _cycle_numbers {
 
   # We assume that there will always be a lane 1 here. So far this has been
   # safe.
-  my @cycle_dirs = glob $run_path . '/Data/Intensities/L001/C*';
+  my @cycle_dirs = glob $run_path . '/Thumbnail_Images/L001/C*';
+  if ( ! @cycle_dirs ) {
+    glob $run_path . '/Data/Intensities/L001/C*';
+  }
   if ( ! @cycle_dirs ) { # fallback when no cifs copied
     @cycle_dirs = glob $run_path . '/Data/Intensities/BaseCalls/L001/C*';
   }
