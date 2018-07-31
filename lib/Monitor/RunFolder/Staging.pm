@@ -317,6 +317,11 @@ sub update_folder {
     my ($self) = @_;
     my $run_db = $self->tracking_run();
     # $run_db->folder_name($self->run_folder);
+    my $expected_cycle_count = $self->expected_cycle_count();
+    if ($run_db->expected_cycle_count() != $expected_cycle_count ) {
+      warn qq[Updating expected cycle count to $expected_cycle_count];
+      $run_db->expected_cycle_count($expected_cycle_count);
+    }
     my $glob = $self->_get_folder_path_glob;
     if ( $glob ) { $run_db->folder_path_glob($glob); }
     $run_db->update();

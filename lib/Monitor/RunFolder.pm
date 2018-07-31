@@ -52,8 +52,11 @@ sub read_long_info {
   my $run_is_indexed       = $self->is_indexed();
   my $run_is_paired_read   = $self->is_paired_read();
 
-  # Update the expected_cycle_count field and run tags.
-  $run_db->expected_cycle_count( $expected_cycle_count );
+  if ( $run_db->expected_cycle_count != $expected_cycle_count ) {
+    # Update the expected_cycle_count field and run tags.
+    warn qq[Updating cycle count $run_db->expected_cycle_count $expected_cycle_count];
+    $run_db->expected_cycle_count( $expected_cycle_count );
+  }
 
   $run_is_paired_read ? $run_db->set_tag( $username, 'paired_read' )
                       : $run_db->set_tag( $username, 'single_read' );
