@@ -28,6 +28,7 @@ Readonly::Scalar my $RTA_COMPLETE         => 10 * $SECONDS_PER_MINUTE;
 Readonly::Scalar my $INTENSITIES_DIR_PATH => 'Data/Intensities';
 Readonly::Array  my @NO_MOVE_NAMES        => qw( npgdonotmove npg_do_not_move );
 Readonly::Scalar my $MODE_INDEX           => 2;
+Readonly::Scalar my $EXP_CBCLS_PER_CYCL   => 2;
 
 has 'rta_complete_wait' => (isa          => 'Int',
                             is           => 'ro',
@@ -181,17 +182,28 @@ sub check_tiles {
         my $expected_tiles_this_lane = $expected_tiles->{$this_lane};
 
         foreach my $cycle ( @cycles) {
-            my $filetype = $cifs_present ? 'cif' : 'bcl';
-            my @tiles   = glob "$cycle/*.$filetype" . q({,.gz});
-            @tiles      = grep { m/ s_ \d+ _ \d+ [.] $filetype (?: [.] gz )? $ /msx } @tiles;
-            my $t_count = scalar @tiles;
+            my $filetype = $cifs_present ? 'cif'
+                                         : $self->platform_NovaSeq() ? 'cbcl' :'bcl';
+            if ( $self->platform_NovaSeq() ) {
+                my @cbcl_files = glob "$cycle/*.$filetype" . q({,.gz});
+                @cbcl_files = grep { m/ L \d+ _ \d+ [.] $filetype (?: [.] gz )? $ /msx } @cbcl_files;
+                my $count = scalar @cbcl_files;
+                if ( $count != $EXP_CBCLS_PER_CYCL ) {
+                    carp 'Missing cbcl(s) files: '
+                       . "$cycle - [expected: $EXP_CBCLS_PER_CYCL, found: $count]";
+                    return 0;
+                }
+            } else {
+                my @tiles   = glob "$cycle/*.$filetype" . q({,.gz});
+                @tiles      = grep { m/ s_ \d+ _ \d+ [.] $filetype (?: [.] gz )? $ /msx } @tiles;
+                my $t_count = scalar @tiles;
 
-            if ( $t_count != $expected_tiles_this_lane ) {
-                carp 'Missing tile(s): '
-                   . "$lane C#$cycle - [$expected_tiles_this_lane $t_count]";
-                return 0;
+                if ( $t_count != $expected_tiles_this_lane ) {
+                    carp 'Missing tile(s): '
+                       . "$lane C#$cycle - [$expected_tiles_this_lane $t_count]";
+                    return 0;
+                }
             }
-
         }
     }
 
