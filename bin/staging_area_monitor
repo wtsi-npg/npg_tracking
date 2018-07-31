@@ -94,7 +94,8 @@ while (1) {
 
             if ( $run_status eq 'run in progress' || $run_status eq 'run pending' ) {
                 my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
-                $folder->check_cycle_count($latest_cycle, 0);
+                my $to_run_complete = $run_status eq 'run in progress' ? 1 : 0;
+                $folder->check_cycle_count($latest_cycle, $to_run_complete);
                 $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
                                               : $folder->tracking_run()->unset_tag( $folder->username(), 'copying_problem' );
                 $folder->fallback_update();
