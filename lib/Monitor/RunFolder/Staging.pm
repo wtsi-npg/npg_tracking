@@ -44,6 +44,23 @@ sub cycle_lag {
     return ( $self->delay() > $MAXIMUM_CYCLE_LAG ) ? 1 : 0;
 }
 
+sub has_rta_complete_file {
+    my ($self) = @_;
+    my $run_path = $self->runfolder_path();
+
+    my @file_list;
+
+    # The trailing slash forces IO::All to cope with symlinks.
+    eval { @file_list = io("$run_path/")->all_files(); 1; }
+        or do { carp $EVAL_ERROR; return 0; };
+
+    my $rta = 'RTAComplete';
+
+    my @markers = map {q().$_} grep { $_ =~ m/ $rta /msx } @file_list;
+
+    return scalar @markers;
+}
+
 sub validate_run_complete {
     my ($self) = @_;
     my $path = $self->runfolder_path();
