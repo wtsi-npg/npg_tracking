@@ -256,8 +256,11 @@ lib/npg_tracking/daemon/staging_local.pm
 lib/npg_tracking/daemon/status.pm
 lib/npg_tracking/data/bait.pm
 lib/npg_tracking/data/bait/find.pm
+lib/npg_tracking/data/common.pm
 lib/npg_tracking/data/gbs_plex.pm
 lib/npg_tracking/data/gbs_plex/find.pm
+lib/npg_tracking/data/geno_refset.pm
+lib/npg_tracking/data/geno_refset/find.pm
 lib/npg_tracking/data/reference.pm
 lib/npg_tracking/data/reference/find.pm
 lib/npg_tracking/data/reference/info.pm
@@ -357,6 +360,7 @@ t/10-authentication-sanger_ldap.t
 t/10-authentication-sanger_sso.t
 t/10-bait.t
 t/10-gbs_plex.t
+t/10-geno_refset.t
 t/10-model-administration.t
 t/10-model-annotations.t
 t/10-model-designation.t
@@ -965,6 +969,11 @@ t/data/repos1/gbs_plex/Hs_W30467/default/all/fasta/Hs_W30467.fa
 t/data/repos1/gbs_plex/Hs_W30467/default/all/bcftools/Hs_W30467.annotation.vcf
 t/data/repos1/gbs_plex/Hs_W30467/default/all/bcftools/Hs_W30467.info.json
 t/data/repos1/gbs_plex/Hs_W30467/default/all/bcftools/Hs_W30467.ploidy
+t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/bcfdb/special_set.bcf
+t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/bcfdb/special_set.bcf.csi
+t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/bcftools/special_set.annotation.vcf
+t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/bcftools/special_set.info.json
+t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/bcftools/special_set.ploidy
 t/data/repos1/npg/run/12071.xml
 t/data/repos1/npg/run/12161.xml
 t/data/repos1/npg/run/7753.xml
@@ -978,6 +987,7 @@ t/data/repos1/references/Homo_sapiens/1000Genomes_hs37d5/all/bwa0_6/.gitignore
 t/data/repos1/references/Homo_sapiens/1000Genomes_hs37d5/all/fasta/hs37d5.fa
 t/data/repos1/references/Homo_sapiens/CGP_GRCh37.NCBI.allchr_MT/all/fasta/Homo_sapiens.GRCh37.NCBI.allchr_MT.fa
 t/data/repos1/references/Homo_sapiens/GRCh37_53/all/fasta/Homo_sapiens.GRCh37.dna.all.fa
+t/data/repos1/references/Homo_sapiens/GRCh38_full_analysis_set_plus_decoy_hla/all/fasta/GRCh38_full_analysis_set_plus_decoy_hla.fa
 t/data/repos1/references/Homo_sapiens/NCBI36/all/bwa0_6/ncbi36.fa.amb
 t/data/repos1/references/Homo_sapiens/NCBI36/all/fasta/ncbi36.fa
 t/data/repos1/references/Mus_musculus/GRCm38/all/fasta/Mus_musculus.GRCm38.68.dna.toplevel.fa

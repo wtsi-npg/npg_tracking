@@ -11,7 +11,8 @@ use File::Spec::Functions qw(catdir catfile);
 
 use npg_tracking::util::abs_path qw(abs_path);
 
-with qw/ npg_tracking::data::reference::find / => {
+with qw/ npg_tracking::data::reference::find 
+         npg_tracking::data::common / => {
   -excludes    => [qw(refs)]
 };
 
@@ -72,7 +73,7 @@ has 'gbs_plex_annotation_path' => ( isa        => q{Maybe[Str]},
 
 sub _build_gbs_plex_annotation_path {
   my $self = shift;
-  return $self->_find_file(q{bcftools}, q{annotation.vcf});
+  return $self->find_file($self->gbs_plex_path, q{bcftools}, q{annotation.vcf});
 }
 
 
@@ -83,7 +84,7 @@ has 'gbs_plex_info_path' => ( isa        => q{Maybe[Str]},
 
 sub _build_gbs_plex_info_path {
   my $self = shift;
-  return $self->_find_file(q{bcftools}, q{info.json});
+  return $self->find_file($self->gbs_plex_path, q{bcftools}, q{info.json});
 }
 
 
@@ -94,7 +95,7 @@ has 'gbs_plex_ploidy_path' => ( isa        => q{Maybe[Str]},
 
 sub _build_gbs_plex_ploidy_path {
   my $self = shift;
-  return $self->_find_file(q{bcftools}, q{ploidy});
+  return $self->find_file($self->gbs_plex_path, q{bcftools}, q{ploidy});
 }
 
 
@@ -129,31 +130,6 @@ sub refs {
 }
 
 
-sub _find_file {
-    my ($self, $subfolder, $file_type) = @_;
-
-    my $dir = $self->gbs_plex_path() ? catdir($self->gbs_plex_path(), $subfolder) : q[];
-
-    my @files;
-    if (-d $dir) {
-      @files = glob $dir . q[/*.] . $file_type;
-    }
-
-    my $file;
-    if (scalar @files > 1) {
-        croak qq[More than one $file_type file in $dir];
-    }
-    elsif (scalar @files == 0) {
-      $self->messages->push(qq[File of type : $file_type not found under $dir]);
-    }
-    else{
-      $file = abs_path($files[0]);
-    }
-    return $file;
-}
-
-
-
 1;
 __END__
 
@@ -167,7 +143,7 @@ npg_tracking::data::gbs_plex::find
 
   package MyPackage;
   use Moose;
-  with qw{npg_tracking::data::plex::find};
+  with qw{npg_tracking::data::gbs_plex::find};
 
 =head1 DESCRIPTION
 
@@ -210,6 +186,8 @@ Examine the messages attribute after calling this function.
 =item npg_tracking::util::abs_path
 
 =item npg_tracking::data::reference::find
+
+=item npg_tracking::data::common
 
 =back
 

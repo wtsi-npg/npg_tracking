@@ -88,8 +88,8 @@ use_ok('npg_tracking::data::gbs_plex');
 
 { # There is no gbs plex name or files for this run
   my $test =npg_tracking::data::gbs_plex->new( repository => $repos, id_run => 7754, position => 1, tag_index => 2);
-  lives_and { is $test->gbs_plex_path, undef } 'plex path found';
-  is($test->gbs_plex_name, undef, 'plex name found');
+  lives_and { is $test->gbs_plex_path, undef } 'gbs_plex_path is undefined';
+  is($test->gbs_plex_name, undef, 'gbs_plex_name is undefined');
 
 }
 

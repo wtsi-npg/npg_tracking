@@ -1,11 +1,11 @@
-package npg_tracking::data::gbs_plex;
+package npg_tracking::data::geno_refset;
 
 use Moose;
 
 our $VERSION = '0';
 
 extends 'npg_tracking::data::reference';
-with    'npg_tracking::data::gbs_plex::find';
+with    'npg_tracking::data::geno_refset::find';
 
 __PACKAGE__->meta->make_immutable;
 no Moose;
@@ -15,7 +15,7 @@ __END__
 
 =head1 NAME
 
-npg_tracking::data::gbs_plex
+npg_tracking::data::geno_refset
 
 =head1 VERSION
 
@@ -23,7 +23,7 @@ npg_tracking::data::gbs_plex
 
 =head1 DESCRIPTION
 
-A wrapper class for finding the location of plex related files.
+A wrapper class for finding the location of geno refset related files.
 
 =head1 SUBROUTINES/METHODS
 
@@ -47,7 +47,7 @@ A wrapper class for finding the location of plex related files.
 
 =item npg_tracking::data::reference
 
-=item npg_tracking::data::gbs_plex::find
+=item npg_tracking::data::geno_refset::find
 
 =back
 
