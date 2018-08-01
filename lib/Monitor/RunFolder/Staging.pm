@@ -423,6 +423,10 @@ script) will be ahead of the number of cycles represented in the staging area.
 This method checks for that and returns a Boolean - true for lag, false for no
 difference between the cycle counts within a limit set by $MAXIMUM_CYCLE_LAG
 
+=head2 has_rta_complete_file
+
+Return true if RTAComplete file in run folder. False otherwise.
+
 =head2 validate_run_complete
 
 Perform a series of checks to make sure the run really is complete. Return 0
@@ -470,7 +474,7 @@ checks and updates in this method as a failsafe.
 
 If there is an unacceptable difference between the actual cycles recorded in
 the database and the highest cycle found on the staging area, then this
-tags the run with 
+tags the run with
 
 =head2 update_folder
 
