@@ -86,7 +86,7 @@ sub find_live {
                 warn qq[Id Run '$id_run' not found in database, skipping\n];
             } else {
                 if (! $run_row->folder_name ) {
-                  warn qq[Folder name in db not available will try to update with '$run_folder'.];
+                  carp qq[Folder name in db not available will try to update with '$run_folder'.];
                   $run_row->update({'folder_name' => $run_folder}); # or validation will fail
                 }
 

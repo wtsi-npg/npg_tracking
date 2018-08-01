@@ -54,7 +54,7 @@ sub read_long_info {
 
   if ( $run_db->expected_cycle_count != $expected_cycle_count ) {
     # Update the expected_cycle_count field and run tags.
-    warn qq[Updating cycle count $run_db->expected_cycle_count $expected_cycle_count];
+    carp qq[Updating cycle count $run_db->expected_cycle_count $expected_cycle_count];
     $run_db->expected_cycle_count( $expected_cycle_count );
   }
 
@@ -117,14 +117,14 @@ sub delay {
 
 sub _delete_lanes {
   my $self = shift;
-  
+
   my $run_lanes = $self->tracking_run()->run_lanes;
   if ( $self->lane_count && ($self->lane_count < $run_lanes->count()) ) {
     while ( my $lane = $run_lanes->next ) {
       my $position = $lane->position;
       if ($position > $self->lane_count) {
           $lane->delete();
-          warn "Deleted lane $position\n"; 
+          carp "Deleted lane $position\n";
       }
     }
   }

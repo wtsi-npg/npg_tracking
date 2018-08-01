@@ -98,7 +98,7 @@ sub mirroring_complete {
 
     my $mtime = ( scalar @markers )
                 ? ( stat $markers[0] )[$MTIME_INDEX]
-                : time();
+                : time;
     my $last_modified = time() - $mtime;
 
     my $events_file  = $self->runfolder_path() . q{/Events.log};
@@ -174,7 +174,7 @@ sub check_tiles {
             return 0;
         }
 
-        my $this_lane = substr($lane, -1, 1);
+        my $this_lane = substr $lane, -1, 1;
         if ( ! exists($expected_tiles->{$this_lane}) ) {
             carp "No expected tile count for lane $this_lane";
             return 0;
@@ -310,7 +310,7 @@ sub _move_folder {
         croak 'Need destination';
     }
     my $rf = $self->runfolder_path();
-    my $result = move($rf, $destination); 
+    my $result = move($rf, $destination);
     my $error = $OS_ERROR;
     my $m = $result ? "Moved $rf to $destination"
                     : "Failed to move $rf to $destination: $error";
@@ -359,7 +359,7 @@ sub update_folder {
 
 sub _change_group {
     my ($group, $directory) = @_;
-  
+
     my $temp = $directory . '.original';
     move($directory, $temp) or croak "move error: '$directory to $temp' : $ERRNO";
     mkdir $directory or croak "mkdir error: $ERRNO";
@@ -369,7 +369,7 @@ sub _change_group {
     }
     rmdir $temp or croak "rmdir error: $ERRNO";
 
-    my $gid = getgrnam($group);
+    my $gid = getgrnam $group;
     chown -1, $gid, $directory;
     # If needed, add 's' to group permission so that
     # a new dir/file has the same group as parent directory
