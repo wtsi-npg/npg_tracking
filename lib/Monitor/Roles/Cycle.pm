@@ -76,19 +76,22 @@ sub _cycle_numbers {
 
   # We assume that there will always be a lane 1 here. So far this has been
   # safe.
-  my @cycle_dirs = glob $run_path . '/Thumbnail_Images/L001/C*';
-  if ( ! @cycle_dirs ) {
-    glob $run_path . '/Data/Intensities/L001/C*';
-  }
-  if ( ! @cycle_dirs ) { # fallback when no cifs copied
-    @cycle_dirs = glob $run_path . '/Data/Intensities/BaseCalls/L001/C*';
+  my @thumbnail_dirs = glob $run_path . '/Thumbnail_Images/L001/C*';
+  my @img_cycle_dirs = map { ( $_ =~ m{ L001/C (\d+) [.]1 $}gmsx ) } @thumbnail_dirs;
+
+  my @intensities_dirs = glob $run_path . '/Data/Intensities/L001/C*';
+  my @cycle_dirs = map { ( $_ =~ m{ L001/C (\d+) [.]1 $}gmsx ) } @intensities_dirs;
+  if ( ! @cycle_dirs) { # fallback when no cifs copied
+    @intensities_dirs = glob $run_path . '/Data/Intensities/BaseCalls/L001/C*';
+    @cycle_dirs = map { ( $_ =~ m{ L001/C (\d+) [.]1 $}gmsx ) } @intensities_dirs;
   }
 
-  my @cycle_numbers =
-        map { ( $_ =~ m{ L001/C (\d+) [.]1 $}gmsx ) } @cycle_dirs;
+  if ( scalar @img_cycle_dirs > scalar @cycle_dirs ) {
+    @cycle_dirs = @img_cycle_dirs;
+  }
 
   # guarantee that we return found cycles in numerical order
-  @cycle_numbers = sort { (sprintf q{%04d}, $a) <=> (sprintf q{%04d}, $b) } @cycle_numbers;
+  my @cycle_numbers = sort { (sprintf q{%04d}, $a) <=> (sprintf q{%04d}, $b) } @cycle_dirs;
 
   $self->{_cycle_numbers}->{$run_path} = \@cycle_numbers;
 
