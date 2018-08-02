@@ -84,9 +84,7 @@ my $schema = t::dbic_util->new->test_schema(fixture_path => q[t/data/dbic_fixtur
                   /HSorHSany_sf40/incoming/110810_HS23_06668_B_D080FACXX );
     map { make_path $_ } @path;
     my @live_incoming;
-    warnings_exist { @live_incoming = $test->find_live($root) }
-        qr/110811_HS17_06670_A_C04C3ACXX[ ]-[ ]error[ ]retrieving[ ]id_run/msx,
-        'warning about name mismatch';
+    lives_ok { @live_incoming = $test->find_live($root) }, 'can find live';
     shift @path; # not in analysis | incoming
     shift @path; # run cancelled
     shift @path; # runfolder name mismatch against the db
