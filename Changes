@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+release 87.3
+ - for a run on ESA, redirect to an ESA url
+
 release 87.2
  - added method to find file with MT genes inside transcriptome repository
  - change attributes in transcriptome-find to use lazy and builder rather than

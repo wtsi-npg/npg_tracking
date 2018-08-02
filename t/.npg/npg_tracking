@@ -10,6 +10,8 @@ my $VAR1 = {
                   'seqqc'        => 'http://gso1.san.ac.uk:999'},
     'default' => {'npg_tracking' => 'http://some.san.ac.uk:678',
                   'seqqc'        => 'http://some.san.ac.uk:999'},
+    'esa-sv' => {'npg_tracking'  => 'http://esa-sv.dnap.san.ac.uk:678',
+                 'seqqc'         => 'http://esa-sv.dnap.san.ac.uk:999'},
   },
   'repository' => {
     'root' => '/lustre/scratch109/srpipe/',
