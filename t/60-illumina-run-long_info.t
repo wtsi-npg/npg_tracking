@@ -35,7 +35,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
 
   my $class = Moose::Meta::Class->create_anon_class(
     methods => {"runfolder_path" => sub {$rf}},
-    roles   => [qw/npg_tracking::illumina::run::long_info/]); 
+    roles   => [qw/npg_tracking::illumina::run::long_info/]);
 
   my @rp_files = qw/
     runParameters.hiseq4000.xml
@@ -65,7 +65,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
     copy(join(q[/],$dir,$f), $name) or die 'Failed to copy file';
 
     my $li = $class->new_object();
-    
+
     foreach my $p ( grep {$_ ne 'HiSeq'} @platforms) {
       my $method = join q[_], 'platform', $p;
       if ($pl =~ /$p/i ) {
@@ -224,12 +224,53 @@ sub delete_staging {
 }
 
 sub create_staging {
+  my ($id_run, $lanes, $cycles) = @_;
   delete_staging();
   `mkdir -p $qc_subpath`;
   `mkdir $basecalls_subpath`;
   `mkdir $config_path`;
   `cp t/data/long_info/Recipe_GA2-PEM_MP_2x76Cycle+8_v7.7.xml $runfolder_path/`;
   `cp t/data/long_info/TileLayout.xml $config_path/`;
+
+  $lanes = $lanes || 8;
+  if ( $cycles ) {
+    $cycles = qq[<Read Number="1" NumCycles="$cycles" IsIndexedRead="Y  " />];
+  } else {
+    $cycles = <<"ENDXML";
+      <Read Number="1" NumCycles="76" IsIndexedRead="N" />
+      <Read Number="2" NumCycles="8" IsIndexedRead="Y" />
+      <Read Number="3" NumCycles="76" IsIndexedRead="N" />
+ENDXML
+  }
+
+  my $runparamsfile = qq[$runfolder_path/runParameters.xml];
+  open(my $fh, '>', $runparamsfile) or die "Could not open file '$runparamsfile' $!";
+  print $fh <<"ENDXML";
+<?xml version="1.0"?>
+<RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Setup>
+  <ApplicationName>HiSeq Control Software</ApplicationName>
+  <ExperimentName>$id_run</ExperimentName>
+</Setup>
+</RunParameters>
+ENDXML
+  close $fh;
+
+  my $runinfofile = qq[$runfolder_path/RunInfo.xml];
+  open($fh, '>', $runinfofile) or die "Could not open file '$runinfofile' $!";
+  print $fh <<"ENDXML";
+<?xml version="1.0"?>
+<RunInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="3">
+<Run>
+  <Reads>
+$cycles
+  </Reads>
+  <FlowcellLayout LaneCount="$lanes" SurfaceCount="2" SwathCount="1" TileCount="60">
+  </FlowcellLayout>
+</Run>
+</RunInfo>
+ENDXML
+  close $fh;
   return 1;
 }
 
@@ -245,7 +286,7 @@ my $orig_dir = getcwd();
   my $long_info;
   lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
 
-  create_staging();
+  create_staging(1234, 8);
 
   lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
   is($long_info->is_paired_read(), 1, q{Read is paired});
@@ -300,19 +341,19 @@ $ENV{TEST_DIR} = 't/data/long_info';
   cmp_ok($long_info->cycle_count, '==', 202, 'correct cycle count');
 
   my $tilelayout_columns;
-  lives_ok  { 
-    $long_info = test::long_info->new({id_run => 5636}); 
+  lives_ok  {
+    $long_info = test::long_info->new({id_run => 5636});
     $tilelayout_columns = $long_info->tilelayout_columns;
   } q{recreate object and call tilelayout_columns ok};
   cmp_ok($tilelayout_columns, '==', 6, 'correct tile columns');
-  
+
   $long_info=undef;
   lives_ok  { $long_info = test::long_info->new({id_run => 19395}); } q{created role_test (HiSeq run 19395, RunInfo.xml) object ok};
   cmp_ok($long_info->lane_tilecount->{1}, '==', 64, 'correct lane 1 tile count');
   lives_ok  { $long_info = test::long_info->new({id_run => 19395}); } q{created role_test (HiSeq run 19395, RunInfo.xml) object ok};
   cmp_ok($long_info->lane_tilecount->{2}, '==', 63, 'correct lane 2 tile count');
-note($long_info->runfolder_path);
-  
+  note($long_info->runfolder_path);
+
 
 }
 
