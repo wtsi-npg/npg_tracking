@@ -85,7 +85,7 @@ subtest 'updating run data from filesystem' => sub {
     my $fs_run_folder = qq[$basedir/IL3/incoming/100622_IL3_01234];
     make_path($fs_run_folder);
 
-    my $id_run = 24235;
+    my $id_run = 1234;
     my $run_data = {
       id_run => $id_run,
       id_instrument => 67,
@@ -97,7 +97,8 @@ subtest 'updating run data from filesystem' => sub {
 
     write_run_files($id_run, $fs_run_folder);
 
-    my $run = $schema->resultset('Run')->create($run_data);
+    my $run = $schema->resultset('Run')->find($id_run);
+    $run->update($run_data);
 
     my $run_folder = Monitor::RunFolder::Staging->new(runfolder_path      => $fs_run_folder,
                                                       npg_tracking_schema => $schema);
