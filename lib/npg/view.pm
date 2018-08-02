@@ -145,11 +145,25 @@ sub is_prod {
 sub staging_urls {
   my ($self, $staging_server) = @_;
 
+  my $config;
+  my $esa_sv_name;
+  my $esa_pattern = 'esa-sv';
   $staging_server ||= 'default';
-  my $config = get_config();
+
+  $config = get_config();
   $config  = $config->{'staging_areas2webservers'} || {};
-  $config  = $config->{$staging_server} || $config->{'default'};
-  my $surl = $config->{'npg_tracking'};
+  if ($staging_server =~ /$esa_pattern/msx
+        && $self->model->is_in_staging && $config->{$esa_pattern}) {
+    $esa_sv_name = $staging_server;
+    $staging_server = $esa_pattern;
+  }
+  $config  = $config->{$staging_server} || $config->{'default'} || {};
+
+  my %config_copy = %{$config};
+  $config = \%config_copy;
+  my $tracking_key = 'npg_tracking';
+
+  my $surl = $config->{$tracking_key};
   $surl ||= q{};
   # If the host that has access to a staging area and
   # this host (the host this request went to) are located
@@ -160,14 +174,24 @@ sub staging_urls {
   # do not delegate some urls to production servers.
   $surl = ($surl && $self->_colocated($surl)) ? q{} : $surl;
   if (!$surl) {
-    # Config hash is a constant, so to delete a key we have
-    # to copy the whole hash but this key.
-    my $nconfig = {};
-    foreach my $key (grep {$_ ne 'npg_tracking'} keys %{$config}) {
-      $nconfig->{$key} = $config->{$key};
-    }
-    $config = $nconfig;
+    delete $config->{$tracking_key};
   }
+
+  if ($esa_sv_name) {
+    my $replace = sub {
+      my $url = shift;
+      $url =~ s/$esa_pattern/$esa_sv_name/msx;
+      return $url;
+    };
+    if ($config->{$tracking_key}) {
+      $config->{$tracking_key} = $replace->($config->{$tracking_key});
+    }
+    my $seqqc_key = 'seqqc';
+    if ($config->{$seqqc_key}) {
+      $config->{$seqqc_key} = $replace->($config->{$seqqc_key});
+    }
+  }
+
   return $config;
 }
 

@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 28;
+use Test::More tests => 30;
 use Test::Exception;
 use Test::Deep;
 use CGI;
@@ -37,6 +37,23 @@ my $util = t::util->new({fixtures  => 1,});
     'no match args, default urls returned');
   is_deeply($view->staging_urls('gs01'),  $gs01_urls,
     'matching host args, correct host-specific urls returned');
+
+  my $name = 'esa-sv-20180707';
+  my $esa_urls = {'npg_tracking'  => qq[http://${name}.dnap.san.ac.uk:678],
+                  'seqqc'         => qq[http://${name}.dnap.san.ac.uk:999]};
+
+  is_deeply($view->staging_urls($name), $default_urls,
+    'default urls - no run id, so not on staging');
+
+  $view = npg::view::run->new({
+          util  => $util,
+          model => npg::model::run->new({
+                 util   => $util,
+                 id_run => 8,
+                }),
+         });
+  is_deeply($view->staging_urls($name), $esa_urls,
+    'run on staging, esa urls');
 }
 
 {
