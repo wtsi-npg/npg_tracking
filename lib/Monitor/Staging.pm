@@ -83,10 +83,14 @@ sub find_live {
 
             my $run_row = $self->schema->resultset('Run')->find({ id_run => $id_run });
             if (! $run_row ) {
-                warn qq[Id Run '$id_run' not found in database, skipping\n];
+                if ( ! defined $id_run ) {
+                    warn qq[ID run is undefined, skipping\n];
+                } else {
+                    warn qq[ID Run '$id_run' not found in database, skipping\n];
+                }
             } else {
                 if (! $run_row->folder_name ) {
-                  carp qq[Folder name in db not available will try to update with '$run_folder'.];
+                  warn qq[Folder name in db not available will try to update with '$run_folder'.];
                   $run_row->update({'folder_name' => $run_folder}); # or validation will fail
                 }
 
