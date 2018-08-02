@@ -93,8 +93,9 @@ sub _build_id_run {
 
   if ( !$self->has_run_folder() ) {
     $self->run_folder();
-    ($inst_t, $inst_i, $id_run) = $self->run_folder() =~ /$NAME_PATTERN/gmsx;
   }
+
+  ($inst_t, $inst_i, $id_run) = $self->run_folder() =~ /$NAME_PATTERN/gmsx;
 
   if ( !$id_run ) {
     if ($self->can(q(npg_tracking_schema)) and  $self->npg_tracking_schema()) {
