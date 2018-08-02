@@ -275,9 +275,13 @@ sub move_to_outgoing {
     } else {
         my $id = $self->tracking_run()->id_run;
         my $status = $self->current_run_status_description();
-        my $destination = $self->_destination_path('analysis', 'outgoing');
-        my $moved;
-        ($moved, $m) = $self->_move_folder($destination);
+        if ($status eq 'qc complete') {
+            my $destination = $self->_destination_path('analysis', 'outgoing');
+            my $moved;
+            ($moved, $m) = $self->_move_folder($destination);
+        } else {
+            $m = "Run $id status $status is not qc complete, not moving to outgoing";
+        }
     }
 
     return $m;
@@ -347,9 +351,15 @@ sub update_folder {
     my $run_db = $self->tracking_run();
     # $run_db->folder_name($self->run_folder);
     my $expected_cycle_count = $self->expected_cycle_count();
-    if ($run_db->expected_cycle_count() != $expected_cycle_count ) {
-      warn qq[Updating expected cycle count to $expected_cycle_count];
+    if ( $expected_cycle_count && ( ! $run_db->expected_cycle_count() ||
+                                    ( $run_db->expected_cycle_count() != $expected_cycle_count ) ) ) {
+      carp qq[Updating expected cycle count to $expected_cycle_count];
       $run_db->expected_cycle_count($expected_cycle_count);
+    }
+    if ( ! $run_db->folder_name() ) {
+      my $folder_name = $self->run_folder();
+      carp qq[Setting undef folder name to $folder_name];
+      $run_db->folder_name($folder_name);
     }
     my $glob = $self->_get_folder_path_glob;
     if ( $glob ) { $run_db->folder_path_glob($glob); }
