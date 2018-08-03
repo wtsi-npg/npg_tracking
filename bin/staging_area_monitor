@@ -108,9 +108,9 @@ while (1) {
             }
 
             if ( $run_status eq 'run complete' ) {
-
                 $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
                                               : $folder->tracking_run()->unset_tag( $folder->username(), 'copying_problem' );
+                $folder->update_folder();
 
                 # Integrity check - got everything.
                 next if $folder->cycle_lag($run_path);
