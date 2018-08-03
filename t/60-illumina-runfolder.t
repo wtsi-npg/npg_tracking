@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 39;
+use Test::More tests => 28;
 use Test::Exception;
 use Archive::Tar;
 use IO::File;
@@ -67,25 +67,9 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
     $rf->run_folder;
   } qr/No path/, 'throws when no run folders found for id_run';
   my $path;
-  lives_ok {
-    $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, name=> q(IL24_2726), npg_tracking_schema => undef);
-    $path = $rf->runfolder_path;
-  } 'runfolder from valid name';
-  is($path, catdir($testdir,q(090414_IL24_2726)), 'runfolder path found');
   my $expected_cycle_count;
   my (@read_cycle_counts, @indexing_cycle_range, @read1_cycle_range, @read2_cycle_range);
-  lives_ok {
-    $expected_cycle_count = $rf->expected_cycle_count;
-    @read_cycle_counts = $rf->read_cycle_counts;
-    @indexing_cycle_range = $rf->indexing_cycle_range;
-    @read1_cycle_range = $rf->read1_cycle_range;
-    @read2_cycle_range = $rf->read2_cycle_range;
-  } 'finds and parses recipe file';
-  is($expected_cycle_count,61,'expected_cycle_count');
-  is_deeply(\@read_cycle_counts,[54,7],'read_cycle_counts');
-  is_deeply(\@read1_cycle_range,[1,54],'read1_cycle_range');
-  is_deeply(\@indexing_cycle_range,[55,61],'indexing_cycle_range');
-  is_deeply(\@read2_cycle_range,[],'read2_cycle_range');
+
 
   my $fh;
   my $runinfofile = qq[$testrundir/RunInfo.xml];
@@ -112,16 +96,11 @@ ENDXML
     $lane_count = $rf->lane_count;
   } 'finds and parses recipe file';
   is($lane_count,8,'lane_count');
-  rename catfile($testrundir,q(Config),q(TileLayout.xml)), catfile($testrundir,q(Config),q(gibber_TileLayout.xml));
-  throws_ok {
-    $rf->tile_count;
-  } qr/File not found/, 'throws on no TileLayout.xml';
-  rename catfile($testrundir,q(Config),q(gibber_TileLayout.xml)), catfile($testrundir,q(Config),q(TileLayout.xml));
   my $tile_count;
   lives_ok {
     $tile_count = $rf->tile_count;
   } 'loads tilelayout file';
-  is($tile_count,100,'tile_count');
+  is($tile_count,120,'tile_count');
 }
 
 {
@@ -150,19 +129,19 @@ ENDXML
     team                 => 'RAD',
     is_paired            => 0,
     priority             => 1,
-    flowcell_id          => 'someid', 
+    flowcell_id          => 'someid',
     id_instrument_format => 1,
     folder_name          => $new_name,
     folder_path_glob     => $testdir
   };
-  
+
   my $run_row = $schema->resultset('Run')->create($data);
   $run_row->set_tag(1, 'staging');
 
   my $rf;
 
   $rf = npg_tracking::illumina::runfolder->new(
-    id_run              => 33333, 
+    id_run              => 33333,
     npg_tracking_schema => undef);
   throws_ok { $rf->run_folder } qr/No paths to run folder found/,
    'error - not able to find a runfolder without db help';
@@ -170,31 +149,24 @@ ENDXML
    'error - not able to find a runfolder without db help';
 
   $rf = npg_tracking::illumina::runfolder->new(
-      id_run              => 33333, 
+      id_run              => 33333,
       npg_tracking_schema => $schema);
   is ($rf->run_folder, $new_name, 'runfolder name with db helper');
   is ($rf->runfolder_path,  $testrundir_new, 'runfolder path with db helper');
 
   $rf = npg_tracking::illumina::runfolder->new(
-    run_folder          => $new_name,  
+    run_folder          => $new_name,
     npg_tracking_schema => undef);
-  throws_ok { $rf->id_run } qr/Attribute \(id_run\) does not pass the type constraint/,
+  throws_ok { $rf->id_run } qr/No paths to run folder found/,
     'error - not able to infer run id without db help';
   throws_ok { $rf->runfolder_path } qr/No paths to run folder found/,
     'error - not able to find a runfolder without db help';
 
   $rf = npg_tracking::illumina::runfolder->new(
-      run_folder          => $new_name, 
+      run_folder          => $new_name,
       npg_tracking_schema => $schema);
   is ($rf->id_run, 33333, 'id_run with db helper');
   is ($rf->runfolder_path,  $testrundir_new, 'runfolder path with db helper');
-
-  $rf = npg_tracking::illumina::runfolder->new(
-    runfolder_path      => $testrundir_new,
-    npg_tracking_schema => undef);
-  throws_ok { $rf->id_run } qr/Attribute \(id_run\) does not pass the type constraint/,
-    'error - not able to infer run id without db help';
-  is ($rf->run_folder, $new_name, 'runfolder name without db help');
 
   $rf = npg_tracking::illumina::runfolder->new(
       runfolder_path      => $testrundir_new,
