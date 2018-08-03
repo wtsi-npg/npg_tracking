@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use English qw(-no_match_vars);
 use File::Copy;
-use Test::More tests => 29;
+use Test::More tests => 28;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -34,9 +34,6 @@ lives_ok {
 
     is( $test->current_run_status_description(), 'analysis pending',
         'Retrieve current run status' );
-
-    isa_ok( $test->file_obj(), 'Monitor::SRS::File',
-            'Object returned by file_obj method' );
 
     # Test Monitor::Roles::Username
     is( $test->username(), 'pipeline',
@@ -85,12 +82,32 @@ lives_ok {
                                      npg_tracking_schema => $schema, );
 
 
-    throws_ok { $test->read_long_info() } qr{File not found}ms, 
-              'Croak if no recipe file is found';    
+    throws_ok { $test->read_long_info() } qr{File not found}ms,
+              'Croak if no recipe file is found';
 
-
+    my $basedir = tempdir( CLEANUP => 1 );
+    my $fs_run_folder = qq[$basedir/IL12/incoming/100721_IL12_05222];
+    make_path($fs_run_folder);
     $mock_path = $MOCK_STAGING . '/IL12/incoming/100721_IL12_05222';
-    $test = Monitor::RunFolder->new( runfolder_path      => $mock_path,
+    system('cp',  '-rp', $mock_path, qq[$basedir/IL3/incoming]);
+    my $fh;
+    my $runinfofile = qq[$fs_run_folder/RunInfo.xml];
+    open($fh, '>', $runinfofile) or die "Could not open file '$runinfofile' $!";
+    print $fh <<"ENDXML";
+<?xml version="1.0"?>
+  <RunInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="3">
+  <Run>
+    <Reads>
+    <Read Number="1" NumCycles="76" IsIndexedRead="N" />
+    </Reads>
+    <FlowcellLayout LaneCount="8" SurfaceCount="2" SwathCount="1" TileCount="60">
+    </FlowcellLayout>
+  </Run>
+  </RunInfo>
+ENDXML
+    close $fh;
+
+    $test = Monitor::RunFolder->new( runfolder_path      => $fs_run_folder,
                                      npg_tracking_schema => $schema, );
 
     move( "$mock_path/Data", "$mock_path/_Data" ) or die "Error $OS_ERROR";
@@ -105,8 +122,31 @@ lives_ok {
     is( $test->tracking_run()->is_tag_set('rta'), 1,
         '  \'rta\' tag is set' );
 
-    $mock_path = $MOCK_STAGING . '/IL3/incoming/100622_IL3_01234';
-    $test = Monitor::RunFolder->new( runfolder_path      => $mock_path,
+    my $basedir2 = tempdir( CLEANUP => 1 );
+    my $fs_run_folder2 = qq[$basedir2/IL3/incoming/100622_IL3_01234];
+    make_path($fs_run_folder2);
+    my $mock_path2 = $MOCK_STAGING . '/IL3/incoming/100622_IL3_01234';
+    system('cp',  '-rp', $mock_path2, qq[$basedir2/IL3/incoming]);
+    my $fh2;
+    my $runinfofile2 = qq[$fs_run_folder2/RunInfo.xml];
+    open($fh2, '>', $runinfofile2) or die "Could not open file '$runinfofile2' $!";
+    print $fh2 <<"ENDXML";
+<?xml version="1.0"?>
+  <RunInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="3">
+  <Run>
+    <Reads>
+    <Read Number="1" NumCycles="35" IsIndexedRead="N" />
+    <Read Number="2" NumCycles="6" IsIndexedRead="Y" />
+    <Read Number="3" NumCycles="35" IsIndexedRead="N" />
+    </Reads>
+    <FlowcellLayout LaneCount="8" SurfaceCount="2" SwathCount="1" TileCount="60">
+    </FlowcellLayout>
+  </Run>
+  </RunInfo>
+ENDXML
+    close $fh2;
+
+    $test = Monitor::RunFolder->new( runfolder_path      => $fs_run_folder2,
                                      npg_tracking_schema => $schema, );
     $test->read_long_info();
 
@@ -127,9 +167,9 @@ q{<?xml version="1.0"?>
     <Instrument>D00241</Instrument>
     <Date>150606</Date>
     <Reads>
-      <Read Number="1" NumCycles="100" IsIndexedRead="N" />
-      <Read Number="2" NumCycles="8" IsIndexedRead="Y" />
-      <Read Number="3" NumCycles="100" IsIndexedRead="N" />
+      <Read Number="1" NumCycles="35" IsIndexedRead="N" />
+      <Read Number="2" NumCycles="6" IsIndexedRead="Y" />
+      <Read Number="3" NumCycles="35" IsIndexedRead="N" />
     </Reads>
     <FlowcellLayout LaneCount="2" SurfaceCount="2" SwathCount="2" TileCount="16" />
     <AlignToPhiX>
