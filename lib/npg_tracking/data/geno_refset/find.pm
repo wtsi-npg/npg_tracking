@@ -5,6 +5,7 @@ use Carp;
 use Readonly;
 use English qw(-no_match_vars);
 use File::Spec::Functions qw(catdir);
+use File::Basename;
 
 use npg_tracking::util::abs_path qw(abs_path);
 
@@ -120,6 +121,26 @@ sub _build_geno_refset_bcfdb_path {
 }
 
 
+has 'geno_refset_genotype_base' => ( isa        => q{Maybe[Str]},
+                                     is         => q{ro},
+                                     lazy       => 1,
+                                     builder    => q{_build_geno_refset_genotype_base},
+                                     documentation => 'Database file for genotype check',);
+
+sub _build_geno_refset_genotype_base {
+  my $self = shift;
+
+  my $basename;
+  if ($self->find_file($self->geno_refset_path,q{genotypedb}, q{aix}) &&
+      $self->find_file($self->geno_refset_path,q{genotypedb}, q{bin}) &&
+      $self->find_file($self->geno_refset_path,q{genotypedb}, q{six})) {
+    my $genotypedb = $self->find_file($self->geno_refset_path,q{genotypedb}, q{six});
+    $basename = dirname($genotypedb) . q[/] . fileparse($genotypedb, qr/\.six/smx);
+  }
+  return $basename;
+}
+
+
 no Moose::Role;
 
 1;
@@ -155,6 +176,8 @@ A Moose role for finding the location of gbs plex related files.
 
 =head2 geno_refset_bcfdb_path
 
+=head2 geno_refset_genotype_base
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -170,6 +193,8 @@ A Moose role for finding the location of gbs plex related files.
 =item Readonly
 
 =item File::Spec::Functions
+
+=item File::Basename
 
 =item npg_tracking::util::abs_path
 

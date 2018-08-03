@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 14;
 use Test::Exception;
 use Moose::Meta::Class;
 use File::Spec::Functions qw(catdir);
@@ -76,9 +76,11 @@ my $strain = q[GRCh38_full_analysis_set_plus_decoy_hla];
   is($fb->geno_refset_ploidy_path, qq{$geno_repos/special_set/$strain/bcftools/special_set.ploidy}, 
                               q{geno_refset_ploidy_path bypassing lims object});
 
+  is($fb->geno_refset_genotype_base, qq{$geno_repos/special_set/$strain/genotypedb/special_set}, 
+                              q{geno_refset_genotype_base bypassing lims object});
+
   is($fb->refs->[0], qq{$repos/references/$species/$strain/all/fasta/$strain.fa}, 
                               q{ref fasta path bypassing lims object});
-
 }
 
 
