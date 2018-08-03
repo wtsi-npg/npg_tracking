@@ -117,7 +117,10 @@ while (1) {
                 next if !$folder->validate_run_complete();
                 $checked{$run_path}++;
 
-                $folder->fallback_update();
+                my $path = $folder->runfolder_path();
+                my $latest_cycle = $folder->get_latest_cycle($path);
+
+                $folder->check_cycle_count( $latest_cycle, 1 );
 
                 my ( $total_size, $latest_mod ) = $folder->monitor_stats();
 

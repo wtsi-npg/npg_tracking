@@ -72,9 +72,6 @@ sub validate_run_complete {
     return 0 if !$self->mirroring_complete( $path );
     return 0 if !$self->check_tiles( $path );
 
-    # Set a marker for fallback_update().
-    $self->{'run_is_complete'} = 1;
-
     # What else goes here?
     return 1;
 }
@@ -321,21 +318,6 @@ sub _move_folder {
     return ($result, $m);
 }
 
-sub fallback_update {
-    my ($self) = @_;
-
-    return if !$self->{'run_is_complete'};
-
-    my $path = $self->runfolder_path();
-    my $latest_cycle = $self->get_latest_cycle($path);
-
-    $self->check_cycle_count( $latest_cycle, 1 );
-
-    $self->read_long_info();
-
-    return;
-}
-
 sub _get_folder_path_glob {
     my ($self) = @_;
     my $p = $self->runfolder_path;
@@ -474,11 +456,6 @@ Returns true if the runfolder is in analysis upstream directory and false othenr
 =head2 move_to_outgoing
 
 Move the run folder from 'analysis' to 'outgoing'.
-
-=head2 fallback_update
-
-In case there has been a problem with the instrument monitors, do various
-checks and updates in this method as a failsafe.
 
 =head2 tag_delayed
 
