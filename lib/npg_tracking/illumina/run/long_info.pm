@@ -346,19 +346,10 @@ has q{experiment_name} => (
 sub _build_experiment_name {
   my $self = shift;
 
+  my $doc = $self->_run_params;
   my $experiment_name;
 
-  if ( $self->platform_HiSeq() ||
-       $self->platform_HiSeqX() ||
-       $self->platform_HiSeq4000() ||
-       $self->platform_NovaSeq() ) {
-    my $doc = $self->_run_params;
-    try {
-      $experiment_name = _get_single_element_text($doc, 'ExperimentName');
-    } catch {
-      croak q[Unable to read experiment name from run parameters file];
-    }
-  }
+  $experiment_name = _get_single_element_text($doc, 'ExperimentName') || q[];
 
   return $experiment_name;
 }

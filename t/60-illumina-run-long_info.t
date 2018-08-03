@@ -180,7 +180,7 @@ subtest 'getting experiment name from runParameters' => sub {
     'runParameters.hiseq.xml'           => { 'rpf' => 'runParameters', 'expname' => '24235' },
     'runParameters.hiseqx.upgraded.xml' => { 'rpf' => 'runParameters', 'expname' => '24420' },
     'runParameters.hiseqx.xml'          => { 'rpf' => 'runParameters', 'expname' => '24422' },
-    'runParameters.miseq.xml'           => { 'rpf' => 'runParameters', 'expname' => undef },
+    'runParameters.miseq.xml'           => { 'rpf' => 'runParameters', 'expname' => '24347' },
     'RunParameters.novaseq.xml'         => { 'rpf' => 'RunParameters', 'expname' => 'Coriell_24PF_auto_PoolF_NEBreagents_TruseqAdap_500pM_NV7B' },
   );
 
