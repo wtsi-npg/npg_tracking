@@ -974,6 +974,9 @@ t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/bc
 t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/bcftools/special_set.annotation.vcf
 t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/bcftools/special_set.info.json
 t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/bcftools/special_set.ploidy
+t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/genotypedb/special_set.aix
+t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/genotypedb/special_set.bin
+t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/genotypedb/special_set.six
 t/data/repos1/npg/run/12071.xml
 t/data/repos1/npg/run/12161.xml
 t/data/repos1/npg/run/7753.xml
