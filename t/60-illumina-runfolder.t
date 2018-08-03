@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 40;
+use Test::More tests => 39;
 use Test::Exception;
 use Archive::Tar;
 use IO::File;
@@ -72,11 +72,6 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
     $path = $rf->runfolder_path;
   } 'runfolder from valid name';
   is($path, catdir($testdir,q(090414_IL24_2726)), 'runfolder path found');
-  IO::File->new(catfile($testrundir,q(Recipe_foo.xml)), q(w));
-  throws_ok {
-    $rf->expected_cycle_count;
-  } qr/Multiple files found:/, 'throws when multiple recipes found';
-  unlink catfile($testrundir,q(Recipe_foo.xml));
   my $expected_cycle_count;
   my (@read_cycle_counts, @indexing_cycle_range, @read1_cycle_range, @read2_cycle_range);
   lives_ok {
@@ -91,9 +86,29 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
   is_deeply(\@read1_cycle_range,[1,54],'read1_cycle_range');
   is_deeply(\@indexing_cycle_range,[55,61],'indexing_cycle_range');
   is_deeply(\@read2_cycle_range,[],'read2_cycle_range');
+
+  my $fh;
+  my $runinfofile = qq[$testrundir/RunInfo.xml];
+  open($fh, '>', $runinfofile) or die "Could not open file '$runinfofile' $!";
+  print $fh <<"ENDXML";
+<?xml version="1.0"?>
+<RunInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="3">
+<Run>
+  <Reads>
+  <Read Number="1" NumCycles="76" IsIndexedRead="N" />
+  <Read Number="2" NumCycles="8" IsIndexedRead="Y" />
+  <Read Number="3" NumCycles="76" IsIndexedRead="N" />
+  </Reads>
+  <FlowcellLayout LaneCount="8" SurfaceCount="2" SwathCount="1" TileCount="60">
+  </FlowcellLayout>
+</Run>
+</RunInfo>
+ENDXML
+  close $fh;
+
   my $lane_count;
+  $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, name=> q(090414_IL24_2726), npg_tracking_schema => undef);
   lives_ok {
-    $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, name=> q(090414_IL24_2726), npg_tracking_schema => undef);
     $lane_count = $rf->lane_count;
   } 'finds and parses recipe file';
   is($lane_count,8,'lane_count');
