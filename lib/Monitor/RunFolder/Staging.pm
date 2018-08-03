@@ -363,6 +363,7 @@ sub _change_group {
 
     my $gid = getgrnam $group;
     chown -1, $gid, $directory;
+    chmod 0775, $directory;
     # If needed, add 's' to group permission so that
     # a new dir/file has the same group as parent directory
     _set_sgid($directory);
