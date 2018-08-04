@@ -81,12 +81,23 @@ sub find_live {
                 warn "Skipping $run_dir - error retrieving id_run\n";
             };
 
-            if ($id_run) {
+            my $run_row = $self->schema->resultset('Run')->find({ id_run => $id_run });
+            if (! $run_row ) {
+                if ( ! defined $id_run ) {
+                    warn qq[ID run is undefined, skipping\n];
+                } else {
+                    warn qq[ID Run '$id_run' not found in database, skipping\n];
+                }
+            } else {
+                if (! $run_row->folder_name ) {
+                  warn qq[Folder name in db not available will try to update with '$run_folder'.];
+                  $run_row->update({'folder_name' => $run_folder}); # or validation will fail
+                }
+
                 if ( npg_tracking::illumina::run::folder::validation->new(
                          run_folder          => $run_folder,
                          id_run              => $id_run,
                          npg_tracking_schema => $self->schema )->check() ) {
-              
                     $path_for{$id_run} = $run_dir;
                     warn "Cached $run_dir for run $id_run\n";
                 } else {

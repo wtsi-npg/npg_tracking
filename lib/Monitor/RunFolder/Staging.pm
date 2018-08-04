@@ -28,6 +28,7 @@ Readonly::Scalar my $RTA_COMPLETE         => 10 * $SECONDS_PER_MINUTE;
 Readonly::Scalar my $INTENSITIES_DIR_PATH => 'Data/Intensities';
 Readonly::Array  my @NO_MOVE_NAMES        => qw( npgdonotmove npg_do_not_move );
 Readonly::Scalar my $MODE_INDEX           => 2;
+Readonly::Scalar my $EXP_CBCLS_PER_CYCL   => 2;
 
 has 'rta_complete_wait' => (isa          => 'Int',
                             is           => 'ro',
@@ -44,6 +45,23 @@ sub cycle_lag {
     return ( $self->delay() > $MAXIMUM_CYCLE_LAG ) ? 1 : 0;
 }
 
+sub has_rta_complete_file {
+    my ($self) = @_;
+    my $run_path = $self->runfolder_path();
+
+    my @file_list;
+
+    # The trailing slash forces IO::All to cope with symlinks.
+    eval { @file_list = io("$run_path/")->all_files(); 1; }
+        or do { carp $EVAL_ERROR; return 0; };
+
+    my $rta = 'RTAComplete';
+
+    my @markers = map {q().$_} grep { $_ =~ m/ $rta /msx } @file_list;
+
+    return scalar @markers;
+}
+
 sub validate_run_complete {
     my ($self) = @_;
     my $path = $self->runfolder_path();
@@ -53,9 +71,6 @@ sub validate_run_complete {
     return 0 if $self->cycle_lag();
     return 0 if !$self->mirroring_complete( $path );
     return 0 if !$self->check_tiles( $path );
-
-    # Set a marker for fallback_update().
-    $self->{'run_is_complete'} = 1;
 
     # What else goes here?
     return 1;
@@ -80,7 +95,7 @@ sub mirroring_complete {
 
     my $mtime = ( scalar @markers )
                 ? ( stat $markers[0] )[$MTIME_INDEX]
-                : time();
+                : time;
     my $last_modified = time() - $mtime;
 
     my $events_file  = $self->runfolder_path() . q{/Events.log};
@@ -156,7 +171,7 @@ sub check_tiles {
             return 0;
         }
 
-        my $this_lane = substr($lane, -1, 1);
+        my $this_lane = substr $lane, -1, 1;
         if ( ! exists($expected_tiles->{$this_lane}) ) {
             carp "No expected tile count for lane $this_lane";
             return 0;
@@ -164,17 +179,28 @@ sub check_tiles {
         my $expected_tiles_this_lane = $expected_tiles->{$this_lane};
 
         foreach my $cycle ( @cycles) {
-            my $filetype = $cifs_present ? 'cif' : 'bcl';
-            my @tiles   = glob "$cycle/*.$filetype" . q({,.gz});
-            @tiles      = grep { m/ s_ \d+ _ \d+ [.] $filetype (?: [.] gz )? $ /msx } @tiles;
-            my $t_count = scalar @tiles;
+            my $filetype = $cifs_present ? 'cif'
+                                         : $self->platform_NovaSeq() ? 'cbcl' :'bcl';
+            if ( $self->platform_NovaSeq() ) {
+                my @cbcl_files = glob "$cycle/*.$filetype" . q({,.gz});
+                @cbcl_files = grep { m/ L \d+ _ \d+ [.] $filetype (?: [.] gz )? $ /msx } @cbcl_files;
+                my $count = scalar @cbcl_files;
+                if ( $count != $EXP_CBCLS_PER_CYCL ) {
+                    carp 'Missing cbcl(s) files: '
+                       . "$cycle - [expected: $EXP_CBCLS_PER_CYCL, found: $count]";
+                    return 0;
+                }
+            } else {
+                my @tiles   = glob "$cycle/*.$filetype" . q({,.gz});
+                @tiles      = grep { m/ s_ \d+ _ \d+ [.] $filetype (?: [.] gz )? $ /msx } @tiles;
+                my $t_count = scalar @tiles;
 
-            if ( $t_count != $expected_tiles_this_lane ) {
-                carp 'Missing tile(s): '
-                   . "$lane C#$cycle - [$expected_tiles_this_lane $t_count]";
-                return 0;
+                if ( $t_count != $expected_tiles_this_lane ) {
+                    carp 'Missing tile(s): '
+                       . "$lane C#$cycle - [$expected_tiles_this_lane $t_count]";
+                    return 0;
+                }
             }
-
         }
     }
 
@@ -285,26 +311,11 @@ sub _move_folder {
         croak 'Need destination';
     }
     my $rf = $self->runfolder_path();
-    my $result = move($rf, $destination); 
+    my $result = move($rf, $destination);
     my $error = $OS_ERROR;
     my $m = $result ? "Moved $rf to $destination"
                     : "Failed to move $rf to $destination: $error";
     return ($result, $m);
-}
-
-sub fallback_update {
-    my ($self) = @_;
-
-    return if !$self->{'run_is_complete'};
-
-    my $path = $self->runfolder_path();
-    my $latest_cycle = $self->get_latest_cycle($path);
-
-    $self->check_cycle_count( $latest_cycle, 1 );
-
-    $self->read_long_info();
-
-    return;
 }
 
 sub _get_folder_path_glob {
@@ -320,7 +331,18 @@ sub _get_folder_path_glob {
 sub update_folder {
     my ($self) = @_;
     my $run_db = $self->tracking_run();
-    $run_db->folder_name($self->run_folder);
+    # $run_db->folder_name($self->run_folder);
+    my $expected_cycle_count = $self->expected_cycle_count();
+    if ( $expected_cycle_count && ( ! $run_db->expected_cycle_count() ||
+                                    ( $run_db->expected_cycle_count() != $expected_cycle_count ) ) ) {
+      carp qq[Updating expected cycle count to $expected_cycle_count];
+      $run_db->expected_cycle_count($expected_cycle_count);
+    }
+    if ( ! $run_db->folder_name() ) {
+      my $folder_name = $self->run_folder();
+      carp qq[Setting undef folder name to $folder_name];
+      $run_db->folder_name($folder_name);
+    }
     my $glob = $self->_get_folder_path_glob;
     if ( $glob ) { $run_db->folder_path_glob($glob); }
     $run_db->update();
@@ -329,7 +351,7 @@ sub update_folder {
 
 sub _change_group {
     my ($group, $directory) = @_;
-  
+
     my $temp = $directory . '.original';
     move($directory, $temp) or croak "move error: '$directory to $temp' : $ERRNO";
     mkdir $directory or croak "mkdir error: $ERRNO";
@@ -339,8 +361,9 @@ sub _change_group {
     }
     rmdir $temp or croak "rmdir error: $ERRNO";
 
-    my $gid = getgrnam($group);
+    my $gid = getgrnam $group;
     chown -1, $gid, $directory;
+    chmod 0775, $directory;
     # If needed, add 's' to group permission so that
     # a new dir/file has the same group as parent directory
     _set_sgid($directory);
@@ -393,6 +416,10 @@ script) will be ahead of the number of cycles represented in the staging area.
 This method checks for that and returns a Boolean - true for lag, false for no
 difference between the cycle counts within a limit set by $MAXIMUM_CYCLE_LAG
 
+=head2 has_rta_complete_file
+
+Return true if RTAComplete file in run folder. False otherwise.
+
 =head2 validate_run_complete
 
 Perform a series of checks to make sure the run really is complete. Return 0
@@ -431,16 +458,11 @@ Returns true if the runfolder is in analysis upstream directory and false othenr
 
 Move the run folder from 'analysis' to 'outgoing'.
 
-=head2 fallback_update
-
-In case there has been a problem with the instrument monitors, do various
-checks and updates in this method as a failsafe.
-
 =head2 tag_delayed
 
 If there is an unacceptable difference between the actual cycles recorded in
 the database and the highest cycle found on the staging area, then this
-tags the run with 
+tags the run with
 
 =head2 update_folder
 

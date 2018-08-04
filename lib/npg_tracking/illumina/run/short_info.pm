@@ -87,17 +87,17 @@ sub short_reference {
 sub _build_id_run {
   my ($self) = @_;
 
+  my $inst_t;
+  my $inst_i;
+  my $id_run;
+
   if ( !$self->has_run_folder() ) {
-    try {
-      $self->run_folder();
-    } catch {
-      croak qq{Unable to obtain id_run from run_folder : $_};
-    };
+    $self->run_folder();
   }
 
-  my ($inst_t, $inst_i, $id_run) = $self->run_folder() =~ /$NAME_PATTERN/gmsx;
+  ($inst_t, $inst_i, $id_run) = $self->run_folder() =~ /$NAME_PATTERN/gmsx;
 
-  if ( !( $inst_t && $inst_i && $id_run ) ) {
+  if ( !$id_run ) {
     if ($self->can(q(npg_tracking_schema)) and  $self->npg_tracking_schema()) {
       my $rs = $self->npg_tracking_schema()->resultset('Run')
                ->search({folder_name => $self->run_folder()});
@@ -105,6 +105,14 @@ sub _build_id_run {
         $id_run = $rs->next()->id_run();
       }
     }
+  }
+
+  if ( !$id_run && $self->can('experiment_name') && $self->experiment_name() ) {
+    ($id_run) = $self->experiment_name() =~ /\A[\s]*([\d]+)[\s]*\Z/xms;
+  }
+
+  if( !$id_run ) {
+    croak q[Unable to identify id_run with data provided];
   }
 
   return $id_run;

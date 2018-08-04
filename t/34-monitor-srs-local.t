@@ -4,11 +4,13 @@ use English qw(-no_match_vars);
 use Readonly;
 use File::Copy;
 use File::Find;
+use File::Temp qw(tempdir);
+use File::Path qw(make_path);
 use Perl6::Slurp;
 use IPC::System::Simple; #needed for Fatalised/autodying system()
 use autodie qw(:all);
 
-use Test::More tests => 11;
+use Test::More tests => 10;
 use Test::Deep;
 use Test::Exception;
 use Test::MockModule;
@@ -107,23 +109,39 @@ isnt( $test->glob_pattern(), undef, 'Retrieve glob pattern' );
 }
 
 
-{
-    my $complete_run_path = "$MOCK_STAGING/IL3/incoming/100622_IL3_01234";
+subtest 'get actual cycle count from files in run folder' => sub {
+    plan tests => 3;
+    my $basedir = tempdir( CLEANUP => 1 );
+    my $fs_incoming = qq[$basedir/IL3/incoming];
+    make_path($fs_incoming);
+    system('cp', '-rp', $MOCK_STAGING . '/IL3/incoming/100622_IL3_01234', $fs_incoming);
 
+    my $complete_run_path = qq[$fs_incoming/100622_IL3_01234];
+
+    $test = Monitor::SRS::Local->new(
+                 ident        => 6,
+                 _schema      => $schema,
+                 glob_pattern => "$basedir/*/*/*",
+    );
     ## no critic (ValuesAndExpressions::ProhibitMagicNumbers)
     is( $test->get_latest_cycle($complete_run_path), 37,
         'Latest cycle derived from \'Intensities\' directory' );
 
-    my $status_xml = "$complete_run_path/Data/reports/StatusUpdate.xml";
-    open my $temp_fh, q{>}, $status_xml  ;
-    print {$temp_fh} '<ImgCycle>52</ImgCycle>' or carp $OS_ERROR;
-    close $temp_fh;
+    my $fs_thumbnail_imgs = qq[$complete_run_path/Thumbnail_Images/L001];
+    make_path($fs_thumbnail_imgs);
+    for(my $i = 1; $i <= 50; $i++) {
+        make_path("$fs_thumbnail_imgs/C$i.1");
+    }
 
-    is( $test->get_latest_cycle($complete_run_path), 52,
-        'Latest cycle derived from StatusUpdate.xml' );
+    is( $test->get_latest_cycle($complete_run_path), 50,
+        'Latest cycle derived from \'Thumbnail_Images\' directory' );
 
-    unlink $status_xml;
-}
+    for(my $i = 25; $i <= 50; $i++) {
+        rmdir "$fs_thumbnail_imgs/C$i.1";
+    }
+    is( $test->get_latest_cycle($complete_run_path), 37,
+        'Latest cycle derived from \'Intensities\' directory when it has more elements' );
+};
 
 END {
   rmdir $NOT_RUNFOLDER unless !-d $NOT_RUNFOLDER;

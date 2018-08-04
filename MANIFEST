@@ -161,7 +161,6 @@ lib/Monitor/Roles/Schema.pm
 lib/Monitor/Roles/Username.pm
 lib/Monitor/RunFolder.pm
 lib/Monitor/RunFolder/Staging.pm
-lib/Monitor/SRS/File.pm
 lib/Monitor/SRS/FTP.pm
 lib/Monitor/SRS/Local.pm
 lib/Monitor/Staging.pm
@@ -479,7 +478,6 @@ t/34-monitor-cbot.t
 t/34-monitor-instrument.t
 t/34-monitor-runfolder-staging.t
 t/34-monitor-runfolder.t
-t/34-monitor-srs-file.t
 t/34-monitor-srs-ftp.t
 t/34-monitor-srs-local.t
 t/34-monitor-staging.t

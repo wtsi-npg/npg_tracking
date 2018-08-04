@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 39;
+use Test::More tests => 28;
 use Test::Exception;
 use Archive::Tar;
 use IO::File;
@@ -67,46 +67,40 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
     $rf->run_folder;
   } qr/No path/, 'throws when no run folders found for id_run';
   my $path;
-  lives_ok {
-    $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, name=> q(IL24_2726), npg_tracking_schema => undef);
-    $path = $rf->runfolder_path;
-  } 'runfolder from valid name';
-  is($path, catdir($testdir,q(090414_IL24_2726)), 'runfolder path found');
-  IO::File->new(catfile($testrundir,q(Recipe_foo.xml)), q(w));
-  throws_ok {
-    $rf->expected_cycle_count;
-  } qr/Multiple files found:/, 'throws when multiple recipes found';
-  unlink catfile($testrundir,q(Recipe_foo.xml));
   my $expected_cycle_count;
   my (@read_cycle_counts, @indexing_cycle_range, @read1_cycle_range, @read2_cycle_range);
-  lives_ok {
-    $expected_cycle_count = $rf->expected_cycle_count;
-    @read_cycle_counts = $rf->read_cycle_counts;
-    @indexing_cycle_range = $rf->indexing_cycle_range;
-    @read1_cycle_range = $rf->read1_cycle_range;
-    @read2_cycle_range = $rf->read2_cycle_range;
-  } 'finds and parses recipe file';
-  is($expected_cycle_count,61,'expected_cycle_count');
-  is_deeply(\@read_cycle_counts,[54,7],'read_cycle_counts');
-  is_deeply(\@read1_cycle_range,[1,54],'read1_cycle_range');
-  is_deeply(\@indexing_cycle_range,[55,61],'indexing_cycle_range');
-  is_deeply(\@read2_cycle_range,[],'read2_cycle_range');
+
+
+  my $fh;
+  my $runinfofile = qq[$testrundir/RunInfo.xml];
+  open($fh, '>', $runinfofile) or die "Could not open file '$runinfofile' $!";
+  print $fh <<"ENDXML";
+<?xml version="1.0"?>
+<RunInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="3">
+<Run>
+  <Reads>
+  <Read Number="1" NumCycles="76" IsIndexedRead="N" />
+  <Read Number="2" NumCycles="8" IsIndexedRead="Y" />
+  <Read Number="3" NumCycles="76" IsIndexedRead="N" />
+  </Reads>
+  <FlowcellLayout LaneCount="8" SurfaceCount="2" SwathCount="1" TileCount="60">
+  </FlowcellLayout>
+</Run>
+</RunInfo>
+ENDXML
+  close $fh;
+
   my $lane_count;
+  $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, name=> q(090414_IL24_2726), npg_tracking_schema => undef);
   lives_ok {
-    $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, name=> q(090414_IL24_2726), npg_tracking_schema => undef);
     $lane_count = $rf->lane_count;
   } 'finds and parses recipe file';
   is($lane_count,8,'lane_count');
-  rename catfile($testrundir,q(Config),q(TileLayout.xml)), catfile($testrundir,q(Config),q(gibber_TileLayout.xml));
-  throws_ok {
-    $rf->tile_count;
-  } qr/File not found/, 'throws on no TileLayout.xml';
-  rename catfile($testrundir,q(Config),q(gibber_TileLayout.xml)), catfile($testrundir,q(Config),q(TileLayout.xml));
   my $tile_count;
   lives_ok {
     $tile_count = $rf->tile_count;
   } 'loads tilelayout file';
-  is($tile_count,100,'tile_count');
+  is($tile_count,120,'tile_count');
 }
 
 {
@@ -135,19 +129,19 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
     team                 => 'RAD',
     is_paired            => 0,
     priority             => 1,
-    flowcell_id          => 'someid', 
+    flowcell_id          => 'someid',
     id_instrument_format => 1,
     folder_name          => $new_name,
     folder_path_glob     => $testdir
   };
-  
+
   my $run_row = $schema->resultset('Run')->create($data);
   $run_row->set_tag(1, 'staging');
 
   my $rf;
 
   $rf = npg_tracking::illumina::runfolder->new(
-    id_run              => 33333, 
+    id_run              => 33333,
     npg_tracking_schema => undef);
   throws_ok { $rf->run_folder } qr/No paths to run folder found/,
    'error - not able to find a runfolder without db help';
@@ -155,39 +149,73 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
    'error - not able to find a runfolder without db help';
 
   $rf = npg_tracking::illumina::runfolder->new(
-      id_run              => 33333, 
+      id_run              => 33333,
       npg_tracking_schema => $schema);
   is ($rf->run_folder, $new_name, 'runfolder name with db helper');
   is ($rf->runfolder_path,  $testrundir_new, 'runfolder path with db helper');
 
   $rf = npg_tracking::illumina::runfolder->new(
-    run_folder          => $new_name,  
+    run_folder          => $new_name,
     npg_tracking_schema => undef);
-  throws_ok { $rf->id_run } qr/Attribute \(id_run\) does not pass the type constraint/,
+  throws_ok { $rf->id_run } qr/No paths to run folder found/,
     'error - not able to infer run id without db help';
   throws_ok { $rf->runfolder_path } qr/No paths to run folder found/,
     'error - not able to find a runfolder without db help';
 
   $rf = npg_tracking::illumina::runfolder->new(
-      run_folder          => $new_name, 
+      run_folder          => $new_name,
       npg_tracking_schema => $schema);
   is ($rf->id_run, 33333, 'id_run with db helper');
   is ($rf->runfolder_path,  $testrundir_new, 'runfolder path with db helper');
 
   $rf = npg_tracking::illumina::runfolder->new(
-    runfolder_path      => $testrundir_new,
-    npg_tracking_schema => undef);
-  throws_ok { $rf->id_run } qr/Attribute \(id_run\) does not pass the type constraint/,
-    'error - not able to infer run id without db help';
-  is ($rf->run_folder, $new_name, 'runfolder name without db help');
-
-  $rf = npg_tracking::illumina::runfolder->new(
-      runfolder_path      => $testrundir_new, 
+      runfolder_path      => $testrundir_new,
       npg_tracking_schema => $schema);
   is ($rf->id_run, 33333, 'id_run with db helper');
   is ($rf->run_folder, $new_name, 'runfolder with db helper');
 
-  rename $testrundir_new, $testrundir; 
+  rename $testrundir_new, $testrundir;
 }
+
+subtest 'getting id_run from experiment name in run parameters' => sub {
+  plan tests => 8;
+
+  my $basedir = tempdir( CLEANUP => 1 );
+  my $rf = join q[/], $basedir, 'runfolder_id_run';
+  mkdir $rf;
+
+  use npg_tracking::illumina::runfolder;
+
+  my %data = (
+    'runParameters.hiseq4000.xml'       => { 'rpf' => 'runParameters', 'expname' => '24359' },
+    'runParameters.hiseq.rr.single.xml' => { 'rpf' => 'runParameters', 'expname' => '25835' },
+    'runParameters.hiseq.rr.truseq.xml' => { 'rpf' => 'runParameters', 'expname' => '21604' },
+    'runParameters.hiseq.rr.twoind.xml' => { 'rpf' => 'runParameters', 'expname' => '25689' },
+    'runParameters.hiseq.rr.xml'        => { 'rpf' => 'runParameters', 'expname' => '24409' },
+    'runParameters.hiseq.xml'           => { 'rpf' => 'runParameters', 'expname' => '24235' },
+    'runParameters.hiseqx.upgraded.xml' => { 'rpf' => 'runParameters', 'expname' => '24420' },
+    'runParameters.hiseqx.xml'          => { 'rpf' => 'runParameters', 'expname' => '24422' },
+#    'RunParameters.novaseq.xml'         => { 'rpf' => 'RunParameters', 'expname' => 'Coriell_24PF_auto_PoolF_NEBreagents_TruseqAdap_500pM_NV7B' },
+  );
+
+  my $expname_data = \%data;
+  my $run_param_dir = 't/data/run_params';
+
+  for my $file_name (sort keys % $expname_data) {
+    note $file_name;
+    my $expected_experiment_name = $expname_data->{$file_name}->{'expname'};
+    my $param_prefix = $expname_data->{$file_name}->{'rpf'};
+    my $run_params_file_path = qq[$rf/$param_prefix.xml];
+
+    use File::Copy;
+    copy(join(q[/],$run_param_dir,$file_name), $run_params_file_path) or die 'Failed to copy file';
+
+    use npg_tracking::illumina::runfolder;
+    my $li = new npg_tracking::illumina::runfolder( runfolder_path => $rf );
+
+    is($li->id_run(), $expected_experiment_name, q[Expected id_run parsed from experiment name in run params]);
+    `rm $run_params_file_path`
+  }
+};
 
 1;
