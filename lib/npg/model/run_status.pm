@@ -85,7 +85,7 @@ sub create {
 
     my $desc = $self->run_status_dict->description();
 
-    my $msg = qq($desc for run @{[$self->run->name()]}\nhttp://npg.sanger.ac.uk/perl/npg/run/@{[$self->run->name()]}\n$history\n\n$contents_of_lanes);
+    my $msg = qq($desc for run @{[$self->run->name()]}\nhttp://sfweb.internal.sanger.ac.uk:9000/perl/npg/run/@{[$self->run->name()]}\n$history\n\n$contents_of_lanes);
     my $event = npg::model::event->new({
                                       run                => $self->run(),
                                       status_description => $desc,
