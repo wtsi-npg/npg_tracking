@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 9;
 use Test::Exception;
 use Moose::Meta::Class;
 
@@ -309,6 +309,52 @@ subtest 'names for multi-compoment compositions across selected lanes' => sub {
   $m = $class_name->new(composition => npg_tracking::glossary::composition->thaw($json));
   is ($m->file_name($selected), '26048_1-2-3-4#8_human', 'file name for a plex, human subset');
   is ($m->dir_path($selected), 'lane1-2-3-4/plex8', 'dir. path for a plex, human subset');
+};
+
+subtest 'full file name' => sub {
+  plan tests => 17;
+
+  my $p = 'npg_tracking::glossary::moniker';
+
+  throws_ok { $p->file_name_full() }
+    qr/File name base should be given/, 'error if no arguments are given';
+  throws_ok { $p->file_name_full(ext => 'bam') }
+    qr/The argument list should contain a file name/,
+    'error if one option is given, but no base file name';
+  throws_ok { $p->file_name_full(ext => 'bam', suffix => 'F0xB00') }
+    qr/The argument list should contain a file name/,
+    'error if two options are given, but no base file name';
+
+  my $name = '26219_1';
+  is ($p->file_name_full($name), '26219_1', 'no-options file name');
+  is ($p->file_name_full($name, ext => 'bam'), '26219_1.bam', 'file name with an extention');
+  is ($p->file_name_full($name, suffix => 'F0xB00'), '26219_1_F0xB00', 'file name with a suffix');
+  is ($p->file_name_full($name, ext => 'stats', suffix => 'F0xB00'), '26219_1_F0xB00.stats',
+    'file name with both extension and suffix');
+  is ($p->file_name_full($name, ext => 'stats.md5', suffix => 'F0xB00'), '26219_1_F0xB00.stats.md5',
+    'file name with both extension and suffix');
+
+  throws_ok { $p->file_name_full($name, other => 'o') }
+    qr/The following options are not recognised: other\. Accepted options: suffix, ext\./,
+    'unrecognised option - error';
+  throws_ok { $p->file_name_full($name, other => 'o', suffix => 'F0xB00') }
+    qr/The following options are not recognised: other\. Accepted options: suffix, ext\./,
+    'unrecognised option - error';
+  throws_ok { $p->file_name_full($name, a => 'a', suffix => 'F0xB00', b => 'b') }
+    qr/The following options are not recognised: a, b\. Accepted options: suffix, ext\./,
+    'unrecognised options - error';
+
+  $name = '26219_1#3';
+  is ($p->file_name_full($name, ext => 'bam'), '26219_1#3.bam', 'file name with an extention');
+  is ($p->file_name_full($name, suffix => 'F0xB00'), '26219_1#3_F0xB00', 'file name with a suffix');
+  is ($p->file_name_full($name, ext => 'stats', suffix => 'F0xB00'), '26219_1#3_F0xB00.stats',
+    'file name with both extension and suffix');
+
+  $name = '26219_1#3_phix';
+  is ($p->file_name_full($name, ext => 'bam'), '26219_1#3_phix.bam', 'file name with an extention');
+  is ($p->file_name_full($name, suffix => 'F0xB00'), '26219_1#3_phix_F0xB00', 'file name with a suffix');
+  is ($p->file_name_full($name, ext => 'stats', suffix => 'F0xB00'), '26219_1#3_phix_F0xB00.stats',
+    'file name with both extension and suffix');
 };
 
 1;
