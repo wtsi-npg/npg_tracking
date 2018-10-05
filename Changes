@@ -1,6 +1,8 @@
 LIST OF CHANGES
 
- - changes to support geno_refset repository 
+ - changes to support geno_refset repository
+ - moved method for creating full file names from npg_tracking::product
+   to the moniker role 
 
 release 87.3
  - for a run on ESA, redirect to an ESA url

@@ -3,6 +3,7 @@ package npg_tracking::glossary::moniker;
 use Moose::Role;
 use Carp;
 use Readonly;
+use Try::Tiny;
 use File::Spec;
 use List::MoreUtils qw/none/;
 use List::Util qw/uniq/;
@@ -17,6 +18,8 @@ Readonly::Scalar my $DELIM       => q[_];
 Readonly::Scalar my $LANE_DELIM  => q[-];
 Readonly::Scalar my $NOT_COMMON  => q[-1];
 Readonly::Scalar my $DIGEST_TYPE => q[md5];
+Readonly::Scalar my $SUFFIX_KEY  => q[suffix];
+Readonly::Scalar my $EXT_KEY     => q[ext];
 
 sub file_name {
   my ($self, $selected_lanes) = @_;
@@ -32,6 +35,45 @@ sub file_name {
     $name = $self->_get_digest();
   }
 
+  return $name;
+}
+
+sub file_name_full {
+  my ($self, $name, @options) = @_;
+
+  $name or croak 'File name base should be given';
+
+  my %h;
+  if (@options) {
+    try {
+      use warnings FATAL => qw/misc/; # Turn warning
+                                      # 'Odd number of elements in hash assignment'
+                                      # into an error...
+      %h = @options;
+    } catch {
+      my $e = $_;
+      if ($e =~ /Odd\ number\ of\ elements\ in\ hash\ assignment/smxi) {
+        $e = 'The argument list should contain a file name'.
+             ' and, optionally, a list of key-value options';
+      }
+      croak $e;
+    };
+    if (exists $h{$SUFFIX_KEY} && $h{$SUFFIX_KEY} ne q[]) {
+      $name .= q[_] . $h{$SUFFIX_KEY};
+      delete $h{$SUFFIX_KEY};
+    }
+    if (exists $h{$EXT_KEY} && $h{$EXT_KEY} ne q[]) {
+      $name .= q[.] . $h{$EXT_KEY};
+      delete  $h{$EXT_KEY};
+    }
+    my @other = keys %h;
+    if (@other) {
+      croak sprintf 'The following options are not recognised: %s. Accepted options: %s, %s.',
+                    join(q[, ], sort @other),
+                    $SUFFIX_KEY,
+                    $EXT_KEY;
+    }
+  }
   return $name;
 }
 
@@ -142,6 +184,7 @@ sub _get_digest {
 no Moose::Role;
 
 1;
+
 __END__
 
 =head1 NAME
@@ -283,6 +326,17 @@ represents a sunset of lanes in the run. False by default.
  $selected_lanes = 1;
  $file_name = $self->file_name($selected_lanes);
 
+=head2 file_name_full
+
+A package-level or class method.
+Adds a suffix and a file extension to an argument filename.
+
+  my $name= q[26219_1#0];
+  $p->file_name_full($name);                                         # 26219_1#0
+  $p->file_name_full($name, ext => 'bam');                           # 26219_1#0.bam
+  $p->file_name_full($name, ext => 'stats', suffix => 'F0xB00');     # 26219_1#0_F0xB00.stats 
+  $p->file_name_full($name, ext => 'stats.md5', suffix => 'F0xB00'); # 26219_1#0_F0xB00.stats.md5 
+
 =head2 dir_path
 
 Returns a relative directory path for the entity described by the composition
@@ -318,6 +372,8 @@ represents a sunset of lanes in the run. False by default.
 =item List::MoreUtils
 
 =item List::Util
+
+=item Try::Tiny
 
 =back
 
