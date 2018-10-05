@@ -3,7 +3,6 @@ package npg_tracking::glossary::moniker;
 use Moose::Role;
 use Carp;
 use Readonly;
-use Try::Tiny;
 use File::Spec;
 use List::MoreUtils qw/none/;
 use List::Util qw/uniq/;
@@ -43,21 +42,16 @@ sub file_name_full {
 
   $name or croak 'File name base should be given';
 
-  my %h;
   if (@options) {
-    try {
-      use warnings FATAL => qw/misc/; # Turn warning
-                                      # 'Odd number of elements in hash assignment'
-                                      # into an error...
-      %h = @options;
-    } catch {
-      my $e = $_;
-      if ($e =~ /Odd\ number\ of\ elements\ in\ hash\ assignment/smxi) {
-        $e = 'The argument list should contain a file name'.
-             ' and, optionally, a list of key-value options';
-      }
-      croak $e;
-    };
+
+    if (scalar @options % 2 != 0) {
+      croak 'The argument list should contain a file name'.
+            ' and, optionally, a list of key-value options';
+    }
+
+    my %h = @options; # Safe, we know that we have an even number
+                      # of list members.
+
     if (exists $h{$SUFFIX_KEY} && $h{$SUFFIX_KEY} ne q[]) {
       $name .= q[_] . $h{$SUFFIX_KEY};
       delete $h{$SUFFIX_KEY};
@@ -66,10 +60,10 @@ sub file_name_full {
       $name .= q[.] . $h{$EXT_KEY};
       delete  $h{$EXT_KEY};
     }
-    my @other = keys %h;
-    if (@other) {
+
+    if (keys %h) {
       croak sprintf 'The following options are not recognised: %s. Accepted options: %s, %s.',
-                    join(q[, ], sort @other),
+                    join(q[, ], sort keys %h),
                     $SUFFIX_KEY,
                     $EXT_KEY;
     }
@@ -372,8 +366,6 @@ represents a sunset of lanes in the run. False by default.
 =item List::MoreUtils
 
 =item List::Util
-
-=item Try::Tiny
 
 =back
 
