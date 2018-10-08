@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Test::Exception;
 
 use_ok ('npg_tracking::glossary::composition::component');
@@ -45,6 +45,28 @@ subtest 'object with optional attrs undefined' => sub {
     is ($c1->attr_2, 'human');
     is ($c1->attr_3, undef);
   }
+};
+
+subtest 'JSON serialization' => sub {
+  plan tests => 5;
+
+  my $c = $pname->new(attr_2 => 'human', attr_1 => 1, attr_3 => 3);
+  my $j = '{"attr_1":1,"attr_2":"human","attr_3":3}';
+  is ($c->freeze, $j, 'serialization to an ordered json string');
+
+  my $c1 = $pname->thaw($j);
+  lives_ok { $pname->thaw($j, component_class => $pname) }
+    'can supply component class';
+  lives_ok { $pname->thaw($j, component_class => 'dfggfg') }
+    'can supply an arbitrary component class';
+
+  $j = '{"__CLASS__":"npg_tracking::composition::component::test","attr_1":1,"attr_2":"human","attr_3":3}';
+  is ($c->freeze(with_class_names => 1), $j,
+    'serialization to an ordered json string with a class name');
+ 
+  $j = '{"__CLASS__":"npg_tracking::composition::component::test-83.3","attr_1":1,"attr_2":"human","attr_3":3}';
+  lives_ok { $pname->thaw($j) }
+    'can be deserialized from a string containing the class name';
 };
 
 subtest 'compare components' => sub {

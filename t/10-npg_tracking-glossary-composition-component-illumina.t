@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 9;
 use Test::Exception;
 
 my $pname = q[npg_tracking::glossary::composition::component::illumina];
@@ -88,6 +88,30 @@ subtest 'unknown attrs' => sub {
   is ($c->position, 2);
   throws_ok { $c->id_position } qr/Can\'t locate object method \"id_position\"/,
     'error accessing undefined attribute';
+};
+
+subtest 'JSON serialization' => sub {
+  plan tests => 5;
+
+  my $c = $pname->new(id_run => 1, position => 2, tag_index => 3, subset => 'human');
+  my $j = '{"id_run":1,"position":2,"subset":"human","tag_index":3}';
+  is ($c->freeze, $j, 'serialization to an ordered json string');
+
+  my $c1 = $pname->thaw($j);
+  lives_ok { $pname->thaw($j, component_class => $pname) }
+    'can supply component class';
+  lives_ok { $pname->thaw($j, component_class => 'dfggfg') }
+    'can supply an arbitrary component class';
+
+  my $version = `git describe --dirty --always`;
+  $version =~ s/\s+//;
+  $j = qq({"__CLASS__":"npg_tracking::glossary::composition::component::illumina-$version","id_run":1,"position":2,"subset":"human","tag_index":3});
+  is ($c->freeze(with_class_names => 1), $j,
+    'serialization to an ordered json string with a class name');
+
+  $j = '{"__CLASS__":"npg_tracking::glossary::composition::component::illumina-100.0","id_run":1,"position":2,"subset":"human","tag_index":3}';  
+  lives_ok { $pname->thaw($j) }
+    'can be deserialized from a string containing the class name';
 };
 
 subtest 'compare components' => sub {
