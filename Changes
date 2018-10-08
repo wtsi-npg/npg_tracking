@@ -13,6 +13,7 @@ LIST OF CHANGES
      code to handle redundant links and paths is removed;
      if the target tileviz directory is not available, fall back to the one
      expected for the old-style run folder
+ - redundant filename method of the illumina component object removed
 
 release 87.3
  - for a run on ESA, redirect to an ESA url
