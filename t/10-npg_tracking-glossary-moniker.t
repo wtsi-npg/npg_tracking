@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 use Test::Exception;
 use Moose::Meta::Class;
 
@@ -28,7 +28,7 @@ $class->make_immutable;
 
 $class = Moose::Meta::Class->create_anon_class(
       superclasses=> ['npg_test::moniker'],
-      roles       => ['npg_tracking::glossary::moniker'] );
+      roles       => [qw/npg_tracking::glossary::moniker MooseX::Getopt/] );
 $class->make_immutable;
 my $class_name = $class->name();
 
@@ -55,6 +55,15 @@ subtest 'test dynamically created test class' => sub {
     'created class, composition defined via the the constructor';
   lives_ok {$moniker->file_name} 'can generate file name';
   lives_ok {$moniker->dir_path} 'can generate dir name';  
+};
+
+subtest 'test compatibility with MooseX::Getopt' => sub {
+  plan tests => 2;
+
+  local @ARGV = qw/--rpt_list 33:3:1/;
+  my $obj = $class_name->new_with_options();
+  isa_ok ($obj, $class_name);
+  is($obj->rpt_list, '33:3:1', 'rpt_list attribute value');
 };
 
 subtest 'no semantically meaningful name' => sub {

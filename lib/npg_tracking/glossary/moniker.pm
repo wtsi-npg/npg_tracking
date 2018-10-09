@@ -110,7 +110,6 @@ has [qw/_file_name_semantic _dir_path_semantic/] => (
   isa        => 'Bool',
   is         => 'ro',
   required   => 0,
-  init_arg   => {},
   lazy_build => 1,
 );
 sub _build__file_name_semantic {
