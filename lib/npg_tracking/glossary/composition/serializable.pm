@@ -7,6 +7,7 @@ use Digest::SHA qw/sha256_hex/;
 use Digest::MD5 qw/md5_hex/;
 use Carp;
 use Readonly;
+use Class::Load qw/load_class/;
 
 use npg_tracking::glossary::rpt;
 
@@ -15,22 +16,74 @@ requires 'unpack';
 
 our $VERSION = '0';
 
-Readonly::Scalar my $COMPONENTS_ATTR_NAME => 'components';
+Readonly::Scalar my $COMPONENTS_ATTR_NAME    => 'components';
+Readonly::Scalar my $COMPONENT_CLASS         => 'component_class';
+Readonly::Scalar my $ENFORCE_COMPONENT_CLASS => 'enforce_component_class';
+Readonly::Scalar my $FREEZE_WITH_CLASS_NAMES => 'with_class_names';
+Readonly::Scalar my $CLASS_NAME_KEY          => '__CLASS__';
 
 sub thaw {
   my ( $class, $json, @args ) = @_;
+
   if (!$json) {
     croak 'JSON string is required';
   }
-  return $class->unpack( JSON::XS->new()->decode($json), @args );
+
+  my $h = JSON::XS->new()->decode($json);
+
+  my $component_class;
+  my $enforce_component_class = 0;
+  if (@args && scalar @args % 2 == 0) {
+    my %ah = @args;
+    $component_class         = $ah{$COMPONENT_CLASS};
+    $enforce_component_class = $ah{$ENFORCE_COMPONENT_CLASS};
+    if ($component_class) {
+      delete $ah{$COMPONENT_CLASS};
+      delete $ah{$ENFORCE_COMPONENT_CLASS};
+      @args = %ah;
+    }
+  }
+
+  #####
+  # JSON string is a serialized composition or component object.
+  #
+  foreach my $component_h ( $h->{$COMPONENTS_ATTR_NAME} ? @{$h->{$COMPONENTS_ATTR_NAME}} : () ) {
+    my $cclass = $component_h->{$CLASS_NAME_KEY};
+    if ($cclass) {
+      if ($component_class && $enforce_component_class
+            && ($component_class ne $cclass)) {
+        croak "Unexpected component class $cclass";
+      }
+      #####
+      # The class name might be concatenated with package version.
+      # A dash is used for concatenation. No way to know whether
+      # this dash is not a part of the package name, meaning that
+      # component classes should not have dashes in their package
+      # name.
+      #
+      ($cclass) = split /-/smx, $cclass;
+    } elsif ($component_class) {
+      $cclass = $component_class;
+    } else {
+      croak "Component class unknown, try defining via $COMPONENT_CLASS option";
+    }
+    $component_h->{$CLASS_NAME_KEY} = $cclass;
+    load_class $cclass; # Multiple attempts to load the same class are OK
+  }
+
+  return $class->unpack( $h, @args );
 }
 
 sub freeze {
-  my $self = shift;
+  my ($self, @args) = @_;
   if ( $self->can('sort') ) {
     $self->sort();
   }
-  return JSON::XS->new()->canonical(1)->encode( $self->_pack_custom() );
+  if (@args && (@args != 2 || $args[0] ne $FREEZE_WITH_CLASS_NAMES)) {
+    croak "Options not recognised, allowed option - $FREEZE_WITH_CLASS_NAMES";
+  }
+  return JSON::XS->new()->canonical(1)->encode(
+    (@args && $args[1]) ? $self->pack() : $self->_pack_custom() );
 }
 
 sub freeze2rpt {
@@ -141,15 +194,46 @@ Differences with MooseX::Storage::Format::JSON:
 
 =head2 thaw
 
-Instantiates an object from a json string.
+Instantiates an object from a JSON string.
 
-  my $p = my::package->thaw($json);
+  my $c = my::package->thaw($json);
+
+If the JSON string does not contain class names of some or all components,
+the default thaw method fails. The component class to use where it's
+missing can be supplied.
+
+  my $c = my::package->thaw(
+    $json,
+    component_class => 'npg_tracking::glossary::composition::component::illumina');
+
+If the enforce_component_class option is set to true, an error is reaised
+if the class of any of the components is defined and is different from the
+supplied component class.
+
+  my $c = my::package->thaw(
+    $json,
+    enforce_component_class => 1,
+    component_class => 'npg_tracking::glossary::composition::component::illumina');
 
 =head2 freeze
 
-Serializes object's public attributes to a canonical (ordered) json string.
+Serializes object's public attributes to a canonical (ordered) JSON string.
 
   $p->freeze();
+
+Example output:
+
+  {"components":[{"id_run":27081,"position":1,"subset":"phix","tag_index":0}]}
+
+This string does not contain class names of the components and, therefore,
+cannot be deserialized without additional options passed to the thaw method.
+For a more conventional serialization set with_class_names to a true value.
+
+ $p->freeze(with_class_names => 1);
+
+Example output:
+
+ {"__CLASS__":"npg_tracking::glossary::composition","components":[{"__CLASS__":"npg_tracking::glossary::composition::component::illumina","id_run":27081,"position":1,"subset":"phix","tag_index":0}]}
 
 =head2 freeze2rpt
 
