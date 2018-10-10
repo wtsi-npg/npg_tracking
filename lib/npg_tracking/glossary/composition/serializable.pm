@@ -43,7 +43,7 @@ sub thaw {
       @args = %ah;
     }
   }
-  
+
   #####
   # JSON string is a serialized composition or component object.
   #
