@@ -5,6 +5,14 @@ LIST OF CHANGES
    to the moniker role
  - extension of the composition/component serialization role to ensure that the
    serialised objects can be deserialized
+ - tracking server run page links to run folder locations:
+     'Latest Analysis' and 'Latest IVC' links removed since the target files
+     are no longer generated;
+     'Tileviz' link is updated to point to a location in the new-style runfolder
+ - 'locate_runfolder' cgi script:
+     code to handle redundant links and paths is removed;
+     if the target tileviz directory is not available, fall back to the one
+     expected for the old-style run folder
 
 release 87.3
  - for a run on ESA, redirect to an ESA url

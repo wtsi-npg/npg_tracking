@@ -6,9 +6,6 @@ use English qw(-no_match_vars);
 use Carp;
 use CGI qw/:standard/;
 use URI::Escape qw(uri_unescape uri_escape);
-use Readonly;
-
-Readonly::Scalar my $UNSAFE => q[#];
 
 main();
 
@@ -17,7 +14,7 @@ exit 0;
 sub _error {
   my ($message, $path) = @_;
   carp "$message for $path";
-  # Path might contain anything, do not write it to
+  # Path might contain anything, do not write it
   # back to the page.
   print "Content-type: text/html\n\n",
         "<html><head></head><body>\n",
@@ -34,21 +31,13 @@ sub main {
   # Not clear why we acquire an extra slash, but we do
   $path_info =~ s{\A//}{/}smx;
 
-  my ($pathglob,$runfolder, $suffix) = $path_info =~ m{\A((?:/\S+?/\*)?)/([^/?]+)(.*)}smx;
-  my ($id_run);
-  my @folders;
-  if (not $runfolder=~/\A\d+\z/smx) {
-    ($id_run)  = $runfolder =~ /_(\d+)/smx;
-    if ($pathglob) {
-      @folders   = sort { -M $a <=> -M $b } glob "$pathglob/$runfolder";
-    } else {
-      @folders   = sort { -M $a <=> -M $b } glob "/staging/IL*/*/$runfolder";
-    }
-  } else {
-    ($id_run)  = $runfolder;
-    @folders   = sort { -M $a <=> -M $b } glob "/staging/IL*/*/*_{,0}$id_run";
+  my ($pathglob, $runfolder, $suffix) = $path_info =~ m{\A((?:/\S+?/\*)?)/([^/?]+)(.*)}smx;
+  if (!($pathglob && $runfolder)) {
+    _error('Failed to get pathglob or run folder or both', $path_info);
+    return;
   }
 
+  my @folders = sort { -M $a <=> -M $b } glob "$pathglob/$runfolder";
   if (!@folders) {
     _error('Run folder not found', $path_info);
     return;
@@ -61,27 +50,15 @@ sub main {
   }
 
   my $rellink = readlink "$uri/Latest_Summary";
-  if ($path_info =~ /latest|summary/msx) {
-    if ($rellink =~ m/GERALD/smx){
-      $uri .= q(/) . $rellink . q(/Summary.htm);
-    } else {
-      ## no critic (RegularExpressions::ProhibitUnusualDelimiters)
-      $rellink =~ s!((?:/B(?:ustard|aseCalls)|_basecalls)[^/]*)/.*!$1!xms;
-      ## use critic
-      $uri .= q(/) . $rellink . q(/BustardSummary.xml);
-    }
-  } elsif ($path_info =~ /ivc/msix) {
-    ## no critic (RegularExpressions::ProhibitUnusualDelimiters)
-    $rellink =~ s!((?:/B(?:ustard|aseCalls)|_basecalls)[^/]*)/.*!$1!xms;
-    ## use critic
-    $uri .= q(/) . $rellink . q(/IVC.htm);
-  } elsif ($path_info =~ /error/msix) {
-    $uri .= q(/) . $rellink . q(/Error.htm);
-  } else {
-    if (defined $rellink) {
-      $suffix =~ s{^/Latest_Summary}{/$rellink}smx;
-    }
-    $uri .= q(/) . uri_escape($suffix,$UNSAFE);
+  if (defined $rellink) {
+    $suffix =~ s{^/Latest_Summary}{/$rellink}smx;
+  }
+
+  my $UNSAFE = q[#];
+  $uri .= q(/) . uri_escape($suffix,$UNSAFE);
+  if ($uri =~ /tileviz$/smx && !-e $uri) {
+    # Path for old-style run folders
+    $uri =~ s{/tileviz$}{/qc/tileviz}smx;
   }
 
   print "Content-type: text/html\n\n",
