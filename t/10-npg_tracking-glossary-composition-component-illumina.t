@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 8;
 use Test::Exception;
 
 my $pname = q[npg_tracking::glossary::composition::component::illumina];
@@ -149,21 +149,6 @@ subtest 'compute digest' => sub {
   $c  = $pname->new(position => 2, id_run => 1);
   is($c->digest, $d, 'the same sha256 digest');
   is($c->digest('md5'), $md5, 'the same md5');
-};
-
-subtest 'file names' => sub {
-  plan tests => 6;
-
-  my $c  = $pname->new(id_run => 1, position => 2);
-  is($c->filename, '1_2', 'without tag index');
-  $c  = $pname->new(id_run => 1, position => 2, tag_index => 1);
-  is($c->filename, '1_2#1', 'with tag index');
-  is($c->filename('.bam'), '1_2#1.bam', 'with tag index, extention given');
-  is($c->filename('_table'), '1_2#1_table', 'extention without dot given');
-  $c  = $pname->new(id_run => 1, position => 2, tag_index => 1, subset => 'phix');
-  is($c->filename, '1_2#1_phix', 'with subset');
-  $c  = $pname->new(id_run => 1, position => 2, subset => 'human');
-  is($c->filename, '1_2_human', 'with subset, without tag index');
 };
 
 1;
