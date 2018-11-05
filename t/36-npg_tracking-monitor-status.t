@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 88;
+use Test::More tests => 92;
 use Test::Exception;
 use Test::Warn;
 use Test::Trap qw/ :stderr(tempfile) /;
@@ -114,6 +114,7 @@ my $cb = sub {
 {
   my $m = npg_tracking::monitor::status->new(transit => $dir, blocking => 0);
   isa_ok($m, q{npg_tracking::monitor::status});
+  ok($m->enable_inotify, 'inotify is enabled by default');
   lives_ok {$m->_transit_watch_setup} 'watch is set up on an empty directory';
   ok(exists $m->_watch_obj->{$dir}, 'watch object is cached');
   is(ref $m->_watch_obj->{$dir}, q[Linux::Inotify2::Watch], 'correct object type');
@@ -493,6 +494,24 @@ my $cb = sub {
   ok (scalar @rows == $count + 3, 'a new run statuses added');
   $run_status_obj = shift @rows;
   is ($run_status_obj->run_status_dict->description, $status2, 'status from the latest status file saved');
+}
+
+{
+  my $m = npg_tracking::monitor::status->new(transit => $dir, enable_inotify => 0);
+  ok(!$m->enable_inotify, 'inotify is disabled');
+  is($m->polling_interval, 60, 'default polling interval');
+
+  $m = npg_tracking::monitor::status->new(transit          => $dir,
+                                          enable_inotify   => 0,
+                                          polling_interval => 1);
+  my $pid = fork();
+  if ($pid) {
+    sleep 3;
+    kill 'HUP', $pid;
+  } else {
+    trap { $m->watch() };
+  }
+  ok (wait(), 'process terminated');
 }
 
 1;

@@ -36,8 +36,9 @@ my $destination = "$dir/outgoing";
 warn "Discovered $dir, starting monitoring $transit and $destination\n";
 
 my $monitor = npg_tracking::monitor::status->new(
-                transit     => $transit,
-                destination => $destination
+                transit        => $transit,
+                destination    => $destination,
+                enable_inotify => 0
                                                 );
 
 $SIG{'INT'}  = 'interrupt_handler';
