@@ -936,7 +936,7 @@ sub _test_di {
 }
 
 subtest 'aggregation across lanes for pools' => sub {
-  plan tests => 79;
+  plan tests => 85;
   
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/test40_lims/samplesheet_novaseq4lanes.csv';
 
@@ -1089,6 +1089,28 @@ subtest 'aggregation across lanes for pools' => sub {
   ok ($tag_spiked->is_phix_spike, 'is phix spike');
   ok (!$tag_first->is_phix_spike, 'is not phix spike');
   ok (!$tag_zero->is_phix_spike, 'is not phix spike');
+
+  is (join(q[:], $tag_zero->study_names), 'Illumina Controls:NovaSeq testing',
+    'study names including spiked phix');
+  is (join(q[:], $tag_zero->study_names(1)), 'Illumina Controls:NovaSeq testing',
+    'sudy names including spiked phix');
+  is (join(q[:], $tag_zero->study_names(0)), 'NovaSeq testing',
+    'study names excluding spiked phix');
+
+  my @sample_names = qw/
+    5318STDY7462457 5318STDY7462458 5318STDY7462459 5318STDY7462460 5318STDY7462461
+    5318STDY7462462 5318STDY7462463 5318STDY7462464 5318STDY7462465 5318STDY7462466
+    5318STDY7462467 5318STDY7462468 5318STDY7462469 5318STDY7462470 5318STDY7462471
+    5318STDY7462472 5318STDY7462473 5318STDY7462474 5318STDY7462475 5318STDY7462476
+    5318STDY7462477  /;
+  
+  is (join(q[:], $tag_zero->sample_names(0)), join(q[:], @sample_names),
+    'sample names excluding spiked phix');
+  push @sample_names, 'phiX_for_spiked_buffers';
+  is (join(q[:], $tag_zero->sample_names()), join(q[:], @sample_names),
+    'sample names including spiked phix');
+  is (join(q[:], $tag_zero->sample_names(1)), join(q[:], @sample_names),
+    'sample names including spiked phix');
 };
 
 subtest 'aggregation across lanes for non-pools' => sub {
