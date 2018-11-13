@@ -17,7 +17,8 @@ our $VERSION = '0';
 
 my $prefix;
 my $help;
-GetOptions ("prefix:s" => \$prefix, 'help|?' => \$help)
+GetOptions ('prefix:s' => \$prefix,
+            'help|?'   => \$help)
   or croak("Error in command line arguments\n");
 
 pod2usage(1) if $help;
@@ -43,14 +44,18 @@ if (scalar @dirs > 1) {
 }
 
 my $dir = $dirs[0];
+
 my $transit     = "$dir/analysis";
 my $destination = "$dir/outgoing";
 warn "Discovered $dir, starting monitoring $transit and $destination\n";
 
+my $fs_type = npg_tracking::monitor::status->staging_fs_type($dir);
+warn "File system type is '$fs_type'\n";
+
 my $monitor = npg_tracking::monitor::status->new(
                 transit        => $transit,
                 destination    => $destination,
-                enable_inotify => 0
+                enable_inotify => $fs_type eq 'lustre' ? 0 : 1
                                                 );
 
 $SIG{'INT'}  = 'interrupt_handler';
@@ -133,6 +138,8 @@ npg_status_watcher
 =item English
 
 =item Getopt::Long
+
+=item Pod::Usage
 
 =item npg_tracking::util::config
 
