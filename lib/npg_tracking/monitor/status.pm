@@ -10,6 +10,8 @@ use File::Basename;
 use Try::Tiny;
 use File::Spec::Functions;
 use Linux::Inotify2;
+use Sys::Filesystem;
+use Sys::Filesystem::MountPoint qw/path_to_mount_point/;
 
 use npg_tracking::util::types;
 use npg_tracking::illumina::run::folder;
@@ -589,6 +591,21 @@ sub watch {
   return;
 }
 
+sub staging_fs_type {
+  my ($self, $path) = @_;
+
+  $path and -e $path or croak 'Existing path required';
+
+  my $mount_point = path_to_mount_point($path);
+  if (!defined $mount_point) {
+    ##no critic (Variables::ProhibitPackageVars)
+    croak "Failed to detect mount point for $path: " .
+      $Sys::Filesystem::MountPoint::errstr;
+  }
+
+  return Sys::Filesystem->new()->type($mount_point);
+}
+
 sub DEMOLISH {
   my $self = shift;
   if ($self->enable_inotify) {
@@ -652,6 +669,13 @@ watches and release system resources associated with them.
 If inotify is enabled, stops watch on all objects and remove
 watch objects.
 
+=head2 staging_fs_type
+
+Returns file system type for the argument staging path.
+
+  npg_tracking::monitor::status->staging_fs_type($staging_path);
+  $obj->staging_fs_type($staging_path);
+
 =head2 DEMOLISH
 
 A Moose hook for object destruction; calls cancel_watch().
@@ -689,6 +713,10 @@ A Moose hook for object destruction; calls cancel_watch().
 =item Try::Tiny
 
 =item File::Spec::Functions
+
+=item Sys::Filesystem
+
+=item Sys::Filesystem::MountPoint
 
 =back
 

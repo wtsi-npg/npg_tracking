@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 94;
+use Test::More tests => 98;
 use Test::Exception;
 use Test::Warn;
 use Test::Trap qw/ :stderr(tempfile) /;
@@ -537,6 +537,17 @@ my $cb = sub {
     exec("$command --prefix $dir");
   }
   ok (wait(), 'process terminated');
+}
+
+{
+  throws_ok { npg_tracking::monitor::status->staging_fs_type() }
+    qr/Existing path required/, 'path argument is required';
+  throws_ok { npg_tracking::monitor::status->staging_fs_type('t/some_path') }
+    qr/Existing path required/, 'path should exist';
+  ok (npg_tracking::monitor::status->staging_fs_type('t'),
+    'file system type returned');
+  ok (npg_tracking::monitor::status->staging_fs_type('/tmp'),
+    'file system type returned');  
 }
 
 1;
