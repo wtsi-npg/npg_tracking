@@ -14,7 +14,11 @@ LIST OF CHANGES
      if the target tileviz directory is not available, fall back to the one
      expected for the old-style run folder
  - redundant filename method of the illumina component object removed
- - two modes for status monitor - with and without inotify
+ - status monitor:
+     two modes - with and without inotify;
+     option to set the prefix from command line so that multiple monitors
+       could potentially run on the same host, each monitor dealing with
+       its own staging area
 
 release 87.3
  - for a run on ESA, redirect to an ESA url
