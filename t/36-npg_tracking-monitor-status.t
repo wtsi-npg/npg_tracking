@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 92;
+use Test::More tests => 94;
 use Test::Exception;
 use Test::Warn;
 use Test::Trap qw/ :stderr(tempfile) /;
@@ -9,6 +9,9 @@ use File::Path qw/ make_path /;
 use DateTime;
 use DateTime::TimeZone;
 use DateTime::Duration;
+use POSIX ":sys_wait_h";
+use Cwd;
+
 use t::dbic_util;
 
 use_ok( q{npg_tracking::status} );
@@ -510,6 +513,28 @@ my $cb = sub {
     kill 'HUP', $pid;
   } else {
     trap { $m->watch() };
+  }
+  ok (wait(), 'process terminated');
+}
+
+{
+  my $new_dir = "$dir/ILorHSany_sf51";
+  if (-e $new_dir && !-d $new_dir) {
+    unlink $new_dir;
+  }
+  -e $new_dir or mkdir $new_dir;
+  mkdir $new_dir . '/outgoing';
+  mkdir $new_dir . '/analysis';
+
+  my $pid = fork();
+  if ($pid) {
+    sleep 1;
+    is (waitpid($pid, WNOHANG), 0, 'process is running');
+    sleep 2;
+    kill 'HUP', $pid;
+  } else {
+    my $command = getcwd . '/bin/npg_status_watcher';
+    exec("$command --prefix $dir");
   }
   ok (wait(), 'process terminated');
 }
