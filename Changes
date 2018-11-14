@@ -18,7 +18,8 @@ LIST OF CHANGES
      two modes - with and without inotify;
      option to set the prefix from command line so that multiple monitors
        could potentially run on the same host, each monitor dealing with
-       its own staging area
+       its own staging area;
+     avoid repeatedly saving the same statuses
 
 release 87.3
  - for a run on ESA, redirect to an ESA url

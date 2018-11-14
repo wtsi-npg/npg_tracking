@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 98;
+use Test::More tests => 114;
 use Test::Exception;
 use Test::Warn;
 use Test::Trap qw/ :stderr(tempfile) /;
@@ -548,6 +548,52 @@ my $cb = sub {
     'file system type returned');
   ok (npg_tracking::monitor::status->staging_fs_type('/tmp'),
     'file system type returned');  
+}
+
+{
+  my $base = tempdir(UNLINK => 1);
+  _runfolder($base);
+  my $rf_path = join q[/], $base, $runfolder_name;
+  my $id_run = 9334;
+
+  $schema->resultset('RunStatus')->search({id_run => $id_run})->delete;
+  is ($schema->resultset('RunStatus')->search({id_run => $id_run})->count(),
+     0, "no run statuses for run $id_run");
+
+  my @files = map {$_->to_file($base)}
+              map {npg_tracking::status->new(id_run => $id_run, status => $_)}
+              ('analysis in progress', 'secondary analysis in progress',
+               'qc review pending', 'archival in progress', 'run archived',
+               'qc complete');
+
+  my $m = npg_tracking::monitor::status->new(transit        => $dir,
+                                             enable_inotify => 0,
+                                             _schema        => $schema);
+  for my $method (qw/_cache_file _file_in_cache/) {
+    ok ($m->can($method),"$method available");
+  }
+
+  my @arg_files = (shift @files);
+  trap {is ($m->_update_status4files(\@arg_files, $rf_path), 1, '1 file saved')};
+  ok ($m->_file_in_cache($arg_files[0]), 'file cached');
+  
+  push @arg_files, shift @files;
+  trap {is ($m->_update_status4files(\@arg_files, $rf_path), 1, '1 file saved')};
+  ok ($m->_file_in_cache($arg_files[1]), 'file cached');
+
+  trap {is ($m->_update_status4files(\@files, $rf_path), 4, '4 files saved')};
+  foreach my $f (@files) {
+    ok ($m->_file_in_cache($f), 'file cached');
+  }
+  trap {is ($m->_update_status4files(\@files, $rf_path), 0, 'no files saved')};
+
+  my $f = npg_tracking::status->new(id_run => $id_run, status => 'some')
+                              ->to_file($base);
+  trap {is ($m->_update_status4files([$f], $rf_path), 0, 'no files saved')};
+  ok (!$m->_file_in_cache($f), 'file not cached');
+
+  is ($schema->resultset('RunStatus')->search({id_run => $id_run})->count(),
+     scalar @files + scalar  @arg_files, 'correct number of statuses saved');
 }
 
 1;
