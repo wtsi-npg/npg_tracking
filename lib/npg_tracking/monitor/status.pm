@@ -116,6 +116,16 @@ sub _build__stock_runfolders {
   return $self->_list_stock_runfolders();
 }
 
+has '_seen_cache'        =>  (isa             => 'HashRef',
+                              traits          => ['Hash'],
+                              is              => 'bare',
+                              default         => sub { {} },
+                              handles   => {
+                                _cache_file    => 'set',
+                                _file_in_cache => 'get',
+                              },
+);
+
 sub _list_stock_runfolders {
   my $self = shift;
 
@@ -259,16 +269,20 @@ sub _update_status4files {
     croak 'Expect runfolder path as the second argument';
   }
 
+  my $num_saved = 0;
   foreach my $file ( @{$files} ) {
+    next if $self->_file_in_cache($file);
     try {
       $self->_log("\nReading status from $file");
       my $status = $self->_read_status($file, $runfolder_path);
       $self->_update_status($status);
+      $self->_cache_file($file, 1);
+      $num_saved++;
     } catch {
       $self->_log("Error saving status: $_\n");
     }
   }
-  return;
+  return $num_saved;
 }
 
 sub _find_path {
