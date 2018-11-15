@@ -236,7 +236,6 @@ foreach my $object_type (keys %ATTRIBUTE_LIST_METHODS) {
 
     my $method_body = sub {
       my ($self, $with_spiked_control) = @_;
-
       return $self->_list_of_attributes($attr_name, $with_spiked_control);
     };
 
@@ -1110,11 +1109,18 @@ sub _list_of_attributes {
 
   if (!defined $with_spiked_control) { $with_spiked_control = 1; }
   my $pool_or_composition = $self->is_pool || $is_composition;
+  my $list_method_name = $attr_name . q[s];
 
   @l = sort {$a cmp $b}
        uniq
        grep {defined and length}
-       map {$_->$attr_name}
+       map {
+         ( $is_composition
+           && (!defined $_->tag_index || $_->tag_index == 0)
+           && $_->can($list_method_name) )
+         ? $_->$list_method_name($with_spiked_control)
+         : $_->$attr_name
+       }
     $pool_or_composition ?
     $attr_name ne 'spiked_phix_tag_index' ? # avoid unintended recursion
       grep { $with_spiked_control || (!$_->is_phix_spike || $is_composition) } $self->children :
