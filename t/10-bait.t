@@ -61,6 +61,7 @@ use_ok('npg_tracking::data::bait');
 }
 
 {
+  local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} = q[t/data/samplesheet/samplesheet_27483.csv];
   my $RNA_LIBRARY_BAIT_NAME = 'Exome';
   my $test = npg_tracking::data::bait->new ( id_run => 27483, position => 1, tag_index => 1, repository => $repos);
   is($test->lims->bait_name, undef, 'bait name undefined for RNA library');
