@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 16;
 use Test::Exception;
 use Moose::Meta::Class;
 
@@ -39,9 +39,9 @@ use_ok('npg_tracking::data::bait');
   my $test = npg_tracking::data::bait->new ( id_run => 7753, position => 1, tag_index => 2, repository => $repos);
   isa_ok($test, 'npg_tracking::data::bait');
   lives_and { is $test->bait_path, "$baits_repos/Human_all_exon_50MB/1000Genomes_hs37d5" } 'bait path found';
-  is($test->bait_intervals_path, "$baits_repos/Human_all_exon_50MB/1000Genomes_hs37d5/S02972011-GRCh37_hs37d5-CTR.interval_list", 
+  is($test->bait_intervals_path, "$baits_repos/Human_all_exon_50MB/1000Genomes_hs37d5/S02972011-GRCh37_hs37d5-CTR.interval_list",
     'bait CTR file found');
-  is($test->target_intervals_path, "$baits_repos/Human_all_exon_50MB/1000Genomes_hs37d5/S02972011-GRCh37_hs37d5-PTR.interval_list", 
+  is($test->target_intervals_path, "$baits_repos/Human_all_exon_50MB/1000Genomes_hs37d5/S02972011-GRCh37_hs37d5-PTR.interval_list",
     'bait PTR file found');
 
   $test = npg_tracking::data::bait->new ( id_run => 7753, position => 1, tag_index => 3, repository => $repos);
@@ -49,7 +49,7 @@ use_ok('npg_tracking::data::bait');
     'bait path found where bait name has white space around it';
 
   $test = npg_tracking::data::bait->new ( id_run => 7753, position => 1, tag_index => 4, repository => $repos);
-  lives_and { is $test->bait_path, undef } 
+  lives_and { is $test->bait_path, undef }
    'bait path not found where bait name is all white space';
 }
 
@@ -58,6 +58,13 @@ use_ok('npg_tracking::data::bait');
   lives_and { is $test->bait_path, undef } 'bait path found';
   is($test->bait_intervals_path, undef, 'bait CTR file found');
   is($test->target_intervals_path, undef, 'bait PTR file found');
+}
+
+{
+  my $RNA_LIBRARY_BAIT_NAME = 'Exome';
+  my $test = npg_tracking::data::bait->new ( id_run => 27483, position => 1, tag_index => 1, repository => $repos);
+  is($test->lims->bait_name, undef, 'bait name undefined for RNA library');
+  is($test->bait_name, $RNA_LIBRARY_BAIT_NAME, qq[bait name '$RNA_LIBRARY_BAIT_NAME' for RNA library]);
 }
 
 1;

@@ -4,7 +4,7 @@ use Moose::Role;
 use Carp;
 use npg_tracking::util::abs_path qw(abs_path);
 
-with qw/ npg_tracking::data::reference::find 
+with qw/ npg_tracking::data::reference::find
          npg_tracking::data::bait::find
        /;
 
@@ -21,7 +21,7 @@ sub _build_snv_path {
   my $path;
   my ($organism, $strain) = $self->parse_reference_genome($self->lims->reference_genome);
   if ($organism && $strain) {
-    my $bait = $self->bait_name || 'Standard';
+    my $bait = $self->bait_name;
     $bait =~ s/\ /_/msxg;
     $path = abs_path($self->snv_repository . "/$organism/default/$bait/$strain");
   }
