@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 14;
 use Test::Exception;
 use Moose::Meta::Class;
 
@@ -60,14 +60,5 @@ use_ok('npg_tracking::data::bait');
   is($test->target_intervals_path, undef, 'bait PTR file found');
 }
 
-{
-  local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} = q[t/data/samplesheet/samplesheet_27483.csv];
-  my $RNA_LIBRARY_BAIT_NAME = 'Exome';
-  my $test = npg_tracking::data::bait->new ( id_run => 27483, position => 1, tag_index => 1, repository => $repos);
-  is($test->lims->bait_name, undef, 'bait name undefined for RNA library');
-  is($test->bait_name, $RNA_LIBRARY_BAIT_NAME, qq[bait name '$RNA_LIBRARY_BAIT_NAME' for RNA library]);
-}
-
 1;
-
 

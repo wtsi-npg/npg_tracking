@@ -20,7 +20,7 @@ LIST OF CHANGES
        could potentially run on the same host, each monitor dealing with
        its own staging area;
      avoid repeatedly saving the same statuses
- - use bait_name => Exome for (cD|R)NA library types
+ - when searching snv_path use bait_name=Exome for (cD|R)NA library types
 
 release 87.3
  - for a run on ESA, redirect to an ESA url

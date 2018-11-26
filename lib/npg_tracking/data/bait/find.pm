@@ -16,19 +16,13 @@ with qw/ npg_tracking::data::reference::find /;
 our $VERSION = '0';
 
 Readonly::Scalar my $STRAIN_ARRAY_INDEX => 1;
-Readonly::Scalar my $DEFAULT_BAIT_NAME => q{Standard};
-Readonly::Scalar my $RNA_LIBRARY_BAIT_NAME => q{Exome};
 
 
 has 'bait_name'     => ( isa => q{Maybe[Str]}, is => q{ro}, lazy_build => 1,
                         documentation => 'Bate name',);
 sub _build_bait_name {
   my $self = shift;
-  my $bait_name = $self->lims->bait_name // $DEFAULT_BAIT_NAME;
-  if ($self->lims->library_type && $self->lims->library_type =~ /(?:cD|R)NA/sxm) {
-      $bait_name = $RNA_LIBRARY_BAIT_NAME;
-  }
-  return $bait_name;
+  return $self->lims->bait_name;
 }
 
 has 'bait_path'     => ( isa => q{Maybe[Str]}, is => q{ro}, lazy_build => 1,
