@@ -227,7 +227,7 @@ my $cb = sub {
     'error saving non-existing lane status';
 
   throws_ok {$m->_read_status('path', $dir)}
-    qr/Error instantiating object from path: read_file 'path' - sysopen: No such file or directory/,
+    qr/Error instantiating object from path: read_file 'path'.*No such file or directory/,
     'error reading object';
   my $path = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7])->to_file($dir);
   throws_ok {$m->_read_status($path, $dir)} qr/Failed to get id_run from $dir/,
