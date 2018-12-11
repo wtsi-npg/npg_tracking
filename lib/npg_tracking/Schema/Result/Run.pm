@@ -329,10 +329,15 @@ with qw/
          npg_tracking::Schema::Retriever
        /;
 
-Readonly::Hash my %STATUS_PROPAGATE_AUTO => (
+Readonly::Hash   my %STATUS_PROPAGATE_AUTO => (
   'analysis complete'  => 'analysis complete',
   'manual qc complete' => 'archival pending',
 );
+
+Readonly::Array  my @WORKFLOW_TYPES         => qw/NovaSeqStandard NovaSeqXp/;
+Readonly::Scalar my $WORKFLOW_TAG_PREFIX    => q[workflow_];
+Readonly::Array  my @INSTRUMENT_SIDES       => qw/A B/;
+Readonly::Scalar my $INSTRUMENT_SIDE_PREFIX => q[fc_slot];
 
 =head2 tags
 
@@ -673,6 +678,62 @@ record exists, undefined value if no record.
 sub tag_run4tag {
     my ($self, $tag) = @_;
     return $self->tag_runs->search({'tag.tag' => $tag}, {join => 'tag'});
+}
+
+=head2 workflow_type
+
+Returns workflow type if it is set or an undefined value.
+
+=cut
+
+sub workflow_type {
+    my $self = shift;
+    foreach my $wf_type (@WORKFLOW_TYPES) {
+        if ($self->is_tag_set($WORKFLOW_TAG_PREFIX . $wf_type)) {
+            return $wf_type;
+        }
+    }
+    return;
+}
+
+=head2 set_workflow_type
+
+Sets workflow type tag.
+
+=cut
+
+sub set_workflow_type {
+    my ($self, $wf_type, $user) = @_;
+    $wf_type or croak 'Run workflow type should be given';
+    return $self->set_tag($user, $WORKFLOW_TAG_PREFIX . $wf_type);
+}
+
+=head2 instrument_side
+
+Returns instrument side (as A or B) if it is set or an undefined value.
+
+=cut
+
+sub instrument_side {
+    my $self = shift;
+    foreach my $side (@INSTRUMENT_SIDES) {
+        if ($self->is_tag_set($INSTRUMENT_SIDE_PREFIX . $side)) {
+            return $side;
+        }
+    }
+    return;
+}
+
+=head2 set_instrument_side
+
+Sets instrument side(slot) tag.
+
+=cut
+
+sub set_instrument_side {
+    my ($self, $side, $user) = @_;
+    $side or croak 'Instrument side should be given';
+    return $self->set_tag($user, $INSTRUMENT_SIDE_PREFIX . $side);
 }
 
 =head2 forward_read

@@ -510,6 +510,20 @@ sub platform_NovaSeq {
 
 ##use critic
 
+=head2 workflow_type
+
+=cut
+
+has q{workflow_type} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build_workflow_type {
+  my $self = shift;
+  return _get_single_element_text($self->_run_params(), 'WorkflowType');
+}
+
 =head2 all_lanes_mergeable
 
 Method returns true if all lanes on the flowcell contain the
@@ -521,7 +535,7 @@ all lanes.
 sub all_lanes_mergeable {
   my $self = shift;
   return (
-    ($self->_workflow_type() =~ /NovaSeqStandard/xms) # ie not NovaSeqXp
+    ($self->workflow_type() =~ /NovaSeqStandard/xms) # ie not NovaSeqXp
      or $self->is_rapid_run() # In our practice Rapid Runs always had the same
                               # library on both lanes.
          );
@@ -590,6 +604,18 @@ sub is_i5opposite {
           $self->platform_MiniSeq() or $self->platform_NextSeq());
 }
 
+=head2 instrument_side
+
+Returns the instrument side (A or B) if available or an empty string.
+
+=cut
+
+sub instrument_side {
+  my $self = shift;
+  return _get_single_element_text($self->_run_params(), 'Side') ||
+    _get_single_element_text($self->_run_params(), 'FCPosition');
+}
+
 #########################################################
 #       Private attributes                              #
 #########################################################
@@ -654,16 +680,6 @@ has q{_run_mode} => (
 sub _build__run_mode {
   my $self = shift;
   return _get_single_element_text($self->_run_params(), 'RunMode');
-}
-
-has q{_workflow_type} => (
-  isa        => 'Str',
-  is         => 'ro',
-  lazy_build => 1,
-);
-sub _build__workflow_type {
-  my $self = shift;
-  return _get_single_element_text($self->_run_params(), 'WorkflowType');
 }
 
 has q{_runinfo_store} => (

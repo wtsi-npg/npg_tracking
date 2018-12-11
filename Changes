@@ -8,8 +8,8 @@ LIST OF CHANGES
      simplify code in DBIx classes for setting and unsetting tags;
      drop requirement for a valid user id when unsetting a tag;
      drop a check for tag existence when unsetting a tag
-  - DBIx result class for Run: add methods for setting and retrieving
-     instrument slot and workflow type
+  - staging monitor to set/fix tracking db record about instrument side and
+    workflow type by setting/resetting appropriate run tags
 
 release 87.4
  - changes to support geno_refset repository
@@ -39,10 +39,6 @@ release 87.4
      add a unique constraint on it;
      simplify DBIx binding for statuses;
      add a method for temporal comparison of run statuses
-     create tags for workflow
- - simplify code in DBIx classes for setting and unsetting tags, drop requirement
-     for a valid user id when unsetting a tag, drop a test to tag existence when
-     unsetting a tag
 
 release 87.3
  - for a run on ESA, redirect to an ESA url

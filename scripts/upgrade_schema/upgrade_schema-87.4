@@ -18,7 +18,3 @@ ADD UNIQUE KEY `unique_rlstdict_description` (`description`);
 
 ALTER TABLE `instrument_status_dict` \
 ADD UNIQUE KEY `unique_instrdict_description` (`description`);
-
-INSERT INTO TABLE `tag` \
-  SET (tag='workflow_NovaSeqStandard'), \
-      (tag='workflow_NovaSeqXp');
