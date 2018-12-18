@@ -8,6 +8,8 @@ LIST OF CHANGES
      simplify code in DBIx classes for setting and unsetting tags;
      drop requirement for a valid user id when unsetting a tag;
      drop a check for tag existence when unsetting a tag
+  - DBIx result class for Run: add methods for setting and retrieving
+     instrument slot and workflow type
 
 release 87.4
  - changes to support geno_refset repository
