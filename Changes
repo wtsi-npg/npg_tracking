@@ -21,6 +21,10 @@ LIST OF CHANGES
        its own staging area;
      avoid repeatedly saving the same statuses
  - when searching snv_path use bait_name=Exome for (cD|R)NA library types
+ - tracking database: 
+     add a unique db constraint for all types of status descriptions;
+     simplify DBIx binding for statuses;
+     add a method for temporal comparison of run statuses
 
 release 87.3
  - for a run on ESA, redirect to an ESA url

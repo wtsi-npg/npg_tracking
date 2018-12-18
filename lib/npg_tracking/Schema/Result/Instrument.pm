@@ -342,21 +342,6 @@ Related object: L<npg_tracking::Schema::Result::SensorData>
 __PACKAGE__->many_to_many('sensor_data' => 'sensor_data_instruments', 'sensor_data');
 
 
-=head2 _isd_rs
-
-Create a dbic InstrumentStatusDict result set as shorthand and to access the
-row validation methods in that class.
-
-=cut
-
-sub _isd_rs {
-    my ($self) = @_;
-
-    return $self->result_source->schema->resultset('InstrumentStatusDict')
-                ->new( {} );
-}
-
-
 =head2 _user_rs
 
 Create a dbic User result set as shorthand and to access the row validation
@@ -410,12 +395,11 @@ Change the instrument_status for an instrument. This means adding a new row to
 the instrument_status table and setting the iscurrent field to 1, after
 marking all the previous rows for the isntrument as iscurrent 0.
 
-Two arguments are required, an instrument status and a user in that order. In
-both cases the primary key can be supplied, or the (case-insensitive)
-description or username fields respectively.
+Two arguments are required, an instrument status description and a user id or
+name.
 
-    $instrument_result_object->update_instrument_status( 4, 'jo3' );
-    $instrument_result_object->update_instrument_status( 'Down', 5 );
+    $instrument_result_object->update_instrument_status( 'Down', 'jo3');
+    $instrument_result_object->update_instrument_status( 'Down', '5);
 
 =cut
 
@@ -424,8 +408,13 @@ sub update_instrument_status {
 
     ( defined $comment ) || ( $comment = q{} );
 
-    my $isd_id = $self->_isd_rs->_insist_on_valid_row($status_identifier)->
-                    id_instrument_status_dict();
+    my $status_row = $self->result_source()
+                          ->related_source('instrument_statuses')
+                          ->related_source('instrument_status_dict')
+                          ->resultset()->find({description => $status_identifier});
+    $status_row or croak "Invalid instrument status '$status_identifier'";
+    $status_row->iscurrent or croak "Instrument status '$status_identifier' is not current";
+    my $isd_id = $status_row->id_instrument_status_dict();
 
     my $user_id =
         $self->_user_rs->_insist_on_valid_row($user_identifier)->id_user();

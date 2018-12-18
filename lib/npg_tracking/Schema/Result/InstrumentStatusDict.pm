@@ -92,6 +92,20 @@ __PACKAGE__->add_columns(
 
 __PACKAGE__->set_primary_key("id_instrument_status_dict");
 
+=head1 UNIQUE CONSTRAINTS
+
+=head2 C<unique_instrdict_description>
+
+=over 4
+
+=item * L</description>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint("unique_instrdict_description", ["description"]);
+
 =head1 RELATIONS
 
 =head2 instrument_statuses
@@ -112,83 +126,14 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:vyAXEjHM3Xkm+oWb97VeSw
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-12-18 14:30:14
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:jhd+l0+Y1Wd/UWRCsPHFbg
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
 
 our $VERSION = '0';
 
-use Carp;
-
-=head2 check_row_validity
-
-Take a single argument and see if it corresponds to a valid row in the
-instrument_status_dictionary table. The argument can be the primary key, or
-the description field. The argument is converted to lower case before
-checking.
-
-The method croaks if no argument is supplied, if no row is found (or if,
-multiple rows are matched) otherwise the row is returned as a DBIx::Class::Row
-object.
-
-=cut
-
-sub check_row_validity {
-    my ( $self, $arg ) = @_;
-
-    croak 'Argument required' if !defined $arg;
-
-    my $field = ( $arg =~ m/^ \d+ $/msx )
-                     ? 'id_instrument_status_dict'
-                     : 'description' ;
-
-    my $rs = $self->result_source->schema->resultset('InstrumentStatusDict')->
-                search( { $field => lc $arg, } );
-
-    return if $rs->count() < 1;
-
-    croak 'Panic! Multiple instrument_status_dict rows found'
-        if $rs->count() > 1;
-
-    my $row = $rs->first();
-    if (!$row->iscurrent) {
-        croak 'Instrument status "' . $row->description . '" is not current';
-    }
-    return $row;
-}
-
-
-=head2 _insist_on_valid_row
-
-The above method is a general query tool. The user shouldn't have to deal with
-a croak just because they asked about a row that doesn't exist.
-
-This method is more severe and will croak in such a case. It is intended for
-internal methods in other classes in this library so that they don't each have
-to define their own user_validity check, but also can insist on a valid
-identifier before proceeding.
-
-It calls the above method, passing back the row object if the identifier is
-valid, but croaking if check_row_validity returns undef. If check_row_validity
-croaks (no argument, multiple rows returned) that suits this method's purpose.
-
-Could we consider caching here? To reduce the number of database queries?
-instrument_status identifiers are not likely to be created or changed during
-an object's lifetime.
-
-=cut
-
-sub _insist_on_valid_row {
-    my ( $self, $arg ) = @_;
-
-    my $row_object = $self->check_row_validity($arg);
-
-    croak "Invalid identifier: $arg" if !defined $row_object;
-
-    return $row_object;
-}
-
 __PACKAGE__->meta->make_immutable;
+
 1;

@@ -40,7 +40,7 @@ my $test_instrument_id = 6;
              ->subtract_duration(DateTime::Duration->new(days=>$wash_interval+4)),
         });
     throws_ok {$test->update_instrument_status('down', 'joe_engineer', 'instrument is down')}
-        qr/Instrument status \"down\" is not current/,
+        qr/Instrument status \'down\' is not current/,
         'error attempting to changed status to down (not current)';
     lives_ok {$test->update_instrument_status('planned repair', 'joe_engineer', 'instrument is down')}
         'status changed to planned repair';
