@@ -52,6 +52,12 @@ __PACKAGE__->table("tag");
   is_nullable: 0
   size: 32
 
+=head2 incompatible_tag
+
+  data_type: 'char'
+  is_nullable: 1
+  size: 32
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -64,6 +70,8 @@ __PACKAGE__->add_columns(
   },
   "tag",
   { data_type => "char", default_value => "", is_nullable => 0, size => 32 },
+  "incompatible_tag",
+  { data_type => "char", is_nullable => 1, size => 32 },
 );
 
 =head1 PRIMARY KEY
@@ -140,14 +148,13 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:08gAge0C54WNuGJ3n4e29g
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-01-14 12:34:10
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:VzRLoLlFaY/kXoUd3QSDuQ
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
 
 our $VERSION = '0';
-
 
 =head2 runs
 
@@ -160,4 +167,5 @@ Related object: L<npg_tracking::Schema::Result::Run>
 __PACKAGE__->many_to_many('runs' => 'tag_runs', 'run');
 
 __PACKAGE__->meta->make_immutable;
+
 1;

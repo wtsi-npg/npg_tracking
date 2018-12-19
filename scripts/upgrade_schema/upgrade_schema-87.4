@@ -18,17 +18,3 @@ ADD UNIQUE KEY `unique_rlstdict_description` (`description`);
 
 ALTER TABLE `instrument_status_dict` \
 ADD UNIQUE KEY `unique_instrdict_description` (`description`);
-
-ALTER TABLE `tag` \
-ADD COLUMN `incompatible_tag` char(32) DEFAULT NULL;
-
-UPDATE TABLE `tag` SET incompatible_tag='paired_read' WHERE tag='single_read';
-UPDATE TABLE `tag` SET incompatible_tag='single_read' WHERE tag='paired_read';
-UPDATE TABLE `tag` SET incompatible_tag='bad'         WHERE tag='good';
-UPDATE TABLE `tag` SET incompatible_tag='good'        WHERE tag='bad';
-UPDATE TABLE `tag` SET incompatible_tag='fc_slotA'    WHERE tag='fc_slotB';
-UPDATE TABLE `tag` SET incompatible_tag='fc_slotB'    WHERE tag='fc_slotA';
-
-INSERT INTO TABLE `tag` \
-  SET (tag='workflow_NovaSeqStandard', incompatible_tag='workflow_NovaSeqXp'), \
-      (tag='workflow_NovaSeqXp',       incompatible_tag='workflow_NovaSeqStandard');

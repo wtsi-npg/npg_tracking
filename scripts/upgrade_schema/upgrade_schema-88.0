@@ -1,0 +1,13 @@
+ALTER TABLE `tag` \
+ADD COLUMN `incompatible_tag` char(32) DEFAULT NULL;
+
+UPDATE `tag` SET incompatible_tag='paired_read' WHERE tag='single_read';
+UPDATE `tag` SET incompatible_tag='single_read' WHERE tag='paired_read';
+UPDATE `tag` SET incompatible_tag='bad'         WHERE tag='good';
+UPDATE `tag` SET incompatible_tag='good'        WHERE tag='bad';
+UPDATE `tag` SET incompatible_tag='fc_slotA'    WHERE tag='fc_slotB';
+UPDATE `tag` SET incompatible_tag='fc_slotB'    WHERE tag='fc_slotA';
+
+INSERT INTO `tag` (tag, incompatible_tag) VALUES('workflow_NovaSeqStandard', 'workflow_NovaSeqXp');
+INSERT INTO `tag` (tag, incompatible_tag) VALUES('workflow_NovaSeqXp', 'workflow_NovaSeqStandard');
+

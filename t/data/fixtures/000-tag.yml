@@ -9,10 +9,12 @@
   tag: all_phix
 - id_tag: 5
   tag: bad
+  incompatible_tag: good
 - id_tag: 6
   tag: dev
 - id_tag: 7
   tag: good
+  incompatible_tag: bad
 - id_tag: 8
   tag: never
 - id_tag: 9
@@ -21,8 +23,10 @@
   tag: requires_illumina_attention
 - id_tag: 11
   tag: paired_read
+  incompatible_tag: single_read
 - id_tag: 12
   tag: single_read
+  incompatible_tag: paired_read
 - id_tag: 13
   tag: rta
 - id_tag: 14

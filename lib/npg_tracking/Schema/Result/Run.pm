@@ -591,15 +591,20 @@ sub run_status_event {
 =head2 set_tag
 
 Assigns a tag to this run if this tag is not already assigned.
-If an incompatible tag has been registered for the argument
-tag, the incompatible tag is removed after this tag is assigned.
+If an incompatible is registered for the argument tag, the
+incompatible tag is removed after this tag is assigned.
+
+Returns 1 if the tag was assigned, 0 otherwise.
+
+Error if the transaction fails for any reason, includng a failure
+to roll back. Error if the user identifier is invalid.
 
 =cut
 
 sub set_tag {
-    my ( $self, $user_identifier, $tag_identifier ) = @_;
+    my ($self, $user_identifier, $tag) = @_;
 
-    $tag_identifier or croak 'No tag supplied.';
+    $tag or croak 'Tag is required.';
 
     my $user_id =
         $self->_user_rs->_insist_on_valid_row($user_identifier)->id_user();
@@ -607,24 +612,31 @@ sub set_tag {
     my $tag_row = $self->result_source()
                        ->related_source('tag_runs')
                        ->related_source('tag')
-                       ->resultset()->find({tag => $tag_identifier});
-    $tag_row or croak "Cannot set uknown tag '$tag_identifier'";
+                       ->resultset()
+                       ->find({tag => $tag});
+    $tag_row or croak "Cannot set unknown tag '$tag'";
 
-    my $tag_record = $self->tag_runs->find_or_new({
-        id_run  => $self->id_run(),
-        id_tag  => $row->id_tag(),
-        date    => $self->get_time_now(),
-        id_user => $user_id,
-    });
-    if (!$tag_record->in_storage) {
-        $tag_record->insert;
-        my $itag = $row->incompatible_tag();
-        if ($itag) {
-            $self->unset_tag($itag);
-        }        
-    }
+    my $transaction = sub {
+        my $tag_set = 0;
+        my $tag_run = $self->tag_runs->find_or_new({
+            id_run  => $self->id_run(),
+            id_tag  => $tag_row->id_tag(),
+            date    => $self->get_time_now(),
+            id_user => $user_id
+        });
+        if (!$tag_run->in_storage()) {
+            my $itag = $tag_row->incompatible_tag();
+            $tag_run->insert();
+            if ($itag) {
+                $self->unset_tag($itag);
+            }
+            $tag_set = 1;
+        }
 
-    return;
+        return $tag_set;
+    };
+
+    return $self->result_source()->storage()->txn_do($transaction);
 }
 
 =head2 unset_tag
@@ -635,20 +647,32 @@ No error if the tag was not set.
 =cut
 
 sub unset_tag {
-    my ( $self, $user_identifier, $tag_identifier ) = @_;
-    $self->tag_runs->search({'tag.tag' => $tag_identifier},{join => 'tag'})->delete;
+    my ($self, $tag) = @_;
+    $self->tag_run4tag($tag)->delete;
     return;
 }
 
 =head2 is_tag_set
 
-Returns true if a suppled tag is set for the run, false otherwise.
+Returns true if the argument tag is set for the run, false otherwise.
 
 =cut
 
 sub is_tag_set {
-    my ( $self, $tag_identifier ) = @_;
-    return $self->tag_runs->search({'tag.tag' => $tag_identifier},{join => 'tag'})->next ? 1 : 0;
+    my ($self, $tag) = @_;
+    return $self->tag_run4tag($tag)->count ? 1 : 0;
+}
+
+=head2 tag_run4tag
+
+Returns a TagRun object for this run for an argument tag if such a
+record exists, undefined value if no record.
+
+=cut
+
+sub tag_run4tag {
+    my ($self, $tag) = @_;
+    return $self->tag_runs->search({'tag.tag' => $tag}, {join => 'tag'});
 }
 
 =head2 forward_read
