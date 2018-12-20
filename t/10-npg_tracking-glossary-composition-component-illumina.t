@@ -105,8 +105,8 @@ subtest 'JSON serialization' => sub {
 
   my $version = `git describe --dirty --always`;
   $version =~ s/\s+//;
-  $j = qq({"__CLASS__":"npg_tracking::glossary::composition::component::illumina-$version","id_run":1,"position":2,"subset":"human","tag_index":3});
-  is ($c->freeze(with_class_names => 1), $j,
+  $j = qr/\{"__CLASS__":"npg_tracking::glossary::composition::component::illumina-(.+)?$version","id_run":1,"position":2,"subset":"human","tag_index":3\}/;
+  like ($c->freeze(with_class_names => 1), $j,
     'serialization to an ordered json string with a class name');
 
   $j = '{"__CLASS__":"npg_tracking::glossary::composition::component::illumina-100.0","id_run":1,"position":2,"subset":"human","tag_index":3}';  
