@@ -88,6 +88,11 @@ sub is_run_complete {
             }
         }
         return 1;
+    } else {
+        if ( $self->platform_NovaSeq() && $self->_has_copy_complete_file() ) {
+            my $rf = $self->runfolder_path();
+            carp "NovaSeq runfolder '$rf' with CopyComplete but not RTAComplete";
+        }
     }
     return 0;
 }
