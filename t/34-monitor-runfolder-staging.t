@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 71;
+use Test::More tests => 73;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -22,6 +22,34 @@ BEGIN {
 
 my $schema = t::dbic_util->new->test_schema();
 
+sub write_run_params {
+  my ($id_run, $fs_run_folder, $application_name) = @_;
+  my $runparamsfile = qq[$fs_run_folder/runParameters.xml];
+  open(my $fh, '>', $runparamsfile) or die "Could not open file '$runparamsfile' $!";
+  print $fh <<"ENDXML";
+<?xml version="1.0"?>
+<RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Setup>
+  <ApplicationName>$application_name</ApplicationName>
+  <ExperimentName>$id_run</ExperimentName>
+</Setup>
+</RunParameters>
+ENDXML
+  close $fh;
+}
+
+sub write_hiseq_run_params {
+  my ($id_run, $fs_run_folder) = @_;
+  my $application_name = q[HiSeq Control Software];
+  write_run_params($id_run, $fs_run_folder, $application_name);
+}
+
+sub write_nova_run_params {
+  my ($id_run, $fs_run_folder) = @_;
+  my $application_name = q[NovaSeq Control Software];
+  write_run_params($id_run, $fs_run_folder, $application_name);
+}
+
 sub write_run_files {
   my ($id_run, $fs_run_folder, $lanes, $cycles) = @_;
   $lanes = $lanes || 8;
@@ -35,21 +63,10 @@ sub write_run_files {
 ENDXML
   }
 
-  my $runparamsfile = qq[$fs_run_folder/runParameters.xml];
-  open(my $fh, '>', $runparamsfile) or die "Could not open file '$runparamsfile' $!";
-  print $fh <<"ENDXML";
-<?xml version="1.0"?>
-<RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-<Setup>
-  <ApplicationName>HiSeq Control Software</ApplicationName>
-  <ExperimentName>$id_run</ExperimentName>
-</Setup>
-</RunParameters>
-ENDXML
-  close $fh;
+  write_hiseq_run_params($id_run, $fs_run_folder);
 
   my $runinfofile = qq[$fs_run_folder/RunInfo.xml];
-  open($fh, '>', $runinfofile) or die "Could not open file '$runinfofile' $!";
+  open(my $fh, '>', $runinfofile) or die "Could not open file '$runinfofile' $!";
   print $fh <<"ENDXML";
 <?xml version="1.0"?>
 <RunInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="3">
@@ -116,9 +133,8 @@ subtest 'updating run data from filesystem' => sub {
     $run->update();
 
     $run_folder = Monitor::RunFolder::Staging->new(runfolder_path      => $fs_run_folder,
-                                                      npg_tracking_schema => $schema);
+                                                   npg_tracking_schema => $schema);
     is( $run_folder->cycle_lag(), 1, 'Mirroring is lagging' );
-    $run->delete();
 };
 
 {
@@ -143,6 +159,108 @@ subtest 'updating run data from filesystem' => sub {
     ok( $test->mirroring_complete(),
         'Mirroring is complete' );
 }
+
+sub touch_file {
+    my ($path) = @_;
+
+    open(my $fh, '>', $path) or die "Could not touch file '$path' $!";
+    close $fh;
+}
+
+subtest 'folder identifies copy complete for HiSeq (Non-NovaSeq)' => sub {
+    plan tests => 2;
+    my $basedir = tempdir( CLEANUP => 1 );
+
+    my $fs_run_folder = qq[$basedir/IL3/incoming/100622_IL3_01234];
+    make_path($fs_run_folder);
+
+    my $id_run = 1234;
+    my $run_data = {
+      id_run => $id_run,
+      id_instrument => 67,
+      id_instrument_format => 10,
+      team => 'A',
+      expected_cycle_count => 310,
+      actual_cycle_count => 0, # So there is no lag
+    };
+
+    write_run_files($id_run, $fs_run_folder);
+
+    my $run = $schema->resultset('Run')->find($id_run);
+    $run->update($run_data);
+
+    my $run_folder = Monitor::RunFolder::Staging->new(runfolder_path      => $fs_run_folder,
+                                                      npg_tracking_schema => $schema);
+
+    ok(!$run_folder->is_run_complete(), 'Run is not complete');
+
+    my $path_to_complete = qq[$fs_run_folder/RTAComplete];
+    touch_file($path_to_complete);
+
+    ok($run_folder->is_run_complete(), 'Run is complete');
+};
+
+subtest 'folder identifies copy complete for NovaSeq' => sub {
+    plan tests => 6;
+    my $basedir = tempdir( CLEANUP => 1 );
+
+    my $fs_run_folder = qq[$basedir/IL3/incoming/100622_IL3_01234];
+    make_path($fs_run_folder);
+
+    my $id_run = 1234;
+    my $run_data = {
+      id_run => $id_run,
+      id_instrument => 67,
+      id_instrument_format => 10,
+      team => 'A',
+      expected_cycle_count => 310,
+      actual_cycle_count => 0, # So there is no lag
+    };
+
+    write_run_files($id_run, $fs_run_folder);
+    write_nova_run_params($id_run, $fs_run_folder);
+
+    my $run = $schema->resultset('Run')->find($id_run);
+    $run->update($run_data);
+
+    my $run_folder = Monitor::RunFolder::Staging->new(runfolder_path      => $fs_run_folder,
+                                                      npg_tracking_schema => $schema);
+
+    ok(!$run_folder->is_run_complete(), 'Run is not complete');
+
+    my $path_to_rta_complete = qq[$fs_run_folder/RTAComplete];
+    my $path_to_copy_complete = qq[$fs_run_folder/CopyComplete];
+
+    touch_file($path_to_rta_complete);
+    ok(!$run_folder->is_run_complete(), 'Only RTAComplete is not enough for NovaSeq');
+
+    unlink $path_to_rta_complete or die "Could not delete file $path_to_rta_complete: $!";
+
+    touch_file($path_to_copy_complete);
+    ok(!$run_folder->is_run_complete(), 'Only CopyComplete is not enough for NovaSeq');
+
+    touch_file($path_to_rta_complete);
+    ok($run_folder->is_run_complete(), 'RTAComplete + CopyComplete is enough for NovaSeq');
+
+    unlink $path_to_copy_complete or die "Could not delete file '$path_to_copy_complete' $!";
+
+    my $SECONDS_PER_HOUR = 60 * 60;
+    my ($atime, $mtime) = (stat($path_to_rta_complete))[8,9];
+    $atime -= 3 * $SECONDS_PER_HOUR; # make it 3 hours ago
+    $mtime = $atime;
+
+    utime($atime, $mtime, $path_to_rta_complete)
+        or die "couldn't backdate $path_to_rta_complete, $!";
+    ok(!$run_folder->is_run_complete(), 'RTAComplete + short wait time is not enough for NovaSeq');
+
+    ($atime, $mtime) = (stat($path_to_rta_complete))[8,9];
+    $atime -= 9 * $SECONDS_PER_HOUR; # make it 12 hours ago
+    $mtime = $atime;
+
+    utime($atime, $mtime, $path_to_rta_complete)
+        or die "couldn't backdate $path_to_rta_complete, $!";
+    ok($run_folder->is_run_complete(), 'RTAComplete + long wait time is enough for NovaSeq');
+};
 
 {
     my $tmpdir = tempdir( CLEANUP => 1 );
