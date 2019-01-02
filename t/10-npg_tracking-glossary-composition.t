@@ -154,8 +154,8 @@ subtest 'serialization' => sub {
 
   my $version = `git describe --dirty --always`;
   $version =~ s/\s+//;
-  my $ej = qq({"__CLASS__":"npg_tracking::glossary::composition-$version","components":[{"__CLASS__":"npg_tracking::glossary::composition::component::illumina-$version","id_run":1,"position":2,"subset":"human"},{"__CLASS__":"npg_tracking::glossary::composition::component::illumina-$version","id_run":1,"position":2,"subset":"phix"}]});
-  is ($cmps->freeze(with_class_names => 1), $ej, 'json with class names');
+  my $ej = qr/\{"__CLASS__":"npg_tracking::glossary::composition-(.+)?$version","components":\[\{"__CLASS__":"npg_tracking::glossary::composition::component::illumina-(.+)?$version","id_run":1,"position":2,"subset":"human"\},\{"__CLASS__":"npg_tracking::glossary::composition::component::illumina-(.+)?$version","id_run":1,"position":2,"subset":"phix"\}\]\}/;
+  like ($cmps->freeze(with_class_names => 1), $ej, 'json with class names');
   
   $f = npg_tracking::glossary::composition::factory->new();
   $f->add_component($c2, $c1);
