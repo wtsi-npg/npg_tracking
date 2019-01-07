@@ -1,0 +1,20 @@
+UPDATE `run_status_dict` \
+set `temporal_index`=997 where `description`='run quarantined';
+UPDATE `run_status_dict` \
+set `temporal_index`=998 where `description`='analysis prelim';
+UPDATE `run_status_dict` \
+set `temporal_index`=999 where `description`='analysis prelim complete';
+UPDATE `run_status_dict` \
+set `temporal_index`=175 where `description`='run imported';
+
+ALTER TABLE `run_status_dict` \
+MODIFY COLUMN `temporal_index` SMALLINT(5) UNSIGNED NOT NULL, \
+ADD UNIQUE KEY `unique_rstdict_temporali` (`temporal_index`), \
+DROP KEY `description`, \
+ADD UNIQUE KEY `unique_rstdict_description` (`description`);
+
+ALTER TABLE `run_lane_status_dict` \
+ADD UNIQUE KEY `unique_rlstdict_description` (`description`);
+
+ALTER TABLE `instrument_status_dict` \
+ADD UNIQUE KEY `unique_instrdict_description` (`description`);

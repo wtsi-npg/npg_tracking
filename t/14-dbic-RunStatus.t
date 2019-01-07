@@ -29,9 +29,11 @@ is($row->information(),
 is_deeply([$row->event_report_types()], ['lims'], 'lims report only');
 
 my @followers_report_statuses = ('qc review pending', 'qc complete');
-my @followers_report_statuses_ids = map {$_->id_run_status_dict() }
-  $schema->resultset( q{RunStatusDict} )->search({
-  description => \@followers_report_statuses})->all();
+my @rows = $schema->resultset( q{RunStatusDict} )->search({
+             description => \@followers_report_statuses})->all();
+my @followers_report_statuses_ids = map {$_->id_run_status_dict() } @rows;
+@followers_report_statuses = map {$_->description() } @rows;
+
 my $count = scalar @followers_report_statuses;
 is (scalar @followers_report_statuses_ids, $count, 'two ids');
 
