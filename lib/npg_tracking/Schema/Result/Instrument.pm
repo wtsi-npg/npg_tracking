@@ -399,21 +399,21 @@ Two arguments are required, an instrument status description and a user id or
 name.
 
     $instrument_result_object->update_instrument_status( 'Down', 'jo3');
-    $instrument_result_object->update_instrument_status( 'Down', '5);
+    $instrument_result_object->update_instrument_status( 'Down', 5);
 
 =cut
 
 sub update_instrument_status {
-    my ( $self, $status_identifier, $user_identifier, $comment ) = @_;
+    my ( $self, $status_description, $user_identifier, $comment ) = @_;
 
     ( defined $comment ) || ( $comment = q{} );
 
     my $status_row = $self->result_source()
                           ->related_source('instrument_statuses')
                           ->related_source('instrument_status_dict')
-                          ->resultset()->find({description => $status_identifier});
-    $status_row or croak "Invalid instrument status '$status_identifier'";
-    $status_row->iscurrent or croak "Instrument status '$status_identifier' is not current";
+                          ->resultset()->find({description => $status_description});
+    $status_row or croak "Invalid instrument status '$status_description'";
+    $status_row->iscurrent or croak "Instrument status '$status_description' is not current";
     my $isd_id = $status_row->id_instrument_status_dict();
 
     my $user_id =
