@@ -62,7 +62,7 @@ __PACKAGE__->table("run_status_dict");
 
   data_type: 'smallint'
   extra: {unsigned => 1}
-  is_nullable: 1
+  is_nullable: 0
 
 =cut
 
@@ -79,7 +79,7 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
   "temporal_index",
-  { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 1 },
+  { data_type => "smallint", extra => { unsigned => 1 }, is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -108,6 +108,18 @@ __PACKAGE__->set_primary_key("id_run_status_dict");
 
 __PACKAGE__->add_unique_constraint("unique_rstdict_description", ["description"]);
 
+=head2 C<unique_rstdict_temporali>
+
+=over 4
+
+=item * L</temporal_index>
+
+=back
+
+=cut
+
+__PACKAGE__->add_unique_constraint("unique_rstdict_temporali", ["temporal_index"]);
+
 =head1 RELATIONS
 
 =head2 run_statuses
@@ -126,8 +138,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-12-18 13:34:31
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:kxht/wI0c1EwwuQJfEKwTQ
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-01-07 12:28:43
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:y62EnQAQNZ+bmHOOU2cGQA
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
@@ -161,15 +173,7 @@ sub compare_to_status_description {
   if (!$other_status_row) {
     croak "Run status description '$status_desc' does not exist";
   }
-  my $this_ti = $self->temporal_index;
-  if (!defined $this_ti) {
-    croak 'Temporal index of this run status description is not defined';
-  }
-  my $that_ti = $other_status_row->temporal_index;
-  if (!defined $that_ti) {
-    croak "Temporal index of '$status_desc' is not defined";
-  } 
-  return $this_ti <=> $that_ti;   
+  return $self->temporal_index <=> $other_status_row->temporal_index;   
 }
 
 __PACKAGE__->meta->make_immutable;
