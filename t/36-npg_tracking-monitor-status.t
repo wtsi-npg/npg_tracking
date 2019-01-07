@@ -500,43 +500,52 @@ my $cb = sub {
 }
 
 {
-  my $m = npg_tracking::monitor::status->new(transit => $dir, enable_inotify => 0);
-  ok(!$m->enable_inotify, 'inotify is disabled');
-  is($m->polling_interval, 60, 'default polling interval');
+  SKIP: {
+    skip 'Test issuing kill command skipped under Jenkins', 3
+      unless !$ENV{'JENKINS_URL'};
 
-  $m = npg_tracking::monitor::status->new(transit          => $dir,
-                                          enable_inotify   => 0,
-                                          polling_interval => 1);
-  my $pid = fork();
-  if ($pid) {
-    sleep 3;
-    kill 'HUP', $pid;
-  } else {
-    trap { $m->watch() };
+    my $m = npg_tracking::monitor::status->new(transit => $dir, enable_inotify => 0);
+    ok(!$m->enable_inotify, 'inotify is disabled');
+    is($m->polling_interval, 60, 'default polling interval');
+
+    $m = npg_tracking::monitor::status->new(transit          => $dir,
+                                            enable_inotify   => 0,
+                                            polling_interval => 1);
+    my $pid = fork();
+    if ($pid) {
+      sleep 3;
+      kill 'HUP', $pid;
+    } else {
+      trap { $m->watch() };
+    }
+    ok (wait(), 'process terminated');
   }
-  ok (wait(), 'process terminated');
 }
 
 {
-  my $new_dir = "$dir/ILorHSany_sf51";
-  if (-e $new_dir && !-d $new_dir) {
-    unlink $new_dir;
-  }
-  -e $new_dir or mkdir $new_dir;
-  mkdir $new_dir . '/outgoing';
-  mkdir $new_dir . '/analysis';
+  SKIP: {
+    skip 'Test issuing kill command skipped under Jenkins', 2
+      unless !$ENV{'JENKINS_URL'};
+    my $new_dir = "$dir/ILorHSany_sf51";
+    if (-e $new_dir && !-d $new_dir) {
+      unlink $new_dir;
+    }
+    -e $new_dir or mkdir $new_dir;
+    mkdir $new_dir . '/outgoing';
+    mkdir $new_dir . '/analysis';
 
-  my $pid = fork();
-  if ($pid) {
-    sleep 1;
-    is (waitpid($pid, WNOHANG), 0, 'process is running');
-    sleep 2;
-    kill 'HUP', $pid;
-  } else {
-    my $command = getcwd . '/bin/npg_status_watcher';
-    exec("$command --prefix $dir");
+    my $pid = fork();
+    if ($pid) {
+      sleep 1;
+      is (waitpid($pid, WNOHANG), 0, 'process is running');
+      sleep 2;
+      kill 'HUP', $pid;
+    } else {
+      my $command = getcwd . '/bin/npg_status_watcher';
+      exec("$command --prefix $dir");
+    }
+    ok (wait(), 'process terminated');
   }
-  ok (wait(), 'process terminated');
 }
 
 {
