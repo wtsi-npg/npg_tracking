@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 87.4
  - changes to support geno_refset repository
  - moved method for creating full file names from npg_tracking::product
    to the moniker role
