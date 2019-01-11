@@ -45,6 +45,10 @@ A wrapper class for finding the location of plex related files.
 
 =item Moose
 
+=item npg_tracking::data::reference
+
+=item npg_tracking::data::gbs_plex::find
+
 =back
 
 =head1 INCOMPATIBILITIES

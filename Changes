@@ -1,5 +1,33 @@
 LIST OF CHANGES
 
+ - changes to support geno_refset repository
+ - moved method for creating full file names from npg_tracking::product
+   to the moniker role
+ - extension of the composition/component serialization role to ensure that the
+   serialised objects can be deserialized
+ - tracking server run page links to run folder locations:
+     'Latest Analysis' and 'Latest IVC' links removed since the target files
+     are no longer generated;
+     'Tileviz' link is updated to point to a location in the new-style runfolder
+ - 'locate_runfolder' cgi script:
+     code to handle redundant links and paths is removed;
+     if the target tileviz directory is not available, fall back to the one
+     expected for the old-style run folder
+ - redundant filename method of the illumina component object removed
+ - status monitor:
+     two modes - with and without inotify;
+     option to set the prefix from command line so that multiple monitors
+       could potentially run on the same host, each monitor dealing with
+       its own staging area;
+     avoid repeatedly saving the same statuses
+ - when searching snv_path use bait_name=Exome for (cD|R)NA library types
+ - tracking database: 
+     add a unique db constraint for all types of status descriptions;
+     make temporal_index column in run_status_dict table non-nullable and
+     add a unique constraint on it;
+     simplify DBIx binding for statuses;
+     add a method for temporal comparison of run statuses
+
 release 87.3
  - for a run on ESA, redirect to an ESA url
 
@@ -11,6 +39,10 @@ release 87.2
      treat error reading a recipe file as non-fatal;
      adjust warning message generation to use methods supported by the poller
      object instance
+ - a new factory method, create_tag_zero_object, to create st::api::lims object
+   for tag zero
+ - a new factory method, aggregate_xlanes, to create a list  of st::api::lims
+    objects for merges across lanes
 
 release 87.1
  - bug fix in JavaScript for run creation - the reflector cannot

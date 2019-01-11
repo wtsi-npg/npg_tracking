@@ -331,6 +331,57 @@ sub _build_lane_tilecount {
   return $lane_tilecount;
 }
 
+=head2 experiment_name
+
+For platforms HiSeq, HiSeqX, Hiseq4000 and NovaSeq experiment name loaded from
+runParameters.xml.
+
+=cut
+
+has q{experiment_name} => (
+  isa        => 'Maybe[Str]',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build_experiment_name {
+  my $self = shift;
+
+  my $doc = $self->_run_params;
+  my $experiment_name;
+
+  $experiment_name = _get_single_element_text($doc, 'ExperimentName') || q[];
+
+  return $experiment_name;
+}
+
+=head2 run_flowcell
+
+flowcell loaded from RunInfo.xml for platforms HiSeq and NovaSeq and
+ReagentKitBarcode from runParameters.xml for platform MiSeq
+
+=cut
+
+has q{run_flowcell} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build_run_flowcell {
+  my $self = shift;
+
+  my $flowcell;
+
+  if ($self->platform_MiSeq()) {
+    my $doc = $self->_run_params;
+    $flowcell = _get_single_element_text($doc, 'ReagentKitBarcode');
+  } else {
+    my $doc = $self->_runinfo_document;
+    $flowcell = _get_single_element_text($doc, 'Flowcell');
+  }
+
+  return $flowcell;
+}
+
 #########################################################
 # 'before' attribute modifiers definitions              #
 #########################################################
@@ -345,11 +396,7 @@ foreach my $f ( qw(expected_cycle_count
      my $self = shift;
      my $has_method_name = join q[_], 'has', $f;
      if( !$self->$has_method_name ) { # If array is empty
-       try {
-         $self->_runinfo_store();
-       } catch {
-         $self->_recipe_store();
-       };
+       $self->_runinfo_store();
      }
    };
 }
@@ -557,6 +604,17 @@ sub _build__run_params {
   return $self->_get_xml_document(qr/[R|r]unParameters[.]xml/smx, $self->runfolder_path());
 }
 
+has q{_runinfo_document} => (
+  is         => 'ro',
+  isa        => 'XML::LibXML::Document',
+  lazy_build => 1,
+);
+sub _build__runinfo_document {
+  my $self = shift;
+
+  return $self->_get_xml_document(qr/RunInfo[.]xml/smx, $self->runfolder_path());
+};
+
 has q{_flowcell_description} => (
   isa        => 'Str',
   is         => 'ro',
@@ -608,78 +666,15 @@ sub _build__workflow_type {
   return _get_single_element_text($self->_run_params(), 'WorkflowType');
 }
 
-
-has q{_recipe_store} => (
-  is         => 'ro',
-  isa        => 'XML::LibXML::Document',
-  lazy_build => 1,
-  init_arg   => undef,
-);
-sub _build__recipe_store {
-  my $self = shift;
-
-  my $doc = $self->_get_xml_document(qr/Recipe\S*?[.]xml/smx, $self->runfolder_path());
-  my @nodelist = $doc->getElementsByTagName('Protocol');
-
-  $self->_set_lane_count($doc->getElementsByTagName('Lane')->size);
-  $self->_set_expected_cycle_count(sum map { $_->getElementsByTagName('Incorporation')->size() } @nodelist);
-
-  my $rc = {
-    count => 0, #restarts with each read
-    start => 1, #start of current read
-    index => 0, #from first read
-    read_index => 1, #non-indexing/mutiplex read number
-    indexingcurrent =>0,
-  };
-  my $indexprepelementfound;
-
-  foreach ( map { $_->getElementsByTagName(q(*)) } @nodelist){
-
-    if ( $_->localname eq 'Incorporation' ) {
-
-      $rc->{count}++; $rc->{index}++;
-
-    } elsif ($_->localname eq 'ChemistryRef') {
-
-      if ( $_->getAttribute('Name') =~ /(\AEnd)|(FirstBase\Z)/smx ) {
-
-        $self->_set_values_at_end_of_read( $rc );
-        if ( $indexprepelementfound or ( $_->getAttribute('Name') =~ /\AIndexing/smx ) ) {
-
-          $rc->{indexingcurrent} = 1;
-          $indexprepelementfound = 0;
-
-        } else {
-
-          $rc->{indexingcurrent} = 0;
-
-        }
-
-      } elsif ($_->getAttribute('Name') eq q(IndexingPreparation)) {
-
-        $indexprepelementfound = 1;
-
-      }
-
-    }
-
-  }
-
-  $self->_set_values_at_end_of_read($rc);
-
-  return $doc;
-}
-
 has q{_runinfo_store} => (
   is         => 'ro',
-  isa        => 'XML::LibXML::Document',
+  isa        => 'Bool',
   lazy_build => 1,
-  init_arg   => undef,
 );
 sub _build__runinfo_store {
   my $self = shift;
 
-  my $doc = $self->_get_xml_document(qr/RunInfo[.]xml/smx, $self->runfolder_path());
+  my $doc = $self->_runinfo_document;
 
   my $fcl_el = $doc->getElementsByTagName('FlowcellLayout')->[0];
   if(not defined $fcl_el) {
@@ -741,7 +736,7 @@ sub _build__runinfo_store {
     }
   }
 
-  return $doc;
+  return 1; # So builder runs only once
 }
 
 has q{_tilelayout_store}  => (

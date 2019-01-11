@@ -17,6 +17,7 @@ our $VERSION = '0';
 
 Readonly::Scalar my $STRAIN_ARRAY_INDEX => 1;
 
+
 has 'bait_name'     => ( isa => q{Maybe[Str]}, is => q{ro}, lazy_build => 1,
                         documentation => 'Bate name',);
 sub _build_bait_name {

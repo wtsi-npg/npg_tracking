@@ -8,7 +8,6 @@ use Carp;
 use Try::Tiny;
 use Readonly;
 
-use Monitor::SRS::File;
 use Monitor::SRS::FTP;
 use Monitor::SRS::Local;
 use Monitor::RunFolder;
@@ -60,9 +59,9 @@ sub main {
     } catch {
         croak "Failed to get run directory list\n$_";
     };
-    
+
     if (scalar @run_paths == 0) {
-        carp 'Empty run directory list' . 
+        carp 'Empty run directory list' .
              $poll->can('top_dir') ? ' for ' . $poll->top_dir : q[];
     }
 

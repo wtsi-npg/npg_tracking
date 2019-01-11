@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 62;
+use Test::More tests => 64;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
@@ -35,7 +35,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
 
   my $class = Moose::Meta::Class->create_anon_class(
     methods => {"runfolder_path" => sub {$rf}},
-    roles   => [qw/npg_tracking::illumina::run::long_info/]); 
+    roles   => [qw/npg_tracking::illumina::run::long_info/]);
 
   my @rp_files = qw/
     runParameters.hiseq4000.xml
@@ -65,7 +65,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
     copy(join(q[/],$dir,$f), $name) or die 'Failed to copy file';
 
     my $li = $class->new_object();
-    
+
     foreach my $p ( grep {$_ ne 'HiSeq'} @platforms) {
       my $method = join q[_], 'platform', $p;
       if ($pl =~ /$p/i ) {
@@ -115,6 +115,93 @@ subtest 'retrieving information from runParameters.xml' => sub {
   }
 };
 
+subtest 'getting flowcell for run' => sub {
+  plan tests => 10;
+
+  $basedir = tempdir( CLEANUP => 1 );
+  my $rf = join q[/], $basedir, 'run_info';
+  mkdir $rf;
+
+  my $class = Moose::Meta::Class->create_anon_class(
+    methods => {"runfolder_path" => sub {$rf}},
+    roles   => [qw/npg_tracking::illumina::run::long_info/]);
+
+  my %data = (
+    'runInfo.hiseq4000.xml'       => { 'rpf' => 'runParameters', 'fc' => 'HLG55BBXX' },
+    'runInfo.hiseq.rr.single.xml' => { 'rpf' => 'runParameters', 'fc' => 'HGM3FBCX2' },
+    'runInfo.hiseq.rr.truseq.xml' => { 'rpf' => 'runParameters', 'fc' => 'HFK5KADXY' },
+    'runInfo.hiseq.rr.twoind.xml' => { 'rpf' => 'runParameters', 'fc' => 'HGF72BCX2' },
+    'runInfo.hiseq.rr.xml'        => { 'rpf' => 'runParameters', 'fc' => 'H2JG5BCX2' },
+    'runInfo.hiseq.xml'           => { 'rpf' => 'runParameters', 'fc' => 'H7TM5CCXY' },
+    'runInfo.hiseqx.upgraded.xml' => { 'rpf' => 'runParameters', 'fc' => 'HFFC5CCXY' },
+    'runInfo.hiseqx.xml'          => { 'rpf' => 'runParameters', 'fc' => 'HCW7MCCXY' },
+    'runInfo.miseq.xml'           => { 'rpf' => 'runParameters', 'fc' => 'MS5534842-300V2' },
+    'runInfo.novaseq.xml'         => { 'rpf' => 'RunParameters', 'fc' => 'H3WCVDSXX' },
+  );
+
+  my $ri_data = \%data;
+  my $run_info_dir = 't/data/run_info';
+  my $run_param_dir = 't/data/run_params';
+
+  for my $file_name (sort keys % $ri_data) {
+    note $file_name;
+    my $expected_flowcell = $ri_data->{$file_name}->{'fc'};
+    my $param_prefix =  $ri_data->{$file_name}->{'rpf'};
+    my $run_params_file_name = $file_name =~ s/runInfo/$param_prefix/r;
+    my $run_params_file_path = qq[$rf/$param_prefix.xml];
+
+    copy(join(q[/],$run_info_dir,$file_name), qq[$rf/RunInfo.xml]) or die 'Failed to copy file';
+    copy(join(q[/],$run_param_dir,$run_params_file_name), $run_params_file_path) or die 'Failed to copy file';
+
+    my $li = $class->new_object();
+
+    is($li->run_flowcell, $expected_flowcell, q[Expected run flowcell matches loaded run flowcell]);
+    `rm $run_params_file_path`
+  }
+};
+
+subtest 'getting experiment name from runParameters' => sub {
+  plan tests => 10;
+
+  $basedir = tempdir( CLEANUP => 1 );
+  my $rf = join q[/], $basedir, 'runfolder_id_run';
+  mkdir $rf;
+
+  my $class = Moose::Meta::Class->create_anon_class(
+    methods => {"runfolder_path" => sub {$rf}},
+    roles   => [qw/npg_tracking::illumina::run::long_info/]);
+
+  my %data = (
+    'runParameters.hiseq4000.xml'       => { 'rpf' => 'runParameters', 'expname' => '24359' },
+    'runParameters.hiseq.rr.single.xml' => { 'rpf' => 'runParameters', 'expname' => '25835' },
+    'runParameters.hiseq.rr.truseq.xml' => { 'rpf' => 'runParameters', 'expname' => '21604' },
+    'runParameters.hiseq.rr.twoind.xml' => { 'rpf' => 'runParameters', 'expname' => '25689' },
+    'runParameters.hiseq.rr.xml'        => { 'rpf' => 'runParameters', 'expname' => '24409' },
+    'runParameters.hiseq.xml'           => { 'rpf' => 'runParameters', 'expname' => '24235' },
+    'runParameters.hiseqx.upgraded.xml' => { 'rpf' => 'runParameters', 'expname' => '24420' },
+    'runParameters.hiseqx.xml'          => { 'rpf' => 'runParameters', 'expname' => '24422' },
+    'runParameters.miseq.xml'           => { 'rpf' => 'runParameters', 'expname' => '24347' },
+    'RunParameters.novaseq.xml'         => { 'rpf' => 'RunParameters', 'expname' => 'Coriell_24PF_auto_PoolF_NEBreagents_TruseqAdap_500pM_NV7B' },
+  );
+
+  my $expname_data = \%data;
+  my $run_param_dir = 't/data/run_params';
+
+  for my $file_name (sort keys % $expname_data) {
+    note $file_name;
+    my $expected_experiment_name = $expname_data->{$file_name}->{'expname'};
+    my $param_prefix = $expname_data->{$file_name}->{'rpf'};
+    my $run_params_file_path = qq[$rf/$param_prefix.xml];
+
+    copy(join(q[/],$run_param_dir,$file_name), $run_params_file_path) or die 'Failed to copy file';
+
+    my $li = $class->new_object();
+
+    is($li->experiment_name, $expected_experiment_name, q[Expected experiment name matches loaded from run params]);
+    `rm $run_params_file_path`
+  }
+};
+
 local $ENV{'TEST_DIR'} = $basedir; #so when npg_tracking::illumina::run::folder globs the test directory
 local $ENV{'dev'} = 'none';
 
@@ -137,12 +224,53 @@ sub delete_staging {
 }
 
 sub create_staging {
+  my ($id_run, $lanes, $cycles) = @_;
   delete_staging();
   `mkdir -p $qc_subpath`;
   `mkdir $basecalls_subpath`;
   `mkdir $config_path`;
   `cp t/data/long_info/Recipe_GA2-PEM_MP_2x76Cycle+8_v7.7.xml $runfolder_path/`;
   `cp t/data/long_info/TileLayout.xml $config_path/`;
+
+  $lanes = $lanes || 8;
+  if ( $cycles ) {
+    $cycles = qq[<Read Number="1" NumCycles="$cycles" IsIndexedRead="Y  " />];
+  } else {
+    $cycles = <<"ENDXML";
+      <Read Number="1" NumCycles="76" IsIndexedRead="N" />
+      <Read Number="2" NumCycles="8" IsIndexedRead="Y" />
+      <Read Number="3" NumCycles="76" IsIndexedRead="N" />
+ENDXML
+  }
+
+  my $runparamsfile = qq[$runfolder_path/runParameters.xml];
+  open(my $fh, '>', $runparamsfile) or die "Could not open file '$runparamsfile' $!";
+  print $fh <<"ENDXML";
+<?xml version="1.0"?>
+<RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Setup>
+  <ApplicationName>HiSeq Control Software</ApplicationName>
+  <ExperimentName>$id_run</ExperimentName>
+</Setup>
+</RunParameters>
+ENDXML
+  close $fh;
+
+  my $runinfofile = qq[$runfolder_path/RunInfo.xml];
+  open($fh, '>', $runinfofile) or die "Could not open file '$runinfofile' $!";
+  print $fh <<"ENDXML";
+<?xml version="1.0"?>
+<RunInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="3">
+<Run>
+  <Reads>
+$cycles
+  </Reads>
+  <FlowcellLayout LaneCount="$lanes" SurfaceCount="2" SwathCount="1" TileCount="60">
+  </FlowcellLayout>
+</Run>
+</RunInfo>
+ENDXML
+  close $fh;
   return 1;
 }
 
@@ -158,7 +286,7 @@ my $orig_dir = getcwd();
   my $long_info;
   lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
 
-  create_staging();
+  create_staging(1234, 8);
 
   lives_ok  { $long_info = test::long_info->new({id_run => 1234}); } q{created role_test object ok};
   is($long_info->is_paired_read(), 1, q{Read is paired});
@@ -213,19 +341,19 @@ $ENV{TEST_DIR} = 't/data/long_info';
   cmp_ok($long_info->cycle_count, '==', 202, 'correct cycle count');
 
   my $tilelayout_columns;
-  lives_ok  { 
-    $long_info = test::long_info->new({id_run => 5636}); 
+  lives_ok  {
+    $long_info = test::long_info->new({id_run => 5636});
     $tilelayout_columns = $long_info->tilelayout_columns;
   } q{recreate object and call tilelayout_columns ok};
   cmp_ok($tilelayout_columns, '==', 6, 'correct tile columns');
-  
+
   $long_info=undef;
   lives_ok  { $long_info = test::long_info->new({id_run => 19395}); } q{created role_test (HiSeq run 19395, RunInfo.xml) object ok};
   cmp_ok($long_info->lane_tilecount->{1}, '==', 64, 'correct lane 1 tile count');
   lives_ok  { $long_info = test::long_info->new({id_run => 19395}); } q{created role_test (HiSeq run 19395, RunInfo.xml) object ok};
   cmp_ok($long_info->lane_tilecount->{2}, '==', 63, 'correct lane 2 tile count');
-note($long_info->runfolder_path);
-  
+  note($long_info->runfolder_path);
+
 
 }
 

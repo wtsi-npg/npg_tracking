@@ -4,11 +4,14 @@ use Moose::Role;
 use Carp;
 use npg_tracking::util::abs_path qw(abs_path);
 
-with qw/ npg_tracking::data::reference::find 
+with qw/ npg_tracking::data::reference::find
          npg_tracking::data::bait::find
        /;
 
 our $VERSION = '0';
+
+Readonly::Scalar my $DEFAULT_SNV_BAIT_NAME => q{Standard};
+Readonly::Scalar my $RNA_SNV_BAIT_NAME => q{Exome};
 
 has 'snv_path' => ( isa        => q{Maybe[Str]},
                     is         => q{ro},
@@ -21,7 +24,10 @@ sub _build_snv_path {
   my $path;
   my ($organism, $strain) = $self->parse_reference_genome($self->lims->reference_genome);
   if ($organism && $strain) {
-    my $bait = $self->bait_name || 'Standard';
+    my $bait = $self->bait_name // $DEFAULT_SNV_BAIT_NAME;
+    if ($self->lims->library_type && $self->lims->library_type =~ /(?:cD|R)NA/sxm) {
+      $bait = $RNA_SNV_BAIT_NAME;
+    }
     $bait =~ s/\ /_/msxg;
     $path = abs_path($self->snv_repository . "/$organism/default/$bait/$strain");
   }

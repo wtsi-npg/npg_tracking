@@ -17,6 +17,8 @@ Readonly::Scalar my $DELIM       => q[_];
 Readonly::Scalar my $LANE_DELIM  => q[-];
 Readonly::Scalar my $NOT_COMMON  => q[-1];
 Readonly::Scalar my $DIGEST_TYPE => q[md5];
+Readonly::Scalar my $SUFFIX_KEY  => q[suffix];
+Readonly::Scalar my $EXT_KEY     => q[ext];
 
 sub file_name {
   my ($self, $selected_lanes) = @_;
@@ -32,6 +34,40 @@ sub file_name {
     $name = $self->_get_digest();
   }
 
+  return $name;
+}
+
+sub file_name_full {
+  my ($self, $name, @options) = @_;
+
+  $name or croak 'File name base should be given';
+
+  if (@options) {
+
+    if (scalar @options % 2 != 0) {
+      croak 'The argument list should contain a file name'.
+            ' and, optionally, a list of key-value options';
+    }
+
+    my %h = @options; # Safe, we know that we have an even number
+                      # of list members.
+
+    if (exists $h{$SUFFIX_KEY} && $h{$SUFFIX_KEY} ne q[]) {
+      $name .= q[_] . $h{$SUFFIX_KEY};
+      delete $h{$SUFFIX_KEY};
+    }
+    if (exists $h{$EXT_KEY} && $h{$EXT_KEY} ne q[]) {
+      $name .= q[.] . $h{$EXT_KEY};
+      delete  $h{$EXT_KEY};
+    }
+
+    if (keys %h) {
+      croak sprintf 'The following options are not recognised: %s. Accepted options: %s, %s.',
+                    join(q[, ], sort keys %h),
+                    $SUFFIX_KEY,
+                    $EXT_KEY;
+    }
+  }
   return $name;
 }
 
@@ -74,7 +110,6 @@ has [qw/_file_name_semantic _dir_path_semantic/] => (
   isa        => 'Bool',
   is         => 'ro',
   required   => 0,
-  init_arg   => {},
   lazy_build => 1,
 );
 sub _build__file_name_semantic {
@@ -142,6 +177,7 @@ sub _get_digest {
 no Moose::Role;
 
 1;
+
 __END__
 
 =head1 NAME
@@ -282,6 +318,17 @@ represents a sunset of lanes in the run. False by default.
  $file_name = $self->file_name($selected_lanes);
  $selected_lanes = 1;
  $file_name = $self->file_name($selected_lanes);
+
+=head2 file_name_full
+
+A package-level or class method.
+Adds a suffix and a file extension to an argument filename.
+
+  my $name= q[26219_1#0];
+  $p->file_name_full($name);                                         # 26219_1#0
+  $p->file_name_full($name, ext => 'bam');                           # 26219_1#0.bam
+  $p->file_name_full($name, ext => 'stats', suffix => 'F0xB00');     # 26219_1#0_F0xB00.stats 
+  $p->file_name_full($name, ext => 'stats.md5', suffix => 'F0xB00'); # 26219_1#0_F0xB00.stats.md5 
 
 =head2 dir_path
 

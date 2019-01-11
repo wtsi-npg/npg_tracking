@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 88;
+use Test::More tests => 114;
 use Test::Exception;
 use Test::Warn;
 use Test::Trap qw/ :stderr(tempfile) /;
@@ -9,6 +9,9 @@ use File::Path qw/ make_path /;
 use DateTime;
 use DateTime::TimeZone;
 use DateTime::Duration;
+use POSIX ":sys_wait_h";
+use Cwd;
+
 use t::dbic_util;
 
 use_ok( q{npg_tracking::status} );
@@ -114,10 +117,11 @@ my $cb = sub {
 {
   my $m = npg_tracking::monitor::status->new(transit => $dir, blocking => 0);
   isa_ok($m, q{npg_tracking::monitor::status});
+  ok($m->enable_inotify, 'inotify is enabled by default');
   lives_ok {$m->_transit_watch_setup} 'watch is set up on an empty directory';
   ok(exists $m->_watch_obj->{$dir}, 'watch object is cached');
   is(ref $m->_watch_obj->{$dir}, q[Linux::Inotify2::Watch], 'correct object type');
-  is($m->_watch_obj->{$dir}->name, $dir, 'watch object name'); 
+  is($m->_watch_obj->{$dir}->name, $dir, 'watch object name');
   warning_like {$m->cancel_watch} qr/Canceling watch for $dir/, 'watch cancelled';
   ok(!exists $m->_watch_obj->{$dir}, 'watch object is not cached');
 }
@@ -133,7 +137,7 @@ my $cb = sub {
     mkdir $new_dir;
     my $pid = fork();
     if ($pid) {
-      warnings_exist { $m->_notifier->poll() } 
+      warnings_exist { $m->_notifier->poll() }
         [qr/test callback: $new_dir deleted/],
         'deletion reported';
     } else {
@@ -152,8 +156,8 @@ my $cb = sub {
   mkdir "$dir/test1";
   mkdir "$dir/test1/test2";
   my $pid = fork();
-  if ($pid) {  
-    warnings_like { $m->_notifier->poll() } 
+  if ($pid) {
+    warnings_like { $m->_notifier->poll() }
      [qr/test callback: $dir\/test2 moved to the watched directory/],
      'move reported';
   } else {
@@ -177,7 +181,7 @@ my $cb = sub {
   rmdir $new_dir;
   ok(!-e $new_dir, 'subdirectory has been removed');
   my $count;
-  warnings_like { $count = $m->_notifier->poll() } 
+  warnings_like { $count = $m->_notifier->poll() }
      [qr/test callback: $new_dir deleted/],
      'deletion reported when polling after the event';
   is($count, 1, 'polled one event');
@@ -186,7 +190,7 @@ my $cb = sub {
 
   my $new_dir1 = "$dir/test1";
   mkdir $new_dir1;
-  mkdir $new_dir; 
+  mkdir $new_dir;
 
   $m = npg_tracking::monitor::status->new(transit => $dir, blocking => 0);
   lives_ok {$m->_transit_watch_setup} 'watch is set up on a directory with a subdirectory';
@@ -201,7 +205,7 @@ my $cb = sub {
      'two deletions reported when polling after two events in the order the events happened';
   is($count, 2, 'polled two event');
   warnings_like { $m->cancel_watch }
-    [qr/Canceling watch for $dir/], 'watch cancell reported'; 
+    [qr/Canceling watch for $dir/], 'watch cancell reported';
 }
 
 {
@@ -223,12 +227,12 @@ my $cb = sub {
     'error saving non-existing lane status';
 
   throws_ok {$m->_read_status('path', $dir)}
-    qr/Error instantiating object from path: read_file 'path' - sysopen: No such file or directory/,
+    qr/Error instantiating object from path: .+ No such file or directory/,
     'error reading object';
-  my $path = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7])->to_file($dir); 
+  my $path = npg_tracking::status->new(id_run => 1, status => 'some status', lanes => [8, 7])->to_file($dir);
   throws_ok {$m->_read_status($path, $dir)} qr/Failed to get id_run from $dir/,
     'error getting id_run from runfolder_path';
-  
+
   ok($m->_path_is_latest_summary('/some/path/Latest_Summary'),
     'latest summary link identified correctly');
   ok(!$m->_path_is_latest_summary('/some/path/Latest_Summary/other'),
@@ -248,7 +252,7 @@ my $cb = sub {
   lives_ok { $m->_stock_watch_setup() } 'existing runfolders watch set-up - no runfolders exist';
   lives_ok { $m->_stock_status_check() } 'stock status check - no runfolders exist';
   is (scalar keys %{$m->_watch_obj}, 1, 'one watch object');
-  
+
   rmdir $a;
   SKIP: {
     skip 'Travis: inotify does not detect deletion from /tmp', 2 unless !$ENV{'TRAVIS'};
@@ -283,7 +287,7 @@ my $cb = sub {
   is( $m->_notifier->poll(), 1, 'creating latest summary link registered');
   is( ref $m->_watch_obj->{$runfolder_name}->{'status_dir'},
      'Linux::Inotify2::Watch', 'watch object for the status directory is cached');
-  my $old = $m->_watch_obj->{$runfolder_name}->{'status_dir'};  
+  my $old = $m->_watch_obj->{$runfolder_name}->{'status_dir'};
   rmdir $status_dir;
   unlink $link;
 
@@ -394,8 +398,8 @@ my $cb = sub {
 
   my $opath = join q[/], $o, $runfolder_name;
   rename $new_path, $opath;
-  
-  lives_ok { $m->_read_status($status_file_path, $opath) } 'processing transit path when file is in destination'; 
+
+  lives_ok { $m->_read_status($status_file_path, $opath) } 'processing transit path when file is in destination';
   my $moved = $status_file_path;
   $moved =~ s/$a/$o/smx;
   my $af = "$a/test.json";
@@ -413,7 +417,7 @@ my $cb = sub {
   close $fh or die "failed to close $moved";
   throws_ok { $m->_read_status($status_file_path, $opath) }
      qr/Error instantiating object from $moved/,
-    'processing transit path (invalid json) when file is in destination'; 
+    'processing transit path (invalid json) when file is in destination';
 }
 
 {
@@ -437,7 +441,7 @@ my $cb = sub {
     'watch object for the runfolder is cached');
   ok( !exists $m->_watch_obj->{$runfolder_name}->{'status_dir'},
     'no summary link - watch object for the status directory has not been created yet');
-  
+
   my $format = npg_tracking::status->_timestamp_format();
   my $date = DateTime->now(time_zone => DateTime::TimeZone->new(name => q[local]));
   $date->add_duration(DateTime::Duration->new(seconds => 10));
@@ -493,6 +497,112 @@ my $cb = sub {
   ok (scalar @rows == $count + 3, 'a new run statuses added');
   $run_status_obj = shift @rows;
   is ($run_status_obj->run_status_dict->description, $status2, 'status from the latest status file saved');
+}
+
+{
+  SKIP: {
+    skip 'Test issuing kill command skipped under Jenkins', 3
+      unless !$ENV{'JENKINS_URL'};
+
+    my $m = npg_tracking::monitor::status->new(transit => $dir, enable_inotify => 0);
+    ok(!$m->enable_inotify, 'inotify is disabled');
+    is($m->polling_interval, 60, 'default polling interval');
+
+    $m = npg_tracking::monitor::status->new(transit          => $dir,
+                                            enable_inotify   => 0,
+                                            polling_interval => 1);
+    my $pid = fork();
+    if ($pid) {
+      sleep 3;
+      kill 'HUP', $pid;
+    } else {
+      trap { $m->watch() };
+    }
+    ok (wait(), 'process terminated');
+  }
+}
+
+{
+  SKIP: {
+    skip 'Test issuing kill command skipped under Jenkins', 2
+      unless !$ENV{'JENKINS_URL'};
+    my $new_dir = "$dir/ILorHSany_sf51";
+    if (-e $new_dir && !-d $new_dir) {
+      unlink $new_dir;
+    }
+    -e $new_dir or mkdir $new_dir;
+    mkdir $new_dir . '/outgoing';
+    mkdir $new_dir . '/analysis';
+
+    my $pid = fork();
+    if ($pid) {
+      sleep 1;
+      is (waitpid($pid, WNOHANG), 0, 'process is running');
+      sleep 2;
+      kill 'HUP', $pid;
+    } else {
+      my $command = getcwd . '/bin/npg_status_watcher';
+      exec("$command --prefix $dir");
+    }
+    ok (wait(), 'process terminated');
+  }
+}
+
+{
+  throws_ok { npg_tracking::monitor::status->staging_fs_type() }
+    qr/Existing path required/, 'path argument is required';
+  throws_ok { npg_tracking::monitor::status->staging_fs_type('t/some_path') }
+    qr/Existing path required/, 'path should exist';
+  ok (npg_tracking::monitor::status->staging_fs_type('t'),
+    'file system type returned');
+  ok (npg_tracking::monitor::status->staging_fs_type('/tmp'),
+    'file system type returned');
+}
+
+{
+  my $base = tempdir(UNLINK => 1);
+  _runfolder($base);
+  my $rf_path = join q[/], $base, $runfolder_name;
+  my $id_run = 9334;
+
+  $schema->resultset('RunStatus')->search({id_run => $id_run})->delete;
+  is ($schema->resultset('RunStatus')->search({id_run => $id_run})->count(),
+     0, "no run statuses for run $id_run");
+
+  my @files = map {$_->to_file($base)}
+              map {npg_tracking::status->new(id_run => $id_run, status => $_)}
+              ('analysis in progress', 'secondary analysis in progress',
+               'qc review pending', 'archival in progress', 'run archived',
+               'qc complete');
+
+  my $m = npg_tracking::monitor::status->new(transit        => $dir,
+                                             enable_inotify => 0,
+                                             _schema        => $schema);
+  for my $method (qw/_cache_file _file_in_cache/) {
+    ok ($m->can($method),"$method available");
+  }
+
+  my @arg_files = (shift @files);
+  trap {is ($m->_update_status4files(\@arg_files, $rf_path), 1, '1 file saved')};
+  ok ($m->_file_in_cache($arg_files[0]), 'file cached');
+
+  push @arg_files, shift @files;
+  trap {is ($m->_update_status4files(\@arg_files, $rf_path), 1, '1 file saved')};
+  ok ($m->_file_in_cache($arg_files[1]), 'file cached');
+
+  trap {is ($m->_update_status4files(\@files, $rf_path), 4, '4 files saved')};
+  foreach my $f (@files) {
+    ok ($m->_file_in_cache($f), 'file cached');
+  }
+  trap {is ($m->_update_status4files(\@files, $rf_path), 0, 'no files saved')};
+
+  my $f = npg_tracking::status->new(id_run => $id_run, status => 'some')
+                              ->to_file($base);
+  trap {is ($m->_update_status4files([$f], $rf_path), 0, 'no files saved')};
+  ok (!$m->_file_in_cache($f), 'file not cached');
+
+  is ($schema->resultset('RunStatus')->search({id_run => $id_run})->count(),
+     scalar @files + scalar  @arg_files, 'correct number of statuses saved');
 }
 
 1;

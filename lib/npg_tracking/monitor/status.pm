@@ -5,11 +5,13 @@ use Moose::Meta::Class;
 use Carp;
 use English qw(-no_match_vars);
 use Readonly;
-use Linux::Inotify2;
 use Errno qw(EINTR EIO :POSIX);
 use File::Basename;
 use Try::Tiny;
 use File::Spec::Functions;
+use Linux::Inotify2;
+use Sys::Filesystem;
+use Sys::Filesystem::MountPoint qw/path_to_mount_point/;
 
 use npg_tracking::util::types;
 use npg_tracking::illumina::run::folder;
@@ -22,6 +24,7 @@ our $VERSION = '0';
 Readonly::Scalar my $STATUS_DIR_KEY   => q[status_dir];
 Readonly::Scalar my $RUNFOLDER_KEY    => q[top_level];
 Readonly::Scalar my $STATUS_DIR_NAME  => q[status];
+Readonly::Scalar my $POLLING_INTERVAL => 60;
 
 has 'transit'     =>  (isa             => 'NpgTrackingDirectory',
                        is              => 'ro',
@@ -43,6 +46,18 @@ has 'verbose'     =>  (isa             => 'Bool',
                        is              => 'ro',
                        required        => 0,
                        default         => 1,
+);
+
+has 'enable_inotify' => (isa           => 'Bool',
+                         is            => 'ro',
+                         required      => 0,
+                         default       => 1,
+);
+
+has 'polling_interval' => (isa         => 'Int',
+                           is          => 'ro',
+                           required    => 0,
+                           default     => $POLLING_INTERVAL,
 );
 
 has '_notifier'   =>   (isa             => 'Linux::Inotify2',
@@ -75,9 +90,9 @@ sub _build__latest_summary_name {
 }
 
 has '_schema' => ( reader     => 'schema',
-                  is         => 'ro',
-                  isa        => 'npg_tracking::Schema',
-                  lazy_build => 1,
+                   is         => 'ro',
+                   isa        => 'npg_tracking::Schema',
+                   lazy_build => 1,
 );
 
 sub _build__schema {
@@ -97,6 +112,21 @@ has '_stock_runfolders'   =>  (isa             => 'ArrayRef',
                                lazy_build      => 1,
 );
 sub _build__stock_runfolders {
+  my $self = shift;
+  return $self->_list_stock_runfolders();
+}
+
+has '_seen_cache'        =>  (isa             => 'HashRef',
+                              traits          => ['Hash'],
+                              is              => 'bare',
+                              default         => sub { {} },
+                              handles   => {
+                                _cache_file    => 'set',
+                                _file_in_cache => 'get',
+                              },
+);
+
+sub _list_stock_runfolders {
   my $self = shift;
 
   my @top_level = $self->destination ?
@@ -239,16 +269,20 @@ sub _update_status4files {
     croak 'Expect runfolder path as the second argument';
   }
 
+  my $num_saved = 0;
   foreach my $file ( @{$files} ) {
+    next if $self->_file_in_cache($file);
     try {
       $self->_log("\nReading status from $file");
       my $status = $self->_read_status($file, $runfolder_path);
       $self->_update_status($status);
+      $self->_cache_file($file, 1);
+      $num_saved++;
     } catch {
       $self->_log("Error saving status: $_\n");
     }
   }
-  return;
+  return $num_saved;
 }
 
 sub _find_path {
@@ -342,7 +376,11 @@ sub _stock_status_check {
 
   my $m = 'Processing backlog';
   $self->_log('Started ' . lc $m);
-  foreach my $runfolder_path (@{$self->_stock_runfolders}) {
+  foreach my $runfolder_path (@{$self->_list_stock_runfolders}) {
+    if (!-e $runfolder_path) { # runfolder could have been moved or deleted
+      $self->_log("Runfolder $runfolder_path does not exist in this location");
+      next;
+    }
     if (!$self->_runfolder_latest_summary_link($runfolder_path)) {
       $self->_log("$m: runfolder $runfolder_path does not have the latest summary link, skipping.");
       next;
@@ -533,7 +571,6 @@ sub _cancel {
 
 sub cancel_watch {
   my $self = shift;
-
   $self->_cancel($self->_watch_obj->{$self->transit});
   delete $self->_watch_obj->{$self->transit};
 
@@ -544,27 +581,50 @@ sub cancel_watch {
     }
     delete $self->_watch_obj->{$runfolder};
   }
-
   return;
 }
 
 sub watch {
   my $self = shift;
 
-  $self->_transit_watch_setup;
-  $self->_stock_watch_setup;
+  if ($self->enable_inotify) {
+    $self->_transit_watch_setup;
+    $self->_stock_watch_setup;
+  }
   $self->_stock_status_check;
 
   while (1) {
-    # This call blocks unless non-blocking mode is set.
-    my $received = $self->_notifier->poll();
+    if ($self->enable_inotify) {
+      # This call blocks unless non-blocking mode is set.
+      my $received = $self->_notifier->poll();
+    } else {
+      sleep $self->polling_interval;
+      $self->_stock_status_check;
+    }
   }
   return;
 }
 
+sub staging_fs_type {
+  my ($self, $path) = @_;
+
+  $path and -e $path or croak 'Existing path required';
+
+  my $mount_point = path_to_mount_point($path);
+  if (!defined $mount_point) {
+    ##no critic (Variables::ProhibitPackageVars)
+    croak "Failed to detect mount point for $path: " .
+      $Sys::Filesystem::MountPoint::errstr;
+  }
+
+  return Sys::Filesystem->new()->type($mount_point);
+}
+
 sub DEMOLISH {
   my $self = shift;
-  $self->cancel_watch();
+  if ($self->enable_inotify) {
+    $self->cancel_watch();
+  }
   return;
 }
 
@@ -583,21 +643,56 @@ npg_tracking::monitor::status
 
 =head1 SUBROUTINES/METHODS
 
+=head2 transit
+
+One of the directories to watch. An initial location of run
+folders, a required attribute.
+
+=head2 destination
+
+One of the directories to watch. An optional attribute. A location
+run folders are normally moved to from the transit location.
+
+=head2 blocking
+
+Boolean flag setting blocking mode for inotify. True by default.
+
+=head2 verbose
+
+Boolean flag, defaults to true.
+
+=head2 enable_inotify
+
+A boolean flag enabling inotify watch over relevant directories.
+True by default.
+
+=head2 polling_interval
+
+If inotify is not enabled, a poll for new statuses is performed
+periodically. This attribute sets time in seconds between the
+polling attempts. If not set, a default value of 60 is used.
+
 =head2 watch
 
- Starts and perpetuates the watch.
- This method never returns. The caller should
- use cancel_watch method to cancel all current
- watches and release system resources associated
- with them.
+Starts and perpetuates the watch. This method never returns.
+The caller should use cancel_watch method to cancel all current
+watches and release system resources associated with them.
 
 =head2 cancel_watch
 
- Stops watch on all objects and remove watch objects.
+If inotify is enabled, stops watch on all objects and remove
+watch objects.
+
+=head2 staging_fs_type
+
+Returns file system type for the argument staging path.
+
+  npg_tracking::monitor::status->staging_fs_type($staging_path);
+  $obj->staging_fs_type($staging_path);
 
 =head2 DEMOLISH
 
- A Moose hook for object destruction; calls cancel_watch().
+A Moose hook for object destruction; calls cancel_watch().
 
 =head2 EBADF (namespace pollution from Errno module)
 
@@ -633,6 +728,10 @@ npg_tracking::monitor::status
 
 =item File::Spec::Functions
 
+=item Sys::Filesystem
+
+=item Sys::Filesystem::MountPoint
+
 =back
 
 =head1 INCOMPATIBILITIES
@@ -645,7 +744,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 Genome Research Limited
+Copyright (C) 2018 Genome Research Limited
 
 This file is part of NPG.
 

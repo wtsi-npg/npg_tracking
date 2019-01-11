@@ -7,21 +7,34 @@ use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Carp;
 use Try::Tiny;
 use English qw(-no_match_vars);
+use Getopt::Long;
+use Pod::Usage;
 
 use npg_tracking::util::config qw(get_config_staging_areas);
 use npg_tracking::monitor::status;
 
 our $VERSION = '0';
 
-my $prefix = get_config_staging_areas()->{'prefix'} ||
-  croak 'Failed to get staging area path prefix from config file';
-$prefix =~ s{\A/nfs/}{/export/}smx; # Using /nfs might be OK since
-# we believe that on a staging area host it's a bind mount to /export.
-# However, /nfs staging area paths are visible from other hosts.
-# If in future we want to try /nfs path, we will have to ensure that
-# the path and staging host name match. 
+my $prefix;
+my $help;
+GetOptions ('prefix:s' => \$prefix,
+            'help|?'   => \$help)
+  or croak("Error in command line arguments\n");
 
-my $pattern = $prefix.q[*/{IL,HS}*];
+pod2usage(1) if $help;
+
+if (!$prefix) {
+  $prefix = get_config_staging_areas()->{'prefix'} ||
+    croak 'Failed to get staging area path prefix from config file';
+  $prefix =~ s{\A/nfs/}{/export/}smx; # Using /nfs might be OK since
+  # we believe that on a staging area host it's a bind mount to /export.
+  # However, /nfs staging area paths are visible from other hosts.
+  # If in future we want to try /nfs path, we will have to ensure that
+  # the path and staging host name match.
+  $prefix .= q[*]; 
+}
+
+my $pattern = $prefix.q[/{IL,HS}*];
 my @dirs = grep { -d $_ } glob $pattern;
 if (!@dirs) {
   croak "Cannot find $pattern";
@@ -31,13 +44,18 @@ if (scalar @dirs > 1) {
 }
 
 my $dir = $dirs[0];
+
 my $transit     = "$dir/analysis";
 my $destination = "$dir/outgoing";
 warn "Discovered $dir, starting monitoring $transit and $destination\n";
 
+my $fs_type = npg_tracking::monitor::status->staging_fs_type($dir);
+warn "File system type is '$fs_type'\n";
+
 my $monitor = npg_tracking::monitor::status->new(
-                transit     => $transit,
-                destination => $destination
+                transit        => $transit,
+                destination    => $destination,
+                enable_inotify => $fs_type eq 'lustre' ? 0 : 1
                                                 );
 
 $SIG{'INT'}  = 'interrupt_handler';
@@ -60,6 +78,7 @@ sub interrupt_handler {
 }
 
 1;
+
 __END__
 
 =head1 NAME
@@ -69,6 +88,8 @@ npg_status_watcher
 =head1 USAGE
 
   npg_status_watcher
+  npg_status_watcher --prefix /export/sf51
+  npg_status_watcher --help
 
 =head1 DESCRIPTION
 
@@ -86,7 +107,11 @@ npg_status_watcher
 
 =head1 OPTIONS
 
-  None
+  --prefix
+  Exact prefix preceeding /{IL,HS}* directories. If given, a lookup in the
+  configuration file will be skipped. Example value: /export/sf51
+
+  --help
 
 =head1 DIAGNOSTICS
 
@@ -111,6 +136,10 @@ npg_status_watcher
 =item Try::Tiny
 
 =item English
+
+=item Getopt::Long
+
+=item Pod::Usage
 
 =item npg_tracking::util::config
 

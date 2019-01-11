@@ -38,7 +38,7 @@ my @area_list = $monitor->validate_areas(@ARGV);
 
 croak 'No valid arguments' if scalar @area_list == 0;
 
-my $dry_run = $ENV{'dev'} && ($ENV{'dev'} ne 'live'); 
+my $dry_run = $ENV{'dev'} && ($ENV{'dev'} ne 'live');
 _log_noindent('*************** ' . ($dry_run ? 'DRY RUN' : 'LIVE RUN') .
           ' ***************');
 
@@ -55,7 +55,11 @@ while (1) {
                            runfolder_path      => $run_path,
                            npg_tracking_schema => $monitor->schema);
             my $run_status = $folder->current_run_status_description();
+            my $id_run = $folder->tracking_run()->id_run;
+
             _log("Run status $run_status");
+
+            # skip changes to run in db if status is after run complete
 
             if ($folder->is_in_analysis) {
                 _log('Folder is in /analysis/');
@@ -63,7 +67,11 @@ while (1) {
                     _log('DRY RUN - not calling move_to_outgoing');
                 } else {
                     try {
-                        _log($folder->move_to_outgoing());
+                        if($run_status eq 'qc complete') {
+                            _log($folder->move_to_outgoing());
+                        } else {
+                            _log(qq[Run $id_run status $run_status is not qc complete, not moving to outgoing]);
+                        }
                     } catch {
                         _log("ERROR moving to outgoing: $_");
                     };
@@ -84,29 +92,35 @@ while (1) {
             # Could delete the directory here. Leave it for now.
             next if $run_status eq 'data discarded';
 
-            if ( $run_status eq 'run pending' ) {
-                $folder->fallback_update();
+            if ( $run_status eq 'run pending' )  {
+                my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
+                $folder->check_cycle_count($latest_cycle, 0);
                 next;
             }
 
             if ( $run_status eq 'run in progress' ) {
+                my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
+                my $run_complete = $folder->has_rta_complete_file();
+                $folder->check_cycle_count($latest_cycle, $run_complete);
                 $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
                                               : $folder->tracking_run()->unset_tag( $folder->username(), 'copying_problem' );
-                $folder->fallback_update();
                 next;
             }
 
             if ( $run_status eq 'run complete' ) {
-
                 $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
                                               : $folder->tracking_run()->unset_tag( $folder->username(), 'copying_problem' );
+                $folder->update_folder();
 
                 # Integrity check - got everything.
                 next if $folder->cycle_lag($run_path);
                 next if !$folder->validate_run_complete();
                 $checked{$run_path}++;
 
-                $folder->fallback_update();
+                my $path = $folder->runfolder_path();
+                my $latest_cycle = $folder->get_latest_cycle($path);
+
+                $folder->check_cycle_count( $latest_cycle, 1 );
 
                 my ( $total_size, $latest_mod ) = $folder->monitor_stats();
 
@@ -127,7 +141,7 @@ while (1) {
 
                 if ($dry_run) {
                     _log('DRY RUN - not calling mark_as_mirrored and move_to_analysis');
-                } else { 
+                } else {
                     $folder->mark_as_mirrored();
                     _log('Folder marked as mirrored');
                     try {

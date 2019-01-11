@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 12;
 use Test::Exception;
 use File::Basename;
 
@@ -22,6 +22,17 @@ use_ok('npg_tracking::data::snv');
   is($test->snv_path, undef, 'snv path undefined');
   is($test->snv_file, undef, 'snv file undefined');
   is($test->messages->pop, 'Failed to get svn_path', 'correct message saved');
+}
+
+{
+  local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} = q[t/data/samplesheet/samplesheet_27483.csv];
+  my $test = npg_tracking::data::snv->new ( id_run => 27483, position => 1, tag_index => 1, repository => $repos);
+  is($test->bait_name, undef, q[bait name undefined for RNA library]);
+  my $expected_bait_name = q[Exome];
+  my $expected_snv_path = qr[$repos/population_snv/Homo_sapiens/default/$expected_bait_name/GRCh38_15];
+  my $expected_snv_file = q[test.vcf.gz];
+  like($test->snv_path, $expected_snv_path, qq[snv path for RNA library is correct]);
+  lives_and {is basename($test->snv_file), $expected_snv_file, q[snv file for RNA library is correct]};
 }
 
 1;

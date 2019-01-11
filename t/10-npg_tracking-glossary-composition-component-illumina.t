@@ -90,6 +90,30 @@ subtest 'unknown attrs' => sub {
     'error accessing undefined attribute';
 };
 
+subtest 'JSON serialization' => sub {
+  plan tests => 5;
+
+  my $c = $pname->new(id_run => 1, position => 2, tag_index => 3, subset => 'human');
+  my $j = '{"id_run":1,"position":2,"subset":"human","tag_index":3}';
+  is ($c->freeze, $j, 'serialization to an ordered json string');
+
+  my $c1 = $pname->thaw($j);
+  lives_ok { $pname->thaw($j, component_class => $pname) }
+    'can supply component class';
+  lives_ok { $pname->thaw($j, component_class => 'dfggfg') }
+    'can supply an arbitrary component class';
+
+  my $version = `git describe --dirty --always`;
+  $version =~ s/\s+//;
+  $j = qr/\{"__CLASS__":"npg_tracking::glossary::composition::component::illumina-(.+)?$version","id_run":1,"position":2,"subset":"human","tag_index":3\}/;
+  like ($c->freeze(with_class_names => 1), $j,
+    'serialization to an ordered json string with a class name');
+
+  $j = '{"__CLASS__":"npg_tracking::glossary::composition::component::illumina-100.0","id_run":1,"position":2,"subset":"human","tag_index":3}';  
+  lives_ok { $pname->thaw($j) }
+    'can be deserialized from a string containing the class name';
+};
+
 subtest 'compare components' => sub {
   plan tests => 5;
 
@@ -125,21 +149,6 @@ subtest 'compute digest' => sub {
   $c  = $pname->new(position => 2, id_run => 1);
   is($c->digest, $d, 'the same sha256 digest');
   is($c->digest('md5'), $md5, 'the same md5');
-};
-
-subtest 'file names' => sub {
-  plan tests => 6;
-
-  my $c  = $pname->new(id_run => 1, position => 2);
-  is($c->filename, '1_2', 'without tag index');
-  $c  = $pname->new(id_run => 1, position => 2, tag_index => 1);
-  is($c->filename, '1_2#1', 'with tag index');
-  is($c->filename('.bam'), '1_2#1.bam', 'with tag index, extention given');
-  is($c->filename('_table'), '1_2#1_table', 'extention without dot given');
-  $c  = $pname->new(id_run => 1, position => 2, tag_index => 1, subset => 'phix');
-  is($c->filename, '1_2#1_phix', 'with subset');
-  $c  = $pname->new(id_run => 1, position => 2, subset => 'human');
-  is($c->filename, '1_2_human', 'with subset, without tag index');
 };
 
 1;
