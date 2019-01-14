@@ -10,6 +10,9 @@ LIST OF CHANGES
      drop a check for tag existence when unsetting a tag
   - staging monitor to set/fix tracking db record about instrument side and
     workflow type by setting/resetting appropriate run tags
+ - Change staging area monitor so for NovaSeq runs, both CopyComplete + RTAComplete
+   or RTAComplete + max waiting time must be true before a run can be considered
+   copy complete.
 
 release 87.4
  - changes to support geno_refset repository
