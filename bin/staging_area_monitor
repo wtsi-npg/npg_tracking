@@ -103,13 +103,13 @@ while (1) {
                 my $run_complete = $folder->has_rta_complete_file();
                 $folder->check_cycle_count($latest_cycle, $run_complete);
                 $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
-                                              : $folder->tracking_run()->unset_tag( $folder->username(), 'copying_problem' );
+                                              : $folder->tracking_run()->unset_tag( 'copying_problem' );
                 next;
             }
 
             if ( $run_status eq 'run complete' ) {
                 $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
-                                              : $folder->tracking_run()->unset_tag( $folder->username(), 'copying_problem' );
+                                              : $folder->tracking_run()->unset_tag( 'copying_problem' );
                 $folder->update_folder();
 
                 # Integrity check - got everything.

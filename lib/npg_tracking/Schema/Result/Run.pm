@@ -387,19 +387,6 @@ sub _event_type_rs {
     return $self->result_source->schema->resultset('EventType')->new( {} );
 }
 
-=head2 _tag_rs
-
-Create a dbic Tag result set as shorthand and to access the row validation
-methods in that class.
-
-=cut
-
-sub _tag_rs {
-    my ($self) = @_;
-
-    return $self->result_source->schema->resultset('Tag')->new( {} );
-}
-
 =head2 _user_rs
 
 Create a dbic User result set as shorthand and to access the row validation
@@ -601,196 +588,91 @@ sub run_status_event {
     return $insert->id_event();
 }
 
-=head2 _map_opposed_tags
-
-Create a hashref that matches mutually exclusive run tags together.
-
-=cut
-
-sub _map_opposed_tags {
-    my ($self) = @_;
-
-    # Make some shorthand.
-    my $shorter = sub { $self->_tag_rs->_insist_on_valid_row($_[0]); };
-
-    my $paired_read_id = $shorter->('paired_read')->id_tag();
-    my $single_read_id = $shorter->('single_read')->id_tag();
-    my $paired_end_id  = $shorter->('paired_end')->id_tag();
-    my $single_end_id  = $shorter->('single_end')->id_tag();
-    my $good_id        = $shorter->('good')->id_tag();
-    my $bad_id         = $shorter->('bad')->id_tag();
-    my $slot_a_id      = $shorter->('fc_slotA')->id_tag();
-    my $slot_b_id      = $shorter->('fc_slotB')->id_tag();
-
-    $self->{opposite_tag} = {
-        $paired_read_id => $single_read_id,
-        $single_read_id => $paired_read_id,
-
-        $paired_end_id  => $single_end_id,
-        $single_end_id  => $paired_end_id,
-
-        $good_id        => $bad_id,
-        $bad_id         => $good_id,
-
-        $slot_a_id      => $slot_b_id,
-        $slot_b_id      => $slot_a_id,
-    };
-
-    return;
-}
-
-=head2 _set_mutually_exclusive_tags
-
-Some tags are paired and mutually exclusive (paired_end/single_end,
-paired_read/single_read, good/bad). This is method is called by set_tag to do
-the heavy lifting of setting one tag and making sure the opposite tag is not
-set.
-
-=cut
-
-sub _set_mutually_exclusive_tags {
-    my ( $self, $user_identifier, $is_tag_id, $is_not_tag_id ) = @_;
-
-    my $user_id =
-        $self->_user_rs->_insist_on_valid_row($user_identifier)->id_user();
-
-    my $tag_run_rs =
-        $self->result_source->schema->resultset('TagRun')->search(
-            {
-                id_run => $self->id_run(),
-                id_tag => { IN => [ $is_tag_id, $is_not_tag_id ] },
-            }
-    );
-
-
-    my $already_set = 0;
-    while ( my $row = $tag_run_rs->next() ) {
-        if ( $row->id_tag() eq $is_not_tag_id ) {
-            $row->delete();
-            next;
-        }
-
-        if ( $row->id_tag() eq $is_tag_id ) {
-            $already_set = 1;
-        }
-    }
-
-    return if $already_set;
-
-    $self->result_source->schema->resultset('TagRun')->create(
-        {
-            id_run  => $self->id_run(),
-            id_tag  => $is_tag_id,
-            id_user => $user_id,
-            date    => $self->get_time_now(),
-        }
-    );
-
-
-    return;
-}
-
 =head2 set_tag
 
-General method for setting/creating TagRun rows.
+Assigns a tag to this run if this tag is not already assigned.
+If an incompatible is registered for the argument tag, the
+incompatible tag is removed after this tag is assigned.
+
+Returns 1 if the tag was assigned, 0 otherwise.
+
+Error if the transaction fails for any reason, includng a failure
+to roll back. Error if the user identifier is invalid.
 
 =cut
 
 sub set_tag {
-    my ( $self, $user_identifier, $tag_identifier ) = @_;
+    my ($self, $user_identifier, $tag) = @_;
 
-    if ( !$tag_identifier ) {
-        carp 'No tag supplied.';
-        return;
-    }
+    $tag or croak 'Tag is required.';
 
     my $user_id =
         $self->_user_rs->_insist_on_valid_row($user_identifier)->id_user();
 
-    my $tag_id =
-        $self->_tag_rs->_insist_on_valid_row($tag_identifier)->id_tag();
+    my $tag_row = $self->result_source()
+                       ->related_source('tag_runs')
+                       ->related_source('tag')
+                       ->resultset()
+                       ->find({tag => $tag});
+    $tag_row or croak "Cannot set unknown tag '$tag'";
 
-    ( scalar keys %{ $self->{opposite_tag} } ) || $self->_map_opposed_tags();
-
-    if ( defined $self->{opposite_tag}{$tag_id} ) {
-        $self->_set_mutually_exclusive_tags(
-            $user_identifier, $tag_id, $self->{opposite_tag}{$tag_id},
-        );
-        return;
-    }
-
-    $self->result_source->schema->resultset('TagRun')->find_or_create(
-        {
+    my $transaction = sub {
+        my $tag_set = 0;
+        my $tag_run = $self->tag_runs->find_or_new({
             id_run  => $self->id_run(),
-            id_tag  => $tag_id,
+            id_tag  => $tag_row->id_tag(),
             date    => $self->get_time_now(),
-            id_user => $user_id,
-        },
-        { key => 'u_idrun_idtag' }
-    );
+            id_user => $user_id
+        });
+        if (!$tag_run->in_storage()) {
+            my $itag = $tag_row->incompatible_tag();
+            $tag_run->insert();
+            if ($itag) {
+                $self->unset_tag($itag);
+            }
+            $tag_set = 1;
+        }
 
-    return;
+        return $tag_set;
+    };
+
+    return $self->result_source()->storage()->txn_do($transaction);
 }
 
 =head2 unset_tag
 
-General method for unsetting TagRun rows. It won't complain if the tag was
-already unset on the run. Also note that unsetting a tag that has a mutually
-exlusive opposite number DOES NOT set that opposite number (or unset it).
+Removes a record linking an argument tag to this run.
+No error if the tag was not set.
 
 =cut
 
 sub unset_tag {
-    my ( $self, $user_identifier, $tag_identifier ) = @_;
-
-    my $user_id =
-        $self->_user_rs->_insist_on_valid_row($user_identifier)->id_user();
-
-    my $tag_id =
-        $self->_tag_rs->_insist_on_valid_row($tag_identifier)->id_tag();
-
-#    ( scalar keys %{ $self->{opposite_tag} } ) || $self->_map_opposed_tags();
-
-#    if ( defined $self->{opposite_tag}{$tag_id} ) {
-#        $self->_set_mutually_exclusive_tags(
-#            $user_identifier, $self->{opposite_tag}{$tag_id}, $tag_id,
-#        );
-#        return;
-#    }
-
-    my $record = 
-        $self->result_source->schema->resultset('TagRun')->search(
-            {
-                id_run  => $self->id_run(),
-                id_tag  => $tag_id,
-            }
-        );
-
-    return $record->delete();
+    my ($self, $tag) = @_;
+    $self->tag_run4tag($tag)->delete;
+    return;
 }
 
 =head2 is_tag_set
 
-Test whether a suppled tag (db id or text) is set for the run. Returns 0 if
-not, and 1 if it is. Actually it returns the number of times it is set for the
-run. This should only ever be 1, but the method doesn't complain or even check
-if it's not.
+Returns true if the argument tag is set for the run, false otherwise.
 
 =cut
 
 sub is_tag_set {
-    my ( $self, $tag_identifier ) = @_;
+    my ($self, $tag) = @_;
+    return $self->tag_run4tag($tag)->count ? 1 : 0;
+}
 
-    my $tag_id =
-        $self->_tag_rs->_insist_on_valid_row($tag_identifier)->id_tag();
+=head2 tag_run4tag
 
-    return 
-        $self->result_source->schema->resultset('TagRun')->search(
-            {
-                id_run  => $self->id_run(),
-                id_tag  => $tag_id,
-            }
-        )->count();
+Returns a TagRun object for this run for an argument tag if such a
+record exists, undefined value if no record.
+
+=cut
+
+sub tag_run4tag {
+    my ($self, $tag) = @_;
+    return $self->tag_runs->search({'tag.tag' => $tag}, {join => 'tag'});
 }
 
 =head2 forward_read

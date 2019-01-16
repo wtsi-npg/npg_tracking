@@ -2,38 +2,24 @@ use strict;
 use warnings;
 use Test::More tests => 108;
 use Test::Exception;
-use Test::Warn;
-use DateTime::Duration;
-use POSIX qw(strftime);
-
 use t::dbic_util;
 
 use_ok('npg_tracking::Schema::Result::Run');
-
 
 my $schema = t::dbic_util->new->test_schema();
 my $test;
 my $test_run_id = 1;
 
-lives_ok {
-            $test = $schema->resultset('Run')->
-                        find( { id_run => $test_run_id } )
-         }
-         'Create test object';
-
+lives_ok {$test = $schema->resultset('Run')->find( { id_run => $test_run_id } )}
+    'Create test object';
 isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
-
 
 {
     my $event_type_rs = $test->_event_type_rs();
-    my $tag_rs        = $test->_tag_rs();
     my $user_rs       = $test->_user_rs();
 
     isa_ok( $event_type_rs, 'npg_tracking::Schema::Result::EventType',
             'Event type result set' );
-
-    isa_ok( $tag_rs, 'npg_tracking::Schema::Result::Tag',
-            'Tag result set' );
 
     isa_ok( $user_rs, 'npg_tracking::Schema::Result::User',
             'User result set' );
@@ -153,122 +139,68 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
     $et_rs->create($et_query);
 }
 
-#
-# Single/paired tag
-#
-
-my $rta_query         = { id_run => $test_run_id,
-                          id_tag => 16 };
-
-my $paired_read_query = { id_run => $test_run_id,
-                          id_tag => 17 };
-
-my $single_read_query = { id_run => $test_run_id,
-                          id_tag => 18 };
-
-my $multiplex_query   = { id_run => $test_run_id,
-                          id_tag => 20 };
-
-
-# Note that SQLite will use the next free ROWID, so we can't use a change in
-# the primary key to check that a new row has actually been created.
-
-my $paired_tag_rs = $schema->resultset('TagRun')->search($paired_read_query);
-
-my $single_tag_rs = $schema->resultset('TagRun')->search($single_read_query);
-
-# Make sure we start off in the right place. (This is a test of the test.)
-is( $paired_tag_rs->count(), 1, 'Start off with one \'paired\' tag' );
-is( $single_tag_rs->count(), 0, 'Start off with no \'single\' tags' );
-
-# Test is_tag_set method while we're here.
-is( $test->is_tag_set('paired_read'), 1, 'Predicate test on a set tag' );
-is( $test->is_tag_set('single_read'), 0, 'Predicate test on an unset tag' );
-
-my $test_date = $paired_tag_rs->first->date();
-
 {
+    my $rta_query         = { id_run => $test_run_id,
+                              id_tag => 16 };
+    my $paired_read_query = { id_run => $test_run_id,
+                              id_tag => 17 };
+    my $single_read_query = { id_run => $test_run_id,
+                              id_tag => 18 };
+    my $multiplex_query   = { id_run => $test_run_id,
+                              id_tag => 20 };
+
+    my $paired_tag_rs = $schema->resultset('TagRun')->search($paired_read_query);
+    my $single_tag_rs = $schema->resultset('TagRun')->search($single_read_query);
+
+    # Make sure we start off in the right place. (This is a test of the test.)
+    is( $paired_tag_rs->count(), 1, 'Start off with one \'paired\' tag' );
+    is( $single_tag_rs->count(), 0, 'Start off with no \'single\' tags' );
+
+    # Test is_tag_set method while we're here.
+    is( $test->is_tag_set('paired_read'), 1, 'Predicate test on a set tag' );
+    is( $test->is_tag_set('single_read'), 0, 'Predicate test on an unset tag' );
+
     # Start over.
     my $tg_rs = $schema->resultset('TagRun');
 
-    $test = $schema->resultset('Run')->new( { id_run => $test_run_id } );
-
-    warning_is { $test->set_tag(3) } { carped => 'No tag supplied.' },
-               'Carp about missing tag argument';
+    throws_ok { $test->set_tag(3) } qr/Tag is required/,
+        'error on missing tag argument';
+    throws_ok { $test->set_tag(3, 'some_tag') }
+        qr/Cannot set unknown tag \'some_tag\'/,
+        'error on setting a non-esisting tag';
+    throws_ok { $test->set_tag('use_unknown', 'rta') }
+        qr/Invalid identifier: use_unknown/,
+        'error on using an invalid user name';
 
     my $tagrun_rs = $tg_rs->search($rta_query);
-
     is( $tagrun_rs->count(), 0, 'Make sure rta tag is not already set' );
-
-    lives_ok { $test->set_tag( 3, 'rta' ) } 'Use general method to set tag';
-
+    is( $test->set_tag( 3, 'rta' ), 1, 'Use general method to set rta tag');
     $tagrun_rs = $tg_rs->search($rta_query);
-
     is( $tagrun_rs->count(), 1, 'rta tag has been set' );
 
     $tagrun_rs = $tg_rs->search($single_read_query);
-
     is( $tagrun_rs->count(), 0, 'single_read tag is not already set' );
-
-    lives_ok { $test->set_tag( 3, 'single_read' ) }
-             'Same method for paired tags';
-
+    is( $test->set_tag( 3, 'single_read' ), 1, 'single_read tag is set');
     $tagrun_rs = $tg_rs->search($single_read_query);
-
     is( $tagrun_rs->count(), 1, 'single_read tag has been set' );
-
     $tagrun_rs = $tg_rs->search($paired_read_query);
-
     is( $tagrun_rs->count(), 0, 'paired_read tag has been removed' );
 
-
-    lives_ok { $test->unset_tag( 3, 'rta' ) }
-             'Use general method to unset tag';
-
+    lives_ok { $test->unset_tag('rta' ) } 'Use general method to unset tag';
     $tagrun_rs = $tg_rs->search($rta_query);
-
     is( $tagrun_rs->count(), 0, 'rta tag has been removed' );
 
-    lives_ok { $test->unset_tag( 3, 'single_read' ) }
-             'Same unset method for paired tags';
-
+    lives_ok { $test->unset_tag('single_read' ) } 'Same unset method for paired tags';
     $tagrun_rs = $tg_rs->search($single_read_query);
-
     is( $tagrun_rs->count(), 0, 'single_read tag has been removed' );
-
     $tagrun_rs = $tg_rs->search($paired_read_query);
-
     is( $tagrun_rs->count(), 0, 'paired_read tag has not been set' );
 
-    $test->set_tag( 3, 'paired_read' );
-    $tagrun_rs = $tg_rs->search($paired_read_query);
-    my $row = $tagrun_rs->next();
-
-    # SQLite seems to return datetimes rather than dates.
-    my $today = strftime( '%F', localtime );
-    like( $row->date(), qr/^$today/msx, 'The date is correct' );
-
-    my $old_date = '1999-04-22';
-    $row->date($old_date);
-    $row->update();
-
-    $test->set_tag( 3, 'paired_read' );
-    $tagrun_rs = $tg_rs->search($paired_read_query);
-    like( $tagrun_rs->next->date(), qr/^$old_date/msx,
-        'The date is not changed if set_tag is called again for a matched tag'
-    );
-
-    $tagrun_rs = $tg_rs->search($multiplex_query);
-
-    is( $tagrun_rs->count(), 1, 'multiplex tag is already set' );
-    $row = $tagrun_rs->next();
-    $row->date($old_date);
-    $row->update();
-
-    $tagrun_rs = $tg_rs->search($multiplex_query);
-    like( $tagrun_rs->next->date(), qr/^$old_date/msx,
-      'The date is not changed if set_tag is called again for a singleton tag'
-    );
+    is( $test->set_tag( 3, 'paired_read' ), 1, 'paired read tag set');
+    is( $test->set_tag( 3, 'paired_read' ), 0, 'paired read tag not set again');
+    
+    lives_ok { $test->unset_tag('some_tag') }
+        'no error unsetting non-existing tag';
 }
 
 # Tests for updating instrument status

@@ -62,7 +62,7 @@ sub read_long_info {
                       : $run_db->set_tag( $username, 'single_read' );
 
   $run_is_indexed     ? $run_db->set_tag(   $username, 'multiplex' )
-                      : $run_db->unset_tag( $username, 'multiplex' );
+                      : $run_db->unset_tag( 'multiplex' );
 
   $run_db->set_tag( $username, 'rta' ); # run is always RTA in year 2015
 
