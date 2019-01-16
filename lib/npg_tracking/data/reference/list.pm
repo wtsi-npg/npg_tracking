@@ -51,6 +51,7 @@ Readonly::Scalar our $TAG_SETS_DIR       => q[tag_sets];
 Readonly::Scalar our $TAXON_IDS_DIR      => q[taxon_ids];
 Readonly::Scalar our $BIN_DIR            => q[bin];
 Readonly::Scalar our $ORG_NAME_DELIM     => q[_];
+Readonly::Scalar our $CUSTOM_ANALYSIS_DIR=> q[custom_analysis];
 
 Readonly::Scalar our $LAST             => -1;
 Readonly::Scalar our $SECOND_FROM_END  => -2;
@@ -596,6 +597,22 @@ sub ref_file_prefix {
     }
     croak qq[Reference file with .fa or .fasta or .fna extension not found in $fasta_dir];
 }
+
+=head2 custom_analysis repository
+
+An absolute path to the custom_analysis repository.
+
+=cut
+has 'custom_analysis_repository' => (isa        => 'NPG_TRACKING_REFERENCE_REPOSITORY',
+                                     is         => 'ro',
+                                     required   => 0,
+                                     lazy_build => 1,
+);
+sub _build_custom_analysis_repository {
+    my $self = shift;
+    return catdir($self->repository, $CUSTOM_ANALYSIS_DIR);
+}
+
 
 no Moose::Role;
 
