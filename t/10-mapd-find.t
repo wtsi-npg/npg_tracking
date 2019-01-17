@@ -14,7 +14,7 @@ my $tmp_repos = tempdir(CLEANUP => 1);
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = $tmp_repos;
 
 my $ref_dir = catdir($tmp_repos,'custom_analysis','mapd','Homo_sapiens','1000Genomes_hs37d5');
-`mkdir -p $ref_dir/{MappableBINS,chromosomes}`;
+make_path(catdir($ref_dir, 'MappableBINS'), catdir($ref_dir, 'chromosomes'));
 `touch $ref_dir/MappableBINS/Combined_Homo_sapiens_1000Genomes_hs37d5_100000_151bases_mappable_bins_GCperc_INPUT.txt`;
 `touch $ref_dir/MappableBINS/Combined_Homo_sapiens_1000Genomes_hs37d5_100000_151bases_mappable_bins.bed`;
 `touch $ref_dir/MappableBINS/Combined_Homo_sapiens_1000Genomes_hs37d5_500000_151bases_mappable_bins_GCperc_INPUT.txt`;
