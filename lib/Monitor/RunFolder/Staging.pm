@@ -33,8 +33,8 @@ Readonly::Array  my @NO_MOVE_NAMES        => qw( npgdonotmove npg_do_not_move );
 Readonly::Scalar my $MODE_INDEX           => 2;
 Readonly::Scalar my $EXP_CBCLS_PER_CYCL   => 2;
 
-Readonly::Scalar my $RTA_COMPLETE_FN      => q[RTAComplete];
-Readonly::Scalar my $COPY_COMPLETE_FN     => q[CopyComplete];
+Readonly::Scalar my $RTA_COMPLETE_FN      => q[RTAComplete\.txt];
+Readonly::Scalar my $COPY_COMPLETE_FN     => q[CopyComplete\.txt];
 
 has 'rta_complete_wait' => (isa          => 'Int',
                             is           => 'ro',
@@ -61,7 +61,11 @@ sub _find_files {
     eval { @file_list = io("$run_path/")->all_files(); 1; }
         or do { carp $EVAL_ERROR; return 0; };
 
-    my @markers = map {q().$_} grep { $_ =~ m/ $filename /msx } @file_list;
+    my @markers = map {q().$_} grep { basename($_) =~ m/\A $filename \Z/msx } @file_list;
+
+    if ( scalar @markers > 1 ) {
+      carp qq[Unexpected to find multiple files matching pattern '$filename' in staging.];
+    }
 
     return @markers;
 }

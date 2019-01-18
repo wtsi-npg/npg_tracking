@@ -168,7 +168,7 @@ sub touch_file {
 }
 
 subtest 'folder identifies copy complete for HiSeq (Non-NovaSeq)' => sub {
-    plan tests => 2;
+    plan tests => 7;
     my $basedir = tempdir( CLEANUP => 1 );
 
     my $fs_run_folder = qq[$basedir/IL3/incoming/100622_IL3_01234];
@@ -194,14 +194,21 @@ subtest 'folder identifies copy complete for HiSeq (Non-NovaSeq)' => sub {
 
     ok(!$run_folder->is_run_complete(), 'Run is not complete');
 
-    my $path_to_complete = qq[$fs_run_folder/RTAComplete];
-    touch_file($path_to_complete);
+    for my $file_name (qw[ RTAComplete RTAcomplete rtacomplete RTAComplete.tsv RTAComplete_old.txt ]) {
+      note $file_name;
+      my $path_to_complete = qq[$fs_run_folder/$file_name];
+      touch_file($path_to_complete);
+      ok(!$run_folder->is_run_complete(), 'Run is not complete');
+      unlink $path_to_complete or die "Could not delete file $path_to_complete: $!";
+    }
 
+    my $path_to_complete = qq[$fs_run_folder/RTAComplete.txt];
+    touch_file($path_to_complete);
     ok($run_folder->is_run_complete(), 'Run is complete');
 };
 
 subtest 'folder identifies copy complete for NovaSeq' => sub {
-    plan tests => 6;
+    plan tests => 11;
     my $basedir = tempdir( CLEANUP => 1 );
 
     my $fs_run_folder = qq[$basedir/IL3/incoming/100622_IL3_01234];
@@ -228,11 +235,19 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
 
     ok(!$run_folder->is_run_complete(), 'Run is not complete');
 
-    my $path_to_rta_complete = qq[$fs_run_folder/RTAComplete];
-    my $path_to_copy_complete = qq[$fs_run_folder/CopyComplete];
+    my $path_to_rta_complete = qq[$fs_run_folder/RTAComplete.txt];
+    my $path_to_copy_complete = qq[$fs_run_folder/CopyComplete.txt];
 
     touch_file($path_to_rta_complete);
     ok(!$run_folder->is_run_complete(), 'Only RTAComplete is not enough for NovaSeq');
+
+    for my $file_name (qw[ CopyComplete Copycomplete copycomplete CopyComplete.tsv CopyComplete_old.txt ]) {
+      note $file_name;
+      my $path_to_wrong_copy_complete = qq[$fs_run_folder/$file_name];
+      touch_file($path_to_wrong_copy_complete);
+      ok(!$run_folder->is_run_complete(), 'Run is not complete');
+      unlink $path_to_wrong_copy_complete or die "Could not delete file $path_to_wrong_copy_complete: $!";
+    }
 
     unlink $path_to_rta_complete or die "Could not delete file $path_to_rta_complete: $!";
 
