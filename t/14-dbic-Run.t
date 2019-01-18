@@ -1,37 +1,28 @@
 use strict;
 use warnings;
-use Test::More tests => 108;
+use Test::More tests => 10;
 use Test::Exception;
 use t::dbic_util;
 
 use_ok('npg_tracking::Schema::Result::Run');
 
 my $schema = t::dbic_util->new->test_schema();
-my $test;
 my $test_run_id = 1;
+my $test = $schema->resultset('Run')->find( { id_run => $test_run_id });
 
-lives_ok {$test = $schema->resultset('Run')->find( { id_run => $test_run_id } )}
-    'Create test object';
-isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
+subtest 'simple Run object tests' => sub {
+    plan tests => 3;
 
-{
-    my $event_type_rs = $test->_event_type_rs();
-    my $user_rs       = $test->_user_rs();
-
-    isa_ok( $event_type_rs, 'npg_tracking::Schema::Result::EventType',
-            'Event type result set' );
-
-    isa_ok( $user_rs, 'npg_tracking::Schema::Result::User',
-            'User result set' );
-}
-
-{
+    isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
     is( $test->current_run_status_description(), 'run complete',
         'Current run status returned' );
-}
+    isa_ok( $test->_user_rs(), 'npg_tracking::Schema::Result::User',
+            'User result set' );
+};
 
-# Status updates.
-{
+subtest 'status updates' => sub {
+    plan tests => 36;
+
     my $new;
     lives_ok { $new = $test->update_run_status( 'run complete', 'joe_loader' ) }
              'Set a status that is already current and older than the new one';
@@ -114,10 +105,15 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
 
     $new = $test->update_run_status( 'analysis pending', 'joe_loader', $now );
     ok(!$new, 'cannot create a duplicate (same description and timestamp)'); 
-}
+};
 
-# Status events
-{
+subtest 'status events' => sub {
+    plan tests => 5;
+
+    my $event_type_rs = $test->_event_type_rs();
+    isa_ok( $event_type_rs, 'npg_tracking::Schema::Result::EventType',
+        'Event type result set' );
+ 
     my $e_rs = $schema->resultset('Event');
 
     throws_ok { $test->run_status_event('joe_loader') }
@@ -137,9 +133,11 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
     is( $ev->notification_sent(), undef, 'Notification not sent' );
 
     $et_rs->create($et_query);
-}
+};
 
-{
+subtest 'setting and unsetting tags' => sub {
+    plan tests => 22;
+
     my $rta_query         = { id_run => $test_run_id,
                               id_tag => 16 };
     my $paired_read_query = { id_run => $test_run_id,
@@ -201,10 +199,11 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
     
     lives_ok { $test->unset_tag('some_tag') }
         'no error unsetting non-existing tag';
-}
+};
 
-# Tests for updating instrument status
-{
+subtest 'updating instrument status' => sub {
+    plan tests => 26;
+
     my $one_of_two_active =
         $schema->resultset('Run')->find( { id_run => 5329 } );
     my $two_of_two_active =
@@ -290,35 +289,35 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
       'run cancelled', 'new current run status is "run cancelled"');
     is( $single->instrument->current_instrument_status(),
         'wash required', 'Instrument status changed to wash required' );
-}
+};
 
-{ #check single read run
-    my$r = $schema->resultset('Run')->find(6699);
+subtest 'expected cycle count' => sub {
+    plan tests => 12;
+
+    my $r = $schema->resultset('Run')->find(6699);
     ok ($r, 'single read run');
     lives_and {cmp_ok($r->forward_read->expected_cycle_count, '==', 54, ' expected cycle count')} 'forward read';
     lives_and {is($r->reverse_read, undef, ' undefined')} 'reverse read';
-}
-{ #check paired read run
-    my$r = $schema->resultset('Run')->find(6670);
+
+    $r = $schema->resultset('Run')->find(6670);
     ok ($r, 'paired read run');
     lives_and {cmp_ok($r->forward_read->expected_cycle_count, '==', 100, ' expected cycle count')} 'forward read';
     lives_and {cmp_ok($r->reverse_read->expected_cycle_count, '==', 100, ' expected cycle count')} 'reverse read';
-}
-{ #check single read plexed run
-    my$r = $schema->resultset('Run')->find(6588);
+
+    $r = $schema->resultset('Run')->find(6588);
     ok ($r, 'single read plexed run');
     lives_and {cmp_ok($r->forward_read->expected_cycle_count, '==', 50, ' expected cycle count')} 'forward read';
     lives_and {is($r->reverse_read, undef, ' undefined')} 'reverse read';
-}
-{ #check paired read plexed run
-    my$r = $schema->resultset('Run')->find(6668);
+
+    $r = $schema->resultset('Run')->find(6668);
     ok ($r, 'paired read plexed run');
     lives_and {cmp_ok($r->forward_read->expected_cycle_count, '==', 100, ' expected cycle count')} 'forward read';
     lives_and {cmp_ok($r->reverse_read->expected_cycle_count, '==', 100, ' expected cycle count')} 'reverse read';
-}
+};
 
-# Find current status - alter count
-{
+subtest 'current status' => sub {
+    plan tests => 2;
+
     my$r = $schema->resultset('Run')->find($test_run_id);
     my $crs = $r->current_run_status();
     $crs->update({iscurrent=>0});
@@ -330,6 +329,64 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
     $r->run_statuses->update({iscurrent=>1});
     dies_ok { $r->current_run_status_description()} 'Dies for multiple current run statuses' ;
   }
-}
+};
+
+subtest 'set and retrieve instrument side' => sub {
+    plan tests => 11;
+
+    my $id_run = 26487;
+    my $id_user = 3;
+    my $run = $schema->resultset('Run')->find($id_run);
+    ok ($run, 'run retrieved');
+
+    is ($run->instrument_side(), undef, 'instrument side is undefined');
+    $run->set_tag($id_user, 'fc_slotA');
+    is ($run->instrument_side(), 'A', 'instrument side is A');
+    $run->set_tag($id_user, 'fc_slotB');
+    is ($run->instrument_side(), 'B', 'instrument side is B');
+
+    throws_ok {$run->set_instrument_side()}
+      qr/Instrument side should be given/,
+      'error if side value is not given';
+    throws_ok {$run->set_instrument_side('C', $id_user)}
+      qr/Cannot set unknown tag \'fc_slotC\'/,
+      'error if side value is not valid'; 
+
+    is ($run->set_instrument_side('B', $id_user), 0, 'no need to reset the side');
+    is ($run->set_instrument_side('A', $id_user, ), 1, 'instrument side is reset');
+    is ($run->instrument_side(), 'A', 'instrument side is A');
+    is ($run->set_instrument_side('B', $id_user), 1, 'instrument side is reset');
+    is ($run->instrument_side(), 'B', 'instrument side is B');   
+};
+
+subtest 'set and retrieve workflow type' => sub {
+    plan tests => 11;
+
+    my $id_run = 26487;
+    my $id_user = 3;
+    my $run = $schema->resultset('Run')->find($id_run);
+    ok ($run, 'run retrieved');
+
+    is ($run->workflow_type(), undef, 'workflow type is undefined');
+    $run->set_tag($id_user, 'workflow_NovaSeqXp');
+    is ($run->workflow_type(), 'NovaSeqXp', 'workflow type is NovaSeqXp');
+    $run->set_tag($id_user, 'workflow_NovaSeqStandard');
+    is ($run->workflow_type(), 'NovaSeqStandard', 'instrument side is NovaSeqStandard');
+
+    throws_ok {$run->set_workflow_type()}
+        qr/Run workflow type should be given/,
+        'error if side value is not given';
+    throws_ok {$run->set_workflow_type('some', $id_user)}
+        qr/Cannot set unknown tag \'workflow_some\'/,
+        'error if side value is not valid'; 
+
+    is ($run->set_workflow_type('NovaSeqStandard', $id_user), 0,
+        'no need to rese workflow type');
+    is ($run->set_workflow_type('NovaSeqXp', $id_user), 1, 'workflow type is reset');
+    is ($run->workflow_type(), 'NovaSeqXp', 'workflow type is NovaSeqXp');
+    is ($run->set_workflow_type('NovaSeqStandard', $id_user), 1,
+        'workflow type is reset');
+    is ($run->workflow_type(), 'NovaSeqStandard', 'instrument side is NovaSeqStandard');   
+};
 
 1;
