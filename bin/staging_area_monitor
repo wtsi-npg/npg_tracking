@@ -115,7 +115,7 @@ while (1) {
 
             if ( $run_status eq 'run in progress' ) {
                 my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
-                my $run_complete = $folder->has_rta_complete_file();
+                my $run_complete = $folder->is_run_complete();
                 $folder->check_cycle_count($latest_cycle, $run_complete);
                 $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
                                               : $folder->tracking_run()->unset_tag( 'copying_problem' );
