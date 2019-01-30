@@ -57,35 +57,50 @@ while (1) {
             my $run_status = $folder->current_run_status_description();
             my $id_run = $folder->tracking_run()->id_run;
 
-            _log("Run status $run_status");
-
-            # skip changes to run in db if status is after run complete
+            _log("Run $id_run status $run_status");
 
             if ($folder->is_in_analysis) {
                 _log('Folder is in /analysis/');
-                if ($dry_run) {
-                    _log('DRY RUN - not calling move_to_outgoing');
-                } else {
-                    try {
-                        if($run_status eq 'qc complete') {
+
+                if( $run_status eq 'qc complete') {
+                    if ($dry_run) {
+                        _log('DRY RUN - not moving to outgoing');
+                    } else {
+                        _log('Will try to move to outgoing');
+                        try {
                             _log($folder->move_to_outgoing());
-                        } else {
-                            _log(qq[Run $id_run status $run_status is not qc complete, not moving to outgoing]);
-                        }
-                    } catch {
-                        _log("ERROR moving to outgoing: $_");
-                    };
+                        } catch {
+                            _log("ERROR moving to outgoing: $_");
+                        };
+                    }
                 }
-                next;
-            } else {
-                _log('Folder is in /incoming/');
+                next; # Nothing else to do for a folder in /analysis/
             }
 
-            # If we don't remember seeing it before set the staging tag, folder name and glob;
+            _log('Folder is in /incoming/');
+
+            # If we don't remember seeing it before set the folder name and glob;
+            # set staging tag, if appropriate, set/fix instrument side, workflow side.
+            # Previously we avoided making changes to the db if status was at or after
+            # 'run complete'. We might consider reinstating this rule.
             if ( not defined $previous_size_of{$run_path} ) {
                 $folder->update_folder();
                 $folder->tracking_run()->set_tag( $folder->username(), 'staging' );
                 _log('Set staging tag');
+                try {
+                    my $iside = $folder->set_instrument_side();
+                    if ($iside) {
+                        _log("Instrument side is set to $iside");
+                    }
+                    my $wf_type = $folder->set_workflow_type();
+                    if ($wf_type) {
+                        _log("Workflow type is set to $wf_type");
+                    }
+                } catch {
+                    _log('Error setting instrument side and/or run workflow type: ' . $_);
+                };
+                # We might want to expand this section to set/fix other tags, see currently
+                # unused read_long_info method in Monitor::RunFolder
                 $previous_size_of{$run_path} = 0;
             }
 
@@ -100,16 +115,16 @@ while (1) {
 
             if ( $run_status eq 'run in progress' ) {
                 my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
-                my $run_complete = $folder->has_rta_complete_file();
+                my $run_complete = $folder->is_run_complete();
                 $folder->check_cycle_count($latest_cycle, $run_complete);
                 $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
-                                              : $folder->tracking_run()->unset_tag( $folder->username(), 'copying_problem' );
+                                              : $folder->tracking_run()->unset_tag( 'copying_problem' );
                 next;
             }
 
             if ( $run_status eq 'run complete' ) {
                 $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
-                                              : $folder->tracking_run()->unset_tag( $folder->username(), 'copying_problem' );
+                                              : $folder->tracking_run()->unset_tag( 'copying_problem' );
                 $folder->update_folder();
 
                 # Integrity check - got everything.

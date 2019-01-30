@@ -60,11 +60,12 @@ sub _expected_name {
   my $self = shift;
 
   my $date = $self->tracking_run()->loading_date();
-
+  my $side = $self->tracking_run()->instrument_side;
+  $side ||= 'A';
   return sprintf '%s_%s_%s%s',
     $date ? substr($date->ymd(q[]), 2) : q[000000],
     $self->tracking_run()->name,
-    $self->tracking_run()->is_tag_set('fc_slotB') ? 'B' : 'A',
+    $side,
     $self->tracking_run()->flowcell_id() ? q[_] . $self->tracking_run()->flowcell_id() : q[];
 }
 

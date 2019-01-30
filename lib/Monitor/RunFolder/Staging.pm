@@ -24,11 +24,17 @@ our $VERSION = '0';
 Readonly::Scalar my $MAXIMUM_CYCLE_LAG    => 6;
 Readonly::Scalar my $MTIME_INDEX          => 9;
 Readonly::Scalar my $SECONDS_PER_MINUTE   => 60;
+Readonly::Scalar my $MINUTES_PER_HOUR     => 60;
+Readonly::Scalar my $SECONDS_PER_HOUR     => $SECONDS_PER_MINUTE * $MINUTES_PER_HOUR;
+Readonly::Scalar my $MAX_COMPLETE_WAIT    => 6 * $SECONDS_PER_HOUR;
 Readonly::Scalar my $RTA_COMPLETE         => 10 * $SECONDS_PER_MINUTE;
 Readonly::Scalar my $INTENSITIES_DIR_PATH => 'Data/Intensities';
 Readonly::Array  my @NO_MOVE_NAMES        => qw( npgdonotmove npg_do_not_move );
 Readonly::Scalar my $MODE_INDEX           => 2;
 Readonly::Scalar my $EXP_CBCLS_PER_CYCL   => 2;
+
+Readonly::Scalar my $RTA_COMPLETE_FN      => q[RTAComplete\.txt];
+Readonly::Scalar my $COPY_COMPLETE_FN     => q[CopyComplete\.txt];
 
 has 'rta_complete_wait' => (isa          => 'Int',
                             is           => 'ro',
@@ -45,8 +51,8 @@ sub cycle_lag {
     return ( $self->delay() > $MAXIMUM_CYCLE_LAG ) ? 1 : 0;
 }
 
-sub has_rta_complete_file {
-    my ($self) = @_;
+sub _find_files {
+    my ($self, $filename) = @_;
     my $run_path = $self->runfolder_path();
 
     my @file_list;
@@ -55,11 +61,44 @@ sub has_rta_complete_file {
     eval { @file_list = io("$run_path/")->all_files(); 1; }
         or do { carp $EVAL_ERROR; return 0; };
 
-    my $rta = 'RTAComplete';
+    my @markers = map {q().$_} grep { basename($_) =~ m/\A $filename \Z/msx } @file_list;
 
-    my @markers = map {q().$_} grep { $_ =~ m/ $rta /msx } @file_list;
+    if ( scalar @markers > 1 ) {
+      carp qq[Unexpected to find multiple files matching pattern '$filename' in staging.];
+    }
 
-    return scalar @markers;
+    return @markers;
+}
+
+sub _has_copy_complete_file {
+    my ($self) = @_;
+    my @files = $self->_find_files($COPY_COMPLETE_FN);
+    return scalar @files;
+}
+
+sub is_run_complete {
+    my ($self) = @_;
+
+    my @markers = $self->_find_files($RTA_COMPLETE_FN);
+
+    if ( scalar @markers ) { # Has RTAComplete
+        if ( $self->platform_NovaSeq() ) {
+            if ( $self->_has_copy_complete_file() ) {
+                return 1;
+            } else {
+                my $mtime = ( stat $markers[0] )[$MTIME_INDEX];
+                my $last_modified = time() - $mtime;
+                return $last_modified > $MAX_COMPLETE_WAIT;
+            }
+        }
+        return 1;
+    } else {
+        if ( $self->platform_NovaSeq() && $self->_has_copy_complete_file() ) {
+            my $rf = $self->runfolder_path();
+            carp "NovaSeq runfolder '$rf' with CopyComplete but not RTAComplete";
+        }
+    }
+    return 0;
 }
 
 sub validate_run_complete {
@@ -81,17 +120,9 @@ sub mirroring_complete {
 
     print {*STDERR} "\tChecking for mirroring complete.\n" or carp $OS_ERROR;
 
-    my @file_list;
-
     my $run_path = $self->runfolder_path();
 
-    # The trailing slash forces IO::All to cope with symlinks.
-    eval { @file_list = io("$run_path/")->all_files(); 1; }
-        or do { carp $EVAL_ERROR; return 0; };
-
-    my $rta = 'RTAComplete';
-
-    my @markers = map {q().$_} grep { $_ =~ m/ $rta /msx } @file_list;
+    my @markers = $self->_find_files($RTA_COMPLETE_FN);
 
     my $mtime = ( scalar @markers )
                 ? ( stat $markers[0] )[$MTIME_INDEX]
@@ -416,9 +447,15 @@ script) will be ahead of the number of cycles represented in the staging area.
 This method checks for that and returns a Boolean - true for lag, false for no
 difference between the cycle counts within a limit set by $MAXIMUM_CYCLE_LAG
 
-=head2 has_rta_complete_file
+=head2 is_run_complete
 
-Return true if RTAComplete file in run folder. False otherwise.
+If not a NovaSeq runfolder, it will return true if RTAComplete file is present.
+
+If it is a NovaSeq runfolder will return true if RTAComplete and CopyComplete
+are present or if only RTAComplete is present but has been there for more than
+a timeout limit.
+
+Returns False otherwise.
 
 =head2 validate_run_complete
 
@@ -512,7 +549,7 @@ John O'Brien E<lt>jo3@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 GRL, by John O'Brien
+Copyright (C) 2019 GRL
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

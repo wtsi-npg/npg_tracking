@@ -1,51 +1,28 @@
 use strict;
 use warnings;
-use Test::More tests => 108;
+use Test::More tests => 10;
 use Test::Exception;
-use Test::Warn;
-use DateTime::Duration;
-use POSIX qw(strftime);
-
 use t::dbic_util;
 
 use_ok('npg_tracking::Schema::Result::Run');
 
-
 my $schema = t::dbic_util->new->test_schema();
-my $test;
 my $test_run_id = 1;
+my $test = $schema->resultset('Run')->find( { id_run => $test_run_id });
 
-lives_ok {
-            $test = $schema->resultset('Run')->
-                        find( { id_run => $test_run_id } )
-         }
-         'Create test object';
+subtest 'simple Run object tests' => sub {
+    plan tests => 3;
 
-isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
-
-
-{
-    my $event_type_rs = $test->_event_type_rs();
-    my $tag_rs        = $test->_tag_rs();
-    my $user_rs       = $test->_user_rs();
-
-    isa_ok( $event_type_rs, 'npg_tracking::Schema::Result::EventType',
-            'Event type result set' );
-
-    isa_ok( $tag_rs, 'npg_tracking::Schema::Result::Tag',
-            'Tag result set' );
-
-    isa_ok( $user_rs, 'npg_tracking::Schema::Result::User',
-            'User result set' );
-}
-
-{
+    isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
     is( $test->current_run_status_description(), 'run complete',
         'Current run status returned' );
-}
+    isa_ok( $test->_user_rs(), 'npg_tracking::Schema::Result::User',
+            'User result set' );
+};
 
-# Status updates.
-{
+subtest 'status updates' => sub {
+    plan tests => 36;
+
     my $new;
     lives_ok { $new = $test->update_run_status( 'run complete', 'joe_loader' ) }
              'Set a status that is already current and older than the new one';
@@ -128,10 +105,15 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
 
     $new = $test->update_run_status( 'analysis pending', 'joe_loader', $now );
     ok(!$new, 'cannot create a duplicate (same description and timestamp)'); 
-}
+};
 
-# Status events
-{
+subtest 'status events' => sub {
+    plan tests => 5;
+
+    my $event_type_rs = $test->_event_type_rs();
+    isa_ok( $event_type_rs, 'npg_tracking::Schema::Result::EventType',
+        'Event type result set' );
+ 
     my $e_rs = $schema->resultset('Event');
 
     throws_ok { $test->run_status_event('joe_loader') }
@@ -151,128 +133,77 @@ isa_ok( $test, 'npg_tracking::Schema::Result::Run', 'Correct class' );
     is( $ev->notification_sent(), undef, 'Notification not sent' );
 
     $et_rs->create($et_query);
-}
+};
 
-#
-# Single/paired tag
-#
+subtest 'setting and unsetting tags' => sub {
+    plan tests => 22;
 
-my $rta_query         = { id_run => $test_run_id,
-                          id_tag => 16 };
+    my $rta_query         = { id_run => $test_run_id,
+                              id_tag => 16 };
+    my $paired_read_query = { id_run => $test_run_id,
+                              id_tag => 17 };
+    my $single_read_query = { id_run => $test_run_id,
+                              id_tag => 18 };
+    my $multiplex_query   = { id_run => $test_run_id,
+                              id_tag => 20 };
 
-my $paired_read_query = { id_run => $test_run_id,
-                          id_tag => 17 };
+    my $paired_tag_rs = $schema->resultset('TagRun')->search($paired_read_query);
+    my $single_tag_rs = $schema->resultset('TagRun')->search($single_read_query);
 
-my $single_read_query = { id_run => $test_run_id,
-                          id_tag => 18 };
+    # Make sure we start off in the right place. (This is a test of the test.)
+    is( $paired_tag_rs->count(), 1, 'Start off with one \'paired\' tag' );
+    is( $single_tag_rs->count(), 0, 'Start off with no \'single\' tags' );
 
-my $multiplex_query   = { id_run => $test_run_id,
-                          id_tag => 20 };
+    # Test is_tag_set method while we're here.
+    is( $test->is_tag_set('paired_read'), 1, 'Predicate test on a set tag' );
+    is( $test->is_tag_set('single_read'), 0, 'Predicate test on an unset tag' );
 
-
-# Note that SQLite will use the next free ROWID, so we can't use a change in
-# the primary key to check that a new row has actually been created.
-
-my $paired_tag_rs = $schema->resultset('TagRun')->search($paired_read_query);
-
-my $single_tag_rs = $schema->resultset('TagRun')->search($single_read_query);
-
-# Make sure we start off in the right place. (This is a test of the test.)
-is( $paired_tag_rs->count(), 1, 'Start off with one \'paired\' tag' );
-is( $single_tag_rs->count(), 0, 'Start off with no \'single\' tags' );
-
-# Test is_tag_set method while we're here.
-is( $test->is_tag_set('paired_read'), 1, 'Predicate test on a set tag' );
-is( $test->is_tag_set('single_read'), 0, 'Predicate test on an unset tag' );
-
-my $test_date = $paired_tag_rs->first->date();
-
-{
     # Start over.
     my $tg_rs = $schema->resultset('TagRun');
 
-    $test = $schema->resultset('Run')->new( { id_run => $test_run_id } );
-
-    warning_is { $test->set_tag(3) } { carped => 'No tag supplied.' },
-               'Carp about missing tag argument';
+    throws_ok { $test->set_tag(3) } qr/Tag is required/,
+        'error on missing tag argument';
+    throws_ok { $test->set_tag(3, 'some_tag') }
+        qr/Cannot set unknown tag \'some_tag\'/,
+        'error on setting a non-esisting tag';
+    throws_ok { $test->set_tag('use_unknown', 'rta') }
+        qr/Invalid identifier: use_unknown/,
+        'error on using an invalid user name';
 
     my $tagrun_rs = $tg_rs->search($rta_query);
-
     is( $tagrun_rs->count(), 0, 'Make sure rta tag is not already set' );
-
-    lives_ok { $test->set_tag( 3, 'rta' ) } 'Use general method to set tag';
-
+    is( $test->set_tag( 3, 'rta' ), 1, 'Use general method to set rta tag');
     $tagrun_rs = $tg_rs->search($rta_query);
-
     is( $tagrun_rs->count(), 1, 'rta tag has been set' );
 
     $tagrun_rs = $tg_rs->search($single_read_query);
-
     is( $tagrun_rs->count(), 0, 'single_read tag is not already set' );
-
-    lives_ok { $test->set_tag( 3, 'single_read' ) }
-             'Same method for paired tags';
-
+    is( $test->set_tag( 3, 'single_read' ), 1, 'single_read tag is set');
     $tagrun_rs = $tg_rs->search($single_read_query);
-
     is( $tagrun_rs->count(), 1, 'single_read tag has been set' );
-
     $tagrun_rs = $tg_rs->search($paired_read_query);
-
     is( $tagrun_rs->count(), 0, 'paired_read tag has been removed' );
 
-
-    lives_ok { $test->unset_tag( 3, 'rta' ) }
-             'Use general method to unset tag';
-
+    lives_ok { $test->unset_tag('rta' ) } 'Use general method to unset tag';
     $tagrun_rs = $tg_rs->search($rta_query);
-
     is( $tagrun_rs->count(), 0, 'rta tag has been removed' );
 
-    lives_ok { $test->unset_tag( 3, 'single_read' ) }
-             'Same unset method for paired tags';
-
+    lives_ok { $test->unset_tag('single_read' ) } 'Same unset method for paired tags';
     $tagrun_rs = $tg_rs->search($single_read_query);
-
     is( $tagrun_rs->count(), 0, 'single_read tag has been removed' );
-
     $tagrun_rs = $tg_rs->search($paired_read_query);
-
     is( $tagrun_rs->count(), 0, 'paired_read tag has not been set' );
 
-    $test->set_tag( 3, 'paired_read' );
-    $tagrun_rs = $tg_rs->search($paired_read_query);
-    my $row = $tagrun_rs->next();
+    is( $test->set_tag( 3, 'paired_read' ), 1, 'paired read tag set');
+    is( $test->set_tag( 3, 'paired_read' ), 0, 'paired read tag not set again');
+    
+    lives_ok { $test->unset_tag('some_tag') }
+        'no error unsetting non-existing tag';
+};
 
-    # SQLite seems to return datetimes rather than dates.
-    my $today = strftime( '%F', localtime );
-    like( $row->date(), qr/^$today/msx, 'The date is correct' );
+subtest 'updating instrument status' => sub {
+    plan tests => 26;
 
-    my $old_date = '1999-04-22';
-    $row->date($old_date);
-    $row->update();
-
-    $test->set_tag( 3, 'paired_read' );
-    $tagrun_rs = $tg_rs->search($paired_read_query);
-    like( $tagrun_rs->next->date(), qr/^$old_date/msx,
-        'The date is not changed if set_tag is called again for a matched tag'
-    );
-
-    $tagrun_rs = $tg_rs->search($multiplex_query);
-
-    is( $tagrun_rs->count(), 1, 'multiplex tag is already set' );
-    $row = $tagrun_rs->next();
-    $row->date($old_date);
-    $row->update();
-
-    $tagrun_rs = $tg_rs->search($multiplex_query);
-    like( $tagrun_rs->next->date(), qr/^$old_date/msx,
-      'The date is not changed if set_tag is called again for a singleton tag'
-    );
-}
-
-# Tests for updating instrument status
-{
     my $one_of_two_active =
         $schema->resultset('Run')->find( { id_run => 5329 } );
     my $two_of_two_active =
@@ -358,35 +289,35 @@ my $test_date = $paired_tag_rs->first->date();
       'run cancelled', 'new current run status is "run cancelled"');
     is( $single->instrument->current_instrument_status(),
         'wash required', 'Instrument status changed to wash required' );
-}
+};
 
-{ #check single read run
-    my$r = $schema->resultset('Run')->find(6699);
+subtest 'expected cycle count' => sub {
+    plan tests => 12;
+
+    my $r = $schema->resultset('Run')->find(6699);
     ok ($r, 'single read run');
     lives_and {cmp_ok($r->forward_read->expected_cycle_count, '==', 54, ' expected cycle count')} 'forward read';
     lives_and {is($r->reverse_read, undef, ' undefined')} 'reverse read';
-}
-{ #check paired read run
-    my$r = $schema->resultset('Run')->find(6670);
+
+    $r = $schema->resultset('Run')->find(6670);
     ok ($r, 'paired read run');
     lives_and {cmp_ok($r->forward_read->expected_cycle_count, '==', 100, ' expected cycle count')} 'forward read';
     lives_and {cmp_ok($r->reverse_read->expected_cycle_count, '==', 100, ' expected cycle count')} 'reverse read';
-}
-{ #check single read plexed run
-    my$r = $schema->resultset('Run')->find(6588);
+
+    $r = $schema->resultset('Run')->find(6588);
     ok ($r, 'single read plexed run');
     lives_and {cmp_ok($r->forward_read->expected_cycle_count, '==', 50, ' expected cycle count')} 'forward read';
     lives_and {is($r->reverse_read, undef, ' undefined')} 'reverse read';
-}
-{ #check paired read plexed run
-    my$r = $schema->resultset('Run')->find(6668);
+
+    $r = $schema->resultset('Run')->find(6668);
     ok ($r, 'paired read plexed run');
     lives_and {cmp_ok($r->forward_read->expected_cycle_count, '==', 100, ' expected cycle count')} 'forward read';
     lives_and {cmp_ok($r->reverse_read->expected_cycle_count, '==', 100, ' expected cycle count')} 'reverse read';
-}
+};
 
-# Find current status - alter count
-{
+subtest 'current status' => sub {
+    plan tests => 2;
+
     my$r = $schema->resultset('Run')->find($test_run_id);
     my $crs = $r->current_run_status();
     $crs->update({iscurrent=>0});
@@ -398,6 +329,64 @@ my $test_date = $paired_tag_rs->first->date();
     $r->run_statuses->update({iscurrent=>1});
     dies_ok { $r->current_run_status_description()} 'Dies for multiple current run statuses' ;
   }
-}
+};
+
+subtest 'set and retrieve instrument side' => sub {
+    plan tests => 11;
+
+    my $id_run = 26487;
+    my $id_user = 3;
+    my $run = $schema->resultset('Run')->find($id_run);
+    ok ($run, 'run retrieved');
+
+    is ($run->instrument_side(), undef, 'instrument side is undefined');
+    $run->set_tag($id_user, 'fc_slotA');
+    is ($run->instrument_side(), 'A', 'instrument side is A');
+    $run->set_tag($id_user, 'fc_slotB');
+    is ($run->instrument_side(), 'B', 'instrument side is B');
+
+    throws_ok {$run->set_instrument_side()}
+      qr/Instrument side should be given/,
+      'error if side value is not given';
+    throws_ok {$run->set_instrument_side('C', $id_user)}
+      qr/Cannot set unknown tag \'fc_slotC\'/,
+      'error if side value is not valid'; 
+
+    is ($run->set_instrument_side('B', $id_user), 0, 'no need to reset the side');
+    is ($run->set_instrument_side('A', $id_user, ), 1, 'instrument side is reset');
+    is ($run->instrument_side(), 'A', 'instrument side is A');
+    is ($run->set_instrument_side('B', $id_user), 1, 'instrument side is reset');
+    is ($run->instrument_side(), 'B', 'instrument side is B');   
+};
+
+subtest 'set and retrieve workflow type' => sub {
+    plan tests => 11;
+
+    my $id_run = 26487;
+    my $id_user = 3;
+    my $run = $schema->resultset('Run')->find($id_run);
+    ok ($run, 'run retrieved');
+
+    is ($run->workflow_type(), undef, 'workflow type is undefined');
+    $run->set_tag($id_user, 'workflow_NovaSeqXp');
+    is ($run->workflow_type(), 'NovaSeqXp', 'workflow type is NovaSeqXp');
+    $run->set_tag($id_user, 'workflow_NovaSeqStandard');
+    is ($run->workflow_type(), 'NovaSeqStandard', 'instrument side is NovaSeqStandard');
+
+    throws_ok {$run->set_workflow_type()}
+        qr/Run workflow type should be given/,
+        'error if side value is not given';
+    throws_ok {$run->set_workflow_type('some', $id_user)}
+        qr/Cannot set unknown tag \'workflow_some\'/,
+        'error if side value is not valid'; 
+
+    is ($run->set_workflow_type('NovaSeqStandard', $id_user), 0,
+        'no need to rese workflow type');
+    is ($run->set_workflow_type('NovaSeqXp', $id_user), 1, 'workflow type is reset');
+    is ($run->workflow_type(), 'NovaSeqXp', 'workflow type is NovaSeqXp');
+    is ($run->set_workflow_type('NovaSeqStandard', $id_user), 1,
+        'workflow type is reset');
+    is ($run->workflow_type(), 'NovaSeqStandard', 'instrument side is NovaSeqStandard');   
+};
 
 1;

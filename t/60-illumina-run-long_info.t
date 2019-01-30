@@ -28,7 +28,7 @@ package main;
 my $basedir = tempdir( CLEANUP => 1 );
 
 subtest 'retrieving information from runParameters.xml' => sub {
-  plan tests => 135;
+  plan tests => 142;
 
   my $rf = join q[/], $basedir, 'runfolder';
   mkdir $rf;
@@ -77,6 +77,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
 
     if ($pl =~ /hiseq\.(?:xml|rr)/ ) {
       ok ($li->platform_HiSeq(), 'platform is HiSeq');
+      is ($li->workflow_type, '', 'workflow type is not known');
     } else {
       ok (!$li->platform_HiSeq(), 'platform is not HiSeq');
     }
@@ -96,9 +97,11 @@ subtest 'retrieving information from runParameters.xml' => sub {
       ok (!$li->is_rapid_run(), 'is not rapid run');
       if ($f =~ /\.novaseq\./) {
         if ($f =~ /\.xp\./) {
-         ok (!$li->all_lanes_mergeable(), 'lanes are not meargeable');
+          ok (!$li->all_lanes_mergeable(), 'lanes are not meargeable');
+          is ($li->workflow_type, 'NovaSeqXp', 'Xp workflow type');
         } else {
-         ok ($li->all_lanes_mergeable(), 'all lanes meargeable');
+          ok ($li->all_lanes_mergeable(), 'all lanes meargeable');
+          is ($li->workflow_type, 'NovaSeqStandard', 'Standard workflow type');
         }
       }
     }

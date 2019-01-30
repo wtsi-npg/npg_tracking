@@ -41,6 +41,38 @@ sub check_cycle_count {
   return;
 }
 
+sub set_instrument_side {
+  my $self = shift;
+  my $li_iside = $self->instrument_side;
+  if ($li_iside) {
+    my $db_iside = $self->tracking_run()->instrument_side || q[];
+    if ($db_iside ne $li_iside) {
+      my $is_set = $self->tracking_run()
+                        ->set_instrument_side($li_iside, $self->username());
+      if ($is_set) {
+        return $li_iside;
+      }
+    }
+  }
+  return;
+}
+
+sub set_workflow_type {
+  my $self = shift;
+  my $li_wftype = $self->workflow_type;
+  if ($li_wftype) {
+    my $db_wftype = $self->tracking_run()->workflow_type || q[];
+    if ($db_wftype ne $li_wftype) {
+      my $is_set = $self->tracking_run()
+                        ->set_workflow_type($li_wftype, $self->username());
+      if ($is_set) {
+        return $li_wftype;
+      }
+    }
+  }
+  return;
+}
+
 sub read_long_info {
   my $self = shift;
 
@@ -52,9 +84,10 @@ sub read_long_info {
   my $run_is_indexed       = $self->is_indexed();
   my $run_is_paired_read   = $self->is_paired_read();
 
-  if ( $run_db->expected_cycle_count != $expected_cycle_count ) {
+  my $db_expected = $run_db->expected_cycle_count;
+  if ( $db_expected != $expected_cycle_count ) {
     # Update the expected_cycle_count field and run tags.
-    carp qq[Updating cycle count $run_db->expected_cycle_count $expected_cycle_count];
+    warn qq[Updating cycle count $db_expected to $expected_cycle_count\n];
     $run_db->expected_cycle_count( $expected_cycle_count );
   }
 
@@ -62,7 +95,7 @@ sub read_long_info {
                       : $run_db->set_tag( $username, 'single_read' );
 
   $run_is_indexed     ? $run_db->set_tag(   $username, 'multiplex' )
-                      : $run_db->unset_tag( $username, 'multiplex' );
+                      : $run_db->unset_tag( 'multiplex' );
 
   $run_db->set_tag( $username, 'rta' ); # run is always RTA in year 2015
 
@@ -176,6 +209,24 @@ Return the current status (description now, object in future) of the object's ru
 When passed the lastest cycle count and a boolean indicating whether the run
 is complete or not, make appropriate adjustments to the database entries for
 the run status and actual cycle count.
+
+=head2 set_instrument_side
+
+Retrieves instrument side from {r|R}unParamaters.xml file and sets
+a relevant run tag if the tag is not yet set or does not match the
+value in the parameters file.
+
+Returns the instrument side string if it has been changed, an undefined
+value otherwise.
+
+=head2 set_workflow_type
+
+Retrieves workflow from {r|R}unParamaters.xml file and sets
+a relevant run tag if the tag is not yest set or does not match the
+value in the parameters file.
+
+Returns the workflow type string if it has been changed, an undefined
+value otherwise.
 
 =head2 read_long_info
 

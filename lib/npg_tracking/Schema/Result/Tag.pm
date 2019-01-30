@@ -52,6 +52,12 @@ __PACKAGE__->table("tag");
   is_nullable: 0
   size: 32
 
+=head2 incompatible_tag
+
+  data_type: 'char'
+  is_nullable: 1
+  size: 32
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -64,6 +70,8 @@ __PACKAGE__->add_columns(
   },
   "tag",
   { data_type => "char", default_value => "", is_nullable => 0, size => 32 },
+  "incompatible_tag",
+  { data_type => "char", is_nullable => 1, size => 32 },
 );
 
 =head1 PRIMARY KEY
@@ -140,75 +148,13 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:08gAge0C54WNuGJ3n4e29g
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2019-01-14 12:34:10
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:VzRLoLlFaY/kXoUd3QSDuQ
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
 
 our $VERSION = '0';
-
-use Carp;
-
-=head2 check_row_validity
-
-Take a single argument and see if it corresponds to a valid row in the tag
-table. The argument can be the primary key, or the tag text. The argument
-is converted to lower case before checking.
-
-The method croaks if no argument is supplied, if no row is found (or if
-multiple rows are matched) otherwise the row is returned as a DBIx::Class::Row
-object.
-
-=cut
-
-sub check_row_validity {
-    my ( $self, $arg ) = @_;
-
-    croak 'Argument required' if !defined $arg;
-
-    my $field = ( $arg =~ m/^ \d+ $/msx )
-                     ? 'id_tag'
-                     : 'tag' ;
-
-    my $rs = $self->result_source->schema->resultset('Tag')->
-        search( { $field => $arg, } );
-
-    return if $rs->count() < 1;
-    croak 'Panic! Multiple tag rows found' if $rs->count() > 1;
-
-    return $rs->first();
-}
-
-=head2 _insist_on_valid_row
-
-The above method is a general query tool. The user shouldn't have to deal with
-a croak just because they asked about a row that doesn't exist.
-
-This method is more severe and will croak in such a case. It is intended for
-internal methods in other classes in this library so that they don't each have
-to define their own user_validity check, but also can insist on a valid
-identifier before proceeding.
-
-It calls the above method, passing back the row object if the identifier is
-valid, but croaking if check_row_validity returns undef. If check_row_validity
-croaks (no argument, multiple rows returned) that suits this method's purpose.
-
-Could we consider caching here? To reduce the number of database queries? User
-identifiers are not likely to be created or changed during an object's
-lifetime.
-
-=cut
-
-sub _insist_on_valid_row {
-    my ( $self, $arg ) = @_;
-
-    my $row_object = $self->check_row_validity($arg);
-
-    croak "Invalid identifier: $arg" if !defined $row_object;
-
-    return $row_object;
-}
 
 =head2 runs
 
@@ -221,4 +167,5 @@ Related object: L<npg_tracking::Schema::Result::Run>
 __PACKAGE__->many_to_many('runs' => 'tag_runs', 'run');
 
 __PACKAGE__->meta->make_immutable;
+
 1;
