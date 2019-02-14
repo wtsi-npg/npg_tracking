@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+release 88.1
+ - status monitor running with inotify disabled should be able to recognise
+   when a cached file is changed
+
 release 88.0
  - tracking database:
      add column `incompatible_tag` to the tag table;

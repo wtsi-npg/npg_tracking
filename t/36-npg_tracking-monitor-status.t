@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 114;
+use Test::More tests => 120;
 use Test::Exception;
 use Test::Warn;
 use Test::Trap qw/ :stderr(tempfile) /;
@@ -601,8 +601,25 @@ my $cb = sub {
   trap {is ($m->_update_status4files([$f], $rf_path), 0, 'no files saved')};
   ok (!$m->_file_in_cache($f), 'file not cached');
 
-  is ($schema->resultset('RunStatus')->search({id_run => $id_run})->count(),
+  my @rows = $schema->resultset('RunStatus')->search({id_run => $id_run})->all();
+  is (scalar @rows,
      scalar @files + scalar  @arg_files, 'correct number of statuses saved');
+  @rows = grep {$_->iscurrent} @rows;
+  is (scalar @rows, 1, 'one current row');
+  is ($rows[0]->run_status_dict->description, 'qc complete',
+    'current status is set to "qc complete"');
+
+  sleep 1;
+  npg_tracking::status->new(id_run => $id_run, status => 'archival in progress')
+                      ->to_file($base);
+  trap {is ($m->_update_status4files(\@files, $rf_path), 1, 'one file saved')};
+  @rows = $schema->resultset('RunStatus')->search({id_run => $id_run})->all;
+  is (scalar @rows,
+     1 + scalar @files + scalar  @arg_files, 'additional status is saved');
+  @rows = grep {$_->run_status_dict->description eq 'archival in progress'} @rows;
+  is (scalar @rows, 2, 'two rows for "archival in progress" status');
+  @rows = grep {$_->iscurrent} @rows;
+  is (scalar @rows, 1, 'one of "archival in progress" rows is current');
 }
 
 1;
