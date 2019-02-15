@@ -152,6 +152,7 @@ my $builder = $class->new(
                 'File::Type'                      => '0.22',
                 'File::Temp'                      => 0,
                 'File::chdir'                     => 0,
+                'File::stat'                      => 0,
                 'GD'                              => '2.35',
                 'GD::Text'                        => 0,
                 'Getopt::Long'                    => '2.37',

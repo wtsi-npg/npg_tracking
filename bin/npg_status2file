@@ -29,6 +29,12 @@ if ( !(-d $dir_out && -w $dir_out) ) {
   croak "--dir_out option $dir_out should be a writable directory";
 }
 
+#####
+# Ensure no two statuses of the same run/lane have the same
+# timestamp so that the iscurrent db flag could be assigned
+# inambigiously. 
+sleep 2;
+
 my $path = npg_tracking::status->new(
    id_run => $id_run, status => $status, lanes => \@lanes)->to_file($dir_out);
 
