@@ -731,6 +731,8 @@ A Moose hook for object destruction; calls cancel_watch().
 
 =item File::Basename
 
+=item File::stat
+
 =item Errno
 
 =item Try::Tiny
