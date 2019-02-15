@@ -6,6 +6,9 @@ use Test::Warn;
 use Test::Deep;
 use Moose::Meta::Class;
 
+use npg_tracking::glossary::rpt;
+use npg_tracking::glossary::composition::factory::rpt_list;
+
 my $mlwh_d      = 'st::api::lims::ml_warehouse';
 my $mlwh_auto_d = 'st::api::lims::ml_warehouse_auto';
 my $mlwh_alt_d  = 'st::api::lims::ml_warehouse_fc_cache';
@@ -18,6 +21,17 @@ lives_ok { $schema_wh = Moose::Meta::Class->create_anon_class(
   roles => [qw/npg_testing::db/])->new_object({})->create_test_db(
   q[WTSI::DNAP::Warehouse::Schema],q[t/data/fixtures_stlims_wh]) 
 } 'ml_warehouse test db created';
+
+sub _add_product_id {
+  my $h = shift;
+  my $rpt = npg_tracking::glossary::rpt->deflate_rpt($h);
+  my $composition = npg_tracking::glossary::composition::factory::rpt_list
+                    ->new(rpt_list => $rpt)
+                    ->create_composition();
+  $h->{id_iseq_product} = $composition->digest;
+  $h->{iseq_composition_tmp} = $composition->freeze;
+  return $h;
+}
 
 subtest 'constructing objects' => sub {
   plan tests => 51;
@@ -272,10 +286,11 @@ subtest 'lane and tag level drivers' => sub {
    { id_flowcell_lims => $lims_id, position => 1});
   my $prs = $schema_wh->resultset('IseqProductMetric');
   while (my $row = $fcrs->next) {
-    $prs->create({id_iseq_flowcell_tmp => $row->id_iseq_flowcell_tmp,
-                  tag_index            => $row->tag_index,
-                  position             => $pos,
-                  id_run               => $id_run});
+    my $h = {id_iseq_flowcell_tmp => $row->id_iseq_flowcell_tmp,
+             tag_index            => $row->tag_index,
+             position             => $pos,
+             id_run               => $id_run};
+    $prs->create(_add_product_id($h));
   }
 
   my $count  = 0;
@@ -353,10 +368,11 @@ subtest 'lave and tag level drivers' => sub {
   my $fcrs = $schema_wh->resultset('IseqFlowcell')->search({ id_flowcell_lims => $lims_id});
   my $prs = $schema_wh->resultset('IseqProductMetric');
   while (my $row = $fcrs->next) {
-    $prs->create({id_iseq_flowcell_tmp => $row->id_iseq_flowcell_tmp,
-                  tag_index            => $row->tag_index,
-                  position             => $row->position,
-                  id_run               => $id_run});
+    my $h = {id_iseq_flowcell_tmp => $row->id_iseq_flowcell_tmp,
+             tag_index            => $row->tag_index,
+             position             => $row->position,
+             id_run               => $id_run};
+    $prs->create(_add_product_id($h));
   }
 
   my $count = 0;
