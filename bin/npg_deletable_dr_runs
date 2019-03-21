@@ -14,34 +14,24 @@ use npg_tracking::Schema;
 our $VERSION = '0';
 
 my $help;
-my $verbose;
-GetOptions ('verbose' => \$verbose,
-            'help|?'   => \$help)
+GetOptions ('help|?'   => \$help)
   or croak("Error in command line arguments\n");
 
-pod2usage(1) if $help;
+pod2usage(0) if $help;
 
-#my $rs=npg_tracking::Schema->connect()->resultset("Run")->search();
 my $rs=npg_tracking::Schema->connect()->resultset(q(RunStatusDict))
     ->search({description=>[q[run cancelled],q[data discarded],q[qc complete]]})
     ->related_resultset(q(run_statuses))->search({q(run_statuses.iscurrent)=>1})
-    ->related_resultset("run")->search();
-my $total = $rs->count;
-my $run;
-my $found = 0;
+    ->related_resultset("run")->search({q(run.folder_path_glob)=>{LIKE=>q(%/esa-%)}});
+
 while (my $run=$rs->next()) {
     my $status = $run->current_run_status_description || "";
     my $tag = $run->is_tag_set("staging");
     my $run_folder = $run->folder_name || "";
-    my $path_glob = $run->folder_path_glob || "";
-    if ($run_folder and !$tag and $path_glob=~/esa/) {
+    if ($run_folder and !$tag ) {
         print $run_folder, "\t", $run->id_run, "\t", $run->folder_path_glob, "\t", $status, "\n";
-        $found++;
     }
 }
-
-if ($verbose) { print STDERR "\nFound ", $found, " out of ", $total, " records\n"; }
-
 
 1;
 
@@ -49,17 +39,17 @@ __END__
 
 =head1 NAME
 
-deletable_dr_runs
+npg_deletable_dr_runs
 
 =head1 USAGE
 
-  deletable_dr_runs
-  deletable_dr_runs --help
+  npg_deletable_dr_runs
+  npg_deletable_dr_runs --help
 
 =head1 SYNOPSIS
 
   Script to read the tracking database and output a list of
-  runfolder names that can be deleted from the Disaster Recovery hxi
+  runfolder names that can be deleted from the Disaster Recovery
   servers.
 
 =head1 REQUIRED ARGUMENTS
