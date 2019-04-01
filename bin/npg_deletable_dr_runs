@@ -1,0 +1,116 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use Carp;
+use English qw(-no_match_vars);
+use Getopt::Long;
+use Pod::Usage;
+
+use npg_tracking::Schema;
+
+our $VERSION = '0';
+
+my $help;
+GetOptions ('help|?'   => \$help)
+  or croak("Error in command line arguments\n");
+
+pod2usage(0) if $help;
+
+my $rs=npg_tracking::Schema->connect()->resultset(q(RunStatusDict))
+    ->search({description=>[q[run cancelled],q[data discarded],q[qc complete]]})
+    ->related_resultset(q(run_statuses))->search({q(run_statuses.iscurrent)=>1})
+    ->related_resultset("run")->search({q(run.folder_path_glob)=>{LIKE=>q(%/esa-%)}});
+
+while (my $run=$rs->next()) {
+    my $status = $run->current_run_status_description || "";
+    my $tag = $run->is_tag_set("staging");
+    my $run_folder = $run->folder_name || "";
+    if ($run_folder and !$tag ) {
+        print $run_folder, "\t", $run->id_run, "\t", $run->folder_path_glob, "\t", $status, "\n";
+    }
+}
+
+1;
+
+__END__
+
+=head1 NAME
+
+npg_deletable_dr_runs
+
+=head1 USAGE
+
+  npg_deletable_dr_runs
+  npg_deletable_dr_runs --help
+
+=head1 SYNOPSIS
+
+  Script to read the tracking database and output a list of
+  runfolder names that can be deleted from the Disaster Recovery
+  servers.
+
+=head1 REQUIRED ARGUMENTS
+
+  None
+
+=head1 OPTIONS
+
+  --help
+
+=head1 DIAGNOSTICS
+
+=head1 DEPENDENCIES
+
+=over
+
+=item strict
+
+=item warnings
+
+=item FindBin
+
+=item lib
+
+=item Carp
+
+=item English
+
+=item Getopt::Long
+
+=item Pod::Usage
+
+=item npg_tracking::Schema
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Jennifer Liddle E<lt>js10@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2019 Genome Research Limited
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut
