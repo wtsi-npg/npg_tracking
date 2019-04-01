@@ -275,18 +275,23 @@ sub _update_status4files {
 
   foreach my $file ( @{$files} ) {
     my $modify_time = stat($file)->mtime;
+    # mtime is last modify time in seconds since the epoch
+    $modify_time or $self->_log("Warning: failed to get mtime for $file");
     my $cached_time = $self->_file_in_cache($file);
     #####
     # If the pipeline is run repeatedly using the same analysis
     # directory, status files might get overwritten. We should
     # save the latest status even if this status had been saved
     # in the past.
-    next if (defined $cached_time && ($cached_time eq $modify_time));
+    next if ($cached_time and $modify_time and ($cached_time == $modify_time));
     try {
       $self->_log("\nReading status from $file");
       my $status = $self->_read_status($file, $runfolder_path);
       $self->_update_status($status);
-      $self->_cache_file($file, $modify_time);
+      if ($modify_time) {
+        $self->_log("Caching mtime $modify_time for $file");
+        $self->_cache_file($file, $modify_time);
+      }
       $num_saved++;
     } catch {
       $self->_log("Error saving status: $_\n");
