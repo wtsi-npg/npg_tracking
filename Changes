@@ -1,5 +1,10 @@
 LIST OF CHANGES
 
+release 88.2
+ - scripts to list run folders that are candidates for deletion in
+   the Data Recovery area
+ - status monitor: improved logging, which now shows timestamps
+
 release 88.1.1
  - test data fixes following ml warehouse schema changes, see
    https://github.com/wtsi-npg/ml_warehouse/pull/104 for details
