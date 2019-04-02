@@ -13,6 +13,7 @@ use Linux::Inotify2;
 use Sys::Filesystem;
 use Sys::Filesystem::MountPoint qw/path_to_mount_point/;
 use File::stat;
+use POSIX;
 
 use npg_tracking::util::types;
 use npg_tracking::illumina::run::folder;
@@ -274,18 +275,23 @@ sub _update_status4files {
 
   foreach my $file ( @{$files} ) {
     my $modify_time = stat($file)->mtime;
+    # mtime is last modify time in seconds since the epoch
+    $modify_time or $self->_log("Warning: failed to get mtime for $file");
     my $cached_time = $self->_file_in_cache($file);
     #####
     # If the pipeline is run repeatedly using the same analysis
     # directory, status files might get overwritten. We should
     # save the latest status even if this status had been saved
     # in the past.
-    next if (defined $cached_time && ($cached_time eq $modify_time));
+    next if ($cached_time and $modify_time and ($cached_time == $modify_time));
     try {
       $self->_log("\nReading status from $file");
       my $status = $self->_read_status($file, $runfolder_path);
       $self->_update_status($status);
-      $self->_cache_file($file, $modify_time);
+      if ($modify_time) {
+        $self->_log("Caching mtime $modify_time for $file");
+        $self->_cache_file($file, $modify_time);
+      }
       $num_saved++;
     } catch {
       $self->_log("Error saving status: $_\n");
@@ -383,9 +389,15 @@ sub _update_status {
 sub _stock_status_check {
   my $self = shift;
 
+  my $get_time = sub {
+    return strftime '%Y%m%d %H:%M:%S', localtime;
+  };
   my $m = 'Processing backlog';
-  $self->_log('Started ' . lc $m);
+
+  $self->_log(join q[ ], $get_time->(), 'Started', lc $m);
   foreach my $runfolder_path (@{$self->_list_stock_runfolders}) {
+    $self->_log(join q[ ], $get_time->(), "$m:",
+                           "looking for status directory in $runfolder_path");
     if (!-e $runfolder_path) { # runfolder could have been moved or deleted
       $self->_log("Runfolder $runfolder_path does not exist in this location");
       next;
@@ -394,10 +406,9 @@ sub _stock_status_check {
       $self->_log("$m: runfolder $runfolder_path does not have the latest summary link, skipping.");
       next;
     }
-    $self->_log("$m: looking for status directory in $runfolder_path");
     $self->_runfolder_status_check($runfolder_path);
   }
-  $self->_log('Finished ' . lc $m);
+  $self->_log(join q[ ], $get_time->(), 'Finished', lc $m);
   return;
 }
 
@@ -742,6 +753,8 @@ A Moose hook for object destruction; calls cancel_watch().
 =item Sys::Filesystem
 
 =item Sys::Filesystem::MountPoint
+
+=item POSIX
 
 =back
 
