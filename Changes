@@ -4,6 +4,9 @@ release 88.2
  - scripts to list run folders that are candidates for deletion in
    the Data Recovery area
  - status monitor: improved logging, which now shows timestamps
+ - alleviate differences in cloud hosts time zone configuration by
+   storing UTC offset as a part of the timestamp in serialized
+   run and lane status objects
 
 release 88.1.1
  - test data fixes following ml warehouse schema changes, see

@@ -9,6 +9,8 @@ use DateTime::TimeZone;
 use File::Spec;
 use File::Slurp;
 use Carp;
+use Readonly;
+use Try::Tiny;
 
 use npg_tracking::util::types;
 
@@ -19,6 +21,9 @@ with Storage( 'traits' => ['OnlyWhenBuilt'],
 with qw/ npg_tracking::glossary::run/;
 
 our $VERSION = '0';
+
+Readonly::Scalar my $TIMESTAMP_FORMAT => q[%d/%m/%Y %H:%M:%S];
+Readonly::Scalar my $TIMESTAMP_FORMAT_WOFFSET => $TIMESTAMP_FORMAT . q[ %z];
 
 has q{lanes} => (
                    isa      => q{ArrayRef[NpgTrackingLaneNumber]},
@@ -42,7 +47,7 @@ has q{timestamp} => (
                    predicate => 'has_timestamp',
                    default   => sub { DateTime->now(
                          time_zone => DateTime::TimeZone->new(name => q[local])
-                                                   )->strftime(_timestamp_format()) },
+                                                   )->strftime($TIMESTAMP_FORMAT_WOFFSET) },
                    documentation => q{timestamp of the status change},
 );
 
@@ -59,28 +64,39 @@ sub filename {
   return $filename;
 }
 
-sub _timestamp_format {
-  return '%d/%m/%Y %H:%M:%S';
-}
-
 sub timestamp_obj {
   my $self = shift;
-  return DateTime::Format::Strptime->new(
-    pattern  => _timestamp_format(),
-    on_error => 'croak',
-  )->parse_datetime($self->timestamp);
+
+  my $parse = sub {
+    my ($format, $time_string) = @_;
+    return DateTime::Format::Strptime->new(
+             pattern  => $format,
+             on_error => 'croak',
+           )->parse_datetime($time_string);
+  };
+
+  my $dt;
+  try {
+    $dt = $parse->($TIMESTAMP_FORMAT_WOFFSET, $self->timestamp);
+  } catch {
+    $dt = $parse->($TIMESTAMP_FORMAT, $self->timestamp);
+  };
+  # If the time zone on the host is configured correctly, the
+  # time will be reset to correct locat time, ie dst when
+  # appropriate.
+  $dt->set_time_zone('local');
+
+  return $dt;
 }
 
 sub to_string {
   my $self = shift;
-  ##no critic (CodeLayout::ProhibitParensWithBuiltins)
-  return sprintf('Object %s status:"%s", id_run:"%i", lanes:"%s", date:"%s"',
+  return sprintf 'Object %s status:"%s", id_run:"%i", lanes:"%s", date:"%s"',
               __PACKAGE__,
               $self->status,
               $self->id_run,
               @{$self->lanes} ? join(q[ ], @{$self->lanes}) : q[none],
-              $self->has_timestamp ? $self->timestamp : q[none]
-         );
+              $self->has_timestamp ? $self->timestamp : q[none];
 }
 
 sub from_file {
@@ -156,7 +172,7 @@ npg_tracking::status
 
 =head2 to_file
 
- Writes serialized object ($self) to a file. The file is created in a directory
+ Writes serialized object to a file. The file is created in a directory
  given as an attribute or, if not passed, in the current directory. Filename returned
  by the filename() method of the object is used. Returns the path of the file created.
  
@@ -189,6 +205,10 @@ npg_tracking::status
 
 =item Carp
 
+=item Readonly
+
+=item Try::Tiny
+
 =item npg_tracking::glossary::run
 
 =item npg_tracking::util::types
@@ -205,9 +225,11 @@ Limitation: does not validate the status against the status dictionaries.
 
 Kate Taylor E<lt>kt6@sanger.ac.ukE<gt>
 
+Marina Gourtovaia
+
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2016 Genome Research Limited
+Copyright (C) 2016, 2019 Genome Research Limited
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

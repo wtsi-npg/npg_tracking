@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 38;
+use Test::More tests => 40;
 use Test::Deep;
 use Test::Exception;
 use File::Temp qw/ tempdir /;
@@ -8,7 +8,6 @@ use Cwd;
 
 use_ok(q{npg_tracking::status});
 
-my $timestamp = q{10/07/2014 13:42:10};
 my $id_run = 1234;
 my $status = q{analysis in progress};
 my $dir = tempdir(UNLINK => 1);
@@ -21,8 +20,9 @@ my $current = getcwd();
       status => $status,
   );
   isa_ok( $rls, q{npg_tracking::status});
-  is($rls->_timestamp_format, '%d/%m/%Y %H:%M:%S', 'timestamp format correct');
-  like( $rls->timestamp, qr{\d\d\/\d\d\/\d\d\d\d\ \d\d:\d\d:\d\d}, 'timestamp generated');
+  like( $rls->timestamp,
+    qr{\d\d\/\d\d\/\d\d\d\d\ \d\d:\d\d:\d\d \+\d\d\d\d},
+    'timestamp generated');
   my $time_obj;
   lives_ok { $time_obj = $rls->timestamp_obj } 'no error converting time from string to an object';
   isa_ok( $time_obj, q{DateTime});
@@ -46,7 +46,7 @@ my $current = getcwd();
       id_run => $id_run,
       lanes => \@lanes,
       status => $status,
-      timestamp => $timestamp,
+      timestamp => q{10/07/2014 13:42:10},
     );
   } q{object for eight lanes created ok};
 
@@ -61,7 +61,7 @@ my $current = getcwd();
   lives_ok{ $s = $rls->freeze() } q{object serialized};
   my $o;
   lives_ok{ $o = npg_tracking::status->thaw($s) } q{object deserialized};
-  is ($o->timestamp, $timestamp, 'timestamp correct');
+  is ($o->timestamp, q{10/07/2014 13:42:10}, 'timestamp correct');
   is ($o->status, $status, 'status correct');
   is ($o->id_run, $id_run, 'run id correct');
   cmp_deeply($o->lanes, \@lanes, 'lanes array correct');
@@ -72,6 +72,7 @@ my $current = getcwd();
   my $new;
   lives_ok { $new = npg_tracking::status->from_file($filename)  } 'object read from  file';
   isa_ok($new, q{npg_tracking::status});
+  lives_ok {$new->timestamp_obj} 'timestamp string parsed';
 }
 
 {
@@ -83,7 +84,7 @@ my $current = getcwd();
       id_run => $id_run,
       lanes => \@lanes,
       status => $status,
-      timestamp => $timestamp,
+      timestamp => q{10/07/2014 13:42:10 +0000},
     );
   } q{object for one lane created ok};
 
@@ -94,10 +95,11 @@ my $current = getcwd();
   lives_ok{ $s = $rls->freeze() } q{object serialized};
   my $o;
   lives_ok{ $o = npg_tracking::status->thaw($s) } q{object deserialized};
-  is ($o->timestamp, $timestamp, 'timestamp correct');
+  is ($o->timestamp, q{10/07/2014 13:42:10 +0000}, 'timestamp correct');
   is ($o->status, $status, 'status correct');
   is ($o->id_run, $id_run, 'run id correct');
-  cmp_deeply($o->lanes, \@lanes, 'lanes array correct'); 
+  cmp_deeply($o->lanes, \@lanes, 'lanes array correct');
+  lives_ok {$o->timestamp_obj} 'timestamp string parsed'; 
 }
 
 {
@@ -108,18 +110,17 @@ my $current = getcwd();
     $rls = npg_tracking::status->new({
       id_run => $id_run,
       status => $status,
-      timestamp => $timestamp,
+      timestamp => q{10/07/2014 13:42:10 +0100},
     });
   } q{object for run created ok};
 
   my $run_filename = q{analysis-complete.json};
   is($rls->filename, $run_filename, q{run filename built correctly});
-
   my $s;
   lives_ok{ $s = $rls->freeze() } q{object serialized};
   my $o;
   lives_ok{ $o = npg_tracking::status->thaw($s) } q{object deserialized};
-  is ($o->timestamp, $timestamp, 'timestamp correct');
+  is ($o->timestamp, q{10/07/2014 13:42:10 +0100}, 'timestamp correct');
   is ($o->status, $status, 'status correct');
   is ($o->id_run, $id_run, 'run id correct');
   cmp_deeply($o->lanes, [], 'lanes array is empty');
@@ -127,6 +128,8 @@ my $current = getcwd();
   my $path = $o->to_file();
   ok(-e $path, 'file created in current directory');
   chdir $current;
+  
+  lives_ok {$rls->timestamp_obj} 'timestamp string parsed';
 }
 
 END {
