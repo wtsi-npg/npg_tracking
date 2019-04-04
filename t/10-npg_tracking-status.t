@@ -21,7 +21,7 @@ my $current = getcwd();
   );
   isa_ok( $rls, q{npg_tracking::status});
   like( $rls->timestamp,
-    qr{\d\d\/\d\d\/\d\d\d\d\ \d\d:\d\d:\d\d \+\d\d\d\d},
+    qr{\d\d\d\d-\d\d-\d\d\T\d\d:\d\d:\d\d\+\d\d\d\d},
     'timestamp generated');
   my $time_obj;
   lives_ok { $time_obj = $rls->timestamp_obj } 'no error converting time from string to an object';
