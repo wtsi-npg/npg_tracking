@@ -22,8 +22,8 @@ with qw/ npg_tracking::glossary::run/;
 
 our $VERSION = '0';
 
-Readonly::Scalar my $TIMESTAMP_FORMAT => q[%d/%m/%Y %H:%M:%S];
-Readonly::Scalar my $TIMESTAMP_FORMAT_WOFFSET => $TIMESTAMP_FORMAT . q[ %z];
+Readonly::Scalar my $TIMESTAMP_FORMAT => q[%d/%m/%Y %H:%M:%S]; # legacy
+Readonly::Scalar my $TIMESTAMP_FORMAT_WOFFSET => q[%Y-%m-%dT%T%z]; # rfc3339, but seconds only
 
 has q{lanes} => (
                    isa      => q{ArrayRef[NpgTrackingLaneNumber]},
