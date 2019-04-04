@@ -442,7 +442,7 @@ my $cb = sub {
   ok( !exists $m->_watch_obj->{$runfolder_name}->{'status_dir'},
     'no summary link - watch object for the status directory has not been created yet');
 
-  my $format = npg_tracking::status->_timestamp_format();
+  my $format = q[%Y-%m-%dT%T%z];
   my $date = DateTime->now(time_zone => DateTime::TimeZone->new(name => q[local]));
   $date->add_duration(DateTime::Duration->new(seconds => 10));
   $status_dir =~ s/$tdir/$a/xms;
