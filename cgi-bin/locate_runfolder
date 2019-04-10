@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use English qw(-no_match_vars);
 use Carp;
-use CGI qw/:standard/;
+use CGI qw(:standard);
 use URI::Escape qw(uri_unescape uri_escape);
 
 main();
@@ -25,13 +25,32 @@ sub _error {
   return;
 }
 
-sub main {
-  my $cgi = CGI->new();
-  my $path_info = uri_unescape($cgi->url(-relative => 1, -path_info => 1));
-  # Not clear why we acquire an extra slash, but we do
-  $path_info =~ s{\A//}{/}smx;
+sub _script_name {
+  my $name = $PROGRAM_NAME;
+  ($name) = $name =~ m{([^/?]+)\Z}smx;
+  return $name;
+}
 
-  my ($pathglob, $runfolder, $suffix) = $path_info =~ m{\A((?:/\S+?/\*)?)/([^/?]+)(.*)}smx;
+sub main {
+
+  my $path_info = uri_unescape(CGI->new()->url(-relative => 1, -path_info => 1));
+
+  # Depending on how the CGI script is being run, the name of this script
+  # might be prepended to $path_info. When the script is run under the
+  # Apache httpd server, this depends on whether mod-rewrite is enabled
+  # in the server, the version of the server and the history of its updates.
+  my $script_name = _script_name();
+  my ($pathglob, $runfolder, $suffix) = $path_info =~
+
+    m{ \A(?:(?:.+/)?$script_name)? # Optionally, the name of this script,
+                                   # optionally prepended by some url,
+                                   # neither of which we need to capture.
+       /?                  # An occasional extra slash
+       ((?:/\S+?/\*)?)     # Run folder path glob.
+       /
+       ([^/?]+)            # Run folder name.
+       (.*) }smx;
+
   if (!($pathglob && $runfolder)) {
     _error('Failed to get pathglob or run folder or both', $path_info);
     return;
