@@ -9,7 +9,7 @@ bin/npg_status2file
 bin/npg_status_watcher
 bin/seq_instr_checker
 bin/staging_area_monitor
-bin/npg_deletable_dr_runs
+bin/npg_delete_dr_runs
 Build.PL
 cgi-bin/locate_runfolder
 cgi-bin/npg

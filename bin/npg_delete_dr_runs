@@ -1,0 +1,170 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use Carp;
+use English qw(-no_match_vars);
+use Getopt::Long;
+use Pod::Usage;
+
+use npg_tracking::Schema;
+
+our $VERSION = '0';
+
+my $help;
+my $files;
+my $folders;
+my $no_dry_run;
+
+sub send_commands {
+    my ($dr_server, $cmd) = @_;
+    open(BASH, "| ssh $dr_server bash -e") or die("Can't run ssh: $!");
+    print BASH $cmd;
+    close(BASH);
+}
+
+GetOptions ('help|?'   => \$help,
+            'no-dry-run'=> \$no_dry_run,
+            'files'    => \$files,
+            'folders'  => \$folders)
+  or croak("Error in command line arguments\n");
+
+if ($files and $folders) {
+    print STDERR "You can't have --files AND --folders. Choose one.\n";
+    pod2usage(1);
+}
+
+
+pod2usage(0) if $help;
+
+my $rs=npg_tracking::Schema->connect()->resultset(q(RunStatusDict))
+    ->search({description=>[q[run cancelled],q[data discarded],q[qc complete]]})
+    ->related_resultset(q(run_statuses))->search({q(run_statuses.iscurrent)=>1})
+    ->related_resultset("run")->search({q(run.folder_path_glob)=>{LIKE=>q(%/esa-%)}});
+
+my $cmd = '';
+while (my $run=$rs->next()) {
+    my $status = $run->current_run_status_description || "";
+    my $tag = $run->is_tag_set("staging");
+    my $run_folder = $run->folder_name || "";
+    if ($run_folder and !$tag ) {
+        my $prefix = substr($run_folder,0,4);
+        my $dname = "/exports/$prefix/$run_folder";
+        if ($files and !$folders) {
+            $cmd .= "if [ -d $dname ]; then rm -f $dname/Data/Intensities/BaseCalls/L\*/C\*/\*.cbcl; fi\n";
+        }
+        if ($folders and !$files) {
+            $cmd .= "if [ -d $dname ]; then rm -r $dname; fi\n";
+        }
+        if (!$files and !$folders) {
+            $cmd .= "if [ -d $dname ]; then ls -ld $dname; fi\n";
+        }
+    }
+}
+chop $cmd;
+if ($no_dry_run) {
+    send_commands('ukbb\@seq-stor-01', $cmd);
+    send_commands('ukbb\@seq-stor-02', $cmd);
+} else {
+    print "These are the commands that would be sent if you specify --no-dry-run:\n";
+    print $cmd, "\n";
+}
+
+1;
+
+__END__
+
+=head1 NAME
+
+npg_delete_dr_runs
+
+=head1 USAGE
+
+  npg_delete_dr_runs --files [--no-dry-run]
+  npg_delete_dr_runs --folders [--no-dry-run]
+  npg_delete_dr_runs --help
+
+=head1 SYNOPSIS
+
+  Script to read the tracking database to find a list of
+  runfolder names and delete them from the Disaster Recovery
+  servers.
+
+  This script can delete either entire run folders, or just the
+  cbcl files within those folders.
+
+  Unless the '--no-dry-run' option is specified, the script will
+  just print the commands generated, and not actually send them
+  to the DR servers.
+
+=head1 REQUIRED ARGUMENTS
+
+  None
+
+=head1 OPTIONS
+
+  --help        display help message and quite
+  --folders     delete entire run folders from the DR servers
+  --files       delete only bcl/cbcl files from the run folders
+  --no-dry-run  really delete things from the DR servers.
+
+  With no options, it will list the run folders on the DR servers
+  to be deleted, but not actually delete anything.
+
+
+=head1 DIAGNOSTICS
+
+=head1 DEPENDENCIES
+
+=over
+
+=item strict
+
+=item warnings
+
+=item FindBin
+
+=item lib
+
+=item Carp
+
+=item English
+
+=item Getopt::Long
+
+=item Pod::Usage
+
+=item npg_tracking::Schema
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Jennifer Liddle E<lt>js10@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2019 Genome Research Limited
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut
