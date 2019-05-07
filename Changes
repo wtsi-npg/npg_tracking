@@ -8,6 +8,8 @@ LIST OF CHANGES
  - pipeline configuration module is moved to this package from
    npg_seq_pipeline package in order for the product configuration
    be accessible from other packages 
+ - modify staging area daemon so processing for each folder is wrapped as
+   try/catch block
 
 release 88.2.1
  - patch to accommodate different URL info passed to the CGI
