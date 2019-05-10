@@ -5,6 +5,9 @@ LIST OF CHANGES
  - samplesheet generator extended to cache data for multiple runs
  - status monitor will now work only with RFC 3339 compliant
    timestamps defined in WTSI::DNAP::Utilities::Timestamp
+ - pipeline configuration module is moved to this package from
+   npg_seq_pipeline package in order for the product configuration
+   be accessible from other packages 
 
 release 88.2.1
  - patch to accommodate different URL info passed to the CGI

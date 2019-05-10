@@ -334,6 +334,7 @@ lib/npg_tracking/util/config_constants.pm
 lib/npg_tracking/util/db_config.pm
 lib/npg_tracking/util/db_connect.pm
 lib/npg_tracking/util/messages.pm
+lib/npg_tracking/util/pipeline_config.pm
 lib/npg_tracking/util/types.pm
 lib/st/api/base.pm
 lib/st/api/batch.pm
@@ -407,6 +408,7 @@ t/10-npg_tracking-glossary-moniker.t
 t/10-npg_tracking-glossary-rpt.t
 t/10-npg_tracking-status.t
 t/10-npg_tracking-util-config.t
+t/10-npg_tracking-util-pipeline_config.t
 t/10-npg_tracking-util-db_connect.t
 t/10-npg_tracking-util-messages.t
 t/10-reference-find.t
@@ -833,6 +835,8 @@ t/data/npg_api/st/studies/546.xml
 t/data/npg_api/st/studies/578.xml
 t/data/npg_api_run/npg/run/604.xml
 t/data/npg_api_run/npg/run/636.xml
+t/data/pipeline_config/study_config_present/product_release.yml
+t/data/pipeline_config/study_config_absent/product_release.yml
 t/data/rendered/20-view-administration_create_instrument_mod.html
 t/data/rendered/20-view-administration_create_instrument_status.html
 t/data/rendered/20-view-administration_create_run_status.html
