@@ -1,13 +1,14 @@
 package st::api::lims;
 
-use Carp;
 use Moose;
 use MooseX::Aliases;
 use Moose::Meta::Class;
 use namespace::autoclean;
+use Carp;
 use Readonly;
 use List::MoreUtils qw/any none uniq each_arrayref/;
 use Class::Load qw/load_class/;
+use Scalar::Util qw/weaken/;
 
 use npg_tracking::util::types;
 use npg_tracking::glossary::rpt;
@@ -796,6 +797,10 @@ sub _build__cached_children {
       }
       if($self->driver->can('free_children')) {
         $self->driver->free_children;
+      } else {
+        foreach my $c ($self->driver->children) {
+          weaken $c;
+        }
       }
     }
   } else {
@@ -1393,6 +1398,8 @@ __END__
 =item Carp
 
 =item Readonly
+
+=item Scalar::Util
 
 =item npg_tracking::util::types
 
