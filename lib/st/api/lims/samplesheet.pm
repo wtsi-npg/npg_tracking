@@ -126,7 +126,7 @@ sub _build_data {
 
       if (!@data_columns) {
         @data_columns = @columns;
-        $id_run_column_present = $self->_parse_data_header($d, @columns);
+        $id_run_column_present = $self->_assign_id_run($d, @columns);
         next;
       }
 
@@ -173,6 +173,10 @@ sub _build_data {
       }
       $d->{$current_section}->{$row[0]} = $row[1];
     }
+  }
+
+  if (scalar keys %{$d->{$DATA_SECTION}} > 1) {
+    $self->_validate_input4multiple_runs($d);
   }
 
   return $d;
@@ -422,14 +426,14 @@ sub _build__sschildren {
 #################  Private methods  ###############################
 ###################################################################
 
-sub _parse_data_header {
+sub _assign_id_run {
   my ($self, $d, @data_columns) = @_;
 
   my $id_run_column_present = any { $_ eq 'id_run' } @data_columns;
 
   if (not $self->id_run) {
-    $id_run_column_present and croak q[id_run column is present,] .
-      q[ id_run attribute should be supplied via the constructor];
+    $id_run_column_present and croak q[id_run column is present in a samplesheet,] .
+      q[ id_run attribute should be set];
     my $en = _id_run_from_header($d);
     if ($en) {
       $self->_set_id_run($en);
@@ -491,6 +495,19 @@ sub _id_run_from_header {
 sub _get_id_run {
   my $self = shift;
   return $self->id_run ? $self->id_run : q[NO_ID_RUN];
+}
+
+sub _validate_input4multiple_runs {
+  my ($self, $d) = @_;
+  my $m = join q[ ], 'Samplesheet', $self->path, 'with data for multiple runs, ';
+  $self->position or
+    croak $m . 'position attribute should be set';
+  (defined $self->tag_index) and ($self->tag_index == 0) and
+    croak $m . 'not possible to get data for tag zero';
+  (not defined $self->tag_index) and
+  (not exists $d->{$DATA_SECTION}->{$self->id_run}->{$self->position}->{$NOT_INDEXED_FLAG}) and
+    croak $m . 'pool data not available';
+  return;
 }
 
 __PACKAGE__->meta->make_immutable;

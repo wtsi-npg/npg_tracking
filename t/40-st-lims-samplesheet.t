@@ -1,10 +1,14 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 12;
 use Test::Exception;
 use Test::Warn;
+use File::Slurp;
+use File::Temp qw(tempdir);
 
 use_ok('st::api::lims::samplesheet');
+
+my $temp_dir = tempdir(CLEANUP => 1);
 
 sub _lane_hash {
   my ($lane_l, @methods) = @_;
@@ -172,11 +176,8 @@ subtest 'MiSeq run, extended samplesheet' => sub {
   is ($plexes[1]->sample_donor_id, 'donor4', 'sample donor id');
 };
 
-subtest 'Multiple lanes, extended samplesheet' => sub {
-  plan tests => 28;
-
-  my $path = 't/data/samplesheet/multilane.csv'; #extended samplesheet
-  my $ss = st::api::lims::samplesheet->new(id_run => 10262, path => $path);
+my $test1 = sub {
+  my $ss = shift;
   my @lanes = $ss->children;
   is (scalar @lanes, 5, '5 lanes parsed');
   is (join(q[ ], map {$_->position} @lanes), '1 2 3 4 5', 'children array sorted by position');
@@ -218,6 +219,122 @@ subtest 'Multiple lanes, extended samplesheet' => sub {
   $lane = $lanes[4];
   is ($lane->is_pool, 0, 'lane 5 is not a pool');
   is ($lane->is_control, 1, 'lane 5 is control');
+};
+
+subtest 'Multiple lanes, extended samplesheet' => sub {
+  plan tests => 28;
+
+  my $path = 't/data/samplesheet/multilane.csv'; #extended samplesheet
+  my $ss = st::api::lims::samplesheet->new(id_run => 10262, path => $path);
+  $test1->($ss);
+};
+
+subtest 'Multiple lanes, extended samplesheet with the id_run column' => sub {
+  plan tests => 29;
+
+  my @lines = read_file('t/data/samplesheet/multilane.csv');
+
+  my $write_edited_file = sub {
+    my ($path, $missing) = @_;
+    my $count = 0;
+    my @new_lines = ();
+    foreach my $line (@lines) {
+      $line =~ s{\s+\Z}{};
+      $count == 0 and push @new_lines, $line . q[,];
+      $count == 1 and push @new_lines, $line . q[id_run,];
+      my $id_run = ($missing and ($count % 2 == 0)) ? q[] : 10262;
+      $count > 1  and push @new_lines, $line . $id_run . q[,];
+      $count++;
+    }  
+    write_file($path, map { $_ . qq[\n]} @new_lines);
+  };
+
+  my $path = join q[/], $temp_dir, 'multilane.csv';
+
+  $write_edited_file->($path, 1);
+  throws_ok {
+    st::api::lims::samplesheet->new(id_run => 10262, path => $path)->children()
+  } qr/No value in the id_run column/, 'error with id_run column partially filled';
+
+  $write_edited_file->($path);
+  $test1->(st::api::lims::samplesheet->new(id_run => 10262, path => $path));
+};
+
+subtest 'Multiple MiSeq runs' => sub {
+  plan tests => 11;
+
+  my @lines = read_file('t/data/samplesheet/6946_extended.csv');
+  my $write_edited_file = sub {
+    my ($path, $missing) = @_;
+    my $count = 0;
+    my @new_lines = ();
+    foreach my $line (@lines) {
+      $line =~ s{\s+\Z}{};
+      $count == 0 and push @new_lines, $line . q[,];
+      $count == 1 and push @new_lines, $line . q[id_run,];
+      my $id_run = ($count % 2 == 0) ? 6946 : 6945;
+      $count > 1  and push @new_lines, $line . $id_run . q[,];
+      $count++;
+    } 
+    write_file($path, map { $_ . qq[\n]} @new_lines);
+  };
+
+  my $path = join q[/], $temp_dir, 'multiruns.csv';
+  $write_edited_file->($path);
+
+  my $err = "Samplesheet $path with data for multiple runs,";
+  my $ss = st::api::lims::samplesheet->new(path => $path);
+  throws_ok { $ss->children }
+    qr/id_run column is present in a samplesheet, id_run attribute should be set/,
+    'error if id_run attr is not set';
+  $ss = st::api::lims::samplesheet->new(id_run => 6946, path => $path);
+  throws_ok { $ss->children }
+    qr/$err position attribute should be set/,
+    'error if id_run attr is not set';
+  throws_ok { st::api::lims::samplesheet->new(
+              id_run => 6946, position => 1, tag_index => 0, path => $path) }
+    qr/$err not possible to get data for tag zero/, 'error for tag zero';
+  throws_ok { st::api::lims::samplesheet->new(
+              id_run => 6946, position => 1, path => $path) }
+    qr/$err pool data not available/, 'error for a pool';
+
+  throws_ok { st::api::lims::samplesheet->new(
+    id_run => 6946, position => 2, tag_index => 2, path => $path)
+  } qr/Position 2 not defined in $path/,
+    'error for position that does not exist';
+  throws_ok { st::api::lims::samplesheet->new(
+    id_run => 6946, position => 1, tag_index => 2, path => $path)
+  } qr/Tag index 2 not defined in $path/,
+    'error for position that does not exist';  
+  
+  lives_ok { $ss = st::api::lims::samplesheet->new(
+    id_run => 6946, position => 1, tag_index => 1, path => $path);
+  } 'no error, record exists';
+  ok(!$ss->is_pool, 'not a pool');
+  ok(!$ss->children, 'no children');
+  is($ss->default_tag_sequence, 'ATCACGTT', 'correct tag sequence');
+  
+  $ss = st::api::lims::samplesheet->new(
+    id_run => 6945, position => 1, tag_index => 2, path => $path);
+  is($ss->default_tag_sequence, 'CGATGTTT', 'correct tag sequence');
+};
+
+subtest 'Multiple NovaSeq runs - top-up merge support' => sub {
+  plan tests => 20;
+
+  my $path = 't/data/samplesheet/novaseq_multirun.csv';
+  my @components = ([26480,1,9],[26480,2,9],[26480,3,9],[26480,4,9],[28780,2,4]);
+  foreach my $c (@components) {
+    my $ss = st::api::lims::samplesheet->new(
+                 id_run    => $c->[0],
+                 position  => $c->[1],
+                 tag_index => $c->[2],
+                 path      => $path);
+    is($ss->default_tag_sequence, 'AGTTCAGG', 'tag sequence');
+    is($ss->default_tagtwo_sequence, 'CCAACAGA', 'tag2 sequence');
+    is($ss->default_library_type, 'HiSeqX PCR free', 'library type');
+    is($ss->sample_name, '7592352', 'sample name');
+  }
 };
 
 subtest 'MiSeq run, comparison of xml and samplesheet drivers' => sub {
