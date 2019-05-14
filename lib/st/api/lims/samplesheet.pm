@@ -61,8 +61,6 @@ has 'path' => (
 );
 
 sub _build_path {
-  my $self = shift;
-
   return $ENV{$st::api::lims::CACHED_SAMPLESHEET_FILE_VAR_NAME};
 }
 
@@ -98,24 +96,24 @@ has 'data' => (
                   builder => '_build_data',
                   trigger => \&_validate_data,
                );
-sub _build_data {## no critic (Subroutines::ProhibitExcessComplexity)
+sub _build_data {
   my $self = shift;
 
   my @lines = read_file($self->path);
   my $d = {};
   my $current_section = q[];
   my @data_columns = ();
+  my $id_run_column_present = 0;
 
   foreach my $line (@lines) {
-    if ($line) {$line =~ s/\s+$//mxs;}
-    if (!$line) {
-      next;
-    }
+
+    $line or next;
+    $line =~ s/\s+$//mxs;
+    $line or next;
+
     my @columns = split $SAMPLESHEET_RECORD_SEPARATOR, $line, $RECORD_SPLIT_LIMIT;
     my @empty = grep {(!defined $_ || $_ eq q[] || $_ =~ /^\s+$/smx)} @columns;
-    if (scalar @empty == scalar @columns) {
-      next;
-    }
+    scalar @empty != scalar @columns or next;
 
     my $section;
     if ( ($section) = $columns[0] =~ /^\[(\w+)\]$/xms) {
@@ -124,57 +122,29 @@ sub _build_data {## no critic (Subroutines::ProhibitExcessComplexity)
       next;
     }
 
-    my $id_run_column_present = 0;
     if ($current_section eq 'Data') {
+
       if (!@data_columns) {
         @data_columns = @columns;
-        if ( any { $_ eq 'id_run' } @data_columns) {
-          $id_run_column_present = 1;
-        }
-
-        if (not $self->id_run) {
-          $id_run_column_present and croak q[id_run column is present,] .
-            q[ id_run attribute should be supplied via the constructor];
-          my $en = _id_run_from_header($d);
-          if ($en) {
-            $self->_set_id_run($en);
-            carp qq[id_run is set to Experiment Name, $en];
-          }
-        }
-
+        $id_run_column_present = $self->_parse_data_header($d, @columns);
         next;
       }
+
       my $row = {'Lane' => 1,};
       foreach my $i (0 .. $#columns) {
         $row->{$data_columns[$i]} = $columns[$i];
       }
 
+      my @lanes = split /\+/smx, $row->{'Lane'};
+      delete $row->{'Lane'};
+
       my $id_run = delete $row->{'id_run'};
       not $id_run and $id_run_column_present and croak 'No value in the id_run column';
       $id_run ||= $self->_get_id_run();
 
-      my @lanes = split /\+/smx, $row->{'Lane'};
-      if(not exists $row->{'default_tag_sequence'}){ #use custom NPG column if provided
-        if ($row->{'Index'}) {
-          $row->{'default_tag_sequence'} = $row->{'Index'};
-          delete $row->{'Index'};
-          if ($row->{'Index2'}) {
-            $row->{'default_tagtwo_sequence'} = $row->{'Index2'};
-            delete $row->{'Index2'};
-          }
-        }
-      }
-      my $index = $row->{'tag_index'};
-      if ($index) {
-        delete $row->{'tag_index'};
-      } elsif ($row->{'default_tag_sequence'}) {
-        $index = $d->{$current_section}->{$id_run}->{$lanes[0]} ?
-          scalar keys %{$d->{$current_section}->{$id_run}->{$lanes[0]}} : 0;
-        $index += 1;
-      } else {
-        $index = $NOT_INDEXED_FLAG;
-      }
-      delete $row->{'Lane'};
+      my $current_num_indexes = $d->{$current_section}->{$id_run}->{$lanes[0]} ?
+        scalar keys %{$d->{$current_section}->{$id_run}->{$lanes[0]}} : 0;
+      my $index = $self->_parse_index($row, $current_num_indexes);
 
       # There might be no index column header or the value might be undefined
       foreach my $lane (@lanes) { #give all lanes explicitly
@@ -183,26 +153,26 @@ sub _build_data {## no critic (Subroutines::ProhibitExcessComplexity)
         }
         $d->{$current_section}->{$id_run}->{$lane}->{$index} = $row;
       }
-   } elsif ($current_section eq 'Reads') {
-     my @reads = grep { $_ =~/\d+/smx} @columns;
-     if (!@reads) {
-       next;
-     }
-     if (scalar @reads > 1) {
-       croak 'Multiple read lengths in one row';
-     }
-     if (!exists $d->{$current_section}) {
-       $d->{$current_section} = [$reads[0]];
-     } else {
-       push @{$d->{$current_section}}, $reads[0];
-     }
-   } else {
-     my @row = grep { defined $_ && ($_ ne q[]) } @columns;
-     if (scalar @row > 2) {
-       croak "More than two columns defined in one row in section $current_section";
-     }
-     $d->{$current_section}->{$row[0]} = $row[1];
-   }
+
+    } elsif ($current_section eq 'Reads') {
+
+      my @reads = grep { $_ =~/\d+/smx} @columns;
+      @reads or next;
+      scalar @reads == 1 or croak 'Multiple read lengths in one row';
+
+      if (!exists $d->{$current_section}) {
+        $d->{$current_section} = [$reads[0]];
+      } else {
+        push @{$d->{$current_section}}, $reads[0];
+      }
+
+    } else {
+      my @row = grep { defined $_ && ($_ ne q[]) } @columns;
+      if (scalar @row > 2) {
+        croak "More than two columns defined in one row in section $current_section";
+      }
+      $d->{$current_section}->{$row[0]} = $row[1];
+    }
   }
 
   return $d;
@@ -451,6 +421,50 @@ sub _build__sschildren {
 ###################################################################
 #################  Private methods  ###############################
 ###################################################################
+
+sub _parse_data_header {
+  my ($self, $d, @data_columns) = @_;
+
+  my $id_run_column_present = any { $_ eq 'id_run' } @data_columns;
+
+  if (not $self->id_run) {
+    $id_run_column_present and croak q[id_run column is present,] .
+      q[ id_run attribute should be supplied via the constructor];
+    my $en = _id_run_from_header($d);
+    if ($en) {
+      $self->_set_id_run($en);
+      carp qq[id_run is set to Experiment Name, $en];
+    }
+  }
+
+  return $id_run_column_present;
+}
+
+sub _parse_index {
+  my ($self, $row, $current_num_indexes) = @_;
+
+  if (not exists $row->{'default_tag_sequence'}) { #use custom NPG column if provided
+    if ($row->{'Index'}) {
+      $row->{'default_tag_sequence'} = $row->{'Index'};
+      delete $row->{'Index'};
+      if ($row->{'Index2'}) {
+        $row->{'default_tagtwo_sequence'} = $row->{'Index2'};
+        delete $row->{'Index2'};
+      }
+    }
+  }
+
+  my $index = $row->{'tag_index'};
+  if ($index) {
+    delete $row->{'tag_index'};
+  } elsif ($row->{'default_tag_sequence'}) {
+    $index = $current_num_indexes + 1;
+  } else {
+    $index = $NOT_INDEXED_FLAG;
+  }
+
+  return $index;
+}
 
 sub _validate_data { # this is a callback for Moose trigger
                      # $old_data might not be set
