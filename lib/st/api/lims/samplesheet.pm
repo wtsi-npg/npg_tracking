@@ -8,6 +8,7 @@ use File::Slurp;
 use Readonly;
 use URI::Escape qw(uri_unescape);
 use open q(:encoding(UTF8));
+use List::MoreUtils qw(any);
 
 use npg_tracking::util::types;
 use st::api::lims;
@@ -41,11 +42,16 @@ Readonly::Scalar  my  $RECORD_SPLIT_LIMIT           => -1;
 Readonly::Scalar  my  $DATA_SECTION                 => q[Data];
 Readonly::Scalar  my  $HEADER_SECTION               => q[Header];
 
+###################################################################
+#################  Public attributes  #############################
+###################################################################
+
 =head2 path
 
 Samplesheet path
 
 =cut
+
 has 'path' => (
                   isa => 'NpgTrackingReadableFile',
                   is  => 'ro',
@@ -65,6 +71,7 @@ sub _build_path {
 Run id, optional attribute.
 
 =cut
+
 has '+id_run'   =>        (required        => 0, writer => '_set_id_run',);
 
 =head2 position
@@ -72,23 +79,12 @@ has '+id_run'   =>        (required        => 0, writer => '_set_id_run',);
 Position, optional attribute.
 
 =cut
+
 has '+position' =>        (required        => 0,);
 
-=head2 BUILD
+=head2 tag_index
 
-Validates attributes given to the constructor against data
-
-=cut
-sub BUILD {
-  my $self = shift;
-  if ($self->position && !exists $self->data->{$DATA_SECTION}->{$self->position}) {
-    croak sprintf 'Position %s not defined in %s', $self->position, $self->path;
-  }
-  if ($self->tag_index && !exists $self->data->{$DATA_SECTION}->{$self->position}->{$self->tag_index}) {
-    croak sprintf 'Tag index %s not defined in %s', $self->tag_index, $self->path;
-  }
-  return;
-}
+Tag index, optional attribute.
 
 =head2 data
 
@@ -102,7 +98,7 @@ has 'data' => (
                   builder => '_build_data',
                   trigger => \&_validate_data,
                );
-sub _build_data {
+sub _build_data {## no critic (Subroutines::ProhibitExcessComplexity)
   my $self = shift;
 
   my @lines = read_file($self->path);
@@ -128,15 +124,35 @@ sub _build_data {
       next;
     }
 
+    my $id_run_column_present = 0;
     if ($current_section eq 'Data') {
       if (!@data_columns) {
         @data_columns = @columns;
+        if ( any { $_ eq 'id_run' } @data_columns) {
+          $id_run_column_present = 1;
+        }
+
+        if (not $self->id_run) {
+          $id_run_column_present and croak q[id_run column is present,] .
+            q[ id_run attribute should be supplied via the constructor];
+          my $en = _id_run_from_header($d);
+          if ($en) {
+            $self->_set_id_run($en);
+            carp qq[id_run is set to Experiment Name, $en];
+          }
+        }
+
         next;
       }
       my $row = {'Lane' => 1,};
       foreach my $i (0 .. $#columns) {
         $row->{$data_columns[$i]} = $columns[$i];
       }
+
+      my $id_run = delete $row->{'id_run'};
+      not $id_run and $id_run_column_present and croak 'No value in the id_run column';
+      $id_run ||= $self->_get_id_run();
+
       my @lanes = split /\+/smx, $row->{'Lane'};
       if(not exists $row->{'default_tag_sequence'}){ #use custom NPG column if provided
         if ($row->{'Index'}) {
@@ -152,8 +168,8 @@ sub _build_data {
       if ($index) {
         delete $row->{'tag_index'};
       } elsif ($row->{'default_tag_sequence'}) {
-        $index = $d->{$current_section}->{$lanes[0]} ?
-          scalar keys %{$d->{$current_section}->{$lanes[0]}} : 0;
+        $index = $d->{$current_section}->{$id_run}->{$lanes[0]} ?
+          scalar keys %{$d->{$current_section}->{$id_run}->{$lanes[0]}} : 0;
         $index += 1;
       } else {
         $index = $NOT_INDEXED_FLAG;
@@ -162,10 +178,10 @@ sub _build_data {
 
       # There might be no index column header or the value might be undefined
       foreach my $lane (@lanes) { #give all lanes explicitly
-        if (exists $d->{$current_section}->{$lane}->{$index}) {
+        if (exists $d->{$current_section}->{$id_run}->{$lane}->{$index}) {
           croak "Multiple $current_section section definitions for lane $lane index $index";
         }
-        $d->{$current_section}->{$lane}->{$index} = $row;
+        $d->{$current_section}->{$id_run}->{$lane}->{$index} = $row;
       }
    } elsif ($current_section eq 'Reads') {
      my @reads = grep { $_ =~/\d+/smx} @columns;
@@ -189,37 +205,7 @@ sub _build_data {
    }
   }
 
-  if (!$self->id_run) {
-    my $en = _id_run_from_header($d);
-    if ($en) {
-      $self->_set_id_run($en);
-      carp qq[id_run is set to Experiment Name, $en];
-    }
-  }
-
   return $d;
-}
-
-sub _validate_data { # this is a callback for Moose trigger
-                     # $old_data might not be set
-  my ( $self, $data, $old_data ) = @_;
-
-  if (!exists $data->{$DATA_SECTION}) {
-    croak "$DATA_SECTION section is missing";
-  }
-
-  my $id_run = _id_run_from_header($data);
-  if ($id_run && $self->id_run && $id_run != $self->id_run) {
-    carp sprintf 'Supplied id_run %i does not match Experiment Name, %s',
-                  $self->id_run, $id_run;
-  }
-
-  return;
-}
-
-sub _id_run_from_header {
-  my $data = shift;
-  return $data->{$HEADER_SECTION}->{'Experiment Name'};
 }
 
 =head2 is_pool
@@ -235,8 +221,11 @@ has 'is_pool' =>          (isa             => 'Bool',
                           );
 sub _build_is_pool {
   my $self = shift;
+  if (scalar keys %{$self->data->{$DATA_SECTION}} > 1) {
+    return 0;
+  }
   if ( $self->position && !$self->tag_index && #lane level or tag zero
-      (!exists $self->data->{$DATA_SECTION}->{$self->position}->{$NOT_INDEXED_FLAG}) ) {
+      (!exists $self->data->{$DATA_SECTION}->{$self->_get_id_run()}->{$self->position}->{$NOT_INDEXED_FLAG}) ) {
     return 1;
   }
   return 0;
@@ -244,8 +233,8 @@ sub _build_is_pool {
 
 =head2 spiked_phix_tag_index
 
- Read-only integer accessor, not possible to set from the constructor.
- Defined for a lane and all tags, including tag zero
+Read-only integer accessor, not possible to set from the constructor.
+Defined for a lane and all tags, including tag zero
 
 =cut
 has 'spiked_phix_tag_index' =>  (isa             => 'Maybe[NpgTrackingTagIndex]',
@@ -269,78 +258,31 @@ sub _build_spiked_phix_tag_index {
     }
   } else {
     my $index = $self->tag_index ? $self->tag_index : $NOT_INDEXED_FLAG;
-    return $self->data->{$DATA_SECTION}->{$self->position}->{$index}->{'spiked_phix_tag_index'} || undef;
+    return $self->data->{$DATA_SECTION}->{$self->_get_id_run()}->{$self->position}->{$index}->{'spiked_phix_tag_index'} || undef;
   }
   return;
 }
 
-has '_data_row' =>        (isa             => 'Maybe[HashRef]',
-                           is              => 'ro',
-                           init_arg        => undef,
-                           lazy_build      => 1,
-                          );
-sub _build__data_row {
+###################################################################
+#################  Public methods  ################################
+###################################################################
+
+=head2 BUILD
+
+Validates attributes given to the constructor against data
+
+=cut
+
+sub BUILD {
   my $self = shift;
-
-  if ($self->position) {
-    if ($self->tag_index) {
-      if (!exists $self->data->{$DATA_SECTION}->{$self->position}->{$self->tag_index}) {
-        croak sprintf 'Tag index %s not defined for %s',
-                    $self->tag_index, $self->to_string;
-      }
-      return $self->data->{$DATA_SECTION}->{$self->position}->{$self->tag_index};
-    }
-    if (!defined $self->tag_index &&
-           exists $self->data->{$DATA_SECTION}->{$self->position}->{$NOT_INDEXED_FLAG}) {
-      return $self->data->{$DATA_SECTION}->{$self->position}->{$NOT_INDEXED_FLAG};
-    }
+  my $id_run = $self->_get_id_run();
+  if ($self->position && !exists $self->data->{$DATA_SECTION}->{$id_run}->{$self->position}) {
+    croak sprintf 'Position %s not defined in %s', $self->position, $self->path;
   }
-
-  return; #nothing on run level, lane-level pool or tag zero
-}
-
-has '_sschildren' =>      (isa             => 'ArrayRef',
-                           is              => 'ro',
-                           init_arg        => undef,
-                           clearer         => 'free_children',
-                           lazy_build      => 1,
-                          );
-sub _build__sschildren {
-  my $self = shift;
-
-  my $child_attr_name;
-  if ($self->position) {
-    if ($self->is_pool) { # lane level pool and tag zero - return plexes
-      $child_attr_name = 'tag_index';
-    }
-  } else { # run level - return lanes
-    $child_attr_name = 'position';
+  if ($self->tag_index && !exists $self->data->{$DATA_SECTION}->{$id_run}->{$self->position}->{$self->tag_index}) {
+    croak sprintf 'Tag index %s not defined in %s', $self->tag_index, $self->path;
   }
-  my @children = ();
-  if ($child_attr_name) {
-
-    my $h = $child_attr_name eq 'position' ?
-               $self->data->{$DATA_SECTION} :
-               $self->data->{$DATA_SECTION}->{$self->position};
-
-    my $init = {};
-    foreach my $init_attr (qw/id_run path/) {
-      if ($self->$init_attr) {
-        $init->{$init_attr} = $self->$init_attr;
-      }
-    }
-    if ($child_attr_name eq 'tag_index') {
-      $init->{'position'} = $self->position;
-    }
-
-    foreach my $attr_value (sort {$a <=> $b} keys %{$h}) {
-      $init->{$child_attr_name} = $attr_value;
-      $init->{'data'}           = $self->data;
-      push @children, __PACKAGE__->new($init);
-    }
-  }
-
-  return \@children;
+  return;
 }
 
 =head2 children
@@ -351,10 +293,38 @@ For a pooled lane and tag zero contains plex-level objects. On a run level, when
 accessor is not set, returns lane level objects.
 
 =cut
+
 sub children {
   my $self = shift;
   return @{$self->_sschildren()};
 }
+
+=head2 to_string
+
+Human friendly description of the object
+
+=cut
+
+sub to_string {
+  my $self = shift;
+  my $s = __PACKAGE__ . q[, path ] . $self->path;
+  if (defined $self->id_run) {
+    $s .= q[ id_run ] . $self->id_run;
+  }
+  if (defined $self->position) {
+    $s .= q[ position ] . $self->position;
+  }
+  if (defined $self->tag_index) {
+    $s .= q[ tag_index ] . $self->tag_index;
+  }
+  return $s;
+}
+
+#####
+#
+# Dinamically create standard driver methods as defined in st::api::lims
+# in the driver_method_list_short class method.
+#
 
 for my $m ( st::api::lims->driver_method_list_short(__PACKAGE__->meta->get_attribute_list) ) {
 
@@ -398,29 +368,121 @@ for my $m ( st::api::lims->driver_method_list_short(__PACKAGE__->meta->get_attri
   });
 }
 
-=head2 to_string
+###################################################################
+#################  Private attributes  ############################
+###################################################################
 
-Human friendly description of the object
-
-=cut
-sub to_string {
+has '_data_row' =>        (isa             => 'Maybe[HashRef]',
+                           is              => 'ro',
+                           init_arg        => undef,
+                           lazy_build      => 1,
+                          );
+sub _build__data_row {
   my $self = shift;
-  my $s = __PACKAGE__ . q[, path ] . $self->path;
-  if (defined $self->id_run) {
-    $s .= q[ id_run ] . $self->id_run;
+
+  my $run_data = $self->data->{$DATA_SECTION}->{$self->_get_id_run()};
+  if ($self->position) {
+    if ($self->tag_index) {
+      my $data = $run_data->{$self->position}->{$self->tag_index};
+      if (!defined $data) {
+        croak sprintf 'Tag index %s not defined for %s',
+                    $self->tag_index, $self->to_string;
+      }
+      return $data;
+    }
+    if (!defined $self->tag_index &&
+           exists $run_data->{$self->position}->{$NOT_INDEXED_FLAG}) {
+      return $run_data->{$self->position}->{$NOT_INDEXED_FLAG};
+    }
   }
-  if (defined $self->position) {
-    $s .= q[ position ] . $self->position;
+
+  return; #nothing on run level, lane-level pool or tag zero
+}
+
+has '_sschildren' =>      (isa             => 'ArrayRef',
+                           is              => 'ro',
+                           init_arg        => undef,
+                           clearer         => 'free_children',
+                           lazy_build      => 1,
+                          );
+sub _build__sschildren {
+  my $self = shift;
+
+  my @children = ();
+
+  # Do not create children if data for multiple runs are present.
+  (scalar keys %{$self->data->{$DATA_SECTION}} > 1) && return \@children;
+
+  my $child_attr_name;
+  if ($self->position) {
+    if ($self->is_pool) { # lane level pool and tag zero - return plexes
+      $child_attr_name = 'tag_index';
+    }
+  } else { # run level - return lanes
+    $child_attr_name = 'position';
   }
-  if (defined $self->tag_index) {
-    $s .= q[ tag_index ] . $self->tag_index;
+
+  if ($child_attr_name) {
+    my $h = $self->data->{$DATA_SECTION}->{$self->_get_id_run()};
+    if ($child_attr_name eq 'tag_index') {
+      $h = $h->{$self->position};
+    }
+
+    my $init = {};
+    foreach my $init_attr (qw/id_run path/) {
+      if ($self->$init_attr) {
+        $init->{$init_attr} = $self->$init_attr;
+      }
+    }
+    if ($child_attr_name eq 'tag_index') {
+      $init->{'position'} = $self->position;
+    }
+
+    foreach my $attr_value (sort {$a <=> $b} keys %{$h}) {
+      $init->{$child_attr_name} = $attr_value;
+      $init->{'data'}           = $self->data;
+      push @children, __PACKAGE__->new($init);
+    }
   }
-  return $s;
+
+  return \@children;
+}
+
+###################################################################
+#################  Private methods  ###############################
+###################################################################
+
+sub _validate_data { # this is a callback for Moose trigger
+                     # $old_data might not be set
+  my ( $self, $data, $old_data ) = @_;
+
+  if (!exists $data->{$DATA_SECTION}) {
+    croak "$DATA_SECTION section is missing";
+  }
+
+  my $id_run = _id_run_from_header($data);
+  if ($id_run && $self->id_run && $id_run != $self->id_run) {
+    carp sprintf 'Supplied id_run %i does not match Experiment Name, %s',
+                  $self->id_run, $id_run;
+  }
+
+  return;
+}
+
+sub _id_run_from_header {
+  my $data = shift;
+  return $data->{$HEADER_SECTION}->{'Experiment Name'};
+}
+
+sub _get_id_run {
+  my $self = shift;
+  return $self->id_run ? $self->id_run : q[NO_ID_RUN];
 }
 
 __PACKAGE__->meta->make_immutable;
 
 1;
+
 __END__
 
 =head1 DIAGNOSTICS
@@ -447,6 +509,8 @@ __END__
 
 =item open
 
+=item List::MoreUtils
+
 =back
 
 =head1 INCOMPATIBILITIES
@@ -459,7 +523,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2016 Genome Research Ltd.
+Copyright (C) 2019 Genome Research Ltd.
 
 This file is part of NPG.
 

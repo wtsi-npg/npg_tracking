@@ -722,14 +722,16 @@ subtest 'Run-level object via samplesheet driver' => sub {
   is ($lanes[0]->id_run, 10000, 'lane id_run as set, differs from Experiment Name');
 
   $ss = st::api::lims->new(path => $path, driver_type => 'samplesheet');
-  is ($ss->is_pool, 0, 'is_pool false on run level');
+  my $is_pool;
+  warning_is { $is_pool = $ss->is_pool }
+    q[id_run is set to Experiment Name, 10262],
+    'warning when setting id_run from Experiment Name';
+  is ($is_pool, 0, 'is_pool false on run level');
   is ($ss->is_control, undef, 'is_control undef on run level');
   is ($ss->library_id, undef, 'library_id undef on run level');
   is ($ss->library_name, undef, 'library_name undef on run level');
-  is ($ss->id_run, undef, 'id_run undefined');
-  warning_is {@lanes = $ss->children}
-    q[id_run is set to Experiment Name, 10262],
-    'can get lane-level objects, get warning about setting id_run from Experiment Name';
+  is ($ss->id_run, 10262, 'id_run undefined');
+  @lanes = $ss->children;
   is (scalar @lanes, 1, 'one lane returned');
   my $lane = $lanes[0];
   is ($lane->position, 1, 'position is 1');
