@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - the samplesheet driver's parser extended to cope with data from
+   multiple runs.
+
 release 88.2.1
  - patch to accommodate different URL info passed to the CGI
    module by different Apache httpd versions

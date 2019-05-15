@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 28;
+use Test::More tests => 29;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -819,20 +819,13 @@ subtest 'Plex-level object via samplesheet driver' => sub {
   is (scalar $ss->children, 0, 'zero children returned');
 };
 
-subtest 'Samplesheet driver for a composition' => sub {
-  plan tests => 28;
+subtest 'Samplesheet driver for a one-component composition' => sub {
+  plan tests => 26;
 
   my $path = 't/data/samplesheet/miseq_default.csv';
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $path;
 
-  my $ss;
-  lives_ok { $ss = st::api::lims->new(rpt_list => '10262:1:3;2:3:4', path => $path) }
-    'no error instantiation an object for a composition';
-  throws_ok { $ss->children }
-    qr/Cannot use samplesheet driver with components from multiple runs/,
-   'error when components belong to different runs';
-
-  $ss=st::api::lims->new(rpt_list => '10262:1:3', driver_type => 'samplesheet');
+  my $ss=st::api::lims->new(rpt_list => '10262:1:3', driver_type => 'samplesheet');
   is ($ss->driver, undef, 'driver undefined');
   is ($ss->path, undef, 'samplesheet path is undefined');
   is ($ss->rpt_list, '10262:1:3', 'rpt list as given');
@@ -860,6 +853,65 @@ subtest 'Samplesheet driver for a composition' => sub {
   is ($ss->library_id, 7583413, 'library id is correct');
   is ($ss->sample_name, 'LIA_3', 'sample name is correct');
   is (scalar $ss->children, 0, 'zero children returned');
+};
+
+subtest 'Samplesheet driver for arbitrary compositions' => sub {
+  plan tests => 69;
+
+  my $path = 't/data/samplesheet/novaseq_multirun.csv';
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $path;
+  my $rpt_list = '26480:1:9;26480:2:9;26480:3:9;26480:4:9;28780:2:4';
+
+  my $ss=st::api::lims->new(rpt_list => $rpt_list);
+  is ($ss->rpt_list, $rpt_list, 'rpt list as given');
+  is ($ss->id_run, undef, 'run id undefined');
+  is ($ss->position, undef, 'position undefined');
+  is ($ss->tag_index, undef, 'tag_index undefined');
+  ok (!$ss->is_pool, 'not a pool');
+  is ($ss->is_composition, 1, 'this is a composition');
+  my @children = $ss->children();
+  is (scalar @children, 5, 'five children');
+
+  foreach my $o ((@children, $ss)) {
+    is($o->default_tag_sequence, 'AGTTCAGG', 'tag sequence');
+    is($o->default_tagtwo_sequence, 'CCAACAGA', 'tag2 sequence');
+    is($o->default_library_type, 'HiSeqX PCR free', 'library type');
+    is($o->sample_name, '7592352', 'sample name');
+    is($o->study_name, 'UK Study', 'study name');
+    is($o->library_name, '22802061', 'library name');
+    is($o->reference_genome, 'Homo_sapiens (GRCh38_15_plus_hs38d1) [minimap2]',
+      'reference genome');
+  }
+
+  $ss = $children[0];
+  ok ($ss->driver && (ref $ss->driver eq 'st::api::lims::samplesheet'), 'correct driver');
+  is ($ss->driver_type, 'samplesheet', 'driver type is samplesheet');
+  is ($ss->rpt_list, undef, 'rpt list is undefined');
+  is ($ss->id_run, 26480, 'correct run id');
+  is ($ss->position, 1, 'correct position');
+  is ($ss->tag_index, 9, 'correct tag_index');
+  ok (!$ss->is_pool, 'plex is not a pool');
+  is ($ss->is_composition, 0, 'not a composition');
+
+  $ss = $children[1];
+  is ($ss->id_run, 26480, 'correct run id');
+  is ($ss->position, 2, 'correct position');
+  is ($ss->tag_index, 9, 'correct tag_index');
+
+  $ss = $children[2];
+  is ($ss->id_run, 26480, 'correct run id');
+  is ($ss->position, 3, 'correct position');
+  is ($ss->tag_index, 9, 'correct tag_index');
+
+  $ss = $children[3];
+  is ($ss->id_run, 26480, 'correct run id');
+  is ($ss->position, 4, 'correct position');
+  is ($ss->tag_index, 9, 'correct tag_index');
+
+  $ss = $children[4];
+  is ($ss->id_run, 28780, 'correct run id');
+  is ($ss->position, 2, 'correct position');
+  is ($ss->tag_index, 4, 'correct tag_index');
 };
 
 subtest 'Instantiating a samplesheet driver' => sub {
