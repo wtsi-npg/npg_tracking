@@ -287,7 +287,7 @@ sub _build__additional_columns {
   my @names = ();
   if ($self->extend) {
     @names = grep {$_ ne 'library_id'} st::api::lims->driver_method_list();  #library_id goes to SAMPLE_ID
-    push @names, 'tag_index';
+    push @names, 'tag_index', 'id_run';
     @names = sort @names;
   }
   return \@names;
