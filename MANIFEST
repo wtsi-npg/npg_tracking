@@ -1,6 +1,5 @@
 bin/cbot_checker
 bin/event_notifications
-bin/generate_samplesheet
 bin/illumina_instruments_uptime
 bin/InstrumentPoller
 bin/npg_daemon_control

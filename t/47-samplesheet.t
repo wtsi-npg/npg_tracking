@@ -290,13 +290,13 @@ subtest 'extended samplesheets' => sub {
   my $ss;
   my $result = q();
   lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, extend => 1, id_run=>7007, output=>\$result); } 'extended sample sheet object for unplexed paired run';
-  ok(!$ss->dual_index, 'no dual index');
+  ok(!$ss->_dual_index, 'no dual index');
   lives_ok { $ss->process(); } ' sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/7007_extended.csv'));
 
   $result = q();
   lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); } 'extended sample sheet object for plexed paired run';
-  ok(!$ss->dual_index, 'no dual index');
+  ok(!$ss->_dual_index, 'no dual index');
   lives_ok { $ss->process(); } ' sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/6946_extended.csv'));
 
@@ -317,7 +317,7 @@ subtest 'extended samplesheets' => sub {
   $result = q();
   lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for plexed paired 8 lane run';
-  ok(!$ss->dual_index, 'no dual index');
+  ok(!$ss->_dual_index, 'no dual index');
   lives_ok { $ss->process(); } 'sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/8pools_extended.csv'));
 
@@ -328,7 +328,7 @@ subtest 'extended samplesheets' => sub {
   $result = q();
   lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for plexed paired run with both pool and library lanes';
-  ok($ss->dual_index, 'dual index from a 16 char first index');
+  ok($ss->_dual_index, 'dual index from a 16 char first index');
   lives_ok { $ss->process(); } 'sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/4pool4libs_extended.csv'));
 
@@ -338,7 +338,7 @@ subtest 'extended samplesheets' => sub {
   $result = q();
   lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for plexed paired run with both pool and library lanes';
-  ok($ss->dual_index, 'dual index from two indexes in LIMs');
+  ok($ss->_dual_index, 'dual index from two indexes in LIMs');
   lives_ok { $ss->process(); } 'sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/dual_index_extended.csv'));
 };
