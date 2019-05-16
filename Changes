@@ -1,7 +1,8 @@
 LIST OF CHANGES
 
  - the samplesheet driver's parser extended to cope with data from
-   multiple runs.
+   multiple runs
+ - samplesheet generator extended to cache data for multiple runs
 
 release 88.2.1
  - patch to accommodate different URL info passed to the CGI

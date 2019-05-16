@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 11;
 use Test::LongString;
 use Test::Exception;
 use File::Slurp;
@@ -12,6 +12,7 @@ local $ENV{'dev'} = q(wibble); # ensure we're not going live anywhere
 local $ENV{'HOME'} = q(t/);
 
 use_ok('npg::samplesheet');
+use_ok('st::api::lims');
 
 my $schema = t::dbic_util->new->test_schema();
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q(t/data/samplesheet);
@@ -341,6 +342,39 @@ subtest 'extended samplesheets' => sub {
   ok($ss->_dual_index, 'dual index from two indexes in LIMs');
   lives_ok { $ss->process(); } 'sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/dual_index_extended.csv'));
+};
+
+subtest 'samplesheets for data for multiple runs' => sub {
+  plan tests => 7;
+
+  my $path = 't/data/samplesheet/novaseq_multirun.csv';
+  my $rpt_list = '26480:1:9;26480:2:9;26480:3:9;26480:4:9;' .
+                 '28780:1:4;28780:2:4;28780:3:4;28780:4:4';
+  my @lims = st::api::lims->new(driver_type => 'samplesheet',
+                                path        => $path, 
+                                rpt_list    => $rpt_list)->children;
+
+  throws_ok { npg::samplesheet->new(
+    id_run => 26480, lims => \@lims, extend => 1)->process() 
+  } qr/Run data set \(id_run or run\) where LIMs data are for multiple runs/,
+    'error if id_run is set';
+  throws_ok { npg::samplesheet->new(
+    run => $schema->resultset('Run')->find(26487), lims => \@lims, extend => 1)->process() 
+  } qr/Run data set \(id_run or run\) where LIMs data are for multiple runs/,
+    'error if run object is set';
+
+  throws_ok { npg::samplesheet->new(lims => \@lims, extend => 0)->process() }
+    qr/id_run or a run is required/,
+    'error trying to generate a default samplesheet';
+  throws_ok { npg::samplesheet->new(lims => \@lims)->process() }
+    qr/id_run or a run is required/,
+    'error trying to generate a default samplesheet';
+
+  my $result = q();
+  my $ss = npg::samplesheet->new(extend => 1, lims => \@lims, output=> \$result);
+  lives_ok { $ss->process() } 'processed without any error';
+  ok ($ss->_add_id_run_column, 'flag for id_run column is set');
+  is_string($result, read_file($path));
 };
 
 1;

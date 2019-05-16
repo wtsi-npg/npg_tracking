@@ -4,8 +4,8 @@ use Moose;
 use namespace::autoclean;
 use Class::Load qw(load_class);
 use Template;
-use Carp;
-use List::MoreUtils qw(any);
+use Carp qw/carp croak confess/;
+use List::MoreUtils qw(any uniq);
 use URI::Escape qw(uri_escape_utf8);
 use Readonly;
 use open q(:encoding(UTF8));
@@ -30,12 +30,32 @@ npg::samplesheet
 
 =head1 SYNOPSIS
 
-  my $samplesheet = npg::samplesheet->new(id_run => 7007);
-  $samplesheet->process;
+  my $ss = npg::samplesheet->new(id_run => 7007); # default samplesheet
+  $ss->process(); # samplesheet is written to a file in the current directory
+
+  my $result = q();
+  $ss = npg::samplesheet->new(extend => 1, lims => \@lims, output=> \$result);
+  $ss->process(); # samplesheet data is in the $result variable
+
+  $ss = npg::samplesheet->new(extend => 1, lims => \@lims, output=> 'path/to/myss.csv');
+  $ss->process(); # samplesheet is written to a file (path/to/myss.csv)
+  
 
 =head1 DESCRIPTION
 
 Class for creating samplesheets to cache LIMs data used during analysis.
+
+The format of the samplesheet follows Illumina's guidelines, see
+http://emea.support.illumina.com/downloads/miseq_sample_sheet_quick_reference_guide_15028392.html
+
+If the 'extend' flag is set, custom fields are added to the default Illumina
+format.
+
+By setting the 'lims' attribute and the 'extend' flag in the constructor it is
+possible to combine data from multiple runs in a single samplesheet. In this case
+an extra custom field, 'id_run', is added to the samplesheet and two default
+fields, 'Index' and 'Index2' are removed. Information about tag sequences is
+still retained in the relevant custom fields.
 
 =head1 SUBROUTINES/METHODS
 
@@ -64,10 +84,10 @@ has '+id_run' => (
 );
 sub _build_id_run {
   my ($self) = @_;
-  if($self->has_run()){
+  if($self->has_tracking_run()){
     return $self->run()->id_run();
   }
-  croak 'id_run or a run is required';
+  confess 'id_run or a run is required';
 }
 
 =head2 samplesheet_path
@@ -92,7 +112,7 @@ sub _build_samplesheet_path {
 =head2 extend
 
 A boolean attribute, false by default.
-If false, a samlesheet similar to Illumina one for a MiSeq oe RapidRun
+If false, a samlesheet similar to Illumina one for a MiSeq run
 is generated. If true, the Illumina-style header of the file is removed
 and the data section is extended by columns for extra LIMs data.
 
@@ -135,7 +155,7 @@ has 'npg_tracking_schema' => (
 );
 sub _build_npg_tracking_schema {
   my ($self) = @_;
-  my$s = $self->has_run() ?
+  my$s = $self->has_tracking_run() ?
          $self->run()->result_source()->schema() :
          npg_tracking::Schema->connect();
   return $s
@@ -150,6 +170,7 @@ An attribute, DBIx object for a row in the run table of the tracking database.
 has 'run' => (
   'isa'        => 'npg_tracking::Schema::Result::Run',
   'is'         => 'ro',
+  'predicate'  => 'has_tracking_run',
   'lazy_build' => 1,
 );
 sub _build_run {
@@ -421,6 +442,29 @@ sub _build__multiple_lanes {
   return ($self->mkfastq || (scalar(@{$self->lims}) > 1));
 }
 
+has '_add_id_run_column' => (
+  'isa'        => 'Bool',
+  'is'         => 'ro',
+  'lazy_build' => 1,
+);
+sub _build__add_id_run_column {
+  my $self = shift;
+
+  my $num_unique_runs = scalar uniq
+                               grep { $_ }
+                               map  { $_->id_run }
+                               grep { $_->can('id_run') }
+                               @{$self->lims};
+
+  $num_unique_runs > 1 and ($self->has_id_run() or $self->has_tracking_run()) and
+    croak 'Run data set (id_run or run) where LIMs data are for multiple runs';
+
+  not $self->extend and $num_unique_runs > 1 and
+    croak 'Cannot have data for multiple runs in a default samplesheet';
+
+  return ($num_unique_runs > 1);
+}
+
 has '_additional_columns' => (
   'isa'        => 'ArrayRef',
   'is'         => 'ro',
@@ -432,6 +476,7 @@ sub _build__additional_columns {
   if ($self->extend) {
     @names = grep {$_ ne 'library_id'} st::api::lims->driver_method_list();  #library_id goes to SAMPLE_ID
     push @names, 'tag_index';
+    $self->_add_id_run_column and push @names, 'id_run';
     @names = sort @names;
   }
   return \@names;
