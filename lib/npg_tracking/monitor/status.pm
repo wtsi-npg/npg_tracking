@@ -15,6 +15,7 @@ use Sys::Filesystem::MountPoint qw/path_to_mount_point/;
 use File::stat;
 use POSIX;
 
+use WTSI::DNAP::Utilities::Timestamp qw/parse_timestamp/;
 use npg_tracking::util::types;
 use npg_tracking::illumina::run::folder;
 use npg_tracking::illumina::run::short_info;
@@ -358,7 +359,7 @@ sub _update_status {
     croak sprintf 'Run id %i does not exist', $status->id_run;
   }
 
-  my $date = $status->timestamp_obj;
+  my $date = parse_timestamp($status->timestamp);
   my $user = undef;
 
   if ( !@{$status->lanes} ) {
@@ -756,6 +757,8 @@ A Moose hook for object destruction; calls cancel_watch().
 
 =item POSIX
 
+=item WTSI::DNAP::Utilities::Timestamp
+
 =back
 
 =head1 INCOMPATIBILITIES
@@ -768,7 +771,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2018 Genome Research Limited
+Copyright (C) 2019 Genome Research Limited
 
 This file is part of NPG.
 

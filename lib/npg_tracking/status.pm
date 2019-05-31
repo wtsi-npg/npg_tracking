@@ -4,13 +4,10 @@ use Moose;
 use namespace::autoclean;
 use MooseX::StrictConstructor;
 use MooseX::Storage;
-use DateTime;
-use DateTime::Format::Strptime;
 use File::Spec;
 use File::Slurp;
-use Readonly;
-use Try::Tiny;
 
+use WTSI::DNAP::Utilities::Timestamp qw/create_current_timestamp/;
 use npg_tracking::util::types;
 
 with Storage( 'traits' => ['OnlyWhenBuilt'],
@@ -20,9 +17,6 @@ with Storage( 'traits' => ['OnlyWhenBuilt'],
 with qw/ npg_tracking::glossary::run/;
 
 our $VERSION = '0';
-
-Readonly::Scalar my $TIMESTAMP_FORMAT => q[%d/%m/%Y %H:%M:%S]; # legacy
-Readonly::Scalar my $TIMESTAMP_FORMAT_WOFFSET => q[%Y-%m-%dT%T%z]; # rfc3339, but seconds only
 
 has q{lanes} => (
                    isa      => q{ArrayRef[NpgTrackingLaneNumber]},
@@ -44,8 +38,7 @@ has q{timestamp} => (
                    is        => 'ro',
                    required  => 0,
                    predicate => 'has_timestamp',
-                   default   => sub { DateTime->now(time_zone => q[local])
-                                      ->strftime($TIMESTAMP_FORMAT_WOFFSET) },
+                   default   => sub { create_current_timestamp() },
                    documentation => q{timestamp of the status change},
 );
 
@@ -60,30 +53,6 @@ sub filename {
   $filename .= q{.json};
 
   return $filename;
-}
-
-sub timestamp_obj {
-  my $self = shift;
-
-  my $parse = sub {
-    my ($format, $time_string) = @_;
-    return DateTime::Format::Strptime->new(
-             pattern  => $format,
-             strict   => 1, # match the pattern exactly
-             on_error => 'croak',
-           )->parse_datetime($time_string);
-  };
-
-  my $dt;
-  try {
-    $dt = $parse->($TIMESTAMP_FORMAT_WOFFSET, $self->timestamp);
-  } catch {
-    $dt = $parse->($TIMESTAMP_FORMAT, $self->timestamp);
-  };
-
-  $dt->set_time_zone('local');
-
-  return $dt;
 }
 
 sub to_string {
@@ -155,16 +124,6 @@ npg_tracking::status
  String timestamp representation, an optional attribute, will
  be built when object is serialized to a JSON string.
 
-=head2 timestamp_obj
-
- A method returning the DateTime object representation of the
- string timestamp attribute. Uses the same date time format
- for parsing teh timestamp string as is used by when lazy-building
- the timestamp attribute.
-
- In order to follow the DST time change correctly, the object is
- localised to the time zone on the host where this method is executed.
-
 =head2 to_string
 
  String representation of the object that does not trigger
@@ -203,17 +162,13 @@ npg_tracking::status
 
 =item MooseX::Storage
 
-=item DateTime
-
-=item DateTime::Format::Strptime
-
 =item File::Spec
 
 =item File::Slurp
 
 =item Readonly
 
-=item Try::Tiny
+=item WTSI::DNAP::Utilities::Timestamp
 
 =item npg_tracking::glossary::run
 
@@ -225,7 +180,8 @@ npg_tracking::status
 
 =head1 BUGS AND LIMITATIONS
 
-Limitation: does not validate the status against the status dictionaries.
+Limitation: does not validate the status against the database
+status dictionaries.
 
 =head1 AUTHOR
 
@@ -235,7 +191,7 @@ Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2016, 2019 Genome Research Limited
+Copyright (C) 2019 Genome Research Limited
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
