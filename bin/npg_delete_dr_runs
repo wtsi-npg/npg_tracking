@@ -8,15 +8,18 @@ use Carp;
 use English qw(-no_match_vars);
 use Getopt::Long;
 use Pod::Usage;
+use Readonly;
 
 use npg_tracking::Schema;
 
-our $VERSION = '0';
+Readonly::Scalar our $VERSION => '0';
+Readonly::Array my @DEFAULT_SERVERS => qw( ukbb@seq-stor-01.sanger.ac.uk ukbb@seq-stor-02.sanger.ac.uk );
 
 my $help;
 my $files;
 my $folders;
 my $no_dry_run;
+my @servers;
 
 sub send_commands {
     my ($dr_server, $cmd) = @_;
@@ -36,8 +39,17 @@ if ($files and $folders) {
     pod2usage(1);
 }
 
+# leftover arguments are server names
+foreach my $arg (@ARGV) {
+    push @servers, $arg;
+}
 
 pod2usage(0) if $help;
+
+# if no server names given, use defaults
+if (!@servers) {
+    @servers = @DEFAULT_SERVERS;
+}
 
 my $rs=npg_tracking::Schema->connect()->resultset(q(RunStatusDict))
     ->search({description=>[q[run cancelled],q[data discarded],q[qc complete]]})
@@ -46,7 +58,6 @@ my $rs=npg_tracking::Schema->connect()->resultset(q(RunStatusDict))
 
 my $cmd = '';
 while (my $run=$rs->next()) {
-    my $status = $run->current_run_status_description || "";
     my $tag = $run->is_tag_set("staging");
     my $run_folder = $run->folder_name || "";
     if ($run_folder and !$tag ) {
@@ -65,8 +76,9 @@ while (my $run=$rs->next()) {
 }
 chop $cmd;
 if ($no_dry_run) {
-    send_commands('ukbb\@seq-stor-01', $cmd);
-    send_commands('ukbb\@seq-stor-02', $cmd);
+    foreach my $server (@servers) {
+        send_commands($server, $cmd);
+    }
 } else {
     print "These are the commands that would be sent if you specify --no-dry-run:\n";
     print $cmd, "\n";
@@ -82,15 +94,16 @@ npg_delete_dr_runs
 
 =head1 USAGE
 
-  npg_delete_dr_runs --files [--no-dry-run]
-  npg_delete_dr_runs --folders [--no-dry-run]
+  npg_delete_dr_runs --files [--no-dry-run] [list of servers]
+  npg_delete_dr_runs --folders [--no-dry-run] [list of servers]
   npg_delete_dr_runs --help
 
 =head1 SYNOPSIS
 
   Script to read the tracking database to find a list of
   runfolder names and delete them from the Disaster Recovery
-  servers.
+  servers. If a list of server names is not supplied then
+  default values will be used.
 
   This script can delete either entire run folders, or just the
   cbcl files within those folders.
