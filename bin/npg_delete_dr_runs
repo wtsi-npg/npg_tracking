@@ -20,7 +20,7 @@ my $no_dry_run;
 
 sub send_commands {
     my ($dr_server, $cmd) = @_;
-    open(BASH, "| ssh $dr_server bash -e") or die("Can't run ssh: $!");
+    open(BASH, '|-', 'ssh', $dr_server, qw(bash -e)) or croak("Can't run ssh: $!");
     print BASH $cmd;
     close(BASH);
 }
