@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - the samplesheet driver's parser extended to cope with data from
+   multiple runs
+ - samplesheet generator extended to cache data for multiple runs
  - status monitor will now work only with RFC 3339 compliant
    timestamps defined in WTSI::DNAP::Utilities::Timestamp
 
