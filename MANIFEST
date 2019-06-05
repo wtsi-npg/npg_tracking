@@ -1,6 +1,5 @@
 bin/cbot_checker
 bin/event_notifications
-bin/generate_samplesheet
 bin/illumina_instruments_uptime
 bin/InstrumentPoller
 bin/npg_daemon_control
@@ -1036,6 +1035,7 @@ t/data/samplesheet/miseq_default.csv
 t/data/samplesheet/miseq_default_dual_index.csv
 t/data/samplesheet/miseq_extended.csv
 t/data/samplesheet/multilane.csv
+t/data/samplesheet/novaseq_multirun.csv
 t/data/samplesheet/st/batches/1.xml
 t/data/samplesheet/st/batches/13994.xml
 t/data/samplesheet/st/batches/14505.xml

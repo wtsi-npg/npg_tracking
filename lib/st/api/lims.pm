@@ -756,13 +756,14 @@ sub _build_separate_y_chromosome_data {
 Method returning a list of st::api::lims objects that are associated with this object
 and belong to the next (one lower) level. An empty list for a non-pool lane and for a plex.
 For a pooled lane contains plex-level objects. On a run level, when the position 
-accessor is not set, returns lane level objects.
-
-=cut
+accessor is not set, returns lane level objects. For the st::api::lims type object that
+was instantiated with an rpt_list attribute, returns a list of st::api::lims type objects
+corresponding to individual components of the composition defined by the rpt_list attribute
+value.
 
 =head2 num_children
 
-Returns the number of children objects, ie the length children list.
+Returns the number of children objects.
 
 =cut
 
@@ -782,11 +783,12 @@ sub _build__cached_children {
 
   my @children = ();
   my @basic_attrs = qw/id_run position tag_index/;
+  my $driver_type = $self->driver_type;
 
   if ($self->driver) {
     if($self->driver->can('children')) {
       foreach my $c ($self->driver->children) {
-        my $init = {'driver_type' => $self->driver_type, 'driver' => $c};
+        my $init = {'driver_type' => $driver_type, 'driver' => $c};
         foreach my $attr (@basic_attrs) {
           if(my $attr_value=$self->$attr || ($c->can($attr) ? $c->$attr : undef)) {
             $init->{$attr}=$attr_value;
@@ -812,16 +814,7 @@ sub _build__cached_children {
                         ]
       )->new_object(rpt_list => $rpt_list)->create_composition();
 
-      my @components = $composition->components_list();
-      my $driver_type = $self->driver_type;
-      if ($driver_type eq $SAMPLESHEET_DRIVER_TYPE) {
-        my @unique_ids = uniq map { $_->id_run } @components;
-        if (@unique_ids != 1) {
-          croak qq[Cannot use $SAMPLESHEET_DRIVER_TYPE driver with components from multiple runs];
-        }
-      }
-
-      foreach my $component (@components) {
+      foreach my $component ($composition->components_list()) {
         my %init = %{$self->_driver_arguments()};
         $init{'driver_type'} = $driver_type;
         foreach my $attr (@basic_attrs) {
