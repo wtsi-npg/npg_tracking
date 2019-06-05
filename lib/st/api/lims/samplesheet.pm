@@ -296,7 +296,7 @@ sub to_string {
 
 #####
 #
-# Dinamically create standard driver methods as defined in st::api::lims
+# Dynamically create standard driver methods as defined in st::api::lims
 # in the driver_method_list_short class method.
 #
 
