@@ -85,6 +85,10 @@ my $builder = $class->new(
                 'Module::Build'                   => '>= 0.42',
           },
 
+          'test_requires' => {
+                'Test::Compile'                   => '< 1.4',
+          },
+
           'build_requires' => {
                 'ExtUtils::CBuilder'              => 0,
                 'Archive::Tar'                    => 0,
