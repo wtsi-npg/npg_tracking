@@ -85,6 +85,10 @@ my $builder = $class->new(
                 'Module::Build'                   => '>= 0.42',
           },
 
+          'test_requires' => {
+                'Test::Compile'                   => '< 1.4',
+          },
+
           'build_requires' => {
                 'ExtUtils::CBuilder'              => 0,
                 'Archive::Tar'                    => 0,
@@ -121,6 +125,7 @@ my $builder = $class->new(
                 'Class::Load'                     => 0,
                 'Class::Std'                      => '0.0.8',
                 'ClearPress'                      => '>= 473.3.3',
+                'Config::Any'                     => 0,
                 'Config::Auto'                    => 0,
                 'Crypt::CBC'                      => 0,
                 'Cwd'                             => 0,
@@ -216,8 +221,10 @@ my $builder = $class->new(
                 'XML::Generator'                  => '1.01',
                 'XML::LibXML'                     => '1.70',
                 'YAML'                            => '0.68',
+                'YAML::XS'                        => 0,
 
-                'WTSI::DNAP::Utilities::Loggable' => '>= 0.5.3',
+                'WTSI::DNAP::Utilities::Loggable'  => '>= 0.5.3',
+                'WTSI::DNAP::Utilities::Timestamp' => '0',
             },
          );
 

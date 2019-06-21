@@ -1,0 +1,16 @@
+---
+default:
+  s3:
+    enable: false
+    notify: false
+  irods:
+    enable: true
+    notify: false
+study:
+  - study_id: "1000"
+    s3:
+      enable: true
+      notify: true
+    irods:
+      enable: false
+      notify: false
