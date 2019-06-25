@@ -16,7 +16,6 @@ our $VERSION = '0';
 Readonly::Scalar my $DELIM       => q[_];
 Readonly::Scalar my $LANE_DELIM  => q[-];
 Readonly::Scalar my $NOT_COMMON  => q[-1];
-Readonly::Scalar my $DIGEST_TYPE => q[md5];
 Readonly::Scalar my $SUFFIX_KEY  => q[suffix];
 Readonly::Scalar my $EXT_KEY     => q[ext];
 
@@ -171,7 +170,7 @@ sub _position_label {
 
 sub _get_digest {
   my $self = shift;
-  return $self->composition()->digest($DIGEST_TYPE);
+  return $self->composition()->digest();
 }
 
 no Moose::Role;
@@ -199,7 +198,7 @@ to translate the name back to the composition.
 
 =head3 Heuristic
 
-In a general case file names are based on the md5
+In a general case file names are based on the sha256_hex
 digest associated with the composition object. In some cases
 it is possible to construct human readable and semantically
 meaningful names. For file names, in all such cases the subset
@@ -211,7 +210,7 @@ therefore, the subset value will be disregarded.
 =head3 File or directory name for results of an arbitrary merge
 (composition)
 
-sha256 or md5 digest associated with the composition object.
+sha256_hex digest associated with the composition object.
 It is not possible to tranlate this name back to the composition.
 
 =head3 File name for a one-component composition
@@ -378,7 +377,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2018 GRL
+Copyright (C) 2019 GRL
 
 This file is part of NPG.
 

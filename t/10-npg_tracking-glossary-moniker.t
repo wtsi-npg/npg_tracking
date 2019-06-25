@@ -70,22 +70,22 @@ subtest 'no semantically meaningful name' => sub {
   plan tests => 12;
   
   my $m = $class_name->new(rpt_list => '33:4:1;34:4:1');
-  my $d = '63ac7e392f2e8599ca11cf543253cb38';
+  my $d = '30866d9fad890b76da390f63d18e74fc08323e8b356c763b3c3568ec228e6a15';
   is ($m->file_name, $d, 'run ids are different, file name is based on a digest');
   is ($m->dir_path,  $d, 'run ids are different, dir. path is based on a digest');
 
   $m = $class_name->new(rpt_list => '33:4:1;33:5:2');
-  $d = '43736c430931af8a6b983bdd2ee171f5';
+  $d = '8aa4ed602a5ebbf782755422bf3328ab5c40ef6723e19806e9deef099ebdbec8';
   is ($m->file_name, $d, 'tag indices are different, file name is based on a digest');
   is ($m->dir_path,  $d, 'tag indices are different, dir. path is based on a digest');
 
   $m = $class_name->new(rpt_list => '33:4:0;33:5:2');
-  $d = '3aab3821306519e5a2e0d7afe32f605b';
+  $d = '52a945319058c7ab3a0f925276fcc4acafa2e68c7e3bcaecde955eb0eb2d0f74';
   is ($m->file_name, $d, 'tag indices are different, file name is based on a digest');
   is ($m->dir_path,  $d, 'tag indices are different, dir. path is based on a digest');
 
   $m = $class_name->new(rpt_list => '33:4;33:5:2');
-  $d = '967ab6c26b4e9dd1c0215cb0107b8779';
+  $d = '86c6c946c00a0f7734035b2776961eb3ae049682864831ff4f12b9f096a7261e';
   is ($m->file_name, $d, 'tag indices are different, file name is based on a digest');
   is ($m->dir_path,  $d, 'tag indices are different, dir. path is based on a digest');
 
@@ -95,7 +95,7 @@ subtest 'no semantically meaningful name' => sub {
   {"__CLASS__":"npg_tracking::glossary::composition::component::illumina",
    "id_run":26048,"position":2,"subset":"phix"}
   ]}';
-  $d = '0fef736f8e41e28ebbe13b710e726ad7';
+  $d = 'f4739972d5097636df3bf2ce6dcd8c8284c1b4dc90ccd1432870f08b93755b48';
   $m = $class_name->new(composition => npg_tracking::glossary::composition->thaw($json));
   is ($m->file_name, $d, 'subsets are different, file name is based on a digest');
 
@@ -105,7 +105,7 @@ subtest 'no semantically meaningful name' => sub {
   {"__CLASS__":"npg_tracking::glossary::composition::component::illumina",
    "id_run":26048,"position":2,"subset":"phix"}
   ]}';
-  $d = '984f91f06ff08eb6e4f5fc31995e4c4e';
+  $d = '9015e2ef5d9594b5a15aca7877d0a83fbe41033fa6fbaaa9deebd54ea4d72400';
   $m = $class_name->new(composition => npg_tracking::glossary::composition->thaw($json));
   is ($m->file_name, $d, 'subsets are different, file name is based on a digest');
 
@@ -115,7 +115,7 @@ subtest 'no semantically meaningful name' => sub {
   {"__CLASS__":"npg_tracking::glossary::composition::component::illumina",
    "id_run":26048,"position":2,"tag_index":3,"subset":"phix"}
   ]}';
-  $d = 'd2a14c5e0bb12f19de529783ffb5b471';
+  $d = 'b9cb8de3aa3690565ca105a7791f6b29e9a00bb79c62a6263a5eb33aec48c6da';
   $m = $class_name->new(composition => npg_tracking::glossary::composition->thaw($json));
   is ($m->file_name, $d, 'subsets are different, file name is based on a digest');
 
@@ -125,7 +125,7 @@ subtest 'no semantically meaningful name' => sub {
   {"__CLASS__":"npg_tracking::glossary::composition::component::illumina",
    "id_run":26048,"position":2,"tag_index":3,"subset":"phix"}
   ]}';
-  $d = 'a6e882824b144f3d6103e3a12625bec2';
+  $d = '5aacdb6c43330130ee6962a6cd1794ee0ba6878d9bce0e2d48000349eec44b71';
   $m = $class_name->new(composition => npg_tracking::glossary::composition->thaw($json));
   is ($m->file_name, $d, 'subsets are different, file name is based on a digest');
 };

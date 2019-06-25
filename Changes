@@ -1,5 +1,12 @@
 LIST OF CHANGES
 
+ - Where semantic names are not possible, standard file and directory
+   names are based on sha256 digest of the composition JSON
+   (previously the md5 digest was used). This makes possible
+   conversion from the name back to the composition using the ml
+   warehouse records, which might be useful in case of clients'
+   queries.
+
 release 89.0.1
  - live test patch to reflect a change in spiked PhiX tag index
 
