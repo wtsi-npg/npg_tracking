@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+release 89.0.1
+ - live test patch to reflect a change in spiked PhiX tag index
+
 release 89.0.0
  - the samplesheet driver's parser extended to cope with data from
    multiple runs

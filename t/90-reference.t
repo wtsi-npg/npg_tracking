@@ -69,7 +69,7 @@ SKIP: {
   throws_ok {$r->refs} qr/No plexes defined for lane 1 in batch 9659/, 'error if using tag_index 168 in the contex of not-pool library';
   $r = npg_tracking::data::reference->new(id_run => 5970,position=>1, for_spike => 1);
   is ($r->refs->[0], $PHIX_FILE, 'spiked phix ref');
-  $r = npg_tracking::data::reference->new(id_run => 5970,position=>6, tag_index=>168);
+  $r = npg_tracking::data::reference->new(id_run => 5970,position=>6, tag_index=>888);
   is ($r->refs->[0], $PHIX_FILE, 'spiked phix ref');
 
   $r = npg_tracking::data::reference->new(id_run => 5970,position=>4);
