@@ -67,7 +67,7 @@ subtest 'test compatibility with MooseX::Getopt' => sub {
 };
 
 subtest 'no semantically meaningful name' => sub {
-  plan tests => 12;
+  plan tests => 13;
   
   my $m = $class_name->new(rpt_list => '33:4:1;34:4:1');
   my $d = '30866d9fad890b76da390f63d18e74fc08323e8b356c763b3c3568ec228e6a15';
@@ -128,16 +128,19 @@ subtest 'no semantically meaningful name' => sub {
   $d = '5aacdb6c43330130ee6962a6cd1794ee0ba6878d9bce0e2d48000349eec44b71';
   $m = $class_name->new(composition => npg_tracking::glossary::composition->thaw($json));
   is ($m->file_name, $d, 'subsets are different, file name is based on a digest');
+  is ($m->generic_name, $d, 'generic name');
 };
 
 subtest 'names for one-compoment compositions' => sub {
-  plan tests => 12;
+  plan tests => 14;
 
   my $json = '{"__CLASS__":"npg_tracking::glossary::composition", "components":[
   {"__CLASS__":"npg_tracking::glossary::composition::component::illumina",
    "id_run":26048,"position":1}]}';
   my $m = $class_name->new(composition => npg_tracking::glossary::composition->thaw($json));
   is ($m->file_name, '26048_1', 'file name for a lane entity');
+  is ($m->generic_name, '79ddd58fd7943302150dd2db2afde3c7afcc13f69d073a3e1cc85ec1400ccb78',
+    'generic name');
   is ($m->dir_path, 'lane1', 'dir. path for a lane entity');
 
   $json = '{"__CLASS__":"npg_tracking::glossary::composition", "components":[
@@ -145,6 +148,8 @@ subtest 'names for one-compoment compositions' => sub {
    "id_run":26048,"position":1,"subset":"phix"}]}';
   $m = $class_name->new(composition => npg_tracking::glossary::composition->thaw($json));
   is ($m->file_name, '26048_1_phix', 'file name for a lane, phix subset');
+  is ($m->generic_name, '1ed187e3130552aa386c6084f5dd765f218f9e41b314d78a2b8300de345c7bf9',
+    'generic name');
   is ($m->dir_path, 'lane1', 'dir. path for a lane, phix subset');
 
   $json = '{"__CLASS__":"npg_tracking::glossary::composition", "components":[
@@ -177,7 +182,7 @@ subtest 'names for one-compoment compositions' => sub {
 };
 
 subtest 'names for multi-compoment compositions across the whole run' => sub {
-  plan tests => 12;
+  plan tests => 14;
 
   my $json = '{"__CLASS__":"npg_tracking::glossary::composition", "components":[
   {"__CLASS__":"npg_tracking::glossary::composition::component::illumina",
@@ -186,6 +191,8 @@ subtest 'names for multi-compoment compositions across the whole run' => sub {
    "id_run":26048,"position":2}]}';
   my $m = $class_name->new(composition => npg_tracking::glossary::composition->thaw($json));
   is ($m->file_name, '26048', 'file name for lanes entity');
+  is ($m->generic_name, '693fe7206a05cfa45b617adcf36449fe6e711fbb465226fcbea76d9427001e97',
+    'generic name');
   is ($m->dir_path, q[], 'dir. path forlanes entity');
 
   $json = '{"__CLASS__":"npg_tracking::glossary::composition", "components":[
@@ -230,6 +237,8 @@ subtest 'names for multi-compoment compositions across the whole run' => sub {
   ]}';
   $m = $class_name->new(composition => npg_tracking::glossary::composition->thaw($json));
   is ($m->file_name, '26048#8', 'file name for a plex');
+  is ($m->generic_name, '4add3c84b63dd3158ae8a12060f6f29aadc5c37d83cbddd970092b4f2f60975d',
+    'generic name');
   is ($m->dir_path, 'plex8', 'dir. path for a plex');
 
   $json = '{"__CLASS__":"npg_tracking::glossary::composition", "components":[
