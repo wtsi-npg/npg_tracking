@@ -8,7 +8,8 @@ with qw( npg_tracking::glossary::composition::component
          npg_tracking::glossary::run
          npg_tracking::glossary::lane
          npg_tracking::glossary::subset
-         npg_tracking::glossary::tag );
+         npg_tracking::glossary::tag
+         npg_tracking::glossary::chunk );
 
 our $VERSION = '0';
 
@@ -46,6 +47,8 @@ The optional attributes are
     attrubute with value 'human' is added. The data before the separation
     is described by the same metadata as 'target' data, a 'subset' attribute
     is set to the value 'all'.
+  (3) chunk, identifying where the data has been broken down into chunks to
+    improve parallelism.
 
 =head1 SUBROUTINES/METHODS
 

@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+release 89.1.0
+ - Add chunk field to npg_tracking::Glossary::Composition::Component::Illumina
+   via npg_tracking::Glossary::Chunk
+
 release 89.0.1
  - live test patch to reflect a change in spiked PhiX tag index
 

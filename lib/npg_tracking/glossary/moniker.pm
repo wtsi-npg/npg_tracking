@@ -15,6 +15,7 @@ our $VERSION = '0';
 
 Readonly::Scalar my $DELIM       => q[_];
 Readonly::Scalar my $LANE_DELIM  => q[-];
+Readonly::Scalar my $CHUNK_DELIM => q[.];
 Readonly::Scalar my $NOT_COMMON  => q[-1];
 Readonly::Scalar my $DIGEST_TYPE => q[md5];
 Readonly::Scalar my $SUFFIX_KEY  => q[suffix];
@@ -25,11 +26,12 @@ sub file_name {
 
   my $name;
   if ($self->_file_name_semantic()) {
-    $name = sprintf '%i%s%s%s',
+    $name = sprintf '%i%s%s%s%s',
       $self->_id_run_common(),
       $self->_position_label($DELIM, $selected_lanes),
       $self->_tag_index_label($npg_tracking::glossary::tag::TAG_DELIM),
-      $self->_subset_label();
+      $self->_subset_label(),
+      $self->_chunk_label();
   } else {
     $name = $self->_get_digest();
   }
@@ -99,7 +101,15 @@ has '_subset_common' => (
   lazy_build => 1,
 );
 
-for my $attr (qw/id_run tag_index subset/) {
+has '_chunk_common' => (
+  isa        => 'Maybe[Str]',
+  is         => 'ro',
+  required   => 0,
+  lazy_build => 1,
+);
+
+
+for my $attr (qw/id_run tag_index subset chunk/) {
   __PACKAGE__->meta()->add_method('_build_' . _attr_name($attr), sub {
     my $self = shift;
     return _get_common($self->composition(), $attr);
@@ -152,6 +162,11 @@ sub _get_common {
 sub _subset_label {
   my $self = shift;
   return $self->_subset_common() ? $DELIM . $self->_subset_common() : q[];
+}
+
+sub _chunk_label {
+  my $self = shift;
+  return $self->_chunk_common() ? $CHUNK_DELIM . $self->_chunk_common() : q[];
 }
 
 sub _tag_index_label {
@@ -225,6 +240,8 @@ It is not possible to tranlate this name back to the composition.
 =item <IDRUN>_<POSITION>#<TAG_INDEX>
 
 =item <IDRUN>_<POSITION>#<TAG_INDEX>_<SUBSET>
+
+=item <IDRUN>_<POSITION>#<TAG_INDEX>_<SUBSET>-<CHUNK>
 
 =back
 
