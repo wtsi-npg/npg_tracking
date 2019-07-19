@@ -6,6 +6,9 @@ LIST OF CHANGES
    conversion from the name back to the composition using the ml
    warehouse records, which might be useful in case of clients'
    queries.
+ - Unused run folder path accessors removed (reports_path,
+   lane_archive_path, lane_archive_paths, lane_qc_path,
+   lane_qc_paths).
 
 release 89.0.1
  - live test patch to reflect a change in spiked PhiX tag index
