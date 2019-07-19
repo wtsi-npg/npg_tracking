@@ -75,8 +75,9 @@ sub _get_path_from_glob_pattern {
 sub _build_runfolder_path {
   my ( $self ) = @_;
 
-  if ( $self->can(q(get_path_from_given_path)) and $self->can(q(_given_path)) and  $self->_given_path() ) {
-    return $self->get_path_from_given_path();
+  if ( $self->can(q(get_path_from_given_path)) ) {
+    my $path = $self->get_path_from_given_path();
+    $path && return $path;
   }
 
   # get info form DB if there - could be better integrated....
