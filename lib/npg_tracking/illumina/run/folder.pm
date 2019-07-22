@@ -11,10 +11,11 @@ use Readonly;
 use npg_tracking::util::abs_path qw/abs_path/;
 use npg_tracking::Schema;
 use npg_tracking::glossary::lane;
+use npg_tracking::illumina::run::folder::location;
 
 our $VERSION = '0';
 
-with 'npg_tracking::illumina::run::folder::location';
+with q{npg_tracking::illumina::run};
 
 Readonly::Scalar my  $DATA_DIR          => q{Data};
 Readonly::Scalar my  $QC_DIR            => q{qc};
@@ -25,15 +26,11 @@ Readonly::Scalar my  $NO_CAL_DIR        => q{no_cal};
 Readonly::Scalar my  $ARCHIVE_DIR       => q{archive};
 Readonly::Scalar our $SUMMARY_LINK      => q{Latest_Summary};
 
-Readonly::Array our @ORDER_TO_ASSESS_SUBPATH_ASSIGNATION => qw(
-      recalibrated_path basecall_path intensity_path
-      archive_path runfolder_path
-  );
-
 Readonly::Hash my %NPG_PATH  => (
+  q{runfolder_path}    => 'Path to and including the run folder',
   q{analysis_path}     => 'Path to the top level custom analysis directory',
   q{intensity_path}    => 'Path to the "Intensities" directory',
-  q{basecall_path}     => 'Path to the "Basecalls" directory',
+  q{basecall_path}     => 'Path to the "BaseCalls" directory',
   q{recalibrated_path} => 'Path to the recalibrated qualities directory',
   q{archive_path}      => 'Path to the directory with data ready for archiving',
   q{qc_path}           => 'Path directory with top level QC data',
@@ -71,6 +68,27 @@ sub _build_npg_tracking_schema {
   return $schema;
 }
 
+sub _build_runfolder_path {
+  my ($self) = @_;
+
+  my $path = $self->_get_path_from_given_path();
+  $path && return $path;
+
+  # get info form DB if there - could be better integrated....
+  if ($self->npg_tracking_schema() and
+      $self->can(q(id_run)) and  $self->id_run() ) {
+    if (! $self->tracking_run->is_tag_set(q(staging))) {
+      croak q{NPG tracking reports run }.$self->id_run().q{ no longer on staging}
+    }
+    if (my $gpath = $self->tracking_run->folder_path_glob and
+        my $fname = $self->tracking_run->folder_name) {
+      return $self->_get_path_from_glob_pattern(catfile($gpath, $fname));
+    }
+  }
+
+  return $self->_get_path_from_short_reference();
+}
+
 sub _build_analysis_path {
   my ($self) = @_;
 
@@ -85,20 +103,6 @@ sub _build_analysis_path {
   }
 
   return q{};
-}
-
-sub _infer_analysis_path {
-  my ($path, $distance) = @_;
-
-  my @path_components = splitdir( abs_path $path );
-  if (scalar @path_components <= $distance) {
-    croak qq[path $path is too short for distance $distance];
-  }
-  while ($distance > 0) {
-    pop @path_components;
-    $distance--;
-  }
-  return File::Spec->catdir( @path_components );
 }
 
 sub _build_intensity_path {
@@ -176,7 +180,11 @@ has q{subpath} => (
 sub _build_subpath {
   my $self = shift;
   my $path;
-  foreach my $path_method (@ORDER_TO_ASSESS_SUBPATH_ASSIGNATION) {
+  foreach my $path_method ( qw/ recalibrated_path
+                                basecall_path
+                                intensity_path
+                                archive_path
+                                runfolder_path / ) {
     my $has_path_method = q{has_} . $path_method;
     if ($self->$has_path_method()) {
       $path = $self->$path_method();
@@ -186,7 +194,74 @@ sub _build_subpath {
   return $path;
 }
 
-sub get_path_from_given_path {
+#############
+# private attributes and methods
+
+has q{_folder_path_glob_pattern}  => (
+  isa        => q{Str},
+  is         => q{ro},
+  lazy_build => 1,
+);
+sub _build__folder_path_glob_pattern {
+  my $test_dir = $ENV{TEST_DIR} || q{};
+  return $test_dir .
+  $npg_tracking::illumina::run::folder::location::FOLDER_PATH_PREFIX_GLOB_PATTERN;
+}
+
+sub _infer_analysis_path {
+  my ($path, $distance) = @_;
+
+  my @path_components = splitdir( abs_path $path );
+  if (scalar @path_components <= $distance) {
+    croak qq[path $path is too short for distance $distance];
+  }
+  while ($distance > 0) {
+    pop @path_components;
+    $distance--;
+  }
+  return catdir( @path_components );
+}
+
+sub _get_path_from_short_reference {
+  my ($self) = @_;
+
+  if ( !$self->can(q(short_reference)) || !$self->short_reference() ) {
+    croak q{Not enough information to obtain the path};
+  }
+
+  # works out by 'glob'ing the filesystem, the path to the run_folder based on
+  # short_reference string
+
+  my $sr = $self->short_reference();
+  if ($sr =~ /\a(\d+)\z/xms) {
+    $sr = q{_{r,}} . $sr;
+  }
+
+  return $self->_get_path_from_glob_pattern(
+    $self->_folder_path_glob_pattern() . q{*} . $sr . q[{,_*}]);
+}
+
+sub _get_path_from_glob_pattern {
+  my ($self, $glob_pattern) = @_;
+
+  my @dir = glob $glob_pattern;
+  @dir = grep {-d $_} @dir;
+
+  if ( @dir == 0 ) {
+    croak q{No paths to run folder found.};
+  }
+
+  my %fs_inode_hash; #ignore multiple paths point to the same folder
+  @dir = grep { not $fs_inode_hash { join q(,), stat $_ }++ } @dir;
+
+  if ( @dir > 1 ) {
+    croak q{Ambiguous paths for run folder found: } . join qq{\n}, @dir;
+  }
+
+  return shift @dir;
+}
+
+sub _get_path_from_given_path {
   my ($self) = @_;
 
   $self->subpath or return;
@@ -198,16 +273,15 @@ sub get_path_from_given_path {
             and
          -d catdir($path, q{Config}) # does this directory have a Config Directory
             and
-         -d catdir($path, $DATA_DIR) # a runfolder is likely to have a Data directory
+         -d catdir($path, $DATA_DIR)   # a runfolder is likely to have a Data directory
         ) {
        return $path;
     }
     pop @subpath;
   }
 
-  confess q{nothing looks like a run_folder in any given subpath};
+  croak q{nothing looks like a run_folder in any given subpath};
 }
-
 
 1;
 
@@ -230,19 +304,21 @@ npg_tracking::illumina::run::folder
 
 =head1 DESCRIPTION
 
-This package needs to have something provide the short_reference method, either declared in your class,
-or because you have previously declared with npg_tracking::illumina::run::short_info, which is the preferred
-option. If you declare short_reference manually, then it must return a string where the last digits are
-the id_run.
+This package might need to have something provide the short_reference method,
+either declared in your class or via inheritance from
+npg_tracking::illumina::run::short_info, which is the preferred option.
 
-Failure to have provided a short_reference method WILL cause a run-time error if your class needs to obtain
-any paths where a path or subpath was not given in object construction (i.e. it wants to try to use id_run
+Failure to have provided a short_reference method might cause a run-time error
+if your class needs to obtain any paths where a path or subpath was not given
+and access to the tracking database is not available.
 to glob for it).
 
-In addition to this, you can add an analysis_path, which is the path to the recalibrated directory,
-which will be used to construct other paths from.
+In addition to this, you can add an analysis_path, which is the path to the
+recalibrated directory, which will be used to construct other paths from.
 
 =head1 SUBROUTINES/METHODS
+
+=head2 runfolder_path
 
 =head2 analysis_path
 
@@ -258,11 +334,6 @@ which will be used to construct other paths from.
 
 One of given paths from which the run folder path might be inferred.
 Might be undefined.
-
-=head2 get_path_from_given_path
-
-if the subpath attribute can be set to one of the given paths, returns
-the run folder path.
 
 =head1 DIAGNOSTICS
 

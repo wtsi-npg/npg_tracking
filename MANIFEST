@@ -501,7 +501,6 @@ t/47-samplesheet.t
 t/50-controller.t
 t/50-decorator.t
 t/60-illumina-runfolder.t
-t/60-illumina-run-folder-location.t
 t/60-illumina-run-folder-validation.t
 t/60-illumina-run-folder.t
 t/60-illumina-run-long_info.t
