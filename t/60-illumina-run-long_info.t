@@ -231,9 +231,6 @@ sub create_staging {
   delete_staging();
   `mkdir -p $qc_subpath`;
   `mkdir $basecalls_subpath`;
-  `mkdir $config_path`;
-  `cp t/data/long_info/Recipe_GA2-PEM_MP_2x76Cycle+8_v7.7.xml $runfolder_path/`;
-  `cp t/data/long_info/TileLayout.xml $config_path/`;
 
   $lanes = $lanes || 8;
   if ( $cycles ) {
