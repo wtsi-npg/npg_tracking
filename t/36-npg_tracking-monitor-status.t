@@ -74,9 +74,15 @@ sub _create_latest_summary_link {
   my $root = shift;
   my @dirs = @bam_basecall;
   unshift @dirs, $root;
+  push @dirs, 'no_cal';
   my $target = join(q[/], @dirs);
+  make_path $target;
+  my @relative_target = split q[/], $target;	
+  while (@relative_target > 4) {
+    shift @relative_target;
+  }
   my $link = join(q[/], $root, $runfolder_name, 'Latest_Summary');
-  symlink $target, $link;
+  symlink join(q[/], @relative_target), $link;
   return $link;
 }
 
