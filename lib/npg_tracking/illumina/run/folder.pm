@@ -7,6 +7,7 @@ use Carp;
 use Cwd qw/getcwd/;
 use Try::Tiny;
 use Readonly;
+use Math::Random::Secure qw/irand/;
 
 use npg_tracking::util::abs_path qw/abs_path/;
 use npg_tracking::Schema;
@@ -49,9 +50,18 @@ has q{bam_basecall_path}  => (
   isa           => q{Str},
   is            => q{ro},
   predicate     => 'has_bam_basecall_path',
-  writer        => 'set_bam_basecall_path',
+  writer        => '_set_bbcall_path',
   documentation => 'Path to the "BAM Basecalls" directory',
 );
+sub set_bam_basecall_path {
+  my ($self, $suffix) = @_;
+  $self->has_bam_basecall_path and croak
+    'bam_basecall is already set to ' . $self->bam_basecall_path();
+  my $path = q[BAM] . $ANALYSIS_DIR_GLOB . (defined $suffix ? $suffix : irand());
+  $path = catdir($self->intensity_path, $path);
+  $self->_set_bbcall_path($path);
+  return $path;
+}
 
 has q{npg_tracking_schema} => (
   isa => q{Maybe[npg_tracking::Schema]},
@@ -98,7 +108,7 @@ sub _build_analysis_path {
   if ($self->has_archive_path) {
     return _infer_analysis_path($self->archive_path, 2);
   }
-  if ($self->has_recalibrated_path || $self->recalibrated_path) {
+  if ($self->has_recalibrated_path) {
     return _infer_analysis_path($self->recalibrated_path, 1);
   }
 
@@ -121,7 +131,7 @@ sub _build_recalibrated_path {
   # Try to get the path either from a known immediate upstream or
   # downstream.
 
-  if ($self->bam_basecall_path) {
+  if ($self->has_bam_basecall_path) {
     # Not checking whether the directory exists! Should we?
     return catdir($self->bam_basecall_path, $NO_CAL_DIR );
   }
@@ -328,15 +338,28 @@ recalibrated directory, which will be used to construct other paths from.
 
 =head2 runfolder_path
 
+=head2 bam_basecall
+
+=head2 set_bam_basecall_path
+
+ Sets and returns bam_basecall_path. Error if this attribute has
+ already been set.
+
+ $obj->set_bam_basecall_path();
+ print $obj->bam_basecall_path(); # BAM_basecalls_SOME-RANDOM-NUMBER
+
+ $obj->set_bam_basecall_path(20190122);
+ print $obj->bam_basecall_path(); # BAM_basecalls_20190122
+
 =head2 analysis_path
 
-=head2 intensity_path - ro accessor to the intensity level directory subpath
+=head2 intensity_path - ro accessor to the intensity level path
 
-=head2 basecall_path - ro accessor to the BaseCalls level directory subpath
+=head2 basecall_path - ro accessor to the BaseCalls level directory path
 
-=head2 recalibrated_path - ro accessor to the recalibrated level directory subpath
+=head2 recalibrated_path - ro accessor to the recalibrated level directory path
 
-=head2 archive_path - ro accessor to the archive level directory subpath
+=head2 archive_path - ro accessor to the archive level directory path
 
 =head2 subpath
 
@@ -364,6 +387,8 @@ Might be undefined.
 =item File::Spec::Functions
 
 =item Try::Tiny
+
+=item Math::Random::Secure
 
 =back
 

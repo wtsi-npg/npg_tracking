@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Carp;
-use Test::More tests => 65;
+use Test::More tests => 55;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw(tempdir);
@@ -148,7 +148,9 @@ sub _create_staging_no_cal {
 chdir $orig_dir; #need to leave directories before you can delete them....
 eval { delete_staging(); } or do { carp 'unable to delete staging area'; };
 
-{
+subtest 'runfolder with unusual structure' => sub {
+  plan tests => 12;
+
   my $path = join q[/], $basedir, qw/aa bb cc dd/;
   make_path $path;
   my $rf = test::run::folder->new(archive_path => $path);
@@ -170,9 +172,9 @@ eval { delete_staging(); } or do { carp 'unable to delete staging area'; };
   $rf = test::run::folder->new( runfolder_path => $basedir,
                                 archive_path   => $path );
   is ($rf->intensity_path, "$basedir/Data/Intensities",
-    'intensity_path returned though it daes not exist');
+    'intensity_path returned though it does not exist');
   is ($rf->basecall_path, "$basedir/Data/Intensities/BaseCalls",
-    'basecall_path returned though it daes not exist');
+    'basecall_path returned though it does not exist');
   is ($rf->bam_basecall_path, undef, 'bam_basecall_path not set');
   is ($rf->analysis_path, join(q[/], $basedir, qw/aa bb/), 'analysis path');
   my $rpath;
@@ -180,8 +182,33 @@ eval { delete_staging(); } or do { carp 'unable to delete staging area'; };
       qr/Summary link $basedir\/Latest_Summary does not exist or is not a link/,
       qr/derived from archive_path does not end with no_cal/
     ], 'warning about the name of the recalibrated dir';
-  is ($rpath,  join(q[/], $basedir, qw/aa bb cc/), 'recalibrated path'); 
-}
+  is ($rpath,  join(q[/], $basedir, qw/aa bb cc/), 'recalibrated path');
+};
+
+subtest 'setting bam_basecall_path' => sub {
+  plan tests => 9;
+
+  my $path = join q[/], $basedir, qw/ee/;
+  make_path $path;
+
+  my $rf = test::run::folder->new(runfolder_path => $path);
+  is ($rf->bam_basecall_path, undef, 'bam_basecall_path is not set');
+  ok (!$rf->has_bam_basecall_path(), 'bam_basecall_path is not set');
+  is ($rf->analysis_path, q{}, 'analysis path is empty');
+  my $expected = join q[/], $basedir, 'ee',
+                 'Data', 'Intensities', 'BAM_basecalls_today';
+  is ($rf->set_bam_basecall_path('today'), $expected,  'set bam_basecall_path');
+  is ($rf->bam_basecall_path(), $expected,  'bam_basecall_path is set');
+  ok ($rf->has_bam_basecall_path(), 'bam_basecall_path is set');
+  is ($rf->analysis_path, q{}, 'analysis path is empty');
+  throws_ok { $rf->set_bam_basecall_path('today') }
+    qr/bam_basecall is already set to $expected/,
+    'bam_basecall_path can be set only once';
+
+  $rf = test::run::folder->new(runfolder_path => $path);
+  like ($rf->set_bam_basecall_path(), qr/BAM_basecalls_\d+/, 
+    'setting bam_basecall_path without a custom suffix');
+};
 
 my $hs_runfolder_dir = qq{$basedir/nfs/sf44/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX};
 make_path qq{$hs_runfolder_dir/Data/Intensities/BAM_basecalls_20101016-172254/no_cal/archive};
