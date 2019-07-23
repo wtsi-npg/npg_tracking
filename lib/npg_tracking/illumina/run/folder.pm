@@ -108,11 +108,12 @@ sub _build_analysis_path {
   if ($self->has_archive_path) {
     return _infer_analysis_path($self->archive_path, 2);
   }
-  if ($self->has_recalibrated_path) {
-    return _infer_analysis_path($self->recalibrated_path, 1);
-  }
+  my $path = q{};
+  try {
+    $path = _infer_analysis_path($self->recalibrated_path, 1);
+  };
 
-  return q{};
+  return $path;
 }
 
 sub _build_intensity_path {
@@ -164,20 +165,8 @@ sub _build_recalibrated_path {
     return $path;
   }
 
-  my $glob_expression = join q[/], $self->intensity_path(),
-                                   q[*] . $ANALYSIS_DIR_GLOB . q[*];
-  my @bbcal_dirs = glob $glob_expression;
-  if (!@bbcal_dirs) {
-    croak 'bam_basecall directory not found in the intensity directory ' .
-          $self->intensity_path();
-  }
-  if (@bbcal_dirs > 1) {
-    croak 'multiple bam_basecall directories in the intensity directory ' .
-          $self->intensity_path();
-  }
-
   # Not checking whether the directory exists! Should we?
-  return catdir($bbcal_dirs[0], $NO_CAL_DIR);
+  return catdir($self->_get_analysis_path_from_glob(), $NO_CAL_DIR);
 }
 
 sub _build_archive_path {
@@ -299,6 +288,24 @@ sub _get_path_from_given_path {
   }
 
   croak q{nothing looks like a run_folder in any given subpath};
+}
+
+sub _get_analysis_path_from_glob {
+  my $self = shift;
+
+  my $glob_expression = join q[/], $self->intensity_path(),
+                                   q[*] . $ANALYSIS_DIR_GLOB . q[*];
+  my @bbcal_dirs = glob $glob_expression;
+  if (!@bbcal_dirs) {
+    croak 'bam_basecall directory not found in the intensity directory ' .
+          $self->intensity_path();
+  }
+  if (@bbcal_dirs > 1) {
+    croak 'multiple bam_basecall directories in the intensity directory ' .
+          $self->intensity_path();
+  }
+
+  return $bbcal_dirs[0];
 }
 
 1;
