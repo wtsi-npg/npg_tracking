@@ -1,12 +1,15 @@
 use strict;
 use warnings;
 use Carp;
-use Test::More tests => 48;
+use Test::More tests => 65;
 use Test::Exception;
+use Test::Warn;
 use File::Temp qw(tempdir);
+use File::Path qw(make_path);
 use Cwd;
 use File::Spec::Functions qw(catfile);
 use Test::MockObject::Extends;
+use Moose::Meta::Class;
 
 BEGIN {
   local $ENV{'HOME'}=getcwd().'/t';
@@ -47,24 +50,24 @@ sub delete_staging {
 sub create_staging {
   my ($qc_subpath, $basecalls_subpath, $config_path) = @_;
   delete_staging();
-  `mkdir -p $qc_subpath`;
-  `mkdir $basecalls_subpath`;
-  `mkdir $config_path`;
+  make_path $qc_subpath;
+  make_path $basecalls_subpath;
+  make_path $config_path;
   return 1;
 }
 
 sub _create_staging_no_recalibrated {
-  my ($bustard_subpath, $basecalls_subpath, $config_path) = @_;
+  my ($bbcalls_subpath, $basecalls_subpath, $config_path) = @_;
   delete_staging();
-  `mkdir -p $bustard_subpath`;
-  `mkdir $basecalls_subpath`;
-  `mkdir $config_path`;
+  make_path $bbcalls_subpath;
+  make_path $basecalls_subpath;
+  make_path $config_path;
   return 1;
 }
-sub _create_staging_PB_cal {
-  my ($bustard_subpath, $basecalls_subpath, $config_path) = @_;
-  _create_staging_no_recalibrated($bustard_subpath, $basecalls_subpath, $config_path);
-  `mkdir $bustard_subpath/PB_cal`;
+sub _create_staging_no_cal {
+  my ($bbcalls_subpath, $basecalls_subpath, $config_path) = @_;
+  _create_staging_no_recalibrated($bbcalls_subpath, $basecalls_subpath, $config_path);
+  make_path qq{$bbcalls_subpath/no_cal};
   return 1;
 }
 
@@ -77,14 +80,12 @@ sub _create_staging_PB_cal {
   my $data_subpath = $runfolder_path . q{/Data};
   my $intensities_subpath = $data_subpath . q{/Intensities};
   my $basecalls_subpath = $intensities_subpath . q{/BaseCalls};
-  my $bustard_subpath = $intensities_subpath . q{/BAM_basecalls_2009-10-01};
-  my $pb_cal_subpath = $bustard_subpath . q{/no_cal};
+  my $bbcalls_subpath = $intensities_subpath . q{/BAM_basecalls_2009-10-01};
+  my $pb_cal_subpath = $bbcalls_subpath . q{/no_cal};
   my $archive_subpath = $pb_cal_subpath . q{/archive};
   my $qc_subpath = $archive_subpath . q{/qc};
   my $config_path = $runfolder_path . q{/Config};
 
-{
-  use Moose::Meta::Class;
   my $path_info;
 
   lives_ok  { $path_info = Moose::Meta::Class->create_anon_class(
@@ -94,70 +95,98 @@ sub _create_staging_PB_cal {
   throws_ok { $path_info->runfolder_path(); }
     qr{Not enough information to obtain the path},
     q{Error getting runfolder_path as no 'short_reference' method in class};
-}
 
-{
   create_staging($qc_subpath, $basecalls_subpath, $config_path);
-  my $path_info;
-  lives_ok  { $path_info = test::run::folder->new({id_run => $id_run}); } q{created role_test object ok};
+  lives_ok  { $path_info = test::run::folder->new(id_run => $id_run); } q{created role_test object ok};
   is($path_info->runfolder_path(), $runfolder_path, q{runfolder_path found});
   is($path_info->run_folder(), $run_folder, q{run_folder worked out from runfolder_path});
-  is($path_info->analysis_path(), $bustard_subpath, q{found a recalibrated directory, so able to work out analysis_path});
-}
+  is($path_info->recalibrated_path(), $pb_cal_subpath, 'recalibrated path');
+  is($path_info->analysis_path(), $bbcalls_subpath, q{found a recalibrated directory, so able to work out analysis_path});
+  is($path_info->archive_path(), $archive_subpath, 'archive path');
+  is($path_info->qc_path(), $qc_subpath, q{qc_path});
 
-{
-  my $path_info;
-  lives_ok  { $path_info = test::run::folder->new({subpath => $archive_subpath}); } q{created role_test object ok};
+  $path_info = test::run::folder->new(id_run => $id_run);
+  is($path_info->archive_path(), $archive_subpath, 'archive path');
+
+  lives_ok  { $path_info = test::run::folder->new(subpath => $archive_subpath); } q{created role_test object ok};
   is($path_info->runfolder_path(), $runfolder_path, q{runfolder_path found});
   is($path_info->recalibrated_path(), $pb_cal_subpath,
-    q{recalibrated_subpath found when subpath is/is below recalibrated directory});
-}
+    q{recalibrated_path found when subpath is below recalibrated directory});
+  is($path_info->analysis_path(), $bbcalls_subpath, 'analysis path');
 
-{
   create_staging($qc_subpath, $basecalls_subpath, $config_path);
-  `ln -s $pb_cal_subpath $runfolder_path/Latest_Summary`;
+  symlink $pb_cal_subpath, qq{$runfolder_path/Latest_Summary};
 
-  my $path_info = test::run::folder->new({id_run => $id_run});
-  
+  $path_info = test::run::folder->new(id_run => $id_run);
   is($path_info->runfolder_path(), $runfolder_path, q{runfolder_path found});
   is($path_info->basecall_path(), $basecalls_subpath, q{basecalls_subpath found when link present to recalibrated directory});
-}
 
-{
   create_staging($qc_subpath, $basecalls_subpath, $config_path);
-  my $path_info = test::run::folder->new({id_run => $id_run});
+  $path_info = test::run::folder->new(id_run => $id_run);
   chdir qq{$pb_cal_subpath};
   is($path_info->runfolder_path(), $runfolder_path, q{runfolder_path found});
   my $returned_qc_path;
   lives_ok { $returned_qc_path = $path_info->qc_path(); } q{qc_subpath obtained ok};
   is($returned_qc_path, $qc_subpath, q{qc_subpath found when in recalibrated directory});
-}
 
-{
-  _create_staging_PB_cal($bustard_subpath, $basecalls_subpath, $config_path);
+  _create_staging_no_cal($bbcalls_subpath, $basecalls_subpath, $config_path);
 
-  my $path_info = test::run::folder->new({ id_run => $id_run, run_folder => $run_folder, });
-  is( $path_info->recalibrated_path(), qq{$bustard_subpath/no_cal}, q{recalibrated_path points to PB_cal} );
-  is( $path_info->analysis_path(), $bustard_subpath, q{analysis path inferred} );
+  $path_info = test::run::folder->new(id_run => $id_run, run_folder => $run_folder);
+  is( $path_info->recalibrated_path(), qq{$bbcalls_subpath/no_cal}, q{recalibrated_path points to PB_cal} );
+  is( $path_info->analysis_path(), $bbcalls_subpath, q{analysis path inferred} );
 
-  _create_staging_PB_cal($bustard_subpath, $basecalls_subpath, $config_path);
-  `mkdir -p $bustard_subpath/PB_cal`;
-  $path_info = test::run::folder->new({
+  _create_staging_no_cal($bbcalls_subpath, $basecalls_subpath, $config_path);
+  make_path qq{$bbcalls_subpath/no_cal};
+  $path_info = test::run::folder->new(
     id_run => $id_run,
     run_folder => $run_folder,
-    recalibrated_path => qq{$bustard_subpath/Help},
-  });
-  is( $path_info->analysis_path(), $bustard_subpath, q{analysis path inferred} );
-}
+    recalibrated_path => qq{$bbcalls_subpath/Help},
+  );
+  is( $path_info->analysis_path(), $bbcalls_subpath, q{analysis path inferred} );
 }
 
 chdir $orig_dir; #need to leave directories before you can delete them....
 eval { delete_staging(); } or do { carp 'unable to delete staging area'; };
 
+{
+  my $path = join q[/], $basedir, qw/aa bb cc dd/;
+  make_path $path;
+  my $rf = test::run::folder->new(archive_path => $path);
+  throws_ok { $rf->runfolder_path }
+    qr/nothing looks like a run_folder in any given subpath/,
+    'cannot infer intensity_path';
+  throws_ok { $rf->intensity_path }
+    qr/nothing looks like a run_folder in any given subpath/,
+    'cannot infer intensity_path';
+  throws_ok { $rf->basecall_path }
+    qr/nothing looks like a run_folder in any given subpath/,
+    'cannot infer basecall_path';
+  throws_ok { $rf->recalibrated_path }
+    qr/nothing looks like a run_folder in any given subpath/,
+    'cannot infer recalibrated_path';
+  is ($rf->bam_basecall_path, undef, 'bam_basecall_path not set');
+  is ($rf->analysis_path, join(q[/], $basedir, qw/aa bb/), 'analysis path');
+
+  $rf = test::run::folder->new( runfolder_path => $basedir,
+                                archive_path   => $path );
+  is ($rf->intensity_path, "$basedir/Data/Intensities",
+    'intensity_path returned though it daes not exist');
+  is ($rf->basecall_path, "$basedir/Data/Intensities/BaseCalls",
+    'basecall_path returned though it daes not exist');
+  is ($rf->bam_basecall_path, undef, 'bam_basecall_path not set');
+  is ($rf->analysis_path, join(q[/], $basedir, qw/aa bb/), 'analysis path');
+  my $rpath;
+  warnings_like { $rpath = $rf->recalibrated_path } [
+      qr/Summary link $basedir\/Latest_Summary does not exist or is not a link/,
+      qr/derived from archive_path does not end with no_cal/
+    ], 'warning about the name of the recalibrated dir';
+  is ($rpath,  join(q[/], $basedir, qw/aa bb cc/), 'recalibrated path'); 
+}
+
 my $hs_runfolder_dir = qq{$basedir/nfs/sf44/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX};
-qx{mkdir -p $hs_runfolder_dir/Data/Intensities/BAM_basecalls_20101016-172254/no_cal/archive};
-qx{mkdir -p $hs_runfolder_dir/Config};
-qx{ln -s Data/Intensities/BAM_basecalls_20101016-172254/no_cal $hs_runfolder_dir/Latest_Summary};
+make_path qq{$hs_runfolder_dir/Data/Intensities/BAM_basecalls_20101016-172254/no_cal/archive};
+make_path qq{$hs_runfolder_dir/Config};
+symlink q{Data/Intensities/BAM_basecalls_20101016-172254/no_cal}, qq{$hs_runfolder_dir/Latest_Summary};
 
 {
   #note( $hs_runfolder_dir . q(/Data/Intensities/BAM_basecalls_20101016-172254/no_cal/archive));
@@ -188,10 +217,12 @@ qx{ln -s Data/Intensities/BAM_basecalls_20101016-172254/no_cal $hs_runfolder_dir
   cmp_ok( $o->runfolder_path, 'eq', $hs_runfolder_dir, 'runfolder_path from archive_path' );
 }
 
-qx{rm $hs_runfolder_dir/Latest_Summary; ln -s Data/Intensities/Bustard1.8.1a2_01-10-2010_RTA.2/PB_cal $hs_runfolder_dir/Latest_Summary};
+unlink qq{$hs_runfolder_dir/Latest_Summary};
+# link points to non-existing directory
+symlink q{Data/Intensities/Bustard1.8.1a2_01-10-2010_RTA.2/PB_cal}, qq{$hs_runfolder_dir/Latest_Summary};
 {
   #note( qx{find $hs_runfolder_dir} );
-  my $linked_dir = readlink ( $hs_runfolder_dir . q{/Latest_Summary} );
+  #my $linked_dir = readlink ( $hs_runfolder_dir . q{/Latest_Summary} );
   #note $linked_dir;
 
   my $o = test::run::folder->new(

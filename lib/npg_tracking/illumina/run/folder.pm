@@ -126,28 +126,36 @@ sub _build_recalibrated_path {
     return catdir($self->bam_basecall_path, $NO_CAL_DIR );
   }
 
-  if ($self->has_archive_path) {
-    # Not checking the name of the directory. Should we?
-    return _infer_analysis_path($self->archive_path, 1);
-  }
-
   my $rf_path = $self->runfolder_path();
-  my $path;
   my $summary_link = catfile($rf_path, $SUMMARY_LINK );
   if (-l $summary_link ) {
-    $path = readlink $summary_link;
-    $path =~ s/\/\Z//xms;
-    if ($path !~ /\A\Q$rf_path\E/xms) {
-      $path = catfile($rf_path, $path);
+    my $path = readlink $summary_link;
+    if ($path) {
+      $path =~ s/\/\Z//xms;
+      if ($path !~ /\A\Q$rf_path\E/xms) {
+        $path = catfile($rf_path, $path);
+      }
+      -d $path or croak "$path is not a directory, cannot be the recalibrated path";
+      $path =~ /\/$NO_CAL_DIR\Z/xms or carp
+        "Warning: recalibrated directory found via $SUMMARY_LINK link ".
+        "is not called $NO_CAL_DIR";
+      return $path;
     }
-    -d $path or croak "$path is not a directory, cannot be the recalibrated path";
-    $path =~ /\/$NO_CAL_DIR\Z/xms or carp
-      "Warning: recalibrated directory found via $SUMMARY_LINK link ".
-      "is not called $NO_CAL_DIR";
+  }
+  # Still here?
+  carp "Summary link $summary_link does not exist or is not a link";
+
+  if ($self->has_archive_path) {
+    my $path = _infer_analysis_path($self->archive_path, 1);
+    if ($path !~ /\/$NO_CAL_DIR\Z/smx) {
+      carp "recalibrated_path $path derived from archive_path " .
+           "does not end with $NO_CAL_DIR";
+    }
     return $path;
   }
 
-  my $glob_expression = join q[/], $self->intensity_path(), q[*] . $ANALYSIS_DIR_GLOB . q[*];
+  my $glob_expression = join q[/], $self->intensity_path(),
+                                   q[*] . $ANALYSIS_DIR_GLOB . q[*];
   my @bbcal_dirs = glob $glob_expression;
   if (!@bbcal_dirs) {
     croak 'bam_basecall directory not found in the intensity directory ' .
