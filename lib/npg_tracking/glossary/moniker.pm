@@ -13,8 +13,8 @@ requires 'composition';
 
 our $VERSION = '0';
 
-Readonly::Scalar my $DELIM       => q[_];
-Readonly::Scalar my $LANE_DELIM  => q[-];
+Readonly::Scalar our $DELIM      => q[_];
+Readonly::Scalar our $LANE_DELIM => q[-];
 Readonly::Scalar my $NOT_COMMON  => q[-1];
 Readonly::Scalar my $SUFFIX_KEY  => q[suffix];
 Readonly::Scalar my $EXT_KEY     => q[ext];
