@@ -54,13 +54,17 @@ has q{bam_basecall_path}  => (
   documentation => 'Path to the "BAM Basecalls" directory',
 );
 sub set_bam_basecall_path {
-  my ($self, $suffix) = @_;
+  my ($self, $path, $full_path_flag) = @_;
   $self->has_bam_basecall_path and croak
     'bam_basecall is already set to ' . $self->bam_basecall_path();
-  my $path = q[BAM] . $ANALYSIS_DIR_GLOB . (defined $suffix ? $suffix : irand());
-  $path = catdir($self->intensity_path, $path);
-  $self->_set_bbcall_path($path);
-  return $path;
+  if ($full_path_flag) {
+    $self->_set_bbcall_path($path);
+  } else {
+    $path = q[BAM] . $ANALYSIS_DIR_GLOB . (defined $path ? $path : irand());
+    $path = catdir($self->intensity_path, $path);
+    $self->_set_bbcall_path($path);
+  }
+  return $self->bam_basecall_path;
 }
 
 has q{npg_tracking_schema} => (

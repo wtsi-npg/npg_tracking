@@ -186,7 +186,7 @@ subtest 'runfolder with unusual structure' => sub {
 };
 
 subtest 'setting bam_basecall_path' => sub {
-  plan tests => 9;
+  plan tests => 10;
 
   my $path = join q[/], $basedir, qw/ee/;
   make_path $path;
@@ -208,6 +208,10 @@ subtest 'setting bam_basecall_path' => sub {
   $rf = test::run::folder->new(runfolder_path => $path);
   like ($rf->set_bam_basecall_path(), qr/BAM_basecalls_\d+/, 
     'setting bam_basecall_path without a custom suffix');
+
+  $rf = test::run::folder->new(runfolder_path => $path);
+  is ($rf->set_bam_basecall_path('t/data', 1), 't/data',
+    'bam_basecall_path is set to the path given');
 };
 
 my $hs_runfolder_dir = qq{$basedir/nfs/sf44/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX};
