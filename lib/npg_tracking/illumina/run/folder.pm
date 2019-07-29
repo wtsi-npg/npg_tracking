@@ -19,6 +19,7 @@ our $VERSION = '0';
 with q{npg_tracking::illumina::run};
 
 Readonly::Scalar my  $DATA_DIR          => q{Data};
+Readonly::Scalar my  $CONFIG_DIR        => q{Config};
 Readonly::Scalar my  $QC_DIR            => q{qc};
 Readonly::Scalar my  $BASECALL_DIR      => q{BaseCalls};
 Readonly::Scalar my  $INTENSITIES_DIR   => q{Intensities};
@@ -259,7 +260,7 @@ sub _get_path_from_glob_pattern {
   @dir = grep {-d $_} @dir;
 
   if ( @dir == 0 ) {
-    croak q{No paths to run folder found.};
+    croak q{No paths to run folder found};
   }
 
   my %fs_inode_hash; #ignore multiple paths point to the same folder
@@ -282,7 +283,7 @@ sub _get_path_from_given_path {
     my $path = catdir(@subpath);
     if ( -d $path # path of all remaining parts of _given_path (subpath)
             and
-         -d catdir($path, q{Config}) # does this directory have a Config Directory
+         -d catdir($path, $CONFIG_DIR) # does this directory have a Config Directory
             and
          -d catdir($path, $DATA_DIR)   # a runfolder is likely to have a Data directory
         ) {
@@ -291,7 +292,7 @@ sub _get_path_from_given_path {
     pop @subpath;
   }
 
-  croak q{nothing looks like a run_folder in any given subpath};
+  croak q{Nothing looks like a run_folder in any given subpath};
 }
 
 sub _get_analysis_path_from_glob {
@@ -305,7 +306,7 @@ sub _get_analysis_path_from_glob {
           $self->intensity_path();
   }
   if (@bbcal_dirs > 1) {
-    croak 'multiple bam_basecall directories in the intensity directory ' .
+    croak 'Multiple bam_basecall directories in the intensity directory ' .
           $self->intensity_path();
   }
 
