@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Carp;
-use Test::More tests => 59;
+use Test::More tests => 45;
 use Test::Exception;
 use File::Temp qw(tempdir);
 use Cwd;
@@ -74,7 +74,6 @@ sub _create_staging_PB_cal {
   my $run_folder = q{123456_} . $instr . q{_1234} . q{_B_205NNABXX};
   my $runfolder_path = qq{$basedir/nfs/sf44/} . $instr . q{/analysis/} . $run_folder;
   my $data_subpath = $runfolder_path . q{/Data};
-  my $reports_subpath = $data_subpath . q{/reports};
   my $intensities_subpath = $data_subpath . q{/Intensities};
   my $basecalls_subpath = $intensities_subpath . q{/BaseCalls};
   my $bustard_subpath = $intensities_subpath . q{/Bustard-2009-10-01};
@@ -132,65 +131,6 @@ sub _create_staging_PB_cal {
   my $returned_qc_path;
   lives_ok { $returned_qc_path = $path_info->qc_path(); } q{qc_subpath obtained ok};
   is($returned_qc_path, $qc_subpath, q{qc_subpath found when in recalibrated directory});
-  is($path_info->reports_path(), $reports_subpath, q{reports path returned correctly});
-}
-
-{
-  create_staging($qc_subpath, $basecalls_subpath, $config_path);
-  my $path_info = test::run::folder->new({id_run => $id_run});
-
-  throws_ok { $path_info->lane_archive_path() } qr/Validation failed for \'NpgTrackingLaneNumber\'/, 'error when position is not supplied';
-  throws_ok { $path_info->lane_archive_path(q[toto]) } qr/Validation failed for \'NpgTrackingLaneNumber\'/, 'error when position is not an integer';
-  throws_ok { $path_info->lane_archive_path(88) } qr/Validation failed for \'NpgTrackingLaneNumber\'/, 'error when position is a float';
-  throws_ok { $path_info->lane_qc_path(10) } qr/Validation failed for \'NpgTrackingLaneNumber\'/, 'error when position is out of range';
-  throws_ok { $path_info->lane_qc_path(0) } qr/Validation failed for \'NpgTrackingLaneNumber\'/, 'error when position is out of range';
-
-  chdir qq{$pb_cal_subpath};
-  $path_info->runfolder_path;
-  my $archive_path = $path_info->archive_path();
-  my $returned_qc_path = $path_info->qc_path();
-  is($path_info->lane_archive_path(2), $archive_path . q[/lane2], 'lane 2 archive path');
-  is($path_info->lane_archive_path(4), $archive_path . q[/lane4], 'lane 4 archive path');
-  is($path_info->lane_qc_path(2), $archive_path . q[/lane2/qc], 'lane 2 qc path');
-  is($path_info->lane_qc_path(4), $archive_path . q[/lane4/qc], 'lane 4 qc path');
-}
-
-{
-  create_staging($qc_subpath, $basecalls_subpath, $config_path);
-  my $path_info = test::run::folder->new({id_run => $id_run});
-  ok(!@{$path_info->lane_archive_paths}, 'no lane archive paths are found');
-  ok(!@{$path_info->lane_qc_paths}, 'no lane qc paths are found'); 
-}
-
-{
-  my $lanes = [1,3,5,7];
-  my $qlanes = [1,5,7];
-
-  create_staging($qc_subpath, $basecalls_subpath, $config_path);
-  foreach my $lane (@{$lanes}) {
-    my $dir = qq[$archive_subpath/lane$lane];
-    `mkdir $dir`;  
-  }
-  foreach my $lane (@{$qlanes}) {
-    my $dir = qq[$archive_subpath/lane$lane] . q[/qc];
-    `mkdir $dir`;  
-  }
-
-  my @expected_lanes = ();
-  foreach my $lane (@{$lanes}) {
-    push @expected_lanes, qq[$archive_subpath/lane$lane];
-  }
-  @expected_lanes = sort @expected_lanes;
-
-  my @qexpected_lanes = ();
-  foreach my $lane (@{$qlanes}) {
-    push @qexpected_lanes, qq[$archive_subpath/lane$lane] . q[/qc];
-  }
-  @qexpected_lanes = sort @qexpected_lanes;
-  
-   my $path_info = test::run::folder->new({id_run => $id_run});
-  is(join(q[ ], sort @{$path_info->lane_archive_paths}), join(q[ ], @expected_lanes), 'lane archive paths returned');
-  is(join(q[ ], sort @{$path_info->lane_qc_paths}), join(q[ ], @qexpected_lanes), 'lane qc paths returned');
 }
 
 {

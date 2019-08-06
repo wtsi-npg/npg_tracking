@@ -20,8 +20,6 @@ our $VERSION = '0';
 
 with 'npg_tracking::illumina::run::folder::location';
 
-##no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
-
 Readonly::Scalar my  $DATA_DIR       => q{Data};
 Readonly::Scalar my  $QC_DIR         => q{qc};
 Readonly::Scalar my  $BASECALL_DIR   => q{BaseCalls};
@@ -38,7 +36,6 @@ Readonly::Array our @ORDER_TO_ASSESS_SUBPATH_ASSIGNATION => qw(
 
 Readonly::Hash my %NPG_PATH  => (
   q{analysis_path}     => 'Path to the top level custom analysis directory',
-  q{reports_path}      => 'Path to the "reports" directory',
   q{intensity_path}    => 'Path to the "Intensities" directory',
   q{bustard_path}      => 'Path to the Bustard directory',
   q{basecall_path}     => 'Path to the "Basecalls" directory',
@@ -64,11 +61,6 @@ has q{bam_basecall_path}  => (
   writer        => 'set_bam_basecall_path',
   documentation => 'Path to the "BAM Basecalls" directory',
 );
-sub _set_bam_basecall_path { #retained for compatibility with the pipeline
-  my ($self, $path) = @_;
-  $self->set_bam_basecall_path($path);
-  return;
-}
 
 has q{npg_tracking_schema} => (
   isa => q{Maybe[npg_tracking::Schema]},
@@ -168,11 +160,6 @@ sub _build_recalibrated_path {
   my ($self) = @_;
   $self->_populate_directory_paths();
   return $self->recalibrated_path();
-}
-
-sub _build_reports_path {
-  my ($self) = @_;
-  return catdir($self->runfolder_path(), $DATA_DIR, q{reports});
 }
 
 sub _build_archive_path {
@@ -432,49 +419,8 @@ sub get_path_from_given_path {
   confess q{nothing looks like a run_folder in any given subpath};
 }
 
-sub lane_archive_path {
-  my ($self, $position) = @_;
-  my $lane =  Moose::Meta::Class->create_anon_class(
-                roles => [qw/npg_tracking::glossary::lane/]
-              )->new_object({position => $position});
-  return catdir($self->archive_path, $lane->lane_archive);
-}
-
-sub lane_qc_path {
-  my ($self, $position) = @_;
-  return catdir($self->lane_archive_path($position), $QC_DIR);
-}
-
-sub lane_archive_paths {
-  my $self = shift;
-
-  my @dirs = ();
-  my $archive_dir = $self->archive_path;
-  opendir(my $dh, $archive_dir) || croak "Can't opendir $archive_dir";
-  my @lanes = grep { /^lane\d$/smx && -d "$archive_dir/$_" } readdir $dh;
-  closedir $dh;
-  foreach my $lane_dir (@lanes) {
-    my $dir = catdir($archive_dir, $lane_dir);
-    push @dirs, $dir;
-  }
-  return \@dirs;
-}
-
-sub lane_qc_paths {
-  my $self = shift;
-
-  my @dirs = ();
-  foreach my $path (@{$self->lane_archive_paths}) {
-    my $dir = catdir($path, $QC_DIR);
-    if (-d $dir) {
-      push @dirs, $dir;
-    }
-  }
-  return \@dirs;
-}
-
-
 1;
+
 __END__
 
 =head1 NAME
@@ -535,20 +481,6 @@ selecting the first which has directories which should be present in a runfolder
 =head2 recalibrated_path - ro accessor to the recalibrated level directory subpath
 
 =head2 archive_path - ro accessor to the archive level directory subpath
-
-=head2 lane_archive_path - returns a path to a location with split files for a lane
-
-  my $position = 8;
-  my $path = $oPackage->lane_archive_path($position);
-
-=head2 lane_qc_path - returns a path to a location for qc output when it is done on split lane files
-
-  my $position = 8;
-  my $path = $oPackage->lane_qc_path($position);
-
-=head2 lane_archive_paths - returns a ref to a list of existing lane archives
-
-=head2 lane_qc_paths - returns a ref to a list of existing qc directories for lanes
 
 =head1 DIAGNOSTICS
 

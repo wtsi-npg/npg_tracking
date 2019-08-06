@@ -16,7 +16,6 @@ our $VERSION = '0';
 Readonly::Scalar my $DELIM       => q[_];
 Readonly::Scalar my $LANE_DELIM  => q[-];
 Readonly::Scalar my $NOT_COMMON  => q[-1];
-Readonly::Scalar my $DIGEST_TYPE => q[md5];
 Readonly::Scalar my $SUFFIX_KEY  => q[suffix];
 Readonly::Scalar my $EXT_KEY     => q[ext];
 
@@ -31,7 +30,7 @@ sub file_name {
       $self->_tag_index_label($npg_tracking::glossary::tag::TAG_DELIM),
       $self->_subset_label();
   } else {
-    $name = $self->_get_digest();
+    $name = $self->generic_name();
   }
 
   return $name;
@@ -79,10 +78,15 @@ sub dir_path {
     @names = grep {$_} ($self->_position_label('lane', $selected_lanes),
                         $self->_tag_index_label('plex'));
   } else {
-    push @names, $self->_get_digest();
+    push @names, $self->generic_name();
   }
 
   return File::Spec->catdir(@names);
+}
+
+sub generic_name {
+  my $self = shift;
+  return $self->composition()->digest();
 }
 
 has [qw/_id_run_common _tag_index_common/] => (
@@ -169,11 +173,6 @@ sub _position_label {
          : q[];
 }
 
-sub _get_digest {
-  my $self = shift;
-  return $self->composition()->digest($DIGEST_TYPE);
-}
-
 no Moose::Role;
 
 1;
@@ -199,9 +198,9 @@ to translate the name back to the composition.
 
 =head3 Heuristic
 
-In a general case file names are based on the md5
+In a general case file names are based on the sha256_hex
 digest associated with the composition object. In some cases
-it is possible to construct human readable and semantically
+it is possible to construct human-readable and semantically
 meaningful names. For file names, in all such cases the subset
 of all components should be either undefined or the same and
 all components should belong to the same run. Directories
@@ -211,8 +210,8 @@ therefore, the subset value will be disregarded.
 =head3 File or directory name for results of an arbitrary merge
 (composition)
 
-sha256 or md5 digest associated with the composition object.
-It is not possible to tranlate this name back to the composition.
+sha256_hex digest associated with the composition object.
+It is not possible to translate this name back to the composition.
 
 =head3 File name for a one-component composition
 
@@ -346,6 +345,12 @@ represents a sunset of lanes in the run. False by default.
  $selected_lanes = 1;
  $dir = $self->dir_path($selected_lanes);
 
+=head2 generic_name
+
+Returns a generic name for a file or directory, which is based on a sha256_hex
+digest associated with the composition object. This type of name is used within
+this module when a semantically meaningful name cannot  be generated.
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -378,7 +383,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2018 GRL
+Copyright (C) 2019 GRL
 
 This file is part of NPG.
 
