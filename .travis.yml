@@ -4,10 +4,8 @@ addons:
     packages:
     - libgd2-xpm-dev
 language: perl
-perl:
-  - "5.22-shrplib"
 dist:
-  - precise
+  - bionic
 env:
   global:
     - secure: "QfmTURdOMius663oUxecwg2cWo1Tk5KmYgpIWFISfHNjICIXyOnhmbftl2d0g3ANqDqgZxhZcIESszPRh44unYKZUahb2vMi4YWh6D5MqnwzesC4qwEhbwkyFy1/L7Zh5T5IZ8WKT/NAuG2wAC8hLcfBNUplVHXX0FCeFq2/nvg="
@@ -35,7 +33,6 @@ deploy:
     - $SHA256_FILE
   skip_cleanup: true
   on:
-    perl: 5.22-shrplib
     tags: true
     all_branches: true
 
