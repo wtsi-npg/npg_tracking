@@ -6,6 +6,10 @@ addons:
 language: perl
 dist:
   - bionic
+perl:
+  - "5.26-shrplib"
+services:
+  - mysql
 env:
   global:
     - secure: "QfmTURdOMius663oUxecwg2cWo1Tk5KmYgpIWFISfHNjICIXyOnhmbftl2d0g3ANqDqgZxhZcIESszPRh44unYKZUahb2vMi4YWh6D5MqnwzesC4qwEhbwkyFy1/L7Zh5T5IZ8WKT/NAuG2wAC8hLcfBNUplVHXX0FCeFq2/nvg="
@@ -33,6 +37,7 @@ deploy:
     - $SHA256_FILE
   skip_cleanup: true
   on:
+    perl: 5.26-shrplib
     tags: true
     all_branches: true
 
