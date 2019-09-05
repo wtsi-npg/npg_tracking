@@ -7,8 +7,8 @@ use Try::Tiny;
 use MooseX::StrictConstructor;
 
 use npg_tracking::illumina::run::folder::validation;
+use npg_tracking::illumina::run::folder::location;
 
-with 'npg_tracking::illumina::run::folder::location';    # For @STAGING_AREAS
 with 'Monitor::Roles::Schema';
 
 
