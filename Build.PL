@@ -179,6 +179,7 @@ my $builder = $class->new(
                 'Log::Log4perl'                   => 0,
                 'LWP::UserAgent'                  => '5.823',
                 'Math::Round'                     => '0.06',
+                'Math::Random::Secure'            => 0,
                 'MIME::Base64'                    => 0,
                 'MIME::Lite'                      => '3.024',
                 'MIME::Parser'                    => '5.427',
