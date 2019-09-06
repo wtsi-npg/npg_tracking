@@ -590,6 +590,23 @@ sub is_i5opposite {
           $self->platform_MiniSeq() or $self->platform_NextSeq());
 }
 
+=head2 uses_patterned_flowcell
+
+HiSeqX, HiSeq3000/4000, and NovaSeq use patterned flowcells
+https://www.illumina.com/science/technology/next-generation-sequencing/sequencing-technology/patterned-flow-cells.html
+
+Method returns true if this is one of those platforms.
+
+=cut
+
+sub uses_patterned_flowcell {
+  my $self = shift;
+
+  return ($self->platform_HiSeqX
+          or $self->platform_HiSeq4000
+          or $self->platform_NovaSeq);
+}
+
 =head2 instrument_side
 
 Returns the instrument side (A or B) if available or an empty string.
