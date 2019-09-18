@@ -26,6 +26,7 @@ Readonly::Scalar my  $INTENSITIES_DIR   => q{Intensities};
 Readonly::Scalar my  $ANALYSIS_DIR_GLOB => q{_basecalls_};
 Readonly::Scalar my  $NO_CAL_DIR        => q{no_cal};
 Readonly::Scalar my  $ARCHIVE_DIR       => q{archive};
+Readonly::Scalar my  $NO_ARCHIVE_DIR    => q{no_archive};
 Readonly::Scalar our $SUMMARY_LINK      => q{Latest_Summary};
 
 Readonly::Hash my %NPG_PATH  => (
@@ -35,6 +36,7 @@ Readonly::Hash my %NPG_PATH  => (
   q{basecall_path}     => 'Path to the "BaseCalls" directory',
   q{recalibrated_path} => 'Path to the recalibrated qualities directory',
   q{archive_path}      => 'Path to the directory with data ready for archiving',
+  q{no_archive_path}   => 'Path to the directory with data not to be archived',
   q{qc_path}           => 'Path directory with top level QC data',
 );
 
@@ -177,6 +179,11 @@ sub _build_recalibrated_path {
 sub _build_archive_path {
   my ($self) = @_;
   return $self->recalibrated_path() . q{/} . $ARCHIVE_DIR;
+}
+
+sub _build_no_archive_path {
+  my ($self) = @_;
+  return $self->analysis_path() . q{/} . $NO_ARCHIVE_DIR;
 }
 
 sub _build_qc_path {
@@ -373,6 +380,8 @@ recalibrated directory, which will be used to construct other paths from.
 
 =head2 archive_path - ro accessor to the archive level directory path
 
+=head2 no_archive_path - ro accessor to the no_archive level directory path
+
 =head2 subpath
 
 One of given paths from which the run folder path might be inferred.
@@ -420,7 +429,7 @@ Might be undefined.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2018 GRL
+Copyright (C) 2018, 2019 Genome Research Limited
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
