@@ -391,7 +391,9 @@ foreach my $f ( qw(expected_cycle_count
                    read_cycle_counts
                    indexing_cycle_range
                    read1_cycle_range
-                   read2_cycle_range) ) {
+                   read2_cycle_range
+                   tilelayout_rows
+                   tilelayout_columns) ) {
    before $f => sub {
      my $self = shift;
      my $has_method_name = join q[_], 'has', $f;
@@ -399,22 +401,6 @@ foreach my $f ( qw(expected_cycle_count
        $self->_runinfo_store();
      }
    };
-}
-
-foreach my $f ( qw(tilelayout_rows
-                   tilelayout_columns) ) {
-  before $f => sub {
-    my $self=shift;
-    my $has_method_name = join q[_], 'has', $f;
-    if( !$self->$has_method_name ) {
-      try {
-        $self->_runinfo_store();
-      };
-      if( !$self->$has_method_name ) {
-        $self->_tilelayout_store();
-      }
-    }
-  };
 }
 
 #########################################################
@@ -604,6 +590,23 @@ sub is_i5opposite {
           $self->platform_MiniSeq() or $self->platform_NextSeq());
 }
 
+=head2 uses_patterned_flowcell
+
+HiSeqX, HiSeq3000/4000, and NovaSeq use patterned flowcells
+https://www.illumina.com/science/technology/next-generation-sequencing/sequencing-technology/patterned-flow-cells.html
+
+Method returns true if this is one of those platforms.
+
+=cut
+
+sub uses_patterned_flowcell {
+  my $self = shift;
+
+  return ($self->platform_HiSeqX
+          or $self->platform_HiSeq4000
+          or $self->platform_NovaSeq);
+}
+
 =head2 instrument_side
 
 Returns the instrument side (A or B) if available or an empty string.
@@ -753,26 +756,6 @@ sub _build__runinfo_store {
   }
 
   return 1; # So builder runs only once
-}
-
-has q{_tilelayout_store}  => (
-  is         => 'ro',
-  isa        => 'XML::LibXML::Document',
-  lazy_build => 1,
-  init_arg   => undef,
-);
-sub _build__tilelayout_store {
-  my $self = shift;
-
-  my $doc = $self->_get_xml_document( qr/TileLayout[.]xml/xms,
-                File::Spec->catdir($self->runfolder_path(), 'Config'));
-
-  my $tl_element = $doc->getElementsByTagName('TileLayout')->[0];
-
-  $self->_set_tilelayout_columns($tl_element->getAttribute('Columns'));
-  $self->_set_tilelayout_rows($tl_element->getAttribute('Rows'));
-
-  return $doc;
 }
 
 has q{_data_intensities_config_xml_object} => (

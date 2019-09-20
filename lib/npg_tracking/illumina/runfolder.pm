@@ -42,7 +42,7 @@ with 'npg_tracking::illumina::run::long_info';
 
 sub _build_run_folder {
   my $self = shift;
-  ($self->_given_path or $self->has_id_run or $self->has_name)
+  ($self->subpath or $self->has_id_run or $self->has_name)
       or croak 'Need a path or id_run to work out a run_folder';
   return first {$_ ne q()} reverse File::Spec->splitdir($self->runfolder_path);
 }

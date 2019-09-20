@@ -28,7 +28,7 @@ package main;
 my $basedir = tempdir( CLEANUP => 1 );
 
 subtest 'retrieving information from runParameters.xml' => sub {
-  plan tests => 142;
+  plan tests => 155;
 
   my $rf = join q[/], $basedir, 'runfolder';
   mkdir $rf;
@@ -57,6 +57,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
   my @platforms = qw/MiniSeq HiSeq HiSeq4000 HiSeqX
                      MiSeq NextSeq NovaSeq/;
   my @i5opp_platforms = map {lc $_} qw/MiniSeq HiSeq4000 HiSeqX NextSeq/;
+  my @patterned_flowcell_platforms = map {lc $_} qw/HiSeq4000 HiSeqX NovaSeq/;
 
   for my $f (@rp_files) {
     note $f;
@@ -112,6 +113,14 @@ subtest 'retrieving information from runParameters.xml' => sub {
       ok ($li->is_i5opposite(), 'i5opposite');
     } else {
       ok (!$li->is_i5opposite(), 'not i5opposite');
+    }
+
+    my @pfc = grep { $pl =~ /\A$_/ } @patterned_flowcell_platforms;
+    if (scalar @pfc > 1) {die 'Too many matches'};
+    if (@pfc) {
+      ok ($li->uses_patterned_flowcell, 'patterned flowcell');
+    } else {
+      ok (!$li->uses_patterned_flowcell, 'not patterned flowcell');
     }
 
     unlink $name;
@@ -231,9 +240,6 @@ sub create_staging {
   delete_staging();
   `mkdir -p $qc_subpath`;
   `mkdir $basecalls_subpath`;
-  `mkdir $config_path`;
-  `cp t/data/long_info/Recipe_GA2-PEM_MP_2x76Cycle+8_v7.7.xml $runfolder_path/`;
-  `cp t/data/long_info/TileLayout.xml $config_path/`;
 
   $lanes = $lanes || 8;
   if ( $cycles ) {
