@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+release 90.0.0
+ - cleanup and simplification of runfolder subpaths logic
  - add uses_patterned_flowcell attribute to long_info
 
 release 89.1.0
