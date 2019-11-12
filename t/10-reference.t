@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 54;
+use Test::More tests => 55;
 use Test::Exception;
 use File::Spec::Functions qw(splitpath catfile);
 use Cwd qw(cwd);
@@ -218,13 +218,18 @@ use_ok('npg_tracking::data::reference');
     'Bordetella reference via rpt_list');
 
   $ruser = npg_tracking::data::reference->new(
+    rpt_list => '6993:8:168', repository => $repos, aligner => q[fasta]);
+  @refs = sort @{$ruser->refs()};
+  is( scalar @refs, 1, 'one path returned');
+  is( shift @refs, catfile($repos, $pref),
+    'PhiX reference via rpt_list');
+
+  $ruser = npg_tracking::data::reference->new(
     rpt_list => '5175:1:1;6993:8:168', repository => $repos, aligner => q[fasta]);
   @refs = sort @{$ruser->refs()};
-  is( scalar @refs, 2, 'two paths returned');
+  is( scalar @refs, 1, 'one path returned');
   is( shift @refs, catfile($repos, $bref),
     'Bordetella reference via rpt_list');
-  is( pop @refs, catfile($repos, $pref),
-    'phix reference via rpt_list');
 }
 
 {
