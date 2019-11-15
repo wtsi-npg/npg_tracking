@@ -49,10 +49,23 @@ my $check_path = sub { ##### Function to deal with one run folder
     my $folder = Monitor::RunFolder::Staging->new(
                    runfolder_path      => $run_path,
                    npg_tracking_schema => $monitor->schema);
+
     my $run_status = $folder->current_run_status_description();
     my $id_run = $folder->tracking_run()->id_run;
 
     _log("Run $id_run status $run_status");
+
+    # Flowcell barcode validation.
+    # Absence of the flowcell barcode in the database is not counted
+    # as a mismatch.
+    my $db_flowcell_barcode      = $folder->tracking_run()->flowcell_id;
+    my $staging_flowcell_barcode = $folder->run_flowcell;
+    if ($db_flowcell_barcode and
+       ($db_flowcell_barcode ne $staging_flowcell_barcode)) {
+      croak 'Flowcell barcode mismatch between database and staging: ' .
+       join q[ ], $db_flowcell_barcode, $staging_flowcell_barcode; 
+    }
+    _log('Staging flowcell barcode: ' . $staging_flowcell_barcode);
 
     if ($folder->is_in_analysis) {
         _log('Folder is in /analysis/');
