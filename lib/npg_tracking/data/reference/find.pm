@@ -209,10 +209,15 @@ sub refs {
   }
 
   if ($self->species) {
-    push @refs, $self->_get_reference_path($self->species, $self->strain);
+    @refs = map { _abs_ref_path($_) }
+            ($self->_get_reference_path($self->species, $self->strain));
   } else {
 
     my $spiked_phix_index = $MINUS_ONE;
+    #####
+    # The below condition should have included a case of compositions.
+    # However, spiked_phix_tag_index attribute is not defined for
+    # compositions, so would not have worked anyway.
     if ($self->lims->is_pool && !($self->can(q(tag_index)) && $self->tag_index) && $self->lims->spiked_phix_tag_index) {
       $spiked_phix_index = $self->lims->spiked_phix_tag_index;
     }
@@ -231,8 +236,17 @@ sub refs {
       }
     }
     @refs = keys %{$ref_hash};
+    #####
+    # This makes sure that for compositions spiked Phix
+    # reference is not returned as one of many possible references.
+    # If spiked PhiX is the only reference available, then
+    # it is returned. Practically speaking, we do not want PhiX
+    # reference returned for compositions containing tag zero.
+    if ($self->lims->is_composition && (@refs > 1)) {
+      @refs = grep { not /$PHIX/smx } @refs;
+    }
   }
-  @refs = map {_abs_ref_path($_)} @refs;
+
   return \@refs;
 }
 
