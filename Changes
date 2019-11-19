@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 90.2.0
  - reference finder for compositions not to return
    a PhiX reference when at least one other reference
    is found
