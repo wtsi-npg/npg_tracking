@@ -517,14 +517,13 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
 
     $schema->resultset('Run')->find(5222)->update_run_status('run pending');
     my $test = Monitor::RunFolder::Staging->new( runfolder_path => $test_source,
-                                                 status_update => 0,
                                                  npg_tracking_schema        => $schema, );
 
     lives_ok { $test->move_to_analysis() } 'Move to analysis';
     ok( !-e $test_source, 'runfolder is gone from incoming' );
     ok(  -e $test_target, 'runfolder is present in analysis' );
-    is( $test->current_run_status_description(), 'run pending',
-          'run status is unchanged' );
+    is( $test->current_run_status_description(), 'analysis pending',
+          'run status changed' );
 }
 
 {

@@ -17,7 +17,6 @@ use Fcntl qw/S_ISGID/;
 use npg_tracking::util::config qw(get_config_staging_areas);
 
 extends 'Monitor::RunFolder';
-with 'MooseX::Getopt';
 
 our $VERSION = '0';
 
@@ -40,11 +39,6 @@ has 'rta_complete_wait' => (isa          => 'Int',
                             is           => 'ro',
                             default      => $RTA_COMPLETE,
                            );
-
-has 'status_update' => (isa          => 'Bool',
-                        is           => 'ro',
-                        default      => 1,
-                       );
 
 sub cycle_lag {
     my ($self) = @_;
@@ -270,11 +264,9 @@ sub move_to_analysis {
             _change_group($group, $destination . "/$INTENSITIES_DIR_PATH");
             push @ms, "Changed group to $group";
         }
-        if ($self->status_update) {
-            my $status = 'analysis pending';
-            $self->tracking_run()->update_run_status($status, $self->username() );
-            push @ms, "Updated Run Status to $status";
-        }
+        my $status = 'analysis pending';
+        $self->tracking_run()->update_run_status($status, $self->username() );
+        push @ms, "Updated Run Status to $status";
     }
 
     return @ms;
