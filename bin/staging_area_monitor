@@ -110,8 +110,15 @@ my $check_path = sub { ##### Function to deal with one run folder
         } catch {
             _log('Error setting instrument side and/or run workflow type: ' . $_);
         };
-        # We might want to expand this section to set/fix other tags, see currently
-        # unused read_long_info method in Monitor::RunFolder
+        try {
+            # This was previously the functionality of the instrument poller.
+            # Do not trust the label on the tin - the code sets some tags
+            # and removes extra lanes.
+            $folder->read_long_info();
+        } catch {
+            _log('Error : ' . $_);
+        };
+        # We might want to expand this section to set/fix other tags
         $previous_size_of{$run_path} = 0;
     }
 
