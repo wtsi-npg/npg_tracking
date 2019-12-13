@@ -496,10 +496,6 @@ t/80-npg_tracking-report-event2followers.t
 t/80-npg_tracking-report-event2subscribers.t
 t/90-reference.t
 t/data/090414_IL24_2726.tar.bz2
-t/data/cbot/cBot1/GetRunList.xml
-t/data/cbot/cBot1/InstrumentStatus.xml
-t/data/cbot/cBot1/RunInfo/091111_OEM-0B6VO7E14KH_0001.xml
-t/data/cbot/cBot2/InstrumentStatus.xml
 t/data/dbic_fixtures/000-Designation.yml
 t/data/dbic_fixtures/000-EntityType.yml
 t/data/dbic_fixtures/000-InstrumentStatusDict.yml
@@ -556,15 +552,6 @@ t/data/fixtures_lims_wh/100-IseqRunLaneMetric.yml
 t/data/fixtures_lims_wh/100-IseqRunStatus.yml
 t/data/fixtures_lims_wh/100-StudyUser.yml
 t/data/fixtures_lims_wh/200-IseqProductMetric.yml
-t/data/gaii/Events.log
-t/data/gaii/Events.Update
-t/data/gaii/ftp/Find_Me
-t/data/gaii/ftp/Runs/100611_IL2_0022/Recipe_GA2-PEM_2x76Cycle_v7.7.xml
-t/data/gaii/ftp/Runs/100628_IL2_04929/Run.completed
-t/data/gaii/ftp/Runs/100914_HS3_05281_A_205MBABXX/Basecalling_Netcopy_complete_READ2.txt
-t/data/gaii/ftp/Runs/100914_HS3_05281_A_205MBABXX/Data/reports/StatusUpdate.xml
-t/data/gaii/ftp/Runs/100914_HS3_05281_A_205MBABXX/ImageAnalysis_Netcopy_complete_READ2.txt
-t/data/gaii/ftp/Runs/100914_HS3_05281_A_205MBABXX/RunInfo.xml
 t/data/gaii/staging/IL3/incoming/100622_IL3_01234/this_run_is_not_complete_yet
 t/data/gaii/staging/IL5/incoming/100621_IL5_01204/Data/Intensities/L001/C1.1/s_1_1.cif
 t/data/gaii/staging/IL5/incoming/100621_IL5_01204/Data/Intensities/L001/C1.1/s_1_2.cif
@@ -694,8 +681,6 @@ t/data/gaii/staging/IL999/incoming/100622_IL3_01234/Recipe_GA2-PEM_2x76Cycle_v7.
 t/data/gaii/staging/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/Data/reports/StatusUpdate.xml
 t/data/gaii/staging/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/RTAComplete.txt
 t/data/gaii/staging/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/RunInfo.xml
-t/data/hiseq/ftp/Runs_E/100914_HS3_05281_A_205MBABXX/Data/reports/StatusUpdate.xml
-t/data/hiseq/ftp/Runs_E/100914_HS3_05281_A_205MBABXX/RunInfo.xml
 t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/RunInfo.xml
 t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/runParameters.xml
 t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/Data/Intensities/BaseCalls/config.xml
@@ -1586,10 +1571,6 @@ t/data/test45/st/studies/297.xml
 t/data/test45/st/studies/333.xml
 t/data/test45/st/studies/365.xml
 t/data/test45/st/studies/700.xml
-t/data/gaii/ftp/Runs/100611_IL2_0022/Data/Intensities/.gitignore
-t/data/gaii/ftp/Runs/100611_IL2_mb110610/.gitignore
-t/data/gaii/ftp/Runs/100628_IL2_04929/Data/.gitignore
-t/data/gaii/ftp/Runs/this_is_not_a_run/.gitignore
 t/data/gaii/staging/IL12/incoming/100721_IL12_05222/Data/Intensities/L001/.gitignore
 t/data/gaii/staging/IL3/incoming/100622_IL3_01234/Data/Intensities/L001/C1.1/.gitignore
 t/data/gaii/staging/IL3/incoming/100622_IL3_01234/Data/Intensities/L001/C10.1/.gitignore
@@ -1695,9 +1676,6 @@ t/data/gaii/staging/IL999/incoming/100622_IL3_01234/Data/Intensities/L001/C6.1/.
 t/data/gaii/staging/IL999/incoming/100622_IL3_01234/Data/Intensities/L001/C7.1/.gitignore
 t/data/gaii/staging/IL999/incoming/100622_IL3_01234/Data/Intensities/L001/C8.1/.gitignore
 t/data/gaii/staging/IL999/incoming/100622_IL3_01234/Data/Intensities/L001/C9.1/.gitignore
-t/data/hiseq/ftp/Runs_D/.gitignore
-t/data/hiseq/ftp/Runs_E/100914_HS3_05281_A_205MBABXX/Images/L001/.gitignore
-t/data/hiseq/ftp/Runs_E/100914_HS3_05281_A_205MBABXX/Processed/L001/.gitignore
 t/data/repos2/references2/Homo_sapiens/GRCh37_53/.gitignore
 t/data/repos2/references2/Homo_sapiens/NCBI36/.gitignore
 t/data/repos2/references2/Human_herpesvirus_4/EB1/.gitignore
