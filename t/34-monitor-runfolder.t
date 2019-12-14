@@ -32,7 +32,7 @@ my $dir4rf = tempdir( CLEANUP => 1 );
     isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
             'Object returned by tracking_run method' );
 
-    is( $test->current_run_status_description(), 'analysis pending',
+    is( $test->tracking_run()->current_run_status_description(), 'analysis pending',
         'Retrieve current run status' );
 
     # Test Monitor::Roles::Username
@@ -45,7 +45,7 @@ my $dir4rf = tempdir( CLEANUP => 1 );
     my $test = Monitor::RunFolder->new( runfolder_path      => $mock_path,
                                         npg_tracking_schema => $schema, );
 
-    is( $test->current_run_status_description(), 'run pending',
+    is( $test->tracking_run()->current_run_status_description(), 'run pending',
         ' test is ready' );
 
     throws_ok { $test->check_cycle_count() }
@@ -59,7 +59,7 @@ my $dir4rf = tempdir( CLEANUP => 1 );
     lives_ok { $test->check_cycle_count( 5, 0 ) }
              '  Move run from \'pending\' to \'in progress\'';
 
-    is( $test->current_run_status_description(), 'run in progress',
+    is( $test->tracking_run()->current_run_status_description(), 'run in progress',
         '  Run status updated' );
 
     is( $test->tracking_run->actual_cycle_count(), 5, '  Cycle count updated' );
@@ -67,7 +67,7 @@ my $dir4rf = tempdir( CLEANUP => 1 );
     lives_ok { $test->check_cycle_count( 43, 1 ) }
              '  Move run from \'in progress\' to \'complete\'';
 
-    is( $test->current_run_status_description(), 'run complete',
+    is( $test->tracking_run()->current_run_status_description(), 'run complete',
         '  Run status updated' );
 
     is( $test->tracking_run->actual_cycle_count(), 43,

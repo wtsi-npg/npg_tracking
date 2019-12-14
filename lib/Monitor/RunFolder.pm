@@ -13,11 +13,6 @@ our $VERSION = '0';
 
 Readonly::Scalar our $ACCEPTABLE_CYCLE_DELAY => 6;
 
-sub current_run_status_description {
-  my ($self) = @_;
-  return $self->tracking_run()->current_run_status_description();
-}
-
 sub check_cycle_count {
   my ( $self, $latest_cycle, $run_complete ) = @_;
 
@@ -27,7 +22,7 @@ sub check_cycle_count {
   my $run_db = $self->tracking_run();
 
   $latest_cycle
-    && ( $self->current_run_status_description() eq 'run pending' )
+    && ( $run_db->current_run_status_description() eq 'run pending' )
     && $run_db->update_run_status( 'run in progress', $self->username() );
 
   $run_complete
@@ -194,16 +189,6 @@ for the run, creating a DBIx record object to do that.
 
 =head1 SUBROUTINES/METHODS
 
-Most of the methods are provided by npg_tracking::illumina::run::short_info.
-
-=head2 current_run_status_description
-
-Return the current status of the object's run.
-
-=head2 current_run_status
-
-Return the current status (description now, object in future) of the object's run.
-
 =head2 check_cycle_count
 
 When passed the lastest cycle count and a boolean indicating whether the run
@@ -231,7 +216,6 @@ value otherwise.
 =head2 read_long_info
 
 Use long_info to find various attributes and update run tags with the results.
-The method accepts a Boolean argument indicating whether the run is RTA.
 
 =head2 check_delay
 

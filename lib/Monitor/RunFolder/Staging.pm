@@ -302,7 +302,7 @@ sub move_to_outgoing {
         $m = "$rf flagged not to be moved to outgoing"
     } else {
         my $id = $self->tracking_run()->id_run;
-        my $status = $self->current_run_status_description();
+        my $status = $self->tracking_run()->current_run_status_description();
         if ($status eq 'qc complete') {
             my $destination = $self->_destination_path('analysis', 'outgoing');
             my $moved;

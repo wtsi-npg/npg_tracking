@@ -363,14 +363,14 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
 
 
     ok( !-e "$mock_path/Mirror.completed", 'Flag file does not exist' );
-    isnt( $test->current_run_status_description(), 'run mirrored',
+    isnt( $test->tracking_run()->current_run_status_description(), 'run mirrored',
           '\'run mirrored\' status not set' );
 
     lives_ok { $test->mark_as_mirrored() } 'Mark as mirrored';
 
     ok( -e "$mock_path/Mirror.completed", 'Now the flag file does exist...' );
 
-    is( $test->current_run_status_description(), 'run mirrored',
+    is( $test->tracking_run()->current_run_status_description(), 'run mirrored',
           '   ...and the \'run mirrored\' status is set' );
 
     my $first_flag_mtime = ( stat "$mock_path/Mirror.completed" )[9];
@@ -428,7 +428,7 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     my $test = Monitor::RunFolder::Staging->new( runfolder_path      => $test_source,
                                                  npg_tracking_schema => $schema, );
 
-    isnt( $test->current_run_status_description(), 'analysis pending',
+    isnt( $test->tracking_run->current_run_status_description(), 'analysis pending',
       'run status is not analysis pending');
     ok( !$test->is_in_analysis(), 'run folder is not in analysis');
     my $m;
@@ -444,7 +444,7 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     ok( !-e $test_source, 'runfolder is gone from incoming' );
     ok(  -e $test_target, 'runfolder is present in analysis' );
 
-    is( $test->current_run_status_description(), 'analysis pending',
+    is( $test->tracking_run()->current_run_status_description(), 'analysis pending',
           'Current run status is \'analysis pending\'' );
 
     $test_source = $test_target;
@@ -523,7 +523,7 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     lives_ok { $test->move_to_analysis() } 'Move to analysis';
     ok( !-e $test_source, 'runfolder is gone from incoming' );
     ok(  -e $test_target, 'runfolder is present in analysis' );
-    is( $test->current_run_status_description(), 'run pending',
+    is( $test->tracking_run()->current_run_status_description(), 'run pending',
           'run status is unchanged' );
 }
 
