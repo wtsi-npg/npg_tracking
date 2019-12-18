@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use English qw(-no_match_vars);
 use File::Copy;
-use Test::More tests => 32;
+use Test::More tests => 30;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -117,9 +117,6 @@ ENDXML
     is( $test->tracking_run()->is_tag_set('multiplex'), 0,
         '  \'multiplex\' tag is not set on this run' );
 
-    is( $test->tracking_run()->is_tag_set('rta'), 1,
-        '  \'rta\' tag is set' );
-
     my $basedir2 = tempdir( CLEANUP => 1 );
     my $fs_run_folder2 = qq[$basedir2/IL3/incoming/100622_IL3_01234];
     make_path($fs_run_folder2);
@@ -152,8 +149,6 @@ ENDXML
         '  \'paired_read\' tag is set on that run' );
     is( $test->tracking_run()->is_tag_set('multiplex'), 1,
         '  \'multiplex\' tag is set on that run' );
-    is( $test->tracking_run()->is_tag_set('rta'), 1,
-        '  \'rta\' tag is set on that run' );
 }
 
 {

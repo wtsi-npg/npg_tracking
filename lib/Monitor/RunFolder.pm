@@ -72,29 +72,19 @@ sub read_long_info {
   my $self = shift;
 
   my $run_db   = $self->tracking_run();
-  my $username = $self->username();
 
-  # Extract the relevant details.
   my $expected_cycle_count = $self->expected_cycle_count();
-  my $run_is_indexed       = $self->is_indexed();
-  my $run_is_paired_read   = $self->is_paired_read();
-
   my $db_expected = $run_db->expected_cycle_count;
   if ( $db_expected != $expected_cycle_count ) {
-    # Update the expected_cycle_count field and run tags.
     warn qq[Updating cycle count $db_expected to $expected_cycle_count\n];
-    $run_db->expected_cycle_count( $expected_cycle_count );
+    $run_db->update({expected_cycle_count => $expected_cycle_count});
   }
 
-  $run_is_paired_read ? $run_db->set_tag( $username, 'paired_read' )
-                      : $run_db->set_tag( $username, 'single_read' );
+  $self->is_paired_read() ? $run_db->set_tag( $self->username, 'paired_read' )
+                          : $run_db->set_tag( $self->username, 'single_read' );
 
-  $run_is_indexed     ? $run_db->set_tag(   $username, 'multiplex' )
+  $self->is_indexed() ? $run_db->set_tag( $self->username, 'multiplex' )
                       : $run_db->unset_tag( 'multiplex' );
-
-  $run_db->set_tag( $username, 'rta' ); # run is always RTA in year 2015
-
-  $run_db->update();
 
   $self->_delete_lanes();
 
