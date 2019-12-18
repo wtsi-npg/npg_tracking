@@ -98,6 +98,25 @@ sub _cycle_numbers {
   return @{ $self->{_cycle_numbers}->{$run_path} };
 }
 
+sub delay {
+  my ( $self ) = @_;
+
+  my $run_actual_cycles = $self->tracking_run()->actual_cycle_count();
+
+  my $latest_cycle = $self->get_latest_cycle();
+
+  my $delay = 0;
+
+  if ( $run_actual_cycles != $latest_cycle ) {
+    $delay = $run_actual_cycles - $latest_cycle;
+    $delay =~ s/-//xms;
+  }
+
+  $delay += scalar $self->missing_cycles();
+
+  return $delay;
+}
+
 1;
 
 
@@ -136,6 +155,11 @@ Goes through all the cycle directories present for lane 1, and then returns any 
 (as if mirroring to stagung is playing catchup, some directories may be missing)
 
   my @MissingCycles = $oClass->missing_cycles( $run_path );
+
+=head2 delay
+
+The number of cycles that are delayed coming across from the instrument
+actual last cycle recorded - highest cycle found on staging
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

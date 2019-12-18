@@ -11,8 +11,6 @@ with qw/ Monitor::Roles::Cycle
 
 our $VERSION = '0';
 
-Readonly::Scalar our $ACCEPTABLE_CYCLE_DELAY => 6;
-
 sub check_cycle_count {
   my ( $self, $latest_cycle, $run_complete ) = @_;
 
@@ -91,48 +89,6 @@ sub read_long_info {
   return;
 }
 
-sub check_delay {
-  my ( $self ) = @_;
-
-  my @missing_cycles = $self->missing_cycles();
-
-  if ( scalar @missing_cycles ) {
-    carp q{Missing the following cycles: };
-    carp join q{,}, @missing_cycles;
-  }
-
-  my $delay = $self->delay();
-
-  if ( $self->delay() > $ACCEPTABLE_CYCLE_DELAY ) {
-    carp q{Delayed by } . $delay . q{ cycles - this is a potential problem.};
-  }
-
-  return;
-}
-
-sub delay {
-  my ( $self, $exclude_missing_cycles ) = @_;
-
-  my $run_actual_cycles = $self->tracking_run()->actual_cycle_count();
-
-  my $latest_cycle = $self->get_latest_cycle();
-
-  my $delay = 0;
-
-  if ( $run_actual_cycles != $latest_cycle ) {
-    $delay = $run_actual_cycles - $latest_cycle;
-    $delay =~ s/-//xms;
-  }
-
-  if ( ! $exclude_missing_cycles ) {
-    my @missing_cycles = $self->missing_cycles();
-
-    $delay += scalar @missing_cycles;
-  }
-
-  return $delay;
-}
-
 sub _delete_lanes {
   my $self = shift;
 
@@ -206,19 +162,6 @@ value otherwise.
 =head2 read_long_info
 
 Use long_info to find various attributes and update run tags with the results.
-
-=head2 check_delay
-
-Looks at the runfolder and sees if there are any missing cycles, and reports these,
-and if the difference between the actual last cycle recorded in the database and the
-highest cycle found in the runfolder on staging is greater than $ACCEPTABLE_CYCLE_DELAY
-then it will report this.
-
-=head2 delay
-
-The number of cycles that are delayed coming across from the instrument
-
-  actual last cycle recorded - higest cycle found on staging
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
