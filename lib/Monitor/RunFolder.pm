@@ -2,16 +2,13 @@ package Monitor::RunFolder;
 
 use Moose;
 use Carp;
-use Readonly;
 
 extends 'npg_tracking::illumina::runfolder';
-
-with qw/ Monitor::Roles::Cycle
-         Monitor::Roles::Username /;
+with qw/ Monitor::Roles::Username /;
 
 our $VERSION = '0';
 
-sub check_cycle_count {
+sub update_cycle_count_and_run_status {
   my ( $self, $latest_cycle, $run_complete ) = @_;
 
   croak 'Latest cycle count not supplied'   if !defined $latest_cycle;
@@ -26,10 +23,9 @@ sub check_cycle_count {
   $run_complete
     && $run_db->update_run_status( 'run complete', $self->username() );
 
-  ( $latest_cycle > $run_db->actual_cycle_count() )
-    && $run_db->actual_cycle_count($latest_cycle);
-
-  $run_db->update();
+  if ( $latest_cycle > $run_db->actual_cycle_count() ) {
+    $run_db->update({actual_cycle_count => $latest_cycle});
+  }
 
   return;
 }
@@ -135,7 +131,7 @@ for the run, creating a DBIx record object to do that.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 check_cycle_count
+=head2 update_cycle_count_and_run_status
 
 When passed the lastest cycle count and a boolean indicating whether the run
 is complete or not, make appropriate adjustments to the database entries for
@@ -172,8 +168,6 @@ Use long_info to find various attributes and update run tags with the results.
 =item Moose
 
 =item Carp
-
-=item Readonly
 
 =back
 

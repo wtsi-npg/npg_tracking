@@ -17,7 +17,7 @@ use Fcntl qw/S_ISGID/;
 use npg_tracking::util::config qw(get_config_staging_areas);
 
 extends 'Monitor::RunFolder';
-with 'MooseX::Getopt';
+with qw/MooseX::Getopt Monitor::Roles::Cycle/;
 
 our $VERSION = '0';
 

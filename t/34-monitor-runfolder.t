@@ -48,15 +48,15 @@ my $dir4rf = tempdir( CLEANUP => 1 );
     is( $test->tracking_run()->current_run_status_description(), 'run pending',
         ' test is ready' );
 
-    throws_ok { $test->check_cycle_count() }
+    throws_ok { $test->update_cycle_count_and_run_status() }
               qr{Latest cycle count not supplied}ms, 
-              '  check_cycle_count requires latest cycle count argument';
+              'requires latest cycle count argument';
 
-    throws_ok { $test->check_cycle_count(5) }
+    throws_ok { $test->update_cycle_count_and_run_status(5) }
               qr{Run complete Boolean not supplied}ms,
-              '  check_cycle_count requires run complete argument';
+              'requires run complete argument';
 
-    lives_ok { $test->check_cycle_count( 5, 0 ) }
+    lives_ok { $test->update_cycle_count_and_run_status( 5, 0 ) }
              '  Move run from \'pending\' to \'in progress\'';
 
     is( $test->tracking_run()->current_run_status_description(), 'run in progress',
@@ -64,7 +64,7 @@ my $dir4rf = tempdir( CLEANUP => 1 );
 
     is( $test->tracking_run->actual_cycle_count(), 5, '  Cycle count updated' );
 
-    lives_ok { $test->check_cycle_count( 43, 1 ) }
+    lives_ok { $test->update_cycle_count_and_run_status( 43, 1 ) }
              '  Move run from \'in progress\' to \'complete\'';
 
     is( $test->tracking_run()->current_run_status_description(), 'run complete',

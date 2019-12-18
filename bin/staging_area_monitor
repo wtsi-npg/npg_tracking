@@ -127,14 +127,14 @@ my $check_path = sub { ##### Function to deal with one run folder
 
     if ( $run_status eq 'run pending' )  {
         my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
-        $folder->check_cycle_count($latest_cycle, 0);
+        $folder->update_cycle_count_and_run_status($latest_cycle, 0);
         return;
     }
 
     if ( $run_status eq 'run in progress' ) {
         my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
         my $run_complete = $folder->is_run_complete();
-        $folder->check_cycle_count($latest_cycle, $run_complete);
+        $folder->update_cycle_count_and_run_status($latest_cycle, $run_complete);
         $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
                                       : $folder->tracking_run()->unset_tag( 'copying_problem' );
         return;
@@ -153,7 +153,7 @@ my $check_path = sub { ##### Function to deal with one run folder
         my $path = $folder->runfolder_path();
         my $latest_cycle = $folder->get_latest_cycle($path);
 
-        $folder->check_cycle_count( $latest_cycle, 1 );
+        $folder->update_cycle_count_and_run_status( $latest_cycle, 1 );
 
         my ( $total_size, $latest_mod ) = $folder->monitor_stats();
 
