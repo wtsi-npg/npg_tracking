@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use English qw(-no_match_vars);
 use File::Copy;
-use Test::More tests => 30;
+use Test::More tests => 29;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -79,10 +79,6 @@ my $dir4rf = tempdir( CLEANUP => 1 );
     my $test = Monitor::RunFolder->new( runfolder_path      => $mock_path,
                                         npg_tracking_schema => $schema, );
 
-
-    throws_ok { $test->read_long_info() } qr{File not found}ms,
-              'Croak if no recipe file is found';
-
     my $basedir = tempdir( CLEANUP => 1 );
     my $fs_run_folder = qq[$basedir/IL12/incoming/100721_IL12_05222];
     make_path($fs_run_folder);
@@ -109,7 +105,7 @@ ENDXML
                                      npg_tracking_schema => $schema, );
 
     move( "$mock_path/Data", "$mock_path/_Data" ) or die "Error $OS_ERROR";
-    lives_ok { $test->read_long_info() } 'Call read_long_info method without error';
+    lives_ok { $test->set_run_tags() } 'Call set_run_tags method without error';
     move( "$mock_path/_Data", "$mock_path/Data" ) or die "Error $OS_ERROR";
 
     is( $test->tracking_run()->is_tag_set('single_read'), 1,
@@ -143,7 +139,7 @@ ENDXML
 
     $test = Monitor::RunFolder->new( runfolder_path      => $fs_run_folder2,
                                      npg_tracking_schema => $schema, );
-    $test->read_long_info();
+    $test->set_run_tags();
 
     is( $test->tracking_run()->is_tag_set('paired_read'), 1,
         '  \'paired_read\' tag is set on that run' );
@@ -191,7 +187,7 @@ q{<?xml version="1.0"?>
     print $fh $run_info;
     close $fh;
 
-    warnings_like { $test->read_long_info(1) } [
+    warnings_like { $test->delete_superfluous_lanes() } [
       qr/Deleted lane 3/, qr/Deleted lane 4/, qr/Deleted lane 5/,
       qr/Deleted lane 6/, qr/Deleted lane 7/, qr/Deleted lane 8/],
       'warnings about lane deletion';
@@ -199,7 +195,7 @@ q{<?xml version="1.0"?>
     is ($test->lane_count, 2, 'two lanes listed in run info');
     is ($test->tracking_run()->run_lanes->count, 2, 'now run has two lanes');
 
-    $test->read_long_info();
+    $test->delete_superfluous_lanes();
     is ($test->tracking_run()->run_lanes->count, 2, 'no change - run has two lanes');
 }
 

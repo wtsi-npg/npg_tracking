@@ -62,30 +62,21 @@ sub set_workflow_type {
   return;
 }
 
-sub read_long_info {
+sub set_run_tags {
   my $self = shift;
 
-  my $run_db   = $self->tracking_run();
+  $self->is_paired_read()
+    ? $self->tracking_run()->set_tag( $self->username, 'paired_read' )
+    : $self->tracking_run()->set_tag( $self->username, 'single_read' );
 
-  my $expected_cycle_count = $self->expected_cycle_count();
-  my $db_expected = $run_db->expected_cycle_count;
-  if ( $db_expected != $expected_cycle_count ) {
-    warn qq[Updating cycle count $db_expected to $expected_cycle_count\n];
-    $run_db->update({expected_cycle_count => $expected_cycle_count});
-  }
-
-  $self->is_paired_read() ? $run_db->set_tag( $self->username, 'paired_read' )
-                          : $run_db->set_tag( $self->username, 'single_read' );
-
-  $self->is_indexed() ? $run_db->set_tag( $self->username, 'multiplex' )
-                      : $run_db->unset_tag( 'multiplex' );
-
-  $self->_delete_lanes();
+  $self->is_indexed()
+    ? $self->tracking_run()->set_tag( $self->username, 'multiplex' )
+    : $self->tracking_run()->unset_tag( 'multiplex' );
 
   return;
 }
 
-sub _delete_lanes {
+sub delete_superfluous_lanes {
   my $self = shift;
 
   my $run_lanes = $self->tracking_run()->run_lanes;
@@ -155,9 +146,13 @@ value in the parameters file.
 Returns the workflow type string if it has been changed, an undefined
 value otherwise.
 
-=head2 read_long_info
+=head2 set_run_tags
 
-Use long_info to find various attributes and update run tags with the results.
+Sets multiplex, paired or single read tags as appropriate.
+
+=head2 delete_superfluous_lanes
+
+Deletes database run_lane table records for lanes not present in a run folder.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

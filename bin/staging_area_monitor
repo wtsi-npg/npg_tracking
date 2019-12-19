@@ -107,18 +107,11 @@ my $check_path = sub { ##### Function to deal with one run folder
             if ($wf_type) {
                 _log("Workflow type is set to $wf_type");
             }
+            $folder->set_run_tags();
         } catch {
-            _log('Error setting instrument side and/or run workflow type: ' . $_);
+            _log('Error: ' . $_);
         };
-        try {
-            # This was previously the functionality of the instrument poller.
-            # Do not trust the label on the tin - the code sets some tags
-            # and removes extra lanes.
-            $folder->read_long_info();
-        } catch {
-            _log('Error : ' . $_);
-        };
-        # We might want to expand this section to set/fix other tags
+
         $previous_size_of{$run_path} = 0;
     }
 
@@ -132,6 +125,11 @@ my $check_path = sub { ##### Function to deal with one run folder
     }
 
     if ( $run_status eq 'run in progress' ) {
+
+        # The lane count comes from the run folder structure, which
+        # we should have by now set up.
+        $folder->delete_superfluous_lanes();
+
         my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
         my $run_complete = $folder->is_run_complete();
         $folder->update_cycle_count_and_run_status($latest_cycle, $run_complete);
