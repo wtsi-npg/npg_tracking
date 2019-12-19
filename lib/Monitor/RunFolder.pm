@@ -93,6 +93,34 @@ sub delete_superfluous_lanes {
   return;
 }
 
+sub update_run_record {
+  my ($self) = @_;
+
+  my $run_db = $self->tracking_run();
+
+  my $expected_cycle_count = $self->expected_cycle_count();
+  if ( $expected_cycle_count && ( ! $run_db->expected_cycle_count() ||
+                                  ( $run_db->expected_cycle_count() != $expected_cycle_count ) ) ) {
+    carp qq[Updating expected cycle count to $expected_cycle_count];
+    $run_db->expected_cycle_count($expected_cycle_count);
+  }
+
+  if ( ! $run_db->folder_name() ) {
+    my $folder_name = $self->run_folder();
+    carp qq[Setting undef folder name to $folder_name];
+    $run_db->folder_name($folder_name);
+  }
+
+  my $glob = $self->_get_folder_path_glob;
+  if ( $glob ) {
+    $run_db->folder_path_glob($glob);
+  }
+
+  $run_db->update();
+
+  return;
+}
+
 1;
 
 __END__
@@ -153,6 +181,11 @@ Sets multiplex, paired or single read tags as appropriate.
 =head2 delete_superfluous_lanes
 
 Deletes database run_lane table records for lanes not present in a run folder.
+
+=head2 update_run_record
+
+Ensures DB has updated runfolder name and a suitable glob for quickly
+finding the run folder. Updates extected cycle count value if needed.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

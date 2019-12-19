@@ -95,7 +95,7 @@ my $check_path = sub { ##### Function to deal with one run folder
     # Previously we avoided making changes to the db if status was at or after
     # 'run complete'. We might consider reinstating this rule.
     if ( not defined $previous_size_of{$run_path} ) {
-        $folder->update_folder();
+        $folder->update_run_record();
         $folder->tracking_run()->set_tag( $folder->username(), 'staging' );
         _log('Set staging tag');
         try {
@@ -141,7 +141,7 @@ my $check_path = sub { ##### Function to deal with one run folder
     if ( $run_status eq 'run complete' ) {
         $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
                                       : $folder->tracking_run()->unset_tag( 'copying_problem' );
-        $folder->update_folder();
+        $folder->update_run_record();
 
         # Integrity check - got everything.
         return if $folder->cycle_lag($run_path);

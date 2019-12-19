@@ -123,7 +123,7 @@ subtest 'updating run data from filesystem' => sub {
     is( $run_folder->_get_folder_path_glob, qq[$basedir/IL3/*/],
         'internal glob correct' );
 
-    lives_ok { $run_folder->update_folder } 'update folder name and glob in DB';
+    lives_ok { $run_folder->update_run_record } 'update folder name and glob in DB';
     is( $run_folder->tracking_run()->folder_name(), '100622_IL3_01234',
         '  folder name updated' );
     is( $run_folder->tracking_run()->folder_path_glob(), qq[$basedir/IL3/*/],
