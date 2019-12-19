@@ -104,6 +104,25 @@ sub _build_index_length {
   return $end - $start + 1;
 }
 
+=head2 is_dual_index
+
+Boolean determines if the run has a second index read, this can be set on object construction
+
+  my $bIsDualIndex = $class->is_dual_index();
+
+=cut
+
+has q{is_dual_index} => (
+  isa           => q{Bool},
+  is            => q{ro},
+  lazy_build    => 1,
+  documentation => q{This run is a paired end read},
+);
+sub _build_is_dual_index {
+  my $self = shift;
+  return $self->index_read2_cycle_range ? 1 : 0;
+}
+
 =head2 lane_count
 
 Number of lanes configured for this run. May be set on Construction.
@@ -208,6 +227,42 @@ has _read2_cycle_range => (
     _push_read2_cycle_range => 'push',
     read2_cycle_range       => 'elements',
     has_read2_cycle_range   => 'count',
+  },
+);
+
+=head2 index_read1_cycle_range
+
+First and last cycles of index read 1, or nothing returned if no index_read 1
+
+=cut
+
+has q{_index_read1_cycle_range} => (
+  traits  => ['Array'],
+  is      => 'ro',
+  isa     => 'ArrayRef[Int]',
+  default => sub { [] },
+  handles => {
+    _push_index_read1_cycle_range  => 'push',
+    index_read1_cycle_range        => 'elements',
+    has_index_read1_cycle_range    => 'count',
+  },
+);
+
+=head2 index_read2_cycle_range
+
+First and last cycles of index_read 2, or nothing returned if no index_read 2
+
+=cut
+
+has _index_read2_cycle_range => (
+  traits  => ['Array'],
+  is      => 'ro',
+  isa     => 'ArrayRef[Int]',
+  default => sub { [] },
+  handles => {
+    _push_index_read2_cycle_range => 'push',
+    index_read2_cycle_range       => 'elements',
+    has_index_read2_cycle_range   => 'count',
   },
 );
 
@@ -392,6 +447,8 @@ foreach my $f ( qw(expected_cycle_count
                    indexing_cycle_range
                    read1_cycle_range
                    read2_cycle_range
+                   index_read1_cycle_range
+                   index_read2_cycle_range
                    tilelayout_rows
                    tilelayout_columns) ) {
    before $f => sub {
@@ -822,11 +879,13 @@ sub _set_values_at_end_of_read {
         if ( $rc->{start} == $end + 1 ) {
           $self->_pop_indexing_cycle_range();
           $self->_push_indexing_cycle_range( $rc->{index} );
+          $self->_push_index_read2_cycle_range( $rc->{start},$rc->{index} );
         } else {
           carp "Don't know how to deal with non adjacent indexing reads: $start,$end and $rc->{start},$rc->{index}"
         }
       } else {
         $self->_push_indexing_cycle_range( $rc->{start},$rc->{index} );
+        $self->_push_index_read1_cycle_range( $rc->{start},$rc->{index} );
       }
     } else {
       $self->_push_reads_indexed(0);
