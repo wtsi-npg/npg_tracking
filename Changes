@@ -1,4 +1,21 @@
 LIST OF CHANGES
+ 
+ - removed scripts for monitoring instruments via ftp; related
+   modules and methods, their tests and test data are removed
+ - code for staging monitor reorganised so that the Monitor::Runfolder
+   class has methods for updating run, run_lane records and run tags
+   and the Monitor::Runfolder::Staging class mainly deals with staging
+   folder inspection and changes; some methods renamed to remove
+   ambiguity about their function
+ - some of the functionality of the instrument monitor is incorporated
+   into the staging monitor code, namely, (1) setting 'multiplex',
+   'paired_read' and 'single_read' tags and (2) deletion of superfluous
+   lanes; this functionality is now available for NovaSeq instruments,
+   while previously it was missing for this instrument type
+ - redundant 'rta' run tag is not longer set
+ - functionality for checking instruments' wash status and setting
+   'was required' instrument tag is lost; this shoud be done outside
+   of staging monitor
 
  - npg_tracking::util::pipeline_config is refactored to restrict access
    to attributes which should not be set by the caller (local_bin, product_config)
