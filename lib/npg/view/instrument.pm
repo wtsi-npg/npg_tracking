@@ -396,15 +396,6 @@ sub read_png { ## no critic (Subroutines::ProhibitExcessComplexity)
   my $x_start = int ($width - $src_width)/2;
   $im->copy($src, $x_start, 0, 0, 0, $src_width, $src_height);
 
-  # if instrument has not been connected to  th threshold duration add disconnect icon
-  if ( my $lc=$model->latest_contact) {
-    if (DateTime::Format::MySQL->parse_datetime($lc)->add(minutes=> $ALERT_MINUTES_THRESHOLD) < DateTime->now()) {
-      my $im_fn_ds  = sprintf q(%s/gfx/disconnect.png), $util->data_path();
-      my $src_ds    = GD::Image->newFromPng($im_fn_ds);
-      $im->copy($src_ds, $im->width - $src_ds->width - $ALERT_MARGIN , $Y_ALERT, 0,0,$src_ds->width,$src_ds->height);
-    }
-  }
-
   # if current_runs have copying_problem tag add drive error icon
   if (my @r = @{$model->current_runs}) {
     if (any {$_->has_tag_with_value(q(copying_problem))} @r) {
