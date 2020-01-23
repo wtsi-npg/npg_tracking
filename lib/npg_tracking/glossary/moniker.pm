@@ -89,6 +89,36 @@ sub generic_name {
   return $self->composition()->digest();
 }
 
+sub parse_file_name {
+  my ($self, $name) = @_;
+
+  $name or croak 'File name argument required';
+
+  my $parsed = {};
+  ##no critic (RegularExpressions::RequireExtendedFormatting)
+  if ( $name =~ /\A(\d+)(?:_(\d))?(?:#(\d+))?(?:_(\w+))?(?:[.](\S+))?\Z/sm ) {
+  ##use critic
+    $parsed->{'id_run'}    = $1;
+    $parsed->{'position'}  = $2;
+    $parsed->{'tag_index'} = $3;
+    $parsed->{'suffix'}    = $4;
+    $parsed->{'extension'} = $5;
+
+    ( $parsed->{'id_run'} and
+      ( $parsed->{'position'} or defined $parsed->{'tag_index'} ) ) or
+      $parsed = {};
+  }
+
+  (keys %{$parsed}) or croak
+    "Argument file name $name does not conform to expected pattern";
+
+  for my $k (keys %{$parsed}) {
+    defined $parsed->{$k} or delete $parsed->{$k};
+  }
+
+  return $parsed;
+}
+
 has [qw/_id_run_common _tag_index_common/] => (
   isa        => 'Maybe[Int]',
   is         => 'ro',
@@ -339,17 +369,32 @@ path exists.
 Optionally takes a boolean argument telling the method whether the composition
 represents a sunset of lanes in the run. False by default.
 
- my $dir = $self->dir_path();
- my $selected_lanes = 0;
- $dir = $self->dir_path($selected_lanes);
- $selected_lanes = 1;
- $dir = $self->dir_path($selected_lanes);
+  my $dir = $self->dir_path();
+  my $selected_lanes = 0;
+  $dir = $self->dir_path($selected_lanes);
+  $selected_lanes = 1;
+  $dir = $self->dir_path($selected_lanes);
 
 =head2 generic_name
 
 Returns a generic name for a file or directory, which is based on a sha256_hex
 digest associated with the composition object. This type of name is used within
 this module when a semantically meaningful name cannot  be generated.
+
+=head2 parse_file_name
+
+A package level method.
+Given a file name, returns a hash containing such file components as
+run id, position, tag index, suffix and extension (keys used: id_run, position,
+tag_index, suffix, extension).
+  
+  my $parsed = $self->parse_file_name('1234_4#0_phix.cram');
+  $parsed = $self->parse_file_name('1234_4#3_phix.cram.crai');
+
+Not all possible components of a file name have to be present. However, 
+run id and either position or tag index should be present. File name components
+that are not present in the argument file name will not be present in the
+returned hash.
 
 =head1 DIAGNOSTICS
 

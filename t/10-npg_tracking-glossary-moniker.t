@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 11;
 use Test::Exception;
 use Moose::Meta::Class;
 
@@ -373,6 +373,54 @@ subtest 'full file name' => sub {
   is ($p->file_name_full($name, suffix => 'F0xB00'), '26219_1#3_phix_F0xB00', 'file name with a suffix');
   is ($p->file_name_full($name, ext => 'stats', suffix => 'F0xB00'), '26219_1#3_phix_F0xB00.stats',
     'file name with both extension and suffix');
+};
+
+subtest 'parse file name' => sub {
+  plan tests => 21;
+
+  my $p = 'npg_tracking::glossary::moniker';
+  is_deeply($p->parse_file_name('1234_4#5'),
+    {id_run => 1234, position => 4, tag_index => 5});
+  is_deeply($p->parse_file_name('1234_4#0'),
+    {id_run => 1234, position => 4, tag_index => 0});
+  is_deeply($p->parse_file_name('1234_4'), {id_run => 1234, position => 4});
+  is_deeply($p->parse_file_name('1234#4'), {id_run => 1234, tag_index => 4});
+  is_deeply($p->parse_file_name('1234#0'), {id_run => 1234, tag_index => 0});
+
+  is_deeply($p->parse_file_name('1234_4#5_phix'),
+    {id_run => 1234, position => 4, tag_index => 5, suffix => 'phix'});
+  is_deeply($p->parse_file_name('1234_4#0_phix'),
+    {id_run => 1234, position => 4, tag_index => 0, suffix => 'phix'});
+  is_deeply($p->parse_file_name('1234_4_phix'),
+    {id_run => 1234, position => 4, suffix => 'phix'});
+  is_deeply($p->parse_file_name('1234#4_phix'),
+    {id_run => 1234, tag_index => 4, suffix => 'phix'});
+  is_deeply($p->parse_file_name('1234#0_phix'),
+    {id_run => 1234, tag_index => 0, suffix => 'phix'});
+
+  is_deeply($p->parse_file_name('1234_4#5_phix.cram'),
+    {id_run => 1234, position => 4, tag_index => 5, suffix => 'phix', extension => 'cram'});
+  is_deeply($p->parse_file_name('1234_4#5_phix.cram.crai'),
+    {id_run => 1234, position => 4, tag_index => 5, suffix => 'phix', extension => 'cram.crai'});
+  is_deeply($p->parse_file_name('1234_4#0_phix.cram'),
+    {id_run => 1234, position => 4, tag_index => 0, suffix => 'phix', extension => 'cram'});
+  is_deeply($p->parse_file_name('1234_4_phix.cram'),
+    {id_run => 1234, position => 4, suffix => 'phix', extension => 'cram'});
+  is_deeply($p->parse_file_name('1234#4_phix.cram'),
+    {id_run => 1234, tag_index => 4, suffix => 'phix', extension => 'cram'});
+  is_deeply($p->parse_file_name('1234#0_phix.cram'),
+    {id_run => 1234, tag_index => 0, suffix => 'phix', extension => 'cram'});
+
+  is_deeply($p->parse_file_name('1234_4#5.cram'),
+    {id_run => 1234, position => 4, tag_index => 5, extension => 'cram'});
+  is_deeply($p->parse_file_name('1234_4#0.cram'),
+    {id_run => 1234, position => 4, tag_index => 0, extension => 'cram'});
+  is_deeply($p->parse_file_name('1234_4.cram'),
+    {id_run => 1234, position => 4, extension => 'cram'});
+  is_deeply($p->parse_file_name('1234#4.cram'),
+    {id_run => 1234, tag_index => 4, extension => 'cram'});
+  is_deeply($p->parse_file_name('1234#0.cram'),
+    {id_run => 1234, tag_index => 0, extension => 'cram'});    
 };
 
 1;

@@ -1,5 +1,12 @@
 LIST OF CHANGES
 
+release 90.3.0
+- npg_tracking::glossary::moniker - added a method for file name
+  parsing to retrieve id_run, position, tag_index, suffix and
+  extension
+- tracking server instrument visualization - remove visual cue
+  for connection delay since ftp-ing to instruments is discontinued
+
 release 90.2.1
  - staging area daemon to save the flowcell barcode to the
    database if it does not have this value already available 
