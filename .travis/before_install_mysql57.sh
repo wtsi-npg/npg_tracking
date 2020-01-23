@@ -11,19 +11,19 @@ sudo apt-get autoclean
 sudo rm -rf /var/lib/mysql
 sudo rm -rf /var/log/mysql
 
-# Get packages from oracle
-sudo -E apt-get install libaio1 apparmor
-wget http://downloads.mysql.com/archives/get/file/mysql-common_5.7.13-1ubuntu12.04_amd64.deb
-wget http://downloads.mysql.com/archives/get/file/libmysqlclient20_5.7.13-1ubuntu12.04_amd64.deb
-wget http://downloads.mysql.com/archives/get/file/mysql-community-client_5.7.13-1ubuntu12.04_amd64.deb
-wget http://downloads.mysql.com/archives/get/file/mysql-client_5.7.13-1ubuntu12.04_amd64.deb
-wget http://downloads.mysql.com/archives/get/file/mysql-community-server_5.7.13-1ubuntu12.04_amd64.deb
-wget http://downloads.mysql.com/archives/get/file/mysql-server_5.7.13-1ubuntu12.04_amd64.deb
+# Get MySQL packages and their dependencies
+sudo -E apt-get install libaio1 apparmor libmecab2
+MYSQL_DOWNLOAD_URL_ROOT='https://downloads.mysql.com/archives/get/p/23/file'
+wget "$MYSQL_DOWNLOAD_URL_ROOT/mysql-common_5.7.13-1ubuntu16.04_amd64.deb"
+wget "$MYSQL_DOWNLOAD_URL_ROOT/mysql-community-client_5.7.13-1ubuntu16.04_amd64.deb"
+wget "$MYSQL_DOWNLOAD_URL_ROOT/mysql-client_5.7.13-1ubuntu16.04_amd64.deb"
+wget "$MYSQL_DOWNLOAD_URL_ROOT/mysql-community-server_5.7.13-1ubuntu16.04_amd64.deb"
+wget "$MYSQL_DOWNLOAD_URL_ROOT/mysql-server_5.7.13-1ubuntu16.04_amd64.deb"
+
 sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password \"''\""
 sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password \"''\""
 sudo dpkg-preconfigure mysql-community-server_5.7.13-1ubuntu12.04_amd64.deb  
 sudo dpkg -i mysql-{common,community-client,client,community-server,server}_*.deb
-sudo dpkg -i libmysqlclient20_5.7.13-1ubuntu12.04_amd64.deb
 sudo -E apt-get -q -y install libmysqlclient-dev libdbd-mysql-perl
 
 sudo /etc/init.d/mysql stop
