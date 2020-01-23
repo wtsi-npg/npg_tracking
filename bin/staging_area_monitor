@@ -55,17 +55,20 @@ my $check_path = sub { ##### Function to deal with one run folder
 
     _log("Run $id_run status $run_status");
 
-    # Flowcell barcode validation.
-    # Absence of the flowcell barcode in the database is not counted
-    # as a mismatch.
     my $db_flowcell_barcode      = $folder->tracking_run()->flowcell_id;
-    my $staging_flowcell_barcode = $folder->run_flowcell;
-    if ($db_flowcell_barcode and
-       ($db_flowcell_barcode ne $staging_flowcell_barcode)) {
-      croak 'Flowcell barcode mismatch between database and staging: ' .
-       join q[ ], $db_flowcell_barcode, $staging_flowcell_barcode; 
+    my $staging_flowcell_barcode = $folder->run_flowcell; # from RunParameters.xml
+    $staging_flowcell_barcode    ||= q[];
+    if ($db_flowcell_barcode) { # database flowcell barcode validation
+        if ($db_flowcell_barcode ne $staging_flowcell_barcode) {
+            croak 'Flowcell barcode mismatch between database and staging: ' .
+            join q[ ], $db_flowcell_barcode, $staging_flowcell_barcode;
+        } 
+    } else { # save flowcell barcode to the tracking database
+        $staging_flowcell_barcode or croak
+            "Staging flowcell barcode is not defined for run $id_run";
+        _log("Saving staging flowcell barcode $staging_flowcell_barcode to the database.");
+        $folder->tracking_run()->update({flowcell_id => $staging_flowcell_barcode});
     }
-    _log('Staging flowcell barcode: ' . $staging_flowcell_barcode);
 
     if ($folder->is_in_analysis) {
         _log('Folder is in /analysis/');
