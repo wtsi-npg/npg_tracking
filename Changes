@@ -1,9 +1,11 @@
 LIST OF CHANGES
 
 release 90.3.0
-- npg_tracking::glossary::moniker - added a method for file name
-  parsing to retrieve id_run, position, tag_index, suffix and
-  extension
+- npg_tracking::glossary::moniker -
+    added a method for file name parsing to retrieve id_run,
+    position, tag_index, suffix and extension;
+    private attributes are prevented from being serialized under
+    MooseX::Storage framework
 - tracking server instrument visualization - remove visual cue
   for connection delay since ftp-ing to instruments is discontinued
 
