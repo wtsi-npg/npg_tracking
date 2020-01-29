@@ -1,5 +1,10 @@
 LIST OF CHANGES
 
+ - npg_tracking::util::pipeline_config is refactored to restrict access
+   to attributes which should not be set by the caller (local_bin, product_config)
+   and to enable setting product release configuration file path via the
+   new product_conf_file_path attribute
+
 release 90.3.0
 - npg_tracking::glossary::moniker -
     added a method for file name parsing to retrieve id_run,

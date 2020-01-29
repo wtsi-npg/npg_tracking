@@ -1,6 +1,7 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Cwd;
+use Test::More tests => 16;
 use Test::Exception;
 use Test::Warn;
 
@@ -18,16 +19,33 @@ package main;
 
 local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/6946_extended.csv';
 
+throws_ok {
+  t::pipeline_config->new(conf_path => 't/data/some_config')
+} qr/Attribute \(conf_path\) does not pass the type constraint/,
+  'cannot use non-exisitng conf directory';
+
 my $c = t::pipeline_config->new(conf_path => 't/data/pipeline_config');
-throws_ok { $c->product_config() }
+throws_ok { $c->product_conf_file_path() }
   qr/File t\/data\/pipeline_config\/product_release\.yml does not exist or is not readable/,
   'error when product config file is not available';
+throws_ok  {
+  t::pipeline_config->new(product_conf_file_path => 't/data/pipeline_config/some.yml')
+} qr/Attribute \(product_conf_file_path\) does not pass the type constraint/,
+  'cannot use non-exisitng product conf file';
+my $pcfile = 't/data/pipeline_config/study_config_present/product_release.yml';
+lives_ok {
+  t::pipeline_config->new(product_conf_file_path => $pcfile)
+} 'can supply a path to the existing product conf file';
 
 $c = t::pipeline_config->new(conf_path => 't/data/pipeline_config/study_config_present');
-my $pc;
-warning_like { $pc = $c->product_config() }
-  qr/Reading product configuration from 't\/data\/pipeline_config\/study_config_present\/product_release\.yml'/,
-  'file exists - message about location logged';
+is ( $c->product_conf_file_path(), $pcfile, 'product conf file path');
+lives_ok { $c->_product_config() } 'product conf file path read OK';
+is ($c->local_bin, join(q[/], getcwd(), 't'), 'local_bin path is correct');
+
+$c = t::pipeline_config->new(product_conf_file_path => $pcfile, local_bin => 't/data');
+isnt ($c->local_bin, 't/data', 'cannot set local_bin attr in the constructor');
+is ($c->local_bin, join(q[/], getcwd(), 't'), 'local_bin path is correct');
+
 throws_ok { $c->study_config() }
   qr/st::api::lims object for a product is required/,
   'error when LIMs object arg is absent';
@@ -40,8 +58,7 @@ is_deeply ($study_hash, $expected, 'correct study data returned in a strict mode
 
 $c = t::pipeline_config->new(conf_path => 't/data/pipeline_config/study_config_absent');
 warnings_like { $study_hash = $c->study_config($l) }
-  [ qr/Reading product configuration from 't\/data\/pipeline_config\/study_config_absent\/product_release\.yml'/,
-    qr/Using the default configuration for study 700/ ],
+  [ qr/Using the default configuration for study 700/ ],
   'warning about using the default configuration';
 $expected = {s3 => {enable => '', notify => ''}, irods => {enable => 1, notify => ''}};
 is_deeply ($study_hash, $expected, 'correct default data returned');
