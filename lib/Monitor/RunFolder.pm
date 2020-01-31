@@ -8,27 +8,27 @@ with qw/ Monitor::Roles::Username /;
 
 our $VERSION = '0';
 
-sub update_cycle_count_and_run_status {
-  my ( $self, $latest_cycle, $run_complete ) = @_;
-
-  croak 'Latest cycle count not supplied'   if !defined $latest_cycle;
-  croak 'Run complete Boolean not supplied' if !defined $run_complete;
-
-  my $run_db = $self->tracking_run();
-
-  $latest_cycle
-    && ( $run_db->current_run_status_description() eq 'run pending' )
-    && $run_db->update_run_status( 'run in progress', $self->username() );
-
-  $run_complete
-    && $run_db->update_run_status( 'run complete', $self->username() );
-
-  if ( $latest_cycle > $run_db->actual_cycle_count() ) {
-    $run_db->update({actual_cycle_count => $latest_cycle});
-  }
-
+sub update_run_status {
+  my ($self, $status_description) = @_;
+  $self->tracking_run()
+       ->update_run_status($status_description, $self->username());
   return;
 }
+
+sub update_cycle_count {
+  my ($self, $latest_cycle) = @_;
+
+  defined $latest_cycle or croak 'Latest cycle count not supplied';
+  my $actual_cycle = $self->tracking_run()->actual_cycle_count();
+  $actual_cycle ||= 0;
+  if ($latest_cycle > $actual_cycle) {
+    $self->tracking_run()->update({actual_cycle_count => $latest_cycle});
+    return 1;
+  }
+
+  return 0;
+}
+
 
 sub set_instrument_side {
   my $self = shift;
@@ -76,6 +76,15 @@ sub set_run_tags {
   return;
 }
 
+sub update_copying_problem_tag {
+  my ($self, $cycle_lag) = @_;
+
+  my $tag = 'copying_problem';
+  $cycle_lag ? $self->tracking_run()->set_tag($self->username, $tag)
+             : $self->tracking_run()->unset_tag($tag);
+  return;
+}
+
 sub delete_superfluous_lanes {
   my $self = shift;
 
@@ -107,7 +116,7 @@ sub update_run_record {
 
   if ( ! $run_db->folder_name() ) {
     my $folder_name = $self->run_folder();
-    carp qq[Setting undef folder name to $folder_name];
+    carp qq[Setting undefined folder name to $folder_name];
     $run_db->folder_name($folder_name);
   }
 
@@ -150,11 +159,19 @@ for the run, creating a DBIx record object to do that.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 update_cycle_count_and_run_status
+=head2 update_cycle_count
 
-When passed the lastest cycle count and a boolean indicating whether the run
-is complete or not, make appropriate adjustments to the database entries for
-the run status and actual cycle count.
+If necessary, updates actual run cycle count. If the count has not advanced
+compared to the database record, the record not updated. Returns true if the
+cycle count has been updated, false otherwise.
+
+  $folder->update_cycle_count(3);
+
+=head2 update_run_status
+
+Updates run status.
+
+  $folder->update_run_status('run in progress');
 
 =head2 set_instrument_side
 
@@ -177,6 +194,14 @@ value otherwise.
 =head2 set_run_tags
 
 Sets multiplex, paired or single read tags as appropriate.
+
+=head2 update_copying_problem_tag
+
+Sets or unset copying_problem tag depending on the methods argument.
+
+  $folder->update_copying_problem_tag(1); # sets tag
+  $folder->update_copying_problem_tag(0); # unsets tag
+  $folder->update_copying_problem_tag();  # unsets tag
 
 =head2 delete_superfluous_lanes
 

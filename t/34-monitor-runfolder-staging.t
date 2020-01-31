@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 71;
+use Test::More tests => 64;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -344,35 +344,7 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
 {
     my $mock_path = $MOCK_STAGING . '/IL5/incoming/100708_IL3_04999';
     my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              npg_tracking_schema        => $schema, );
-
-
-    # Make sure that our initial set up is ok, and that any changes are made
-    # by the tests in this section.
-
-
-    ok( !-e "$mock_path/Mirror.completed", 'Flag file does not exist' );
-    isnt( $test->tracking_run()->current_run_status_description(), 'run mirrored',
-          '\'run mirrored\' status not set' );
-
-    lives_ok { $test->mark_as_mirrored() } 'Mark as mirrored';
-
-    ok( -e "$mock_path/Mirror.completed", 'Now the flag file does exist...' );
-
-    is( $test->tracking_run()->current_run_status_description(), 'run mirrored',
-          '   ...and the \'run mirrored\' status is set' );
-
-    my $first_flag_mtime = ( stat "$mock_path/Mirror.completed" )[9];
-    sleep 1;
-    lives_ok { $test->mark_as_mirrored() } 'Repeat mark as mirrored...';
-
-    my $second_flag_mtime = ( stat "$mock_path/Mirror.completed" )[9];
-
-    ok( $first_flag_mtime < $second_flag_mtime,
-        '   ...flag file has been touched' );
-
-    my $f = "$mock_path/Mirror.completed";
-    if (-e $f) { unlink $f;}
+                                                 npg_tracking_schema => $schema );
 
     my @missing_cycles;
     lives_ok { @missing_cycles = $test->missing_cycles($mock_path); } q{missing_cycles ran ok};

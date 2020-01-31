@@ -238,23 +238,6 @@ sub check_tiles {
     return 1;
 }
 
-sub mark_as_mirrored {
-    my ($self) = @_;
-
-    $self->tracking_run()->update_run_status( 'run mirrored', $self->username() );
-
-    my $mirrored_flag = $self->runfolder_path() . q{/Mirror.completed};
-
-    if ( !-e $mirrored_flag ) {
-        open my $flag_fh, q{>}, $mirrored_flag;
-        close $flag_fh;
-    }
-
-    utime time, time, $mirrored_flag;
-
-    return;
-}
-
 sub move_to_analysis {
     my ($self) = @_;
 
@@ -455,11 +438,6 @@ also the highest epoch time found.
 =head2 check_tiles
 
 Confirm number of lanes, cycles and tiles are as expected.
-
-=head2 mark_as_mirrored
-
-Set the current run_status to 'run mirrored'. Create and/or touch the file
-that marks the mirroring as complete.
 
 =head2 move_to_analysis
 

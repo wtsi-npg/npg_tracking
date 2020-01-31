@@ -49,6 +49,7 @@ my $check_path = sub { ##### Function to deal with one run folder
     my $folder = Monitor::RunFolder::Staging->new(
                    runfolder_path      => $run_path,
                    npg_tracking_schema => $monitor->schema);
+    $run_path = $folder->runfolder_path; # in case path was transformed
 
     my $run_status = $folder->tracking_run()->current_run_status_description();
     my $id_run = $folder->tracking_run()->id_run;
@@ -119,8 +120,14 @@ my $check_path = sub { ##### Function to deal with one run folder
     return if $run_status eq 'data discarded';
 
     if ( $run_status eq 'run pending' )  {
-        my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
-        $folder->update_cycle_count_and_run_status($latest_cycle, 0);
+        my $latest_cycle = $folder->get_latest_cycle($run_path);
+        if ($latest_cycle) {
+            if ($folder->update_cycle_count($latest_cycle)) {
+                _log("Cycle count updated to $latest_cycle");
+            }
+            $folder->update_run_status('run in progress');
+            _log(q[Run status updated to 'run in progress']);
+        }
         return;
     }
 
@@ -129,29 +136,35 @@ my $check_path = sub { ##### Function to deal with one run folder
         # The lane count comes from the run folder structure, which
         # we should have by now set up.
         $folder->delete_superfluous_lanes();
+        my $latest_cycle = $folder->get_latest_cycle($run_path);
+        if ($folder->update_cycle_count($latest_cycle)) {
+            _log("Cycle count updated to $latest_cycle");
+        }
+        if ($folder->is_run_complete()) {
+            $folder->update_run_status('run complete');
+            _log(q[Run status updated to 'run complete']);
+        }
+        $folder->update_copying_problem_tag($folder->cycle_lag($run_path));
 
-        my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
-        my $run_complete = $folder->is_run_complete();
-        $folder->update_cycle_count_and_run_status($latest_cycle, $run_complete);
-        $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
-                                      : $folder->tracking_run()->unset_tag( 'copying_problem' );
         return;
     }
 
     if ( $run_status eq 'run complete' ) {
-        $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
-                                      : $folder->tracking_run()->unset_tag( 'copying_problem' );
-        $folder->update_run_record();
 
-        # Integrity check - got everything.
-        return if $folder->cycle_lag($run_path);
+        # Inspect and update cycles.
+        $folder->update_run_record(); # including expected cycle count!
+        my $latest_cycle = $folder->get_latest_cycle($run_path);
+        if ($folder->update_cycle_count($latest_cycle)) {
+            _log("Cycle count updated to $latest_cycle");
+        }
+        my $cycle_lag = $folder->cycle_lag($run_path);
+        $folder->update_copying_problem_tag($cycle_lag);
+
+        # Integrity check - return early if anything is amiss.
+        return if $cycle_lag;
         return if !$folder->validate_run_complete();
+
         $checked{$run_path}++;
-
-        my $path = $folder->runfolder_path();
-        my $latest_cycle = $folder->get_latest_cycle($path);
-
-        $folder->update_cycle_count_and_run_status( $latest_cycle, 1 );
 
         my ( $total_size, $latest_mod ) = $folder->monitor_stats();
 
@@ -170,11 +183,14 @@ my $check_path = sub { ##### Function to deal with one run folder
             return;
         }
 
+        # Still here? Set status to 'run mirrored'
+        $folder->update_run_status('run mirrored');
+        _log(q[Run status updated to 'run mirrored']);
+
+        # Move run folder from incoming to analysis
         if ($dry_run) {
-            _log('DRY RUN - not calling mark_as_mirrored and move_to_analysis');
+            _log('DRY RUN - not calling move_to_analysis');
         } else {
-            $folder->mark_as_mirrored();
-            _log('Folder marked as mirrored');
             try {
                 _log($folder->move_to_analysis());
             } catch {

@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use English qw(-no_match_vars);
 use File::Copy;
-use Test::More tests => 29;
+use Test::More tests => 35;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -46,32 +46,36 @@ my $dir4rf = tempdir( CLEANUP => 1 );
                                         npg_tracking_schema => $schema, );
 
     is( $test->tracking_run()->current_run_status_description(), 'run pending',
-        ' test is ready' );
+        'test is ready' );
 
-    throws_ok { $test->update_cycle_count_and_run_status() }
-              qr{Latest cycle count not supplied}ms, 
-              'requires latest cycle count argument';
+    throws_ok { $test->update_cycle_count() }
+        qr{Latest cycle count not supplied}ms, 
+        'requires latest cycle count argument';
+    throws_ok { $test->update_run_status() }
+        qr{Description should be provided}ms,
+        'requires run status description argument';
 
-    throws_ok { $test->update_cycle_count_and_run_status(5) }
-              qr{Run complete Boolean not supplied}ms,
-              'requires run complete argument';
-
-    lives_ok { $test->update_cycle_count_and_run_status( 5, 0 ) }
-             '  Move run from \'pending\' to \'in progress\'';
-
+    lives_ok { $test->update_run_status('run in progress') }
+        'move run from \'pending\' to \'in progress\'';
     is( $test->tracking_run()->current_run_status_description(), 'run in progress',
-        '  Run status updated' );
+        'run status updated' );
 
-    is( $test->tracking_run->actual_cycle_count(), 5, '  Cycle count updated' );
+    is( $test->update_cycle_count(5), 1, 'cycle count updated' );
+    is( $test->tracking_run->actual_cycle_count(), 5, 'cycle count updated correctly' );
+    is( $test->update_cycle_count(5), 0, 'cycle count not updated' );
+    is( $test->tracking_run->actual_cycle_count(), 5, 'cycle count has not changed' );
 
-    lives_ok { $test->update_cycle_count_and_run_status( 43, 1 ) }
-             '  Move run from \'in progress\' to \'complete\'';
-
+    lives_ok { $test->update_run_status('run complete') }
+        'move run from \'pending\' to \'in progress\'';
     is( $test->tracking_run()->current_run_status_description(), 'run complete',
-        '  Run status updated' );
+        'run status updated' );
 
+    is( $test->update_cycle_count(43), 1, 'cycle count updated');
     is( $test->tracking_run->actual_cycle_count(), 43,
-        '  Cycle count updated' );
+        'cycle count updated' );
+    is( $test->update_cycle_count(41), 0, 'cycle count not updated');
+    is( $test->tracking_run->actual_cycle_count(), 43,
+        'cycle count has not changed' );
 }
 
 {
