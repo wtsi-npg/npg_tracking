@@ -1,7 +1,3 @@
-#########
-# Author:        jo3
-# Created:       2010-04-28
-
 package Monitor::Roles::Cycle;
 
 use Moose::Role;
@@ -177,11 +173,7 @@ actual last cycle recorded - highest cycle found on staging
 
 =back
 
-
-
 =head1 INCOMPATIBILITIES
-
-Do not use with Monitor::IlluminaSRS::FTP
 
 =head1 BUGS AND LIMITATIONS
 
@@ -189,11 +181,12 @@ We assume that there will always be a lane 1.
 
 =head1 AUTHOR
 
-John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+John O'Brien
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by John O'Brien
+Copyright (C) 2013,2014,2015,2018,2019,2020 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

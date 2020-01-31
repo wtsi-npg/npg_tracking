@@ -6,30 +6,31 @@ LIST OF CHANGES
    class has methods for updating run, run_lane records and run tags
    and the Monitor::Runfolder::Staging class mainly deals with staging
    folder inspection and changes; some methods renamed to remove
-   ambiguity about their function
+   ambiguity about their functionality
  - some of the functionality of the instrument monitor is incorporated
-   into the staging monitor code, namely, (1) setting 'multiplex',
+   into the staging monitor script code, namely, (1) setting 'multiplex',
    'paired_read' and 'single_read' tags and (2) deletion of superfluous
    lanes; this functionality is now available for NovaSeq instruments,
    while previously it was missing for this instrument type
  - redundant 'rta' run tag is not longer set
+ - redundant Mirror.completed file is no longer created in the run
+   folder
  - functionality for checking instruments' wash status and setting
    'was required' instrument tag is lost; this shoud be done outside
    of staging monitor
-
  - npg_tracking::util::pipeline_config is refactored to restrict access
-   to attributes which should not be set by the caller (local_bin, product_config)
-   and to enable setting product release configuration file path via the
-   new product_conf_file_path attribute
+   to attributes which should not be set by the caller (local_bin,
+   product_config) and to enable setting product release configuration
+   file path via the new product_conf_file_path attribute
 
 release 90.3.0
-- npg_tracking::glossary::moniker -
-    added a method for file name parsing to retrieve id_run,
-    position, tag_index, suffix and extension;
-    private attributes are prevented from being serialized under
-    MooseX::Storage framework
-- tracking server instrument visualization - remove visual cue
-  for connection delay since ftp-ing to instruments is discontinued
+ - npg_tracking::glossary::moniker -
+     added a method for file name parsing to retrieve id_run,
+     position, tag_index, suffix and extension;
+     private attributes are prevented from being serialized under
+     MooseX::Storage framework
+ - tracking server instrument visualization - remove visual cue
+   for connection delay since ftp-ing to instruments is discontinued
 
 release 90.2.1
  - staging area daemon to save the flowcell barcode to the

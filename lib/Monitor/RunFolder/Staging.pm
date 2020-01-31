@@ -377,14 +377,12 @@ __PACKAGE__->meta->make_immutable();
 
 __END__
 
-
 =head1 NAME
 
 Monitor::RunFolder::Staging - additional runfolder information specific to
 local staging
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
@@ -498,11 +496,12 @@ Please inform the author of any found.
 
 =head1 AUTHOR
 
-John O'Brien E<lt>jo3@sanger.ac.ukE<gt>
+John O'Brien
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2019 GRL
+Copyright (C) 2013,2014,2015,2016,2018,2019,2020 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

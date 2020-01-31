@@ -1,7 +1,5 @@
 #!/usr/bin/env perl
 
-package staging_area_monitor;
-
 use strict;
 use warnings;
 use FindBin qw($Bin);
@@ -225,48 +223,32 @@ sub main {
 
 __END__
 
-
 =head1 NAME
 
-staging_area_monitor - monitor incoming runs for problems and completion
+staging_area_monitor
 
 =head1 VERSION
 
 =head1 SYNOPSIS
 
-    staging_area_monitor [0] [1] ... [8]
-OR:
-    staging_area_monitor [/nfs/sf10] [/nfs/sf8] ...
-
-In the first version the integer is taken as an array index. The array is
-maintained in @npg_tracking::illumina::run::folder::location::STAGING_AREAS, any integer
-that is greater than the last element's index will be ignored.
-
-In the second version a test is done to see that the argument is a directory
-on the filesystem. Any argument that is not a directory will be ignored.
-
-Both argument types can be mixed also.
+    staging_area_monitor /nfs/sf10 [/nfs/sf8] ...
 
 =head1 DESCRIPTION
 
-Monitor one or more staging areas supplied as commandline arguments.
+Monitor one or more staging areas supplied as command-line arguments.
 
 The script runs an infinite loop so do not call it via a crontab.
 
 Actions for runs in the incoming directory:
 
-Check the number of cycles mirrored is not lagging behind the actual cycle
-count. Tag the run as 'copying_problem' if it is, remove the tag if it isn't.
-
 If the run has a status of 'run complete' check to make sure that all activity
 has stopped (no change in the sum of file sizes, no modtimes in advance of the
 present). When this is the case run some validation checks, set the status to
-'run mirrored', move the run folder to 'analysis', and set the status to
-'analysis pending'.
+'run mirrored' and move the run folder to 'analysis'.
 
 Actions for runs in analysis directory:
 
-If the run status is 'qc complete, the run is moved to the outgoing directory.
+If the run status is 'qc complete', the run is moved to the outgoing directory.
 
 =head1 SUBROUTINES/METHODS
 
@@ -274,8 +256,8 @@ None
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-If dev environment variable is set, the script will carry out all the
-same functions but will not make any file-system changes
+If dev environment variable is set to dev, the script has full functionality
+except for changes to the file system. Development database is used in this case.
 
 =head1 INCOMPATIBILITIES
 
@@ -283,15 +265,16 @@ None known.
 
 =head1 BUGS AND LIMITATIONS
 
-None known. Yet.
+None known.
 
 =head1 AUTHOR
 
-John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+John O'Brien
+Marina Gourtovaia
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (C) 2015 GRL, by John O'Brien
+Copyright (C) 2013,2014,2015,2018,2019,2020 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

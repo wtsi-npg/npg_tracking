@@ -29,7 +29,6 @@ sub update_cycle_count {
   return 0;
 }
 
-
 sub set_instrument_side {
   my $self = shift;
   my $li_iside = $self->instrument_side;
@@ -134,7 +133,6 @@ sub update_run_record {
 
 __END__
 
-
 =head1 NAME
 
 Monitor::RunFolder - provide methods to get run details from a folder path
@@ -234,7 +232,7 @@ Please inform the author of any found.
 
 =over
 
-=item John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+=item John O'Brien
 
 =item Marina Gourtovaia
 
@@ -242,7 +240,7 @@ Please inform the author of any found.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2018 GRL
+Copyright (C) 2013,2014,2015,2018,2019,2020 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
