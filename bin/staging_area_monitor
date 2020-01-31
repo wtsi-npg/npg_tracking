@@ -32,22 +32,16 @@ sub _log_noindent {
     print {*STDOUT} @ms or carp $OS_ERROR;
 }
 
-my %previous_size_of;
-my %checked;
-
-my $monitor   = Monitor::Staging->new();
-my @area_list = $monitor->validate_areas(@ARGV);
-
-croak 'No valid arguments' if scalar @area_list == 0;
-
 _log_noindent($DRY_RUN ? 'DRY RUN, no run folder moves' : 'LIVE RUN');
 
-my $check_path = sub { ##### Function to deal with one run folder
-    my $run_path = shift;
+main();
+
+sub check_path { ##### Function to deal with one run folder
+    my ($run_path, $schema, $previous_size_of) = @_;
 
     my $folder = Monitor::RunFolder::Staging->new(
                    runfolder_path      => $run_path,
-                   npg_tracking_schema => $monitor->schema);
+                   npg_tracking_schema => $schema);
     $run_path = $folder->runfolder_path; # in case path was transformed
 
     my $run_status = $folder->tracking_run()->current_run_status_description();
@@ -86,7 +80,7 @@ my $check_path = sub { ##### Function to deal with one run folder
     # set staging tag, if appropriate, set/fix instrument side, workflow side.
     # Previously we avoided making changes to the db if status was at or after
     # 'run complete'. We might consider reinstating this rule.
-    if ( not defined $previous_size_of{$run_path} ) {
+    if ( not defined $previous_size_of->{$run_path} ) {
         $folder->update_run_record();
         $folder->tracking_run()->set_tag( $folder->username(), 'staging' );
         _log('Set staging tag');
@@ -104,7 +98,7 @@ my $check_path = sub { ##### Function to deal with one run folder
             _log('Error: ' . $_);
         };
 
-        $previous_size_of{$run_path} = 0;
+        $previous_size_of->{$run_path} = 0;
     }
 
     # Could delete the directory here. Leave it for now.
@@ -155,22 +149,20 @@ my $check_path = sub { ##### Function to deal with one run folder
         return if $cycle_lag;
         return if !$folder->validate_run_complete();
 
-        $checked{$run_path}++;
-
         my ( $total_size, $latest_mod ) = $folder->monitor_stats();
 
         # Check that no file is 'in the future'.
         if ( $latest_mod > time ) {
-            $previous_size_of{$run_path} = $total_size;
+            $previous_size_of->{$run_path} = $total_size;
             _log("Not done: 'future' file $latest_mod");
             return;
         }
 
         # Check that there's been no activity since last time.
-        if ( $total_size != $previous_size_of{$run_path} ) {
+        if ( $total_size != $previous_size_of->{$run_path} ) {
             _log(sprintf 'Sizes not equal: %d %d',
-                $previous_size_of{$run_path}, $total_size);
-            $previous_size_of{$run_path} = $total_size;
+                $previous_size_of->{$run_path}, $total_size);
+            $previous_size_of->{$run_path} = $total_size;
             return;
         }
 
@@ -180,41 +172,54 @@ my $check_path = sub { ##### Function to deal with one run folder
         _log(q[Run status updated to 'run mirrored']);
         _log('Moving run folder to analysis');
         (not $DRY_RUN) and _log($folder->move_to_analysis());
+
+        return 'done';
     }
-}; ###### End of function to deal with one run folder
+   
+    return; # Explicit false return is needed.
+} ###### End of function to deal with one run folder
 
 ###########################################################
 ###############   Main daemon loop  #######################
 ###########################################################
-while (1) {
 
-    _log_noindent(strftime '%a %b %e %T %Y%n', localtime);
+sub main {
 
-    foreach my $area (@area_list) {
+    my $monitor   = Monitor::Staging->new();
+    my @area_list = $monitor->validate_areas(@ARGV);
+    @area_list or croak 'No valid arguments';
 
-        foreach my $run_path ( $monitor->find_live($area) ) {
-            _log_noindent("Considering $run_path");
-            try {
-                $check_path->($run_path);
-            } finally {
-                if (@_) {
-                    _log("ERROR: Execution for $run_path died with: @_\n");
-                } else {
-                    _log("Succesfully processed $run_path");
-                }
-            };
+    my $time = sub {
+        return strftime '%a %b %e %T %Y%n', localtime;
+    };
+
+    my $previous_size_of = {};
+
+    while (1) {
+
+        _log_noindent($time->());
+
+        foreach my $area (@area_list) {
+            foreach my $run_path ( $monitor->find_live($area) ) {
+                _log_noindent("Considering $run_path");
+                my $done;
+                try {
+                    $done = check_path($run_path, $monitor->schema, $previous_size_of);
+                } finally {
+                    if (@_) {
+                        _log("ERROR: Execution for $run_path died with: @_\n");
+                    } else {
+                        _log("Succesfully processed $run_path");
+                    }
+                };
+                $done and delete $previous_size_of->{$run_path};
+            }
         }
-    }
 
-    # Clean out %previous_size so that it doesn't grow and grow.
-    foreach my $completed_runpath ( keys %previous_size_of ) {
-        next if defined $checked{$completed_runpath};
-        delete $previous_size_of{$completed_runpath};
-    }
-
-    sleep $SLEEP_INTERVAL;
+        _log_noindent("Gone to sleep for $SLEEP_INTERVAL seconds at " . $time->());
+        sleep $SLEEP_INTERVAL;
+    } 
 }
-
 
 1;
 
