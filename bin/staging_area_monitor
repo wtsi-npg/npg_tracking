@@ -18,6 +18,7 @@ use Monitor::RunFolder::Staging;
 our $VERSION = '0';
 
 Readonly::Scalar my $SLEEP_INTERVAL => 60 * 15;
+Readonly::Scalar my $DRY_RUN => $ENV{'dev'} && ($ENV{'dev'} ne 'live');
 
 local $OUTPUT_AUTOFLUSH = 1;
 
@@ -39,9 +40,7 @@ my @area_list = $monitor->validate_areas(@ARGV);
 
 croak 'No valid arguments' if scalar @area_list == 0;
 
-my $dry_run = $ENV{'dev'} && ($ENV{'dev'} ne 'live');
-_log_noindent('*************** ' . ($dry_run ? 'DRY RUN' : 'LIVE RUN') .
-          ' ***************');
+_log_noindent($DRY_RUN ? 'DRY RUN, no run folder moves' : 'LIVE RUN');
 
 my $check_path = sub { ##### Function to deal with one run folder
     my $run_path = shift;
@@ -75,16 +74,8 @@ my $check_path = sub { ##### Function to deal with one run folder
         _log('Folder is in /analysis/');
 
         if( $run_status eq 'qc complete') {
-            if ($dry_run) {
-                _log('DRY RUN - not moving to outgoing');
-            } else {
-                _log('Will try to move to outgoing');
-                try {
-                    _log($folder->move_to_outgoing());
-                } catch {
-                    _log("ERROR moving to outgoing: $_");
-                };
-            }
+            _log('Moving run folder to outgoing');
+            (not $DRY_RUN) and _log($folder->move_to_outgoing());
         }
         return; # Nothing else to do for a folder in /analysis/
     }
@@ -183,20 +174,12 @@ my $check_path = sub { ##### Function to deal with one run folder
             return;
         }
 
-        # Still here? Set status to 'run mirrored'
+        # Set status to 'run mirrored' and move run folder
+        # from incoming to analysis
         $folder->update_run_status('run mirrored');
         _log(q[Run status updated to 'run mirrored']);
-
-        # Move run folder from incoming to analysis
-        if ($dry_run) {
-            _log('DRY RUN - not calling move_to_analysis');
-        } else {
-            try {
-                _log($folder->move_to_analysis());
-            } catch {
-                _log("ERROR moving to analysis: $_");
-            };
-        }
+        _log('Moving run folder to analysis');
+        (not $DRY_RUN) and _log($folder->move_to_analysis());
     }
 }; ###### End of function to deal with one run folder
 
