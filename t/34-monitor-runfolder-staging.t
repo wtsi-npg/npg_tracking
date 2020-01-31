@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 73;
+use Test::More tests => 71;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -82,21 +82,8 @@ ENDXML
   close $fh;
 }
 
-{
-    my $test;
-    my $mock_path = $MOCK_STAGING . '/IL4/incoming/101026_IL4_0095';
-
-    lives_ok {
-           $test = Monitor::RunFolder::Staging->new(
-                    runfolder_path      => $mock_path,
-                    npg_tracking_schema => $schema)
-         }
-         'Object creation ok';
-    is($test->rta_complete_wait, 600, 'default rta complete wait time');
-}
-
 subtest 'updating run data from filesystem' => sub {
-    plan tests => 6;
+    plan tests => 8;
     my $basedir = tempdir( CLEANUP => 1 );
 
     my $fs_run_folder = qq[$basedir/IL3/incoming/100622_IL3_01234];
@@ -119,6 +106,8 @@ subtest 'updating run data from filesystem' => sub {
 
     my $run_folder = Monitor::RunFolder::Staging->new(runfolder_path      => $fs_run_folder,
                                                       npg_tracking_schema => $schema);
+    isa_ok($run_folder, 'Monitor::RunFolder::Staging');
+    is($run_folder->rta_complete_wait, 600, 'default rta complete wait time');
 
     is( $run_folder->_get_folder_path_glob, qq[$basedir/IL3/*/],
         'internal glob correct' );

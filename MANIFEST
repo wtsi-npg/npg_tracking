@@ -1618,7 +1618,6 @@ t/data/gaii/staging/IL3/incoming/100622_IL3_01234/Data/Intensities/L006/.gitigno
 t/data/gaii/staging/IL3/incoming/100622_IL3_01234/Data/Intensities/L007/.gitignore
 t/data/gaii/staging/IL3/incoming/100622_IL3_01234/Data/Intensities/L008/.gitignore
 t/data/gaii/staging/IL3/skip_this_one/090810_IL12_3289/.gitignore
-t/data/gaii/staging/IL4/incoming/101026_IL4_0095/.gitignore
 t/data/gaii/staging/IL5/incoming/100708_IL3_04998/.gitignore
 t/data/gaii/staging/IL5/incoming/100708_IL3_04999/Images/L001/.gitignore
 t/data/gaii/staging/IL5/incoming/not_a_valid_run_folder/.gitignore

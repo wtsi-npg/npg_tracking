@@ -75,15 +75,10 @@ my $dir4rf = tempdir( CLEANUP => 1 );
 }
 
 {
-    my $mock_path = $MOCK_STAGING . '/IL4/incoming/101026_IL4_0095';
-    my $test = Monitor::RunFolder->new( runfolder_path      => $mock_path,
-                                        npg_tracking_schema => $schema, );
-
     my $basedir = tempdir( CLEANUP => 1 );
     my $fs_run_folder = qq[$basedir/IL12/incoming/100721_IL12_05222];
     make_path($fs_run_folder);
-    $mock_path = $MOCK_STAGING . '/IL12/incoming/100721_IL12_05222';
-    system('cp',  '-rp', $mock_path, qq[$basedir/IL3/incoming]);
+    my $mock_path = $MOCK_STAGING . '/IL12/incoming/100721_IL12_05222';
     my $fh;
     my $runinfofile = qq[$fs_run_folder/RunInfo.xml];
     open($fh, '>', $runinfofile) or die "Could not open file '$runinfofile' $!";
@@ -101,8 +96,8 @@ my $dir4rf = tempdir( CLEANUP => 1 );
 ENDXML
     close $fh;
 
-    $test = Monitor::RunFolder->new( runfolder_path      => $fs_run_folder,
-                                     npg_tracking_schema => $schema, );
+    my $test = Monitor::RunFolder->new( runfolder_path      => $fs_run_folder,
+                                        npg_tracking_schema => $schema, );
 
     move( "$mock_path/Data", "$mock_path/_Data" ) or die "Error $OS_ERROR";
     lives_ok { $test->set_run_tags() } 'Call set_run_tags method without error';
