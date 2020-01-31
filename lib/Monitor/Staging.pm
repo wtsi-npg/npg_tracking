@@ -90,7 +90,7 @@ sub find_live {
                 }
             } else {
                 if (! $run_row->folder_name ) {
-                  warn qq[Folder name in db not available will try to update with '$run_folder'.];
+                  warn qq[Folder name in db not available, will try to update using '$run_folder'.];
                   $run_row->update({'folder_name' => $run_folder}); # or validation will fail
                 }
 
