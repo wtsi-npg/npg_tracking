@@ -4,6 +4,10 @@ LIST OF CHANGES
    to attributes which should not be set by the caller (local_bin, product_config)
    and to enable setting product release configuration file path via the
    new product_conf_file_path attribute
+ - genome reference hierarchy in the current samplesheet is not compatible with
+   the latest version of MiSeq Illumina software; setting Workflow value to
+   GenerateFastQ prevents the instrument's software from using this value,
+   hence we can stop setting genome reference path altogether
 
 release 90.3.0
 - npg_tracking::glossary::moniker -
