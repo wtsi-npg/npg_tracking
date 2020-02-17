@@ -1,0 +1,23 @@
+---
+default:
+  s3:
+    enable: false
+    notify: false
+  irods:
+    enable: true
+    notify: false
+study:
+  - study_id: "700"
+    s3:
+      enable: true
+      notify: true
+    irods:
+      enable: false
+      notify: false
+    tertiary:
+      Homo_sapiens:
+        GRCh37_53:
+          haplotype_caller:
+            enable: true
+            sample_chunking: hs37primary
+            sample_chunking_number: 24

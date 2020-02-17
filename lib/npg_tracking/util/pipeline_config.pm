@@ -11,11 +11,14 @@ use YAML::XS;
 
 use npg_tracking::util::types;
 use npg_tracking::util::abs_path qw(abs_path);
+use npg_tracking::data::reference;
 
 our $VERSION = '0';
 
 Readonly::Scalar my $CONF_DIR            => q(data/config_files);
 Readonly::Scalar my $PRODUCT_CONFIG_FILE => q(product_release.yml);
+Readonly::Scalar my $CONFIG_DEFAULT      => q(default);
+Readonly::Scalar my $CONFIG_TERTIARY     => q(tertiary);
 
 =head1 NAME
 
@@ -198,7 +201,7 @@ sub study_config {
     }
     $study_config = $study_configs[0];
   } elsif (!$strict) {
-    $study_config = $self->_product_config->{default};
+    $study_config = $self->_product_config->{$CONFIG_DEFAULT};
     (defined $study_config) and $self->_log_message("Using the default configuration for study $study_id", 'debug');
   }
 
@@ -230,6 +233,45 @@ sub find_study_config {
   }
 
   return $sc;
+}
+
+=head2 find_tertiary_config
+
+  Arg [1]    : npg_pipeline::product
+
+  Example    : $obj->find_tertiary_config($product)
+  Description: Returns a study and reference specific tertiary analysis config
+               or a default study tertiary config aslong as a reference is set
+               for a product and a relevant config exists. Therefore one cannot
+               rely on keys being defined in the obtained data structure.
+
+  Returntype : Hash
+
+=cut
+
+sub find_tertiary_config {
+  my ($self, $product) = @_;
+
+  my $sc = $self->find_study_config($product);
+
+  my $tc = {};
+  if($sc->{$CONFIG_TERTIARY} && $sc->{study_id}) {
+    my $ref_genome = $product->lims->reference_genome();
+
+    my ($species,$ref);
+    if ($ref_genome) {
+      my $r = npg_tracking::data::reference->new();
+      ($species, $ref) = $r->parse_reference_genome($ref_genome);
+
+      if($species && $ref && $sc->{$CONFIG_TERTIARY}->{$species}->{$ref}) {
+        $tc = $sc->{$CONFIG_TERTIARY}->{$species}->{$ref};
+      } elsif ($sc->{$CONFIG_TERTIARY}->{$CONFIG_DEFAULT}) {
+        $tc = $sc->{$CONFIG_TERTIARY}->{$CONFIG_DEFAULT};
+      }
+    }
+  }
+
+  return $tc;
 }
 
 has '_product_config' => (
