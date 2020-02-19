@@ -475,7 +475,7 @@ Investigator Name,[% pendingstatus.user.username %][% separator.repeat(one_less_
 Project Name[% separator _ project_name %][% separator.repeat(one_less_sep) %]
 Experiment Name[% separator _ run.id_run %][% separator.repeat(one_less_sep) %]
 Date[% separator _ pendingstatus.date %][% separator.repeat(one_less_sep) %]
-Workflow[% separator %]GenerateFastQ[% separator.repeat(one_less_sep) %]
+Workflow[% separator %]GenerateFASTQ[% separator.repeat(one_less_sep) %]
 Chemistry[% separator %][% IF has_dual_index %]Amplicon[% ELSE %]Default[% END -%]
 [% separator.repeat(one_less_sep) %]
 [% separator.repeat(num_sep) -%]
