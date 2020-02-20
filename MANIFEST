@@ -766,6 +766,7 @@ t/data/npg_api_run/npg/run/604.xml
 t/data/npg_api_run/npg/run/636.xml
 t/data/pipeline_config/study_config_present/product_release.yml
 t/data/pipeline_config/study_config_absent/product_release.yml
+t/data/pipeline_config/study_config_tertiary_present/product_release.yml
 t/data/rendered/20-view-administration_create_instrument_mod.html
 t/data/rendered/20-view-administration_create_instrument_status.html
 t/data/rendered/20-view-administration_create_run_status.html

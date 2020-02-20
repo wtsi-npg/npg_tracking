@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Cwd;
-use Test::More tests => 16;
+use Test::More tests => 21;
 use Test::Exception;
 use Test::Warn;
 
@@ -65,4 +65,14 @@ is_deeply ($study_hash, $expected, 'correct default data returned');
 $study_hash = $c->study_config($l, 1);
 is_deeply ($study_hash, {}, 'strict mode - an empty hash is returned');
 
+my $pctfile = 't/data/pipeline_config/study_config_tertiary_present/product_release.yml';
+$c = t::pipeline_config->new(conf_path => 't/data/pipeline_config/study_config_tertiary_present');
+is ( $c->product_conf_file_path(), $pctfile, 'product conf file path');
+lives_ok { $c->_product_config() } 'product conf file path read OK';
+is ($c->local_bin, join(q[/], getcwd(), 't'), 'local_bin path is correct');
+$study_hash = $c->study_config($l);
+$expected = {study_id => 700, s3 => {enable => 1, notify => 1}, irods => {enable => '', notify => ''}, tertiary => {'Homo_sapiens' => {'GRCh37_53' => {'haplotype_caller' => {enable => 1, sample_chunking => 'hs37primary', sample_chunking_number => 24}}}}};
+is_deeply ($study_hash, $expected, 'correct study with tertiary data returned');
+$study_hash = $c->study_config($l, 1);
+is_deeply ($study_hash, $expected, 'correct study with tertiary data returned in strict mode ');
 1;
