@@ -90,7 +90,7 @@ sub find_live {
                 }
             } else {
                 if (! $run_row->folder_name ) {
-                  warn qq[Folder name in db not available will try to update with '$run_folder'.];
+                  warn qq[Folder name in db not available, will try to update using '$run_folder'.];
                   $run_row->update({'folder_name' => $run_folder}); # or validation will fail
                 }
 
@@ -136,9 +136,7 @@ no Moose;
 __PACKAGE__->meta->make_immutable();
 1;
 
-
 __END__
-
 
 =head1 NAME
 
@@ -146,7 +144,6 @@ Monitor::Staging - interrogate the staging area of an Illumina
 short read sequencer.
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
@@ -198,7 +195,7 @@ they match /staging_area/machine/{incoming, analysis}/run_folder
 
 =over
 
-=item John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+=item John O'Brien
 
 =item Marina Gourtovaia
 
@@ -206,7 +203,7 @@ they match /staging_area/machine/{incoming, analysis}/run_folder
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2018 GRL
+Copyright (C) 2013,2014,2015,2018,2019,2020 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

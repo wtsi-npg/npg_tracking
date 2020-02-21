@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 73;
+use Test::More tests => 64;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -82,21 +82,8 @@ ENDXML
   close $fh;
 }
 
-{
-    my $test;
-    my $mock_path = $MOCK_STAGING . '/IL4/incoming/101026_IL4_0095';
-
-    lives_ok {
-           $test = Monitor::RunFolder::Staging->new(
-                    runfolder_path      => $mock_path,
-                    npg_tracking_schema => $schema)
-         }
-         'Object creation ok';
-    is($test->rta_complete_wait, 600, 'default rta complete wait time');
-}
-
 subtest 'updating run data from filesystem' => sub {
-    plan tests => 6;
+    plan tests => 8;
     my $basedir = tempdir( CLEANUP => 1 );
 
     my $fs_run_folder = qq[$basedir/IL3/incoming/100622_IL3_01234];
@@ -119,11 +106,13 @@ subtest 'updating run data from filesystem' => sub {
 
     my $run_folder = Monitor::RunFolder::Staging->new(runfolder_path      => $fs_run_folder,
                                                       npg_tracking_schema => $schema);
+    isa_ok($run_folder, 'Monitor::RunFolder::Staging');
+    is($run_folder->rta_complete_wait, 600, 'default rta complete wait time');
 
     is( $run_folder->_get_folder_path_glob, qq[$basedir/IL3/*/],
         'internal glob correct' );
 
-    lives_ok { $run_folder->update_folder } 'update folder name and glob in DB';
+    lives_ok { $run_folder->update_run_record } 'update folder name and glob in DB';
     is( $run_folder->tracking_run()->folder_name(), '100622_IL3_01234',
         '  folder name updated' );
     is( $run_folder->tracking_run()->folder_path_glob(), qq[$basedir/IL3/*/],
@@ -355,35 +344,7 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
 {
     my $mock_path = $MOCK_STAGING . '/IL5/incoming/100708_IL3_04999';
     my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                              npg_tracking_schema        => $schema, );
-
-
-    # Make sure that our initial set up is ok, and that any changes are made
-    # by the tests in this section.
-
-
-    ok( !-e "$mock_path/Mirror.completed", 'Flag file does not exist' );
-    isnt( $test->current_run_status_description(), 'run mirrored',
-          '\'run mirrored\' status not set' );
-
-    lives_ok { $test->mark_as_mirrored() } 'Mark as mirrored';
-
-    ok( -e "$mock_path/Mirror.completed", 'Now the flag file does exist...' );
-
-    is( $test->current_run_status_description(), 'run mirrored',
-          '   ...and the \'run mirrored\' status is set' );
-
-    my $first_flag_mtime = ( stat "$mock_path/Mirror.completed" )[9];
-    sleep 1;
-    lives_ok { $test->mark_as_mirrored() } 'Repeat mark as mirrored...';
-
-    my $second_flag_mtime = ( stat "$mock_path/Mirror.completed" )[9];
-
-    ok( $first_flag_mtime < $second_flag_mtime,
-        '   ...flag file has been touched' );
-
-    my $f = "$mock_path/Mirror.completed";
-    if (-e $f) { unlink $f;}
+                                                 npg_tracking_schema => $schema );
 
     my @missing_cycles;
     lives_ok { @missing_cycles = $test->missing_cycles($mock_path); } q{missing_cycles ran ok};
@@ -428,7 +389,7 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     my $test = Monitor::RunFolder::Staging->new( runfolder_path      => $test_source,
                                                  npg_tracking_schema => $schema, );
 
-    isnt( $test->current_run_status_description(), 'analysis pending',
+    isnt( $test->tracking_run->current_run_status_description(), 'analysis pending',
       'run status is not analysis pending');
     ok( !$test->is_in_analysis(), 'run folder is not in analysis');
     my $m;
@@ -444,7 +405,7 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     ok( !-e $test_source, 'runfolder is gone from incoming' );
     ok(  -e $test_target, 'runfolder is present in analysis' );
 
-    is( $test->current_run_status_description(), 'analysis pending',
+    is( $test->tracking_run()->current_run_status_description(), 'analysis pending',
           'Current run status is \'analysis pending\'' );
 
     $test_source = $test_target;
@@ -523,7 +484,7 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     lives_ok { $test->move_to_analysis() } 'Move to analysis';
     ok( !-e $test_source, 'runfolder is gone from incoming' );
     ok(  -e $test_target, 'runfolder is present in analysis' );
-    is( $test->current_run_status_description(), 'run pending',
+    is( $test->tracking_run()->current_run_status_description(), 'run pending',
           'run status is unchanged' );
 }
 

@@ -1,7 +1,5 @@
 #!/usr/bin/env perl
 
-package staging_area_monitor;
-
 use strict;
 use warnings;
 use FindBin qw($Bin);
@@ -18,6 +16,7 @@ use Monitor::RunFolder::Staging;
 our $VERSION = '0';
 
 Readonly::Scalar my $SLEEP_INTERVAL => 60 * 15;
+Readonly::Scalar my $DRY_RUN => $ENV{'dev'} && ($ENV{'dev'} ne 'live');
 
 local $OUTPUT_AUTOFLUSH = 1;
 
@@ -31,26 +30,19 @@ sub _log_noindent {
     print {*STDOUT} @ms or carp $OS_ERROR;
 }
 
-my %previous_size_of;
-my %checked;
+_log_noindent($DRY_RUN ? 'DRY RUN, no run folder moves' : 'LIVE RUN');
 
-my $monitor   = Monitor::Staging->new();
-my @area_list = $monitor->validate_areas(@ARGV);
+main();
 
-croak 'No valid arguments' if scalar @area_list == 0;
-
-my $dry_run = $ENV{'dev'} && ($ENV{'dev'} ne 'live');
-_log_noindent('*************** ' . ($dry_run ? 'DRY RUN' : 'LIVE RUN') .
-          ' ***************');
-
-my $check_path = sub { ##### Function to deal with one run folder
-    my $run_path = shift;
+sub check_path { ##### Function to deal with one run folder
+    my ($run_path, $schema, $previous_size_of) = @_;
 
     my $folder = Monitor::RunFolder::Staging->new(
                    runfolder_path      => $run_path,
-                   npg_tracking_schema => $monitor->schema);
+                   npg_tracking_schema => $schema);
+    $run_path = $folder->runfolder_path; # in case path was transformed
 
-    my $run_status = $folder->current_run_status_description();
+    my $run_status = $folder->tracking_run()->current_run_status_description();
     my $id_run = $folder->tracking_run()->id_run;
 
     _log("Run $id_run status $run_status");
@@ -74,16 +66,8 @@ my $check_path = sub { ##### Function to deal with one run folder
         _log('Folder is in /analysis/');
 
         if( $run_status eq 'qc complete') {
-            if ($dry_run) {
-                _log('DRY RUN - not moving to outgoing');
-            } else {
-                _log('Will try to move to outgoing');
-                try {
-                    _log($folder->move_to_outgoing());
-                } catch {
-                    _log("ERROR moving to outgoing: $_");
-                };
-            }
+            _log('Moving run folder to outgoing');
+            (not $DRY_RUN) and _log($folder->move_to_outgoing());
         }
         return; # Nothing else to do for a folder in /analysis/
     }
@@ -94,8 +78,8 @@ my $check_path = sub { ##### Function to deal with one run folder
     # set staging tag, if appropriate, set/fix instrument side, workflow side.
     # Previously we avoided making changes to the db if status was at or after
     # 'run complete'. We might consider reinstating this rule.
-    if ( not defined $previous_size_of{$run_path} ) {
-        $folder->update_folder();
+    if ( not defined $previous_size_of->{$run_path} ) {
+        $folder->update_run_record();
         $folder->tracking_run()->set_tag( $folder->username(), 'staging' );
         _log('Set staging tag');
         try {
@@ -107,157 +91,164 @@ my $check_path = sub { ##### Function to deal with one run folder
             if ($wf_type) {
                 _log("Workflow type is set to $wf_type");
             }
+            $folder->set_run_tags();
         } catch {
-            _log('Error setting instrument side and/or run workflow type: ' . $_);
+            _log('Error: ' . $_);
         };
-        # We might want to expand this section to set/fix other tags, see currently
-        # unused read_long_info method in Monitor::RunFolder
-        $previous_size_of{$run_path} = 0;
+
+        $previous_size_of->{$run_path} = 0;
     }
 
     # Could delete the directory here. Leave it for now.
     return if $run_status eq 'data discarded';
 
     if ( $run_status eq 'run pending' )  {
-        my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
-        $folder->check_cycle_count($latest_cycle, 0);
+        my $latest_cycle = $folder->get_latest_cycle($run_path);
+        if ($latest_cycle) {
+            if ($folder->update_cycle_count($latest_cycle)) {
+                _log("Cycle count updated to $latest_cycle");
+            }
+            $folder->update_run_status('run in progress');
+            _log(q[Run status updated to 'run in progress']);
+        }
         return;
     }
 
     if ( $run_status eq 'run in progress' ) {
-        my $latest_cycle = $folder->get_latest_cycle($folder->runfolder_path());
-        my $run_complete = $folder->is_run_complete();
-        $folder->check_cycle_count($latest_cycle, $run_complete);
-        $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
-                                      : $folder->tracking_run()->unset_tag( 'copying_problem' );
+
+        # The lane count comes from the run folder structure, which
+        # we should have by now set up.
+        $folder->delete_superfluous_lanes();
+        my $latest_cycle = $folder->get_latest_cycle($run_path);
+        if ($folder->update_cycle_count($latest_cycle)) {
+            _log("Cycle count updated to $latest_cycle");
+        }
+        if ($folder->is_run_complete()) {
+            $folder->update_run_status('run complete');
+            _log(q[Run status updated to 'run complete']);
+        }
+        $folder->update_copying_problem_tag($folder->cycle_lag($run_path));
+
         return;
     }
 
     if ( $run_status eq 'run complete' ) {
-        $folder->cycle_lag($run_path) ? $folder->tracking_run()->set_tag( $folder->username(), 'copying_problem' )
-                                      : $folder->tracking_run()->unset_tag( 'copying_problem' );
-        $folder->update_folder();
 
-        # Integrity check - got everything.
-        return if $folder->cycle_lag($run_path);
+        # Inspect and update cycles.
+        $folder->update_run_record(); # including expected cycle count!
+        my $latest_cycle = $folder->get_latest_cycle($run_path);
+        if ($folder->update_cycle_count($latest_cycle)) {
+            _log("Cycle count updated to $latest_cycle");
+        }
+        my $cycle_lag = $folder->cycle_lag($run_path);
+        $folder->update_copying_problem_tag($cycle_lag);
+
+        # Integrity check - return early if anything is amiss.
+        return if $cycle_lag;
         return if !$folder->validate_run_complete();
-        $checked{$run_path}++;
-
-        my $path = $folder->runfolder_path();
-        my $latest_cycle = $folder->get_latest_cycle($path);
-
-        $folder->check_cycle_count( $latest_cycle, 1 );
 
         my ( $total_size, $latest_mod ) = $folder->monitor_stats();
 
         # Check that no file is 'in the future'.
         if ( $latest_mod > time ) {
-            $previous_size_of{$run_path} = $total_size;
+            $previous_size_of->{$run_path} = $total_size;
             _log("Not done: 'future' file $latest_mod");
             return;
         }
 
         # Check that there's been no activity since last time.
-        if ( $total_size != $previous_size_of{$run_path} ) {
+        if ( $total_size != $previous_size_of->{$run_path} ) {
             _log(sprintf 'Sizes not equal: %d %d',
-                $previous_size_of{$run_path}, $total_size);
-            $previous_size_of{$run_path} = $total_size;
+                $previous_size_of->{$run_path}, $total_size);
+            $previous_size_of->{$run_path} = $total_size;
             return;
         }
 
-        if ($dry_run) {
-            _log('DRY RUN - not calling mark_as_mirrored and move_to_analysis');
-        } else {
-            $folder->mark_as_mirrored();
-            _log('Folder marked as mirrored');
-            try {
-                _log($folder->move_to_analysis());
-            } catch {
-                _log("ERROR moving to analysis: $_");
-            };
-        }
+        # Set status to 'run mirrored' and move run folder
+        # from incoming to analysis
+        $folder->update_run_status('run mirrored');
+        _log(q[Run status updated to 'run mirrored']);
+        _log('Moving run folder to analysis');
+        (not $DRY_RUN) and _log($folder->move_to_analysis());
+
+        return 'done';
     }
-}; ###### End of function to deal with one run folder
+   
+    return; # Explicit false return is needed.
+} ###### End of function to deal with one run folder
 
 ###########################################################
 ###############   Main daemon loop  #######################
 ###########################################################
-while (1) {
 
-    _log_noindent(strftime '%a %b %e %T %Y%n', localtime);
+sub main {
 
-    foreach my $area (@area_list) {
+    my $monitor   = Monitor::Staging->new();
+    my @area_list = $monitor->validate_areas(@ARGV);
+    @area_list or croak 'No valid arguments';
 
-        foreach my $run_path ( $monitor->find_live($area) ) {
-            _log_noindent("Considering $run_path");
-            try {
-                $check_path->($run_path);
-            } finally {
-                if (@_) {
-                    _log("ERROR: Execution for $run_path died with: @_\n");
-                } else {
-                    _log("Succesfully processed $run_path");
-                }
-            };
+    my $time = sub {
+        return strftime '%a %b %e %T %Y%n', localtime;
+    };
+
+    my $previous_size_of = {};
+
+    while (1) {
+
+        _log_noindent($time->());
+
+        foreach my $area (@area_list) {
+            foreach my $run_path ( $monitor->find_live($area) ) {
+                _log_noindent("Considering $run_path");
+                my $done;
+                try {
+                    $done = check_path($run_path, $monitor->schema, $previous_size_of);
+                } finally {
+                    if (@_) {
+                        _log("ERROR: Execution for $run_path died with: @_\n");
+                    } else {
+                        _log("Succesfully processed $run_path");
+                    }
+                };
+                $done and delete $previous_size_of->{$run_path};
+            }
         }
-    }
 
-    # Clean out %previous_size so that it doesn't grow and grow.
-    foreach my $completed_runpath ( keys %previous_size_of ) {
-        next if defined $checked{$completed_runpath};
-        delete $previous_size_of{$completed_runpath};
-    }
-
-    sleep $SLEEP_INTERVAL;
+        _log_noindent("Gone to sleep for $SLEEP_INTERVAL seconds at " . $time->());
+        sleep $SLEEP_INTERVAL;
+    } 
 }
-
 
 1;
 
 __END__
 
-
 =head1 NAME
 
-staging_area_monitor - monitor incoming runs for problems and completion
+staging_area_monitor
 
 =head1 VERSION
 
 =head1 SYNOPSIS
 
-    staging_area_monitor [0] [1] ... [8]
-OR:
-    staging_area_monitor [/nfs/sf10] [/nfs/sf8] ...
-
-In the first version the integer is taken as an array index. The array is
-maintained in @npg_tracking::illumina::run::folder::location::STAGING_AREAS, any integer
-that is greater than the last element's index will be ignored.
-
-In the second version a test is done to see that the argument is a directory
-on the filesystem. Any argument that is not a directory will be ignored.
-
-Both argument types can be mixed also.
+    staging_area_monitor /nfs/sf10 [/nfs/sf8] ...
 
 =head1 DESCRIPTION
 
-Monitor one or more staging areas supplied as commandline arguments.
+Monitor one or more staging areas supplied as command-line arguments.
 
 The script runs an infinite loop so do not call it via a crontab.
 
 Actions for runs in the incoming directory:
 
-Check the number of cycles mirrored is not lagging behind the actual cycle
-count. Tag the run as 'copying_problem' if it is, remove the tag if it isn't.
-
 If the run has a status of 'run complete' check to make sure that all activity
 has stopped (no change in the sum of file sizes, no modtimes in advance of the
 present). When this is the case run some validation checks, set the status to
-'run mirrored', move the run folder to 'analysis', and set the status to
-'analysis pending'.
+'run mirrored' and move the run folder to 'analysis'.
 
 Actions for runs in analysis directory:
 
-If the run status is 'qc complete, the run is moved to the outgoing directory.
+If the run status is 'qc complete', the run is moved to the outgoing directory.
 
 =head1 SUBROUTINES/METHODS
 
@@ -265,8 +256,8 @@ None
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-If dev environment variable is set, the script will carry out all the
-same functions but will not make any file-system changes
+If dev environment variable is set to dev, the script has full functionality
+except for changes to the file system. Development database is used in this case.
 
 =head1 INCOMPATIBILITIES
 
@@ -274,15 +265,16 @@ None known.
 
 =head1 BUGS AND LIMITATIONS
 
-None known. Yet.
+None known.
 
 =head1 AUTHOR
 
-John O'Brien, E<lt>jo3@sanger.ac.ukE<gt>
+John O'Brien
+Marina Gourtovaia
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (C) 2015 GRL, by John O'Brien
+Copyright (C) 2013,2014,2015,2018,2019,2020 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
