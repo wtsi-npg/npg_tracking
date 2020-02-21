@@ -4,7 +4,7 @@ use Moose;
 use namespace::autoclean;
 use Class::Load qw(load_class);
 use Template;
-use Carp qw/carp croak confess/;
+use Carp qw(carp croak confess);
 use List::MoreUtils qw(any uniq);
 use URI::Escape qw(uri_escape_utf8);
 use Readonly;
@@ -13,9 +13,7 @@ use open q(:encoding(UTF8));
 use npg_tracking::Schema;
 use st::api::lims;
 use st::api::lims::samplesheet;
-use npg_tracking::data::reference;
-use npg_tracking::util::config qw(get_config_repository
-                                  get_config_staging_areas);
+use npg_tracking::util::config qw(get_config_staging_areas);
 use npg_tracking::util::abs_path qw(abs_path);
 
 with 'npg_tracking::glossary::run';
@@ -63,10 +61,7 @@ still retained in the relevant custom fields.
 
 my$config=get_config_staging_areas();
 Readonly::Scalar my $SAMPLESHEET_PATH => $config->{'samplesheets'}||q(samplesheets/);
-my$configr=get_config_repository();
-Readonly::Scalar my $INSTRUMENT_REFERENCE_PREFIX => $configr->{'instrument_prefix'}||q(C:\Illumina\MiSeq Reporter\Genomes);
-Readonly::Scalar my $DEFAULT_FALLBACK_REFERENCE_SPECIES=> q(PhiX);
-Readonly::Scalar my  $MIN_COLUMN_NUM => 3;
+Readonly::Scalar my $MIN_COLUMN_NUM   => 3;
 
 ##################################################################
 ####################### Public attributes ########################
@@ -221,28 +216,6 @@ sub _build_output {
   return $self->samplesheet_path . $reagent_kit . q(.csv);
 }
 
-=head2 fallback_reference
-
-An optional attribute. Defaults to Phix reference path
-
-=cut
-
-has 'fallback_reference' => (
-  'is'         => 'ro',
-  'lazy_build' => 1,
-  'isa'        => 'Str',
-);
-sub _build_fallback_reference {
-  my ($self) = @_;
-  return Moose::Meta::Class->create_anon_class(
-    roles=>[qw(npg_tracking::data::reference::find)]
-  )->new_object(
-    species=>$DEFAULT_FALLBACK_REFERENCE_SPECIES,
-    aligner => q(fasta),
-    ($self->repository ? ('repository' => $self->repository) : ()),
-  )->ref_info->ref_path;
-}
-
 =head2 limsreflist
 
 =cut
@@ -264,22 +237,6 @@ sub _build__limsreflist {
     for my $tmpl ( $l->is_pool ? $l->children : ($l) ) {
 
       my $ref = q[];
-      if (!$self->extend) {
-        my $dataref = npg_tracking::data::reference->new(
-              ($self->repository ? ('repository' => $self->repository) : ()),
-              aligner => q(fasta),
-              lims=>$tmpl, position=>$tmpl->position, id_run=>$self->id_run
-        );
-        my @refs = @{$dataref->refs ||[]};
-        $ref = shift @refs;
-        $ref ||= $self->fallback_reference();
-        $ref=~s{(/fasta/).*$}{$1}smgx;
-        $ref=~s{(/references)}{}smgx;
-        my$repository= abs_path $dataref->repository();
-        $ref=~s{^$repository}{$INSTRUMENT_REFERENCE_PREFIX}smgx;
-        $ref=~s{/}{\\}smgx;
-      }
-
       my @row = ();
       if ($self->_multiple_lanes) {
         push @row, $tmpl->position;
@@ -518,7 +475,7 @@ Investigator Name,[% pendingstatus.user.username %][% separator.repeat(one_less_
 Project Name[% separator _ project_name %][% separator.repeat(one_less_sep) %]
 Experiment Name[% separator _ run.id_run %][% separator.repeat(one_less_sep) %]
 Date[% separator _ pendingstatus.date %][% separator.repeat(one_less_sep) %]
-Workflow[% separator %]LibraryQC[% separator.repeat(one_less_sep) %]
+Workflow[% separator %]GenerateFASTQ[% separator.repeat(one_less_sep) %]
 Chemistry[% separator %][% IF has_dual_index %]Amplicon[% ELSE %]Default[% END -%]
 [% separator.repeat(one_less_sep) %]
 [% separator.repeat(num_sep) -%]
@@ -640,7 +597,7 @@ David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2019 GRL
+Copyright (C) 2019,2020 Genome Research Ltd.
 
 This file is part of NPG.
 
