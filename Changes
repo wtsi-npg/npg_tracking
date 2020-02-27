@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - BotSeq renamed Duplex-Seq
  - added new functions to long_info for BotSeq analysis
 
 release 90.2.0
