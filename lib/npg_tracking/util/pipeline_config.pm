@@ -1,6 +1,7 @@
 package npg_tracking::util::pipeline_config;
 
 use Moose::Role;
+use MooseX::Getopt::Meta::Attribute::Trait::NoGetopt;
 use Carp;
 use Config::Any;
 use FindBin qw($Bin);
@@ -8,12 +9,16 @@ use File::Spec::Functions qw(catfile);
 use Readonly;
 use YAML::XS;
 
+use npg_tracking::util::types;
 use npg_tracking::util::abs_path qw(abs_path);
+use npg_tracking::data::reference;
 
 our $VERSION = '0';
 
 Readonly::Scalar my $CONF_DIR            => q(data/config_files);
 Readonly::Scalar my $PRODUCT_CONFIG_FILE => q(product_release.yml);
+Readonly::Scalar my $CONFIG_DEFAULT      => q(default);
+Readonly::Scalar my $CONFIG_TERTIARY     => q(tertiary);
 
 =head1 NAME
 
@@ -23,28 +28,32 @@ npg_tracking::util::pipeline_config
 
 =head1 DESCRIPTION
 
-A Moose role providing accessors for pipelines' configuration files.
+A Moose role providing accessors for the pipeline's configuration files.
 
 If the consuming object has methods for logging defined (see
 WTSI::DNAP::Utilities::Loggable) or has an logger accessor,
-these methods are used, via teh logger if appropriate, in preference
+these methods are used, via the logger if appropriate, in preference
 to other ways of logging messages and raising errors.
 
 =head1 SUBROUTINES/METHODS
 
 =head2 local_bin
 
-  Description: An attribute, an absolute path of the directory containing
-               the currently running script.
+  Description: A read-only attribute, an absolute path of the directory
+               containing the currently running script. Cannot be set
+               via the constructor. Will be disregarded by the MooseX::Getopt
+               framework for the purpose of using as a script argument.
 
   Returntype : Str
 
 =cut
 
 has 'local_bin' => (
-  isa         => 'Str',
-  is          => 'ro',
-  lazy_build  => 1,
+  traits     => ['NoGetopt'],
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+  init_arg   => undef,
 );
 sub _build_local_bin {
   return abs_path($Bin);
@@ -52,8 +61,8 @@ sub _build_local_bin {
 
 =head2 conf_path
 
-  Description: An attribute, an absolute path of the directory with
-               the pipeline's configuration files.
+  Description: A read-only attribute, an absolute path of the directory
+               with the pipeline's configuration files.
                Defaults to data/config_files relative to the bin directory
                of the current script.
 
@@ -62,38 +71,37 @@ sub _build_local_bin {
 =cut
 
 has 'conf_path' => (
-  isa           => 'Str',
+  isa           => 'NpgTrackingDirectory',
   is            => 'ro',
   lazy_build    => 1,
-  documentation => 'A full path of directory containing config files',
+  documentation => 'A full path of the directory containing config files',
 );
 sub _build_conf_path {
   my $self = shift;
   return abs_path($self->local_bin . "/../$CONF_DIR");
 }
 
-=head2 product_config
+=head2 product_conf_file_path
 
-  Description: An attribute, a hashref of configuration details from the
-               product configuration file.
+  Description: A read-only attribute, an absolute path of the product release
+               configuration file.
+               Defaults to data/config_files/product_release.yml
+               relative to the bin directory of the current script.
 
-  Returntype : Hash
+  Returntype : Str
 
 =cut
 
-has 'product_config' => (
-  isa        => 'HashRef',
-  is         => 'rw',
-  required   => 1,
-  lazy_build => 1,
+has 'product_conf_file_path' => (
+  isa           => 'NpgTrackingReadableFile',
+  is            => 'ro',
+  required      => 1,
+  lazy_build    => 1,
   documentation => 'A full path of the product configuration file',
 );
-sub _build_product_config {
+sub _build_product_conf_file_path {
   my ($self) = @_;
-
-  my $file = $self->conf_file_path($PRODUCT_CONFIG_FILE);
-  $self->_log_message("Reading product configuration from '$file'", 'info');
-  return $self->read_config($file);
+  return $self->conf_file_path($PRODUCT_CONFIG_FILE);
 }
 
 =head2 conf_file_path
@@ -103,13 +111,11 @@ sub _build_product_config {
 
   Example    : $obj->conf_file_path('config.yml')
 
-  Description: Returns an absolute path of the configuration
+  Description: Given the pipeline configuration file name,
+               returns an absolute path of the configuration
                file. Raises an error if the file does not exist.
 
-  Returntype : Hash
-
-Given the pipeline configuration file name, returns an absolute path
-to this file. Raises an error if the file does not exist.
+  Returntype : Str
 
 =cut
 
@@ -186,7 +192,7 @@ sub study_config {
   my $study_id = $study_ids[0];
 
   my @study_configs = grep { $_->{study_id} eq $study_id }
-                      @{$self->product_config->{study}};
+                      @{$self->_product_config->{study}};
   my $study_config = {};
 
   if (@study_configs) {
@@ -195,7 +201,7 @@ sub study_config {
     }
     $study_config = $study_configs[0];
   } elsif (!$strict) {
-    $study_config = $self->product_config->{default};
+    $study_config = $self->_product_config->{$CONFIG_DEFAULT};
     (defined $study_config) and $self->_log_message("Using the default configuration for study $study_id", 'debug');
   }
 
@@ -227,6 +233,56 @@ sub find_study_config {
   }
 
   return $sc;
+}
+
+=head2 find_tertiary_config
+
+  Arg [1]    : npg_pipeline::product
+
+  Example    : $obj->find_tertiary_config($product)
+  Description: Returns a study and reference specific tertiary analysis config
+               or a default study tertiary config aslong as a reference is set
+               for a product and a relevant config exists. Therefore one cannot
+               rely on keys being defined in the obtained data structure.
+
+  Returntype : Hash
+
+=cut
+
+sub find_tertiary_config {
+  my ($self, $product) = @_;
+
+  my $sc = $self->find_study_config($product);
+
+  my $tc = {};
+  if($sc->{$CONFIG_TERTIARY} && $sc->{study_id}) {
+    my $ref_genome = $product->lims->reference_genome();
+
+    my ($species,$ref);
+    if ($ref_genome) {
+      my $r = npg_tracking::data::reference->new();
+      ($species, $ref) = $r->parse_reference_genome($ref_genome);
+
+      if($species && $ref && $sc->{$CONFIG_TERTIARY}->{$species}->{$ref}) {
+        $tc = $sc->{$CONFIG_TERTIARY}->{$species}->{$ref};
+      } elsif ($sc->{$CONFIG_TERTIARY}->{$CONFIG_DEFAULT}) {
+        $tc = $sc->{$CONFIG_TERTIARY}->{$CONFIG_DEFAULT};
+      }
+    }
+  }
+
+  return $tc;
+}
+
+has '_product_config' => (
+  isa        => 'HashRef',
+  is         => 'ro',
+  init_arg   => undef,
+  lazy_build => 1,
+);
+sub _build__product_config {
+  my ($self) = @_;
+  return $self->read_config($self->product_conf_file_path);
 }
 
 sub _log_message {
@@ -264,6 +320,8 @@ YAML::XS import is used here.
 
 =item Moose::Role
 
+=item MooseX::Getopt::Meta::Attribute::Trait::NoGetopt
+
 =item Carp
 
 =item Config::Any
@@ -275,6 +333,8 @@ YAML::XS import is used here.
 =item Readonly
 
 =item YAML::XS
+
+=item npg_tracking::util::types
 
 =item npg_tracking::util::abs_path
 
@@ -291,7 +351,7 @@ Keith James
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2019 Genome Research Ltd
+Copyright (C) 2019, 2020 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

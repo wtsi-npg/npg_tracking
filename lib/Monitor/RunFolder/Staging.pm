@@ -17,7 +17,7 @@ use Fcntl qw/S_ISGID/;
 use npg_tracking::util::config qw(get_config_staging_areas);
 
 extends 'Monitor::RunFolder';
-with 'MooseX::Getopt';
+with qw/MooseX::Getopt Monitor::Roles::Cycle/;
 
 our $VERSION = '0';
 
@@ -238,23 +238,6 @@ sub check_tiles {
     return 1;
 }
 
-sub mark_as_mirrored {
-    my ($self) = @_;
-
-    $self->tracking_run()->update_run_status( 'run mirrored', $self->username() );
-
-    my $mirrored_flag = $self->runfolder_path() . q{/Mirror.completed};
-
-    if ( !-e $mirrored_flag ) {
-        open my $flag_fh, q{>}, $mirrored_flag;
-        close $flag_fh;
-    }
-
-    utime time, time, $mirrored_flag;
-
-    return;
-}
-
 sub move_to_analysis {
     my ($self) = @_;
 
@@ -302,7 +285,7 @@ sub move_to_outgoing {
         $m = "$rf flagged not to be moved to outgoing"
     } else {
         my $id = $self->tracking_run()->id_run;
-        my $status = $self->current_run_status_description();
+        my $status = $self->tracking_run()->current_run_status_description();
         if ($status eq 'qc complete') {
             my $destination = $self->_destination_path('analysis', 'outgoing');
             my $moved;
@@ -359,27 +342,6 @@ sub _get_folder_path_glob {
     return $p;
 }
 
-sub update_folder {
-    my ($self) = @_;
-    my $run_db = $self->tracking_run();
-    # $run_db->folder_name($self->run_folder);
-    my $expected_cycle_count = $self->expected_cycle_count();
-    if ( $expected_cycle_count && ( ! $run_db->expected_cycle_count() ||
-                                    ( $run_db->expected_cycle_count() != $expected_cycle_count ) ) ) {
-      carp qq[Updating expected cycle count to $expected_cycle_count];
-      $run_db->expected_cycle_count($expected_cycle_count);
-    }
-    if ( ! $run_db->folder_name() ) {
-      my $folder_name = $self->run_folder();
-      carp qq[Setting undef folder name to $folder_name];
-      $run_db->folder_name($folder_name);
-    }
-    my $glob = $self->_get_folder_path_glob;
-    if ( $glob ) { $run_db->folder_path_glob($glob); }
-    $run_db->update();
-    return;
-}
-
 sub _change_group {
     my ($group, $directory) = @_;
 
@@ -415,14 +377,12 @@ __PACKAGE__->meta->make_immutable();
 
 __END__
 
-
 =head1 NAME
 
 Monitor::RunFolder::Staging - additional runfolder information specific to
 local staging
 
 =head1 VERSION
-
 
 =head1 SYNOPSIS
 
@@ -477,11 +437,6 @@ also the highest epoch time found.
 
 Confirm number of lanes, cycles and tiles are as expected.
 
-=head2 mark_as_mirrored
-
-Set the current run_status to 'run mirrored'. Create and/or touch the file
-that marks the mirroring as complete.
-
 =head2 move_to_analysis
 
 Move the run folder from 'incoming' to 'analysis'. Then set the run status to
@@ -500,10 +455,6 @@ Move the run folder from 'analysis' to 'outgoing'.
 If there is an unacceptable difference between the actual cycles recorded in
 the database and the highest cycle found on the staging area, then this
 tags the run with
-
-=head2 update_folder
-
-Ensure DB has updated runfolder name and a suitable glob for quickly finding the folder
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
@@ -545,11 +496,12 @@ Please inform the author of any found.
 
 =head1 AUTHOR
 
-John O'Brien E<lt>jo3@sanger.ac.ukE<gt>
+John O'Brien
+Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2019 GRL
+Copyright (C) 2013,2014,2015,2016,2018,2019,2020 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

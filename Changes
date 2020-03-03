@@ -1,4 +1,47 @@
 LIST OF CHANGES
+ 
+ - removed scripts for monitoring instruments via ftp; related
+   modules and methods, their tests and test data are removed
+ - code for staging monitor reorganised so that the Monitor::Runfolder
+   class has methods for updating run, run_lane records and run tags
+   and the Monitor::Runfolder::Staging class mainly deals with staging
+   folder inspection and changes; some methods renamed to remove
+   ambiguity about their functionality
+ - some of the functionality of the instrument monitor is incorporated
+   into the staging monitor script code, namely, (1) setting 'multiplex',
+   'paired_read' and 'single_read' tags and (2) deletion of superfluous
+   lanes; this functionality is now available for NovaSeq instruments,
+   while previously it was missing for this instrument type
+ - redundant 'rta' run tag is not longer set
+ - redundant Mirror.completed file is no longer created in the run
+   folder
+ - functionality for checking instruments' wash status and setting
+   'was required' instrument tag is lost; this shoud be done outside
+   of staging monitor
+ - minor change to npg_tracking::util::pipeline_config to move bqsr and
+   haplotype caller to a tertiary section which can be set by specifically
+   by reference or by using a default study config.
+ - npg_tracking::util::pipeline_config is refactored to restrict access
+   to attributes which should not be set by the caller (local_bin, product_config)
+   and to enable setting product release configuration file path via the
+   new product_conf_file_path attribute
+ - genome reference hierarchy in the current samplesheet is not compatible with
+   the latest version of MiSeq Illumina software; setting Workflow value to
+   GenerateFastQ prevents the instrument's software from using this value,
+   hence we can stop setting genome reference path altogether
+
+release 90.3.0
+ - npg_tracking::glossary::moniker -
+     added a method for file name parsing to retrieve id_run,
+     position, tag_index, suffix and extension;
+     private attributes are prevented from being serialized under
+     MooseX::Storage framework
+ - tracking server instrument visualization - remove visual cue
+   for connection delay since ftp-ing to instruments is discontinued
+
+release 90.2.1
+ - staging area daemon to save the flowcell barcode to the
+   database if it does not have this value already available 
 
 release 90.2.0
  - reference finder for compositions not to return
