@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 64;
+use Test::More tests => 65;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
@@ -28,7 +28,7 @@ package main;
 my $basedir = tempdir( CLEANUP => 1 );
 
 subtest 'retrieving information from runParameters.xml' => sub {
-  plan tests => 155;
+  plan tests => 142;
 
   my $rf = join q[/], $basedir, 'runfolder';
   mkdir $rf;
@@ -56,7 +56,6 @@ subtest 'retrieving information from runParameters.xml' => sub {
 
   my @platforms = qw/MiniSeq HiSeq HiSeq4000 HiSeqX
                      MiSeq NextSeq NovaSeq/;
-  my @i5opp_platforms = map {lc $_} qw/MiniSeq HiSeq4000 HiSeqX NextSeq/;
   my @patterned_flowcell_platforms = map {lc $_} qw/HiSeq4000 HiSeqX NovaSeq/;
 
   for my $f (@rp_files) {
@@ -107,14 +106,6 @@ subtest 'retrieving information from runParameters.xml' => sub {
       }
     }
 
-    my @i5 = grep { $pl =~ /\A$_/ } @i5opp_platforms;
-    if (scalar @i5 > 1) {die 'Too many matches'};
-    if (@i5) {
-      ok ($li->is_i5opposite(), 'i5opposite');
-    } else {
-      ok (!$li->is_i5opposite(), 'not i5opposite');
-    }
-
     my @pfc = grep { $pl =~ /\A$_/ } @patterned_flowcell_platforms;
     if (scalar @pfc > 1) {die 'Too many matches'};
     if (@pfc) {
@@ -124,6 +115,59 @@ subtest 'retrieving information from runParameters.xml' => sub {
     }
 
     unlink $name;
+  }
+};
+
+subtest 'getting i5opposite for run' => sub {
+  plan tests => 14;
+
+  $basedir = tempdir( CLEANUP => 1 );
+  my $rf = join q[/], $basedir, 'run_info';
+  mkdir $rf;
+
+  my $class = Moose::Meta::Class->create_anon_class(
+    methods => {"runfolder_path" => sub {$rf}},
+    roles   => [qw/npg_tracking::illumina::run::long_info/]);
+
+  my %data = (
+    'runInfo.hiseq4000.xml'                => { 'rpf' => 'runParameters', 'i5opposite' => 1 },
+    'runInfo.hiseq4000.single.twoind.xml'  => { 'rpf' => 'runParameters', 'i5opposite' => 0 },
+    'runInfo.hiseq.rr.single.xml'          => { 'rpf' => 'runParameters', 'i5opposite' => 0 },
+    'runInfo.hiseq.rr.truseq.xml'          => { 'rpf' => 'runParameters', 'i5opposite' => 0 },
+    'runInfo.hiseq.rr.twoind.xml'          => { 'rpf' => 'runParameters', 'i5opposite' => 0 },
+    'runInfo.hiseq.rr.xml'                 => { 'rpf' => 'runParameters', 'i5opposite' => 0 },
+    'runInfo.hiseq.xml'                    => { 'rpf' => 'runParameters', 'i5opposite' => 0 },
+    'runInfo.hiseqx.upgraded.xml'          => { 'rpf' => 'runParameters', 'i5opposite' => 1 },
+    'runInfo.hiseqx.xml'                   => { 'rpf' => 'runParameters', 'i5opposite' => 1 },
+    'runInfo.miniseq.xml'                  => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
+    'runInfo.miseq.xml'                    => { 'rpf' => 'runParameters', 'i5opposite' => 0 },
+    'runInfo.nextseq.xml'                  => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
+    'runInfo.novaseq.xml'                  => { 'rpf' => 'RunParameters', 'i5opposite' => 0 },
+    'runInfo.novaseq.xp.xml'               => { 'rpf' => 'RunParameters', 'i5opposite' => 0 },
+  );
+
+  my $ri_data = \%data;
+  my $run_info_dir = 't/data/run_info';
+  my $run_param_dir = 't/data/run_params';
+
+  for my $file_name (sort keys % $ri_data) {
+    note $file_name;
+    my $expected_i5opposite = $ri_data->{$file_name}->{'i5opposite'};
+    my $param_prefix =  $ri_data->{$file_name}->{'rpf'};
+    my $run_params_file_name = $file_name =~ s/runInfo/$param_prefix/r;
+    my $run_params_file_path = qq[$rf/$param_prefix.xml];
+
+    copy(join(q[/],$run_info_dir,$file_name), qq[$rf/RunInfo.xml]) or die 'Failed to copy file';
+    copy(join(q[/],$run_param_dir,$run_params_file_name), $run_params_file_path) or die 'Failed to copy file';
+
+    my $li = $class->new_object();
+
+    if ( $expected_i5opposite ) {
+      ok($li->is_i5opposite, 'i5opposite');
+    } else {
+      ok(!$li->is_i5opposite, 'i5opposite');
+    }
+    `rm $run_params_file_path`
   }
 };
 

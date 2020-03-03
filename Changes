@@ -1,5 +1,6 @@
 LIST OF CHANGES
  
+ - modified is_i5opposite when there is no reverse read
  - removed scripts for monitoring instruments via ftp; related
    modules and methods, their tests and test data are removed
  - code for staging monitor reorganised so that the Monitor::Runfolder
