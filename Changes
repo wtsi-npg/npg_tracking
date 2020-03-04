@@ -32,6 +32,8 @@ release 91.0.0
    GenerateFastQ prevents the instrument's software from using this value,
    hence we can stop setting genome reference path altogether
  - make impossible to download cbcl file via tracking web pages
+ - runs_on_batch method of npg::run::model is refactored not to cache
+   the return value; proper input checking is added
 
 release 90.3.0
  - npg_tracking::glossary::moniker -

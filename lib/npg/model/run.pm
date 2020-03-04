@@ -363,21 +363,26 @@ sub run_lanes {
 
 sub runs_on_batch {
   my ($self, $batch_id) = @_;
-  $batch_id ||= $self->batch_id();
 
-  if(!$batch_id) {
-    return [];
+  if (defined $batch_id) {
+    my $temp = int $batch_id; # strings will be converted to zeros
+    ($temp eq $batch_id) or croak "Invalid batch id '$batch_id'";
+    ($batch_id > 0) or croak "Invalid negative or zero batch id '$batch_id'";
+  } else {
+    $batch_id = $self->batch_id();
   }
 
-  if(!$self->{runs_on_batch}->{$batch_id}) {
+  my $ids = [];
+  if ($batch_id) { # default batch id for a run is zero
     my $pkg   = 'npg::model::run';
     my $query = qq(SELECT @{[join q(, ), $pkg->fields()]}
                    FROM   @{[$pkg->table()]}
-                   WHERE  batch_id = ?);
-    $self->{runs_on_batch}->{$batch_id} = $self->gen_getarray($pkg, $query, $batch_id);
+                   WHERE  batch_id = ?
+                   ORDER BY id_run asc);
+    $ids = $self->gen_getarray($pkg, $query, $batch_id);
   }
 
-  return $self->{runs_on_batch}->{$batch_id};
+  return $ids;
 }
 
 #########
@@ -1084,7 +1089,14 @@ npg::model::run
 
   my $iRunCount = $oRun->count_runs();
 
-=head2 runs_on_batch - arrayref of npg::model::runs associated with this run's batch_id, or with a given batch_id
+=head2 runs_on_batch
+
+  Returns an array reference of npg::model::run objects associated with batch_id given as
+  an argument or, if the argument is not defined or zero, with this object's batch id if known
+  An empty array is returned if batch id to query on is not defined or if no runs ar eassociated
+  with the batch id.
+
+  Error if batch id is not a positive integer.
 
   my $arRunsOnBatch = $oRun->runs_on_batch();
   my $arRunsOnBatch = $oRootRun->runs_on_batch($iBatchId);

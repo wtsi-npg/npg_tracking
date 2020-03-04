@@ -1,72 +1,113 @@
 use strict;
 use warnings;
-use t::util;
-use npg::model::instrument;
-use npg::model::user;
-use npg::model::annotation;
-use Test::More tests => 105;
+use Test::More tests => 93;
 use Test::Exception;
+use t::util;
 
 use_ok('npg::model::run');
+use_ok ('npg::model::instrument');
+use_ok ('npg::model::user');
+use_ok ('npg::model::annotation');
 
 # using fixtures to import data
-#
-my $util  = t::util->new({
-                fixtures  => 1,
-            });
-my $model = npg::model::run->new({
-                util => $util
-            });
+my $util  = t::util->new({fixtures  => 1});
 
-########
-# first tests are on model object that is not actually linked to a run
-#
-isa_ok($model, 'npg::model::run', '$model');
-my @fields = $model->fields();
-is((scalar @fields), 13, '$model->fields() size');
+subtest 'model object that is not linked to a run' => sub {
+  plan tests => 7;
 
-isa_ok( $model->potentially_stuck_runs(), q{HASH}, q{potentially_stuck_runs} );
+  my $model = npg::model::run->new({util => $util});
+  isa_ok($model, 'npg::model::run');
+  my @fields = $model->fields();
+  is((scalar @fields), 13, '$model->fields() size');
 
-my $runs_on_batch = $model->runs_on_batch();
-isa_ok($runs_on_batch, 'ARRAY', '$model->runs_on_batch()');
-is(scalar@{$runs_on_batch}, 0, '$model->runs_on_batch() is empty');
-$runs_on_batch = $model->runs_on_batch(10);
-isa_ok($runs_on_batch, 'ARRAY', '$model->runs_on_batch(10)');
-is($model->runs_on_batch(10), $runs_on_batch, '$model->runs_on_batch(10) cached ok');
+  isa_ok( $model->potentially_stuck_runs(), q{HASH}, q{potentially_stuck_runs} );
 
-my $runs = $model->runs();
-isa_ok($runs, 'ARRAY', '$model->runs()');
+  is($model->name(), 'UNKNOWN_0000', 'unknown name if no instrument name and no id_run');
 
-my $run = $runs->[-1];
-isa_ok($run, 'npg::model::run', 'last of $model->runs()');
+  is($model->attach_annotation('test annotation'), 1, '$model->attach_annotation() with annotation, but no $model->id_run()');
+  is($model->{annotations}->[0], 'test annotation', 'annotation appended to annotations array within $model');
+  is($model->id_user(), undef, 'id_user not found by model or current run status');
+};
 
-my $name = $model;
-is($name->name(), 'UNKNOWN_0000', 'unknown name if no instrument name and no id_run - HK model');
+subtest 'runs on batch' => sub {
+  plan tests => 23;
 
+  my $model = npg::model::run->new({util => $util});
 
-is($model->attach_annotation('test annotation'), 1, '$model->attach_annotation() with annotation, but no $model->id_run()');
-is($model->{annotations}->[0], 'test annotation', 'annotation appended to annotations array within $model');
-is($model->id_user(), undef, 'id_user not found by model or current run status');
+  throws_ok { $model->runs_on_batch('batch') } qr/Invalid batch id \'batch\'/,
+    'error if batch id argument is a string';
+  throws_ok { $model->runs_on_batch(3.5) } qr/Invalid batch id \'3.5\'/,
+    'error if batch id argument is a float';
+  throws_ok { $model->runs_on_batch(-5) } qr/Invalid negative or zero batch id \'-5\'/,
+    'error if batch id argument is a negative integer';
+  throws_ok { $model->runs_on_batch(0) } qr/Invalid negative or zero batch id \'0\'/,
+    'error if batch id argument is zero';
 
-#########
-#  now begin testing on model object which is a run, using first one obtained above
-# (if runs are added to the fixtures the results can change, so use $got to
-# make updating the tests a little easier)
-{
-   my $run2 = $runs->[1];
-   my $got = $run2->id_run;
-   is($got, 9950, 'correct id_run for the 2nd run');
-   is($run2->name(), 'HS1_9950', "correct run name for run $got");
+  my $runs_on_batch = $model->runs_on_batch();
+  isa_ok($runs_on_batch, 'ARRAY', 'runs_on_batch returns an array');
+  is(scalar@{$runs_on_batch}, 0, 'no runs listed since no batch associated with this run');
+
+  $runs_on_batch = $model->runs_on_batch(10);
+  is(scalar@{$runs_on_batch}, 0, 'no runs listed since no runs are associated with batch 10');
+
+  $runs_on_batch = $model->runs_on_batch(939);
+  is(scalar @{$runs_on_batch}, 1, 'one run is associated wiht batch 939');
+  my $run = $runs_on_batch->[0];
+  isa_ok($run, 'npg::model::run');
+  is($run->id_run, 1, 'correct run id');
+  ok (! (exists $model->{runs_on_batch}), 'result is not cached');
+
+  $runs_on_batch = $model->runs_on_batch(10000);
+  is(scalar@{$runs_on_batch}, 2, 'two runs are associated wiht batch 10000');
+  $run = $runs_on_batch->[0];
+  isa_ok($run, 'npg::model::run');
+  is($run->id_run, 9950, 'correct run id');
+  $run = $runs_on_batch->[1];
+  isa_ok($run, 'npg::model::run');
+  is($run->id_run, 9951, 'correct run id');
+
+  $model = npg::model::run->new({util => $util, id_run => 9949});
+  is ($model->batch_id, 9999, 'batch id of this run');
+  is($model->runs_on_batch(939)->[0]->id_run, 1,
+    'correct result when quering on a different batch');
+  is($model->runs_on_batch()->[0]->id_run, 9949,
+    'correct result when quering without argument');
+
+  $model = npg::model::run->new({util => $util, id_run => 9951});
+  is ($model->batch_id, 10000, 'batch id of this run');
+  is($model->runs_on_batch(939)->[0]->id_run, 1,
+    'correct result when quering on a different batch');
+  is($model->runs_on_batch()->[0]->id_run, 9950,
+    'correct result when quering without argument - first run');
+  is($model->runs_on_batch()->[1]->id_run, 9951,
+    'correct result when quering without argument - second run'); 
+};
+
+subtest 'listing runs' => sub {
+  plan tests => 6;
+
+  my $model = npg::model::run->new({util => $util});
+  my $runs = $model->runs();
+  isa_ok($runs, 'ARRAY', '$model->runs()');
+
+  my $run = $runs->[-1];
+  isa_ok($run, 'npg::model::run', 'last of $model->runs()');
+
+  my $run2 = $runs->[1];
+  my $got = $run2->id_run;
+  is($got, 9950, 'correct id_run for the 2nd run');
+  is($run2->name(), 'HS1_9950', "correct run name for run $got");
    
-   $run2 = $runs->[9];
-   $got = $run2->id_run;
-   is($got, 15, 'correct id_run for the 10th run');
-   is($run2->name(), 'IL10_0015', "correct run name for run $got");
-}
+  $run2 = $runs->[9];
+  $got = $run2->id_run;
+  is($got, 15, 'correct id_run for the 10th run');
+  is($run2->name(), 'IL10_0015', "correct run name for run $got");
+};
 
 {
-  my $runs_on_batch = $run->runs_on_batch();
-  isnt($runs_on_batch->[0], undef, '$run->runs_on_batch() has found some runs');
+  my $model = npg::model::run->new({util => $util});  
+  my $runs = $model->runs();
+  my $run = $runs->[-1];
 
   my $instrument = $run->instrument();
   isa_ok($instrument, 'npg::model::instrument', '$run->instrument()');
