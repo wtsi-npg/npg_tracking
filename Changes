@@ -34,6 +34,9 @@ release 91.0.0
  - make impossible to download cbcl file via tracking web pages
  - runs_on_batch method of npg::run::model is refactored not to cache
    the return value; proper input checking is added
+ - error on run creation if the batch id associated with the run is already
+   associated with one of active runs, i.e. a run that has no current status
+   or its current status is not either 'run cancelled' or 'run stopped early
 
 release 90.3.0
  - npg_tracking::glossary::moniker -

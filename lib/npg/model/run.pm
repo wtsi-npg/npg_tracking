@@ -385,6 +385,26 @@ sub runs_on_batch {
   return $ids;
 }
 
+sub is_batch_duplicate {
+  my ($self, $batch_id) = @_;
+
+  defined $batch_id or croak 'Batch id should be given';
+
+  $batch_id or return 0; # if zero, then nothing ot compare to
+
+  my @runs = @{$self->runs_on_batch($batch_id)};
+  my @run_statuses =
+    grep { $_ }
+    map  { $_->current_run_status->run_status_dict->description }
+    @runs;
+
+  (@runs == @run_statuses) or return 1;  # some runs might have no current status
+
+  return scalar
+         grep { $_ !~ /run[ ]cancelled|run[ ]stopped[ ]early/xms }
+         @run_statuses;
+}
+
 #########
 # maybe this should be inside run_status.pm?
 #
@@ -598,8 +618,14 @@ sub create {
   $util->transactions(0);
 
   eval {
-    if (!$self->validate_team($self->{team})) { croak 'Invalid team name ' . $self->{team}; }
-    $self->{batch_id}           ||= 0;
+    if (!$self->validate_team($self->{team})) {
+      croak 'Invalid team name ' . $self->{team};
+    }
+    $self->{batch_id} ||= 0;
+    if ($self->is_batch_duplicate($self->{batch_id})) {
+      croak sprintf
+        'Batch %i might have been already used for an active run', $self->{batch_id};
+    }
     $self->{is_paired}          ||= 0;
     $self->{actual_cycle_count} ||= 0;
     $self->{id_instrument_format} = $self->instrument->id_instrument_format();
@@ -1103,6 +1129,12 @@ npg::model::run
 
   Effectively yields runs performed on the same flowcell
 
+=head2 is_batch_duplicate
+
+ Given batch id, checks whether an active run associated with this batch id already exists.
+ Active run is defined as a run that has no current status or its current status is not
+ either 'run cancelled' or 'run stopped early'.
+
 =head2 recent_runs - arrayref of npg::model::runs with recent status changes (< X days ago, default 14)
 
   my $arRecentRuns = $oRun->recent_runs();
@@ -1124,7 +1156,13 @@ npg::model::run
   
 =head2 is_paired_read - If paired run, return 1. If single run, check paired_read or single_read tags available or not, then return 1 or 0. For single run without single_read or paired_read tags available, return undef 
 
-=head2 create - support for saving a cascade of run_lanes and a current run_status
+=head2 create
+  Creates a new database record for a run, corresponding database records for run lanes
+  and run tags, assigns the current status of this run to 'run pending'.
+
+  Error if an invalid team is given or if the new run is associated with a batch is that
+  is already associated with an active run as defined in documentation for the
+  is_batch_duplicate method. In case of en error all database changes are rolled back.
 
   $oRun->create();
 

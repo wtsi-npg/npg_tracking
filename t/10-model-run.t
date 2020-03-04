@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 93;
+use Test::More tests => 95;
 use Test::Exception;
 use t::util;
 
@@ -208,7 +208,7 @@ subtest 'listing runs' => sub {
 {
   my $model = npg::model::run->new({
             util                 => $util,
-            batch_id             => 939,
+            batch_id             => 1939,
             id_instrument        => 3,
             expected_cycle_count => 35,
             priority             => 1,
@@ -236,7 +236,7 @@ subtest 'listing runs' => sub {
 {
   my $model = npg::model::run->new({
             util                 => $util,
-            batch_id             => 939,
+            batch_id             => 10939,
             id_instrument        => 3,
             expected_cycle_count => 35,
             actual_cycle_count   => 10,
@@ -297,7 +297,7 @@ subtest 'listing runs' => sub {
 {
   my $model = npg::model::run->new({
 				    util                 => $util,
-				    batch_id             => 939,
+				    batch_id             => 5939,
 				    id_instrument        => 3,
 				    expected_cycle_count => 35,
 				    priority             => 1,
@@ -312,7 +312,7 @@ subtest 'listing runs' => sub {
 
   my $run1 = npg::model::run->new({
            util                 => $util,
-           batch_id             => 939,
+           batch_id             => 2939,
            id_instrument        => 3,
            expected_cycle_count => 35,
            priority             => 1,
@@ -324,7 +324,7 @@ subtest 'listing runs' => sub {
   my $run2 = npg::model::run->new({
            util                 => $util,
            id_run_pair          => $run1->id_run(),
-           batch_id             => 939,
+           batch_id             => 3939,
            id_instrument        => 3,
            expected_cycle_count => 35,
            priority             => 1,
@@ -351,7 +351,7 @@ subtest 'listing runs' => sub {
   my $run3 = npg::model::run->new({
            util                 => $util,
            id_run_pair          => $run1->id_run(),
-           batch_id             => 939,
+           batch_id             => 4939,
            id_instrument        => 3,
            expected_cycle_count => 35,
            priority             => 1,
@@ -410,7 +410,7 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a ne
 {
   my $model = npg::model::run->new({
             util                 => $util,
-            batch_id             => 939,
+            batch_id             => 6939,
             id_instrument        => 64,
             expected_cycle_count => 35,
             actual_cycle_count   => 10,
@@ -428,7 +428,7 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a ne
 {
   my $model = npg::model::run->new({
             util                 => $util,
-            batch_id             => 939,
+            batch_id             => 7939,
             id_instrument        => 64,
             expected_cycle_count => 35,
             actual_cycle_count   => 10,
@@ -448,7 +448,7 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a ne
 {
   my $model = npg::model::run->new({
             util                 => $util,
-            batch_id             => 939,
+            batch_id             => 8939,
             id_instrument        => 64,
             expected_cycle_count => 35,
             actual_cycle_count   => 10,
@@ -483,6 +483,147 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a ne
   is($m->team, 'RAD', 'team is RAD');
   ok($m->is_dev, 'dev run');
 }
+
+subtest 'check for batch duplication' => sub {
+   plan tests => 14;
+
+   my $model = npg::model::run->new({util => $util});
+   throws_ok { $model->is_batch_duplicate() }
+     qr/Batch id should be given/, 'no argument - error';
+   ok(!$model->is_batch_duplicate(0), 'zero - not a duplicate');
+   ok(!$model->is_batch_duplicate(q[]), 'empty string - not a duplicate');
+
+   my $batch_id = 9999901;
+   my $run = npg::model::run->new({
+            util                 => $util,
+            batch_id             => $batch_id,
+            id_instrument        => 3,
+            expected_cycle_count => 35,
+            is_paired            => 1,
+            priority             => 1,
+            team                 => 'RAD',
+            id_user              => $util->requestor->id_user(),
+            flowcell_id          => 'FC' . $batch_id
+   });
+   $run->create();
+   my $id_run = $run->id_run;
+
+   is($run->current_run_status->run_status_dict->description,
+    'run pending', 'new run is active');
+   ok($model->is_batch_duplicate($batch_id), 'duplicate detected');
+
+   $util->dbh->do("UPDATE run_status SET iscurrent=0 WHERE id_run=$id_run");
+   $util->dbh->commit;
+   $model = npg::model::run->new({util => $util});
+   my @runs = grep { $_->id_run == $id_run } @{$model->runs()};
+   ok ($runs[0]->batch_id == $batch_id, 'correct run found');
+   is ($runs[0]->current_run_status->run_status_dict->description,
+     undef, 'no current run status');
+   ok($model->is_batch_duplicate($batch_id), 'duplicate detected');
+  
+   my $query = "SELECT id_run_status_dict FROM run_status_dict WHERE description = ?";
+   my $sth = $util->dbh->prepare($query); 
+   for my $d (('run cancelled', 'run stopped early')) {
+     $sth->execute($d);
+     my @row = $sth->fetchrow_array;
+     my $id_dict = $row[0];
+     $util->dbh->do(
+       "UPDATE run_status SET iscurrent=1, id_run_status_dict=$id_dict WHERE id_run=$id_run");
+     my $m = npg::model::run->new({util => $util});
+     my @rs = grep { $_->id_run == $id_run } @{$m->runs()};
+     ok ($rs[0]->batch_id == $batch_id, 'correct run found');
+     is ($rs[0]->current_run_status->run_status_dict->description,
+       $d, "current run status is '$d'");
+     ok(!$m->is_batch_duplicate($batch_id), 'no batch duplication');
+   }
+};
+
+subtest 'run creation error due to problems with batch id' => sub {
+   plan tests => 12;
+
+   my $h = {
+     util                 => $util,
+     id_instrument        => 3,
+     expected_cycle_count => 35,
+     is_paired            => 1,
+     priority             => 1,
+     team                 => 'RAD',
+     id_user              => $util->requestor->id_user()
+   };
+
+   my %ref = %{$h};
+   lives_ok { npg::model::run->new(\%ref)->create() }
+     'run with no batch id can always be created';
+   
+   %ref = %{$h};
+   $ref{batch_id} = q[];
+   lives_ok { npg::model::run->new(\%ref)->create() }
+     'run with an empty string batch id can always be created';
+
+   %ref = %{$h};
+   $ref{batch_id} = 0;
+   lives_ok { npg::model::run->new(\%ref)->create() }
+     'run with zero batch id can always be created';
+
+   %ref = %{$h};
+   $ref{batch_id} = 'some';
+   throws_ok { npg::model::run->new(\%ref)->create() }
+     qr/Invalid batch id \'some\'/,
+     'run with non-empty string batch id cannot be created';
+
+   my $batch_id = 9999902;
+   %ref = %{$h};
+   $ref{batch_id} = $batch_id;
+   my $run = npg::model::run->new(\%ref);
+   lives_ok { $run->create() }
+     'run with yet unused integer batch id can be created';
+   my $id_run = $run->id_run;
+
+   %ref = %{$h};
+   $ref{batch_id} = $batch_id;
+   throws_ok { npg::model::run->new(\%ref)->create() }
+     qr/Batch $batch_id might have been already used for an active run/,
+     'second run with the same batch id cannot be created';
+
+   my $query =
+     "SELECT id_run_status_dict FROM run_status_dict WHERE description = ?";
+   my $sth = $util->dbh->prepare($query);
+   $sth->execute('run cancelled');
+   my @row = $sth->fetchrow_array;
+   my $id_dict = $row[0];
+   $util->dbh->do(
+     "UPDATE run_status SET id_run_status_dict=$id_dict WHERE id_run=$id_run");
+   
+   %ref = %{$h};
+   $ref{batch_id} = $batch_id;
+   my $run_next = npg::model::run->new(\%ref);
+   lives_ok { $run_next->create() } 'can create a run with previously used batch id ' .
+    'if the previous run is cancelled';
+   my $id_run_next = $run_next->id_run;
+   ok ($id_run_next != $id_run, 'a different run is created');
+
+   %ref = %{$h};
+   $ref{batch_id} = $batch_id;
+   throws_ok { npg::model::run->new(\%ref)->create() }
+     qr/Batch $batch_id might have been already used for an active run/,
+     'third run with the same batch id cannot be created  while one of the ' .
+     'previous runs is active';
+
+   $sth->execute('run stopped early');
+   @row = $sth->fetchrow_array;
+   $id_dict = $row[0];
+   $util->dbh->do(
+     "UPDATE run_status SET id_run_status_dict=$id_dict WHERE id_run=$id_run_next");
+   
+   %ref = %{$h};
+   $ref{batch_id} = $batch_id;
+   my $run_next_next = npg::model::run->new(\%ref);
+   lives_ok { $run_next_next->create() } 'can create a run with previously used batch id ' .
+    'if the previous runs are inactive';
+   my $id_run_next_next = $run_next_next->id_run;
+   ok ($id_run_next_next != $id_run, 'a different run is created');
+   ok ($id_run_next_next != $id_run_next, 'a different run is created');
+};
 
 1;
 
