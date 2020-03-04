@@ -166,7 +166,7 @@ subtest 'getting i5opposite for run' => sub {
     } else {
       ok(!$li->is_i5opposite, 'i5opposite');
     }
-    unlink $run_params_file_path;
+    unlink $run_params_file_path or die "Failed to delete $run_params_file_path";
   }
 };
 
