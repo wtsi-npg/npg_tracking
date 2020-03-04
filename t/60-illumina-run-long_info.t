@@ -146,14 +146,13 @@ subtest 'getting i5opposite for run' => sub {
     'runInfo.novaseq.xp.xml'               => { 'rpf' => 'RunParameters', 'i5opposite' => 0 },
   );
 
-  my $ri_data = \%data;
   my $run_info_dir = 't/data/run_info';
   my $run_param_dir = 't/data/run_params';
 
-  for my $file_name (sort keys % $ri_data) {
+  for my $file_name (sort keys %data) {
     note $file_name;
-    my $expected_i5opposite = $ri_data->{$file_name}->{'i5opposite'};
-    my $param_prefix =  $ri_data->{$file_name}->{'rpf'};
+    my $expected_i5opposite = $data{$file_name}->{'i5opposite'};
+    my $param_prefix =  $data{$file_name}->{'rpf'};
     my $run_params_file_name = $file_name =~ s/runInfo/$param_prefix/r;
     my $run_params_file_path = qq[$rf/$param_prefix.xml];
 
@@ -167,7 +166,7 @@ subtest 'getting i5opposite for run' => sub {
     } else {
       ok(!$li->is_i5opposite, 'i5opposite');
     }
-    `rm $run_params_file_path`
+    unlink $run_params_file_path or die "Failed to delete $run_params_file_path";
   }
 };
 
