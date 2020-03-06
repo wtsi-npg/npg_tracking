@@ -1,6 +1,3 @@
-#########
-# Created:       2006-10-31
-#
 package npg::model::run;
 
 use strict;
@@ -1278,7 +1275,7 @@ and loader user name under the 'loader' key
 
 =item JSON
 
-=item List::MoreUtils qw(none)
+=item List::MoreUtils
 
 =back
 
@@ -1288,11 +1285,17 @@ and loader user name under the 'loader' key
 
 =head1 AUTHOR
 
-Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+=over
+
+=item Roger Pettett
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017 GRL
+Copyright (C) 2006-2012,2013,2014,2015,2016,2017,2020 Genome Research Ltd.
 
 This file is part of NPG.
 
