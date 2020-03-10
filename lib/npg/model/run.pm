@@ -387,7 +387,7 @@ sub is_batch_duplicate {
 
   defined $batch_id or croak 'Batch id should be given';
 
-  $batch_id or return 0; # if zero, then nothing ot compare to
+  $batch_id or return 0; # if zero, then nothing to compare to
 
   my @runs = @{$self->runs_on_batch($batch_id)};
   my @run_statuses =
@@ -1116,7 +1116,7 @@ npg::model::run
 
   Returns an array reference of npg::model::run objects associated with batch_id given as
   an argument or, if the argument is not defined or zero, with this object's batch id if known
-  An empty array is returned if batch id to query on is not defined or if no runs ar eassociated
+  An empty array is returned if batch id to query on is not defined or if no runs are associated
   with the batch id.
 
   Error if batch id is not a positive integer.
