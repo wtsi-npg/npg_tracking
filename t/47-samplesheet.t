@@ -18,37 +18,6 @@ my $schema = t::dbic_util->new->test_schema();
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q(t/data/samplesheet);
 
 my $dir = tempdir( CLEANUP => 1 );
-my @refs = ();
-
-foreach my $r (qw(PhiX/Illumina
-                  Homo_sapiens/NCBI36
-                  Mus_musculus/NCBIm37
-                  Strongyloides_ratti/20100601
-                  Salmonella_pullorum/449_87
-                  Homo_sapiens/1000Genomes
-                  Haemonchus_contortus/V1_21June13
-                  Plasmodium_falciparum/3D7
-                  Bordetella_pertussis/ST24
-                  Mus_musculus/GRCm38
-                  Homo_sapiens/GRCh37_53
-                  Homo_sapiens/CGP_GRCh37.NCBI.allchr_MT)) {
-
-  my $path = "$dir/references/$r/all/fasta";
-  make_path $path;
-  push @refs, $path;
-}
-
-make_path "$dir/references/taxon_ids";
-symlink "../Homo_sapiens", "$dir/references/taxon_ids/9606";
-symlink "NCBI36", "$dir/references/Homo_sapiens/default";
-symlink "Illumina", "$dir/references/PhiX/default";
-
-foreach my $r (@refs) {
-  my $file = "$r/some.fa";
-  open my $fh, '>', $file or die "Cannot write to $file";
-  print $fh 'some ref';
-  close $fh;
-}
 
 subtest 'object creation' => sub {
    plan tests => 7;
@@ -102,7 +71,7 @@ Investigator Name,mq1,,
 Project Name,Strongyloides ratti transcriptomics,,
 Experiment Name,7007,,
 Date,2011-11-03T12:16:00,,
-Workflow,LibraryQC,,
+Workflow,GenerateFASTQ,,
 Chemistry,Default,,
 ,,,
 [Reads],,,
@@ -115,7 +84,7 @@ Chemistry,Default,,
 ,,,
 [Data],,,
 Sample_ID,Sample_Name,GenomeFolder,
-3789277,Strongyloides ratti,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Strongyloides_ratti\20100601\all\fasta\,
+3789277,Strongyloides ratti,,
 RESULT_7007
   $expected_result_7007 =~ s/\n/\r\n/smg;
 
@@ -144,7 +113,7 @@ Investigator Name,mq1,,,
 Project Name,Kapa HiFi test,,,
 Experiment Name,6946,,,
 Date,2011-10-14T16:32:00,,,
-Workflow,LibraryQC,,,
+Workflow,GenerateFASTQ,,,
 Chemistry,Default,,,
 ,,,,
 [Reads],,,,
@@ -157,18 +126,18 @@ Chemistry,Default,,,
 ,,,,
 [Data],,,,
 Sample_ID,Sample_Name,GenomeFolder,Index,
-3789278,Salmonella pullorum,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Salmonella_pullorum\449_87\all\fasta\,ATCACGTT,
-3789279,Bordetella Pertussis,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Bordetella_pertussis\ST24\all\fasta\,CGATGTTT,
-3789280,Plasmodium Falciparum,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,TTAGGCAT,
-3789281,Homo sapiens,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Homo_sapiens\GRCh37_53\all\fasta\,TGACCACT,
-3789282,Salmonella pullorum,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Salmonella_pullorum\449_87\all\fasta\,ACAGTGGT,
-3789283,Bordetella Pertussis,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Bordetella_pertussis\ST24\all\fasta\,GCCAATGT,
-3789284,Plasmodium Falciparum,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,CAGATCTG,
-3789285,Homo sapiens,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Homo_sapiens\GRCh37_53\all\fasta\,ACTTGATG,
-3789286,Salmonella pullorum,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Salmonella_pullorum\449_87\all\fasta\,GATCAGCG,
-3789287,Bordetella Pertussis,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Bordetella_pertussis\ST24\all\fasta\,TAGCTTGT,
-3789288,Plasmodium Falciparum,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,GGCTACAG,
-3789289,Homo sapiens,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Homo_sapiens\GRCh37_53\all\fasta\,CTTGTACT,
+3789278,Salmonella pullorum,,ATCACGTT,
+3789279,Bordetella Pertussis,,CGATGTTT,
+3789280,Plasmodium Falciparum,,TTAGGCAT,
+3789281,Homo sapiens,,TGACCACT,
+3789282,Salmonella pullorum,,ACAGTGGT,
+3789283,Bordetella Pertussis,,GCCAATGT,
+3789284,Plasmodium Falciparum,,CAGATCTG,
+3789285,Homo sapiens,,ACTTGATG,
+3789286,Salmonella pullorum,,GATCAGCG,
+3789287,Bordetella Pertussis,,TAGCTTGT,
+3789288,Plasmodium Falciparum,,GGCTACAG,
+3789289,Homo sapiens,,CTTGTACT,
 RESULT_6946
   $expected_result =~ s/\n/\r\n/smg;
   lives_ok { $ss->process(); } ' sample sheet generated';
@@ -187,7 +156,7 @@ Investigator Name,nh4,,,
 Project Name,Mate Pair R%26D,,,
 Experiment Name,7825,,,
 Date,2012-04-03T16:39:48,,,
-Workflow,LibraryQC,,,
+Workflow,GenerateFASTQ,,,
 Chemistry,Default,,,
 ,,,,
 [Reads],,,,
@@ -200,11 +169,11 @@ Chemistry,Default,,,
 ,,,,
 [Data],,,,
 Sample_ID,Sample_Name,GenomeFolder,Index,
-4894529,Mouse_test_3kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Mus_musculus\NCBIm37\all\fasta\,ATCACGTTAT,
-4894528,Tetse_3kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\PhiX\Illumina\all\fasta\,CGATGTTTAT,
-4894527,PfIT_454_5kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,ACTTGATGAT,
-4894525,PfIT_Sanger_5kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,GATCAGCGAT,
-4894526,PfIT_SOLiD5500_5kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,TAGCTTGTAT,
+4894529,Mouse_test_3kb,,ATCACGTTAT,
+4894528,Tetse_3kb,,CGATGTTTAT,
+4894527,PfIT_454_5kb,,ACTTGATGAT,
+4894525,PfIT_Sanger_5kb,,GATCAGCGAT,
+4894526,PfIT_SOLiD5500_5kb,,TAGCTTGTAT,
 RESULT_7825
   $expected_result =~ s/\n/\r\n/smg;
   lives_ok { $ss->process(); } ' sample sheet generated';
@@ -225,7 +194,7 @@ Investigator Name,nh4,,,,
 Project Name,Mate Pair R%26D,,,,
 Experiment Name,7826,,,,
 Date,2012-04-03T16:39:48,,,,
-Workflow,LibraryQC,,,,
+Workflow,GenerateFASTQ,,,,
 Chemistry,Amplicon,,,,
 ,,,,,
 [Reads],,,,,
@@ -238,11 +207,11 @@ Chemistry,Amplicon,,,,
 ,,,,,
 [Data],,,,,
 Lane,Sample_ID,Sample_Name,GenomeFolder,Index,Index2,
-1,7826_1_ATCACGTTATAAAAAA,7826_1_ATCACGTTATAAAAAA,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Mus_musculus\NCBIm37\all\fasta\,ATCACGTT,ATAAAAAA,
-1,7826_1_CGATGTTTATTTTTTT,7826_1_CGATGTTTATTTTTTT,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\PhiX\Illumina\all\fasta\,CGATGTTT,ATTTTTTT,
-1,7826_1_ACTTGATGATCCCCCC,7826_1_ACTTGATGATCCCCCC,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,ACTTGATG,ATCCCCCC,
-1,7826_1_GATCAGCGATGGGGGG,7826_1_GATCAGCGATGGGGGG,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,GATCAGCG,ATGGGGGG,
-1,7826_1_TAGCTTGTATACACGT,7826_1_TAGCTTGTATACACGT,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,TAGCTTGT,ATACACGT,
+1,7826_1_ATCACGTTATAAAAAA,7826_1_ATCACGTTATAAAAAA,,ATCACGTT,ATAAAAAA,
+1,7826_1_CGATGTTTATTTTTTT,7826_1_CGATGTTTATTTTTTT,,CGATGTTT,ATTTTTTT,
+1,7826_1_ACTTGATGATCCCCCC,7826_1_ACTTGATGATCCCCCC,,ACTTGATG,ATCCCCCC,
+1,7826_1_GATCAGCGATGGGGGG,7826_1_GATCAGCGATGGGGGG,,GATCAGCG,ATGGGGGG,
+1,7826_1_TAGCTTGTATACACGT,7826_1_TAGCTTGTATACACGT,,TAGCTTGT,ATACACGT,
 RESULT_mkfastq
   $expected_result =~ s/\n/\r\n/smg;
   lives_ok { $ss->process(); } ' sample sheet generated';
@@ -261,7 +230,7 @@ Investigator Name,nh4,,,
 Project Name,Mate Pair R%26D,,,
 Experiment Name,7826,,,
 Date,2012-04-03T16:39:48,,,
-Workflow,LibraryQC,,,
+Workflow,GenerateFASTQ,,,
 Chemistry,Amplicon,,,
 ,,,,
 [Reads],,,,
@@ -274,11 +243,11 @@ Chemistry,Amplicon,,,
 ,,,,
 [Data],,,,
 Sample_ID,Sample_Name,GenomeFolder,Index,Index2,
-4894529,Mouse_test_3kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Mus_musculus\NCBIm37\all\fasta\,ATCACGTT,ATAAAAAA,
-4894528,Tetse_3kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\PhiX\Illumina\all\fasta\,CGATGTTT,ATTTTTTT,
-4894527,PfIT_454_5kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,ACTTGATG,ATCCCCCC,
-4894525,PfIT_Sanger_5kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,GATCAGCG,ATGGGGGG,
-4894526,PfIT_SOLiD5500_5kb,C:\Illumina\MiSeq Reporter\Genomes\WTSI_references\Plasmodium_falciparum\3D7\all\fasta\,TAGCTTGT,ATACACGT,
+4894529,Mouse_test_3kb,,ATCACGTT,ATAAAAAA,
+4894528,Tetse_3kb,,CGATGTTT,ATTTTTTT,
+4894527,PfIT_454_5kb,,ACTTGATG,ATCCCCCC,
+4894525,PfIT_Sanger_5kb,,GATCAGCG,ATGGGGGG,
+4894526,PfIT_SOLiD5500_5kb,,TAGCTTGT,ATACACGT,
 RESULT_7826
   $expected_result =~ s/\n/\r\n/smg;
   lives_ok { $ss->process(); } ' sample sheet generated';
@@ -363,10 +332,10 @@ subtest 'samplesheets for data for multiple runs' => sub {
   } qr/Run data set \(id_run or run\) where LIMs data are for multiple runs/,
     'error if run object is set';
 
-  throws_ok { npg::samplesheet->new(lims => \@lims, extend => 0)->process() }
+  throws_ok { npg::samplesheet->new(lims => \@lims, npg_tracking_schema=>$schema, extend => 0)->process() }
     qr/id_run or a run is required/,
     'error trying to generate a default samplesheet';
-  throws_ok { npg::samplesheet->new(lims => \@lims)->process() }
+  throws_ok { npg::samplesheet->new(lims => \@lims, npg_tracking_schema=>$schema)->process() }
     qr/id_run or a run is required/,
     'error trying to generate a default samplesheet';
 

@@ -167,7 +167,6 @@ my $builder = $class->new(
                 'HTTP::Request::Common'           => '5.822',
                 'HTTP::Response'                  => 0,
                 'IO::All'                         => '0.39',
-                'IO::All::FTP'                    => 0,
                 'IO::Scalar'                      => '2.110',
                 'IPC::System::Simple'             => 0,
                 'JSON'                            => '2.12',

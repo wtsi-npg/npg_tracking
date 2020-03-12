@@ -120,6 +120,7 @@ sub parse_file_name {
 }
 
 has [qw/_id_run_common _tag_index_common/] => (
+  metaclass  => 'DoNotSerialize',
   isa        => 'Maybe[Int]',
   is         => 'ro',
   required   => 0,
@@ -127,6 +128,7 @@ has [qw/_id_run_common _tag_index_common/] => (
 );
 
 has '_subset_common' => (
+  metaclass  => 'DoNotSerialize',
   isa        => 'Maybe[Str]',
   is         => 'ro',
   required   => 0,
@@ -141,6 +143,7 @@ for my $attr (qw/id_run tag_index subset/) {
 }
 
 has [qw/_file_name_semantic _dir_path_semantic/] => (
+  metaclass  => 'DoNotSerialize',
   isa        => 'Bool',
   is         => 'ro',
   required   => 0,
@@ -225,6 +228,9 @@ Both file and directory names are deterministic. It is guaranteed
 that the same name is returned for a given composition and that names
 for different compositions do not clash. It is not always possible
 to translate the name back to the composition.
+
+Private attributes defined in this role will not be serialized under
+the MooseX::Storage framework.
 
 =head3 Heuristic
 
@@ -406,6 +412,8 @@ returned hash.
 
 =item Moose::Role
 
+=item MooseX::Storage::Meta::Attribute::DoNotSerialize
+
 =item Carp
 
 =item Readonly
@@ -428,7 +436,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2019 GRL
+Copyright (C) 2018,2019,2020 GRL
 
 This file is part of NPG.
 
