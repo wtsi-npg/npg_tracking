@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - Update URL for production Sequencescape LIMS
+
 release 91.0.0
  - modified is_i5opposite when there is no reverse read
  - removed scripts for monitoring instruments via ftp; related

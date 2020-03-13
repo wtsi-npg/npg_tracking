@@ -12,7 +12,7 @@ use_ok('st::api::event');
             is_success => 1,
            });
   my $mock = {
-        q(http://psd-support.internal.sanger.ac.uk:6600/events)  => $ua,
+        q(http://sequencescape.psd.sanger.ac.uk/events)  => $ua,
        };
   $ua->{mock} = $mock;
   my $ev = st::api::event->new({
@@ -23,7 +23,7 @@ use_ok('st::api::event');
   isa_ok($ev, 'st::api::event');
   is($ev->entity_name(), 'event', 'entity_name returns event');
 
-  is($ev->service(), 'http://psd-support.internal.sanger.ac.uk:6600/events',
+  is($ev->service(), 'http://sequencescape.psd.sanger.ac.uk/events',
     'live url returned');
   {
     local $ENV{'dev'} = 'some';
