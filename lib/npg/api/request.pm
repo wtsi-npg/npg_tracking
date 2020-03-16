@@ -209,10 +209,10 @@ sub make {
 sub _create_path {
   my ( $self, $url ) = @_;
 
-  my ($stpath)  = $url =~ m{\Ahttps?://(?:dev\.)?
+  my ($stpath)  = $url =~ m{\Ahttps?://(?:(?:dev|sequencescape)\.)?
                             psd.*
-                            \.sanger\.ac\.uk?(?::\d+)
-                            (.*?)\z}xms; # sequencescape path
+                            \.sanger\.ac\.uk?(?::\d+)?
+                            (/.*?)\z}xms; # sequencescape path
   ##no critic(ProhibitComplexRegexes)
   my ($npgpath) = $url =~ m{\Ahttps?://
                             (?:npg|sfweb|sf2-farm-srv1)
@@ -469,7 +469,7 @@ Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010 GRL, by Marina Gourtovaia
+Copyright (C) 2010,2020 Genome Research Ltd. by Marina Gourtovaia
 
 This file is part of NPG.
 
