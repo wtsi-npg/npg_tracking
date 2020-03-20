@@ -1,6 +1,9 @@
 LIST OF CHANGES
 
  - Update URL for production Sequencescape LIMS
+ - method for creating a lane-level st::api::lims object from
+   any other st::api::lims object where the resulting object has
+   the same driver as the original one
 
 release 91.0.0
  - modified is_i5opposite when there is no reverse read
