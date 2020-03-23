@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<RunInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="4">
+  <Run Id="160607_ML-PT1-15_0009_A000H02MFC" Number="9">
+    <Flowcell>000H02MFC</Flowcell>
+    <Instrument>ML-PT1-15</Instrument>
+    <Date>160607</Date>
+    <Reads>
+      <Read Number="1" NumCycles="30" IsIndexedRead="N" />
+      <Read Number="2" NumCycles="8" IsIndexedRead="Y" />
+      <Read Number="3" NumCycles="30" IsIndexedRead="N" />
+    </Reads>
+    <FlowcellLayout LaneCount="1" SurfaceCount="2" SwathCount="3" TileCount="10" SectionPerLane="1" LanePerSection="1">
+      <TileSet TileNamingConvention="FiveDigit">
+        <Tiles>
+          <Tile>1_11102</Tile>
+          <Tile>1_21102</Tile>
+          <Tile>1_11103</Tile>
+          <Tile>1_21103</Tile>
+          <Tile>1_11104</Tile>
+          <Tile>1_21104</Tile>
+          <Tile>1_11105</Tile>
+          <Tile>1_21105</Tile>
+          <Tile>1_11106</Tile>
+          <Tile>1_21106</Tile>
+          <Tile>1_11107</Tile>
+          <Tile>1_21107</Tile>
+          <Tile>1_11108</Tile>
+          <Tile>1_21108</Tile>
+          <Tile>1_11109</Tile>
+          <Tile>1_21109</Tile>
+          <Tile>1_11110</Tile>
+          <Tile>1_21110</Tile>
+          <Tile>1_12101</Tile>
+          <Tile>1_22101</Tile>
+          <Tile>1_12102</Tile>
+          <Tile>1_22102</Tile>
+          <Tile>1_12103</Tile>
+          <Tile>1_22103</Tile>
+          <Tile>1_12104</Tile>
+          <Tile>1_22104</Tile>
+          <Tile>1_12105</Tile>
+          <Tile>1_22105</Tile>
+          <Tile>1_12106</Tile>
+          <Tile>1_22106</Tile>
+          <Tile>1_12107</Tile>
+          <Tile>1_22107</Tile>
+          <Tile>1_12108</Tile>
+          <Tile>1_22108</Tile>
+          <Tile>1_12109</Tile>
+          <Tile>1_22109</Tile>
+          <Tile>1_12110</Tile>
+          <Tile>1_22110</Tile>
+          <Tile>1_13102</Tile>
+          <Tile>1_23102</Tile>
+          <Tile>1_13103</Tile>
+          <Tile>1_23103</Tile>
+          <Tile>1_13104</Tile>
+          <Tile>1_23104</Tile>
+          <Tile>1_13105</Tile>
+          <Tile>1_23105</Tile>
+          <Tile>1_13106</Tile>
+          <Tile>1_23106</Tile>
+          <Tile>1_13107</Tile>
+          <Tile>1_23107</Tile>
+          <Tile>1_13108</Tile>
+          <Tile>1_23108</Tile>
+          <Tile>1_13109</Tile>
+          <Tile>1_23109</Tile>
+          <Tile>1_13110</Tile>
+          <Tile>1_23110</Tile>
+        </Tiles>
+      </TileSet>
+    </FlowcellLayout>
+    <ImageDimensions Width="2592" Height="1944" />
+    <ImageChannels>
+      <Name>Red</Name>
+      <Name>Green</Name>
+    </ImageChannels>
+  </Run>
+</RunInfo>

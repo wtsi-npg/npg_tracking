@@ -1,5 +1,9 @@
 LIST OF CHANGES
- 
+
+ - Update URL for production Sequencescape LIMS
+
+release 91.0.0
+ - modified is_i5opposite when there is no reverse read
  - removed scripts for monitoring instruments via ftp; related
    modules and methods, their tests and test data are removed
  - code for staging monitor reorganised so that the Monitor::Runfolder
@@ -18,17 +22,23 @@ LIST OF CHANGES
  - functionality for checking instruments' wash status and setting
    'was required' instrument tag is lost; this shoud be done outside
    of staging monitor
- - minor change to npg_tracking::util::pipeline_config to move bqsr and
-   haplotype caller to a tertiary section which can be set by specifically
-   by reference or by using a default study config.
- - npg_tracking::util::pipeline_config is refactored to restrict access
-   to attributes which should not be set by the caller (local_bin, product_config)
-   and to enable setting product release configuration file path via the
-   new product_conf_file_path attribute
+ - npg_tracking::util::pipeline_config:
+     move bqsr and haplotype caller to a tertiary section which can be
+     set specifically by reference or by using a default study config;
+     restrict access to attributes which should not be set by the caller
+     (local_bin, product_config);
+     enable setting product release configuration file path via the
+     new product_conf_file_path attribute
  - genome reference hierarchy in the current samplesheet is not compatible with
    the latest version of MiSeq Illumina software; setting Workflow value to
    GenerateFastQ prevents the instrument's software from using this value,
    hence we can stop setting genome reference path altogether
+ - make impossible to download cbcl file via tracking web pages
+ - runs_on_batch method of npg::run::model is refactored not to cache
+   the return value; proper input checking is added
+ - error on run creation if the batch id associated with the run is already
+   associated with one of active runs, i.e. a run that has no current status
+   or its current status is not either 'run cancelled' or 'run stopped early
 
 release 90.3.0
  - npg_tracking::glossary::moniker -
