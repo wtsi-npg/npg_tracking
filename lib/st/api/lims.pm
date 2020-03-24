@@ -996,6 +996,29 @@ sub create_tag_zero_object {
   return __PACKAGE__->new(%init);
 }
 
+=head2 create_lane_object
+
+Using id_run and position values given as attributes to this method, creates
+and returns an st::api::lims object for the lane corresponding to the given
+attributes. The new object has the same driver settings as the original object.
+
+  my $l = st::api::lims->new(id_run => 4, position => 3, tag_index => 6);
+  my $lane_lims = $l->create_lane_object(4,4);
+
+=cut
+
+sub create_lane_object {
+  my ($self, $id_run, $position) = @_;
+  ($id_run and $position) or croak 'id_run and position are expected as arguments';
+  my %init = %{$self->_driver_arguments()};
+  $init{'driver_type'} = $self->driver_type;
+  delete $init{'tag_index'};
+  delete $init{'rpt_list'};
+  $init{'id_run'}   = $id_run;
+  $init{'position'} = $position;
+  return __PACKAGE__->new(%init);
+}
+
 =head2 cached_samplesheet_var_name
 
 Returns the name of the env. variable for storing the full path of the cached
@@ -1410,7 +1433,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2018 Genome Research Ltd
+Copyright (C) 2013,2014,2015,2016,2017,2018,2019,2020 Genome Research Ltd.
 
 This file is part of NPG.
 
