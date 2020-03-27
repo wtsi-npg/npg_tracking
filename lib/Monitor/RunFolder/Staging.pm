@@ -31,7 +31,6 @@ Readonly::Scalar my $RTA_COMPLETE         => 10 * $SECONDS_PER_MINUTE;
 Readonly::Scalar my $INTENSITIES_DIR_PATH => 'Data/Intensities';
 Readonly::Array  my @NO_MOVE_NAMES        => qw( npgdonotmove npg_do_not_move );
 Readonly::Scalar my $MODE_INDEX           => 2;
-Readonly::Scalar my $EXP_CBCLS_PER_CYCL   => 2;
 
 Readonly::Scalar my $RTA_COMPLETE_FN      => q[RTAComplete\.txt];
 Readonly::Scalar my $COPY_COMPLETE_FN     => q[CopyComplete\.txt];
@@ -159,10 +158,11 @@ sub monitor_stats {
 sub check_tiles {
     my ($self) = @_;
 
-    my $expected_lanes  = $self->lane_count();
-    my $expected_cycles = $self->expected_cycle_count();
-    my $expected_tiles  = $self->lane_tilecount();
-    my $path            = $self->runfolder_path();
+    my $expected_lanes    = $self->lane_count();
+    my $expected_surfaces = $self->surface_count();
+    my $expected_cycles   = $self->expected_cycle_count();
+    my $expected_tiles    = $self->lane_tilecount();
+    my $path              = $self->runfolder_path();
 
     print {*STDERR} "\tChecking Lanes, Cycles, Tiles...\n" or carp $OS_ERROR;
 
@@ -216,9 +216,10 @@ sub check_tiles {
                 my @cbcl_files = glob "$cycle/*.$filetype" . q({,.gz});
                 @cbcl_files = grep { m/ L \d+ _ \d+ [.] $filetype (?: [.] gz )? $ /msx } @cbcl_files;
                 my $count = scalar @cbcl_files;
-                if ( $count != $EXP_CBCLS_PER_CYCL ) {
+                # there should be one cbcl file per expected surface
+                if ( $count != $expected_surfaces ) {
                     carp 'Missing cbcl(s) files: '
-                       . "$cycle - [expected: $EXP_CBCLS_PER_CYCL, found: $count]";
+                       . "$cycle - [expected: $expected_surfaces, found: $count]";
                     return 0;
                 }
             } else {

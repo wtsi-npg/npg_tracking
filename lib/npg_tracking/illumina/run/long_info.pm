@@ -120,6 +120,22 @@ has q{lane_count} => (
   documentation => q{The number of lanes on this run},
 );
 
+=head2 surface_count
+
+Number of surfaces configured for this run. May be set on Construction.
+
+  my $iSurfaceCount = $self->surface_count();
+
+=cut
+
+has q{surface_count} => (
+  is            => 'ro',
+  isa           => 'Int',
+  writer        => '_set_surface_count',
+  predicate     => 'has_surface_count',
+  documentation => q{The number of surfaces on this run},
+);
+
 =head2 read_cycle_counts
 
 List of cycle lengths configured for each read/index in order.
@@ -510,6 +526,20 @@ sub _build_workflow_type {
   return _get_single_element_text($self->_run_params(), 'WorkflowType');
 }
 
+=head2 flowcell_mode
+
+=cut
+
+has q{flowcell_mode} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build_flowcell_mode {
+  my $self = shift;
+  return _get_single_element_text($self->_run_params(), 'FlowCellMode');
+}
+
 =head2 all_lanes_mergeable
 
 Method returns true if all lanes on the flowcell contain the
@@ -697,6 +727,9 @@ sub _build__runinfo_store {
 
   my $fcl_el = $doc->getElementsByTagName('FlowcellLayout')->[0];
   if(not defined $fcl_el) {
+    if ( $self->platform_NovaSeq() ) {
+      croak q{No FlowCellLayout for NovaSeq run};
+    }
     $self->_set_lane_count($doc->getElementsByTagName('Lane')->size);
     $self->_set_expected_cycle_count($doc->getElementsByTagName('Cycles')->[0]->getAttribute('Incorporation'));
 
@@ -725,7 +758,12 @@ sub _build__runinfo_store {
 
   }else{
     $self->_set_lane_count($fcl_el->getAttribute('LaneCount'));
-    my $ncol = $fcl_el->getAttribute('SurfaceCount') * $fcl_el->getAttribute('SwathCount');
+    $self->_set_surface_count($fcl_el->getAttribute('SurfaceCount'));
+    if ( $self->platform_NovaSeq() && $self->flowcell_mode() eq 'SP' ) {
+      # NovaSeq SP flowcells only have one surface
+      $self->_set_surface_count(1);
+    }
+    my $ncol = $self->surface_count() * $fcl_el->getAttribute('SwathCount');
     my $nrow = $fcl_el->getAttribute('TileCount'); #informatic split on HiSeq
     $self->_set_tilelayout_columns($ncol);
     $self->_set_tilelayout_rows($nrow);

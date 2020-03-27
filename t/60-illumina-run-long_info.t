@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 65;
+use Test::More tests => 67;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
@@ -447,5 +447,13 @@ note($long_info->runfolder_path);
   lives_and { ok( $long_info->is_indexed, 'is_indexed ok');} 'is_indexed lives and ok';
   lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for dual index paired};
   lives_and { ok( $long_info->is_paired_read, 'is_paired_read ok');} 'is_paired_read lives and ok';
+}
+
+#and a SP flowcell
+{
+  my $long_info;
+  my $rfpath = q(t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming//200303_A00562_0352_AHKFVLDRXX);
+  lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for SP flowcell};
+  cmp_ok( $long_info->surface_count, '==', 1, 'surface_count');
 }
 1;
