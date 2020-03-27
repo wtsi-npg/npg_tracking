@@ -404,6 +404,7 @@ sub _build_run_flowcell {
 
 foreach my $f ( qw(expected_cycle_count
                    lane_count
+                   surface_count 
                    read_cycle_counts
                    indexing_cycle_range
                    read1_cycle_range
