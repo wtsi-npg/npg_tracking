@@ -249,6 +249,8 @@ lib/npg_tracking/data/gbs_plex.pm
 lib/npg_tracking/data/gbs_plex/find.pm
 lib/npg_tracking/data/geno_refset.pm
 lib/npg_tracking/data/geno_refset/find.pm
+lib/npg_tracking/data/primer_panel.pm
+lib/npg_tracking/data/primer_panel/find.pm
 lib/npg_tracking/data/reference.pm
 lib/npg_tracking/data/reference/find.pm
 lib/npg_tracking/data/reference/info.pm
@@ -400,6 +402,7 @@ t/10-npg_tracking-util-config.t
 t/10-npg_tracking-util-pipeline_config.t
 t/10-npg_tracking-util-db_connect.t
 t/10-npg_tracking-util-messages.t
+t/10-primer_panel.t
 t/10-reference-find.t
 t/10-reference-info.t
 t/10-reference-list.t
@@ -915,6 +918,7 @@ t/data/repos1/npg/run/7753.xml
 t/data/repos1/npg/run/7754.xml
 t/data/repos1/population_snv/Homo_sapiens/default/Human_all_exon_50MB/1000Genomes_hs37d5/Human_all_exon_50MB-1000Genomes_hs37d5.vcf.gz
 t/data/repos1/population_snv/Homo_sapiens/default/Standard/1000Genomes_hs37d5/Human_all_exon_50MB-1000Genomes_hs37d5.vcf.gz
+t/data/repos1/primer_panel/nCoV-2019/default/SARS-CoV-2/MN908947.3/nCoV-2019.bed
 t/data/repos1/references/Bordetella_pertussis/ST24/all/fasta/bpst24_May2010-1.fa
 t/data/repos1/references/Haemonchus_contortus/V1_21June13/all/fasta/haemonchus_V1.fa
 t/data/repos1/references/Homo_sapiens/1000Genomes/all/fasta/human_g1k_v37.fasta
@@ -931,6 +935,7 @@ t/data/repos1/references/PhiX/Illumina/all/fasta/phix-illumina.fa
 t/data/repos1/references/Plasmodium_falciparum/3D7/all/fasta/MAL.version2.1.4.fasta
 t/data/repos1/references/Salmonella_pullorum/449_87/all/fasta/Salmonella_pullorum_449_87.fasta
 t/data/repos1/references/Strongyloides_ratti/20100601/all/fasta/S_ratti_010610.fa
+t/data/repos1/references/SARS-CoV-2/MN908947.3/all/fasta/MN908947.3.fa
 t/data/repos1/st/batches/16442.xml
 t/data/repos1/st/batches/16467.xml
 t/data/repos1/st/batches/25539.xml

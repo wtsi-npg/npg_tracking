@@ -47,6 +47,7 @@ Readonly::Scalar our $GENOTYPES_DIR      => q[genotypes];
 Readonly::Scalar our $BAITS_DIR          => q[baits];
 Readonly::Scalar our $GBS_PLEX_DIR       => q[gbs_plex];
 Readonly::Scalar our $GENO_REFSET_DIR    => q[geno_refset];
+Readonly::Scalar our $PRIMER_PANEL_DIR   => q[primer_panel];
 Readonly::Scalar our $TAG_SETS_DIR       => q[tag_sets];
 Readonly::Scalar our $TAXON_IDS_DIR      => q[taxon_ids];
 Readonly::Scalar our $BIN_DIR            => q[bin];
@@ -174,6 +175,21 @@ sub _build_geno_refset_repository {
     my $self = shift;
     return catdir($self->repository, $GENO_REFSET_DIR);
 }
+
+
+=head2 primer_panel_repository
+
+=cut
+has 'primer_panel_repository' => (isa        => 'NPG_TRACKING_REFERENCE_REPOSITORY',
+                                  is         => 'ro',
+                                  required   => 0,
+                                  lazy_build => 1,
+);
+sub _build_primer_panel_repository {
+    my $self = shift;
+    return catdir($self->repository, $PRIMER_PANEL_DIR);
+}
+
 
 =head2 tag_sets_repository
 
