@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - staging monitor changes for SP flowcells
  - Update URL for production Sequencescape LIMS
  - method for creating a lane-level st::api::lims object from
    any other st::api::lims object where the resulting object has
