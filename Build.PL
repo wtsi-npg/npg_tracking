@@ -86,7 +86,7 @@ my $builder = $class->new(
           },
 
           'test_requires' => {
-                'Test::Compile'                   => '< 1.4',
+              'Test::Compile'                     => '< 1.4',
           },
 
           'build_requires' => {
@@ -102,6 +102,7 @@ my $builder = $class->new(
                 'Test::Distribution'              => 0,
                 'Test::Deep'                      => '0.103',
                 'Test::Exception'                 => '0.27',
+                'Test::HTTP::Server'              =>  0,
                 'Test::LongString'                => 0,
                 'Test::MockModule'                => 0,
                 'Test::MockObject'                => 0,
@@ -129,6 +130,7 @@ my $builder = $class->new(
                 'Config::Auto'                    => 0,
                 'Crypt::CBC'                      => 0,
                 'Cwd'                             => 0,
+                'Data::Dump'                      => 0,
                 'Date::Parse'                     => '2.27',
                 'DateTime'                        => '0.5',
                 'DateTime::TimeZone'              => 0,
@@ -214,6 +216,7 @@ my $builder = $class->new(
                 'Sys::Hostname'                   => '1.11',
                 'Template'                        => '2.19',
                 'Try::Tiny'                       => 0,
+                'URI'                             => 0,
                 'URI::Escape'                     => 0,
                 'URI::URL'                        => 0,
                 'utf8'                            => 0,
