@@ -16,6 +16,17 @@ our $VERSION = '0';
 
 Readonly::Scalar our $FORM  => q[default];
 
+has 'primer_panel' => ( isa           => q{Maybe[Str]},
+                        is            => q{ro},
+                        lazy          => 1,
+                        builder       => '_build_primer_panel',
+                        documentation => 'The primer panel optionally including version',);
+
+sub _build_primer_panel {
+  my $self = shift;
+  return $self->lims->gbs_plex_name;
+}
+
 has 'primer_panel_name' => ( isa           => q{Maybe[Str]},
                              is            => q{ro},
                              lazy          => 1,
@@ -24,7 +35,27 @@ has 'primer_panel_name' => ( isa           => q{Maybe[Str]},
 
 sub _build_primer_panel_name {
   my $self = shift;
-  return $self->lims->gbs_plex_name;
+  my $name;
+  if($self->primer_panel) {
+    my @n = split /\//smx, $self->primer_panel;
+    $name = $n[0];
+  }
+  return $name;
+}
+
+has 'primer_panel_version' => ( isa           => q{Maybe[Str]},
+                                is            => q{ro},
+                                lazy          => 1,
+                                builder       => '_build_primer_panel_version',
+                                documentation => 'The primer panel version',);
+
+sub _build_primer_panel_version {
+  my $self = shift;
+  my $version;
+  if ($self->primer_panel =~ m{[/] \s* (\w+) \s* $}smx) {
+    $version = $1;
+  }
+  return (defined $version) ? $version : $FORM;
 }
 
 
@@ -53,7 +84,8 @@ sub _build_primer_panel_path {
       $self->parse_reference_genome($self->lims->reference_genome);
 
   my $path = catdir
-      ($self->primer_panel_repository, $primer_panel_name, $FORM, $organism, $strain);
+      ($self->primer_panel_repository, $primer_panel_name,
+       $self->primer_panel_version, $organism, $strain);
 
   if (!-d $path) {
     $self->messages->push('Primer panel directory ' . $path . ' does not exist');

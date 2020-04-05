@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 12;
 use Test::Exception;
 use Moose::Meta::Class;
 use File::Spec::Functions qw(catdir);
@@ -60,10 +60,22 @@ $pp_repos = catdir($repos, q[primer_panel]);
                                                    tag_index => 1);
   
   is($fb->primer_panel_path, qq{$pp_repos/nCoV-2019/default/SARS-CoV-2/MN908947.3},
-     q{primer_path correct via lims});
+     q{primer_path correct via lims - default version});
 
   is($fb->primer_panel_bed_file, qq{$pp_repos/nCoV-2019/default/SARS-CoV-2/MN908947.3/nCoV-2019.bed}, 
      q{primer_panel_bed_file correct via lims});
+
+  my $fc = npg_tracking::data::primer_panel->new ( repository => $repos, 
+                                                   id_run => 33990,
+                                                   position => 1,
+                                                   tag_index => 2);
+  
+  is($fc->primer_panel_path, qq{$pp_repos/nCoV-2019/V2/SARS-CoV-2/MN908947.3},
+     q{primer_path correct via lims -version specified});
+
+  is($fc->primer_panel_bed_file, qq{$pp_repos/nCoV-2019/V2/SARS-CoV-2/MN908947.3/nCoV-2019.bed}, 
+     q{primer_panel_bed_file correct via lims});
+
 }
 
 {
