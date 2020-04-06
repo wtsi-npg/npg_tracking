@@ -13,7 +13,7 @@ use npg::api::util;
 
 our $VERSION = '0';
 
-sub live_url { return q{http://psd-support.internal.sanger.ac.uk:6600}; }
+sub live_url { return q{http://sequencescape.psd.sanger.ac.uk}; }
 sub dev_url  { return q{http://dev.psd.sanger.ac.uk:6610}; }
 
 sub lims_url {

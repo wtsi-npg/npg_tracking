@@ -14,7 +14,7 @@ use npg::api::util;
 use st::api::sample;
 
 use t::useragent;
-my $lims_url = q[http://psd-support.internal.sanger.ac.uk:6600];
+my $lims_url = q[http://sequencescape.psd.sanger.ac.uk];
 my $ua = t::useragent->new({
                          is_success => 1,
                          mock       => {

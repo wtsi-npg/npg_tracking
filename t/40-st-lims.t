@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 29;
+use Test::More tests => 30;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -1220,6 +1220,29 @@ subtest 'creating tag zero object' => sub {
   is ($l->create_tag_zero_object()->to_string(), $description, 'created from lane-level object');
   $l = st::api::lims->new(id_run => 25846, position => 3, tag_index => 5);
   is ($l->create_tag_zero_object()->to_string(), $description, 'created from plex-level object');
+};
+
+subtest 'creating lane object' => sub {
+  plan tests => 13;
+ 
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/test40_lims/samplesheet_novaseq4lanes.csv';
+
+  my $l = st::api::lims->new(rpt_list => '25846:1:1;25846:2:1');
+
+  my $e = qr/id_run and position are expected as arguments/;
+  throws_ok { $l->create_lane_object() } $e, 'no arguments - error';
+  throws_ok { $l->create_lane_object(1) } $e, 'one argument - error';
+  throws_ok { $l->create_lane_object(1, 0) } $e,
+    'one of argument is false - error';
+
+  for my $p ((1,2)) {
+    my $lane_l = $l->create_lane_object(25846, $p);
+    is ($lane_l->id_run, 25846, 'run id is 25846');
+    is ($lane_l->position, $p, "position is $p");
+    is ($lane_l->rpt_list, undef, 'rpt_list is undefined');
+    is ($lane_l->tag_index, undef, 'tag index is undefined');
+    ok ($lane_l->is_pool, 'the entity is a pool');
+  }
 };
 
 1;

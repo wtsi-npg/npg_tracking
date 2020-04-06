@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 65;
+use Test::More tests => 59;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
@@ -385,20 +385,6 @@ $ENV{TEST_DIR} = 't/data/long_info';
     }
   }
 
-  lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
-  cmp_ok($long_info->tile_count, '==', 48, 'correct tile count');
-  lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
-  cmp_ok($long_info->lane_count, '==', 8, 'correct lane count');
-  lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
-  cmp_ok($long_info->cycle_count, '==', 202, 'correct cycle count');
-
-  my $tilelayout_columns;
-  lives_ok  {
-    $long_info = test::long_info->new({id_run => 5636});
-    $tilelayout_columns = $long_info->tilelayout_columns;
-  } q{recreate object and call tilelayout_columns ok};
-  cmp_ok($tilelayout_columns, '==', 6, 'correct tile columns');
-
   $long_info=undef;
   lives_ok  { $long_info = test::long_info->new({id_run => 19395}); } q{created role_test (HiSeq run 19395, RunInfo.xml) object ok};
   cmp_ok($long_info->lane_tilecount->{1}, '==', 64, 'correct lane 1 tile count');
@@ -447,5 +433,13 @@ note($long_info->runfolder_path);
   lives_and { ok( $long_info->is_indexed, 'is_indexed ok');} 'is_indexed lives and ok';
   lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for dual index paired};
   lives_and { ok( $long_info->is_paired_read, 'is_paired_read ok');} 'is_paired_read lives and ok';
+}
+
+#and a SP flowcell
+{
+  my $long_info;
+  my $rfpath = q(t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming//200303_A00562_0352_AHKFVLDRXX);
+  lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for SP flowcell};
+  cmp_ok( $long_info->surface_count, '==', 1, 'surface_count');
 }
 1;
