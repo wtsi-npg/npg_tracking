@@ -2,11 +2,10 @@ package npg_tracking::heron::upload::run;
 
 use strict;
 
+use Carp;
 use List::MoreUtils qw(any);
 use Moose;
 use MooseX::StrictConstructor;
-
-with qw(WTSI::DNAP::Utilities::Loggable);
 
 our $VERSION = '0';
 
@@ -46,16 +45,13 @@ https://docs.covid19.climb.ac.uk/metadata
 sub BUILD {
    my ($self, $args) = @_;
 
-   $args->{name} or
-       $self->logconfess('An empty name was supplied');
-   $args->{instrument_make}  or
-       $self->logconfess('An empty instrument_make was supplied');
-   $args->{instrument_model} or
-       $self->logconfess('An empty instrument_model was supplied');
+   $args->{name}             or croak 'An empty name was supplied';
+   $args->{instrument_make}  or croak 'An empty instrument_make was supplied';
+   $args->{instrument_model} or croak 'An empty instrument_model was supplied';
 
    my $make = $args->{instrument_make};
    if (not any { $make eq $_ } ($ILLUMINA, $ONT, $PACBIO)) {
-      $self->logconfess("Invalid instrument make '$make'");
+      croak "Invalid instrument make '$make'";
    }
 
    return 1;
