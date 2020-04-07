@@ -13,8 +13,6 @@ use URI;
 use Pod::Usage;
 use Try::Tiny;
 
-use WTSI::DNAP::Warehouse::Schema;
-
 use npg_tracking::Schema;
 use npg_tracking::heron::upload::run;
 use npg_tracking::heron::upload::metadata_client;
