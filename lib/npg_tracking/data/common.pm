@@ -17,8 +17,9 @@ sub find_file {
   }
 
   my $file;
-  if ( $data_dir && $subfolder ) {
-    my $dir = catdir($data_dir, $subfolder);
+  if ($data_dir) {
+    my $dir = ( $data_dir && $subfolder ) ?
+        catdir($data_dir, $subfolder) : $data_dir;
 
     my @files;
     if (-d $dir) {

@@ -6,6 +6,7 @@ release 91.1.0
  - method for creating a lane-level st::api::lims object from
    any other st::api::lims object where the resulting object has
    the same driver as the original one
+ - add support for finding primer_panel bed files 
 
 release 91.0.0
  - modified is_i5opposite when there is no reverse read
