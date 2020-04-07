@@ -18,38 +18,36 @@ our $ILLUMINA = qw(ILLUMINA);
 our $ONT      = qw(OXFORD_NANOPORE);
 our $PACBIO   = qw(PACIFIC_BIOSCIENCES);
 
-our $NAME_PREFIX = qw(CAMB);
-
-has 'id' =>
+has 'name' =>
     (isa           => 'Str',
      is            => 'ro',
      required      => 1,
-     documentation => 'The run identifier from the instrument',);
+     documentation => 'The COG-UK compliant run name',);
 
 has 'instrument_make' =>
     (isa           => 'Str',
      is            => 'ro',
      required      => 1,
-     documentation => 'The instrument make (controlled vocabulary)',);
+     documentation => 'The COG-UK compliant instrument make (controlled vocabulary)',);
 
 has 'instrument_model' =>
     (isa           => 'Str',
      is            => 'ro',
      required      => 1,
-     documentation => 'The instrument model',);
-
+     documentation => 'The COG-UK compliant instrument model',);
 
 =head2 BUILD
 
-Validates constructor arguments for correctness.
+Validates constructor arguments for correctness. See
+https://docs.covid19.climb.ac.uk/metadata
 
 =cut
 
 sub BUILD {
    my ($self, $args) = @_;
 
-   $args->{id} or
-       $self->logconfess('An empty or zero id was supplied');
+   $args->{name} or
+       $self->logconfess('An empty name was supplied');
    $args->{instrument_make}  or
        $self->logconfess('An empty instrument_make was supplied');
    $args->{instrument_model} or
@@ -61,20 +59,6 @@ sub BUILD {
    }
 
    return 1;
-}
-
-=head2 name
-
-  Example    : my $name = $run->name
-  Description: Return a COG-UK compliant run name.
-  Returntype : Str
-
-=cut
-
-sub name {
-   my ($self) = @_;
-
-   return sprintf q(%s-%s), $NAME_PREFIX, $self->id;
 }
 
 __PACKAGE__->meta->make_immutable;

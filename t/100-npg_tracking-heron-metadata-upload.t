@@ -55,33 +55,33 @@ my @instrument_args = (instrument_make  => $make,
                        instrument_model => $model);
 
 # We can make valid runs
-ok(npg_tracking::heron::upload::run->new(id               => 'run1',
+ok(npg_tracking::heron::upload::run->new(name             => 'run1',
                                          instrument_make  => 'ILLUMINA',
                                          instrument_model => 'SomeModel'),
    'ILLUMINA make is OK');
-ok(npg_tracking::heron::upload::run->new(id               => 'run1',
+ok(npg_tracking::heron::upload::run->new(name             => 'SANG-run1',
                                          instrument_make  => 'OXFORD_NANOPORE',
                                          instrument_model => 'SomeModel'),
    'OXFORD_NANOPORE make is OK');
-ok(npg_tracking::heron::upload::run->new(id               => 'run1',
+ok(npg_tracking::heron::upload::run->new(name             => 'SANG-run1',
                                          instrument_make  => 'PACIFIC_BIOSCIENCES',
                                          instrument_model => 'SomeModel'),
    'PACIFIC_BIOSCIENCES make is OK');
 
-like(npg_tracking::heron::upload::run->new(id               => 'run1',
+like(npg_tracking::heron::upload::run->new(name             => 'SANG-run1',
                                            instrument_make  => 'ILLUMINA',
                                            instrument_model => 'SomeModel')->name,
-     qr{CAMB-.*}, 'Run name has correct form');
+     qr{SANG-.*}, 'Run name has correct form');
 
 dies_ok {
-  npg_tracking::heron::upload::run->new(name             => 'run1',
+  npg_tracking::heron::upload::run->new(name             => 'SANG-run1',
                                         instrument_make  => 'invalid_make',
                                         instrument_model => 'SomeModel');
 } 'run will not accept an invalid make';
 
-my @runs = (npg_tracking::heron::upload::run->new(id => 'run1', @instrument_args),
-            npg_tracking::heron::upload::run->new(id => 'run2', @instrument_args),
-            npg_tracking::heron::upload::run->new(id => 'run3', @instrument_args));
+my @runs = (npg_tracking::heron::upload::run->new(name => 'SANG-run1', @instrument_args),
+            npg_tracking::heron::upload::run->new(name => 'SANG-run2', @instrument_args),
+            npg_tracking::heron::upload::run->new(name => 'SANG-run3', @instrument_args));
 
 my $server = Test::HTTP::Server->new;
 my $server_uri = URI->new($server->uri);

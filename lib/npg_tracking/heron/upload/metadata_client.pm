@@ -54,15 +54,16 @@ has 'api_uri' =>
 sub send_metadata {
   my ($self, $library_name, @runs) = @_;
 
-  my $metadata = $self->_make_library_metadata($library_name);
+  my $document = $self->_make_library_metadata($library_name);
   foreach my $run (@runs) {
-    push @{$metadata->{runs}}, $self->_make_run_metadata($run);
+    push @{$document->{runs}}, $self->_make_run_metadata($run);
   }
 
-  $metadata->{username} = $self->username;
-  $metadata->{token}    = $self->token;
+  # Add credentials
+  $document->{username} = $self->username;
+  $document->{token}    = $self->token;
 
-  my $req_content = $self->encode($metadata);
+  my $req_content = $self->encode($document);
 
   my $ua = LWP::UserAgent->new;
   $ua->default_header('Content-Type' => $JSON_CONTENT_TYPE);
