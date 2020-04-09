@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+release 91.2.0
+ - add support for finding primer_panel bed files
+
 release 91.1.0
  - staging monitor changes for SP flowcells
  - Update URL for production Sequencescape LIMS
