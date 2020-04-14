@@ -42,7 +42,7 @@ local $ENV{dev} = qw{non_existant_dev_enviroment}; #prevent pickup of user's con
 local $ENV{TEST_DIR} = $basedir; #so when npg_tracking::illumina::run::folder globs the test director
 
 subtest 'standard runfolder' => sub {
-  plan tests => 26;
+  plan tests => 27;
 
   my $instr = 'HS2';
   my $id_run = q{1234};
@@ -57,6 +57,7 @@ subtest 'standard runfolder' => sub {
   my $pb_cal_subpath = $bbcalls_subpath . q{/no_cal};
   my $archive_subpath = $pb_cal_subpath . q{/archive};
   my $no_archive_subpath = $bbcalls_subpath . q{/no_archive};
+  my $pp_archive_subpath = $bbcalls_subpath . q{/pp_archive};
   my $qc_subpath = $archive_subpath . q{/qc};
   my $config_path = $runfolder_path . q{/Config};
 
@@ -98,6 +99,7 @@ subtest 'standard runfolder' => sub {
     q{found a recalibrated directory, so able to work out analysis_path});
   is($path_info->archive_path(), $archive_subpath, 'archive path');
   is($path_info->no_archive_path(), $no_archive_subpath, 'no_archive path');
+  is($path_info->pp_archive_path(), $pp_archive_subpath, 'pp_archive path');
   is($path_info->qc_path(), $qc_subpath, q{qc_path});
   is($path_info->basecall_path(), $basecalls_subpath,
     q{basecalls_subpath});
