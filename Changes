@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - pp_archive_path runfolder accessor - a path to an archive directory
+   for third party portable pipelines
+
 release 91.2.0
  - add support for finding primer_panel bed files
 
