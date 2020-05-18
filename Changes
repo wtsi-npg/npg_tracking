@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - disable downloading *.fa (consensus) files from tracking server
+   views of staging folders
+
 release 91.3.0
  - pp_archive_path runfolder accessor - a path to an archive directory
    for third party portable pipelines
