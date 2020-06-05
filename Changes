@@ -2,6 +2,7 @@ LIST OF CHANGES
 
  - disable downloading *.fa (consensus) files from tracking server
    views of staging folders
+ - add executable for npg samplesheet4MiSeq wrapper
 
 release 91.3.0
  - pp_archive_path runfolder accessor - a path to an archive directory

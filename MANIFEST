@@ -2,6 +2,7 @@ bin/event_notifications
 bin/illumina_instruments_uptime
 bin/npg_daemon_control
 bin/npg_move_runfolder
+bin/npg_samplesheet4MiSeq
 bin/npg_status2file
 bin/npg_status_watcher
 bin/staging_area_monitor
