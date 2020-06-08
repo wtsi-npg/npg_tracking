@@ -111,6 +111,8 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
                            sample_supplier_name
                            sample_cohort
                            sample_donor_id
+                           sample_is_control
+                           sample_control_type
                       /],
 
     'study'        => [qw/ study_id

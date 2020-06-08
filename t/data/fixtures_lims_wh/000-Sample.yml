@@ -462,7 +462,8 @@
   cohort: ~
   common_name: ~
   consent_withdrawn: 0
-  control: ~
+  control: 1
+  control_type: negative
   country_of_origin: ~
   created: 2017-10-19 13:30:14
   deleted_at: ~
@@ -492,7 +493,8 @@
   cohort: ~
   common_name: ~
   consent_withdrawn: 0
-  control: ~
+  control: 1
+  control_type: positive
   country_of_origin: ~
   created: 2017-10-19 13:30:14
   deleted_at: ~

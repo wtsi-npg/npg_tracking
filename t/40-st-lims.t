@@ -5,7 +5,7 @@ use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
 
-my $num_delegated_methods = 46;
+my $num_delegated_methods = 48;
 
 local $ENV{'http_proxy'} = 'http://wibble.com';
 
@@ -433,7 +433,7 @@ subtest 'Object for a tag' => sub {
 };
 
 subtest 'Object for a non-pool lane' => sub {
-  plan tests => 97;
+  plan tests => 99;
 
   my $lims = st::api::lims->new(id_run => 6607, position => 1);
   isa_ok($lims, 'st::api::lims');
