@@ -1,5 +1,12 @@
 LIST OF CHANGES
 
+release 91.4.0
+ - disable downloading *.fa (consensus) files from tracking server
+   views of staging folders
+ - add executable for npg samplesheet4MiSeq wrapper
+ - st::api::lims - two new accessors, 'sample_is_control'
+   and 'sample_control_type'
+
 release 91.3.0
  - pp_archive_path runfolder accessor - a path to an archive directory
    for third party portable pipelines
