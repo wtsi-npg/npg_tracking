@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 91.4.0
  - disable downloading *.fa (consensus) files from tracking server
    views of staging folders
  - add executable for npg samplesheet4MiSeq wrapper
