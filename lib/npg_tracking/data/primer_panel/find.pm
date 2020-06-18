@@ -52,12 +52,20 @@ has 'primer_panel_version' => ( isa           => q{Maybe[Str]},
 sub _build_primer_panel_version {
   my $self = shift;
   my $version;
-  if ($self->primer_panel =~ m{[/] \s* (\w+) \s* $}smx) {
-    $version = $1;
+  if($self->primer_panel) {
+    my @v = split /\//smx, $self->primer_panel;
+    if(scalar @v == 2) {
+      $version = $v[1];
+    }
+    elsif(scalar @v == 3) {
+      $version = $v[1] .q[/]. $v[2];
+    }
+    elsif(scalar @v == 1) {
+      $version = $FORM;
+    }
   }
-  return (defined $version) ? $version : $FORM;
+  return $version;
 }
-
 
 has 'primer_panel_path'=> ( isa           => q{Maybe[Str]},
                             is            => q{ro},
