@@ -76,15 +76,15 @@ $pp_repos = catdir($repos, q[primer_panel]);
   is($fc->primer_panel_bed_file, qq{$pp_repos/nCoV-2019/V2/SARS-CoV-2/MN908947.3/nCoV-2019.bed}, 
      q{primer_panel_bed_file correct via lims});
 
-  my $fd = npg_tracking::data::primer_panel->new ( repository => $repos, 
+  my $fd = npg_tracking::data::primer_panel->new ( repository => $repos,
                                                    id_run => 33990,
                                                    position => 1,
                                                    tag_index => 3);
-  
+
   is($fd->primer_panel_path, qq{$pp_repos/nCoV-2019/V3/B/SARS-CoV-2/MN908947.3},
      q{primer_path correct via lims - version and revision specified});
 
-  is($fd->primer_panel_bed_file, qq{$pp_repos/nCoV-2019/V3/B/SARS-CoV-2/MN908947.3/nCoV-2019.bed}, 
+  is($fd->primer_panel_bed_file, qq{$pp_repos/nCoV-2019/V3/B/SARS-CoV-2/MN908947.3/nCoV-2019.bed},
      q{primer_panel_bed_file correct via lims});
 
 }

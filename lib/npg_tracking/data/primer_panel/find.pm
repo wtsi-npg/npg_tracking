@@ -14,7 +14,10 @@ with qw/ npg_tracking::data::reference::find
 
 our $VERSION = '0';
 
-Readonly::Scalar our $FORM  => q[default];
+Readonly::Scalar our $FORM        => q[default];
+Readonly::Scalar our $PP_NAME     => 0;
+Readonly::Scalar our $PP_VERSION  => 1;
+Readonly::Scalar our $PP_REVISION => 2;
 
 has 'primer_panel' => ( isa           => q{Maybe[Str]},
                         is            => q{ro},
@@ -38,7 +41,7 @@ sub _build_primer_panel_name {
   my $name;
   if($self->primer_panel) {
     my @n = split /\//smx, $self->primer_panel;
-    $name = $n[0];
+    $name = $n[$PP_NAME];
   }
   return $name;
 }
@@ -54,13 +57,13 @@ sub _build_primer_panel_version {
   my $version;
   if($self->primer_panel) {
     my @v = split /\//smx, $self->primer_panel;
-    if(scalar @v == 2) {
-      $version = $v[1];
+    if(scalar @v == $PP_VERSION + 1) {
+      $version = $v[$PP_VERSION];
     }
-    elsif(scalar @v == 3) {
-      $version = $v[1] .q[/]. $v[2];
+    elsif(scalar @v == $PP_REVISION + 1) {
+      $version = $v[$PP_VERSION] .q[/]. $v[$PP_REVISION];
     }
-    elsif(scalar @v == 1) {
+    elsif(scalar @v == $PP_NAME + 1) {
       $version = $FORM;
     }
   }
