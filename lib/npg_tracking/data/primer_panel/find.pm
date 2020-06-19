@@ -17,7 +17,6 @@ our $VERSION = '0';
 Readonly::Scalar our $FORM        => q[default];
 Readonly::Scalar our $PP_NAME     => 0;
 Readonly::Scalar our $PP_VERSION  => 1;
-Readonly::Scalar our $PP_REVISION => 2;
 
 has 'primer_panel' => ( isa           => q{Maybe[Str]},
                         is            => q{ro},
@@ -57,15 +56,7 @@ sub _build_primer_panel_version {
   my $version;
   if($self->primer_panel) {
     my @v = split /\//smx, $self->primer_panel;
-    if(scalar @v == $PP_VERSION + 1) {
-      $version = $v[$PP_VERSION];
-    }
-    elsif(scalar @v == $PP_REVISION + 1) {
-      $version = $v[$PP_VERSION] .q[/]. $v[$PP_REVISION];
-    }
-    elsif(scalar @v == $PP_NAME + 1) {
-      $version = $FORM;
-    }
+    $version = defined $v[$PP_VERSION] ? $v[$PP_VERSION] : $FORM;
   }
   return $version;
 }

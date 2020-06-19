@@ -1,6 +1,6 @@
 LIST OF CHANGES
 
- - Optional revision field added to primer panel name in LIMs.
+ - Ignore new revision field optionally added to primer panel name in LIMs.
 
 release 91.4.0
  - disable downloading *.fa (consensus) files from tracking server
