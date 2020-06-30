@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+ - tracking server access to run run folders:
+     allow access using /lustre/scratch path
+     stop access for /{export,nfs}/gs path
+
 release 91.6.0
  - enforce custom type NpgTrackingReadableFile to check that the
    given path is not only readable, but is actually a file
