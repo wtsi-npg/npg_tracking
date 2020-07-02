@@ -14,7 +14,9 @@ with qw/ npg_tracking::data::reference::find
 
 our $VERSION = '0';
 
-Readonly::Scalar our $FORM  => q[default];
+Readonly::Scalar our $FORM        => q[default];
+Readonly::Scalar our $PP_NAME     => 0;
+Readonly::Scalar our $PP_VERSION  => 1;
 
 has 'primer_panel' => ( isa           => q{Maybe[Str]},
                         is            => q{ro},
@@ -38,7 +40,7 @@ sub _build_primer_panel_name {
   my $name;
   if($self->primer_panel) {
     my @n = split /\//smx, $self->primer_panel;
-    $name = $n[0];
+    $name = $n[$PP_NAME];
   }
   return $name;
 }
@@ -52,12 +54,12 @@ has 'primer_panel_version' => ( isa           => q{Maybe[Str]},
 sub _build_primer_panel_version {
   my $self = shift;
   my $version;
-  if ($self->primer_panel =~ m{[/] \s* (\w+) \s* $}smx) {
-    $version = $1;
+  if($self->primer_panel) {
+    my @v = split /\//smx, $self->primer_panel;
+    $version = defined $v[$PP_VERSION] ? $v[$PP_VERSION] : $FORM;
   }
-  return (defined $version) ? $version : $FORM;
+  return $version;
 }
-
 
 has 'primer_panel_path'=> ( isa           => q{Maybe[Str]},
                             is            => q{ro},
