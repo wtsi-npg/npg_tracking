@@ -126,18 +126,7 @@ my @accessions_6551_1 = qw/ERS024591 ERS024592 ERS024593 ERS024594 ERS024595 ERS
 my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Shigella sp.');
 
 subtest 'Driver type and driver build' => sub {
-  plan tests => 6;
-
-  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
-
-  use_ok('st::api::lims::samplesheet');
-  lives_and( sub{
-    my $lims = st::api::lims->new(id_run => 6551,
-                                  driver => st::api::lims::samplesheet->new(
-                                    id_run => 6551,
-                                    path => $ENV{NPG_WEBSERVICE_CACHE_DIR}));
-    is($lims->driver_type, 'samplesheet');
-  }, 'obtain driver type from driver if driver given');
+  plan tests => 7;
 
   throws_ok { st::api::lims->new(id_run => 6551, driver_type => 'some') }
     qr/Can\'t locate st\/api\/lims\/some\.pm in \@INC/,
@@ -147,8 +136,19 @@ subtest 'Driver type and driver build' => sub {
     'st::api::lims::xml');
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[];
   isa_ok (st::api::lims->new(id_run => 6551)->driver(), 'st::api::lims::xml');
+  
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/miseq_default.csv';
-  isa_ok (st::api::lims->new(id_run => 6551)->driver(), 'st::api::lims::samplesheet');
+  my $l = st::api::lims->new(id_run => 6551);
+  is($l->driver_type, 'samplesheet');
+  isa_ok ($l->driver(), 'st::api::lims::samplesheet');
+
+  use_ok('st::api::lims::samplesheet');
+  $l = st::api::lims->new(id_run => 6551,
+                          driver => st::api::lims::samplesheet->new(
+                            id_run => 6551,
+                            path   => $ENV{NPG_CACHED_SAMPLESHEET_FILE}));
+  is($l->driver_type, 'samplesheet',
+    'obtain driver type from the driver object if given');
 };
 
 subtest 'Run-level object' => sub {
@@ -915,7 +915,7 @@ subtest 'Samplesheet driver for arbitrary compositions' => sub {
 };
 
 subtest 'Instantiating a samplesheet driver' => sub {
-  plan tests => 15;
+  plan tests => 16;
 
   my $ss_path = 't/data/samplesheet/miseq_default.csv';
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $ss_path;
@@ -928,21 +928,22 @@ subtest 'Instantiating a samplesheet driver' => sub {
   is ($l->driver->path, $ss_path, 'correct path assigned to the driver object');
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet';
+  ok (-d $ENV{NPG_CACHED_SAMPLESHEET_FILE});
   lives_ok {$l = st::api::lims->new(id_run => 10262,)}
     'no error creating an object with samplesheet file defined in env var';
   is ($l->driver_type, 'samplesheet', 'driver type is samplesheet');
-  ok ($l->path, 'path is built');
-  throws_ok {$l->children}
-    qr/Is a directory/,
-    'directory given as a samplesheet file path - error';
+  throws_ok { $l->path }
+    qr/Attribute \(path\) does not pass the type constraint/,
+    'samplesheet cannot be a directory';
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/non-existing';
+  ok (not -e $ENV{NPG_CACHED_SAMPLESHEET_FILE});
   lives_ok {$l = st::api::lims->new(id_run => 10262,)}
     'no error creating an object with samplesheet file defined in env var';
   is ($l->driver_type, 'samplesheet', 'driver type is samplesheet');
   throws_ok {$l->children}
     qr/Attribute \(path\) does not pass the type constraint/,
-    'directory given as a samplesheet file path - error';
+    'samplesheet file should exist';
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/non-existing';
   lives_ok {$l = st::api::lims->new(id_run => 10262, path => $ss_path)}

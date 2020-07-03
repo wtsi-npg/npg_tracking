@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - enforce custom type NpgTrackingReadableFile to check that the
+   given path is not only readable, but is actually a file
+
 release 91.5.0
  - ignore new revision field optionally added to primer panel name in LIMs.
 
