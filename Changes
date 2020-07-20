@@ -3,6 +3,9 @@ LIST OF CHANGES
 release release 91.6.0
  - enforce custom type NpgTrackingReadableFile to check that the
    given path is not only readable, but is actually a file
+ - discontinue 'npgdonotmove' and 'npg_do_not_move' file and
+   directory names being used as flags to stop moving the run folder
+   from analysis to outgoing
 
 release 91.5.0
  - ignore new revision field optionally added to primer panel name in LIMs.
