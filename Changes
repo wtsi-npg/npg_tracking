@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release release 91.6.0
  - enforce custom type NpgTrackingReadableFile to check that the
    given path is not only readable, but is actually a file
 
