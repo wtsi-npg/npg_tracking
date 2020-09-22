@@ -1024,7 +1024,10 @@ sub staging_server_name {
   my $self = shift;
   if ($self->folder_path_glob) {
     my @components = split m{/}smx, $self->folder_path_glob;
-    return $components[$FOLDER_GLOB_INDEX];
+    # Assuming the folder path glob starts with a forward slash,
+    # the first array member is an empty string.
+    return $components[1] eq 'lustre' ? $components[$FOLDER_GLOB_INDEX + 1]
+                                      : $components[$FOLDER_GLOB_INDEX];
   }
   return;
 }

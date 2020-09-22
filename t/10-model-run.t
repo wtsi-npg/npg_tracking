@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 95;
+use Test::More tests => 96;
 use Test::Exception;
 use t::util;
 
@@ -102,6 +102,35 @@ subtest 'listing runs' => sub {
   $got = $run2->id_run;
   is($got, 15, 'correct id_run for the 10th run');
   is($run2->name(), 'IL10_0015', "correct run name for run $got");
+};
+
+subtest 'staging server name' => sub {
+  plan tests => 4;
+
+  my $name = 'esa-sv-20200210-02';
+
+  my $model = npg::model::run->new({
+    util             => $util
+  });
+  is ($model->staging_server_name, undef, 'staging server name is undefined');
+
+  $model = npg::model::run->new({
+    util             => $util,
+    folder_path_glob => '/export/esa-sv-20200210-02/IL_seq_data'
+  });
+  is ($model->staging_server_name, $name, 'staging server name from /export glob');
+
+  $model = npg::model::run->new({
+    util             => $util,
+    folder_path_glob => '/export|nfs/esa-sv-20200210-02/IL_seq_data'
+  });
+  is ($model->staging_server_name, $name, 'staging server name from /export|nfs glob');
+
+  $model = npg::model::run->new({
+    util             => $util,
+    folder_path_glob => '/lustre/scratch5/esa-sv-20200210-02/IL_seq_data'
+  });
+  is ($model->staging_server_name, $name, 'staging server name from /lustre glob');
 };
 
 {
