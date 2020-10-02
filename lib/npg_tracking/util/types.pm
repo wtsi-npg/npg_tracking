@@ -1,8 +1,3 @@
-#########
-# Author:        Marina Gourtovaia
-# Created:       20 December 2012
-#
-
 package npg_tracking::util::types;
 
 use Moose::Util::TypeConstraints;
@@ -17,7 +12,7 @@ Readonly::Scalar our $TAG_INDEX_MAX => 9999;
 
 subtype 'NpgTrackingReadableFile'
       => as 'Str'
-      => where { -r $_ };
+      => where { -f $_ && -r $_ };
 
 subtype 'NpgTrackingExecutable'
       => as 'Str'
@@ -50,6 +45,7 @@ subtype 'NpgTrackingTagIndex'
 no Moose::Util::TypeConstraints;
 
 1;
+
 __END__
 
 =head1 NAME
@@ -90,7 +86,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 GRL
+Copyright (C) 2013,2014,2015,2016,2020 Genome Research Ltd.
 
 This file is part of NPG.
 

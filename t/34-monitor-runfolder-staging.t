@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 64;
+use Test::More tests => 58;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -451,21 +451,6 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     ok( !-e $test_source, 'gone from analysis' );
     throws_ok { $test->move_to_outgoing() } qr/already\ exists/msx,
               'Refuse to overwrite an existing directory';
-
-    move( $test_target, $test_source ); # Put things back as they were.
-    my $flag = $tmpdir . '/IL12/analysis/100721_IL12_05222/npg_do_not_move';
-    mkdir $flag;
-    my $expected = $test_source . ' flagged not to be moved to outgoing';
-    lives_ok { $m = $test->move_to_outgoing() } 'Move to outgoing lives';
-    ok( !-e $test_target, 'not in outgoing' );
-    is( $m, $expected, 'not moved since the runfolder has a flag');
-
-    rmdir $flag;
-    $flag = $tmpdir . '/IL12/analysis/100721_IL12_05222/npgdonotmove';
-    mkdir $flag;
-    lives_ok { $m = $test->move_to_outgoing() } 'Move to outgoing lives';
-    ok( !-e $test_target, 'not in outgoing' );
-    is( $m, $expected, 'not moved since the runfolder has a flag');
 }
 
 {

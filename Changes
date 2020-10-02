@@ -1,6 +1,36 @@
 LIST OF CHANGES
 
+release 91.6.0
+ - enforce custom type NpgTrackingReadableFile to check that the
+   given path is not only readable, but is actually a file
+ - discontinue 'npgdonotmove' and 'npg_do_not_move' file and
+   directory names being used as flags to stop moving the run folder
+   from analysis to outgoing
+
+release 91.5.0
+ - ignore new revision field optionally added to primer panel name in LIMs.
+
+release 91.4.0
+ - disable downloading *.fa (consensus) files from tracking server
+   views of staging folders
+ - add executable for npg samplesheet4MiSeq wrapper
+ - st::api::lims - two new accessors, 'sample_is_control'
+   and 'sample_control_type'
+
+release 91.3.0
+ - pp_archive_path runfolder accessor - a path to an archive directory
+   for third party portable pipelines
+
+release 91.2.0
+ - add support for finding primer_panel bed files
+
+release 91.1.0
+ - staging monitor changes for SP flowcells
  - Update URL for production Sequencescape LIMS
+ - method for creating a lane-level st::api::lims object from
+   any other st::api::lims object where the resulting object has
+   the same driver as the original one
+ - add support for finding primer_panel bed files 
 
 release 91.0.0
  - modified is_i5opposite when there is no reverse read
