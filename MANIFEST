@@ -92,7 +92,6 @@ data/templates/run_lane_update_xml.tt2
 data/templates/run_list.tt2
 data/templates/run_list_row_xml.tt2
 data/templates/run_list_stuck_runs.tt2
-data/templates/run_list_summary.tt2
 data/templates/run_read.tt2
 data/templates/run_read_xml.tt2
 data/templates/run_status_create.tt2
