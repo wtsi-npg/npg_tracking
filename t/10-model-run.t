@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 95;
+use Test::More tests => 87;
 use Test::Exception;
 use t::util;
 
@@ -149,21 +149,6 @@ subtest 'listing runs' => sub {
   $util->requestor('public');
   my $annotation = npg::model::annotation->new({util => $util, id_annotation => 1});
   is($run->attach_annotation($annotation), 1, 'attach_annotation successful');
-  my $recent_runs = $run->recent_runs();
-  isa_ok($recent_runs, 'ARRAY', '$run->recent_runs()');
-  is($run->recent_runs(), $recent_runs, 'recent_runs cached');
-  is($recent_runs->[0], undef, 'no recent runs');
-  $run->{recent_runs} = undef;
-  my $recent_mirrored_runs = $run->recent_mirrored_runs();
-  isa_ok($recent_mirrored_runs, 'ARRAY', '$run->recent_mirrored_runs()');
-  is($run->recent_mirrored_runs(), $recent_mirrored_runs, 'recent_mirrored_runs cached');
-  is($recent_mirrored_runs->[0], undef, 'no recent mirrored runs');
-  $run->{recent_mirrored_runs} = undef;
-  $run->{'days'} = '40000';
-  $recent_runs = $run->recent_runs();
-  ok($recent_runs->[0], 'recent runs found');
-  $recent_mirrored_runs = $run->recent_mirrored_runs();
-  ok($recent_mirrored_runs->[0], 'recent mirrored runs found');
 
   is($run->id_user(), 1, '$run->id_user() got from current run status');
   is($run->id_user(5), 5, 'id_user set by $run->id_user(5)');
