@@ -402,10 +402,6 @@ sub is_batch_duplicate {
          @run_statuses;
 }
 
-#########
-# maybe this should be inside run_status.pm?
-#
-
 sub run_finished_on_instrument {
   my ($self) = @_;
   my $query = q(SELECT rs.date

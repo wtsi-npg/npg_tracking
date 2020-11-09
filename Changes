@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - remove the template for an unused tracking server url - run/summary -
+   and all underlying code to remove obsolete sql queries used by that code
+
 release 91.6.0
  - enforce custom type NpgTrackingReadableFile to check that the
    given path is not only readable, but is actually a file
