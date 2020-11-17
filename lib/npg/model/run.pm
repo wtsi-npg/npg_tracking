@@ -402,104 +402,6 @@ sub is_batch_duplicate {
          @run_statuses;
 }
 
-#########
-# maybe this should be inside run_status.pm?
-#
-sub recent_runs {
-  my $self = shift;
-
-  if(!$self->{recent_runs}) {
-    my $days  = $self->{'days'} || $DEFAULT_SUMMARY_DAYS;
-    my $pkg   = ref $self;
-    my $query = qq(SELECT rs.id_run,
-                          r.priority,max(date)
-                   FROM   run_status rs,
-                          run        r
-                   WHERE  rs.date  > DATE_SUB(NOW(), INTERVAL $days DAY)
-                   AND    r.id_run = rs.id_run
-                   GROUP BY rs.id_run
-                   ORDER BY priority,date,id_run);
-    my $seen = {};
-
-    my $db_runs = $self->gen_getarray($pkg, $query);
-    my $runs    = [sort { $a->id_run() <=> $b->id_run() }
-                  grep { defined $_ }
-                  map  { ($_, $_->run_pair()?$_->run_pair():undef) } @{$db_runs}];
-
-    $self->{recent_runs} = [grep { !$seen->{$_->id_run()}++ &&
-                                    (!$_->run_pair() || !$seen->{$_->run_pair->id_run()}++) }
-                    @{$runs}];
-  }
-  return $self->{recent_runs};
-}
-
-sub recent_mirrored_runs {
-  my ($self) = @_;
-
-  if(!$self->{recent_mirrored_runs}) {
-    my $days  = $self->{'days'} || $DEFAULT_SUMMARY_DAYS;
-    my $pkg   = ref $self;
-    my $query = qq(SELECT rs.id_run,
-                          r.priority,max(date)
-                   FROM   run_status rs,
-                          run        r,
-                          run_status_dict rsd
-                   WHERE  rs.date               > DATE_SUB(NOW(), INTERVAL $days DAY)
-                   AND    r.id_run              = rs.id_run
-                   AND    rs.id_run_status_dict = rsd.id_run_status_dict
-                   AND    rsd.description       = 'run mirrored'
-                   GROUP BY rs.id_run
-                   ORDER BY priority,date,id_run);
-    my $seen = {};
-
-    my $db_runs = $self->gen_getarray($pkg, $query);
-    my $runs    = [sort { $a->id_run() <=> $b->id_run() }
-                  grep { defined $_ }
-                  map  { ($_, $_->run_pair()?$_->run_pair():undef) } @{$db_runs}];
-
-    $self->{recent_mirrored_runs} = [grep { !$seen->{$_->id_run()}++ &&
-                                           (!$_->run_pair() || !$seen->{$_->run_pair->id_run()}++) }
-                                    @{$runs}];
-  }
-
-  return $self->{recent_mirrored_runs};
-}
-
-sub recent_pending_runs {
-  my ($self, $return_all) = @_;
-  if(!$self->{recent_pending_runs} || $return_all) {
-    my $days  = $self->{'days'} || $DEFAULT_SUMMARY_DAYS;
-    my $pkg   = ref $self;
-    my $query = qq(SELECT rs.id_run,
-                          r.priority,max(date)
-                   FROM   run_status rs,
-                          run        r,
-                          run_status_dict rsd
-                   WHERE  rs.date               > DATE_SUB(NOW(), INTERVAL $days DAY)
-                   AND    r.id_run              = rs.id_run
-                   AND    rs.id_run_status_dict = rsd.id_run_status_dict
-                   AND    rsd.description       = 'run pending'
-                   GROUP BY rs.id_run
-                   ORDER BY priority,date,id_run);
-    my $seen = {};
-
-    my $db_runs = $self->gen_getarray($pkg, $query);
-    if ($return_all) {
-      return $db_runs;
-    } else {
-      my $runs    = [sort { $a->id_run() <=> $b->id_run() }
-                     grep { defined $_ }
-                     map  { ($_, $_->run_pair()?$_->run_pair():undef) } @{$db_runs}];
-
-      $self->{recent_pending_runs} = [grep { !$seen->{$_->id_run()}++ &&
-                                             (!$_->run_pair() || !$seen->{$_->run_pair->id_run()}++) }
-                                           @{$runs}];
-    }
-  }
-
-  return $self->{recent_pending_runs};
-}
-
 sub run_finished_on_instrument {
   my ($self) = @_;
   my $query = q(SELECT rs.date
@@ -1132,14 +1034,6 @@ npg::model::run
  Active run is defined as a run that has no current status or its current status is not
  either 'run cancelled' or 'run stopped early'.
 
-=head2 recent_runs - arrayref of npg::model::runs with recent status changes (< X days ago, default 14)
-
-  my $arRecentRuns = $oRun->recent_runs();
-
-=head2 recent_mirrored_runs - arrayref of npg::model::runs, like 'recent_runs()' but only for 'run mirrored' states
-
-  my $arRecentMirroredRuns = $oRun->recent_mirrored_runs();
-
 =head2 id_user - holder for storing the id_user, particularly for creating new run_status on a new run
 
   $oRun->id_user($iIdUser);
@@ -1182,7 +1076,6 @@ npg::model::run
 
   eval { $oRun->remove_tags(['tag1','tag2'], $oRequestor); };
 
-=head2 recent_pending_runs
 =head2 run_finished_on_instrument
 =head2 run_folder - returns a run folder name (no HTML formating),
 
