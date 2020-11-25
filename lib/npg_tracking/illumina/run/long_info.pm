@@ -8,10 +8,12 @@ use IO::All;
 use File::Spec;
 use XML::LibXML;
 use Try::Tiny;
+use Readonly;
 
 requires qw{runfolder_path};
 
 our $VERSION = '0';
+Readonly::Scalar my $NOVASEQ_I5FLIP_REAGENT_VER              => 3;
 
 =head1 NAME
 
@@ -632,9 +634,11 @@ Method returns true if this is the case.
 
 sub is_i5opposite {
   my $self = shift;
-  return ($self->is_paired_read() && ($self->platform_HiSeqX()  or $self->platform_HiSeq4000() or
-                                      $self->platform_MiniSeq() or $self->platform_NextSeq() or
-			              ($self->platform_NovaSeq() && ($self->sbs_consumable_version() >= 3))));
+  return ($self->is_paired_read() &&
+              ($self->platform_HiSeqX()  or $self->platform_HiSeq4000() or
+               $self->platform_MiniSeq() or $self->platform_NextSeq() or
+               ($self->platform_NovaSeq() &&
+                ($self->sbs_consumable_version() >= $NOVASEQ_I5FLIP_REAGENT_VER))));
 }
 
 =head2 uses_patterned_flowcell
