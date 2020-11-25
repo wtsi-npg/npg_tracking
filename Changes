@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - added support for NovaSeq v1.5 reagents, i5 index sequenced in opposite direction
+
 release 91.6.0
  - enforce custom type NpgTrackingReadableFile to check that the
    given path is not only readable, but is actually a file

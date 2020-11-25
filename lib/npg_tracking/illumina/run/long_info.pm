@@ -541,6 +541,20 @@ sub _build_flowcell_mode {
   return _get_single_element_text($self->_run_params(), 'FlowCellMode');
 }
 
+=head2 sbs_consumable_version
+
+=cut
+
+has q{sbs_consumable_version} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build_sbs_consumable_version{
+  my $self = shift;
+  return _get_single_element_text($self->_run_params(), 'SbsConsumableVersion')||1;
+}
+
 =head2 all_lanes_mergeable
 
 Method returns true if all lanes on the flowcell contain the
@@ -605,11 +619,12 @@ sub is_rapid_run_abovev2 {
 
 =head2 is_i5opposite
 
-A dual-indexed sequencing run on the MiniSeq, NextSeq, HiSeq 4000, or HiSeq 3000
+A dual-indexed sequencing run on the MiniSeq, NextSeq, HiSeq 4000, HiSeq 3000 or NovaSeq using v1.5 reagents
 performs the Index 2 Read after the Read 2 resynthesis step. This workflow
 requires a reverse complement of the Index 2 (i5) primer sequence compared to
 the primer sequence used on other Illumina platform, see
 https://support.illumina.com/content/dam/illumina-support/documents/documentation/system_documentation/miseq/indexed-sequencing-overview-guide-15057455-04.pdf
+For NovaSeq using v1.5 reagents the SbsConsumableVersion will be 3
 
 Method returns true if this is the case.
 
@@ -618,7 +633,8 @@ Method returns true if this is the case.
 sub is_i5opposite {
   my $self = shift;
   return ($self->is_paired_read() && ($self->platform_HiSeqX()  or $self->platform_HiSeq4000() or
-                                      $self->platform_MiniSeq() or $self->platform_NextSeq()));
+                                      $self->platform_MiniSeq() or $self->platform_NextSeq() or
+			              ($self->platform_NovaSeq() && ($self->sbs_consumable_version() >= 3))));
 }
 
 =head2 uses_patterned_flowcell

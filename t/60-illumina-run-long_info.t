@@ -28,7 +28,7 @@ package main;
 my $basedir = tempdir( CLEANUP => 1 );
 
 subtest 'retrieving information from runParameters.xml' => sub {
-  plan tests => 142;
+  plan tests => 153;
 
   my $rf = join q[/], $basedir, 'runfolder';
   mkdir $rf;
@@ -50,6 +50,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
     RunParameters.nextseq.xml
     RunParameters.novaseq.xml
     RunParameters.novaseq.xp.xml
+    RunParameters.novaseq.xp.v1.5.xml
     runParameters.hiseq.rr.truseq.xml
                   /;
   my $dir = 't/data/run_params';
@@ -119,7 +120,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
 };
 
 subtest 'getting i5opposite for run' => sub {
-  plan tests => 14;
+  plan tests => 15;
 
   $basedir = tempdir( CLEANUP => 1 );
   my $rf = join q[/], $basedir, 'run_info';
@@ -144,6 +145,7 @@ subtest 'getting i5opposite for run' => sub {
     'runInfo.nextseq.xml'                  => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
     'runInfo.novaseq.xml'                  => { 'rpf' => 'RunParameters', 'i5opposite' => 0 },
     'runInfo.novaseq.xp.xml'               => { 'rpf' => 'RunParameters', 'i5opposite' => 0 },
+    'runInfo.novaseq.xp.v1.5.xml'          => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
   );
 
   my $run_info_dir = 't/data/run_info';
