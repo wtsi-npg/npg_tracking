@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - added support for NovaSeq v1.5 reagents, i5 index sequenced in opposite direction
+
 release 91.7.0
  - remove the template for an unused tracking server url - run/summary -
    and all underlying code to remove obsolete sql queries used by that code
