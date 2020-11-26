@@ -969,7 +969,7 @@ t/data/run_info/runInfo.miseq.xml
 t/data/run_info/runInfo.nextseq.xml
 t/data/run_info/runInfo.novaseq.xml
 t/data/run_info/runInfo.novaseq.xp.xml
-t/data/run_info/runInfo.novaseq.v1.5.xp.xml
+t/data/run_info/runInfo.novaseq.xp.v1.5.xml
 t/data/run_params/RunParameters.miniseq.xml
 t/data/run_params/RunParameters.nextseq.xml
 t/data/run_params/RunParameters.novaseq.xml
