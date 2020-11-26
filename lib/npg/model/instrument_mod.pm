@@ -1,8 +1,5 @@
-#########
-# Author:        rmp
-# Created:       2008-03
-#
 package npg::model::instrument_mod;
+
 use strict;
 use warnings;
 use base qw(npg::model);
@@ -131,11 +128,11 @@ npg::model::instrument_mod
 
 =head1 AUTHOR
 
-Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+Roger Pettett
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Andy Brown
+Copyright (C) 2020 Genome Research Ltd.
 
 This file is part of NPG.
 

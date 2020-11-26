@@ -1,8 +1,5 @@
-#########
-# Author:        rmp
-# Created:       2008-03
-#
 package npg::model::instrument_mod_dict;
+
 use strict;
 use warnings;
 use base qw(npg::model);
@@ -35,6 +32,7 @@ sub descriptions {
 }
 
 1;
+
 __END__
 
 =head1 NAME
@@ -77,6 +75,10 @@ npg::model::instrument_mod_dict
 Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2020 Genome Research Ltd.
+
+This file is part of NPG.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

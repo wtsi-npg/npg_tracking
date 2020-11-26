@@ -1,7 +1,3 @@
-#########
-# Author:        rmp
-# Created:       2006-10-31
-#
 package npg::model::instrument_status;
 
 use strict;
@@ -313,7 +309,7 @@ Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2020 Genome Research Ltd.
 
 This file is part of NPG.
 

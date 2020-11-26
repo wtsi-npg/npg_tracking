@@ -1,3 +1,0 @@
-<!--begin $Id: instrument_mod_update.tt2 2662 2008-08-06 12:23:37Z rmp $-->
-[% PROCESS instrument_mod_create.tt2 %]
-<!--end $Id: instrument_mod_update.tt2 2662 2008-08-06 12:23:37Z rmp $-->

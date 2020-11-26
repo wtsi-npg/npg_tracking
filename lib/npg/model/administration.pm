@@ -1,23 +1,12 @@
-#########
-# Author:        ajb
-# Created:       2008-04-24
-#
 package npg::model::administration;
+
 use strict;
 use warnings;
-use English qw(-no_match_vars);
-use Carp;
 use base qw(npg::model);
 use npg::model::user;
 use npg::model::usergroup;
-use npg::model::instrument_mod_dict;
 
 our $VERSION = '0';
-
-sub instrument_mod_dict_descriptions {
-  my $self = shift;
-  return npg::model::instrument_mod_dict->new({util => $self->util()})->descriptions();
-}
 
 sub users {
   my $self = shift;
@@ -30,13 +19,12 @@ sub usergroups {
 }
 
 1;
+
 __END__
 
 =head1 NAME
 
 npg::model::administration
-
-=head1 VERSION
 
 =head1 SYNOPSIS
 
@@ -45,10 +33,6 @@ npg::model::administration
 =head1 DESCRIPTION
 
 =head1 SUBROUTINES/METHODS
-
-=head2 instrument_mod_dict_descriptions - fetches arrayref of existing instrument modification description types
-
-  my $aInstrument_mod_dict_descriptions = $oAdministration->instrument_mod_dict_descriptions();
 
 =head2 users - fetches arrayref of all users
 
@@ -66,10 +50,6 @@ npg::model::administration
 
 =item warnings
 
-=item English
-
-=item Carp
-
 =item base
 
 =item npg::model
@@ -77,8 +57,6 @@ npg::model::administration
 =item npg::model::user
 
 =item npg::model::usergroup
-
-=item npg::model::instrument_mod_dict
 
 =back
 
@@ -92,9 +70,9 @@ Roger M Pettett
 
 =head1 LICENSE AND COPYRIGHT
 
-This file is part of NPG.
+Copyright (C) 2020 Genome Research Ltd.
 
-NPG is free software: you can redistribute it and/or modify
+This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.

@@ -1,9 +1,0 @@
-<!--begin $Id: instrument_mod_create.tt2 2662 2008-08-06 12:23:37Z rmp $-->
-Instrument mod updated ok.
-
-Please click <a href="[% SCRIPT_NAME %]/instrument/[% model.id_instrument %]">here</a> to continue.
-
-<script type="text/javascript">
-  document.location.href = '[% SCRIPT_NAME %]/instrument/[% model.id_instrument %]';
-</script>
-<!--end $Id: instrument_mod_create.tt2 2662 2008-08-06 12:23:37Z rmp $-->

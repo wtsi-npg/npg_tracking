@@ -1,8 +1,5 @@
-#########
-# Author:        rmp
-# Created:       2006-10-31
-#
 package npg::model::run_status_dict;
+
 use strict;
 use warnings;
 use base qw(npg::model);
@@ -120,6 +117,7 @@ sub run_status_dicts_sorted {
 }
 
 1;
+
 __END__
 
 =head1 NAME
@@ -185,11 +183,11 @@ Use instead of generated run_status_dicts to get a temporal ordered, current lis
 
 =head1 AUTHOR
 
-Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+Roger Pettett
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2020 Genome Research Ltd.
 
 This file is part of NPG.
 
