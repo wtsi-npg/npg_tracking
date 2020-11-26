@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - BotSeq renamed Duplex-Seq
+ - added new functions to long_info for BotSeq analysis
  - added support for NovaSeq v1.5 reagents, i5 index sequenced in opposite direction
 
 release 91.7.0

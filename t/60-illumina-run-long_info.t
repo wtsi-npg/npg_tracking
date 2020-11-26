@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 59;
+use Test::More tests => 65;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
@@ -435,6 +435,12 @@ note($long_info->runfolder_path);
   lives_and { ok( $long_info->is_indexed, 'is_indexed ok');} 'is_indexed lives and ok';
   lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for dual index paired};
   lives_and { ok( $long_info->is_paired_read, 'is_paired_read ok');} 'is_paired_read lives and ok';
+  lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for dual index paired};
+  lives_and { ok( $long_info->is_dual_index, 'is_dual_index ok');} 'is_paired_read lives and ok';
+  lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for dual index paired};
+  lives_and { cmp_deeply( [$long_info->index_read1_cycle_range], [152,159], 'index_read1_cycle_range matches');} 'index_read1_cycle_range lives and matches';
+  lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for dual index paired};
+  lives_and { cmp_deeply( [$long_info->index_read2_cycle_range], [160,167], 'index_read2_cycle_range matches');} 'index_read2_cycle_range lives and matches';
 }
 
 #and a SP flowcell
