@@ -138,21 +138,21 @@ sub _sort_by_name {
   my @nonnv;
   # move NV to the top
   foreach my $instrument (@current_instruments){
-    if ($instrument->{name} =~ /^NV/){
-      push(@instruments, $instrument);
+    if ($instrument->{name} =~ /^NV/xms){
+      push @instruments, $instrument;
     }else {
-      push(@nonnv, $instrument);
+      push @nonnv, $instrument;
     }
   }
-  push(@instruments, @nonnv);
+  push @instruments, @nonnv;
 
   return \@instruments;
 }
 
 sub _compare_alphanumeric {
   # separate alphabetic part [0] and numeric part [1]
-  my @a = $a->{name} =~ m/([a-z]*)([0-9]*)/gi;
-  my @b = $b->{name} =~ m/([a-z]*)([0-9]*)/gi;
+  my @a = $a->{name} =~ m/([a-z]*)([0-9]*)/gixms;
+  my @b = $b->{name} =~ m/([a-z]*)([0-9]*)/gixms;
 
   #compare alphabetic part
   if ($a[0] gt $b[0]){
