@@ -128,6 +128,46 @@ sub _comp_name_by_host {
   return $comp_name;
 }
 
+sub sorted_instruments {
+  my ($self)=@_;
+
+  my @current_instruments = sort _compare_alphanumeric @{$self->{instruments}};
+
+  my @sorted_instruments;
+  my @nonnv;
+  # move NV to the top
+  foreach my $instrument (@current_instruments){
+    if ($instrument->{name} =~ /^NV/xms){
+      push @sorted_instruments, $instrument;
+    }else {
+      push @nonnv, $instrument;
+    }
+  }
+  push @sorted_instruments, @nonnv;
+
+  return \@sorted_instruments;
+}
+
+sub _compare_alphanumeric {
+  # separate alphabetic part [0] and numeric part [1]
+  my @a = $a->{name} =~ m/([a-z]*)([0-9]*)/gixms;
+  my @b = $b->{name} =~ m/([a-z]*)([0-9]*)/gixms;
+
+  my $return;
+  #compare alphabetic part
+  if ($a[0] gt $b[0]){
+    $return = 1;
+  }elsif ($b[0] gt $a[0]){
+    $return = -1;
+  # if alphabetic parts are identical, compare numeric part
+  }elsif ($a[1] > $b[1]){
+    $return = 1;
+  }else{
+    $return = -1;
+  }
+  return $return;
+}
+
 1;
 __END__
 

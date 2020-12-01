@@ -123,50 +123,10 @@ sub current_instruments {
                    WHERE  iscurrent = 1
                    ORDER BY id_instrument);
     $self->{current_instruments} = $self->gen_getarray($pkg, $query);
-    $self->{current_instruments} = $self->_sort_by_name;
   }
 
   return $self->{current_instruments};
 }
-
-sub _sort_by_name {
-  my ($self)=@_;
-
-  my @current_instruments = sort _compare_alphanumeric @{$self->{current_instruments}};
-
-  my @instruments;
-  my @nonnv;
-  # move NV to the top
-  foreach my $instrument (@current_instruments){
-    if ($instrument->{name} =~ /^NV/xms){
-      push @instruments, $instrument;
-    }else {
-      push @nonnv, $instrument;
-    }
-  }
-  push @instruments, @nonnv;
-
-  return \@instruments;
-}
-
-sub _compare_alphanumeric {
-  # separate alphabetic part [0] and numeric part [1]
-  my @a = $a->{name} =~ m/([a-z]*)([0-9]*)/gixms;
-  my @b = $b->{name} =~ m/([a-z]*)([0-9]*)/gixms;
-
-  #compare alphabetic part
-  if ($a[0] gt $b[0]){
-    return 1;
-  }elsif ($b[0] gt $a[0]){
-    return -1;
-  # if alphabetic parts are identical, compare numeric part
-  }elsif ($a[1] > $b[1]){
-    return 1;
-  }else{
-    return -1;
-  }
-}
-
 
 sub current_run {
   my $self  = shift;
