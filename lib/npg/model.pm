@@ -153,17 +153,17 @@ sub _compare_alphanumeric {
   my @a = $a->name =~ m/([a-z]*)([0-9]*)/gixms;
   my @b = $b->name =~ m/([a-z]*)([0-9]*)/gixms;
 
-  my $return;
+  my $return = 0;
   #compare alphabetic part
   if ($a[0] gt $b[0]){
-    $return = 1;
+    $return += 1;
   }elsif ($b[0] gt $a[0]){
-    $return = -1;
+    $return -= 1;
   # if alphabetic parts are identical, compare numeric part
   }elsif ($a[1] > $b[1]){
-    $return = 1;
+    $return += 1;
   }else{
-    $return = -1;
+    $return -= 1;
   }
   return $return;
 }

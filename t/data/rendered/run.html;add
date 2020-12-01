@@ -72,7 +72,10 @@
    <th>Instrument</th>
    <td><select onchange="ajax_instrument()" id="id_instrument" name="id_instrument">
      <option value="empty">Select instrument</option>
-   
+
+     <option value="35" >HS1 wash required</option>
+     <option value="36" >HS2 wash required</option>
+     <option value="64" >HS3 wash required</option>
      <option value="4" >IL2 wash required</option>
      <option value="6" >IL3 down</option>
      <option value="7" >IL4 down</option>
@@ -85,9 +88,6 @@
      <option value="14" >IL11 planned maintenance</option>
      <option value="31" >IL28 wash required</option>
      <option value="34" >IL29 wash required</option>
-     <option value="35" >HS1 wash required</option>
-     <option value="36" >HS2 wash required</option>
-     <option value="64" >HS3 wash required</option>
      <option value="90" >MS1 wash required</option>
    </select>
    <div id="instrument_details" />

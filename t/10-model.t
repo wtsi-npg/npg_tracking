@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 use Sys::Hostname;
 use Socket;
 use Try::Tiny;
@@ -52,4 +52,20 @@ use_ok('npg::model');
   }
 }
 
+{
+  use t::instrument;
+  my @instruments = (t::instrument->new(name => "cbot2"), t::instrument->new( name => "NV10"),
+    t::instrument->new( name => "cbot1" ), t::instrument->new( name => "NV15" ),
+    t::instrument->new( name => "NV2" ), t::instrument->new(name => "NV1"));
+  my @model_instruments = @instruments;
+  
+  my $model = npg::model->new({
+    util        => $util,
+    instruments => \@model_instruments,
+  });
+
+  is_deeply($model->sorted_instruments, [$instruments[5], $instruments[4], $instruments[1], $instruments[3], $instruments[2],
+    $instruments[0]], "Instrument dropdown when adding runs sorted");
+
+}
 1;
