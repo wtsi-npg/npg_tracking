@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - Usage page retired
+
 release 91.8.0
  - BotSeq renamed Duplex-Seq
  - added new functions to long_info for BotSeq analysis
