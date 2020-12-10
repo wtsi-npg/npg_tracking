@@ -68,7 +68,11 @@
    <th>Instrument</th>
    <td><select onchange="ajax_instrument()" id="id_instrument" name="id_instrument">
      [% IF !this_instr_id %]<option value="empty">Select instrument</option>[% END %]
-   [% FOREACH instrument = model.sorted_instruments; IF instrument.does_sequencing %]
+   <!--
+    model.instruments contains an ArrayRef of current instruments, which is assigned in npg::view::run::add before the
+    template is rendered
+   -->
+   [% FOREACH instrument = run.sort_instruments(model.instruments); IF instrument.does_sequencing %]
      <option value="[% instrument.id_instrument %]" [% IF this_instr_id && instrument.id_instrument == this_instr_id %]selected="selected"[% END %]>[% instrument.name %] [% instrument.current_instrument_status.instrument_status_dict.description %]</option>[% END %][% END %]
    </select>
    <div id="instrument_details" />

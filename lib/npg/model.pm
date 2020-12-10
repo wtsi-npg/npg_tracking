@@ -128,46 +128,6 @@ sub _comp_name_by_host {
   return $comp_name;
 }
 
-sub sorted_instruments {
-  my ($self)=@_;
-
-  my @current_instruments = sort _compare_alphanumeric @{$self->{instruments}};
-
-  my @sorted_instruments;
-  my @nonnv;
-  # move NV to the top
-  foreach my $instrument (@current_instruments){
-    if ($instrument->name =~ /^NV/xms){
-      push @sorted_instruments, $instrument;
-    }else {
-      push @nonnv, $instrument;
-    }
-  }
-  push @sorted_instruments, @nonnv;
-
-  return \@sorted_instruments;
-}
-
-sub _compare_alphanumeric {
-  # separate alphabetic part [0] and numeric part [1]
-  my @a = $a->name =~ m/([a-z]*)([0-9]*)/gixms;
-  my @b = $b->name =~ m/([a-z]*)([0-9]*)/gixms;
-
-  my $return = 0;
-  #compare alphabetic part
-  if ($a[0] gt $b[0]){
-    $return += 1;
-  }elsif ($b[0] gt $a[0]){
-    $return -= 1;
-  # if alphabetic parts are identical, compare numeric part
-  }elsif ($a[1] > $b[1]){
-    $return += 1;
-  }else{
-    $return -= 1;
-  }
-  return $return;
-}
-
 1;
 __END__
 
@@ -230,12 +190,6 @@ Optionally, can take an instrument object to reduce the need to create one
 A cache is set, so this is a once per request lookup, since it is highly unlikely the requesting instrument is likely to change as we create a page, but the page might need to call this method more than once
 
 Access from the sequencers is via a proxy which sets X-F-F request header
-
-=head2 sorted_instruments
-
-returns instruments sorted by name, with NovaSeq instruments displayed first
-
-  my $sorted_instruments = $oModelSubClass->sorted_instruments()
 
 =head1 DIAGNOSTICS
 
