@@ -931,10 +931,17 @@ sub staging_server_name {
   return;
 }
 
+sub get_instruments {
+  my ($self) = @_;
+
+  return $self->{instruments};
+}
+
 sub sort_instruments {
   my ($self, $instruments)=@_;
-
-  croak q(Instrument list is undefined) unless defined $instruments;
+  if (!defined $instruments) {
+    croak q(Instrument list is undefined);
+  }
 
   my @current_instruments = sort _compare_alphanumeric @{$instruments};
 
@@ -960,9 +967,9 @@ sub _compare_alphanumeric {
 
   my $return = 0;
   #compare alphabetic part
-  if ($a[0] gt $b[0]){
+  if (uc $a[0] gt uc $b[0]){
     $return += 1;
-  }elsif ($b[0] gt $a[0]){
+  }elsif (uc $b[0] gt uc $a[0]){
     $return -= 1;
   # if alphabetic parts are identical, compare numeric part
   }elsif ($a[1] > $b[1]){
@@ -1162,11 +1169,18 @@ and loader user name under the 'loader' key
 
 =head2 staging_server_name - from runfolder glob
 
-=head2 sorted_instruments
+=head2 get_instruments
 
-returns ArrayRef $instruments sorted by name, with NovaSeq instruments displayed first, or error if $instruments is undefined
+returns an ArrayRef of instrument objects
 
-  my $sorted_instruments = $oRun->sort_instruments($instruments)
+  my $instruments = $oRun->get_instruments();
+
+=head2 sort_instruments
+
+returns ArrayRef $instruments sorted by name, with NovaSeq instruments displayed first, or throws an error if
+$instruments is undefined
+
+  my $sorted_instruments = $oRun->sort_instruments($instruments);
 
 =head1 DIAGNOSTICS
 

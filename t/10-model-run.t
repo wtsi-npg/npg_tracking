@@ -1,8 +1,9 @@
 use strict;
 use warnings;
-use Test::More tests => 87;
+use Test::More tests => 88;
 use Test::Exception;
 use t::util;
+use t::instrument;
 
 use_ok('npg::model::run');
 use_ok ('npg::model::instrument');
@@ -610,5 +611,32 @@ subtest 'run creation error due to problems with batch id' => sub {
    ok ($id_run_next_next != $id_run_next, 'a different run is created');
 };
 
+{
+
+	#               0    1   2    3    4   5    6   7    8     9   10   11  12   13   14     15  16    17   18   19   20
+	my @names = (qw{NV74 HX1 NV21 HX57 MS6 NV78 NV9 HS57 cbot5 HX3 HF59 MS3 HF55 MS32 cbot45 NV2 cbot3 HS20 MS82 HX11 HX5},
+		#  21   22   23    24   25     26  27   28   29  30  31    32   33   34   35   36   37  38  39     40   41  42   43
+		qw{MS86 NV79 cbot9 HX25 cbot49 HF5 HX67 NV10 MS8 HX4 cbot1 MS62 MS47 MS18 MS49 NV15 HX9 HF1 cbot13 MS59 HS5 MS72 NV1});
+
+	my @order = (43, 15, 6, 28, 36, 2, 0, 5, 22, 31, 16, 8, 23, 39, 14, 25, 38, 26, 12, 10, 41, 17, 7, 1, 9, 30, 20, 37,
+		19, 24, 3, 27, 11, 4, 29, 34, 13, 33, 35, 40, 32, 42, 18, 21);
+
+	my @instruments;
+	foreach my $name (@names){
+		push @instruments, t::instrument->new(name => "$name");
+	}
+
+	my @ordered_instruments;
+	foreach my $position (@order){
+		push @ordered_instruments, $instruments[$position];
+	}
+
+  my $model = npg::model::run->new({
+    instruments => \@instruments,
+  });
+
+  is_deeply($model->sort_instruments($model->get_instruments), \@ordered_instruments, "Instrument dropdown for run;add sorted");
+
+}
 1;
 

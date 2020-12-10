@@ -1704,6 +1704,7 @@ t/data/repos2/references2/PhiX/Illumina/.gitignore
 t/data/repos2/references2/PhiX/Sanger/.gitignore
 t/dbh.pm
 t/dbic_util.pm
+t/instrument.pm
 t/perlcriticrc
 t/request.pm
 t/useragent.pm
