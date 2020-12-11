@@ -934,14 +934,15 @@ sub staging_server_name {
 sub get_instruments {
   my ($self) = @_;
 
+  if (!defined $self->{instruments}) {
+    croak q(Instrument array is undefined);
+  }
+
   return $self->{instruments};
 }
 
 sub sort_instruments {
   my ($self, $instruments)=@_;
-  if (!defined $instruments) {
-    croak q(Instrument list is undefined);
-  }
 
   my @current_instruments = sort _compare_alphanumeric @{$instruments};
 
