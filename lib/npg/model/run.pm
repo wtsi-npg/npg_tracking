@@ -931,6 +931,56 @@ sub staging_server_name {
   return;
 }
 
+sub get_instruments {
+  my ($self) = @_;
+
+  if (!defined $self->{instruments}) {
+    croak q(Instrument array is undefined);
+  }
+
+  return $self->{instruments};
+}
+
+sub sort_instruments {
+  my ($self, $instruments)=@_;
+
+  my @current_instruments = sort _compare_alphanumeric @{$instruments};
+
+  my @sorted_instruments;
+  my @nonnv;
+  # move NV to the top
+  foreach my $instrument (@current_instruments){
+    if ($instrument->name =~ /^NV/xms){
+      push @sorted_instruments, $instrument;
+    }else {
+      push @nonnv, $instrument;
+    }
+  }
+  push @sorted_instruments, @nonnv;
+
+  return \@sorted_instruments;
+}
+
+sub _compare_alphanumeric {
+  # separate alphabetic part [0] and numeric part [1]
+  my @a = $a->name =~ m/([a-z]*)([0-9]*)/gixms;
+  my @b = $b->name =~ m/([a-z]*)([0-9]*)/gixms;
+
+  my $return = 0;
+  #compare alphabetic part
+  if (uc $a[0] gt uc $b[0]){
+    $return += 1;
+  }elsif (uc $b[0] gt uc $a[0]){
+    $return -= 1;
+  # if alphabetic parts are identical, compare numeric part
+  }elsif ($a[1] > $b[1]){
+    $return += 1;
+  }else{
+    $return -= 1;
+  }
+  return $return;
+}
+
 1;
 __END__
 
@@ -1119,6 +1169,19 @@ and loader user name under the 'loader' key
 =head2 is_dev method returns true if the run belongs to R&D team, false otherwise
 
 =head2 staging_server_name - from runfolder glob
+
+=head2 get_instruments
+
+returns an ArrayRef of instrument objects
+
+  my $instruments = $oRun->get_instruments();
+
+=head2 sort_instruments
+
+returns ArrayRef $instruments sorted by name, with NovaSeq instruments displayed first, or throws an error if
+$instruments is undefined
+
+  my $sorted_instruments = $oRun->sort_instruments($instruments);
 
 =head1 DIAGNOSTICS
 
