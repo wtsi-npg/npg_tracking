@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 33;
+use Test::More tests => 30;
 use Test::Exception;
 use HTTP::Headers;
 use CGI;
@@ -107,35 +107,6 @@ my $cgi = $util->cgi();
   throws_ok { $view->render() }
     qr{description\ \(present\)\ and\/or\ revision\ \(\)\ is\ missing},
     'croaked - missing revision';
-}
-
-{
-  $cgi->param('description',q{});
-  my $view = npg::view::administration->new({
-    util    => $util,
-    model   => npg::model::administration->new({ util => $util }),
-    action  => q{create},
-    aspect  => q{create_instrument_status},
-    headers => HTTP::Headers->new()
-  });
-  $util->requestor('joe_engineer');
-  throws_ok { $view->render() } qr{No\ status\ given},
-    'error - no status given';
-
-  $cgi->param('description','new status');
-  $view = npg::view::administration->new({
-    util    => $util,
-    model   => npg::model::administration->new({ util => $util }),
-    action  => q{create},
-    aspect  => q{create_instrument_status},
-    headers => HTTP::Headers->new(),
-  });
-  my $render;
-  lives_ok { $render = $view->render() }
-    'engineers and admin authorised for create_instrument_status';
-  ok($util->test_rendered($render,
-    't/data/rendered/20-view-administration_create_instrument_status.html'),
-    'create_instrument_status renders ok');
 }
 
 {

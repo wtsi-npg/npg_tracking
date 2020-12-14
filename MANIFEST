@@ -31,7 +31,6 @@ data/npg_tracking_email/templates/wrapper.tt2
 data/schema.txt
 data/templates/actions.tt2
 data/templates/administration_create_instrument_mod.tt2
-data/templates/administration_create_instrument_status.tt2
 data/templates/administration_create_run_status.tt2
 data/templates/administration_create_user.tt2
 data/templates/administration_create_user_to_usergroup.tt2
@@ -766,7 +765,6 @@ t/data/pipeline_config/study_config_present/product_release.yml
 t/data/pipeline_config/study_config_absent/product_release.yml
 t/data/pipeline_config/study_config_tertiary_present/product_release.yml
 t/data/rendered/20-view-administration_create_instrument_mod.html
-t/data/rendered/20-view-administration_create_instrument_status.html
 t/data/rendered/20-view-administration_create_run_status.html
 t/data/rendered/20-view-administration_create_user.html
 t/data/rendered/20-view-administration_create_user_to_usergroup.html

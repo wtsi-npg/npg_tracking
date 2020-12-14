@@ -3,7 +3,6 @@
   <div id="admin_options">
     <ul class="inline">
       <li><a href="javascript:void(show_form('instrument_mod'))">[New Instrument Upgrade]</a></li>
-      <li><a href="javascript:void(show_form('instrument_status'))">[New Instrument Status]</a></li>
     </ul>
     <div class="clearfloats"></div>
     <div id="spinner" style="display:none;">
@@ -22,8 +21,4 @@
     if (form == 'instrument_mod') {
       $('form_space').replace('<div id="form_space"><fieldset><legend>Enter new Instrument Upgrade</legend><form method="post" action="/cgi-bin/npg/administration/;create_instrument_mod"><label for="select existing mod description">Select an upgrade description:</label><select name="description"><option value="">-</option><option value="Mode Scrambler">Mode Scrambler</option><option value="Objective">Objective</option><option value="PE module">PE module</option><option value="Prism">Prism</option></select><label for="new mod description">Or new upgrade description:</label> <input type="text" name="new_description" /><br /><label for="new revision">New Revision:</label> <input type="text" name="revision" /> <input type="submit" value="New Upgrade" /></form></fieldset></div>');
     }
-    if (form == 'instrument_status') {
-      $('form_space').replace('<div id="form_space"><fieldset><legend>Enter new Instrument Status</legend><form method="post" action="/cgi-bin/npg/administration/;create_instrument_status"><label for="new instrument status">New Instrument Status:</label> <input type="text" name="description" /><input type="submit" value="New Status" /></form></fieldset></div>');
-    }
-  }
 </script>

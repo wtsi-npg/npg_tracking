@@ -46,20 +46,6 @@ sub create_instrument_mod {
   return;
 }
 
-sub create_instrument_status {
-  my $self = shift;
-  my $util = $self->util();
-  my $cgi = $util->cgi();
-  my $description = $cgi->param('description');
-  if (!$description) {
-    croak 'No status given';
-  }
-  my $isd = npg::model::instrument_status_dict->new(
-    {util => $util, description => $description, iscurrent => 1,});
-  $isd->create();
-  return;
-}
-
 sub create_user {
   my $self = shift;
   my $util = $self->util();
@@ -142,8 +128,6 @@ npg::view::administration
 =head2 authorised - handles authorization
 
 =head2 create_instrument_mod - handles creation of an instrument modification dictionary reference
-
-=head2 create_instrument_status - handles creation of an instrument status dictionary reference
 
 =head2 create_user - handles creating a user for the system
 
