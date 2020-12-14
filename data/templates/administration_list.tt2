@@ -6,7 +6,6 @@
       [% IF requestor.is_member_of('engineers') %]<li><a href="javascript:void(show_form('instrument_mod'))">[New Instrument Upgrade]</a></li>
       [% END %][% IF requestor.is_member_of('admin') %]<li><a href="javascript:void(show_form('new_user'))">[New User]</a></li>
       <li><a href="javascript:void(show_form('new_usergroup'))">[New Usergroup]</a></li>
-      <li><a href="javascript:void(show_form('new_run_status'))">[New Run Status]</a></li>
       <li><a href="javascript:void(show_form('add_to_usergroup'))">[Add User to Usergroup]</a></li>
       [% END %]
     </ul>
@@ -35,9 +34,6 @@
     };
     if (form == 'new_usergroup') {
       $('form_space').replace('<div id="form_space"><fieldset><legend>Enter new Usergroup</legend><form method="post" action="[% SCRIPT_NAME %]/administration/;create_usergroup"><label for="groupname">Groupname:</label> <input type="text" name="groupname" /><label for="description">Description:</label> <input type="text" name="description" /><label for="is public">Is Public?</label> <select name="is_public" /><option value="0">No</option><option value="1">Yes</option></select><input type="submit" value="New Usergroup" /></form></fieldset></div>');
-    };
-    if (form == 'new_run_status') {
-      $('form_space').replace('<div id="form_space"><fieldset><legend>Enter new Run Status</legend><form method="post" action="[% SCRIPT_NAME %]/administration/;create_run_status"><label for="description">Description:</label> <input type="text" name="description" /><input type="submit" value="New Run Status" /></form></fieldset></div>');
     };
     if (form == 'add_to_usergroup') {
       $('form_space').replace('<div id="form_space"><fieldset><legend>Add User to Usergroup</legend><form method="post" action="[% SCRIPT_NAME %]/administration/;create_user_to_usergroup"><label for="user">User:</label> <select name="id_user">[% FOREACH user = model.users %]<option value="[% user.id_user %]">[% user.username %]</option>[% END %]</select><label for="usergroup">Usergroup:</label> <select name="id_usergroup">[% FOREACH usergroup = model.usergroups %]<option value="[% usergroup.id_usergroup %]">[% usergroup.groupname %]</option>[% END %]</select> <input type="submit" value= "Add to Usergroup" /></form></fieldset></div>');
