@@ -46,20 +46,6 @@ sub create_instrument_mod {
   return;
 }
 
-sub create_instrument_status {
-  my $self = shift;
-  my $util = $self->util();
-  my $cgi = $util->cgi();
-  my $description = $cgi->param('description');
-  if (!$description) {
-    croak 'No status given';
-  }
-  my $isd = npg::model::instrument_status_dict->new(
-    {util => $util, description => $description, iscurrent => 1,});
-  $isd->create();
-  return;
-}
-
 sub create_user {
   my $self = shift;
   my $util = $self->util();
@@ -97,19 +83,6 @@ sub create_usergroup {
   return;
 }
 
-sub create_run_status {
-  my $self = shift;
-  my $util = $self->util();
-  my $cgi = $util->cgi();
-  my $description = $cgi->param('description');
-  if (!$description) {
-    croak 'No status given';
-  }
-  my $rsd = npg::model::run_status_dict->new({util => $util, description => $description});
-  $rsd->create();
-  return;
-}
-
 sub create_user_to_usergroup {
   my $self = shift;
   my $util = $self->util();
@@ -143,13 +116,9 @@ npg::view::administration
 
 =head2 create_instrument_mod - handles creation of an instrument modification dictionary reference
 
-=head2 create_instrument_status - handles creation of an instrument status dictionary reference
-
 =head2 create_user - handles creating a user for the system
 
 =head2 create_usergroup - handles creation of a new user group
-
-=head2 create_run_status - handles creation of a new run status
 
 =head2 create_user_to_usergroup - handles adding a user to a user group for permissions
 

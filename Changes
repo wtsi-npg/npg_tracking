@@ -1,6 +1,7 @@
 LIST OF CHANGES
 
  - Change 'New Instrument Mod' to 'New Instrument Upgrade' on the admin options
+ - Remove 'New Instrument Status' and 'New Run Status' options from Admin page
  - Sort the dropdown menu of instruments on 'New Run' page
  - Usage page retired
 
