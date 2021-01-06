@@ -70,7 +70,6 @@
 <ul class="inline">
  <li><a class="npg_menu" href="[% SCRIPT_NAME %]/run/">Runs</a></li>
  <li><a class="npg_menu" href="[% SCRIPT_NAME %]/instrument/">Instruments</a></li>
- <li><a class="npg_menu" href="[% SCRIPT_NAME %]/usage/">Disk Usage</a></li>
 [%- IF requestor.is_member_of('loaders') || requestor.is_member_of('annotators') %]
  <li><a class="npg_menu" href="[% SCRIPT_NAME %]/run/stuck_runs">Stuck Runs</a></li>
 [% END -%]

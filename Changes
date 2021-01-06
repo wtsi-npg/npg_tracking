@@ -1,5 +1,11 @@
 LIST OF CHANGES
 
+release 91.9.0
+ - Change label 'New Instrument Mod' to 'New Instrument Upgrade' on the Admin page
+ - Remove 'New Instrument Status' and 'New Run Status' options from Admin page
+ - Sort the dropdown menu of instruments on the 'New Run' page
+ - Staging servers usage page retired
+
 release 91.8.0
  - BotSeq renamed Duplex-Seq
  - added new functions to long_info for BotSeq analysis

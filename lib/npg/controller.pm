@@ -22,7 +22,6 @@ use npg::model::search;
 use npg::model::administration;
 use npg::model::run_lane_annotation;
 use npg::model::instrument_status_annotation;
-use npg::model::usage;
 
 use npg::view::annotation;
 use npg::view::manufacturer;
@@ -43,7 +42,6 @@ use npg::view::search;
 use npg::view::administration;
 use npg::view::run_lane_annotation;
 use npg::view::instrument_status_annotation;
-use npg::view::usage;
 
 our $VERSION = '0';
 
