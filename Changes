@@ -1,5 +1,10 @@
 LIST OF CHANGES
 
+release 91.10.0
+ - script npg_samplesheet4MiSeq is removed this utility has been moved
+   to a different git package; the samplesheet daemon stays in this
+   package till all MiSeq instruments are redirected off old staging servers 
+
 release 91.9.0
  - Change label 'New Instrument Mod' to 'New Instrument Upgrade' on the Admin page
  - Remove 'New Instrument Status' and 'New Run Status' options from Admin page
