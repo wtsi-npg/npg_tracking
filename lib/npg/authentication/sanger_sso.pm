@@ -1,6 +1,3 @@
-# Author:        david.jackson@sanger.ac.uk
-# Created:       2010-04-28
-
 package npg::authentication::sanger_sso;
 
 use strict;
@@ -33,11 +30,10 @@ sub sanger_username {
     $unescaped =~ s/\ /+/mxg;
     ##use critic
     my $decoded = decode_base64($unescaped);
-    my $crypt = Crypt::CBC->new(  -key         => $enc_key,
-                                  -literal_key => 1,
-                                  -cipher      => 'Blowfish',
-                                  -header      => 'randomiv',
-                                  -padding     => 'space');
+    my $crypt = Crypt::CBC->new(-pass    => $enc_key,
+                                -pbkdf   => 'pbkdf2',
+                                -cipher  => 'Blowfish',
+                                -padding => 'space');
     my $decrypted = $crypt->decrypt($decoded);
     ($username, $at_domain) = $decrypted =~ /<<<<(\w+)(@[\w|\.]+)?/xms;
     if ($username && $at_domain) {
@@ -60,7 +56,7 @@ __END__
 
 =head1 DESCRIPTION
 
-Module to extract username from WTSI single sign-on cookie value
+Module to extract username from WSI single sign-on cookie value
 
 =head1 SUBROUTINES/METHODS
 
@@ -90,7 +86,7 @@ Called by Catalyst authentication infrastructure....
 
 =item Readonly
 
-=item Exporter qw(import)
+=item Exporter
 
 =back
 
@@ -100,11 +96,17 @@ Called by Catalyst authentication infrastructure....
 
 =head1 AUTHOR
 
-David Jackson
+=over
 
+=item David Jackson
+
+=item Jennifer Liddle
+
+=back
+ 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2012 GRL, by Jennifer Liddle (js10@sanger.ac.uk)
+Copyright (C) 2012,2013,2014,2021 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
