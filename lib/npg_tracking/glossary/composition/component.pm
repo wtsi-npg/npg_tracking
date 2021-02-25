@@ -1,6 +1,7 @@
 package npg_tracking::glossary::composition::component;
 
 use Moose::Role;
+use namespace::autoclean;
 use MooseX::Storage;
 use Carp;
 
@@ -79,6 +80,8 @@ See digest() in npg_tracking::glossary::composition::serializable.
 
 =item MooseX::Storage
 
+=item namespace::autoclean
+
 =item Carp
 
 =back
@@ -93,7 +96,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 GRL
+Copyright (C) 2015,2021 Genome Research Ltd.
 
 This file is part of NPG.
 

@@ -53,12 +53,12 @@ use_ok('npg_tracking::data::reference');
   lives_ok {$ruser = npg_tracking::data::reference->new(repository => $repos)}
     'can create object without any lims ids';
   throws_ok {$ruser->refs()}
-    qr/Either id_run or position key is undefined/,
+    qr/'id_run' key is undefined/,
     '... however, cannot get a reference';
   lives_ok {$ruser = npg_tracking::data::reference->new(id_run => 1, repository => $repos)}
     'can create object with id_run only';
   throws_ok {$ruser->refs()}
-    qr/Either id_run or position key is undefined/,
+    qr/'position' key is undefined/,
     '... however, cannot get a reference';  
 }
 

@@ -61,16 +61,16 @@ subtest 'deflate to rpt string' => sub {
     qr/Hash or object input expected/,
     'class method needs input';
   throws_ok {$package->deflate_rpt({position=>3})}
-    qr/Either id_run or position key is undefined/,
+    qr/'id_run' key is undefined/,
     'no id_run - error';
   throws_ok {$package->deflate_rpt({id_run=>0,position=>3})}
-    qr/Either id_run or position key is undefined/,
+    qr/'id_run' key is undefined/,
     'zero run id - error';
   throws_ok {$package->deflate_rpt({id_run=>5})}
-    qr/Either id_run or position key is undefined/,
+    qr/'position' key is undefined/,
     'no position - error';
   throws_ok {$package->deflate_rpt({id_run=>5, position=>0})}
-    qr/Either id_run or position key is undefined/,
+    qr/'position' key is undefined/,
     'zero position - error';
   is($package->deflate_rpt({id_run=>5, position=>6}),
     '5:6', 'correct output');

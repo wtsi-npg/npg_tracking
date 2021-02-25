@@ -65,7 +65,7 @@ subtest 'errors when required attrs are undefined' => sub {
   throws_ok { $pname->new(position => 1) } qr/Attribute \(id_run\) is required/,
     'run id undefined - error';
   
-  throws_ok { $pname->thaw() } qr/JSON string is required/,
+  throws_ok { $pname->thaw() } qr/malformed JSON string/,
     'no args to thaw - error';
   throws_ok { $pname->thaw(q[some]) } qr/malformed JSON string/,
     'plain string to thaw - error';

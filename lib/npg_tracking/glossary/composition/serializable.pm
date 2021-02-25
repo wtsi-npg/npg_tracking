@@ -8,6 +8,7 @@ use Digest::MD5 qw/md5_hex/;
 use Carp;
 use Readonly;
 use Class::Load qw/load_class/;
+use List::MoreUtils qw/uniq/;
 
 use npg_tracking::glossary::rpt;
 
@@ -25,35 +26,29 @@ Readonly::Scalar my $CLASS_NAME_KEY          => '__CLASS__';
 sub thaw {
   my ( $class, $json, @args ) = @_;
 
-  if (!$json) {
-    croak 'JSON string is required';
-  }
-
   my $h = JSON::XS->new()->decode($json);
 
   my $component_class;
   my $enforce_component_class = 0;
   if (@args && scalar @args % 2 == 0) {
     my %ah = @args;
-    $component_class         = $ah{$COMPONENT_CLASS};
-    $enforce_component_class = $ah{$ENFORCE_COMPONENT_CLASS};
-    if ($component_class) {
-      delete $ah{$COMPONENT_CLASS};
-      delete $ah{$ENFORCE_COMPONENT_CLASS};
-      @args = %ah;
+    $component_class = delete $ah{$COMPONENT_CLASS};
+    my $tmp          = delete $ah{$ENFORCE_COMPONENT_CLASS};
+    if (defined $tmp) {
+      $enforce_component_class = $tmp;
     }
+    @args = %ah;
   }
 
   #####
   # JSON string is a serialized composition or component object.
   #
-  foreach my $component_h ( $h->{$COMPONENTS_ATTR_NAME} ? @{$h->{$COMPONENTS_ATTR_NAME}} : () ) {
-    my $cclass = $component_h->{$CLASS_NAME_KEY};
-    if ($cclass) {
-      if ($component_class && $enforce_component_class
-            && ($component_class ne $cclass)) {
-        croak "Unexpected component class $cclass";
-      }
+  if ( $h->{$COMPONENTS_ATTR_NAME} ) {
+    my @classes = ();
+    foreach my $component_h ( @{$h->{$COMPONENTS_ATTR_NAME}} ) {
+
+      my $cclass = $component_h->{$CLASS_NAME_KEY};
+      $cclass ||= q();
       #####
       # The class name might be concatenated with package version.
       # A dash is used for concatenation. No way to know whether
@@ -62,13 +57,23 @@ sub thaw {
       # name.
       #
       ($cclass) = split /-/smx, $cclass;
-    } elsif ($component_class) {
-      $cclass = $component_class;
-    } else {
-      croak "Component class unknown, try defining via $COMPONENT_CLASS option";
+
+      if ($cclass) {
+        if ($component_class && $enforce_component_class
+            && ($component_class ne $cclass)) {
+          croak "Unexpected component class $cclass";
+        }
+      } elsif ($component_class) {
+        $cclass = $component_class;
+      } else {
+        croak "Component class unknown, try defining via $COMPONENT_CLASS option";
+      }
+      $component_h->{$CLASS_NAME_KEY} = $cclass;
+      push @classes, $cclass;
     }
-    $component_h->{$CLASS_NAME_KEY} = $cclass;
-    load_class $cclass; # Multiple attempts to load the same class are OK
+    for (uniq @classes) {
+      load_class $_;
+    }
   }
 
   return $class->unpack( $h, @args );
@@ -76,9 +81,7 @@ sub thaw {
 
 sub freeze {
   my ($self, @args) = @_;
-  if ( $self->can('sort') ) {
-    $self->sort();
-  }
+
   if (@args && (@args != 2 || $args[0] ne $FREEZE_WITH_CLASS_NAMES)) {
     croak "Options not recognised, allowed option - $FREEZE_WITH_CLASS_NAMES";
   }
@@ -88,17 +91,10 @@ sub freeze {
 
 sub freeze2rpt {
   my $self = shift;
-
-  my $values = $self->_pack_custom();
-  my $rpt_string;
-  if ($values->{$COMPONENTS_ATTR_NAME}) {
-    $rpt_string = npg_tracking::glossary::rpt
-                    ->deflate_rpts($values->{$COMPONENTS_ATTR_NAME});
-  } else {
-    $rpt_string = npg_tracking::glossary::rpt->deflate_rpt($values);
-  }
-
-  return $rpt_string;
+  my @rpts = map { npg_tracking::glossary::rpt->deflate_rpt($_) }
+             (ref $self eq 'npg_tracking::glossary::composition') ?
+             $self->components_list() : ($self);
+  return npg_tracking::glossary::rpt->join_rpts(@rpts);
 }
 
 sub digest {
@@ -117,28 +113,23 @@ sub _pack_custom {
   return _clean_pack($self->pack());
 }
 
-sub _clean_pack { # Recursive function
+sub _clean_pack {
   my $old = shift;
 
-  my $type = ref $old;
-  if (!$type || $type ne 'HASH') {
-    return $old;
+  # Do not pack the __CLASS__ key and other private attributes.
+  # Do not pack undefined attributes.
+  # Recurse for components.
+  my %packed = map  { $_ => $old->{$_} }
+               grep { defined $old->{$_} }
+               grep { not m{\A _}smx }
+               keys %{$old};
+  if (exists $packed{$COMPONENTS_ATTR_NAME}) {
+    $packed{$COMPONENTS_ATTR_NAME} = [
+      (map { _clean_pack($_) } @{$packed{$COMPONENTS_ATTR_NAME}})
+                                     ];
   }
 
-  my $values = {};
-  while ( my ($k, $v) = each %{$old} ) {
-     # Delete __CLASS__ key along with private attrs
-    if (defined $v && $k !~ /\A_/smx) {
-      # Treat components the same way
-      if (ref $v eq 'ARRAY' && $k eq $COMPONENTS_ATTR_NAME) {
-        my @clean = map { _clean_pack($_) } @{$v};
-        $v = \@clean;
-      }
-      $values->{$k} = $v;
-    }
-  }
-
-  return $values;
+  return \%packed;
 }
 
 no Moose::Role;
@@ -282,6 +273,8 @@ Returns a digest of an input string.
 
 =item Readonly
 
+=item List::MoreUtils
+
 =item npg_tracking::glossary::rpt
 
 =back
@@ -296,7 +289,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2016 GRL
+Copyright (C) 2015,2016,2018,2021 Genome Research Ltd.
 
 This file is part of NPG.
 
