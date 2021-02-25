@@ -5,7 +5,7 @@ use namespace::autoclean;
 use MooseX::Storage;
 use Carp;
 
-with Storage( 'traits' => ['OnlyWhenBuilt'],
+with Storage( 'traits' => [qw/OnlyWhenBuilt DisableCycleDetection/],
               'format' => '=npg_tracking::glossary::composition::serializable' );
 
 our $VERSION = '0';
