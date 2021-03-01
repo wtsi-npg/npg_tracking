@@ -173,13 +173,53 @@ npg_tracking::glossary::composition::serializable
 
 =head1 DESCRIPTION
 
-Custom JSON serialization format for MooseX::Storage framework.
-Differences with MooseX::Storage::Format::JSON:
-  - uses JSON::XS directly,
-  - private attributes are not serialized,
-  - the output does not contain the __CLASS__ key,
-  - the above applies recursively to an array reference attribute called
-    'components'.
+L<npg_tracking::glossary::composition> objects and component objects
+that make up a composition use the L<MooseX::Storage> serialization
+framework to enable serialization to (freeze) and from (thaw) JSON
+strings. This Moose role provides custom JSON serialization format
+for MooseX::Storage framework by implementing custom C<freeze> and
+C<thaw> methods. The role also provides other custom serialization
+formats, which are used by NPG pipelines and other applications.
+
+=head2 Serialization to JSON
+
+Differences with L<MooseX::Storage::Format::JSON>:
+
+=over
+
+=item Uses JSON::XS.
+
+=item Produces canonical (sorted) JSON strings.
+
+=item Private attributes are not serialized.
+
+=item The C<__CLASS__> key is not serialized.
+
+=item The above applies recursively to members of an array reference
+      attribute called C<components>, which can contain objects of any
+      class as long as these classes consume the
+      L<npg_tracking::glossary::composition::component> role.
+
+=back
+
+=head2 Serialization to an rtp string.
+
+A lossy conversion to a concise text string, which can be used as a
+convenient human-readable id in web applications and command line arguments.
+This type of serialization is specific to the
+L<npg_tracking::glossary::composition::component::illumina> class. It
+disregards the value of the C<subset> attribute of the object. See
+L<npg_tracking::glossary::rpt> for details.
+
+=head2 Serialization to unique 64- or 32-long character strings
+
+This is a one-way serialization that is possible for any type of the
+component. It produces fixed length strings that are unique to a particular
+component or composition object and are guaranteed not to clash. The
+computation of the string is deterministic. These strings are widely used
+in NPG applications as unique identifiers for pipelines' inputs and outputs
+and as the common part of files names in cases of complex provenance of
+the files, see L<npg_tracking::glossary::moniker> for details.
 
 =head1 SUBROUTINES/METHODS
 
