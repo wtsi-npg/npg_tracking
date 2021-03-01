@@ -71,8 +71,8 @@ sub thaw {
       $component_h->{$CLASS_NAME_KEY} = $cclass;
       push @classes, $cclass;
     }
-    for (uniq @classes) {
-      load_class $_;
+    for my $class_name (uniq @classes) {
+      load_class $class_name;
     }
   }
 
