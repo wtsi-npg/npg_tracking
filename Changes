@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - add geno files to disabled access list in http_sfweb.conf
+
 release 91.10.0
  - script npg_samplesheet4MiSeq is removed this utility has been moved
    to a different git package; the samplesheet daemon stays in this
