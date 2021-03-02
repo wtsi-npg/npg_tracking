@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - a partial reimplementation of the serialization framework for components
+   and compositions in order to speed-up frequently used methods 
  - add geno files to disabled access list in http_sfweb.conf
 
 release 91.10.0
