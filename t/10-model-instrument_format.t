@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use t::util;
 use npg::model::instrument;
-use Test::More tests => 15;
+use Test::More tests => 13;
 use Test::Trap;
 use Test::Deep;
 
@@ -56,26 +56,8 @@ my $util = t::util->new({fixtures => 1});
          util => $util,
          id_instrument_format => 4,
         });
-  my $ic = $if->instrument_count();
-  is($ic, 13, 'instrument count');
-}
-
-{
-  trap {
-    my $if = $IF->new({
-           util => 'foo',
-          });
-    is($if->instrument_count(), undef, 'database query failure');
-  };
-}
-
-{
-  my $if = $IF->new({
-         util => $util,
-         id_instrument_format => 0,
-        });
-  my $ic = $if->instrument_count();
-  is($ic, 0, 'zero instrument count');
+  my $ic = $if->current_instruments_count();
+  is($ic, 12, 'current instrument count');
 }
 
 

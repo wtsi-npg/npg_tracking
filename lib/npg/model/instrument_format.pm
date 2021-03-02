@@ -92,21 +92,9 @@ sub current_instruments {
   return $self->{'current_instruments'};
 }
 
-sub instrument_count {
+sub current_instruments_count {
   my $self  = shift;
-  my $query = q(SELECT COUNT(*)
-                FROM   instrument
-                WHERE  id_instrument_format = ?);
-  my $ref = [];
-  eval {
-    $ref = $self->util->dbh->selectall_arrayref($query, {},
-                                                $self->id_instrument_format());
-  } or do {
-    carp $EVAL_ERROR;
-    return;
-  };
-
-  return $ref->[0]->[0] || q(0);
+  return scalar @{$self->current_instruments()};
 }
 
 sub is_used_sequencer_type {
@@ -192,9 +180,9 @@ initialise an object based on model being provided
 
   my $arCurrentInstrumentFormats = $oInstrumentFormat->current_instrument_formats();
 
-=head2 instrument_count - count of instruments of this instrument_format
+=head2 current_instruments_count - count of instruments of this instrument_format
 
-  my $iInstrumentCount = $oInstrumentFormat->instrument_count();
+  my $iCurrentInstrumentCount = $oInstrumentFormat->current_instrument_count();
 
 =head2 is_used_sequencer_type
 

@@ -9,18 +9,18 @@
     <tr>
       <th>Instrument Manufacturer</th>
       <th>Instrument Model</th>
-      <th>Is Current</th>
-      <th>Instrument Count</th>
+      <th>Current Instrument Count</th>
     </tr>
   </thead>
   <tbody>
 [% FOREACH instrument_format = model.instrument_formats %]
-  <tr>
-    <td><a href="[% SCRIPT_NAME %]/manufacturer/[% instrument_format.id_manufacturer %]">[% instrument_format.manufacturer.name %]</a></td>
-    <td><a href="[% SCRIPT_NAME %]/instrument_format/[% instrument_format.id_instrument_format %]">[% instrument_format.model %]</a></td>
-    <td>[% IF instrument_format.iscurrent %]<img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
-    <td>[% instrument_format.instrument_count %]</td>
-  </tr>
+  [% IF instrument_format.iscurrent %]
+    <tr>
+      <td><a href="[% SCRIPT_NAME %]/manufacturer/[% instrument_format.id_manufacturer %]">[% instrument_format.manufacturer.name %]</a></td>
+      <td><a href="[% SCRIPT_NAME %]/instrument_format/[% instrument_format.id_instrument_format %]">[% instrument_format.model %]</a></td>
+      <td>[% instrument_format.current_instruments_count %]</td>
+    </tr>
+  [% END %]
 [% END %]
   </tbody>
 </table>

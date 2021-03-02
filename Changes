@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - Change instrument format page to only show current instruments
+
 release 91.11.0
  - a partial reimplementation of the serialization framework for components
    and compositions in order to speed-up frequently used methods 
