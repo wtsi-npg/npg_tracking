@@ -5,6 +5,8 @@ release 91.11.0
    and compositions in order to speed-up frequently used methods 
  - add geno files to disabled access list in http_sfweb.conf
  - cookie decryption - use an up-to-date Crypt::CBC API and algorithm
+ - reduce the sleep type of the status daemon from 60 to 1 sec in order to
+   reduce the time it takes to loop over the run folders on lustre 
 
 release 91.10.0
  - script npg_samplesheet4MiSeq is removed this utility has been moved

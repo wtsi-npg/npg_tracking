@@ -27,7 +27,7 @@ our $VERSION = '0';
 Readonly::Scalar my $STATUS_DIR_KEY   => q[status_dir];
 Readonly::Scalar my $RUNFOLDER_KEY    => q[top_level];
 Readonly::Scalar my $STATUS_DIR_NAME  => q[status];
-Readonly::Scalar my $POLLING_INTERVAL => 60;
+Readonly::Scalar my $POLLING_INTERVAL => 1;
 
 has 'transit'     =>  (isa             => 'NpgTrackingDirectory',
                        is              => 'ro',
