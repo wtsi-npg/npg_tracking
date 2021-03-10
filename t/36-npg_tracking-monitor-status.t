@@ -512,7 +512,7 @@ my $cb = sub {
 
     my $m = npg_tracking::monitor::status->new(transit => $dir, enable_inotify => 0);
     ok(!$m->enable_inotify, 'inotify is disabled');
-    is($m->polling_interval, 60, 'default polling interval');
+    is($m->polling_interval, 1, 'default polling interval');
 
     $m = npg_tracking::monitor::status->new(transit          => $dir,
                                             enable_inotify   => 0,
