@@ -112,35 +112,25 @@ id_run and position accessors/keys.
 sub deflate_rpt {
   my ($self, $rpt) = @_;
 
-  if (!$rpt) {
-    $rpt = $self;
-  }
-  if (!ref $rpt) {
+  $rpt ||= $self;
+  my $type = ref $rpt;
+  if (not $type) {
     croak 'Hash or object input expected';
   }
 
-  my $h = {};
-
-  for my $attr (qw/id_run position tag_index/) {
-    if (ref $rpt eq 'HASH') {
-      $h->{$attr} = $rpt->{$attr};
-    } else {
-      if ($rpt->can($attr)) {
-        $h->{$attr} = $rpt->$attr;
-      }
-    }
+  my $is_hash = $type eq 'HASH';
+  my @rpt_components = ();
+  for my $attr (qw/id_run position/) {
+    my $value = $is_hash ? $rpt->{$attr} : $rpt->$attr;
+    $value or croak qq['$attr' key is undefined];
+    push @rpt_components, $value;
   }
+  my $attr = 'tag_index';
+  push @rpt_components, $is_hash
+                        ? $rpt->{$attr}
+                        : ($rpt->can($attr) ? $rpt->$attr : undef);
 
-  if (!$h->{'id_run'} || !$h->{'position'}) {
-    croak 'Either id_run or position key is undefined';
-  }
-
-  my @rpt_components = ($h->{'id_run'}, $h->{'position'});
-  if (defined $h->{'tag_index'}) {
-    push @rpt_components, $h->{'tag_index'};
-  }
-
-  return join $RPT_KEY_DELIM, @rpt_components;
+  return join $RPT_KEY_DELIM, grep { defined } @rpt_components;
 }
 
 =head2 split_rpts
@@ -260,7 +250,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 GRL
+Copyright (C) 2015,2017,2018,2021 Genome Research Ltd.
 
 This file is part of NPG.
 
