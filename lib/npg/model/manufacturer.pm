@@ -1,21 +1,14 @@
-#########
-# Author:        rmp
-# Created:       2006-10-31
-#
 package npg::model::manufacturer;
+
 use strict;
 use warnings;
 use base qw(npg::model);
 use English qw(-no_match_vars);
 use Carp;
-use npg::model::instrument_format;
-use npg::model::instrument;
 
 our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
-__PACKAGE__->has_many('instrument_format');
-__PACKAGE__->has_all();
 
 sub fields {
   return qw(id_manufacturer
@@ -46,41 +39,6 @@ sub init {
   return 1;
 }
 
-sub current_instruments {
-  my $self  = shift;
-  my $pkg   = 'npg::model::instrument';
-  my $query = qq(SELECT @{[join q(, ), q(ifm.model AS model),
-                                       map { "i.$_ AS $_" } $pkg->fields()]}
-                 FROM   @{[$pkg->table()]} i,
-                        instrument_format  ifm
-                 WHERE  i.id_instrument_format = ifm.id_instrument_format
-                 AND    ifm.id_manufacturer    = ?
-                 AND    ifm.iscurrent          = 1
-                 AND    i.iscurrent            = 1
-                 ORDER BY i.id_instrument_format DESC);
-  return $self->gen_getarray($pkg,
-                            $query,
-                            $self->id_manufacturer());
-}
-
-sub instrument_count {
-  my $self  = shift;
-  my $query = q(SELECT COUNT(*)
-                FROM   instrument        i,
-                       instrument_format ifrm
-                WHERE  ifrm.id_manufacturer      = ?
-                AND    ifrm.id_instrument_format = i.id_instrument_format);
-  my $ref = [];
-  eval {
-    $ref = $self->util->dbh->selectall_arrayref($query, {},
-                                               $self->id_manufacturer());
-  } or do {
-    carp $EVAL_ERROR;
-    return;
-  };
-
-  return $ref->[0]->[0];
-}
 
 1;
 __END__
@@ -110,22 +68,6 @@ npg::model::manufacturer
                                             'name' => 'Illumina',
                                            });
 
-=head2 manufacturers - arrayref of all npg::model::manufacturers
-
-  my $arManufacturers = $oManufacturer->manufacturers();
-
-=head2 instrument_formats - arrayref of npg::model::instrument_formats by this manufacturer
-
-  my $arInstrumentFormats = $oManufacturer->instrument_formats();
-
-=head2 current_instruments - arrayref of npg::model::instruments which have iscurrent and whose instrument_formats have iscurrent
-
-  my $arInstruments = $oManufacturer->current_instruments();
-
-=head2 instrument_count - A count of all instruments from this manufacturer
-
-  my $iInstrumentCount = $oManufacturer->instrument_count();
-
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -146,10 +88,6 @@ npg::model::manufacturer
 
 =item Carp
 
-=item npg::model::instrument_format
-
-=item npg::model::instrument
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -158,11 +96,17 @@ npg::model::manufacturer
 
 =head1 AUTHOR
 
-Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+=over
+
+=item Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2008,2013,2014,2021 Genome Research Ltd.
 
 This file is part of NPG.
 

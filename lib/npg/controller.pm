@@ -24,7 +24,6 @@ use npg::model::run_lane_annotation;
 use npg::model::instrument_status_annotation;
 
 use npg::view::annotation;
-use npg::view::manufacturer;
 use npg::view::instrument_format;
 use npg::view::instrument_status;
 use npg::view::instrument_annotation;
@@ -111,11 +110,17 @@ npg::controller - NPG tracking controller
 
 =head1 AUTHOR
 
-Roger M Pettett
+=over
+
+=item Roger M Pettett
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2016 GRL
+Copyright (C) 2013,2014,2016,2020,2021 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

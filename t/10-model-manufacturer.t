@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 6;
 use t::util;
 use Test::Trap;
 
@@ -39,7 +39,6 @@ my $util = t::util->new({fixtures=>1});
   is($m->id_manufacturer(), 20, 'load by name');
 }
 
-
 {
   my $m = npg::model::manufacturer->new({
            util => $util,
@@ -48,51 +47,4 @@ my $util = t::util->new({fixtures=>1});
   is($m->name(), 'Illumina', 'load by id');
 }
 
-{
-  my $m = npg::model::manufacturer->new({
-           util => $util,
-           id_manufacturer => 10,
-          });
-  my $ci = $m->current_instruments();
-  isa_ok($ci, 'ARRAY');
-  is((scalar @{$ci}), 19, 'current instrument size');
-}
-
-{
-  my $m = npg::model::manufacturer->new({
-           util => $util,
-           id_manufacturer => 10,
-          });
-  is($m->instrument_count(), 20, 'instrument count');
-}
-
-{
-  trap {
-    my $m = npg::model::manufacturer->new({
-             util => 'bla',
-             id_manufacturer => 10,
-            });
-    is($m->instrument_count(), undef, 'database query failure');
-  };
-}
-
-{
-  my $m = npg::model::manufacturer->new({
-           util => $util,
-           id_manufacturer => 10,
-          });
-  my $is = $m->instrument_formats();
-  isa_ok($is, 'ARRAY');
-  is((scalar @{$is}), 6, 'instrument_formats');
-}
-
-{
-  my $m = npg::model::manufacturer->new({
-           util => $util,
-           id_manufacturer => 10,
-          });
-  my $ms = $m->manufacturers();
-  isa_ok($ms, 'ARRAY');
-  is((scalar @{$ms}), 3, 'manufacturers');
-}
-
+1;

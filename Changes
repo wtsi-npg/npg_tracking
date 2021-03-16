@@ -1,6 +1,7 @@
 LIST OF CHANGES
 
  - Change instrument format page to only show current instruments
+ - Remove unused views for an instrument manufacturer
 
 release 91.11.0
  - a partial reimplementation of the serialization framework for components
