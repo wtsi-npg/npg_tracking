@@ -1,6 +1,9 @@
 LIST OF CHANGES
 
- - Change instrument format page to only show current instruments
+ - Change instrument and instrument format pages to only show current
+   instruments and instrument formats
+ - Remove superfluous columns in tables for lists of instruments and
+   instrument formats
  - Remove unused views for an instrument manufacturer
 
 release 91.11.0

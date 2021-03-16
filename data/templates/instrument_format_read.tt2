@@ -1,4 +1,3 @@
-<!-- begin $Id: instrument_format_read.tt2 2662 2008-08-06 12:23:37Z rmp $ -->
 <table id="instruments" class="sortable zebra">
  <caption>Instruments for format [% model.manufacturer.name %] [% model.model %]</caption>
  <thead>
@@ -6,18 +5,13 @@
    <th>Name</th>
    <th>Model</th>
    <th>External Name</th>
-   <th>Serial #</th>
-   <th>Is Current</th>
   </tr>
  </thead>
- <tbody>[% FOREACH instrument = model.instruments %]
+ <tbody>[% FOREACH instrument = model.instruments; IF instrument.iscurrent %]
   <tr>
    <td><a href="[% SCRIPT_NAME %]/instrument/[% instrument.id_instrument %]">[% instrument.name %]</a></td>
    <td>[% instrument.model %]</td>
    <td>[% instrument.external_name %]</td>
-   <td>[% instrument.serial %]</td>
-   <td>[% IF instrument.iscurrent %]<img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
-  </tr>[% END %]
+  </tr>[% END; END %]
  </tbody>
 </table>
-<!-- end $Id: instrument_format_read.tt2 2662 2008-08-06 12:23:37Z rmp $ -->
