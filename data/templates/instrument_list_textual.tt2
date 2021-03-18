@@ -9,8 +9,6 @@
    <th>Model</th>
    <th>External Name</th>
    <th>Designation</th>
-   <th>Serial #</th>
-   <th>Is Current</th>
    <th>Current Run</th>
    <th>Current Status</th>
    <th>Status Comment</th>
@@ -23,8 +21,6 @@
    <td>[% instrument.model %]</td>
    <td>[% instrument.external_name %]</td>
    <td>[% IF instrument.designations %][% FOREACH designation = instrument.designations %][% designation.description | html %]&nbsp;[% END %][% ELSE %]&nbsp;[% END %]</td>
-   <td>[% instrument.serial %]</td>
-   <td>[% IF instrument.iscurrent %]<img src="/icons/silk/tick.png" alt="tick.png" title="yes" />[% ELSE %]<img src="/icons/silk/cross.png" alt="cross.png" title="no" />[% END %]</td>
    <td>[% PROCESS current_runs_info %]</td>
    <td>[% instrument.current_instrument_status.instrument_status_dict.description %]</td>
    <td>[% instrument.current_instrument_status.comment %]</td>

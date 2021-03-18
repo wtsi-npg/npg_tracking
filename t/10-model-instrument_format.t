@@ -1,15 +1,13 @@
 use strict;
 use warnings;
 use t::util;
-use npg::model::instrument;
-use Test::More tests => 13;
-use Test::Trap;
-use Test::Deep;
+use Test::More tests => 17;
+use Test::Exception;
 
 our $IF = 'npg::model::instrument_format';
 
+use_ok('npg::model::instrument');
 use_ok($IF);
-
 
 my $util = t::util->new({fixtures => 1});
 
@@ -28,6 +26,10 @@ my $util = t::util->new({fixtures => 1});
   isa_ok($cifs, 'ARRAY');
   is((scalar @{$cifs}), 7, 'unprimed cache cif');
   is((scalar @{$if->current_instrument_formats()}), 7, 'primed cache cif');
+  my $name;
+  lives_ok {$if->manufacturer_name},
+    'no error calling manufacturer_name on an object used in list context';
+  is($name, undef, 'manufacturer name is undefined');
 }
 
 {
@@ -38,6 +40,7 @@ my $util = t::util->new({fixtures => 1});
   my $is = $if->instruments();
   isa_ok($is, 'ARRAY');
   is((scalar @{$is}), 13, 'instruments');
+  is($if->manufacturer_name, 'Illumina', 'correct manufacturer name');
 }
 
 {

@@ -64,10 +64,6 @@ data/templates/instrument_status_menu.tt2
 data/templates/instrument_status_read_xml.tt2
 data/templates/instrument_top.tt2
 data/templates/instrument_update_statuses.tt2
-data/templates/manufacturer_add.tt2
-data/templates/manufacturer_create.tt2
-data/templates/manufacturer_list.tt2
-data/templates/manufacturer_read.tt2
 data/templates/run_add.tt2
 data/templates/run_annotation_add_ajax.tt2
 data/templates/run_annotation_add_input_form.tt2
@@ -182,7 +178,6 @@ lib/npg/model/instrument_mod_dict.pm
 lib/npg/model/instrument_status.pm
 lib/npg/model/instrument_status_annotation.pm
 lib/npg/model/instrument_status_dict.pm
-lib/npg/model/manufacturer.pm
 lib/npg/model/run.pm
 lib/npg/model/run_annotation.pm
 lib/npg/model/run_lane.pm
@@ -215,7 +210,6 @@ lib/npg/view/instrument_format.pm
 lib/npg/view/instrument_mod.pm
 lib/npg/view/instrument_status.pm
 lib/npg/view/instrument_status_annotation.pm
-lib/npg/view/manufacturer.pm
 lib/npg/view/run.pm
 lib/npg/view/run_annotation.pm
 lib/npg/view/run_lane.pm
@@ -360,7 +354,6 @@ t/10-model-instrument_mod_dict.t
 t/10-model-instrument_status.t
 t/10-model-instrument_status_annotation.t
 t/10-model-instrument_status_dict.t
-t/10-model-manufacturer.t
 t/10-model-run.t
 t/10-model-run_annotation.t
 t/10-model-run_lane.t

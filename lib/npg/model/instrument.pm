@@ -1,8 +1,5 @@
-#########
-# Author:        rmp
-# Created:       2006-10-31
-#
 package npg::model::instrument;
+
 use strict;
 use warnings;
 use base qw(npg::model);
@@ -178,14 +175,9 @@ sub model {
   return $self->instrument_format->model();
 }
 
-sub id_manufacturer {
+sub manufacturer_name {
   my $self = shift;
-  return $self->instrument_format->id_manufacturer();
-}
-
-sub manufacturer {
-  my $self = shift;
-  return $self->instrument_format->manufacturer();
+  return $self->instrument_format->manufacturer_name();
 }
 
 sub runs {
@@ -666,13 +658,9 @@ Has a side-effect of updating an instrument's current instrument_status to 'wash
 
   my $sModel = $oInstrument->model();
 
-=head2 id_manufacturer - id_manufacturer of this machine, via its instrument_format
+=head2 manufacturer_name - the name of the manufacturer of this instrument
 
-  my $iIdManufacturer = $oInstrument->id_manufacturer();
-
-=head2 manufacturer - npg::model::manufacturer of this machine, via its instrument_format
-
-  my $oManufacturer = $oInstrument->manufacturer();
+  my $oManufacturer = $oInstrument->manufacturer_name();
 
 =head2 instrument_statuses - arrayref of npg::model::instrument_statuses for this instrument
 
@@ -776,11 +764,17 @@ returns true if the instrument is a MiSeq, false otherwise
 
 =head1 AUTHOR
 
-Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+=over
+
+=item Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2006,2008,2013,2014,2016,2018,2021 Genome Research Ltd.
 
 This file is part of NPG.
 

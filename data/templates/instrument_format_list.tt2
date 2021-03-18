@@ -1,8 +1,5 @@
-<!-- begin $Id: instrument_format_list.tt2 6141 2009-08-13 09:19:17Z dj3 $ -->
-
 [% PROCESS instrument_formats_menu.tt2
 %]
-
 
 <table id="instrument_formats" class="sortable zebra">
   <thead>
@@ -16,7 +13,7 @@
 [% FOREACH instrument_format = model.instrument_formats %]
   [% IF instrument_format.iscurrent %]
     <tr>
-      <td><a href="[% SCRIPT_NAME %]/manufacturer/[% instrument_format.id_manufacturer %]">[% instrument_format.manufacturer.name %]</a></td>
+      <td>[% instrument_format.manufacturer_name %]</td>
       <td><a href="[% SCRIPT_NAME %]/instrument_format/[% instrument_format.id_instrument_format %]">[% instrument_format.model %]</a></td>
       <td>[% instrument_format.current_instruments_count %]</td>
     </tr>
@@ -24,4 +21,3 @@
 [% END %]
   </tbody>
 </table>
-<!-- end $Id: instrument_format_list.tt2 6141 2009-08-13 09:19:17Z dj3 $ -->
