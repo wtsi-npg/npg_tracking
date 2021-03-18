@@ -1,5 +1,5 @@
 <table id="instruments" class="sortable zebra">
- <caption>Instruments for format [% model.manufacturer.name %] [% model.model %]</caption>
+ <caption>Instruments for format [% model.manufacturer_name %] [% model.model %]</caption>
  <thead>
   <tr>
    <th>Name</th>

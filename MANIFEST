@@ -178,7 +178,6 @@ lib/npg/model/instrument_mod_dict.pm
 lib/npg/model/instrument_status.pm
 lib/npg/model/instrument_status_annotation.pm
 lib/npg/model/instrument_status_dict.pm
-lib/npg/model/manufacturer.pm
 lib/npg/model/run.pm
 lib/npg/model/run_annotation.pm
 lib/npg/model/run_lane.pm
@@ -355,7 +354,6 @@ t/10-model-instrument_mod_dict.t
 t/10-model-instrument_status.t
 t/10-model-instrument_status_annotation.t
 t/10-model-instrument_status_dict.t
-t/10-model-manufacturer.t
 t/10-model-run.t
 t/10-model-run_annotation.t
 t/10-model-run_lane.t

@@ -13,7 +13,7 @@
 [% FOREACH instrument_format = model.instrument_formats %]
   [% IF instrument_format.iscurrent %]
     <tr>
-      <td>[% instrument_format.manufacturer.name %]</td>
+      <td>[% instrument_format.manufacturer_name %]</td>
       <td><a href="[% SCRIPT_NAME %]/instrument_format/[% instrument_format.id_instrument_format %]">[% instrument_format.model %]</a></td>
       <td>[% instrument_format.current_instruments_count %]</td>
     </tr>

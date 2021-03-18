@@ -2,9 +2,11 @@ LIST OF CHANGES
 
  - Change instrument and instrument format pages to only show current
    instruments and instrument formats
- - Remove superfluous columns in tables for lists of instruments and
-   instrument formats
- - Remove unused views for an instrument manufacturer
+ - Remove superfluous columns in display tables for lists of instruments
+   and instrument formats
+ - Remove unused views (templates) for an instrument manufacturer
+ - Remove manufacturer model and view classes, create manufacturer_name
+   method in the instrument and instrument_format model classes
 
 release 91.11.0
  - a partial reimplementation of the serialization framework for components

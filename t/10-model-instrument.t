@@ -107,6 +107,8 @@ my $util = t::util->new({ fixtures => 1 });
   isa_ok($current_instruments, 'ARRAY', '$model->current_instruments()');
   is((scalar@{$current_instruments} + 1), scalar@{$instruments}, 'scalar@{$model->current_instruments()} is 1 less than scalar@{$model->instruments()}');
   is($model->current_instruments(), $current_instruments, '$model->current_instruments() cached ok');
+  is($model->manufacturer_name, undef,
+    'manufacturer name is undefined for a model used in list context');
 }
 
 {
@@ -139,8 +141,7 @@ my $util = t::util->new({ fixtures => 1 });
   isa_ok($current_run, 'npg::model::run', '$model->current_run()');
   is($model->current_run(), $current_run, '$model->current_run() cached ok');
   is($model->model(), 'HK', '$model->model() retrieved correctly');
-  is($model->id_manufacturer(), 10, '$model->id_manufacturer() retrieved correctly');
-  isa_ok($model->manufacturer(), 'npg::model::manufacturer', '$model->id_manufacturer()');
+  is($model->manufacturer_name(), 'Illumina', 'correct manufacturer name');
 
   my @desigs;
   foreach my $i ( @{$model->designations()} ) {

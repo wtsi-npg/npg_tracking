@@ -7,7 +7,6 @@ use base qw(ClearPress::controller);
 use npg::decorator;
 
 use npg::model::instrument_format;
-use npg::model::manufacturer;
 use npg::model::instrument;
 use npg::model::instrument_annotation;
 use npg::model::instrument_status;
@@ -120,7 +119,7 @@ npg::controller - NPG tracking controller
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2016,2020,2021 Genome Research Ltd.
+Copyright (C) 2006,2014,2016,2020,2021 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
