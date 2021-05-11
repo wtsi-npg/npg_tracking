@@ -2,7 +2,7 @@ package reference;
 
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 22;
 use Test::Exception;
 use File::Spec::Functions qw(catfile);
 use Cwd qw(cwd);
@@ -149,6 +149,16 @@ SKIP: {
           roles => [qw/npg_tracking::data::reference::list/])->new_object(repository=>q[t/data/repos1],);
   is ($lister->bait_report, "Bait Name\tReferences\nHuman_all_exon_50MB\t1000Genomes_hs37d5\n", 'bait report by bait name');
   is ($lister->bait_report_by_reference, "Reference\tBait Names\n1000Genomes_hs37d5\tHuman_all_exon_50MB\n", 'bait report by reference name');
+}
+
+{
+  my $lister = Moose::Meta::Class->create_anon_class(roles =>
+    [qw/npg_tracking::data::reference::list/])->new_object(repository=>$root);
+  throws_ok { $lister->metaref_repository } qr/does not pass the type constraint/,
+    'error if the repo directory does not exist';
+  my $repo = join q[/], $root, q[meta_references];
+  mkdir $repo;
+  is ($lister->metaref_repository, $repo, 'metaref repo path'); 
 }
 
 1;
