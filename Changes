@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - Extend npg_status2file script to optionally save statuses to the tracking
+   database
+ 
 release 91.12.0
  - Change instrument and instrument format pages to only show current
    instruments and instrument formats

@@ -4,11 +4,12 @@ use strict;
 use warnings;
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
-use Carp;
 use Getopt::Long;
 use Pod::Usage;
+use Log::Log4perl qw{:levels};
 
 use npg_tracking::status;
+use npg_tracking::Schema;
 
 our $VERSION = '0';
 
@@ -16,17 +17,26 @@ my $dir_out;
 my $id_run;
 my @lanes = ();
 my $status;
+my $db_flag;
 GetOptions('dir_out=s' => \$dir_out,
            'id_run=i'  => \$id_run,
            'status=s'  => \$status,
            'lanes=i@'  => \@lanes,
+           'db_save'   => \$db_flag,
           ) || pod2usage(2);
 
+my $layout = '%d %-5p %c - %m%n';
+Log::Log4perl->easy_init({layout => $layout,
+                          level  => $INFO,
+                          utf8   => 1});
+my $logger = Log::Log4perl->get_logger();
+
 if (!$dir_out) {
-  croak '--dir_out option should be set';
+  $logger->error_die('--dir_out option should be set');
 }
 if ( !(-d $dir_out && -w $dir_out) ) {
-  croak "--dir_out option $dir_out should be a writable directory";
+  $logger->error_die(
+    "--dir_out option $dir_out should be a writable directory");
 }
 
 #####
@@ -35,10 +45,17 @@ if ( !(-d $dir_out && -w $dir_out) ) {
 # inambigiously. 
 sleep 2;
 
-my $path = npg_tracking::status->new(
-   id_run => $id_run, status => $status, lanes => \@lanes)->to_file($dir_out);
+my $status_obj = npg_tracking::status->new(
+   id_run => $id_run, status => $status, lanes => \@lanes);
+my $path = $status_obj->to_file($dir_out);
+$logger->info("Wrote status '$status' to $path");
 
-warn "Wrote status '$status' to $path\n";
+if ($db_flag) {
+  $logger->info("Saving status '$status' to the database"); 
+  $status_obj->to_database(npg_tracking::Schema->connect());
+} else {
+  $logger->info("Not saving status '$status' to the database");
+}
 
 0;
 
@@ -51,13 +68,19 @@ npg_status2file
 =head1 USAGE
 
   #save status for two lanes
-  npg_status2file --id_run 1234 --lanes 1 --lanes 2  --dir_out my_dir --status 'qc review pending'
+  npg_status2file --id_run 1234 --lanes 1 --lanes 2  --dir_out my_dir \
+    --status 'qc review pending'
 
   #save status for one lane
-  npg_status2file --id_run 1234 --lanes 1 --dir_out my_dir --status 'analysis in progress'
+  npg_status2file --id_run 1234 --lanes 1 --dir_out my_dir \
+    --status 'analysis in progress'
 
   #save status for a run
   npg_status2file --id_run 1234 --dir_out my_dir --status 'analysis pending'
+
+  #save status for a run and create a database record
+  npg_status2file --id_run 1234 --dir_out my_dir --db_save \
+    --status 'analysis pending'
 
 =head1 REQUIRED ARGUMENTS
 
@@ -67,7 +90,10 @@ npg_status2file
 
 =head1 OPTIONS
 
- If --lanes exist then one lane status json file is created to cover all lanes.
+If --db_save is enabled, in addition to saving the status in a JSON file,
+the status record is created in the tracking database.
+
+If --lanes is set then one lane status JSON file is created to cover all lanes.
 
 =head1 EXIT STATUS
 
@@ -77,8 +103,9 @@ npg_status2file
 
 =head1 DESCRIPTION
 
- Given run identifier, an optional array of lanes, the status description
- and output directory, creates a json file recording the input plus a timestamp.
+Given run identifier, an optional array of lanes, the status description
+and output directory, creates a json file recording the input plus a timestamp.
+Optionally creates a run or lane status record in the tracking database.
 
 =head1 DIAGNOSTICS
 
@@ -92,11 +119,13 @@ npg_status2file
 
 =item warnings
 
-=item Carp
-
 =item Getopt::Long
 
+=item Log::Log4perl
+
 =item npg_pipeline::status
+
+=item npg_tracking::Schema
 
 =item FindBin
 
@@ -112,11 +141,17 @@ npg_status2file
 
 =head1 AUTHOR
 
-Kate Taylor
+=over
+
+=item Kate Taylor
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 Genome Research Limited
+Copyright (C) 2014,2019,2021 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
