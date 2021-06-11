@@ -63,23 +63,23 @@ __END__
 
 =head1 NAME
 
-npg_status2file
+npg_status_save
 
 =head1 USAGE
 
   #save status for two lanes
-  npg_status2file --id_run 1234 --lanes 1 --lanes 2  --dir_out my_dir \
+  npg_status_save --id_run 1234 --lanes 1 --lanes 2  --dir_out my_dir \
     --status 'qc review pending'
 
   #save status for one lane
-  npg_status2file --id_run 1234 --lanes 1 --dir_out my_dir \
+  npg_status_save --id_run 1234 --lanes 1 --dir_out my_dir \
     --status 'analysis in progress'
 
   #save status for a run
-  npg_status2file --id_run 1234 --dir_out my_dir --status 'analysis pending'
+  npg_status_save --id_run 1234 --dir_out my_dir --status 'analysis pending'
 
   #save status for a run and create a database record
-  npg_status2file --id_run 1234 --dir_out my_dir --db_save \
+  npg_status_save --id_run 1234 --dir_out my_dir --db_save \
     --status 'analysis pending'
 
 =head1 REQUIRED ARGUMENTS
