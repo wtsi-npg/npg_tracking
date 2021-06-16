@@ -5,7 +5,7 @@ use Test::More tests => 12;
 use File::Temp qw{ tempdir };
 
 my $tempdir = tempdir(CLEANUP => 1,);
-my $script = 'bin/npg_status2file';
+my $script = 'bin/npg_status_save';
 
 use_ok(q{npg_tracking::status});
 
