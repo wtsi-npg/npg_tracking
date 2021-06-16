@@ -47,8 +47,6 @@ sleep 2;
 
 my $status_obj = npg_tracking::status->new(
    id_run => $id_run, status => $status, lanes => \@lanes);
-my $path = $status_obj->to_file($dir_out);
-$logger->info("Wrote status '$status' to $path");
 
 if ($db_flag) {
   $logger->info("Saving status '$status' to the database"); 
@@ -56,6 +54,9 @@ if ($db_flag) {
 } else {
   $logger->info("Not saving status '$status' to the database");
 }
+
+my $path = $status_obj->to_file($dir_out);
+$logger->info("Wrote status '$status' to $path");
 
 0;
 
