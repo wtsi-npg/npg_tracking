@@ -1,7 +1,9 @@
 LIST OF CHANGES
 
+release 91.13.0
  - Extend npg_status2file script to optionally save statuses to the tracking
    database and renamed the script to npg_status_save.
+ - Move from Travis CI to GitHub Actions.
  
 release 91.12.0
  - Change instrument and instrument format pages to only show current
