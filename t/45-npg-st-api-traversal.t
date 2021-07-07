@@ -1,35 +1,13 @@
 use strict;
 use warnings;
-use Test::More tests => 142; #remember to change the skip number below as well!
+use Test::More tests => 48;
 use Test::Deep;
 use Test::Exception;
-use npg_testing::intweb qw(npg_is_accessible);
 
 use_ok('npg::api::run');
 
-my $do_test = 1;
-
-foreach my $pa (['test', 'using mocked data'],
-                ['live', 'using live'],
-                ['dev',  'using dev'],
-    ) {
-    diag($pa->[1]);
-    local $ENV{dev}=$pa->[0] unless $pa->[0] eq 'test';
-    local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[];
-    local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/test45] if $pa->[0] eq 'test';
-
-    if ($pa->[0] eq q[dev]) {
-        $do_test = npg_is_accessible(q[http://sf2-farm-srv2.internal.sanger.ac.uk:9010]);
-    } elsif ($pa->[0] eq q[live]) {
-        $do_test = npg_is_accessible();
-    }
-
-  SKIP: {
-
-    if (!$do_test) {
-      skip 'Live test, but sanger intweb is not accessible',  47;
-    }
-
+local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/test45];
+{
     my $run = npg::api::run->new({
              max_retries => 2,
              retry_delay => 1,
@@ -48,7 +26,6 @@ foreach my $pa (['test', 'using mocked data'],
     my @lanes = $lims->associated_child_lims;
     cmp_ok(scalar @lanes,  q(==), 8, 'lims lane count');
 
-    {#get the lanes from the batch
     isa_ok($lanes[0], 'st::api::lims', 'first lane isa');
     cmp_ok($lanes[0]->position, q(==), 1, 'first st lane position');
     cmp_ok($lanes[5]->position, q(==), 6, 'sixth st lane position');
@@ -67,14 +44,12 @@ foreach my $pa (['test', 'using mocked data'],
     cmp_ok($control->library_id, q(==), 79577, 'control id from fourth st lane');
     cmp_ok($lanes[5]->project_id, q(==), 333, 'study id');
     cmp_ok($lanes[5]->project_name, q(eq), q(CLL whole genome), 'study name');
- #warn @{$project->email_addresses};
     cmp_bag($lanes[5]->email_addresses,[qw(dg10@sanger.ac.uk las@sanger.ac.uk pc8@sanger.ac.uk sm2@sanger.ac.uk)],'All email addresses');
     cmp_bag($lanes[5]->email_addresses_of_managers,[qw(sm2@sanger.ac.uk)],'Managers email addresses');
     is_deeply($lanes[5]->email_addresses_of_followers,[qw(dg10@sanger.ac.uk las@sanger.ac.uk pc8@sanger.ac.uk)],'Followers email addresses');
     is_deeply($lanes[5]->email_addresses_of_owners,[qw(sm2@sanger.ac.uk)],'Owners email addresses');
     TODO: { local $TODO = 'expect cancer study to have BAM alignments set to false'; # should probably bung in true one as well....
-    ok(! $lanes[5]->alignments_in_bam, 'No alignments in BAM');
-    }
+        ok(! $lanes[5]->alignments_in_bam, 'No alignments in BAM');
     }
 
     #get npg run lanes from run
@@ -85,43 +60,37 @@ foreach my $pa (['test', 'using mocked data'],
     cmp_ok($run_lanes[5]->position, q(==), 6, 'sixth run lane position');
     is($run_lanes[0]->is_control, 0, 'first run lane is not control');
     is($run_lanes[3]->is_control, 1, 'fourth run lane is a control');
-    {
-      my $run_lane = npg::api::run_lane->new({
+
+    my $run_lane = npg::api::run_lane->new({
                                           'id_run'   => 3948,
                                           'position' => 6,
-                                         });
-      is($run_lane->id_run_lane, 31141, 'lookup from id_run and position');
-      ok($run_lane->contains_nonconsented_human, 'contains nonconsented human');
-      ok($run_lane->contains_unconsented_human, 'contains unconsented human (back compat)');
-      ok(!$run_lane->is_library, 'not from a single library');
-      ok(!$run_lane->is_control, 'not from a control');
-      ok($run_lane->is_pool, 'from a pool');
-      is( $run_lane->asset_id, '65172', 'return asset id for a pool' );
-    }
-    {
-      my $run_lane = npg::api::run_lane->new({
+                                           });
+    is($run_lane->id_run_lane, 31141, 'lookup from id_run and position');
+    ok($run_lane->contains_nonconsented_human, 'contains nonconsented human');
+    ok($run_lane->contains_unconsented_human, 'contains unconsented human (back compat)');
+    ok(!$run_lane->is_library, 'not from a single library');
+    ok(!$run_lane->is_control, 'not from a control');
+    ok($run_lane->is_pool, 'from a pool');
+    is( $run_lane->asset_id, '65172', 'return asset id for a pool' );
+
+    $run_lane = npg::api::run_lane->new({
                                           'id_run'   => 3948,
                                           'position' => 1,
-                                         });
-      is($run_lane->id_run_lane, 31136, 'lookup from id_run and position');
-      ok(!$run_lane->contains_nonconsented_human, 'does not contain nonconsented human');
-      ok(!$run_lane->contains_unconsented_human, 'does not contain unconsented human (back compat)');
-      ok(!$run_lane->is_library, 'not from a single library');
-      ok(!$run_lane->is_control, 'not from a control');
-      ok($run_lane->is_pool, 'from a pool');
-    }
+                                       });
+    is($run_lane->id_run_lane, 31136, 'lookup from id_run and position');
+    ok(!$run_lane->contains_nonconsented_human, 'does not contain nonconsented human');
+    ok(!$run_lane->contains_unconsented_human, 'does not contain unconsented human (back compat)');
+    ok(!$run_lane->is_library, 'not from a single library');
+    ok(!$run_lane->is_control, 'not from a control');
+    ok($run_lane->is_pool, 'from a pool');
 
-    {
-      my $run = npg::api::run->new({
+    $run = npg::api::run->new({
         id_run => 5937,
-      });
-      my $lims = $run->lims();
-      is( $lims->batch_id(), 9589, q{correct batch id} );
-      my $lane1_lims = $lims->associated_child_lims_ia->{1};
-      is(scalar $lane1_lims->sample_names, 2 , '2 samples in a pool');
-    }
-
-  } # end of SKIP
+    });
+    $lims = $run->lims();
+    is( $lims->batch_id(), 9589, q{correct batch id} );
+    my $lane1_lims = $lims->associated_child_lims_ia->{1};
+    is(scalar $lane1_lims->sample_names, 2 , '2 samples in a pool');
 }
 
 1;
