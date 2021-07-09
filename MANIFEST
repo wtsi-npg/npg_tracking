@@ -326,6 +326,7 @@ lib/st/api/sample.pm
 lib/st/api/study.pm
 MANIFEST			This list of files
 README
+README.md
 t/.npg/npg_tracking
 t/.npg/t-magic-connection
 t/.npg/t-magic-connection2
