@@ -35,7 +35,7 @@ Environment Variables and Their Meaning
 + `NPG_WEBSERVICE_CACHE_DIR` - a cache directory for test LIMS and NPG servers
                                XML feeds, used in unit tests only
 
-Tags and their Meaning
+Tags and Their Meaning
 ----------------------
 
 Text tags can be associated with sequencing runs and individual lanes of a run.
@@ -54,11 +54,12 @@ explicitly stated. Any tag can be removed manually via a web page of a run.
               run folders from the staging area.
 + `multiplex` - The staging daemon assigns this tag to a run if the run had
                 an indexing read.
-+ `no_mqc_skipper` - This tag can be assigned to a run to prevent the data
-                     being assessed by a script that can change the run status
-                     from `qc review pending` to `archival pending` bypassing
-                     the stage of manual QC.
-+ `no_auto` - This tag can be assigned to a run to prevent it being considered
-              by any automatic processing. Currently, only functionaly
-              identical to triggered by the `no_mqc_skipper` is implemented.
++ `no_mqc_skipper` - This tag can be manually assigned to a run to prevent the
+                     data being assessed by a
+[script](https://github.com/wtsi-npg/npg_qc/blob/master/bin/npg_mqc_skipper)
+                     that can change the run status from `qc review pending` to
+                     `archival pending` bypassing the stage of manual QC.
++ `no_auto` - This tag is intended to be manually assigned to a run to prevent
+              it being considered by any automatic processing. Currently, it is
+              only functionaly identical to the `no_mqc_skipper` tag.
 
