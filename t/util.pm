@@ -124,8 +124,9 @@ sub load_fixtures {
   #########
   # build table definitions
   #
-  if(!-e "data/schema.txt") {
-    croak "Could not find data/schema.txt";
+  my $schema_dump = 't/data/schema.txt';
+  if(!-e $schema_dump) {
+    croak "Database schema dump '$schema_dump' does not exist";
   }
 
   if ($self->dbh) {
@@ -138,9 +139,10 @@ sub load_fixtures {
     $self->{'dbh'} = undef; #for good measure
   }
 
-  $self->log('Loading data/schema.txt');
-  my $cmd = q(cat data/schema.txt | mysql);
-  my $local_socket = $self->dbhost() eq 'localhost' && $ENV{'MYSQL_UNIX_PORT'} ? $ENV{'MYSQL_UNIX_PORT'} : q[];
+  my $cmd = qq(cat $schema_dump | mysql);
+  my $local_socket =
+    $self->dbhost() eq 'localhost' && $ENV{'MYSQL_UNIX_PORT'}
+    ? $ENV{'MYSQL_UNIX_PORT'} : q[];
   if ($local_socket) {
     $cmd .= q( --no-defaults); #do not read ~/.my.cnf
                                #this should be the first option

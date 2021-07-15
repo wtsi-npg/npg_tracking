@@ -28,7 +28,6 @@ data/npg_tracking_email/templates/run_or_lane2subscribers.tt2
 data/npg_tracking_email/templates/run_status2followers.tt2
 data/npg_tracking_email/templates/urls.tt2
 data/npg_tracking_email/templates/wrapper.tt2
-data/schema.txt
 data/templates/actions.tt2
 data/templates/administration_create_instrument_mod.tt2
 data/templates/administration_create_user.tt2
@@ -485,6 +484,7 @@ t/80-npg_tracking-report-event2lims.t
 t/80-npg_tracking-report-event2followers.t
 t/80-npg_tracking-report-event2subscribers.t
 t/90-reference.t
+t/data/schema.txt
 t/data/090414_IL24_2726.tar.bz2
 t/data/dbic_fixtures/000-Designation.yml
 t/data/dbic_fixtures/000-EntityType.yml

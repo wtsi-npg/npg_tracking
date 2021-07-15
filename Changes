@@ -9,6 +9,8 @@ LIST OF CHANGES
    variable is unset. 
  - Move README file to README.md, improve Markdown format. Add sections
    describing environment variables and tags.
+ - Move db schema dump, which is only used for tests, from tge data to t/data
+   directory.
 
 release 91.13.0
  - Extend npg_status2file script to optionally save statuses to the tracking
