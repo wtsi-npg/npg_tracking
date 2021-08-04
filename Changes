@@ -11,6 +11,7 @@ LIST OF CHANGES
    describing environment variables and tags.
  - Move db schema dump, which is only used for tests, from tge data to t/data
    directory.
+ - Block access to tsv files via httpd_sfweb.conf
 
 release 91.13.0
  - Extend npg_status2file script to optionally save statuses to the tracking
