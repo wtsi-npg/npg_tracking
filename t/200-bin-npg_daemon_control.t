@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use IPC::Open2;
 use Perl6::Slurp;
-use Test::More tests => 77;
+use Test::More tests => 59;
 use File::Temp qw/tempdir/;
 use File::Slurp;
 use File::Copy qw/cp/;
@@ -37,7 +37,7 @@ like (shift(@lines), qr/--dry-run/, 'dry-run option present');
 pop @lines;
 like (pop @lines, qr/--host/, 'host option present');
 
-foreach my $app (qw/jenkins samplesheet staging status/) {
+foreach my $app (qw/jenkins samplesheet staging/) {
   foreach my $action (qw/ping stop start/) {
     my $option = q{--} . $action . q{_} . $app;
     my @found = grep { /$option/ } @lines;

@@ -228,7 +228,6 @@ lib/npg_tracking/daemon/jenkins.pm
 lib/npg_tracking/daemon/samplesheet.pm
 lib/npg_tracking/daemon/staging.pm
 lib/npg_tracking/daemon/staging_local.pm
-lib/npg_tracking/daemon/status.pm
 lib/npg_tracking/data/bait.pm
 lib/npg_tracking/data/bait/find.pm
 lib/npg_tracking/data/common.pm
@@ -418,7 +417,6 @@ t/14-dbic-User.t
 t/16-npg_tracking-daemon-jenkins.t
 t/16-npg_tracking-daemon-samplesheet.t
 t/16-npg_tracking-daemon-staging.t
-t/16-npg_tracking-daemon-status.t
 t/16-npg_tracking-daemon.t
 t/20-model-run_and_instrument_status.t
 t/20-view-administration.t
