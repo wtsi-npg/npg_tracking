@@ -1,0 +1,3 @@
+INSERT INTO `tag` (tag, incompatible_tag) VALUES('no_auto', NULL);
+INSERT INTO `tag` (tag, incompatible_tag) VALUES('no_auto_analysis', NULL);
+INSERT INTO `tag` (tag, incompatible_tag) VALUES('no_auto_archive', NULL);
