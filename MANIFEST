@@ -4,7 +4,6 @@ bin/illumina_instruments_uptime
 bin/npg_daemon_control
 bin/npg_move_runfolder
 bin/npg_status_save
-bin/npg_status_watcher
 bin/staging_area_monitor
 bin/npg_deletable_dr_runs
 Build.PL
@@ -267,7 +266,6 @@ lib/npg_tracking/illumina/run/folder/location.pm
 lib/npg_tracking/illumina/run/folder/validation.pm
 lib/npg_tracking/illumina/run/long_info.pm
 lib/npg_tracking/illumina/run/short_info.pm
-lib/npg_tracking/monitor/status.pm
 lib/npg_tracking/Schema.pm
 lib/npg_tracking/Schema/Result/Annotation.pm
 lib/npg_tracking/Schema/Result/Designation.pm
@@ -452,7 +450,6 @@ t/30-api-util.t
 t/34-monitor-runfolder-staging.t
 t/34-monitor-runfolder.t
 t/34-monitor-staging.t
-t/36-npg_tracking-monitor-status.t
 t/40-st-base.t
 t/40-st-batch.t
 t/40-st-event.t
