@@ -10,6 +10,8 @@ use Cwd qw(cwd);
 use File::Copy;
 use File::Find;
 
+use st::api::lims;
+
 my $current_dir = cwd();
 my $repos = catdir($current_dir, q[t/data/repos1]);
 my $pp_repos = catdir($repos, q[primer_panel]);
@@ -33,7 +35,6 @@ find({'wanted' => \&_copy_ref_rep, 'follow' => 0, 'no_chdir' => 1}, $pp_repos);
 find({'wanted' => \&_copy_ref_rep, 'follow' => 0, 'no_chdir' => 1}, $ref_repos);
 $repos = $new;
 $pp_repos = catdir($repos, q[primer_panel]);
-
 
 {
   local $ENV{http_proxy} = 'wibble';
@@ -102,13 +103,12 @@ $pp_repos = catdir($repos, q[primer_panel]);
 
 {
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/repos1];
-  my $test =npg_tracking::data::primer_panel->new( repository => $repos,
-                                                   id_run => 7754,
-                                                   position => 1,
-                                                   tag_index => 2);
+  my %init = (id_run => 7754, position => 1, tag_index => 2);
+  my $test =npg_tracking::data::primer_panel->new(
+    repository => $repos, %init,
+    lims => st::api::lims->new(%init, batch_id => 16467));
   lives_and { is $test->primer_panel_path, undef } 'primer_panel_path is undefined - 7754_1';
   is($test->primer_panel_name, undef, 'primer_panel_name is undefined - 7754_1');
-
 }
 
 1;

@@ -37,7 +37,8 @@ subtest 'Setting return value for primary attributes' => sub {
 
   my @other = qw/path id_flowcell_lims flowcell_barcode/;
 
-  my $lims = st::api::lims->new(id_run => 6551, position => 2);
+  my $lims = st::api::lims->new(
+    id_run => 6551, batch_id => 12141, position => 2);
   my $lane_lims = $lims;
   for my $attr (@other) {
     is ($lims->$attr, undef, "$attr is undefined");
@@ -58,7 +59,8 @@ subtest 'Setting return value for primary attributes' => sub {
   is ($lims->position, 2, 'position is set correctly');
   is ($lims->tag_index, 1, 'tag_index is set to 1');
   
-  $lims = st::api::lims->new(id_run => 6551, position => 2, tag_index => 0);
+  $lims = st::api::lims->new(
+    id_run => 6551, batch_id => 12141, position => 2, tag_index => 0);
   for my $attr (@other) {
     is ($lims->$attr, undef, "$attr is undefined");
   }
@@ -69,14 +71,15 @@ subtest 'Setting return value for primary attributes' => sub {
   ok ($lims->is_pool, 'tag zero is a pool');
 
   $lims = st::api::lims->new(driver => $lane_lims->driver(),
-    id_run => 6551, position => 2, tag_index => 0);
+    id_run => 6551, batch_id => 12141, position => 2, tag_index => 0);
   is ($lims->id_run, 6551, 'id run is set correctly');
   is ($lims->batch_id, 12141, 'batch id is set correctly');
   is ($lims->position, 2, 'position is set correctly');
   is ($lims->tag_index, 0, 'tag_index is set to zero');
   ok ($lims->is_pool, 'tag zero is a pool');
 
-  $lims = st::api::lims->new(id_run => 6551, position => 2, tag_index => 2);
+  $lims = st::api::lims->new(
+    id_run => 6551, batch_id => 12141, position => 2, tag_index => 2);
   is ($lims->tag_index, 2, 'tag_index is set correctly');
 
   my $path = 't/data/samplesheet/miseq_default.csv';
@@ -128,11 +131,13 @@ my @studies_6551_1 = ('Illumina Controls','Discovery of sequence diversity in Sh
 subtest 'Driver type and driver build' => sub {
   plan tests => 7;
 
-  throws_ok { st::api::lims->new(id_run => 6551, driver_type => 'some') }
+  throws_ok { st::api::lims->new(
+    id_run => 6551, batch_id => 12141, driver_type => 'some') }
     qr/Can\'t locate st\/api\/lims\/some\.pm in \@INC/,
     'unknown driver type specified - error';
 
-  isa_ok (st::api::lims->new(id_run => 6551, driver_type => 'xml')->driver(),
+  isa_ok (st::api::lims->new(
+    id_run => 6551, batch_id => 12141, driver_type => 'xml')->driver(),
     'st::api::lims::xml');
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[];
   isa_ok (st::api::lims->new(id_run => 6551)->driver(), 'st::api::lims::xml');
@@ -154,7 +159,7 @@ subtest 'Driver type and driver build' => sub {
 subtest 'Run-level object' => sub {
   plan tests => 19;
 
-  my $lims = st::api::lims->new(id_run => 6551);
+  my $lims = st::api::lims->new(id_run => 6551, batch_id => 12141);
   is($lims->cached_samplesheet_var_name, 'NPG_CACHED_SAMPLESHEET_FILE',
     'correct name of the cached samplesheet env var');
   is(scalar $lims->driver_method_list_short(), $num_delegated_methods, 'short driver method list lenght from an object');
@@ -181,20 +186,21 @@ subtest 'Lane-level object' => sub {
   plan tests => 103;
 
   my @lims_list = ();
-  push @lims_list, st::api::lims->new(id_run => 6551, position => 1);
+  push @lims_list, st::api::lims->new(
+    id_run => 6551, batch_id => 12141, position => 1);
   my @comps = ();
   foreach my $tag ((1 .. 12)) {
     push @comps, "6551:1:${tag}";
   }
   my $rpt_list = join q[;], @comps;
-  push @lims_list, st::api::lims->new(rpt_list => $rpt_list);
+  push @lims_list, st::api::lims->new(batch_id => 12141,rpt_list => $rpt_list);
   my $count = 0;
   foreach my $lims (@lims_list) {
     is($lims->rpt_list, $count ? $rpt_list : undef, 'rpt list value');
     is($lims->id_run,   $count ? undef     : 6551,  'id_run value');
     is($lims->position, $count ? undef     : 1,     'position value');
     is($lims->lane_id(),      $lims->rpt_list ? undef : 3065552, 'lane id');
-    is($lims->batch_id,       $lims->rpt_list ? undef : 12141, 'batch id');
+    is($lims->batch_id,       12141, 'batch id');
     is($lims->is_control,     0, 'entity is not control');
     is($lims->is_pool,        $lims->rpt_list ? undef : 1, 'pool flag value');
     is($lims->is_composition, $lims->rpt_list ? 1 : 0, 'composition flag value');
@@ -236,7 +242,7 @@ subtest 'Lane-level object' => sub {
     is ($p6->default_tag_sequence, 'GCCAATGTAT', 'plex tag sequence');
 
     is($lims->to_string, $lims->rpt_list ?
-      "st::api::lims object, rpt_list $rpt_list" :
+      "st::api::lims object, batch_id 12141, rpt_list $rpt_list" :
       'st::api::lims object, driver - xml, batch_id 12141, id_run 6551, position 1',
       'string respresentation of the object');
 
@@ -313,7 +319,8 @@ subtest 'Lane-level object' => sub {
 subtest 'Object for tag zero' => sub {
   plan tests => 27;
 
-  my $lims = st::api::lims->new(id_run => 6551, position => 1, tag_index => 0);
+  my $lims = st::api::lims->new(
+    id_run => 6551, batch_id => 12141, position => 1, tag_index => 0);
   is($lims->lane_id(), undef, q{lane_id undef for id_run 6551, position 1, tag_index defined} );
   is($lims->batch_id, 12141, 'batch id is 12141 for lane 1');
   is($lims->is_control, 0, 'lane 1 is not control');
@@ -353,7 +360,8 @@ subtest 'Object for tag zero' => sub {
 subtest 'Object for spiked phix tag' => sub {
   plan tests => 24;
 
-  my $lims = st::api::lims->new(id_run => 6551, position => 1, tag_index => 168);
+  my $lims = st::api::lims->new(
+    id_run => 6551, batch_id => 12141, position => 1, tag_index => 168);
   is($lims->is_control, 1, 'tag 1/168 is control');
   is($lims->is_pool, 0, 'tag 1/168 is not a pool');
   is($lims->contains_nonconsented_human, 0, 'does not contain nonconcented human');
@@ -389,7 +397,8 @@ subtest 'Object for spiked phix tag' => sub {
 subtest 'Object for a tag' => sub {
   plan tests => 33;
 
-  my $lims = st::api::lims->new(id_run => 6551, position => 1, tag_index => 1);
+  my $lims = st::api::lims->new(
+    id_run => 6551, batch_id => 12141, position => 1, tag_index => 1);
   is($lims->is_control, 0, 'tag 1/1 is not control');
   is($lims->is_pool, 0, 'tag 1/1 is not a pool');
   is($lims->contains_nonconsented_human, 0, 'does not contain nonconcented human');
@@ -406,8 +415,10 @@ subtest 'Object for a tag' => sub {
   is(join(q[ ], $lims->sample_accession_numbers($with_spiked_phix)), 'ERS024591', 'tag 1 sample_accession_numbers list $with_spiked_phix = 0');
   is(join(q[ ], $lims->study_names($with_spiked_phix)), $studies_6551_1[1], 'tag 1 study_names list $with_spiked_phix = 0');
 
-  $lims = st::api::lims->new(id_run => 6607, position => 5, tag_index => 1);
-  my $lims_nofb = st::api::lims->new(id_run => 6607, position => 5, tag_index => 1);
+  $lims = st::api::lims->new(
+    id_run => 6607, batch_id => 12378, position => 5, tag_index => 1);
+  my $lims_nofb = st::api::lims->new(
+    id_run => 6607, batch_id => 12378, position => 5, tag_index => 1);
   is($lims->batch_id, 12378, 'batch id for lane 5 tag 1');
   is($lims->tag_index, 1, 'tag index 1');
   is($lims->is_control, 0, 'plex 5/1 is not control');
@@ -435,7 +446,8 @@ subtest 'Object for a tag' => sub {
 subtest 'Object for a non-pool lane' => sub {
   plan tests => 99;
 
-  my $lims = st::api::lims->new(id_run => 6607, position => 1);
+  my $lims = st::api::lims->new(
+    id_run => 6607, batch_id => 12378, position => 1);
   isa_ok($lims, 'st::api::lims');
   is($lims->batch_id, 12378, 'batch id for lane 1');
   is($lims->is_control, 0, 'lane 1 is not control');
@@ -473,26 +485,29 @@ subtest 'Object for a non-pool lane' => sub {
 subtest 'Priority and seqqc state' => sub {
   plan tests => 8;
 
-  my $lims = st::api::lims->new(id_run => 6607, position => 2); # non-pool lane
+  my $lims = st::api::lims->new(
+    id_run => 6607, batch_id => 12378, position => 2); # non-pool lane
   is($lims->seq_qc_state, undef, 'seq qc not set for pending');
   is($lims->lane_priority, 0, 'priority 0');
-  $lims = st::api::lims->new(id_run => 6607, position => 3);
+  $lims = st::api::lims->new(id_run => 6607, batch_id => 12378, position => 3);
   is($lims->seq_qc_state, 1, 'seq qc 1 for pass');
   is($lims->lane_priority, 1, 'priority 1');
-  $lims = st::api::lims->new(id_run => 6607, position => 4);
+  $lims = st::api::lims->new(id_run => 6607, batch_id => 12378, position => 4);
   is($lims->seq_qc_state, 0, 'seq qc 0 for fail');
-  $lims = st::api::lims->new(id_run => 6607, position => 5);
+  $lims = st::api::lims->new(id_run => 6607, batch_id => 12378, position => 5);
   throws_ok {$lims->seq_qc_state} qr/Unexpected value 'some' for seq qc state/, 'error for unexpected qc state';
-  $lims = st::api::lims->new(id_run => 6607, position => 5, tag_index => 1);
+  $lims = st::api::lims->new(
+    id_run => 6607, batch_id => 12378, position => 5, tag_index => 1);
   is($lims->lane_priority, undef, 'priority undefined on plex level');
-  $lims = st::api::lims->new(id_run => 6607);
+  $lims = st::api::lims->new(id_run => 6607, batch_id => 12378);
   is($lims->lane_priority, undef, 'priority undefined on batch level');
 };
 
 subtest 'Object for a not spiked pool' => sub {
   plan tests => 26;
 
-  my $lims = st::api::lims->new(id_run => 6607, position => 5);
+  my $lims = st::api::lims->new(
+    id_run => 6607, batch_id => 12378, position => 5);
   is($lims->batch_id, 12378, 'batch id for lane 5');
   is($lims->tag_index, undef, 'tag index undefined');
   is($lims->is_control, 0, 'lane 5 is not control');
@@ -539,17 +554,21 @@ subtest 'Object for a not spiked pool' => sub {
 subtest 'Library types' => sub {
   plan tests => 6;
 
-  my $lims = st::api::lims->new(id_run => 6607);
+  my $lims = st::api::lims->new(id_run => 6607, batch_id => 12378,);
   is($lims->library_type, undef, 'library type undefined on a batch level');
-  $lims = st::api::lims->new(id_run => 6607, position => 2); # non-pool lane
+  $lims = st::api::lims->new(
+    id_run => 6607, batch_id => 12378, position => 2); # non-pool lane
   is($lims->library_type, 'Illumina cDNA protocol', 'library type');
-  $lims = st::api::lims->new(id_run => 6607, position => 5);
+  $lims = st::api::lims->new(id_run => 6607, batch_id => 12378, position => 5);
   is($lims->library_type, undef, 'library type undefined for a pool');
-  $lims = st::api::lims->new(id_run => 6607, position => 5, tag_index => 0);
+  $lims = st::api::lims->new(
+    id_run => 6607, batch_id => 12378, position => 5, tag_index => 0);
   is($lims->library_type, undef, 'library type undefined for tag 0');
-  $lims = st::api::lims->new(id_run => 6607, position => 5, tag_index => 1);
+  $lims = st::api::lims->new(
+    id_run => 6607, batch_id => 12378, position => 5, tag_index => 1);
   is($lims->library_type, 'Custom', 'library type');
-  $lims = st::api::lims->new(id_run => 6607, position => 6, tag_index => 8);
+  $lims = st::api::lims->new(
+    id_run => 6607, batch_id => 12378, position => 6, tag_index => 8);
   is($lims->library_type, 'Standard', 'library type');
 };
 
@@ -558,7 +577,7 @@ subtest 'Unconcented human and xahuman' => sub {
 
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/npg_api';
 
-  my $lims = st::api::lims->new(batch_id   => 1536,position => 5);
+  my $lims = st::api::lims->new(batch_id => 1536, position => 5);
   ok(!$lims->is_pool, 'lane is not a pool');
   is($lims->contains_nonconsented_human, 1, 'contains nonconsented human');
   is($lims->contains_unconsented_human, 1, 'contains unconsented human (back compat)');
@@ -572,17 +591,19 @@ subtest 'Unconcented human and xahuman' => sub {
 
  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/st_api_lims_new';
 
-  $lims = st::api::lims->new(id_run => 8260);
+  $lims = st::api::lims->new(id_run => 8260, batch_id => 17763);
   is($lims->contains_nonconsented_xahuman, 0,
     'run does contain nonconsented X and autosomal human does not propagate to run level');
 
-  $lims = st::api::lims->new(id_run => 8260, position => 2);
+  $lims = st::api::lims->new(id_run => 8260, batch_id => 17763, position => 2);
   is($lims->contains_nonconsented_xahuman, 0, 'lane 2 does not contain nonconsented X and autosomal human');
-  $lims = st::api::lims->new(id_run => 8260, position => 8);
+  $lims = st::api::lims->new(id_run => 8260, batch_id => 17763, position => 8);
   is($lims->contains_nonconsented_xahuman, 1, 'lane 8 does contain nonconsented X and autosomal human');
-  $lims = st::api::lims->new(id_run => 8260, position => 2, tag_index => 33);
+  $lims = st::api::lims->new(
+    id_run => 8260, batch_id => 17763, position => 2, tag_index => 33);
   is($lims->contains_nonconsented_xahuman, 0, 'plex 33 lane 2 does not contain nonconsented X and autosomal human');
-  $lims = st::api::lims->new(id_run => 8260, position => 8, tag_index => 57);
+  $lims = st::api::lims->new(
+    id_run => 8260, batch_id => 17763, position => 8, tag_index => 57);
   is($lims->contains_nonconsented_xahuman, 1, 'plex 57 lane 8 does contain nonconsented X and autosomal human');
 };
 
@@ -590,28 +611,28 @@ subtest 'Bait name' => sub {
   plan tests => 11;
 
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/npg_api';
-  my $lims = st::api::lims->new(batch_id   => 16442);
+  my $lims = st::api::lims->new(batch_id => 16442);
   is($lims->bait_name, undef, 'bait name undefined on a batch level');
-  $lims = st::api::lims->new(batch_id   => 16442, position => 1);
+  $lims = st::api::lims->new(batch_id => 16442, position => 1);
   is($lims->bait_name, undef, 'bait name undefined on a pool level');
-  $lims = st::api::lims->new(batch_id   => 16442, position => 1, tag_index=> 2);
+  $lims = st::api::lims->new(batch_id => 16442, position => 1, tag_index=> 2);
   is($lims->bait_name,'Human all exon 50MB', 'bait name for a plex');
-  $lims = st::api::lims->new(batch_id   => 16442, position => 1, tag_index=> 3);
+  $lims = st::api::lims->new(batch_id => 16442, position => 1, tag_index=> 3);
   is($lims->bait_name,'Fox bait', 'bait name for another plex');
-  $lims = st::api::lims->new(batch_id   => 16442, position => 8, tag_index=> 5);
+  $lims = st::api::lims->new(batch_id => 16442, position => 8, tag_index=> 5);
   is($lims->bait_name,'Mouse some exon', 'bait name for yet another plex');
-  $lims = st::api::lims->new(batch_id   => 16442, position => 1, tag_index=> 4);
+  $lims = st::api::lims->new(batch_id => 16442, position => 1, tag_index=> 4);
   is($lims->bait_name, undef, 'bait name undefined if no bait element');
-  $lims = st::api::lims->new(batch_id   => 16442, position => 1, tag_index=> 5);
+  $lims = st::api::lims->new(batch_id => 16442, position => 1, tag_index=> 5);
   is($lims->bait_name, undef, 'bait name undefined if no bait name tag is empty');
-  $lims = st::api::lims->new(batch_id   => 16442, position => 1, tag_index=> 168);
+  $lims = st::api::lims->new(batch_id => 16442, position => 1, tag_index=> 168);
   is($lims->bait_name, undef, 'bait name undefined for hyp buffer');
 
-  $lims = st::api::lims->new(batch_id   => 3022, position => 1);
+  $lims = st::api::lims->new(batch_id => 3022, position => 1);
   is($lims->bait_name,'Mouse all exon', 'bait name for a non-pool lane');
-  $lims = st::api::lims->new(batch_id   => 3022, position => 2);
+  $lims = st::api::lims->new(batch_id => 3022, position => 2);
   is($lims->bait_name, undef, 'bait name undefined for a non-pool lane if there is no bait element');
-  $lims = st::api::lims->new(batch_id   => 3022, position => 4);
+  $lims = st::api::lims->new(batch_id => 3022, position => 4);
   is($lims->bait_name, undef, 'bait name undefined for a control lane despite the presence of the bait element');
 };
 
@@ -682,7 +703,7 @@ subtest 'Tag sequence and library type from sample description' => sub {
 subtest 'Inline index' => sub {
   plan tests => 14;
 
-  my $lims = st::api::lims->new(id_run=>10638, position=>5);
+  my $lims = st::api::lims->new(id_run=>10638, batch_id=>22829, position=>5);
   is ($lims->id_run(), 10638, "Found the run");
   my @children = $lims->children();
   isnt (scalar @children, 0, "We have children");
@@ -692,7 +713,7 @@ subtest 'Inline index' => sub {
   is($lims->inline_index_read,2,'found correct inline index read');
   is($lims->tag_sequence,undef,'tag sequence undefined for lane level');
 
-  $lims = st::api::lims->new(id_run=>10638, position=>6);
+  $lims = st::api::lims->new(id_run=>10638, batch_id=>22829, position=>6);
   is ($lims->id_run(), 10638, "Found the run");
   @children = $lims->children();
   isnt (scalar @children, 0, "We have children");

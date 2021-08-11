@@ -10,6 +10,8 @@ use Cwd qw(cwd);
 use File::Copy;
 use File::Find;
 
+use st::api::lims;
+
 my $current_dir = cwd();
 my $repos = catdir($current_dir, q[t/data/repos1]);
 my $gbs_repos = catdir($repos, q[gbs_plex]);
@@ -87,7 +89,9 @@ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/repos1];
 use_ok('npg_tracking::data::gbs_plex');
 
 { # There is no gbs plex name or files for this run
-  my $test =npg_tracking::data::gbs_plex->new( repository => $repos, id_run => 7754, position => 1, tag_index => 2);
+  my %init = (id_run => 7754, position     => 1, tag_index => 2);
+  my $test =npg_tracking::data::gbs_plex->new( repository => $repos, %init,
+    lims => st::api::lims->new(%init, batch_id => 16467));
   lives_and { is $test->gbs_plex_path, undef } 'gbs_plex_path is undefined';
   is($test->gbs_plex_name, undef, 'gbs_plex_name is undefined');
 

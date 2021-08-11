@@ -1,5 +1,19 @@
 LIST OF CHANGES
 
+ - Remove the API wrapping around tracking XML API.
+   This API has not been used in production for a long time. The part of it
+   that links run id and batch id (npg::api::run) was used in tests. Tests
+   are amended either to use samplesheets is a source of LIMS data or, where
+   they are still using XML LIMS driver for st::api::lims, batch id is used
+   explicitly.
+   st::api::lims::xml previously had dependency on npg::api::run to allow          
+   for retrieval of batch_id from run XML API in cases where it was not            
+   supplied explicitly. This dependency is removed without changing the            
+   public interface of the class. Formally speaking, the batch_id                  
+   attribute remains optional for creating an instance of the class.               
+   However, failure to supply it will result in an error when trying to            
+   access batch XML API of the LIMS system.
+
 release 91.15.0
  - Remove status daemon. This daemon is no longer run since the pipeline
    updates run and lane statuses by writing directly to the database. 
