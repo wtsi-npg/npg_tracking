@@ -181,7 +181,6 @@ lib/npg/model/user.pm
 lib/npg/model/user2usergroup.pm
 lib/npg/model/usergroup.pm
 lib/npg_tracking/report/event2followers.pm
-lib/npg_tracking/report/event2lims.pm
 lib/npg_tracking/report/event2subscribers.pm
 lib/npg_tracking/report/events.pm
 lib/npg/samplesheet.pm
@@ -456,7 +455,6 @@ t/60-illumina-run.t
 t/60-util-mailer.t
 t/70-bin-npg_status2file.t
 t/80-npg_tracking-report-events.t
-t/80-npg_tracking-report-event2lims.t
 t/80-npg_tracking-report-event2followers.t
 t/80-npg_tracking-report-event2subscribers.t
 t/90-reference.t
@@ -771,7 +769,6 @@ t/data/rendered/user/1000.html
 t/data/report/report_text_1
 t/data/report/report_text_5
 t/data/report/samplesheet_21915.csv
-t/data/report/st/batches/51875.xml
 t/data/repos/samplesheet_1937.csv
 t/data/repos/samplesheet_4254.csv
 t/data/repos/samplesheet_6993.csv

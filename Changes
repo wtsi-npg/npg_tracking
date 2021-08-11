@@ -13,6 +13,8 @@ LIST OF CHANGES
    attribute remains optional for creating an instance of the class.               
    However, failure to supply it will result in an error when trying to            
    access batch XML API of the LIMS system.
+ - Remove code for sending run status events to LIMS, this functionality is
+   no longer required.
 
 release 91.15.0
  - Remove status daemon. This daemon is no longer run since the pipeline

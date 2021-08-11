@@ -13,7 +13,7 @@ use npg_tracking::util::types;
 use st::api::lims;
 use npg::util::mailer;
 
-extends 'npg_tracking::report::event2lims';
+with 'WTSI::DNAP::Utilities::Loggable';
 
 our $VERSION = '0';
 
@@ -24,6 +24,17 @@ Readonly::Scalar my $DEFAULT_RECIPIENT_HOST => q[@sanger.ac.uk];
 Readonly::Scalar my $DEFAULT_AUTHOR         => q[srpipe];
 Readonly::Scalar my $MLWH_DRIVER_TYPE       => q[ml_warehouse_fc_cache];
 
+has 'dry_run' => (
+  isa       => 'Bool',
+  is        => 'ro',
+);
+
+has 'event_entity' => (
+  is       => 'ro',
+  required => 1,
+  isa      => 'DBIx::Class::Row',
+);
+
 has 'schema_mlwh' => (
   isa        => 'WTSI::DNAP::Warehouse::Schema',
   is         => 'ro',
@@ -31,6 +42,12 @@ has 'schema_mlwh' => (
   predicate  => '_has_schema_mlwh',
 );
 
+has 'lims' => (
+  is         => 'ro',
+  required   => 0,
+  isa        => 'ArrayRef[st::api::lims]',
+  lazy_build => 1,
+);
 sub _build_lims {
   my $self = shift;
 
@@ -158,6 +175,13 @@ sub _subscribers {
   return [ $self->username2email_address(@subscribers) ];
 }
 
+has 'reports' => (
+  is         => 'ro',
+  required   => 0,
+  isa        => 'ArrayRef',
+  init_arg   => undef,
+  lazy_build => 1,
+);
 sub _build_reports {
   my $self = shift;
 
@@ -307,7 +331,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017 GRL
+Copyright (C) 2017,2021 Genome Research Ltd.
 
 This file is part of NPG.
 
