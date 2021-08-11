@@ -1,5 +1,19 @@
 LIST OF CHANGES
 
+release 91.14.0
+ - Remove live tests for st::api::lims XML driver and other XML-based APIs.
+   The CI tests are mostly run on hosts with no access to either production
+   or development hosts. 
+ - NPG_TEST_TRACKING_CONFIGPATH environment variable can be used to set a
+   custom location of the Clearpress configuration file for unit tests.
+   The default location of the file, data/config.ini, is used if the
+   variable is unset. 
+ - Move README file to README.md, improve Markdown format. Add sections
+   describing environment variables and tags.
+ - Move db schema dump, which is only used for tests, from tge data to t/data
+   directory.
+ - Block access to tsv files via httpd_sfweb.conf
+
 release 91.13.0
  - Extend npg_status2file script to optionally save statuses to the tracking
    database and renamed the script to npg_status_save.
