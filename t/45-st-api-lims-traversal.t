@@ -1,12 +1,9 @@
 use strict;
 use warnings;
-use Test::More tests => 121; #remember to change the skip number below as well!
+use Test::More tests => 41;
 use Test::Deep;
 use Test::Exception;
 use Try::Tiny;
-
-use npg_testing::intweb qw(npg_is_accessible);
-use st::api::lims;
 
 sub _positions {
   my @lims = @_;
@@ -21,9 +18,7 @@ sub _positions {
 
 use_ok('st::api::lims');
 
-foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
-                 ['using live',        q[],              'xml'],
-                 ['using live',        q[],              'ml_warehouse']))
+foreach my $pa ((['using mocked data', q[t/data/test45], 'xml']))
 {
   my $do_test = 1;
   my $reason = q[];
@@ -31,35 +26,9 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
   my $test_data_dir = $pa->[1];
   diag($pa->[0], ", $driver driver");
   local $ENV{NPG_WEBSERVICE_CACHE_DIR} = $test_data_dir;
-  my $lfield = $driver eq 'xml' ? 'batch_id' : 'id_flowcell_lims';
+  my $lfield = 'batch_id';
 
-  if ($driver eq 'xml' && !$test_data_dir) {
-    $do_test = npg_is_accessible();
-    $reason = 'Live test, but sanger intweb is not accessible';
-  } elsif ($driver eq 'ml_warehouse') {
-    my $package = 'st::api::lims::ml_warehouse';
-    my $schema_package = 'WTSI::DNAP::Warehouse::Schema';
-    eval "require $package" or $do_test = 0;
-    eval "require $schema_package" or $do_test = 0;
-    if (!$do_test) {
-      $reason = "$package is not deployed or cannot be loaded";
-    } else {
-      try {
-        $schema_package->connect();
-      } catch {
-        $reason = "Failed to connect to ml_warehouse";
-        diag "$reason $_";
-        $do_test = 0;
-      };
-    } 
-  }
-
-  SKIP: {
-
-    if (!$do_test) {
-      skip $reason, 40;
-    }
-
+  {
     my $lims = st::api::lims->new($lfield => 4775, driver_type => $driver);
     isa_ok($lims, 'st::api::lims', 'lims isa');
     my @alims = $lims->associated_lims;
@@ -136,7 +105,7 @@ foreach my $pa ((['using mocked data', q[t/data/test45], 'xml'],
     my $lims10 = st::api::lims->new($lfield =>43500, position=>1, tag_index=>1, driver_type => $driver);
     is($lims10->purpose,'standard','Purpose');
 
-  }; # end of SKIP
+  }
 }
 
 1;

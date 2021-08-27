@@ -5,6 +5,8 @@ LIST OF CHANGES
    Remove the script, npg_status_watcher, for detecting run status JSON
    files in run folders and updating database run and lane statuses,
    which was run by the status daemon.
+ - Removed live tests for XML and warehouse drivers. Live data can change
+   at any time without notice, causing tests to fail.
 
 release 91.14.0
  - Remove live tests for st::api::lims XML driver and other XML-based APIs.
