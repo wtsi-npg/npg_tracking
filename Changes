@@ -1,5 +1,11 @@
 LIST OF CHANGES
 
+ - Remove status daemon. This daemon is no longer run since the pipeline
+   updates run and lane statuses by writing directly to the database. 
+   Remove the script, npg_status_watcher, for detecting run status JSON
+   files in run folders and updating database run and lane statuses,
+   which was run by the status daemon.
+
 release 91.14.0
  - Remove live tests for st::api::lims XML driver and other XML-based APIs.
    The CI tests are mostly run on hosts with no access to either production
@@ -10,7 +16,7 @@ release 91.14.0
    variable is unset. 
  - Move README file to README.md, improve Markdown format. Add sections
    describing environment variables and tags.
- - Move db schema dump, which is only used for tests, from tge data to t/data
+ - Move db schema dump, which is only used for tests, from the data to t/data
    directory.
  - Block access to tsv files via httpd_sfweb.conf
 
