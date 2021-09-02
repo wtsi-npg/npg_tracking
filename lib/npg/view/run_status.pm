@@ -59,16 +59,6 @@ sub create {
   return $self->SUPER::create();
 }
 
-sub list_xml {
-  my $self = shift;
-  my $template = q[run_status_list_xml.tt2];
-  print "Content-type: text/xml\n\n" or croak $OS_ERROR;
-  $self->process_template('run_status_list_xml.tt2');
-  # flush and close
-  $self->output_finished(1);
-  return 1;
-}
-
 1;
 
 __END__
@@ -92,8 +82,6 @@ npg::view::run_status - view handling for run_statuses
 =head2 create - set up requestor's id_user
 
 =head2 new
-
-=head2 list_xml - handling for streamed XML list response
 
 =head1 DIAGNOSTICS
 

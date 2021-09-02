@@ -14,6 +14,10 @@ LIST OF CHANGES
    However, failure to supply it will result in an error when trying to            
    access batch XML API of the LIMS system.
 
+ - Stop generating XML output from the tracking server. Remove all templates
+   for generating XML output, all associated code in views, tests and test
+   data.
+
 release 91.15.0
  - Remove status daemon. This daemon is no longer run since the pipeline
    updates run and lane statuses by writing directly to the database. 
