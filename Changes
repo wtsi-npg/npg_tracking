@@ -15,6 +15,7 @@ LIST OF CHANGES
    access batch XML API of the LIMS system.
  - Remove code for sending run status events to LIMS, this functionality is
    no longer required.
+ - Remove st::api::event class, which is no longer used.
 
 release 91.15.0
  - Remove status daemon. This daemon is no longer run since the pipeline

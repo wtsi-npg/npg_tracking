@@ -300,7 +300,6 @@ lib/npg_tracking/util/pipeline_config.pm
 lib/npg_tracking/util/types.pm
 lib/st/api/base.pm
 lib/st/api/batch.pm
-lib/st/api/event.pm
 lib/st/api/lims.pm
 lib/st/api/lims/samplesheet.pm
 lib/st/api/lims/xml.pm
@@ -433,7 +432,6 @@ t/34-monitor-runfolder.t
 t/34-monitor-staging.t
 t/40-st-base.t
 t/40-st-batch.t
-t/40-st-event.t
 t/40-st-lims-insert_size.t
 t/40-st-lims-mlwarehouse.t
 t/40-st-lims-samplesheet.t
