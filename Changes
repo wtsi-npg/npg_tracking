@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - Create 'primer_panel' alias for the 'gbs_plex_name' methods in
+   st::api::lims. The new accessor will be used in contexts that are outside
+   of processing GBS runs.
  - Remove the API wrapping around tracking XML API.
    This API has not been used in production for a long time. The part of it
    that links run id and batch id (npg::api::run) was used in tests. Tests
