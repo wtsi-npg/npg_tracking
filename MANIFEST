@@ -181,7 +181,6 @@ lib/npg/model/user.pm
 lib/npg/model/user2usergroup.pm
 lib/npg/model/usergroup.pm
 lib/npg_tracking/report/event2followers.pm
-lib/npg_tracking/report/event2lims.pm
 lib/npg_tracking/report/event2subscribers.pm
 lib/npg_tracking/report/events.pm
 lib/npg/samplesheet.pm
@@ -301,7 +300,6 @@ lib/npg_tracking/util/pipeline_config.pm
 lib/npg_tracking/util/types.pm
 lib/st/api/base.pm
 lib/st/api/batch.pm
-lib/st/api/event.pm
 lib/st/api/lims.pm
 lib/st/api/lims/samplesheet.pm
 lib/st/api/lims/xml.pm
@@ -434,7 +432,6 @@ t/34-monitor-runfolder.t
 t/34-monitor-staging.t
 t/40-st-base.t
 t/40-st-batch.t
-t/40-st-event.t
 t/40-st-lims-insert_size.t
 t/40-st-lims-mlwarehouse.t
 t/40-st-lims-samplesheet.t
@@ -456,7 +453,6 @@ t/60-illumina-run.t
 t/60-util-mailer.t
 t/70-bin-npg_status2file.t
 t/80-npg_tracking-report-events.t
-t/80-npg_tracking-report-event2lims.t
 t/80-npg_tracking-report-event2followers.t
 t/80-npg_tracking-report-event2subscribers.t
 t/90-reference.t
@@ -771,7 +767,6 @@ t/data/rendered/user/1000.html
 t/data/report/report_text_1
 t/data/report/report_text_5
 t/data/report/samplesheet_21915.csv
-t/data/report/st/batches/51875.xml
 t/data/repos/samplesheet_1937.csv
 t/data/repos/samplesheet_4254.csv
 t/data/repos/samplesheet_6993.csv

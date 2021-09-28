@@ -213,7 +213,6 @@ my $builder = $class->new(
                 'URI::URL'                        => 0,
                 'utf8'                            => 0,
                 'warnings'                        => '1.05',
-                'XML::Generator'                  => '1.01',
                 'XML::LibXML'                     => '1.70',
                 'YAML'                            => '0.68',
                 'YAML::XS'                        => 0,
