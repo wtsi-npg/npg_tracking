@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 4;
 use t::request;
 use t::util;
 use npg::model::run_lane;
@@ -25,26 +25,6 @@ my $util = t::util->new({
 }
 
 {
-  my $str = t::request->new({
-           PATH_INFO      => '/run_lane/16.xml',
-           REQUEST_METHOD => 'POST',
-           username       => 'public',
-           util           => $util,
-          });
-  like($str, qr/not\ authorised/mix, 'public update_xml not authorised');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run_lane/16.xml',
-           REQUEST_METHOD => 'POST',
-           username       => q[pipeline],
-           util           => $util,
-          });
-  unlike($str, qr/not\ authorised/mix, 'pipeline update_xml authorised');
-}
-
-{
   for my $aspect (qw(update_tags)) {
     my $str = t::request->new({
              PATH_INFO      => "/run_lane/16;$aspect",
@@ -62,28 +42,6 @@ my $util = t::util->new({
              });
     like($str2, qr/not\ authorised/mix, "public $aspect not authorised");
   }
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run_lane/16.xml',
-           REQUEST_METHOD => 'POST',
-           username       => 'joe_admin',
-           util           => $util,
-          });
-
-  like($str, qr{<run_lane\ id_run_lane="16".*/run_lane>}smix);
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run_lane/16.xml',
-           REQUEST_METHOD => 'POST',
-           username       => 'joe_admin',
-           util           => $util,
-          });
-
-  like($str, qr{<run_lane\ id_run_lane="16".*/run_lane>}smix);
 }
 
 1;

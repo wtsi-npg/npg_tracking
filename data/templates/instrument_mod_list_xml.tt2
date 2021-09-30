@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<instrument_mods>
-  [% FOREACH instrument = model.instruments %]<instrument_mod instrument_name="[% instrument.name %]" id_instrument="[% instrument.id_instrument %]" mode_scrambler="[% instrument.current_instrument_mods.mode_scrambler.revision %]" objective="[% instrument.current_instrument_mods.objective.revision %]" pe_module="[% instrument.current_instrument_mods.pe_module.revision %]" prism="[% instrument.current_instrument_mods.prism.revision %]" recipes="[% instrument.current_instrument_mods.recipes.revision %]" scs="[% instrument.current_instrument_mods.scs.revision %]" tubing="[% instrument.current_instrument_mods.tubing.revision %]" />
-  [% END %]
-</instrument_mods>

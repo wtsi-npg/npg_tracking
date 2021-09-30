@@ -20,6 +20,10 @@ LIST OF CHANGES
    no longer required.
  - Remove st::api::event class, which is no longer used.
 
+ - Stop generating XML output from the tracking server. Remove all templates
+   for generating XML output, all associated code in views, tests and test
+   data.
+
 release 91.15.0
  - Remove status daemon. This daemon is no longer run since the pipeline
    updates run and lane statuses by writing directly to the database. 

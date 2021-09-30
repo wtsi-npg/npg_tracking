@@ -21,11 +21,6 @@ sub authorised {
   my $action    = $self->action();
   my $requestor = $util->requestor();
 
-  if($aspect eq 'update_xml' &&
-     $requestor->is_member_of('pipeline')) {
-    return 1;
-  }
-
   if( $aspect eq 'update_tags' && ($requestor->is_member_of('annotators') || $requestor->is_member_of('manual_qc')) ) {
     return 1;
   }

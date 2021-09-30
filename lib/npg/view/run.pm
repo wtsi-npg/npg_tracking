@@ -167,11 +167,6 @@ sub list {
   my $model      = $self->model();
   my $aspect     = $self->aspect();
 
-  if($aspect =~ /xml/smx) {
-    $start = undef;
-    $len = undef;
-  }
-
   $model->{start} = $start;
   $model->{len}   = $len;
 

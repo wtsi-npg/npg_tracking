@@ -61,14 +61,6 @@ sub list_advanced_ajax {
   return;
 }
 
-sub list_advanced_xml {
-  my $self = shift;
-  my $util  = $self->util();
-  my $model = $self->model();
-  $model->util($util);
-  return;
-}
-
 1;
 __END__
 
@@ -89,8 +81,6 @@ npg::view::search
 =head2 list_advanced - creates/enables creation of more advanced search criteria and returns table
 
 =head2 list_advanced_ajax - intent to AJAX back results from advanced search query
-
-=head2 list_advanced_xml - returns result of advanced search query as an XML DOM tree
 
 =head2 read - handler to catch when a search term is used where the primary key would be, and then switches this to the query term
 
