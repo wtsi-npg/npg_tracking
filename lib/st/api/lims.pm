@@ -324,6 +324,9 @@ for my $m ( @METHODS ){
   });
 }
 
+# All methods are created, now aliases for methods can be defined.
+alias primer_panel => 'gbs_plex_name';
+
 =head2 inline_index_read
 
 index read
@@ -1435,7 +1438,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2015,2016,2017,2018,2019,2020 Genome Research Ltd.
+Copyright (C) 2013,2014,2015,2016,2017,2018,2019,2020,2021 Genome Research Ltd.
 
 This file is part of NPG.
 

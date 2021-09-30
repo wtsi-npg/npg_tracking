@@ -48,7 +48,7 @@ if (!$available) {
   };
 
   subtest 'family tree, product table entries are present' => sub {
-    plan tests => 31;
+    plan tests => 33;
     
     my $id_run = 15440;
     my $l = st::api::lims->new(
@@ -74,6 +74,7 @@ if (!$available) {
       is($plex->position, $count, "plex position is $count");
       is($plex->id_run, $id_run, 'id_run is propagated');
       is($plex->gbs_plex_name, undef, 'gbs_plex_name is undefined');
+      is($plex->primer_panel, undef, 'primer_panel is undefined');
 
       is(join(q[ ],
         map {join q[:], $_->tag_index, defined $_->qc_state ? $_->qc_state : q[undef]}
@@ -111,8 +112,8 @@ if (!$available) {
     }
   };
 
-  subtest 'gbs plex name' => sub {
-    plan tests => 7;
+  subtest 'gbs plex name, primer panel' => sub {
+    plan tests => 13;
 
     my $id_run = 24135;
     my $l= st::api::lims->new(
@@ -122,26 +123,32 @@ if (!$available) {
     is($l->id_run, $id_run, 'id_run is propagated');
 
     is($l->gbs_plex_name, undef, 'gbs_plex_name undefined on a batch level');
+    is($l->primer_panel, undef, 'primer_panel undefined on a batch level');
 
     $l = st::api::lims->new(id_flowcell_lims => 57543, position => 1, 
                             driver_type => 'ml_warehouse', mlwh_schema => $schema_wh);
     is($l->gbs_plex_name, undef, 'gbs_plex_name undefined on a pool level as mixed');
-
+    is($l->primer_panel, undef, 'primer_panel undefined on a pool level as mixed');
+    
     $l = st::api::lims->new(id_flowcell_lims => 57543, position => 1, tag_index=> 1, 
                                driver_type => 'ml_warehouse', mlwh_schema => $schema_wh);
     is($l->gbs_plex_name, 'Hs_MajorQC', 'gbs_plex_name for a plex');
+    is($l->primer_panel, 'Hs_MajorQC', 'primer_panel for a plex');
 
     $l = st::api::lims->new(id_flowcell_lims => 57543, position => 1, tag_index=> 2, 
                             driver_type => 'ml_warehouse', mlwh_schema => $schema_wh);
     is($l->gbs_plex_name, 'Pf_GRC1', 'gbs_plex_name for another plex');
+    is($l->primer_panel, 'Pf_GRC1', 'primer_panel for another plex');
+
     $l = st::api::lims->new(id_flowcell_lims => 57543, position => 1, tag_index=> 3,
                                driver_type => 'ml_warehouse', mlwh_schema => $schema_wh);
     is($l->gbs_plex_name, 'Pf_GRC2', 'gbs_plex_name for yet another plex');
+    is($l->primer_panel, 'Pf_GRC2', 'primer_panel for yet another plex');
 
     $l = st::api::lims->new(id_flowcell_lims => 57543, position => 1, tag_index=> 4,
                              driver_type => 'ml_warehouse', mlwh_schema => $schema_wh);
     is($l->gbs_plex_name, undef, 'gbs_plex_name undefined');
-    
+    is($l->primer_panel, undef, 'primer_panel undefined');
   };
 
   subtest 'sample controls' => sub {

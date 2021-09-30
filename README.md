@@ -59,7 +59,10 @@ explicitly stated. Any tag can be removed manually via a web page of a run.
 [script](https://github.com/wtsi-npg/npg_qc/blob/master/bin/npg_mqc_skipper)
                      that can change the run status from `qc review pending` to
                      `archival pending` bypassing the stage of manual QC.
-+ `no_auto` - This tag is intended to be manually assigned to a run to prevent
-              it being considered by any automatic processing. Currently, it is
-              only functionaly identical to the `no_mqc_skipper` tag.
++ `no_auto_analysis` - This tag can be manually assigned to a run to prevent
+                       it being considered by the analysis daemon.
++ `no_auto_archive` - This tag can be manually assigned to a run to prevent
+                      it being considered by the archival daemon.
++ `no_auto` - This tag can be manually assigned to a run to prevent it being
+              considered by any automatic processing.
 

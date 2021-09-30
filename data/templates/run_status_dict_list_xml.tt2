@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<run_status_dicts>
-[% FOREACH run_status_dict = model.run_status_dicts %]
-  <run_status_dict id_run_status_dict="[% run_status_dict.id_run_status_dict %]" description="[% run_status_dict.description %]" />
-[% END %]
-</run_status_dicts>

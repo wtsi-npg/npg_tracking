@@ -1,8 +1,3 @@
-# Author:        Jillian Durham 
-# Created:       March 2014 
-
-package transcriptome;
-
 use strict;
 use warnings;
 use Test::More tests => 17;
@@ -17,13 +12,13 @@ use Cwd;
 use Carp;
 use IO::File;
 
+use st::api::lims;
+
 my $repos = 't/data/repos1';
 
 use_ok('npg_tracking::data::transcriptome');
 
 {
-
-
 my $tmp_repos = tempdir( CLEANUP => 1);
 local $ENV{NPG_WEBSERVICE_CACHE_DIR} = $tmp_repos;
 
@@ -64,19 +59,16 @@ foreach my $spp (keys %builds){
 
 }
 
-my $run_dir     = join q[/],'npg','run';
 my $batch_dir   = join q[/],'st','batches';
 my $samples_dir = join q[/],'st','samples';
 my $study_dir   = join q[/],'st','studies';
 
-make_path ("$tmp_repos/$run_dir","$tmp_repos/$batch_dir","$tmp_repos/$samples_dir","$tmp_repos/$study_dir",{verbose => 0}); #to create directory tree
+make_path ("$tmp_repos/$batch_dir","$tmp_repos/$samples_dir","$tmp_repos/$study_dir",{verbose => 0}); #to create directory tree
 
 #Mouse 
-copy("$repos/$run_dir/12071.xml","$tmp_repos/$run_dir/12071.xml") or carp "Copy failed: $!";
 copy("$repos/$batch_dir/25539.xml","$tmp_repos/$batch_dir/25539.xml") or carp "Copy failed: $!";
 copy("$repos/$samples_dir/1807468.xml","$tmp_repos/$samples_dir/1807468.xml") or carp "Copy failed: $!";
 #Human
-copy("$repos/$run_dir/12161.xml","$tmp_repos/$run_dir/12161.xml") or carp "Copy failed: $!";
 copy("$repos/$batch_dir/25715.xml","$tmp_repos/$batch_dir/25715.xml") or carp "Copy failed: $!";
 copy("$repos/$samples_dir/1830658.xml","$tmp_repos/$samples_dir/1830658.xml") or carp "Copy failed: $!";
 copy("$repos/$study_dir/2910.xml","$tmp_repos/$study_dir/2910.xml") or carp "Copy failed: $!";
@@ -114,12 +106,18 @@ foreach my $file (@files){
 ###########################################################################################################################
 
 #Mus_musculus (GRCm38 + ensembl_75_transcriptome)  Transcriptome Analysis
-my $m_test = npg_tracking::data::transcriptome->new (id_run => 12071, position => 4, tag_index => 2, repository => $tmp_repos, aligner => 'tophat2');
+my %init = (id_run => 12071, position => 4, tag_index => 2);
+my $m_test = npg_tracking::data::transcriptome->new (%init,
+  lims => st::api::lims->new(%init, batch_id => 25539),
+  repository => $tmp_repos, aligner => 'tophat2');
 isa_ok($m_test, 'npg_tracking::data::transcriptome');
 lives_and { is basename($m_test->gtf_file), 'ensembl_75_transcriptome-GRCm38.gtf' } 'file ensembl_75_transcriptome-GRCm38.gtf found';
 
-#Homo_sapiens (1000Genomes_hs37d5)   
-my $test = npg_tracking::data::transcriptome->new (id_run => 12161, position => 1, tag_index => 1, repository => $tmp_repos);
+#Homo_sapiens (1000Genomes_hs37d5)
+%init = (id_run => 12161, position => 1, tag_index => 1);
+my $test = npg_tracking::data::transcriptome->new (%init,
+  lims => st::api::lims->new(%init, batch_id => 25715),
+  repository => $tmp_repos);
 
 lives_and { is $test->transcriptome_index_path,undef } "ok - returns undef for transcriptome_index_path if no transcriptome version in reference name - Homo_sapiens (1000Genomes_hs37d5)";
 
@@ -136,8 +134,10 @@ while(<$fh>){
 $w_fh->close;
 $fh->close;
 
-
-my $test2 = npg_tracking::data::transcriptome->new (id_run => 12161, position => 1, tag_index => 1, repository => $tmp_repos);
+%init = (id_run => 12161, position => 1, tag_index => 1);
+my $test2 = npg_tracking::data::transcriptome->new (%init,
+  lims => st::api::lims->new(%init, batch_id => 25715),
+  repository => $tmp_repos);
 lives_and { is $test2->transcriptome_index_path, undef } "no path for bowtie2 indices found (reference genome missing in sample and study xml)";
 
 
@@ -154,7 +154,10 @@ while(<$ver_fh>){
 $ver_w_fh->close;
 $ver_fh->close;
 
-my $test3 = npg_tracking::data::transcriptome->new (id_run => 12161, position => 1, tag_index => 1, repository => $tmp_repos);
+%init = (id_run => 12161, position => 1, tag_index => 1);
+my $test3 = npg_tracking::data::transcriptome->new (%init,
+  lims => st::api::lims->new(%init, batch_id => 25715),
+  repository => $tmp_repos);
 lives_and { is basename($test3->gtf_file), 'ensembl_74_transcriptome-1000Genomes_hs37d5.gtf' } 'file ensembl_74_transcriptome-1000Genomes_hs37d5.gtf found where reference = Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)';
 
 lives_and { is basename($test3->rnaseqc_gtf_file), 'ensembl_74_transcriptome-1000Genomes_hs37d5.gtf' } 'RNA-SeQC file ensembl_74_transcriptome-1000Genomes_hs37d5.gtf found where reference = Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)';
@@ -169,14 +172,20 @@ lives_and { is basename($test3->mt_file), 'mt_genes.csv' } 'mt genes csv file fo
 my $prefix_path_74 = catfile($tmp_repos, q[transcriptomes/Homo_sapiens/ensembl_74_transcriptome/1000Genomes_hs37d5/tophat2/1000Genomes_hs37d5.known]);
 lives_and { is $test3->transcriptome_index_name, $prefix_path_74 } "Correctly found transcriptome version index name path and prefix ";
 
-my $test4 = npg_tracking::data::transcriptome->new (id_run => 12161, position => 1, tag_index => 1, repository => $tmp_repos, aligner => 'tophat2', analysis => 'salmon');
+my $test4 = npg_tracking::data::transcriptome->new (
+  %init, repository => $tmp_repos,
+  lims => st::api::lims->new(%init, batch_id => 25715),
+  aligner => 'tophat2', analysis => 'salmon');
 lives_and { is $test4->transcriptome_index_path, catfile($tmp_repos, q[transcriptomes/Homo_sapiens/ensembl_74_transcriptome/1000Genomes_hs37d5/salmon])
 } "correct path for salmon indices found";
 
 lives_and { is $test4->transcriptome_index_name, undef
 } "ok - returns undef when looking for index name for salmon";
 
-my $test5 = npg_tracking::data::transcriptome->new (id_run => 12161, position => 1, tag_index => 1, repository => $tmp_repos);
+my $test5 = npg_tracking::data::transcriptome->new (
+  %init, repository => $tmp_repos,
+  lims => st::api::lims->new(%init, batch_id => 25715)
+);
 lives_and { is basename($test5->fasta_file), '1000Genomes_hs37d5.fa'
 } "transcriptome fasta file 1000Genomes_hs37d5.fa found where reference = Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)";
 
@@ -194,7 +203,10 @@ while(<$cpy_fh>){
 $mm_ver_fh->close;
 $cpy_fh->close;
 
-my $test6 = npg_tracking::data::transcriptome->new (id_run => 12071, position => 4, tag_index => 2, repository => $tmp_repos);
+%init = (id_run => 12071, position => 4, tag_index => 2);
+my $test6 = npg_tracking::data::transcriptome->new (
+  %init, repository => $tmp_repos,
+  lims => st::api::lims->new(%init, batch_id => 25539));
 throws_ok { $test6->gtf_file } qr/More than one gtf file/,
 'ok - croaks when more than 1 gtf file found - Mus_musculus (GRCm38 + ensembl_84_transcriptome)';
 
@@ -209,7 +221,6 @@ like($msg, $re_no_idx_name, 'ok - message stored when index files not found');
 
 }
 
-
 # make default symlink 
 sub symlink_default {
     my($dir,$spp,$release) = @_;
@@ -219,5 +230,5 @@ sub symlink_default {
     eval { symlink($release,"default") };
     print "symlink error $@" if $@; 
     chdir $orig_dir;
-return;
+    return;
 }

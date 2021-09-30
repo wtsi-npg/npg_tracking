@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<instrument_mod id_instrument_mod="[% model.id_instrument_mod %]" id_instrument="[% model.id_instrument %]" date_added="[% model.date_added %]" date_removed="[% model.date_removed %]" id_instrument_mod_dict="[% model.id_instrument_mod_dict %]" id_user="[% model.id_user %]" iscurrent="[% model.iscurrent %]" description="[% model.instrument_mod_dict.description %]" />

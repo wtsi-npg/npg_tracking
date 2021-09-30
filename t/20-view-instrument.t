@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 17;
+use Test::More tests => 15;
 use Test::Exception;
 use t::util;
 use t::request;
@@ -44,17 +44,6 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 {
   my $str = t::request->new({
            REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument.xml',
-           username       => 'public',
-           util           => $util,
-                });
-  ok($util->test_rendered($str, 't/data/rendered/instrument.xml'),
-    'list instruments xml');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'GET',
            PATH_INFO      => '/instrument/',
            username       => 'public',
            util           => $util,
@@ -82,19 +71,6 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
            util           => $util,
           });
   ok($util->test_rendered($str, 't/data/rendered/instrument/11.html'), 'read instrument');
-}
-
-{
-  my $str = t::request->new({
-           REQUEST_METHOD => 'GET',
-           PATH_INFO      => '/instrument/13.xml',
-           username       => 'public',
-           util           => $util,
-           cgi_params     => {
-            id_run_status_dict => 71,
-                 },
-          });
-  ok($util->test_rendered($str, 't/data/rendered/instrument/13.xml'), 'read_xml renders ok');
 }
 
 {
