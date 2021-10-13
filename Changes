@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - Removed samplesheet daemon definition, which is no longer used.
+
 release 92.0.0
  - Create 'primer_panel' alias for the 'gbs_plex_name' methods in
    st::api::lims. The new accessor will be used in contexts that are outside
