@@ -168,7 +168,6 @@ lib/npg_tracking/report/event2followers.pm
 lib/npg_tracking/report/event2subscribers.pm
 lib/npg_tracking/report/events.pm
 lib/npg/samplesheet.pm
-lib/npg/samplesheet/auto.pm
 lib/npg/util.pm
 lib/npg/util/mailer.pm
 lib/npg/view.pm
@@ -421,7 +420,6 @@ t/40-st-project.t
 t/40-st-sample.t
 t/40-st-study.t
 t/45-st-api-lims-traversal.t
-t/47-samplesheet-auto.t
 t/47-samplesheet.t
 t/50-controller.t
 t/50-decorator.t
