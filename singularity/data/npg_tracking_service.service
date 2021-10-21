@@ -1,0 +1,17 @@
+[Unit]
+Description=The Apache HTTP Server
+After=network.target remote-fs.target nss-lookup.target
+ConditionPathIsDirectory=/etc/apache2-%i
+
+[Service]
+Type=forking
+Environment=APACHE_CONFDIR=/etc/apache2-%i APACHE_STARTED_BY_SYSTEMD=true
+EnvironmentFile=/etc/apache2-npg_tracking/envvars
+ExecStart=/usr/sbin/apachectl start
+ExecStop=/usr/sbin/apachectl graceful-stop
+ExecReload=/usr/sbin/apachectl graceful
+PrivateTmp=true
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
