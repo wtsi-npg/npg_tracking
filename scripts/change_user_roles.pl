@@ -46,7 +46,6 @@ $schema->txn_do(
                 print "Assigned $new_role to user\n";
             }
         }
-        die "You shall not pass!";
     }
 );
 
