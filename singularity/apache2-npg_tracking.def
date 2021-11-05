@@ -21,12 +21,58 @@ usage:
 cat /.singularity.d/runscript.help
 
 
+%setup
+
+echo "TRACKING_PORT=${TRACKING_PORT:-9000}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+echo "TRACKING_SSL_PORT=${TRACKING_SSL_PORT:-12443}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+echo "TRACKING_GIT=${TRACKING_GIT:-'https://github.com/wtsi-npg/npg_tracking.git'}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+if [ -n "$TRACKING_COMMIT" ]
+then
+    echo "TRACKING_COMMIT=${TRACKING_COMMIT}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+fi
+if [ -n "$TRACKING_BRANCH" ]
+then
+    echo "TRACKING_BRANCH=${TRACKING_BRANCH}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+fi
+if [ -n "$DEV_BUILD" ]
+then
+    echo "DEV_BUILD=${DEV_BUILD}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+fi
+
 %files
 data/apache2-conf.patch /opt/apache2-conf.patch
 data/envvars /opt/envvars
 token.txt /opt/token.txt
 
 %post
+
+# Determine if dev or prod build and set vars
+. /opt/buildenv
+
+if [ -n "$DEV_BUILD" ]
+then
+    echo 'export dev=dev' >> /opt/envvars
+    export BRANCH=devel
+    echo "Building development image"
+else
+    echo 'export dev=live' >> /opt/envvars
+    export BRANCH=master
+    echo "Building production image"
+fi
+
+
+if [ -n "$TRACKING_BRANCH" ]
+then
+    export BRANCH=$TRACKING_BRANCH
+fi
+
+echo "export NPG_TRACKING_SERVER_PORT=$TRACKING_PORT" >> /opt/envvars
+echo "export NPG_TRACKING_SERVER_SSL_PORT=$TRACKING_SSL_PORT" >> /opt/envvars
+
+echo "npg_tracking commit: $TRACKING_COMMIT"
+echo "npg_tracking branch: $BRANCH"
+echo "npg_tracking git:    $TRACKING_GIT"
+
 
 # Do not exclude apache2 example scripts
 cat >> /etc/dpkg/dpkg.cfg.d/excludes << EOF
@@ -73,7 +119,12 @@ cd ..
 export PERL5LIB=${PERL5LIB}:${SRC_DIR}/perl-dnap-utilities/blib/lib
 
 
-git clone -b devel https://github.com/wtsi-npg/npg_tracking.git && cd npg_tracking
+git clone -b $BRANCH $TRACKING_GIT npg_tracking && cd npg_tracking
+if [ -n "$TRACKING_COMMIT" ]
+then
+    git checkout $TRACKING_COMMIT
+fi
+
 perl Build.PL
 cpanm --quiet --notest --installdeps .
 ./Build # run the build step explicitly, needed for some of our packages

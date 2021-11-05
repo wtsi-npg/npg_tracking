@@ -9,6 +9,14 @@ Then, build the image from within the same directory:
 - as root: `singularity build apache2-npg_tracking.sif apache2-npg_tracking.def`
 - or with fakeroot: `singularity build --fakeroot apache2-npg_tracking.sif apache2-npg_tracking.def` 
 
+Customisable environment variables:
+- `TRACKING_PORT`: defaults to 9000
+- `TRACKING_SSL_PORT`: defaults to 12443
+- `TRACKING_GIT`: defaults to `https://github.com/wtsi-npg/npg_tracking`
+- `TRACKING_BRANCH`: defaults to `master`, or `devel` if `DEV_BUILD` is set 
+- `DEV_BUILD`: set this to any value to build a development server image
+
+
 ## Running
 
 You should place the server SSL certificate and key, and the `config.ini` in a folder.
