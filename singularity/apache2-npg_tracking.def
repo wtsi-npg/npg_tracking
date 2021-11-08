@@ -22,7 +22,6 @@ cat /.singularity.d/runscript.help
 
 
 %files
-data/npg_tracking_service.service /opt/npg_tracking_service.service
 data/apache2-conf.patch /opt/apache2-conf.patch
 data/envvars /opt/envvars
 token.txt /opt/token.txt
@@ -52,9 +51,7 @@ apt-get install -y --no-install-recommends \
     cpanminus \
     libhtml-tidy-perl \
     build-essential \
-    libnumber-compare-perl \
-    openssh-client
-
+    libnumber-compare-perl
 
 # Build dependencies
 
@@ -167,10 +164,6 @@ done
 '
 
 ln -s /etc/apache2-npg_tracking/mods-enabled/ /etc/apache2-npg_tracking/modules
-
-
-mv /opt/npg_tracking_service.service /etc/apache2-npg_tracking/apache2@npg_tracking.service
-ln -s /etc/apache2-npg_tracking/apache2@npg_tracking.service /etc/systemd/system/multi-user.target.wants/apache2@npg_tracking.service
 
 # Patch and link apache config
 rm /etc/apache2-npg_tracking/apache2.conf
