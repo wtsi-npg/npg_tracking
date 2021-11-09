@@ -14,7 +14,7 @@ usage:
       apache2-npg_tracking
 
     stopping the instance:
-    $ singularity instance stop apache2
+    $ singularity instance stop apache2-npg_tracking
 
 %runscript
 # print help menu
