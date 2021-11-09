@@ -123,6 +123,9 @@ git clone -b $BRANCH $TRACKING_GIT npg_tracking && cd npg_tracking
 if [ -n "$TRACKING_COMMIT" ]
 then
     git checkout $TRACKING_COMMIT
+else
+    # Set env var for dynamic label
+    export TRACKING_COMMIT=$(git rev-parse HEAD)
 fi
 
 perl Build.PL
@@ -245,6 +248,24 @@ ln -s /srv/data/server.pem /software/npg/wtsi_local/server.pem
 
 # Cleanup
 rm -rf /opt/*
+
+# Dynamic labels for the image
+if [ -n ${DEV_BUILD} ]
+then
+    export BUILD_TYPE=dev
+else
+    export BUILD=TYPElive
+fi
+echo "org.label-schema.name npg_tracking-${BUILD_TYPE}-${TRACKING_COMMIT}" >> "$SINGULARITY_LABELS"
+echo "org.label-schema.vcs_url ${TRACKING_GIT}" >> "$SINGULARITY_LABELS"
+echo "org.label-schema.vcs_ref ${TRACKING_COMMIT}" >> "$SINGULARITY_LABELS"
+echo "npg_tracking.port ${TRACKING_PORT}" >> "$SINGULARITY_LABELS"
+echo "npg_tracking.ssl_port" ${TRACKING_SSL_PORT} >> "$SINGULARITY_LABELS"
+
+%labels
+org.label-schema.vendor Wellcome Sanger Institute
+org.label-schema.url https://github.com/wtsi-npg/npg_tracking
+org.label-schema.schema-version  1.0
 
 %startscript
 
