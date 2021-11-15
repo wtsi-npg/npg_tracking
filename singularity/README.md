@@ -14,6 +14,7 @@ Customisable environment variables:
 - `TRACKING_SSL_PORT`: defaults to 12443
 - `TRACKING_GIT`: defaults to `https://github.com/wtsi-npg/npg_tracking`
 - `TRACKING_BRANCH`: defaults to `master`, or `devel` if `DEV_BUILD` is set 
+- `ENIGMATIC_BRANCH`: defaults to `master`, or `devel` if `DEV_BUILD` is set
 - `DEV_BUILD`: set this to any value to build a development server image
 
 

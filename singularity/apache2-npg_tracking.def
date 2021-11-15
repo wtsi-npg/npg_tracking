@@ -34,6 +34,10 @@ if [ -n "$TRACKING_BRANCH" ]
 then
     echo "TRACKING_BRANCH=${TRACKING_BRANCH}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
 fi
+if [ -n "$ENIGMATIC_BRANCH" ]
+then
+    echo "ENIGMATIC_BRANCH=${ENIGMATIC_BRANCH}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+fi
 if [ -n "$DEV_BUILD" ]
 then
     echo "DEV_BUILD=${DEV_BUILD}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
@@ -53,10 +57,12 @@ if [ -n "$DEV_BUILD" ]
 then
     echo 'export dev=dev' >> /opt/envvars
     export BRANCH=devel
+    export SSO_BRANCH=devel
     echo "Building development image"
 else
     echo 'export dev=live' >> /opt/envvars
     export BRANCH=master
+    export SSO_BRANCH=master
     echo "Building production image"
 fi
 
@@ -66,12 +72,18 @@ then
     export BRANCH=$TRACKING_BRANCH
 fi
 
+if [ -n "$ENIGMATIC_BRANCH" ]
+then
+    export SSO_BRANCH=$ENIGMATIC_BRANCH
+fi
+
 echo "export NPG_TRACKING_SERVER_PORT=$TRACKING_PORT" >> /opt/envvars
 echo "export NPG_TRACKING_SERVER_SSL_PORT=$TRACKING_SSL_PORT" >> /opt/envvars
 
 echo "npg_tracking commit: $TRACKING_COMMIT"
 echo "npg_tracking branch: $BRANCH"
 echo "npg_tracking git:    $TRACKING_GIT"
+echo "sso branch:          $SSO_BRANCH"
 
 
 # Do not exclude apache2 example scripts
@@ -136,7 +148,7 @@ cd ..
 
 
 TOKEN=`cat /opt/token.txt`
-git clone -b master https://oauth2:${TOKEN}@gitlab.internal.sanger.ac.uk/npg/npg-sso-enigmatic.git && cd npg-sso-enigmatic
+git clone -b $SSO_BRANCH https://oauth2:${TOKEN}@gitlab.internal.sanger.ac.uk/npg/npg-sso-enigmatic.git && cd npg-sso-enigmatic
 perl Build.PL
 cpanm --quiet --notest --installdeps .
 ./Build && ./Build install
