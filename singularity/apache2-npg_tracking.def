@@ -26,10 +26,9 @@ cat /.singularity.d/runscript.help
 echo "TRACKING_PORT=${TRACKING_PORT:-9000}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
 echo "TRACKING_SSL_PORT=${TRACKING_SSL_PORT:-12443}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
 echo "TRACKING_GIT=${TRACKING_GIT:-'https://github.com/wtsi-npg/npg_tracking.git'}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
-if [ -n "$TRACKING_COMMIT" ]
-then
-    echo "TRACKING_COMMIT=${TRACKING_COMMIT}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
-fi
+echo "CONTAINER_BUILD_VERSION=$(git describe --dirty --always)" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+echo "CONTAINER_BUILD_URL=$(git remote -v | grep origin | grep fetch | perl -nle '@a=$_=~/\s(.+)\s/; print $a[0]')" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+
 if [ -n "$TRACKING_BRANCH" ]
 then
     echo "TRACKING_BRANCH=${TRACKING_BRANCH}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
@@ -132,13 +131,8 @@ export PERL5LIB=${PERL5LIB}:${SRC_DIR}/perl-dnap-utilities/blib/lib
 
 
 git clone -b $BRANCH $TRACKING_GIT npg_tracking && cd npg_tracking
-if [ -n "$TRACKING_COMMIT" ]
-then
-    git checkout $TRACKING_COMMIT
-else
-    # Set env var for dynamic label
-    export TRACKING_COMMIT=$(git rev-parse HEAD)
-fi
+# Set env var for dynamic label
+export TRACKING_VERSION=$(git describe --dirty --always)
 
 perl Build.PL
 cpanm --quiet --notest --installdeps .
@@ -262,22 +256,23 @@ ln -s /srv/data/server.pem /software/npg/wtsi_local/server.pem
 rm -rf /opt/*
 
 # Dynamic labels for the image
-if [ -n "$DEV_BUILD" ]
+BUILD_TYPE=''
+if [ -n "${DEV_BUILD}" ]
 then
-    export BUILD_TYPE=dev
-else
-    export BUILD_TYPE=live
+    BUILD_TYPE='-dev'
 fi
-echo "org.label-schema.name npg_tracking-${BUILD_TYPE}-${TRACKING_COMMIT}" >> "$SINGULARITY_LABELS"
-echo "org.label-schema.vcs_url ${TRACKING_GIT}" >> "$SINGULARITY_LABELS"
-echo "org.label-schema.vcs_ref ${TRACKING_COMMIT}" >> "$SINGULARITY_LABELS"
-echo "npg_tracking.port ${TRACKING_PORT}" >> "$SINGULARITY_LABELS"
-echo "npg_tracking.ssl_port" ${TRACKING_SSL_PORT} >> "$SINGULARITY_LABELS"
+
+echo "org.label-schema.name npg.run_tracking_server${BUILD_TYPE}-${TRACKING_VERSION}" >> "$SINGULARITY_LABELS"
+echo "org.label-schema.vcs_url ${CONTAINER_BUILD_URL}" >> "$SINGULARITY_LABELS"
+echo "org.label-schema.vcs_ref ${CONTAINER_BUILD_VERSION}" >> "$SINGULARITY_LABELS"
+
+echo "wti.npg.run_tracking_server.vcs_url ${TRACKING_GIT}" >> "$SINGULARITY_LABELS"
+echo "wti.npg.run_tracking_server.port ${TRACKING_PORT}" >> "$SINGULARITY_LABELS"
+echo "wti.npg.run_tracking_server.ssl_port" ${TRACKING_SSL_PORT} >> "$SINGULARITY_LABELS"
 
 %labels
 org.label-schema.vendor Wellcome Sanger Institute
-org.label-schema.url https://github.com/wtsi-npg/npg_tracking
-org.label-schema.schema-version  1.0
+org.label-schema.url https://github.com/wtsi-npg/npg_tracking/singularity
 
 %startscript
 
