@@ -262,7 +262,7 @@ ln -s /srv/data/server.pem /software/npg/wtsi_local/server.pem
 rm -rf /opt/*
 
 # Dynamic labels for the image
-if [ -n ${DEV_BUILD} ]
+if [ -n "$DEV_BUILD" ]
 then
     export BUILD_TYPE=dev
 else
