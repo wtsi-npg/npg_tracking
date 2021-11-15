@@ -266,7 +266,7 @@ if [ -n ${DEV_BUILD} ]
 then
     export BUILD_TYPE=dev
 else
-    export BUILD=TYPElive
+    export BUILD_TYPE=live
 fi
 echo "org.label-schema.name npg_tracking-${BUILD_TYPE}-${TRACKING_COMMIT}" >> "$SINGULARITY_LABELS"
 echo "org.label-schema.vcs_url ${TRACKING_GIT}" >> "$SINGULARITY_LABELS"
