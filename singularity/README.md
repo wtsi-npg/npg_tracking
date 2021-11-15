@@ -32,4 +32,4 @@ You should place the server SSL certificate and key, and the `config.ini` in a f
   ```
 
 - stopping the instance:
-`singularity instance stop apache2`
+`singularity instance stop apache2-npg_tracking`
