@@ -24,7 +24,8 @@ Top Level Directories
 + `data`
   + templates for the web app and some cron jobs
   + example database configuration file for the web application
-+ `wtsi_local` - Apache web server configuration files
++ `docs` - directory for documentation
++ `wtsi_local` - Apache httpd web server configuration files
 + `t` - unit tests, test data, supplimentary scripts and modules for testing
 
 Environment Variables and Their Meaning
