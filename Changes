@@ -1,5 +1,14 @@
 LIST OF CHANGES
 
+release 92.1.0
+ - Change LDAP URL to read-only URL
+ - Added a SOP for creating/decommitioning instruments.
+ - Removed the samplesheet daemon definition npg_tracking::daemon::samplesheet
+   and the auto-generator for samplesheets npg::daemon::samplesheet::auto.
+   Both are no longer in use, the functionality was moved to
+   https://github.com/wtsi-npg/npg_ml_warehouse, see
+   https://github.com/wtsi-npg/npg_ml_warehouse/commit/0b98fc4defb8338914f8d11448df4b30cd75528c
+
 release 92.0.0
  - Create 'primer_panel' alias for the 'gbs_plex_name' methods in
    st::api::lims. The new accessor will be used in contexts that are outside

@@ -168,7 +168,6 @@ lib/npg_tracking/report/event2followers.pm
 lib/npg_tracking/report/event2subscribers.pm
 lib/npg_tracking/report/events.pm
 lib/npg/samplesheet.pm
-lib/npg/samplesheet/auto.pm
 lib/npg/util.pm
 lib/npg/util/mailer.pm
 lib/npg/view.pm
@@ -195,7 +194,6 @@ lib/npg_testing/html.pm
 lib/npg_testing/intweb.pm
 lib/npg_tracking/daemon.pm
 lib/npg_tracking/daemon/jenkins.pm
-lib/npg_tracking/daemon/samplesheet.pm
 lib/npg_tracking/daemon/staging.pm
 lib/npg_tracking/daemon/staging_local.pm
 lib/npg_tracking/data/bait.pm
@@ -383,7 +381,6 @@ t/14-dbic-RunStatusDict.t
 t/14-dbic-Tag.t
 t/14-dbic-User.t
 t/16-npg_tracking-daemon-jenkins.t
-t/16-npg_tracking-daemon-samplesheet.t
 t/16-npg_tracking-daemon-staging.t
 t/16-npg_tracking-daemon.t
 t/20-model-run_and_instrument_status.t
@@ -423,7 +420,6 @@ t/40-st-project.t
 t/40-st-sample.t
 t/40-st-study.t
 t/45-st-api-lims-traversal.t
-t/47-samplesheet-auto.t
 t/47-samplesheet.t
 t/50-controller.t
 t/50-decorator.t
