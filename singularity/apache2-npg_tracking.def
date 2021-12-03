@@ -52,38 +52,33 @@ token.txt /opt/token.txt
 # Determine if dev or prod build and set vars
 . /opt/buildenv
 
+BRANCH=master
+SSO_BRANCH=master
+
 if [ -n "$DEV_BUILD" ]
 then
     echo 'export dev=dev' >> /opt/envvars
-    export BRANCH=devel
-    export SSO_BRANCH=devel
+    BRANCH=devel
+    SSO_BRANCH=devel
     echo "Building development image"
 else
     echo 'export dev=live' >> /opt/envvars
-    export BRANCH=master
-    export SSO_BRANCH=master
     echo "Building production image"
 fi
 
 
 if [ -n "$TRACKING_BRANCH" ]
 then
-    export BRANCH=$TRACKING_BRANCH
+    BRANCH=$TRACKING_BRANCH
 fi
 
 if [ -n "$ENIGMATIC_BRANCH" ]
 then
-    export SSO_BRANCH=$ENIGMATIC_BRANCH
+    SSO_BRANCH=$ENIGMATIC_BRANCH
 fi
 
 echo "export NPG_TRACKING_SERVER_PORT=$TRACKING_PORT" >> /opt/envvars
 echo "export NPG_TRACKING_SERVER_SSL_PORT=$TRACKING_SSL_PORT" >> /opt/envvars
-
-echo "npg_tracking commit: $TRACKING_COMMIT"
-echo "npg_tracking branch: $BRANCH"
-echo "npg_tracking git:    $TRACKING_GIT"
-echo "sso branch:          $SSO_BRANCH"
-
 
 # Do not exclude apache2 example scripts
 cat >> /etc/dpkg/dpkg.cfg.d/excludes << EOF
@@ -110,11 +105,11 @@ apt-get install -y --no-install-recommends \
     build-essential \
     libnumber-compare-perl
 
-# Build dependencies
+# Build Perl dependencies
 
-export DEPLOY_DIR=/software/npg; # Just an example, can be any directory inside the image
+DEPLOY_DIR=/software/npg; # Just an example, can be any directory inside the image
                           # If the root directory does not exist, create
-export SRC_DIR=${DEPLOY_DIR}/src
+SRC_DIR=${DEPLOY_DIR}/src
 mkdir -p ${SRC_DIR}
 cd ${SRC_DIR}
 # Set the environment for the Perl builds. If this is not done, an attempt to
@@ -129,10 +124,9 @@ perl Build.PL
 cd ..
 export PERL5LIB=${PERL5LIB}:${SRC_DIR}/perl-dnap-utilities/blib/lib
 
-
 git clone -b $BRANCH $TRACKING_GIT npg_tracking && cd npg_tracking
 # Set env var for dynamic label
-export TRACKING_VERSION=$(git describe --dirty --always)
+TRACKING_VERSION=$(git describe --dirty --always)
 
 perl Build.PL
 cpanm --quiet --notest --installdeps .
@@ -147,7 +141,6 @@ perl Build.PL
 cpanm --quiet --notest --installdeps .
 ./Build && ./Build install
 cd # get out of the source directory tree, does not matter where to
-
 rm /opt/token.txt
 
 rm -rf ${SRC_DIR} ${DEPLOY_DIR}/{man,share,bin} # to reduce image size
@@ -177,13 +170,10 @@ chown root:adm /var/log/apache2-$SUFFIX
 echo "Setting up /etc/default/apache-htcacheclean-$SUFFIX"
 cp -a /etc/default/apache-htcacheclean /etc/default/apache-htcacheclean-$SUFFIX
 
-
-
 mv /opt/envvars /etc/apache2-npg_tracking/envvars
 
 # Remove default sites
 rm /etc/apache2-npg_tracking/sites-enabled/*
-
 
 # Remove default modules
 rm /etc/apache2-npg_tracking/mods-enabled/*
@@ -220,7 +210,6 @@ for mod in "${modules[@]}"
 do
     ln -s /etc/apache2-npg_tracking/mods-available/${mod} /etc/apache2-npg_tracking/mods-enabled/${mod}
 done
-
 '
 
 ln -s /etc/apache2-npg_tracking/mods-enabled/ /etc/apache2-npg_tracking/modules
