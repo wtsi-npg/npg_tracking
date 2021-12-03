@@ -47,9 +47,9 @@ if ($username) {
                 die "User $username does not exist in the DB";
             }
             my @groups = $user->usergroups()->all();
-            @group_names = join ',', map {$_->groupname} sort @groups;
+            @group_names = map {$_->groupname} sort @groups;
             if ($list) {
-                printf "Existing groups for user %s: %s\n", $username, @group_names;
+                printf "Existing groups for user %s: %s\n", $username, join ',', @group_names;
             }
         }
     );
