@@ -29,14 +29,6 @@ echo "TRACKING_GIT=${TRACKING_GIT:-'https://github.com/wtsi-npg/npg_tracking.git
 echo "CONTAINER_BUILD_VERSION=$(git describe --dirty --always)" >> ${SINGULARITY_ROOTFS}/opt/buildenv
 echo "CONTAINER_BUILD_URL=$(git remote -v | grep origin | grep fetch | perl -nle '@a=$_=~/\s(.+)\s/; print $a[0]')" >> ${SINGULARITY_ROOTFS}/opt/buildenv
 
-if [ -n "$TRACKING_BRANCH" ]
-then
-    echo "TRACKING_BRANCH=${TRACKING_BRANCH}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
-fi
-if [ -n "$ENIGMATIC_BRANCH" ]
-then
-    echo "ENIGMATIC_BRANCH=${ENIGMATIC_BRANCH}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
-fi
 if [ -n "$DEV_BUILD" ]
 then
     echo "DEV_BUILD=${DEV_BUILD}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
@@ -53,28 +45,15 @@ token.txt /opt/token.txt
 . /opt/buildenv
 
 BRANCH=master
-SSO_BRANCH=master
 
 if [ -n "$DEV_BUILD" ]
 then
     echo 'export dev=dev' >> /opt/envvars
     BRANCH=devel
-    SSO_BRANCH=devel
     echo "Building development image"
 else
     echo 'export dev=live' >> /opt/envvars
     echo "Building production image"
-fi
-
-
-if [ -n "$TRACKING_BRANCH" ]
-then
-    BRANCH=$TRACKING_BRANCH
-fi
-
-if [ -n "$ENIGMATIC_BRANCH" ]
-then
-    SSO_BRANCH=$ENIGMATIC_BRANCH
 fi
 
 echo "export NPG_TRACKING_SERVER_PORT=$TRACKING_PORT" >> /opt/envvars
@@ -136,7 +115,7 @@ cd ..
 
 
 TOKEN=`cat /opt/token.txt`
-git clone -b $SSO_BRANCH https://oauth2:${TOKEN}@gitlab.internal.sanger.ac.uk/npg/npg-sso-enigmatic.git && cd npg-sso-enigmatic
+git clone -b $BRANCH https://oauth2:${TOKEN}@gitlab.internal.sanger.ac.uk/npg/npg-sso-enigmatic.git && cd npg-sso-enigmatic
 perl Build.PL
 cpanm --quiet --notest --installdeps .
 ./Build && ./Build install
