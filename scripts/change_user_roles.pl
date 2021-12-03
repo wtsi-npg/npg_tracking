@@ -1,5 +1,8 @@
 #!/usr/bin/env perl
 
+use strict;
+use warnings;
+
 use Getopt::Long;
 use List::Util qw/any/;
 use Pod::Usage;
@@ -22,12 +25,13 @@ GetOptions(
     -verbose => 1, -message => '--username and at least one --role required'
 );
 
-if ($help) { pod2usage(1) }
+if ($help || !($username || @new_roles || $list || $list_roles)) { pod2usage(1) }
 
 my $schema = npg_tracking::Schema->connect();
 
 # Validate requested roles
-my %valid_roles = map { $_->groupname => $_ } $schema->resultset('Usergroup')->all();
+my %valid_roles = map { $_->groupname => $_ }
+    $schema->resultset('Usergroup')->search({ iscurrent => 1 })->all();
 
 sub list_valid_roles {
     return sprintf "Valid roles are: %s\n", join ',',keys %valid_roles;
@@ -38,7 +42,7 @@ if ($list_roles) {
     exit(0);
 }
 
-my ($user, @groups, @group_names);;
+my ($user, @groups, @group_names);
 if ($username) {
     $schema->txn_do(
         sub {
@@ -64,7 +68,7 @@ if (@new_roles) {
 
     $schema->txn_do(
         sub {
-	    printf "Setting new groups: %s\n", join ',', @new_roles;
+            printf "Setting new groups: %s\n", join ',', @new_roles;
             foreach my $new_role (@new_roles) {
                 if ( any { $new_role eq $_ } @group_names) {
                     print "$new_role is redundant. Not adding\n";
