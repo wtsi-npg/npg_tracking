@@ -26,18 +26,9 @@ cat /.singularity.d/runscript.help
 echo "TRACKING_PORT=${TRACKING_PORT:-9000}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
 echo "TRACKING_SSL_PORT=${TRACKING_SSL_PORT:-12443}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
 echo "TRACKING_GIT=${TRACKING_GIT:-'https://github.com/wtsi-npg/npg_tracking.git'}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
-if [ -n "$TRACKING_COMMIT" ]
-then
-    echo "TRACKING_COMMIT=${TRACKING_COMMIT}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
-fi
-if [ -n "$TRACKING_BRANCH" ]
-then
-    echo "TRACKING_BRANCH=${TRACKING_BRANCH}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
-fi
-if [ -n "$ENIGMATIC_BRANCH" ]
-then
-    echo "ENIGMATIC_BRANCH=${ENIGMATIC_BRANCH}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
-fi
+echo "CONTAINER_BUILD_VERSION=$(git describe --dirty --always)" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+echo "CONTAINER_BUILD_URL=$(git remote -v | grep origin | grep fetch | perl -nle '@a=$_=~/\s(.+)\s/; print $a[0]')" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+
 if [ -n "$DEV_BUILD" ]
 then
     echo "DEV_BUILD=${DEV_BUILD}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
@@ -53,38 +44,20 @@ token.txt /opt/token.txt
 # Determine if dev or prod build and set vars
 . /opt/buildenv
 
+BRANCH=master
+
 if [ -n "$DEV_BUILD" ]
 then
     echo 'export dev=dev' >> /opt/envvars
-    export BRANCH=devel
-    export SSO_BRANCH=devel
+    BRANCH=devel
     echo "Building development image"
 else
     echo 'export dev=live' >> /opt/envvars
-    export BRANCH=master
-    export SSO_BRANCH=master
     echo "Building production image"
-fi
-
-
-if [ -n "$TRACKING_BRANCH" ]
-then
-    export BRANCH=$TRACKING_BRANCH
-fi
-
-if [ -n "$ENIGMATIC_BRANCH" ]
-then
-    export SSO_BRANCH=$ENIGMATIC_BRANCH
 fi
 
 echo "export NPG_TRACKING_SERVER_PORT=$TRACKING_PORT" >> /opt/envvars
 echo "export NPG_TRACKING_SERVER_SSL_PORT=$TRACKING_SSL_PORT" >> /opt/envvars
-
-echo "npg_tracking commit: $TRACKING_COMMIT"
-echo "npg_tracking branch: $BRANCH"
-echo "npg_tracking git:    $TRACKING_GIT"
-echo "sso branch:          $SSO_BRANCH"
-
 
 # Do not exclude apache2 example scripts
 cat >> /etc/dpkg/dpkg.cfg.d/excludes << EOF
@@ -111,11 +84,11 @@ apt-get install -y --no-install-recommends \
     build-essential \
     libnumber-compare-perl
 
-# Build dependencies
+# Build Perl dependencies
 
-export DEPLOY_DIR=/software/npg; # Just an example, can be any directory inside the image
+DEPLOY_DIR=/software/npg; # Just an example, can be any directory inside the image
                           # If the root directory does not exist, create
-export SRC_DIR=${DEPLOY_DIR}/src
+SRC_DIR=${DEPLOY_DIR}/src
 mkdir -p ${SRC_DIR}
 cd ${SRC_DIR}
 # Set the environment for the Perl builds. If this is not done, an attempt to
@@ -130,15 +103,9 @@ perl Build.PL
 cd ..
 export PERL5LIB=${PERL5LIB}:${SRC_DIR}/perl-dnap-utilities/blib/lib
 
-
 git clone -b $BRANCH $TRACKING_GIT npg_tracking && cd npg_tracking
-if [ -n "$TRACKING_COMMIT" ]
-then
-    git checkout $TRACKING_COMMIT
-else
-    # Set env var for dynamic label
-    export TRACKING_COMMIT=$(git rev-parse HEAD)
-fi
+# Set env var for dynamic label
+TRACKING_VERSION=$(git describe --dirty --always)
 
 perl Build.PL
 cpanm --quiet --notest --installdeps .
@@ -148,12 +115,11 @@ cd ..
 
 
 TOKEN=`cat /opt/token.txt`
-git clone -b $SSO_BRANCH https://oauth2:${TOKEN}@gitlab.internal.sanger.ac.uk/npg/npg-sso-enigmatic.git && cd npg-sso-enigmatic
+git clone -b $BRANCH https://oauth2:${TOKEN}@gitlab.internal.sanger.ac.uk/npg/npg-sso-enigmatic.git && cd npg-sso-enigmatic
 perl Build.PL
 cpanm --quiet --notest --installdeps .
 ./Build && ./Build install
 cd # get out of the source directory tree, does not matter where to
-
 rm /opt/token.txt
 
 rm -rf ${SRC_DIR} ${DEPLOY_DIR}/{man,share,bin} # to reduce image size
@@ -183,13 +149,10 @@ chown root:adm /var/log/apache2-$SUFFIX
 echo "Setting up /etc/default/apache-htcacheclean-$SUFFIX"
 cp -a /etc/default/apache-htcacheclean /etc/default/apache-htcacheclean-$SUFFIX
 
-
-
 mv /opt/envvars /etc/apache2-npg_tracking/envvars
 
 # Remove default sites
 rm /etc/apache2-npg_tracking/sites-enabled/*
-
 
 # Remove default modules
 rm /etc/apache2-npg_tracking/mods-enabled/*
@@ -226,7 +189,6 @@ for mod in "${modules[@]}"
 do
     ln -s /etc/apache2-npg_tracking/mods-available/${mod} /etc/apache2-npg_tracking/mods-enabled/${mod}
 done
-
 '
 
 ln -s /etc/apache2-npg_tracking/mods-enabled/ /etc/apache2-npg_tracking/modules
@@ -262,22 +224,23 @@ ln -s /srv/data/server.pem /software/npg/wtsi_local/server.pem
 rm -rf /opt/*
 
 # Dynamic labels for the image
-if [ -n "$DEV_BUILD" ]
+BUILD_TYPE=''
+if [ -n "${DEV_BUILD}" ]
 then
-    export BUILD_TYPE=dev
-else
-    export BUILD_TYPE=live
+    BUILD_TYPE='-dev'
 fi
-echo "org.label-schema.name npg_tracking-${BUILD_TYPE}-${TRACKING_COMMIT}" >> "$SINGULARITY_LABELS"
-echo "org.label-schema.vcs_url ${TRACKING_GIT}" >> "$SINGULARITY_LABELS"
-echo "org.label-schema.vcs_ref ${TRACKING_COMMIT}" >> "$SINGULARITY_LABELS"
-echo "npg_tracking.port ${TRACKING_PORT}" >> "$SINGULARITY_LABELS"
-echo "npg_tracking.ssl_port" ${TRACKING_SSL_PORT} >> "$SINGULARITY_LABELS"
+
+echo "org.label-schema.name npg.run_tracking_server${BUILD_TYPE}-${TRACKING_VERSION}" >> "$SINGULARITY_LABELS"
+echo "org.label-schema.vcs_url ${CONTAINER_BUILD_URL}" >> "$SINGULARITY_LABELS"
+echo "org.label-schema.vcs_ref ${CONTAINER_BUILD_VERSION}" >> "$SINGULARITY_LABELS"
+
+echo "wti.npg.run_tracking_server.vcs_url ${TRACKING_GIT}" >> "$SINGULARITY_LABELS"
+echo "wti.npg.run_tracking_server.port ${TRACKING_PORT}" >> "$SINGULARITY_LABELS"
+echo "wti.npg.run_tracking_server.ssl_port" ${TRACKING_SSL_PORT} >> "$SINGULARITY_LABELS"
 
 %labels
 org.label-schema.vendor Wellcome Sanger Institute
-org.label-schema.url https://github.com/wtsi-npg/npg_tracking
-org.label-schema.schema-version  1.0
+org.label-schema.url https://github.com/wtsi-npg/npg_tracking/singularity
 
 %startscript
 
