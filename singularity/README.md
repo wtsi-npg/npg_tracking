@@ -1,7 +1,9 @@
 # Singularity Container
 
 `apache2-npg_tracking.def` contains the recipe to build a Singularity
-container to run the tracking web server.
+container to run the tracking web server. The recipe is using dynamic
+labels to assign some of the metadata to the image. For this reason
+the image cannot be built with singularity versions below 3.7.
 
 ## Building
 
