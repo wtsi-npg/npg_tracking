@@ -14,7 +14,7 @@ Build the image from within the same directory:
 # as root
 singularity build apache2-npg_tracking.sif apache2-npg_tracking.def
 
-#or with fakeroot
+# or with fakeroot
 singularity build --fakeroot apache2-npg_tracking.sif apache2-npg_tracking.def
 ```
 
