@@ -1,0 +1,249 @@
+Bootstrap: docker
+From: ubuntu:bionic
+
+%help
+npg_tracking on Ubuntu 18.04 running in a Singularity container.
+
+usage:
+
+    starting the instance :
+    $ singularity instance start \
+      -B /path/to/config/folder/:/srv/data/ \
+      -B /path/to/logs/folder/:/srv/httpd/ \
+      apache2-npg_tracking.sif \
+      apache2-npg_tracking
+
+    stopping the instance:
+    $ singularity instance stop apache2-npg_tracking
+
+%runscript
+# print help menu
+cat /.singularity.d/runscript.help
+
+
+%setup
+
+echo "TRACKING_PORT=${TRACKING_PORT:-9000}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+echo "TRACKING_SSL_PORT=${TRACKING_SSL_PORT:-12443}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+echo "TRACKING_GIT=${TRACKING_GIT:-'https://github.com/wtsi-npg/npg_tracking.git'}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+echo "CONTAINER_BUILD_VERSION=$(git describe --dirty --always)" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+echo "CONTAINER_BUILD_URL=$(git remote -v | grep origin | grep fetch | perl -nle '@a=$_=~/\s(.+)\s/; print $a[0]')" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+
+if [ -n "$DEV_BUILD" ]
+then
+    echo "DEV_BUILD=${DEV_BUILD}" >> ${SINGULARITY_ROOTFS}/opt/buildenv
+fi
+
+%files
+data/apache2-conf.patch /opt/apache2-conf.patch
+data/envvars /opt/envvars
+token.txt /opt/token.txt
+
+%post
+
+# Determine if dev or prod build and set vars
+. /opt/buildenv
+
+BRANCH=master
+
+if [ -n "$DEV_BUILD" ]
+then
+    echo 'export dev=dev' >> /opt/envvars
+    BRANCH=devel
+    echo "Building development image"
+else
+    echo 'export dev=live' >> /opt/envvars
+    echo "Building production image"
+fi
+
+echo "export NPG_TRACKING_SERVER_PORT=$TRACKING_PORT" >> /opt/envvars
+echo "export NPG_TRACKING_SERVER_SSL_PORT=$TRACKING_SSL_PORT" >> /opt/envvars
+
+# Do not exclude apache2 example scripts
+cat >> /etc/dpkg/dpkg.cfg.d/excludes << EOF
+
+# ... and examples for apache2 ...
+path-include=/usr/share/doc/apache2/examples/*
+EOF
+
+
+# Install Apache2 and required deps for npg_tracking
+apt-get update
+apt-get full-upgrade -y
+apt-get install -y --no-install-recommends \
+    apache2 \
+    libapache2-mod-perl2 \
+    liblocal-lib-perl \
+    libgd-dev \
+    libxml2-dev \
+    libssl-dev \
+    libmysqlclient-dev \
+    git \
+    cpanminus \
+    libhtml-tidy-perl \
+    build-essential \
+    libnumber-compare-perl
+
+# Build Perl dependencies
+
+DEPLOY_DIR=/software/npg; # Just an example, can be any directory inside the image
+                          # If the root directory does not exist, create
+SRC_DIR=${DEPLOY_DIR}/src
+mkdir -p ${SRC_DIR}
+cd ${SRC_DIR}
+# Set the environment for the Perl builds. If this is not done, an attempt to
+# deploy into the Perl interpreter hierarchy is done. This is fine for libraries,
+# but probably not for custom directories we are creating.
+eval "$(perl -Mlocal::lib=${DEPLOY_DIR})"
+
+git clone -b master https://github.com/wtsi-npg/perl-dnap-utilities.git
+cd perl-dnap-utilities
+perl Build.PL 
+./Build # Run the build script to set the version
+cd ..
+export PERL5LIB=${PERL5LIB}:${SRC_DIR}/perl-dnap-utilities/blib/lib
+
+git clone -b $BRANCH $TRACKING_GIT npg_tracking && cd npg_tracking
+# Set env var for dynamic label
+TRACKING_VERSION=$(git describe --dirty --always)
+
+perl Build.PL
+cpanm --quiet --notest --installdeps .
+./Build # run the build step explicitly, needed for some of our packages
+./Build install # install under ${DEPLOY_DIR}
+cd ..
+
+
+TOKEN=`cat /opt/token.txt`
+git clone -b $BRANCH https://oauth2:${TOKEN}@gitlab.internal.sanger.ac.uk/npg/npg-sso-enigmatic.git && cd npg-sso-enigmatic
+perl Build.PL
+cpanm --quiet --notest --installdeps .
+./Build && ./Build install
+cd # get out of the source directory tree, does not matter where to
+rm /opt/token.txt
+
+rm -rf ${SRC_DIR} ${DEPLOY_DIR}/{man,share,bin} # to reduce image size
+
+
+# Generate npg_tracking instance
+# sh /usr/share/doc/apache2/examples/setup-instance npg_tracking
+SUFFIX=npg_tracking
+cp -a /etc/apache2 /etc/apache2-$SUFFIX
+
+cp /usr/share/doc/apache2/examples/secondary-init-script /etc/init.d/apache2-$SUFFIX
+perl -p -i -e s,XXX,$SUFFIX, /etc/init.d/apache2-$SUFFIX
+chmod 755 /etc/init.d/apache2-$SUFFIX
+
+for a in a2enmod a2dismod a2ensite a2dissite a2enconf a2disconf apache2ctl ; do
+    echo -n "$a-$SUFFIX"
+    ln -s /usr/sbin/$a /usr/local/sbin/$a-$SUFFIX
+done
+
+echo Setting up /etc/logrotate.d/apache2-$SUFFIX and /var/log/apache2-$SUFFIX ...
+cp -a /etc/logrotate.d/apache2 /etc/logrotate.d/apache2-$SUFFIX
+perl -p -i -e s,apache2,apache2-$SUFFIX,g /etc/logrotate.d/apache2-$SUFFIX
+mkdir /var/log/apache2-$SUFFIX
+chmod 750 /var/log/apache2-$SUFFIX
+chown root:adm /var/log/apache2-$SUFFIX
+
+echo "Setting up /etc/default/apache-htcacheclean-$SUFFIX"
+cp -a /etc/default/apache-htcacheclean /etc/default/apache-htcacheclean-$SUFFIX
+
+mv /opt/envvars /etc/apache2-npg_tracking/envvars
+
+# Remove default sites
+rm /etc/apache2-npg_tracking/sites-enabled/*
+
+# Remove default modules
+rm /etc/apache2-npg_tracking/mods-enabled/*
+
+bash -c '
+modules=("alias.load" 
+         "authn_core.load" 
+         "authz_core.load" 
+         "authz_host.load" 
+         "authz_user.load" 
+         "autoindex.load" 
+         "cgid.load" 
+         "deflate.load" 
+         "dir.load" 
+         "env.load" 
+         "headers.load" 
+         "mime.load" 
+         "mpm_event.load"
+         "perl.load" 
+         "rewrite.load" 
+         "setenvif.load" 
+         "socache_shmcb.load" 
+         "ssl.load" 
+         "autoindex.conf" 
+         "cgid.conf" 
+         "deflate.conf" 
+         "dir.conf" 
+         "mime.conf" 
+         "mpm_event.conf" 
+         "setenvif.conf" 
+         "ssl.conf")
+
+for mod in "${modules[@]}"
+do
+    ln -s /etc/apache2-npg_tracking/mods-available/${mod} /etc/apache2-npg_tracking/mods-enabled/${mod}
+done
+'
+
+ln -s /etc/apache2-npg_tracking/mods-enabled/ /etc/apache2-npg_tracking/modules
+
+# Patch and link apache config
+rm /etc/apache2-npg_tracking/apache2.conf
+patch /software/npg/wtsi_local/httpd.conf /opt/apache2-conf.patch
+ln -s /software/npg/wtsi_local/httpd.conf /etc/apache2-npg_tracking/apache2.conf
+
+# Deal with MIME types
+mkdir /etc/apache2-npg_tracking/conf
+ln -s /etc/mime.types /etc/apache2-npg_tracking/conf/mime.types
+
+# Replace the stock locations with symlinks to our bind point
+rm -rf /var/log/apache2-npg_tracking/
+ln -s /srv/httpd/logs/ /var/log/apache2-npg_tracking
+
+rm -rf /var/run/apache2-npg_tracking/
+ln -s /srv/httpd/var/run/ /var/run/apache2-npg_tracking
+
+rm -rf /var/lock/apache2-npg_tracking/
+ln -s /srv/httpd/var/lock/ /var/lock/apache2-npg_tracking
+
+# Prepare extra data dir
+mkdir /srv/data
+
+ln -s /srv/data/config.ini /software/npg/data/config.ini
+ln -s /srv/data/key.pem /software/npg/wtsi_local/key.pem
+ln -s /srv/data/server.pem /software/npg/wtsi_local/server.pem
+
+
+# Cleanup
+rm -rf /opt/*
+
+# Dynamic labels for the image
+BUILD_TYPE=''
+if [ -n "${DEV_BUILD}" ]
+then
+    BUILD_TYPE='-dev'
+fi
+
+echo "org.label-schema.name npg.run_tracking_server${BUILD_TYPE}-${TRACKING_VERSION}" >> "$SINGULARITY_LABELS"
+echo "org.label-schema.vcs_url ${CONTAINER_BUILD_URL}" >> "$SINGULARITY_LABELS"
+echo "org.label-schema.vcs_ref ${CONTAINER_BUILD_VERSION}" >> "$SINGULARITY_LABELS"
+
+echo "wti.npg.run_tracking_server.vcs_url ${TRACKING_GIT}" >> "$SINGULARITY_LABELS"
+echo "wti.npg.run_tracking_server.port ${TRACKING_PORT}" >> "$SINGULARITY_LABELS"
+echo "wti.npg.run_tracking_server.ssl_port" ${TRACKING_SSL_PORT} >> "$SINGULARITY_LABELS"
+
+%labels
+org.label-schema.vendor Wellcome Sanger Institute
+org.label-schema.url https://github.com/wtsi-npg/npg_tracking/singularity
+
+%startscript
+
+mkdir -p /srv/httpd/logs /srv/httpd/var/run
+
+service apache2-npg_tracking start -D UBUNTU_APACHE
