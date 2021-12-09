@@ -51,6 +51,7 @@
    <th>Status Operator</th>
    <th>Loader</th>
    <th>Loading Date</th>
+   <th>Folder Name</th>
   </tr>
  </thead>
  <tbody>
@@ -69,6 +70,7 @@
  <td>[% run.current_run_status.user.username %]</td>
  <td>[% run.loader_info.loader %]</td>
  <td>[% run.loader_info.date %]</td>
+ <td>[% fname = run.folder_name; fname = fname ? fname : '&nbsp;'; fname; %]</td>
 </tr>
 [%- END -%]
  </tbody>
