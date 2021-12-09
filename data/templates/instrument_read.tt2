@@ -10,6 +10,7 @@
 <table id="instrument_info_table">
  <tr><th>Model</th><td><a href="[% SCRIPT_NAME %]/instrument_format/[% model.id_instrument_format %]">[% model.instrument_format.model %]</a>&nbsp;</td></tr>
  <tr><th>Manufacturer</th><td>[% mname = model.manufacturer_name; mname = mname ? mname : '&nbsp;'; mname; %]</td></tr>
+ <tr><th>External name</th><td>[% xname = model.external_name; xname = xname ? xname : '&nbsp;'; xname; %]</td></tr>
  [% IF model.serial %]<tr><th>Serial Number</th><td>[% model.serial %]&nbsp;</td></tr>[% END %]
  [% IF model.designations %]<tr><th>Designations</th><td>[% FOREACH designation = model.designations %][% designation.description | html %]&nbsp;[% END %]</td></tr>[% END %]
 
