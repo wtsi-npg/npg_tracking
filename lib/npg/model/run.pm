@@ -33,7 +33,7 @@ our $VERSION = '0';
 Readonly::Scalar our $DEFAULT_SUMMARY_DAYS        => 14;
 Readonly::Scalar my  $FOLDER_GLOB_INDEX           => 2;
 Readonly::Scalar my  $PADDING                     => 4;
-Readonly::Hash   our %TEAMS => ('5' => 'joint', '4' => 'RAD', '1' => 'A', '2' => 'B', '3' => 'C',);
+Readonly::Hash   our %TEAMS => ('1' => 'A', '2' => 'RAD');
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a([qw(instrument instrument_format)]);

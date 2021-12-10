@@ -6,7 +6,7 @@
 <div class="lfloat roundborder">
 <div class="page_title">New run by team
 <select id="team" name="team">
-<option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="RAD">RAD</option><option value="joint" selected="selected">joint</option>
+<option value="A">A</option><option value="RAD" selected="selected">RAD</option>
 </select></div>
 
  <table>
