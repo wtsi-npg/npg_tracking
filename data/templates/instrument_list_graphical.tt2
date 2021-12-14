@@ -3,6 +3,29 @@
            index=0
 %]
 
+[% labs = ['Sulston', 'Ogilvie'] -%]
+<div class="npgmenu2">
+  <font class="npgmenu1-highlighted">Instrument location:</font>
+  [% IF model.current_instruments_lab == "All" -%]
+    <font class="npgmenu2-highlighted">
+  [% END -%]
+    <a href=".">All labs</a>
+  [% IF model.current_instruments_lab == "All" -%]
+    </font>
+  [% END %]
+[% FOREACH lab IN labs -%]
+  |
+  [% IF model.current_instruments_lab == lab -%]
+    <font class="npgmenu2-highlighted">
+  [% END -%]
+      <a href=".?filter_lab=[% lab %]">[% lab %]</a>
+  [% IF model.current_instruments_lab == lab -%]
+    </font>
+  [% END %]
+[% END -%]
+  <div><img src="[% SCRIPT_NAME %]/instrument/lab_key.png" alt="lab key" title="lab key" /></div>
+</div>
+
 [%- reqd_order_of_inst_type = ['MiSeq','NovaSeq','HiSeqX','HiSeq 4000','HiSeq','cBot'] -%]
 <ul class="instrument_by_type">
 [% FOREACH ins IN reqd_order_of_inst_type ;

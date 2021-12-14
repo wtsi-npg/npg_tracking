@@ -11,6 +11,7 @@
   staging_dir:
   latest_contact: '2010-05-11 13:34:04'
   percent_complete: 40
+  lab: Ogilvie
 - external_name: eas15
   id_instrument: 3
   id_instrument_format: 4
@@ -22,6 +23,7 @@
   mirroring_host:
   staging_dir:
   latest_contact:
+  lab: Ogilvie
 - external_name: eas37
   id_instrument: 4
   id_instrument_format: 4
@@ -30,6 +32,7 @@
   name: IL2
   serial: ''
   latest_contact:
+  lab: Ogilvie
 - external_name: eas92
   id_instrument: 6
   id_instrument_format: 4
@@ -38,6 +41,7 @@
   name: IL3
   serial: ''
   latest_contact:
+  lab: Ogilvie
 - external_name: ''
   id_instrument: 7
   id_instrument_format: 4
@@ -46,6 +50,7 @@
   name: IL4
   serial: ''
   latest_contact:
+  lab: Ogilvie
 - external_name: ''
   id_instrument: 8
   id_instrument_format: 4
@@ -54,6 +59,7 @@
   name: IL5
   serial: ''
   latest_contact:
+  lab: Ogilvie
 - external_name: ''
   id_instrument: 9
   id_instrument_format: 4
@@ -62,6 +68,7 @@
   name: IL6
   serial: ''
   latest_contact:
+  lab: Ogilvie
 - external_name: ''
   id_instrument: 10
   id_instrument_format: 4
@@ -70,6 +77,7 @@
   name: IL7
   serial: ''
   latest_contact:
+  lab: Ogilvie
 - external_name: ''
   id_instrument: 11
   id_instrument_format: 4
@@ -78,6 +86,7 @@
   name: IL8
   serial: ''
   latest_contact:
+  lab: Ogilvie
 - external_name: ''
   id_instrument: 12
   id_instrument_format: 4
@@ -86,6 +95,7 @@
   name: IL9
   serial: ''
   latest_contact:
+  lab: Sulston
 - external_name: ''
   id_instrument: 13
   id_instrument_format: 4
@@ -94,6 +104,7 @@
   name: IL10
   serial: ''
   latest_contact:
+  lab: Sulston
 - external_name: ''
   id_instrument: 14
   id_instrument_format: 4
@@ -102,6 +113,7 @@
   name: IL11
   serial: ''
   latest_contact:
+  lab: Sulston
 - external_name: EAS267
   id_instrument: 31
   id_instrument_format: 4
@@ -113,6 +125,7 @@
   mirroring_host: sf-1-1-08
   staging_dir: /staging/IL28/incoming
   latest_contact:
+  lab:
 - external_name: ''
   id_instrument: 34
   id_instrument_format: 4
@@ -124,6 +137,7 @@
   mirroring_host: sf-1-1-01
   staging_dir: /staging/IL29/incoming
   latest_contact:
+  lab: Sulston
 - external_name: ''
   id_instrument: 35
   id_instrument_format: 10
@@ -135,6 +149,7 @@
   mirroring_host: ''
   staging_dir: ''
   latest_contact:
+  lab: Sulston
 - external_name: ''
   id_instrument: 36
   id_instrument_format: 10
@@ -146,6 +161,7 @@
   mirroring_host: ''
   staging_dir: ''
   latest_contact:
+  lab:
 - id_instrument: 64
   name: HS3
   id_instrument_format: 10
@@ -157,6 +173,7 @@
   mirroring_host: ''
   staging_dir: ''
   latest_contact:
+  lab: Sulston
 - id_instrument: 90
   name: MS1
   id_instrument_format: 11
@@ -168,6 +185,7 @@
   mirroring_host: ''
   staging_dir: ''
   latest_contact:
+  lab: Ogilvie
 - id_instrument: 91
   name: HX1
   id_instrument_format: 12
@@ -179,6 +197,7 @@
   mirroring_host: ''
   staging_dir: ''
   latest_contact:
+  lab: Sulston
 - id_instrument: 92
   name: HX2
   id_instrument_format: 12
@@ -190,3 +209,4 @@
   mirroring_host: ''
   staging_dir: ''
   latest_contact:
+  lab: Ogilvie

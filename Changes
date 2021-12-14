@@ -3,6 +3,8 @@ LIST OF CHANGES
  - Removed old team names from run add template
  - Made NovaSeq instruments skip wash statuses after completing a run, this
    does not affect statuses set manually through the UI.
+ - Added lab location to instrument pages. Instruments are also now 
+   colour-coded on the graphical instrument list page.
 
 release 92.2.0
  - Added singularity definition for the tracking web server.

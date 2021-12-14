@@ -276,6 +276,10 @@ ul.instrument_by_type > li {
   width: 920px;
 }
 
+.instrument_lab_list {
+  list-style: none;
+}
+
 div#spinner{
  width:100px;
  height:100px;
@@ -498,6 +502,11 @@ p.npgmenu2 {
   margin-bottom:5px;
 }
 
+div.npgmenu2 {
+  margin-left:20px;
+  margin-top:5px;
+  margin-bottom:5px;
+}
 /* end of styles for lower-level menues */
 
 /* Sanger-less main menu */

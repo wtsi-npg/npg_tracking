@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 21;
 use Test::Exception;
 use t::util;
 use t::request;
@@ -102,6 +102,20 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 {
   my $str = t::request->new({
            REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/lab_key.png',
+           username       => 'public',
+           util           => $util,
+          });
+  like($str, qr{image/png.*PNG}smx, 'laboratory location key graphical read');
+  my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'lab_key.png'));
+  $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
+  my $rendered = GD::Image->new($str);
+  ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'laboratory location legend image');
+}
+
+{
+  my $str = t::request->new({
+           REQUEST_METHOD => 'GET',
            PATH_INFO      => '/instrument/64.png',
            username       => 'public',
            util           => $util,
@@ -111,7 +125,38 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
   my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'HS3.png'));
   $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
   my $rendered = GD::Image->new($str);
-  ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle HiSeq image'); 
+  ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle HiSeq image in Sulston'); 
+}
+
+{
+  my $str = t::request->new({
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/36.png',
+           username       => 'public',
+           util           => $util,
+          });
+
+  like($str, qr{image/png.*PNG}smx, 'HiSeq instrument graphical read');
+  my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'HS2.png'));
+  $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
+  my $rendered = GD::Image->new($str);
+  ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle HiSeq image in no lab'); 
+}
+
+{
+  my $str = t::request->new({
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/90.png',
+           username       => 'public',
+           util           => $util,
+          });
+
+  like($str, qr{image/png.*PNG}smx, 'HiSeq instrument graphical read');
+  my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'MS1.png'));
+  $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
+  my $rendered = GD::Image->new($str);
+  $rendered->_file('/home/runner/test.png');
+  ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle MiSeq image in Ogilvie'); 
 }
 
 {
