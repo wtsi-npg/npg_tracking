@@ -33,7 +33,8 @@ our $VERSION = '0';
 Readonly::Scalar our $DEFAULT_SUMMARY_DAYS        => 14;
 Readonly::Scalar my  $FOLDER_GLOB_INDEX           => 2;
 Readonly::Scalar my  $PADDING                     => 4;
-Readonly::Hash   our %TEAMS => ('1' => 'A', '2' => 'RAD');
+Readonly::Hash   our %TEAMS => ('5' => 'joint', '4' => 'RAD', '1' => 'A', '2' => 'B', '3' => 'C',);
+Readonly::Array  our @ACTIVE_TEAMS => qw[A RAD];
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a([qw(instrument instrument_format)]);
@@ -904,6 +905,11 @@ sub potentially_stuck_runs {
   return $self->{potentially_stuck_runs};
 }
 
+sub active_teams {
+  my $self = shift;
+  return @ACTIVE_TEAMS;
+}
+
 sub teams {
   my $self = shift;
   return map {$TEAMS{$_}} (sort {$a <=> $b} keys %TEAMS);
@@ -1157,7 +1163,9 @@ return runs which are potentially stuck due to the length of time at their curre
 
 provides a short cut method to the run status dict object providing the description for the current run status
 
-=head2 teams ordered list of teams
+=head2 active_teams list of teams currently active
+
+=head2 teams ordered list of all teams
 
 =head2 validate_team
 
@@ -1251,7 +1259,7 @@ $instruments is undefined
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2006-2012,2013,2014,2015,2016,2017,2020 Genome Research Ltd.
+Copyright (C) 2006-2012,2013,2014,2015,2016,2017,2020, 2021 Genome Research Ltd.
 
 This file is part of NPG.
 

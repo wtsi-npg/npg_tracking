@@ -455,7 +455,7 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a ne
 
 {
   my $m = npg::model::run->new({util => $util,});
-  is(join(q[ ], $m->teams), 'A RAD', 'ordered list of teams');
+  is(join(q[ ], $m->teams), 'A B C RAD joint', 'ordered list of teams');
   ok(!$m->validate_team(), 'team validation failed if no arg supplied');
   ok(!$m->validate_team('dodo'), 'team validation failed for non-existing team');
   ok($m->validate_team('B'), 'team B validation succeeds');
