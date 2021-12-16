@@ -477,6 +477,11 @@ sub status_to_change_to {
     }
     my $next_auto = $STATUS_CHANGE_AUTO{$current};
 
+    if ($self->instrument_format->model eq 'NovaSeq' &&
+        $next_auto eq 'wash required'){
+        $next_auto = 'wash performed';
+    }
+
     if ( $self->is_idle() &&
        ($current eq 'planned repair' || $current eq 'planned service')) {
       return $next_auto;
