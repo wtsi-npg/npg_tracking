@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - Made NovaSeq instruments skip 'wash required' status.
+ 
 release 92.2.0
  - Added singularity definition for the tracking web server.
  - Tracking web pages:

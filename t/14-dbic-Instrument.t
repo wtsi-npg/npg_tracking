@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 54;
+use Test::More tests => 58;
 use Test::Deep;
 use Test::Exception;
 use DateTime;
@@ -234,6 +234,23 @@ my $test_instrument_id = 6;
     is($i->name, $name.q[2], 'new instrument name is correct');
     is( $i->instrument_format->model, 'cBot', 'is cBot instrument');
     is( $i->current_instrument_status, undef, 'no initial instrument status');
+}
+
+{
+    my $i;
+    lives_ok {$i = $schema->resultset('Instrument')->create({
+        id_instrument        => 103,
+        id_instrument_format => 1,
+        name                 => 'NV',
+        external_name        => 'external',
+        serial               => '12345',
+        iscurrent            => 1,
+    })
+    } 'no error creating a new NovaSeq instrument';
+    is($i->instrument_format->model, 'NovaSeq', 'is NovaSeq instrument');
+    is($i->current_instrument_status, 'wash required', 'initial instrument status is set');
+    $i->update_instrument_status('up', 'pipeline');
+    is($i->status_to_change_to('run complete'), 'wash performed', 'NovaSeq skips skips wash required status');
 }
 
 1;
