@@ -1,37 +1,8 @@
 ALTER TABLE `instrument`
-    ADD COLUMN `lab` VARCHAR(255) DEFAULT NULL;
+    ADD COLUMN `lab` VARCHAR(10) DEFAULT NULL;
+
+UPDATE `instrument` SET `lab`='Ogilvie' WHERE iscurrent=1 AND `name` NOT LIKE 'cBot%';
 
 UPDATE `instrument`
     SET `lab`='Sulston'
     WHERE iscurrent=1 AND name IN ('NV21', 'NV24', 'NV25', 'NV26', 'NV27', 'NV28');
-
-UPDATE `instrument`
-    SET `lab`='Ogilvie'
-    WHERE iscurrent=1 AND name IN (
-        'NV1',
-        'NV2',
-        'NV4',
-        'NV5',
-        'NV6',
-        'NV7',
-        'NV10',
-        'NV11',
-        'NV12',
-        'NV13',
-        'NV14',
-        'NV15',
-        'NV16',
-        'NV17',
-        'NV18',
-        'NV19',
-        'NV20',
-        'NV22',
-        'NV23',
-        'MS3',
-        'MS5', 
-        'MS7',
-        'MS8',
-        'HX5',
-        'HX9',
-        'HF2',
-        'HS40');
