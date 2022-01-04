@@ -3,27 +3,31 @@
            index=0
 %]
 
-[% labs = ['Sulston', 'Ogilvie'] -%]
+[% labs = view.lab_names;
+   labs.unshift('All');
+   lab_selection = model.current_instruments_lab;
+   separator = '|';
+-%]
 <div class="npgmenu2">
   <font class="npgmenu1-highlighted">Instrument location:</font>
-  [% IF model.current_instruments_lab == "All" -%]
+[% FOREACH lab IN labs;
+     lab_label = lab;
+     lab_link  = '.';
+     IF lab_label == 'All';
+       lab_label = 'All labs';
+     ELSE;
+       separator;
+       lab_link = '.?filter_lab=' _ lab;
+     END;
+ -%]
+  [% IF lab == lab_selection -%]
     <font class="npgmenu2-highlighted">
   [% END -%]
-    <a href=".">All labs</a>
-  [% IF model.current_instruments_lab == "All" -%]
-    </font>
-  [% END %]
-[% FOREACH lab IN labs -%]
-  |
-  [% IF model.current_instruments_lab == lab -%]
-    <font class="npgmenu2-highlighted">
-  [% END -%]
-      <a href=".?filter_lab=[% lab %]">[% lab %]</a>
-  [% IF model.current_instruments_lab == lab -%]
+      <a href="[% lab_link %]">[% lab_label %]</a>
+  [% IF lab == lab_selection -%]
     </font>
   [% END %]
 [% END -%]
-  <div><img src="[% SCRIPT_NAME %]/instrument/lab_key.png" alt="lab key" title="lab key" /></div>
 </div>
 
 [%- reqd_order_of_inst_type = ['MiSeq','NovaSeq','HiSeqX','HiSeq 4000','HiSeq','cBot'] -%]
@@ -34,9 +38,9 @@
 
   <li>Instrument Type: [% ins %]
       <ul class="instruments inline">
-  	 <li><img style="width:110px;height:110px" src="[% SCRIPT_NAME %]/instrument/key.png" alt="status key" title="status key" /></li>
-	 [% fslash = '/';FOREACH instrument IN instruments -%]
-	    [% status = instrument.current_run.current_run_status.run_status_dict.description;
+      <li><img src="[% SCRIPT_NAME %]/instrument/key.png" alt="status key" title="status key" /></li>
+  [% fslash = '/';FOREACH instrument IN instruments -%]
+    [% status = instrument.current_run.current_run_status.run_status_dict.description;
                runs = [];
                IF status;
                  IF instrument.is_two_slot_instrument;
@@ -53,7 +57,7 @@
                  END;
                END;
             %]
-	    <li id="instrument[% instrument.id_instrument %]"><a href="[% SCRIPT_NAME %]/instrument/[% instrument.name %]"> <img style="background:no-repeat url('/gfx/spinner.gif');" src="[% SCRIPT_NAME %]/instrument/[% instrument.name %].png" alt="[% instrument.name %]" title="[% run_info=''; IF status; run_info = runs.0.name _ ' ' _ status; END; PROCESS instr_full_info %]" [% IF status %] usemap="#instmap[% instrument.name %]"[% END %] /></a>
+      <li id="instrument[% instrument.id_instrument %]"><a href="[% SCRIPT_NAME %]/instrument/[% instrument.name %]"> <img style="background:no-repeat url('/gfx/spinner.gif');" src="[% SCRIPT_NAME %]/instrument/[% instrument.name %].png" alt="[% instrument.name %]" title="[% run_info=''; IF status; run_info = runs.0.name _ ' ' _ status; END; PROCESS instr_full_info %]" [% IF status %] usemap="#instmap[% instrument.name %]"[% END %] /></a>
 [%- IF status %]
 <map id="instmap[% instrument.name %]" name="instmap[% instrument.name %]">
 [%- count = 0;
