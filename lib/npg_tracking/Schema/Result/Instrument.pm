@@ -479,7 +479,7 @@ sub status_to_change_to {
 
     if ($self->instrument_format->model eq 'NovaSeq' &&
         $next_auto eq 'wash required'){
-        $next_auto = 'wash performed';
+        $next_auto = 'up';
     }
 
     if ( $self->is_idle() &&

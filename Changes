@@ -1,6 +1,7 @@
 LIST OF CHANGES
 
- - Made NovaSeq instruments skip 'wash required' status.
+ - Made NovaSeq instruments skip wash statuses after completing a run, this
+   does not affect statuses set manually through the UI.
  
 release 92.2.0
  - Added singularity definition for the tracking web server.
