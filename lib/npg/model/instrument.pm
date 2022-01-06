@@ -610,16 +610,6 @@ instrument_by_instrument_comp
 
   my $arCurrentInstruments = $oInstrument->current_instruments();
 
-=head2 last_wash_instrument_status - npg::model::instrument_status (or undef) corresponding to the last 'wash performed' state
-
-  my $oInstrumentStatus = $oInstrument->last_wash_instrument_status();
-
-=head2 check_wash_status - boolean whether this instrument needs washing
-
-Has a side-effect of updating an instrument's current instrument_status to 'wash required'
-
- $bNeedAWash = $oInstrument->check_wash_status();
-
 =head2 runs - arrayref of npg::model::runs for this instrument
 
   my $arRuns = $oInstrument->runs();
