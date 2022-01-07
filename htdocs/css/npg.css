@@ -276,10 +276,6 @@ ul.instrument_by_type > li {
   width: 920px;
 }
 
-.instrument_lab_list {
-  list-style: none;
-}
-
 div#spinner{
  width:100px;
  height:100px;
