@@ -34,10 +34,10 @@ find({'wanted' => \&_copy_ref_rep, 'follow' => 0, 'no_chdir' => 1}, $gbs_repos);
 $repos = $new;
 $gbs_repos = catdir($repos, q[gbs_plex]);
 
-{
-  local $ENV{http_proxy} = 'wibble';
-  use_ok('npg_tracking::data::gbs_plex::find');
+use_ok('npg_tracking::data::gbs_plex::find');
+use_ok('npg_tracking::data::gbs_plex');
 
+{
   my $fb;
   lives_ok { $fb = Moose::Meta::Class->create_anon_class(
          roles => [qw/npg_tracking::data::gbs_plex::find/])
@@ -83,15 +83,13 @@ $gbs_repos = catdir($repos, q[gbs_plex]);
   is( $fb->gbs_plex_info_path, undef, q{gbs_plex_info_path is undefined});
 }
 
-
-
-local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/repos1];
-use_ok('npg_tracking::data::gbs_plex');
-
-{ # There is no gbs plex name or files for this run
-  my %init = (id_run => 7754, position     => 1, tag_index => 2);
+{
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/samplesheet/samplesheet_7753.csv';
+  # There is no gbs plex name or files for this run
+  my %init = (id_run => 7751, position => 2, tag_index => 1);
   my $test =npg_tracking::data::gbs_plex->new( repository => $repos, %init,
-    lims => st::api::lims->new(%init, batch_id => 16467));
+    lims => st::api::lims->new(%init));
   lives_and { is $test->gbs_plex_path, undef } 'gbs_plex_path is undefined';
   is($test->gbs_plex_name, undef, 'gbs_plex_name is undefined');
 

@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 13;
 use Test::Exception;
 use Moose::Meta::Class;
 use File::Spec::Functions qw(catdir);
@@ -36,10 +36,10 @@ find({'wanted' => \&_copy_ref_rep, 'follow' => 0, 'no_chdir' => 1}, $ref_repos);
 $repos = $new;
 $pp_repos = catdir($repos, q[primer_panel]);
 
-{
-  local $ENV{http_proxy} = 'wibble';
-  use_ok('npg_tracking::data::primer_panel::find');
+use_ok('npg_tracking::data::primer_panel::find');
+use_ok('npg_tracking::data::primer_panel');
 
+{
   my $fb;
   lives_ok { $fb = Moose::Meta::Class->create_anon_class(
          roles => [qw/npg_tracking::data::primer_panel::find/])
@@ -49,11 +49,9 @@ $pp_repos = catdir($repos, q[primer_panel]);
                         strain            => 'MN908947.3',                       
                       }) }
   'no error creating an object without id_run and position accessors';
-
 }
 
 {
-  use_ok('npg_tracking::data::primer_panel');
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} = q[t/data/samplesheet/samplesheet_33990.csv];
   my $fb = npg_tracking::data::primer_panel->new ( repository => $repos, 
                                                    id_run => 33990,
@@ -91,7 +89,6 @@ $pp_repos = catdir($repos, q[primer_panel]);
 }
 
 {
-  use_ok('npg_tracking::data::primer_panel');
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} = q[t/data/samplesheet/samplesheet_27483.csv];
   my $test = npg_tracking::data::primer_panel->new ( repository => $repos,
                                                      id_run => 27483,
@@ -102,13 +99,15 @@ $pp_repos = catdir($repos, q[primer_panel]);
 }
 
 {
-  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/repos1];
-  my %init = (id_run => 7754, position => 1, tag_index => 2);
+  local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =
+    q[t/data/samplesheet/samplesheet_7753.csv];
+  my %init = (id_run => 7753, position => 2, tag_index => 1);
   my $test =npg_tracking::data::primer_panel->new(
     repository => $repos, %init,
-    lims => st::api::lims->new(%init, batch_id => 16467));
-  lives_and { is $test->primer_panel_path, undef } 'primer_panel_path is undefined - 7754_1';
-  is($test->primer_panel_name, undef, 'primer_panel_name is undefined - 7754_1');
+    lims => st::api::lims->new(%init));
+  lives_and { is $test->primer_panel_path, undef }
+    'primer_panel_path is undefined';
+  is($test->primer_panel_name, undef, 'primer_panel_name is undefined');
 }
 
 1;

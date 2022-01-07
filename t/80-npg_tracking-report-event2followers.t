@@ -12,8 +12,6 @@ use Perl6::Slurp;
 
 use t::dbic_util;
 
-local $ENV{'http_proxy'} = 'http://npgwibble.com'; #invalid proxy
-
 my $logfile = join q[/], tempdir(CLEANUP => 1), 'logfile';
 note "Log file: $logfile";
 Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
@@ -58,7 +56,7 @@ my $expected = [
 ];
 
 subtest 'run status qc review pending event' => sub {
-  plan tests => 34;
+  plan tests => 32;
 
   my $qc_review_pending_status_desc = 'qc review pending';
   my $qc_review_pending_status = $schema->resultset('RunStatus')->create({
@@ -77,8 +75,6 @@ subtest 'run status qc review pending event' => sub {
   ok ($e->dry_run, 'dry_run mode');
   is ($e->template_name(), 'run_status2followers', 'template name');
   is ($e->report_short(), 'Run 21915 was assigned status "qc review pending"', 'short report text');
-  throws_ok {$e->lims} qr/XML driver type is not allowed/, 'XML driver is not allowed';
-  throws_ok { $e->emit() } qr/XML driver type is not allowed/, 'XML driver is not allowed';
 
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} =  't/data/report/samplesheet_21915.csv';
   $e = npg_tracking::report::event2followers->new(dry_run           => 1,

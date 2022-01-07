@@ -108,7 +108,7 @@ foreach my $file (@files){
 #Mus_musculus (GRCm38 + ensembl_75_transcriptome)  Transcriptome Analysis
 my %init = (id_run => 12071, position => 4, tag_index => 2);
 my $m_test = npg_tracking::data::transcriptome->new (%init,
-  lims => st::api::lims->new(%init, batch_id => 25539),
+  lims => st::api::lims->new(%init, batch_id => 25539, driver_type => 'xml'),
   repository => $tmp_repos, aligner => 'tophat2');
 isa_ok($m_test, 'npg_tracking::data::transcriptome');
 lives_and { is basename($m_test->gtf_file), 'ensembl_75_transcriptome-GRCm38.gtf' } 'file ensembl_75_transcriptome-GRCm38.gtf found';
@@ -116,7 +116,7 @@ lives_and { is basename($m_test->gtf_file), 'ensembl_75_transcriptome-GRCm38.gtf
 #Homo_sapiens (1000Genomes_hs37d5)
 %init = (id_run => 12161, position => 1, tag_index => 1);
 my $test = npg_tracking::data::transcriptome->new (%init,
-  lims => st::api::lims->new(%init, batch_id => 25715),
+  lims => st::api::lims->new(%init, batch_id => 25715, driver_type => 'xml'),
   repository => $tmp_repos);
 
 lives_and { is $test->transcriptome_index_path,undef } "ok - returns undef for transcriptome_index_path if no transcriptome version in reference name - Homo_sapiens (1000Genomes_hs37d5)";
@@ -136,7 +136,7 @@ $fh->close;
 
 %init = (id_run => 12161, position => 1, tag_index => 1);
 my $test2 = npg_tracking::data::transcriptome->new (%init,
-  lims => st::api::lims->new(%init, batch_id => 25715),
+  lims => st::api::lims->new(%init, batch_id => 25715, driver_type => 'xml'),
   repository => $tmp_repos);
 lives_and { is $test2->transcriptome_index_path, undef } "no path for bowtie2 indices found (reference genome missing in sample and study xml)";
 
@@ -156,7 +156,7 @@ $ver_fh->close;
 
 %init = (id_run => 12161, position => 1, tag_index => 1);
 my $test3 = npg_tracking::data::transcriptome->new (%init,
-  lims => st::api::lims->new(%init, batch_id => 25715),
+  lims => st::api::lims->new(%init, batch_id => 25715, driver_type => 'xml'),
   repository => $tmp_repos);
 lives_and { is basename($test3->gtf_file), 'ensembl_74_transcriptome-1000Genomes_hs37d5.gtf' } 'file ensembl_74_transcriptome-1000Genomes_hs37d5.gtf found where reference = Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)';
 
@@ -174,7 +174,7 @@ lives_and { is $test3->transcriptome_index_name, $prefix_path_74 } "Correctly fo
 
 my $test4 = npg_tracking::data::transcriptome->new (
   %init, repository => $tmp_repos,
-  lims => st::api::lims->new(%init, batch_id => 25715),
+  lims => st::api::lims->new(%init, batch_id => 25715, driver_type => 'xml'),
   aligner => 'tophat2', analysis => 'salmon');
 lives_and { is $test4->transcriptome_index_path, catfile($tmp_repos, q[transcriptomes/Homo_sapiens/ensembl_74_transcriptome/1000Genomes_hs37d5/salmon])
 } "correct path for salmon indices found";
@@ -184,7 +184,7 @@ lives_and { is $test4->transcriptome_index_name, undef
 
 my $test5 = npg_tracking::data::transcriptome->new (
   %init, repository => $tmp_repos,
-  lims => st::api::lims->new(%init, batch_id => 25715)
+  lims => st::api::lims->new(%init, batch_id => 25715, driver_type => 'xml')
 );
 lives_and { is basename($test5->fasta_file), '1000Genomes_hs37d5.fa'
 } "transcriptome fasta file 1000Genomes_hs37d5.fa found where reference = Homo_sapiens (1000Genomes_hs37d5 + ensembl_74_transcriptome)";
@@ -206,7 +206,7 @@ $cpy_fh->close;
 %init = (id_run => 12071, position => 4, tag_index => 2);
 my $test6 = npg_tracking::data::transcriptome->new (
   %init, repository => $tmp_repos,
-  lims => st::api::lims->new(%init, batch_id => 25539));
+  lims => st::api::lims->new(%init, batch_id => 25539, driver_type => 'xml'));
 throws_ok { $test6->gtf_file } qr/More than one gtf file/,
 'ok - croaks when more than 1 gtf file found - Mus_musculus (GRCm38 + ensembl_84_transcriptome)';
 
