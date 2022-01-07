@@ -135,38 +135,40 @@ sub _obtain_numerical_name_part {
 }
 
 sub current_instruments_by_format {
-  my ( $self ) = @_;
+  my $self = shift;
 
   my $cgi = $self->util()->cgi();
   my $filter_lab = $cgi->param('filter_lab');
 
   if ( ! $self->{current_instruments_by_format} ) {
-    my $href = {};
-    foreach my $format ( @{ $self->current_instrument_formats() } ) {
-      my $model = $format->model();
-      $model = $model eq q{HK} ? q{GA-II} : $model;
-      if ($filter_lab) {
-        my @ordered = map  { $_->[0] }
-                      sort { $a->[1] <=> $b->[1] }
-                      map  { [ $_, $self->_obtain_numerical_name_part( $_->name() ) ] } @{ $format->current_instruments_from_lab($filter_lab) };
-
-        if ( scalar @ordered ) {
-          $href->{$model} = \@ordered;
-        }
-      }
-      else {
-        my @ordered = map  { $_->[0] }
-                      sort { $a->[1] <=> $b->[1] }
-                      map  { [ $_, $self->_obtain_numerical_name_part( $_->name() ) ] } @{ $format->current_instruments() };
-        if ( scalar @ordered ) {
-          $href->{$model} = \@ordered;
-        }
-      }
-    }
-    $self->{current_instruments_by_format} = $href;
+    $self->{current_instruments_by_format} =
+      $self->_map_current_instruments_by_format($filter_lab);
   }
 
   return $self->{current_instruments_by_format};
+}
+
+sub _map_current_instruments_by_format {
+  my ($self, $filter_lab) = @_;
+
+  my $href = {};
+  foreach my $format ( @{ $self->current_instrument_formats() } ) {
+    my $model = $format->model();
+    $model = $model eq q{HK} ? q{GA-II} : $model;
+    my $instruments = $filter_lab ?
+      $format->current_instruments_from_lab($filter_lab) :
+      $format->current_instruments();
+    if (@{$instruments}) {
+      my @ordered =
+        map  { $_->[0] }
+        sort { $a->[1] <=> $b->[1] }
+        map  { [ $_, $self->_obtain_numerical_name_part( $_->name() ) ] }
+        @{$instruments};
+      $href->{$model} = \@ordered;
+    }
+  }
+
+  return $href;
 }
 
 sub manufacturer_name {
