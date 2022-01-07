@@ -241,7 +241,7 @@ my $inst = npg::model::instrument->new({
           actual_cycle_count   => 0,
           priority             => 0,
           id_user              => $util->requestor->id_user(),
-                                  team                 => 'B',
+          team                 => 'A',
          });
   $run->create();
 

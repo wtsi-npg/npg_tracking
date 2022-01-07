@@ -15,7 +15,7 @@
    IF !known_team;
      known_team = requestor.is_member_of('r+d') ? 'RAD' : 'A';
    END %]
-[% FOREACH team=model.active_teams %]<option value="[% team %]"[% IF known_team == team %] selected="selected"[% END %]>[% team %]</option>[% END %]
+[% FOREACH team=model.teams %]<option value="[% team %]"[% IF known_team == team %] selected="selected"[% END %]>[% team %]</option>[% END %]
 </select></div>
 
  <table>
