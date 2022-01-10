@@ -25,7 +25,7 @@
    <td>[% PROCESS current_runs_info %]</td>
    <td>[% instrument.current_instrument_status.instrument_status_dict.description %]</td>
    <td>[% instrument.current_instrument_status.comment %]</td>
-   <td>[% instrument.lab %]
+   <td>[% instrument.lab %]</td>
   </tr>
 [% END %]
  </tbody>

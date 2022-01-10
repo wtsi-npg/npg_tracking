@@ -8,7 +8,7 @@
    lab_selection = model.current_instruments_lab;
    separator = '|';
 -%]
-<div class="npgmenu2">
+<p class="npgmenu2">
   <font class="npgmenu1-highlighted">Instrument location:</font>
 [% FOREACH lab IN labs;
      lab_label = lab;
@@ -28,7 +28,7 @@
     </font>
   [% END %]
 [% END -%]
-</div>
+</p>
 
 [%- reqd_order_of_inst_type = ['MiSeq','NovaSeq','HiSeqX','HiSeq 4000','HiSeq','cBot'] -%]
 <ul class="instrument_by_type">
