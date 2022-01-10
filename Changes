@@ -1,5 +1,13 @@
 LIST OF CHANGES
 
+ - Switched the default st::api::lims driver from xml to samplesheet.
+   Fixed tests, which implicitly relied on the xml driver being the default.
+   Some tests used the default driver type. For those tests either test
+   samplesheets were generated and used as a source of LIMS data or the
+   driver type was explicitly set as 'xml'.
+ - In samplesheet generation (npg::samplesheet) explicitly set the default
+   st::api::lims driver to xml. This driver was previously used implicitly.
+
 release 92.3.1
  - A WHILE loop in run_list.tt2 iterates over a number of pages (40 runs
    per page) in a visual listing of runs. The number of pages is now
