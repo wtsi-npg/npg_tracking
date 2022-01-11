@@ -232,9 +232,10 @@ initialise an object based on model being provided
 
   my $arCurrentInstruments = $oInstrumentFormat->current_instruments();
 
-=head2 current_instruments_from_lab - Arrayref of npg::model::instruments with iscurrent=1 and lab=lab
+=head2 current_instruments_from_lab - Arrayref of npg::model::instruments with iscurrent=1 and from a lab
 
-  my $arCurrentInstruments = $oInstrumentFormat->current_instruments_from_lab($lab);
+  my $lab = "Sulston"
+  my $arCurrentSulstonInstruments = $oInstrumentFormat->current_instruments_from_lab($lab);
 
 =head2 instrument_formats - Arrayref of all instrument_formats (for all manufacturers)
 

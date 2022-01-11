@@ -627,9 +627,10 @@ instrument_by_instrument_comp
 
   my $arCurrentInstruments = $oInstrument->current_instruments();
 
-=head2 current_instruments_from_lab - arrayref of all npg::model::instruments with iscurrent=1 and lab=lab
+=head2 current_instruments_from_lab - arrayref of all npg::model::instruments with iscurrent=1 from a lab
 
-  my $arCurrentInstruments = $oInstrument->current_instruments_from_lab($lab);
+  my $lab = 'Sulston';
+  my $arCurrentSulstonInstruments = $oInstrument->current_instruments_from_lab($lab);
 
 =head2 last_wash_instrument_status - npg::model::instrument_status (or undef) corresponding to the last 'wash performed' state
 
