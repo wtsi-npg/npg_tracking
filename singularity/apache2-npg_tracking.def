@@ -218,9 +218,9 @@ ln -s /srv/httpd/var/lock/ /var/lock/apache2-npg_tracking
 mkdir /srv/data
 
 ln -s /srv/data/config.ini /software/npg/data/config.ini
+ln -s /srv/data/npg_tracking /software/npg/data/npg_tracking
 ln -s /srv/data/key.pem /software/npg/wtsi_local/key.pem
 ln -s /srv/data/server.pem /software/npg/wtsi_local/server.pem
-
 
 # Cleanup
 rm -rf /opt/*
