@@ -98,11 +98,16 @@ sub current_instruments_from_lab {
 
   if(!$self->{'current_instruments'}) {
     my $pkg   = 'npg::model::instrument';
-    my $query = qq(SELECT @{[join q(, ), $pkg->fields()]}
-                   FROM   @{[$pkg->table()]}
-                   WHERE  id_instrument_format = ?
-                   AND    iscurrent            = 1
-                   AND    lab                  = '@{[$filter_lab]}');
+
+    my $query = sprintf q{SELECT %s
+                          FROM %s
+                          WHERE id_instrument_format = ?
+                          AND iscurrent              = 1
+                          AND lab                    = '%s'},
+                        join(q(, ), $pkg->fields()),
+                        $pkg->table(),
+                        $filter_lab;
+
     $self->{'current_instruments'} =  $self->gen_getarray($pkg,
                                                           $query,
                                                           $self->id_instrument_format());

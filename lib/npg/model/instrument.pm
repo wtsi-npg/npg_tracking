@@ -131,11 +131,15 @@ sub current_instruments_from_lab {
   my $lab = shift;
 
   my $pkg = ref $self;
-  my $query = qq(SELECT @{[join q(,), $self->fields()]}
-                 FROM @{[$self->table()]}
-                 WHERE iscurrent = 1
-                 AND lab = '@{[$lab]}'
-                 ORDER BY id_instrument);
+
+  my $query = sprintf q{SELECT %s 
+                        FROM %s 
+                        WHERE iscurrent = 1 
+                        AND lab = '%s' 
+                        ORDER BY id_instrument},
+                      join(q{,}, $self->fields()),
+                      $self->table(),
+                      $lab;
 
   $self->{current_instruments} = $self->gen_getarray($pkg, $query);
   $self->{current_instruments_lab} = $lab;
