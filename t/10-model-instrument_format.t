@@ -103,7 +103,7 @@ our $INS = q{npg::model::instrument};
 }
 
 {
-  my $map2names = sub {
+  sub map2names {
     my $map = shift;
     foreach my $format (keys %{$map}) {
       my @names = map {$_->name} @{$map->{$format}};
@@ -121,7 +121,7 @@ our $INS = q{npg::model::instrument};
   }; 
   my $model = npg::model::instrument_format->new({util => $util});
   my $instruments_by_format =
-    $map2names->($model->_map_current_instruments_by_format());
+    map2names($model->_map_current_instruments_by_format());
   is_deeply ($instruments_by_format, $expected,
     'map of all instruments by format');
 
@@ -132,7 +132,7 @@ our $INS = q{npg::model::instrument};
   };
   $model = npg::model::instrument_format->new({util => $util});
   $instruments_by_format =
-    $map2names->($model->_map_current_instruments_by_format('Sulston'));
+    map2names($model->_map_current_instruments_by_format('Sulston'));
   is_deeply ($instruments_by_format, $expected,
     'map of instruments in the Sulston by format');  
 
@@ -143,13 +143,13 @@ our $INS = q{npg::model::instrument};
   };
   $model = npg::model::instrument_format->new({util => $util});
   $instruments_by_format =
-    $map2names->($model->_map_current_instruments_by_format('Ogilvie'));
+    map2names($model->_map_current_instruments_by_format('Ogilvie'));
   is_deeply ($instruments_by_format, $expected,
     'map of instruments in the Ogilvie by format');
 
   $model = npg::model::instrument_format->new({util => $util});
   $instruments_by_format =
-    $map2names->($model->_map_current_instruments_by_format('Unknown'));
+    map2names($model->_map_current_instruments_by_format('Unknown'));
   is_deeply ($instruments_by_format, {}, 'empty map for an unknown lab');
 }
 
