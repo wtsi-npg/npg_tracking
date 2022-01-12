@@ -13,6 +13,12 @@ usage:
       apache2-npg_tracking.sif \
       apache2-npg_tracking
 
+    config/folder should include:
+      config.ini application and db configuration
+      npg_tracking mapping of staging areas to webservers
+      key.pem & server.pem private key and ssl certificate
+
+
     stopping the instance:
     $ singularity instance stop apache2-npg_tracking
 
