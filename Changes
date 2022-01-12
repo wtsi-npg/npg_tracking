@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+ - Removed colocation functionality in npg_tracking views. Colocation checks
+   will not make sense once npg_tracking runs in containers in head nodes.
+   Staging areas are not local to head node/reachable from within the
+   container.
  - Removed old team names from run add template
  - Made NovaSeq instruments skip wash statuses after completing a run, this
    does not affect statuses set manually through the UI.
