@@ -117,6 +117,12 @@ __PACKAGE__->table("instrument");
   extra: {unsigned => 1}
   is_nullable: 1
 
+=head2 lab
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 10
+
 =cut
 
 __PACKAGE__->add_columns(
@@ -159,6 +165,8 @@ __PACKAGE__->add_columns(
   },
   "percent_complete",
   { data_type => "tinyint", extra => { unsigned => 1 }, is_nullable => 1 },
+  "lab",
+  { data_type => "varchar", is_nullable => 1, size => 10 },
 );
 
 =head1 PRIMARY KEY
@@ -282,8 +290,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-04-22 11:28:19
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:E5Nz+9XPZcWU7mIsrGXHXw
+# Created by DBIx::Class::Schema::Loader v0.07049 @ 2022-01-10 16:30:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:7AZ9QOLc9VZulP3ExZljWQ
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08

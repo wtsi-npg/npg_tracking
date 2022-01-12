@@ -125,6 +125,7 @@ CREATE TABLE `instrument` (
   `staging_dir` varchar(128) DEFAULT NULL,
   `latest_contact` datetime DEFAULT NULL,
   `percent_complete` tinyint(3) unsigned DEFAULT NULL,
+  `lab` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id_instrument`,`name`),
   UNIQUE KEY `name` (`name`),
   KEY `id_if` (`id_instrument_format`),

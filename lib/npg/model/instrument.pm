@@ -73,7 +73,8 @@ sub fields {
             mirroring_host
             staging_dir
             latest_contact
-            percent_complete);
+            percent_complete
+            lab);
 }
 
 sub init {
@@ -121,7 +122,27 @@ sub current_instruments {
                    ORDER BY id_instrument);
     $self->{current_instruments} = $self->gen_getarray($pkg, $query);
   }
+  $self->{current_instruments_lab} = 'All';
+  return $self->{current_instruments};
+}
 
+sub current_instruments_from_lab {
+  my $self = shift;
+  my $lab = shift;
+
+  my $pkg = ref $self;
+
+  my $query = sprintf q{SELECT %s 
+                        FROM %s 
+                        WHERE iscurrent = 1 
+                        AND lab = '%s' 
+                        ORDER BY id_instrument},
+                      join(q{,}, $self->fields()),
+                      $self->table(),
+                      $lab;
+
+  $self->{current_instruments} = $self->gen_getarray($pkg, $query);
+  $self->{current_instruments_lab} = $lab;
   return $self->{current_instruments};
 }
 
@@ -609,6 +630,21 @@ instrument_by_instrument_comp
 =head2 current_instruments - arrayref of all npg::model::instruments with iscurrent=1
 
   my $arCurrentInstruments = $oInstrument->current_instruments();
+
+=head2 current_instruments_from_lab - arrayref of all npg::model::instruments with iscurrent=1 from a lab
+
+  my $lab = 'Sulston';
+  my $arCurrentSulstonInstruments = $oInstrument->current_instruments_from_lab($lab);
+
+=head2 last_wash_instrument_status - npg::model::instrument_status (or undef) corresponding to the last 'wash performed' state
+
+  my $oInstrumentStatus = $oInstrument->last_wash_instrument_status();
+
+=head2 check_wash_status - boolean whether this instrument needs washing
+
+Has a side-effect of updating an instrument's current instrument_status to 'wash required'
+
+ $bNeedAWash = $oInstrument->check_wash_status();
 
 =head2 runs - arrayref of npg::model::runs for this instrument
 

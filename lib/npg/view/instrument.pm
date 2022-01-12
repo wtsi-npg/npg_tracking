@@ -62,6 +62,8 @@ Readonly::Scalar our $COLOUR_LIGHT_ORANGE => [(252,174,42)];
 Readonly::Scalar our $COLOUR_BLUE   => [(61,171,255)];
 Readonly::Scalar our $COLOUR_YELLOW => [(246,229,171)];
 Readonly::Scalar our $COLOUR_PINK   => [(255,192,203)];
+Readonly::Scalar our $COLOUR_LAB1   => [(215, 221, 220)];
+Readonly::Scalar our $COLOUR_LAB2   => [(212, 242, 217)];
 Readonly::Scalar our $PROGRESS_BAR_BG   => [(220,220,220)];
 Readonly::Scalar our $PROGRESS_BAR_FG   => [(225,225,60)];
 
@@ -70,6 +72,9 @@ Readonly::Scalar our $KEY_OFFSET_X     => 4;
 Readonly::Scalar our $KEY_BLOCK_WIDTH  => 20;
 Readonly::Scalar our $KEY_BLOCK_HEIGHT => 10;
 Readonly::Scalar our $KEY_FONTSIZE     => 24;
+
+Readonly::Hash my %LAB_COLOURS => ('Sulston' => $COLOUR_LAB2,
+                                   'Ogilvie' => $COLOUR_LAB1,);
 
 sub new {
   my ($class, @args) = @_;
@@ -87,10 +92,18 @@ sub new {
   return $self;
 }
 
+sub lab_names {
+  my @labs = sort keys %LAB_COLOURS;
+  return @labs;
+}
+
 sub list {
   my $self  = shift;
   my $util  = $self->util();
   my $cgi   = $util->cgi();
+
+  my $filter_lab = $cgi->param('filter_lab');
+
   my $model = $self->model();
   my $id_instrument_format = $cgi->param('id_instrument_format');
 
@@ -101,6 +114,8 @@ sub list {
                      });
     $model->{instruments} = $instrument_format->instruments();
 
+  } elsif ($filter_lab) {
+    $model->{instruments} = $model->current_instruments_from_lab($filter_lab);
   } else {
     $model->{instruments} = $model->current_instruments();
   }
@@ -172,24 +187,31 @@ sub read { ## no critic (ProhibitBuiltinHomonyms)
 sub read_key_png {
   my $self = shift;
 
-  my $im       = GD::Image->new($IMAGE_DIMENSIONS,$IMAGE_DIMENSIONS);
+  my $im = GD::Image->new($IMAGE_DIMENSIONS, $IMAGE_DIMENSIONS);
   my $colours = $self->_allocate_colours($im);
-  my $font     = gdSmallFont;
+  # assign colours for instrument statuses
+  my @legend = (
+    {'busy'          => $colours->{'green'}  },
+    {'idle'          => $colours->{'blue'}   },
+    {'wash required' => $colours->{'yellow'} },
+    {'plnd. repair'  => $colours->{'pink'}   },
+    {'down4repair'   => $colours->{'red'}    },
+    {'plnd. service' => $colours->{'lorange'}},
+    {'down4service'  => $colours->{'orange'} },
+  );
+  # add legend items for labs
+  for my $lab ($self->lab_names()) {
+    push @legend, {$lab => $colours->{$lab}};
+  }
 
-  Readonly::Scalar my $TYPES => [
-                                 {'busy'          => $colours->{'green'},  },
-                                 {'idle'          => $colours->{'blue'},   },
-                                 {'wash required' => $colours->{'yellow'}, },
-                                 {'plnd. repair'  => $colours->{'pink'},   },
-                                 {'down4repair'   => $colours->{'red'},    },
-                                 {'plnd. service' => $colours->{'lorange'},},
-                                 {'down4service'  => $colours->{'orange'},    },
-                                ];
-  my $y = $KEY_OFFSET_Y;
-  for my $type (@{$TYPES}) {
-    my ($k, $v) = %{$type};
-    $im->filledRectangle($KEY_OFFSET_X, $y, $KEY_BLOCK_WIDTH, $y+$KEY_BLOCK_HEIGHT, $v);
-    $im->string($font, $KEY_OFFSET_X*2+$KEY_BLOCK_WIDTH, $y, $k, $colours->{'black'});
+  my $font = gdSmallFont;
+  my $y = 0;
+  for my $item (@legend) {
+    my ($name, $colour) = %{$item};
+    $im->filledRectangle($KEY_OFFSET_X, $y, $KEY_BLOCK_WIDTH,
+                         $y+$KEY_BLOCK_HEIGHT, $colour);
+    $im->string($font, $KEY_OFFSET_X*2+$KEY_BLOCK_WIDTH, $y,
+                $name, $colours->{'black'});
     $y += $KEY_OFFSET_Y;
   }
 
@@ -211,6 +233,9 @@ sub _allocate_colours {
   $colours->{'pink'}   = $im->colorAllocate(@{$COLOUR_PINK});
   $colours->{'pbar_bg'}   = $im->colorAllocate(@{$PROGRESS_BAR_BG});
   $colours->{'pbar_fg'}   = $im->colorAllocate(@{$PROGRESS_BAR_FG});
+  for my $lab (keys %LAB_COLOURS) {
+    $colours->{$lab} = $im->colorAllocate(@{$LAB_COLOURS{$lab}});
+  }
   return $colours;
 }
 
@@ -380,12 +405,16 @@ sub read_png { ## no critic (Subroutines::ProhibitExcessComplexity)
   my $src    = (-e $im_fn)
                 ? GD::Image->newFromPng($im_fn)
                 : GD::Image->new($IMAGE_DIMENSIONS,$IMAGE_DIMENSIONS);
-  $src->colorAllocate(@{$COLOUR_WHITE});
 
   my $width  = $is2slot ? 2*$IMAGE_DIMENSIONS+2 : $IMAGE_DIMENSIONS;
   my $height = $IMAGE_DIMENSIONS;
   my $im     = GD::Image->new($width, $height);
+
+  my $lab = $self->model->lab || q{};
+  my $background_colour = $LAB_COLOURS{$lab} || $COLOUR_WHITE;
+  $im->colorAllocate(@{$background_colour});
   my $colours = $self->_allocate_colours($im);
+
   my $font   = gdSmallFont;
 
   # copy the image of the instrument to our image, align to the centre
@@ -540,6 +569,9 @@ npg::view::instrument - view handling for instruments
 =head2 authorised - handling for permissions for certain action/group members
 
 =head2 new - handling for creation by instrument-name
+
+=head2 lab_names - returns a sorted list of locations (labs) for the
+       instruments. These are labs for which visualisation is been implemented.
 
 =head2 list - handling for a specific instrument_format or instruments
 
