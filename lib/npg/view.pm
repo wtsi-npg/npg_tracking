@@ -3,7 +3,6 @@ package npg::view;
 use strict;
 use warnings;
 use POSIX qw(strftime);
-use URI::URL;
 use Carp;
 use Try::Tiny;
 
@@ -288,8 +287,6 @@ residing on staging areas.
 =item Carp
 
 =item Try::Tiny
-
-=item URI::URL
 
 =item strict
 

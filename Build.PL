@@ -210,7 +210,6 @@ my $builder = $class->new(
                 'Template'                        => '2.19',
                 'Try::Tiny'                       => 0,
                 'URI::Escape'                     => 0,
-                'URI::URL'                        => 0,
                 'utf8'                            => 0,
                 'warnings'                        => '1.05',
                 'XML::LibXML'                     => '1.70',
