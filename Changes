@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - new link in sigularity image to pass npg_tracking configuration file
  - Removed ability of the tracking server to provide directory views of
    visible to the server /nfs partitions since nfs staging servers are
    no longer used.
