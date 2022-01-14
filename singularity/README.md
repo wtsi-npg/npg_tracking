@@ -33,8 +33,8 @@ If `DEV_BUILD` is set, the `devel` branches will be used
 ## Running
 
 You should place the server SSL certificate `server.pem` and key `key.pem`
-and the application configuration file `config.ini` in the `config` directory
-specified below.
+and the application configuration files `config.ini` and `npg_tracking` in the
+`config` directory specified below.
 
 - starting the instance :
   ```

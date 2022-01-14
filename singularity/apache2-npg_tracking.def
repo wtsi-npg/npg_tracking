@@ -13,6 +13,12 @@ usage:
       apache2-npg_tracking.sif \
       apache2-npg_tracking
 
+    config/folder should include:
+      config.ini application and db configuration
+      npg_tracking mapping of staging areas to webservers
+      key.pem & server.pem private key and ssl certificate
+
+
     stopping the instance:
     $ singularity instance stop apache2-npg_tracking
 
@@ -69,7 +75,7 @@ EOF
 
 # Install Apache2 and required deps for npg_tracking
 apt-get update
-apt-get full-upgrade -y
+apt-get upgrade -y
 apt-get install -y --no-install-recommends \
     apache2 \
     libapache2-mod-perl2 \
@@ -83,6 +89,8 @@ apt-get install -y --no-install-recommends \
     libhtml-tidy-perl \
     build-essential \
     libnumber-compare-perl
+apt-get autoclean
+apt-get autoremove -y
 
 # Build Perl dependencies
 
@@ -98,7 +106,7 @@ eval "$(perl -Mlocal::lib=${DEPLOY_DIR})"
 
 git clone -b master https://github.com/wtsi-npg/perl-dnap-utilities.git
 cd perl-dnap-utilities
-perl Build.PL 
+perl Build.PL
 ./Build # Run the build script to set the version
 cd ..
 export PERL5LIB=${PERL5LIB}:${SRC_DIR}/perl-dnap-utilities/blib/lib
@@ -158,31 +166,31 @@ rm /etc/apache2-npg_tracking/sites-enabled/*
 rm /etc/apache2-npg_tracking/mods-enabled/*
 
 bash -c '
-modules=("alias.load" 
-         "authn_core.load" 
-         "authz_core.load" 
-         "authz_host.load" 
-         "authz_user.load" 
-         "autoindex.load" 
-         "cgid.load" 
-         "deflate.load" 
-         "dir.load" 
-         "env.load" 
-         "headers.load" 
-         "mime.load" 
+modules=("alias.load"
+         "authn_core.load"
+         "authz_core.load"
+         "authz_host.load"
+         "authz_user.load"
+         "autoindex.load"
+         "cgid.load"
+         "deflate.load"
+         "dir.load"
+         "env.load"
+         "headers.load"
+         "mime.load"
          "mpm_event.load"
-         "perl.load" 
-         "rewrite.load" 
-         "setenvif.load" 
-         "socache_shmcb.load" 
-         "ssl.load" 
-         "autoindex.conf" 
-         "cgid.conf" 
-         "deflate.conf" 
-         "dir.conf" 
-         "mime.conf" 
-         "mpm_event.conf" 
-         "setenvif.conf" 
+         "perl.load"
+         "rewrite.load"
+         "setenvif.load"
+         "socache_shmcb.load"
+         "ssl.load"
+         "autoindex.conf"
+         "cgid.conf"
+         "deflate.conf"
+         "dir.conf"
+         "mime.conf"
+         "mpm_event.conf"
+         "setenvif.conf"
          "ssl.conf")
 
 for mod in "${modules[@]}"
@@ -216,9 +224,9 @@ ln -s /srv/httpd/var/lock/ /var/lock/apache2-npg_tracking
 mkdir /srv/data
 
 ln -s /srv/data/config.ini /software/npg/data/config.ini
+ln -s /srv/data/npg_tracking /software/npg/data/npg_tracking
 ln -s /srv/data/key.pem /software/npg/wtsi_local/key.pem
 ln -s /srv/data/server.pem /software/npg/wtsi_local/server.pem
-
 
 # Cleanup
 rm -rf /opt/*
