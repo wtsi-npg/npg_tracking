@@ -9,6 +9,7 @@ LIST OF CHANGES
    Staging areas are not local to head node/reachable from within the
    container.
  - Removed old team names from run add template
+ - Removed unused daemon runners for staging daemons and the Jenkins server.
  - Made NovaSeq instruments skip wash statuses after completing a run, this
    does not affect statuses set manually through the UI.
  - Added lab location to instrument pages. Instruments are also now 
