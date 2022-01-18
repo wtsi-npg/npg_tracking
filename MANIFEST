@@ -193,9 +193,6 @@ lib/npg_testing/db.pm
 lib/npg_testing/html.pm
 lib/npg_testing/intweb.pm
 lib/npg_tracking/daemon.pm
-lib/npg_tracking/daemon/jenkins.pm
-lib/npg_tracking/daemon/staging.pm
-lib/npg_tracking/daemon/staging_local.pm
 lib/npg_tracking/data/bait.pm
 lib/npg_tracking/data/bait/find.pm
 lib/npg_tracking/data/common.pm
@@ -380,8 +377,6 @@ t/14-dbic-RunStatus.t
 t/14-dbic-RunStatusDict.t
 t/14-dbic-Tag.t
 t/14-dbic-User.t
-t/16-npg_tracking-daemon-jenkins.t
-t/16-npg_tracking-daemon-staging.t
 t/16-npg_tracking-daemon.t
 t/20-model-run_and_instrument_status.t
 t/20-view-administration.t
@@ -403,7 +398,6 @@ t/20-view-user.t
 t/20-view-user2usergroup.t
 t/20-view-usergroup.t
 t/20-view.t
-t/200-bin-npg_daemon_control.t
 t/25-template-actions.t
 t/30-api-request.t
 t/30-api-util.t
@@ -713,7 +707,9 @@ t/data/rendered/actions_annotator.html
 t/data/rendered/actions_engineer.html
 t/data/rendered/actions_loader.html
 t/data/rendered/actions_public.html
+t/data/rendered/images/HS2.png
 t/data/rendered/images/HS3.png
+t/data/rendered/images/MS1.png
 t/data/rendered/images/key.png
 t/data/rendered/instrument.html
 t/data/rendered/instrument/11.html

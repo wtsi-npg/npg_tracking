@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 20;
 use Test::Exception;
 use t::util;
 use t::request;
@@ -17,6 +17,9 @@ my $util = t::util->new({
 
 my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
 
+
+is (join(q[ ], npg::view::instrument->lab_names()), 'Ogilvie Sulston',
+  'sorted lab names list');
 {
   my $str = t::request->new({
            REQUEST_METHOD => 'GET',
@@ -111,7 +114,38 @@ my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
   my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'HS3.png'));
   $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
   my $rendered = GD::Image->new($str);
-  ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle HiSeq image'); 
+  ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle HiSeq image in Sulston'); 
+}
+
+{
+  my $str = t::request->new({
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/36.png',
+           username       => 'public',
+           util           => $util,
+          });
+
+  like($str, qr{image/png.*PNG}smx, 'HiSeq instrument graphical read');
+  my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'HS2.png'));
+  $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
+  my $rendered = GD::Image->new($str);
+  ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle HiSeq image in no lab'); 
+}
+
+{
+  my $str = t::request->new({
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/90.png',
+           username       => 'public',
+           util           => $util,
+          });
+  
+  like($str, qr{image/png.*PNG}smx, 'MiSeq instrument graphical read');
+  my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'MS1.png'));
+  $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
+  my $rendered = GD::Image->new($str);
+  ok (!($rendered->compare($expected) & GD_CMP_IMAGE),
+    'idle MiSeq R&D image in Ogilvie'); 
 }
 
 {
@@ -129,7 +163,8 @@ $util->requestor('joe_loader');
 my $inst = npg::model::instrument->new({
           util => $util,
           name => 'IL8',
-               });
+});
+
 {
   #########
   # set up a cancelled run
@@ -241,7 +276,7 @@ my $inst = npg::model::instrument->new({
           actual_cycle_count   => 0,
           priority             => 0,
           id_user              => $util->requestor->id_user(),
-                                  team                 => 'B',
+          team                 => 'A',
          });
   $run->create();
 

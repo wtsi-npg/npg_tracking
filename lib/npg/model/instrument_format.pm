@@ -92,6 +92,30 @@ sub current_instruments {
   return $self->{'current_instruments'};
 }
 
+sub current_instruments_from_lab {
+  my $self  = shift;
+  my $filter_lab = shift;
+
+  if(!$self->{'current_instruments'}) {
+    my $pkg   = 'npg::model::instrument';
+
+    my $query = sprintf q{SELECT %s
+                          FROM %s
+                          WHERE id_instrument_format = ?
+                          AND iscurrent              = 1
+                          AND lab                    = '%s'},
+                        join(q(, ), $pkg->fields()),
+                        $pkg->table(),
+                        $filter_lab;
+
+    $self->{'current_instruments'} =  $self->gen_getarray($pkg,
+                                                          $query,
+                                                          $self->id_instrument_format());
+  }
+
+  return $self->{'current_instruments'};
+}
+
 sub current_instruments_count {
   my $self  = shift;
   return scalar @{$self->current_instruments()};
@@ -116,24 +140,40 @@ sub _obtain_numerical_name_part {
 }
 
 sub current_instruments_by_format {
-  my ( $self ) = @_;
+  my $self = shift;
+
+  my $cgi = $self->util()->cgi();
+  my $filter_lab = $cgi->param('filter_lab');
 
   if ( ! $self->{current_instruments_by_format} ) {
-    my $href = {};
-    foreach my $format ( @{ $self->current_instrument_formats() } ) {
-      my $model = $format->model();
-      $model = $model eq q{HK} ? q{GA-II} : $model;
-      my @ordered = map  { $_->[0] }
-                    sort { $a->[1] <=> $b->[1] }
-                    map  { [ $_, $self->_obtain_numerical_name_part( $_->name() ) ] } @{ $format->current_instruments() };
-      if ( scalar @ordered ) {
-        $href->{$model} = \@ordered;
-      }
-    }
-    $self->{current_instruments_by_format} = $href;
+    $self->{current_instruments_by_format} =
+      $self->_map_current_instruments_by_format($filter_lab);
   }
 
   return $self->{current_instruments_by_format};
+}
+
+sub _map_current_instruments_by_format {
+  my ($self, $filter_lab) = @_;
+
+  my $href = {};
+  foreach my $format ( @{ $self->current_instrument_formats() } ) {
+    my $model = $format->model();
+    $model = $model eq q{HK} ? q{GA-II} : $model;
+    my $instruments = $filter_lab ?
+      $format->current_instruments_from_lab($filter_lab) :
+      $format->current_instruments();
+    if (@{$instruments}) {
+      my @ordered =
+        map  { $_->[0] }
+        sort { $a->[1] <=> $b->[1] }
+        map  { [ $_, $self->_obtain_numerical_name_part( $_->name() ) ] }
+        @{$instruments};
+      $href->{$model} = \@ordered;
+    }
+  }
+
+  return $href;
 }
 
 sub manufacturer_name {
@@ -196,6 +236,11 @@ initialise an object based on model being provided
 =head2 current_instruments - Arrayref of npg::model::instruments with iscurrent=1
 
   my $arCurrentInstruments = $oInstrumentFormat->current_instruments();
+
+=head2 current_instruments_from_lab - Arrayref of npg::model::instruments with iscurrent=1 and from a lab
+
+  my $lab = "Sulston"
+  my $arCurrentSulstonInstruments = $oInstrumentFormat->current_instruments_from_lab($lab);
 
 =head2 instrument_formats - Arrayref of all instrument_formats (for all manufacturers)
 

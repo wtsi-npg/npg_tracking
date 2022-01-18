@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 54;
+use Test::More tests => 58;
 use Test::Deep;
 use Test::Exception;
 use DateTime;
@@ -234,6 +234,36 @@ my $test_instrument_id = 6;
     is($i->name, $name.q[2], 'new instrument name is correct');
     is( $i->instrument_format->model, 'cBot', 'is cBot instrument');
     is( $i->current_instrument_status, undef, 'no initial instrument status');
+}
+
+{
+    my $hs = $schema->resultset('Instrument')->create({
+        id_instrument        => 103,
+        id_instrument_format => 10,
+        name                 => 'HS',
+        external_name        => 'external',
+        serial               => '12345',
+        iscurrent            => 1,
+    });
+    is($hs->instrument_format->model, 'HiSeq', 'is HiSeq instrument');
+    $hs->update_instrument_status('up', 'pipeline');
+    $hs->autochange_status_if_needed('run complete', 'pipeline');
+    is($hs->current_instrument_status, 'wash required', 'HiSeq status automatically changes
+                                                         from up to wash_required');
+
+    my $nv = $schema->resultset('Instrument')->create({
+        id_instrument        => 104,
+        id_instrument_format => 1,
+        name                 => 'NV',
+        external_name        => 'external',
+        serial               => '12346',
+        iscurrent            => 1,
+    });
+    is($nv->instrument_format->model, 'NovaSeq', 'is NovaSeq instrument');
+    $nv->update_instrument_status('up', 'pipeline');
+    $nv->autochange_status_if_needed('run complete', 'pipeline');
+    is($nv->current_instrument_status, 'up', 'NovaSeq status remains at up when automatically
+                                              changed from up');
 }
 
 1;

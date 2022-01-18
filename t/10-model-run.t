@@ -248,7 +248,7 @@ subtest 'listing runs' => sub {
 				    id_instrument        => 3,
 				    expected_cycle_count => 35,
 				    priority             => 1,
-				    team                 => 'joint',
+				    team                 => 'A',
 				    id_user              => $util->requestor->id_user(),
 				   });
   lives_ok { $model->create(); } 'Unpaired run created without supplying batch_id explicitly';
@@ -259,7 +259,7 @@ subtest 'listing runs' => sub {
 				    id_instrument        => 3,
 				    expected_cycle_count => 35,
 				    priority             => 1,
-				    team                 => 'joint',
+				    team                 => 'A',
 				    id_user              => $util->requestor->id_user(),
                                     batch_id             => undef,
 				});
@@ -272,7 +272,7 @@ subtest 'listing runs' => sub {
 				    id_instrument        => 3,
 				    expected_cycle_count => 35,
 				    priority             => 1,
-				    team                 => 'joint',
+				    team                 => 'A',
 				    id_user              => $util->requestor->id_user(),
 				    batch_id             => q{},
 				});
@@ -287,7 +287,7 @@ subtest 'listing runs' => sub {
 				    id_instrument        => 3,
 				    expected_cycle_count => 35,
 				    priority             => 1,
-				    team                 => 'joint',
+				    team                 => 'A',
 				    id_user              => $util->requestor->id_user(),
 				   });
   lives_ok { $model->create(); } 'created run ok - not paired';
@@ -314,7 +314,7 @@ subtest 'listing runs' => sub {
            id_instrument        => 3,
            expected_cycle_count => 35,
            priority             => 1,
-           team                 => 'B',
+           team                 => 'RAD',
            id_user              => $util->requestor->id_user(),
           });
   $run2->create();
@@ -341,7 +341,7 @@ subtest 'listing runs' => sub {
            id_instrument        => 3,
            expected_cycle_count => 35,
            priority             => 1,
-           team                 => 'C',
+           team                 => 'RAD',
            id_user              => $util->requestor->id_user(),
           });
   $run3->create();
@@ -455,10 +455,10 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a ne
 
 {
   my $m = npg::model::run->new({util => $util,});
-  is(join(q[ ], $m->teams), 'A B C RAD joint', 'ordered list of teams');
+  is(join(q[ ], $m->teams), 'A RAD', 'ordered list of teams');
   ok(!$m->validate_team(), 'team validation failed if no arg supplied');
   ok(!$m->validate_team('dodo'), 'team validation failed for non-existing team');
-  ok($m->validate_team('B'), 'team B validation succeeds');
+  ok($m->validate_team('A'), 'team A validation succeeds');
   ok(!$m->is_dev(), 'id_dev is false for a model without a defined run');
 
   $m = npg::model::run->new({util => $util, id_run => 9950,});

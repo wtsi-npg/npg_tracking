@@ -33,7 +33,7 @@ our $VERSION = '0';
 Readonly::Scalar our $DEFAULT_SUMMARY_DAYS        => 14;
 Readonly::Scalar my  $FOLDER_GLOB_INDEX           => 2;
 Readonly::Scalar my  $PADDING                     => 4;
-Readonly::Hash   our %TEAMS => ('5' => 'joint', '4' => 'RAD', '1' => 'A', '2' => 'B', '3' => 'C',);
+Readonly::Hash   our %TEAMS => ('2' => 'RAD', '1' => 'A',);
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a([qw(instrument instrument_format)]);
@@ -1251,7 +1251,7 @@ $instruments is undefined
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2006-2012,2013,2014,2015,2016,2017,2020 Genome Research Ltd.
+Copyright (C) 2006-2012,2013,2014,2015,2016,2017,2020, 2021 Genome Research Ltd.
 
 This file is part of NPG.
 

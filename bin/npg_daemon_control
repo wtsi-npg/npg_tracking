@@ -25,7 +25,6 @@ my $opts = {};
 my @classes = Module::Pluggable::Object->new(
                              require     => 0,
                              search_path => $DAEMON_NAMESPACE,
-                             except      => $DAEMON_NAMESPACE . q[::staging_local],
                                             )->plugins;
 
 my @options = qw(help dry-run);

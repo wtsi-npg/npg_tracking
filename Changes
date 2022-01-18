@@ -1,5 +1,21 @@
 LIST OF CHANGES
 
+release 92.3.0
+ - New link in sigularity image to pass npg_tracking configuration file.
+ - Removed ability of the tracking server to provide directory views of
+   visible to the server /nfs partitions since nfs staging servers are
+   no longer used.
+ - Removed co-location functionality in npg_tracking views. Co-location checks
+   will not make sense once npg_tracking runs in containers in head nodes.
+   Staging areas are not local to head node/reachable from within the
+   container.
+ - Removed old team names from run add template.
+ - Removed unused daemon runners for staging daemons and the Jenkins server.
+ - Made NovaSeq instruments skip wash statuses after completing a run, this
+   does not affect statuses set manually through the UI.
+ - Added lab location to instrument pages. Instruments are also now 
+   colour-coded on the graphical instrument list page.
+
 release 92.2.0
  - Added singularity definition for the tracking web server.
  - Tracking web pages:

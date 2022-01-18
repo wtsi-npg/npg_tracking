@@ -3,7 +3,6 @@ package npg::view;
 use strict;
 use warnings;
 use POSIX qw(strftime);
-use URI::URL;
 use Carp;
 use Try::Tiny;
 
@@ -164,15 +163,6 @@ sub staging_urls {
   my $tracking_key = 'npg_tracking';
 
   my $surl = $config->{$tracking_key};
-  $surl ||= q{};
-  # If the host that has access to a staging area and
-  # this host (the host this request went to) are located
-  # in the same cluster, this host is likely to have
-  # access to that staging area itself. Therefore, a
-  # separate url is not needed. It is important that the
-  # development servers serve all urls themselves and
-  # do not delegate some urls to production servers.
-  $surl = ($surl && $self->_colocated($surl)) ? q{} : $surl;
   if (!$surl) {
     delete $config->{$tracking_key};
   }
@@ -198,25 +188,6 @@ sub staging_urls {
 sub lims_batches_url {
   my $self = shift;
   return $self->util->lims_url . '/batches/';
-}
-
-sub _colocated {
-  my ($self, $staging_url) = @_;
-  my $request_cluster = $self->_cluster(
-    $self->util()->cgi()->url(-full => 1));
-  my $staging_cluster = $self->_cluster($staging_url);
-  return $request_cluster && $staging_cluster &&
-         ($request_cluster eq $staging_cluster);
-}
-
-sub _cluster {
-  my ($self, $url) = @_;
-  # Expect url to be host.cluster.sanger.ac.uk,
-  # but do not fail if it's something else.
-  # Return cluster name or the original url/IP address.
-  $url = URI::URL->new($url)->host();
-  $url=~ s/\A[^\.]+\.//smx;
-  return $url;
 }
 
 1;
@@ -316,8 +287,6 @@ residing on staging areas.
 =item Carp
 
 =item Try::Tiny
-
-=item URI::URL
 
 =item strict
 
