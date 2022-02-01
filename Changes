@@ -1,5 +1,12 @@
 LIST OF CHANGES
 
+release 92.3.1
+ - A WHILE loop in run_list.tt2 iterates over a number of pages (40 runs
+   per page) in a visual listing of runs. The number of pages is now
+   (January 2022) sufficiently high to trigger an error in Template Toolkit,
+   which, by default, allows 1000 iterations only. The value of
+   $Template::Directive::WHILE_MAX variable is, therefore, set to 2000.
+
 release 92.3.0
  - New link in sigularity image to pass npg_tracking configuration file.
  - Removed ability of the tracking server to provide directory views of
