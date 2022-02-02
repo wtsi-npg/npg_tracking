@@ -5,6 +5,23 @@ use warnings;
 use npg::controller;
 use npg::util;
 
+BEGIN {
+  use Template::Directive;
+  ######
+  # A WHILE loop in run_list.tt2 iterates over a number of pages (40 runs
+  # per page) in a visual listing of runs. The number of pages is now
+  # (January 2022) sufficiently high to trigger an error in Template Toolkit,
+  # which, by default, allows 1000 iterations only. The directive below sets
+  # the maximum the number of loop iterations to a higher value.
+  #
+  # This has to be done before Clearpress had a chance to load the Template
+  # Toolkit library.
+  #
+
+  ## no critic (ValuesAndExpressions::ProhibitMagicNumbers)
+  $Template::Directive::WHILE_MAX=2000;
+}
+
 npg::controller->handler(npg::util->new());
 
 0;
