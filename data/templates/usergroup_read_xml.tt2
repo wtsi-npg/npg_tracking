@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<usergroup id_usergroup="[% model.id_usergroup %]" groupname="[% model.groupname %]">
- <users>[% FOREACH user = model.users %]
-  <user id_user="[% user.id_user %]" username="[% user.username %]"/>[% END %]
- </users>
-</usergroup>

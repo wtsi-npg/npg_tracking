@@ -20,7 +20,8 @@ our $VERSION = '0';
 
 Readonly::Array  my @COMMON_REPORT_TYPES  => qw/subscribers/;
 Readonly::Scalar my $WH_SCHEMA_CLASS_NAME => q[WTSI::DNAP::Warehouse::Schema];
-Readonly::Scalar my $TEMPLATE_DIR         => q[data/npg_tracking_email/templates];
+Readonly::Scalar my $TEMPLATE_DIR         =>
+                                          q[data/npg_tracking_email/templates];
 
 has 'dry_run' => (
   isa       => 'Bool',
@@ -92,7 +93,8 @@ sub process {
       next;
     }
     if (!$entity->can('information')) {
-      $self->info('Do not know how to report ' . $entity->resultsource()->name());
+      $self->info('Do not know how to report ' .
+        $entity->resultsource()->name());
       next;
     }
 
@@ -126,13 +128,6 @@ sub _report_types {
   if ($entity->can('event_report_types')) {
     push @report_types, $entity->event_report_types();
   }
-  my $lims_type = 'lims';
-  my %types = map { $_ => 1 } @report_types;
-  my $lims = delete $types{$lims_type};
-  @report_types = sort keys %types;
-  if ($lims) {
-    unshift @report_types, $lims_type;
-  }
   return @report_types;
 }
 
@@ -142,19 +137,19 @@ sub _get_report_obj {
   my $class = 'npg_tracking::report::event2' . $report_type;
   load_class($class);
   my $ref = {
-      event_entity => $entity,
-      dry_run      => $self->dry_run() ? 1 : 0
+    event_entity      => $entity,
+    dry_run           => $self->dry_run() ? 1 : 0,
+    template_dir_path => $self->_template_dir_path()
   };
-  if ($report_type ne 'lims') {
-    $ref->{'template_dir_path'} = $self->_template_dir_path();
-    if ($self->schema_mlwh()) {
-      $ref->{'schema_mlwh'}  = $self->schema_mlwh();
-    }
+  if ($self->schema_mlwh()) {
+    $ref->{'schema_mlwh'}  = $self->schema_mlwh();
   }
+
   return $class->new($ref);
 }
 
 1;
+
 __END__
 
 =head1 NAME
@@ -176,27 +171,31 @@ npg_tracking::report::events
 
 =head2 dry_run
 
- A boolean flag. Set it to avoid sending out reports or marking events as reported.
+ A boolean flag. Set it to avoid sending out reports or marking events
+ as reported.
 
 =head2 schema_npg
 
- DBIx handle for NPG tracking database, see npg_tracking::Schema. This attribute
- will be built if not set.
+ DBIx handle for NPG tracking database, see npg_tracking::Schema.
+ This attribute will be built if not set.
 
 =head2 schema_mlwh
 
- DBIx handle for a warehouse containing LIMs data, see WTSI::DNAP::Warehouse::Schema.
- This attribute will be built if not set. However, to avoid circular dependencies between
- different NPG packages, if the WTSI::DNAP::Warehouse::Schema module cannot be loaded,
- this attribute will be assigned an undefined value and its value will not be propagated
+ DBIx handle for a warehouse containing LIMs data, see
+ C<WTSI::DNAP::Warehouse::Schema>. This attribute will be built if not set.
+ 
+ To avoid circular dependencies between different NPG packages, if the
+ C<WTSI::DNAP::Warehouse::Schema> class cannot be loaded, this attribute is
+ assigned an undefined value and its value will not be propagated
  to individual reporter modules.
 
 =head2 process
 
- Retrieves unprocessed events from the database, attempts to process them and mark them as
- reported. Is tolerant of errors in processing individual events. Is ignorant about where
- errors in reporting occured and whether some of the reports for an event that is not marked
- as reported wer eactually sent.
+ Retrieves unprocessed events from the database, attempts to process them
+ and mark them as reported. It is tolerant to errors in processing individual
+ events. It is ignorant about where errors in reporting occured and whether
+ some of the reports for an event that is not marked as reported were actually
+ sent.
 
 =head1 DIAGNOSTICS
 
@@ -240,7 +239,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017 GRL
+Copyright (C) 2017,2021 Genome Research Ltd.
 
 This file is part of NPG.
 

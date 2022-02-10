@@ -33,7 +33,7 @@ our $VERSION = '0';
 Readonly::Scalar our $DEFAULT_SUMMARY_DAYS        => 14;
 Readonly::Scalar my  $FOLDER_GLOB_INDEX           => 2;
 Readonly::Scalar my  $PADDING                     => 4;
-Readonly::Hash   our %TEAMS => ('5' => 'joint', '4' => 'RAD', '1' => 'A', '2' => 'B', '3' => 'C',);
+Readonly::Hash   our %TEAMS => ('2' => 'RAD', '1' => 'A',);
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a([qw(instrument instrument_format)]);
@@ -400,104 +400,6 @@ sub is_batch_duplicate {
   return scalar
          grep { $_ !~ /run[ ]cancelled|run[ ]stopped[ ]early/xms }
          @run_statuses;
-}
-
-#########
-# maybe this should be inside run_status.pm?
-#
-sub recent_runs {
-  my $self = shift;
-
-  if(!$self->{recent_runs}) {
-    my $days  = $self->{'days'} || $DEFAULT_SUMMARY_DAYS;
-    my $pkg   = ref $self;
-    my $query = qq(SELECT rs.id_run,
-                          r.priority,max(date)
-                   FROM   run_status rs,
-                          run        r
-                   WHERE  rs.date  > DATE_SUB(NOW(), INTERVAL $days DAY)
-                   AND    r.id_run = rs.id_run
-                   GROUP BY rs.id_run
-                   ORDER BY priority,date,id_run);
-    my $seen = {};
-
-    my $db_runs = $self->gen_getarray($pkg, $query);
-    my $runs    = [sort { $a->id_run() <=> $b->id_run() }
-                  grep { defined $_ }
-                  map  { ($_, $_->run_pair()?$_->run_pair():undef) } @{$db_runs}];
-
-    $self->{recent_runs} = [grep { !$seen->{$_->id_run()}++ &&
-                                    (!$_->run_pair() || !$seen->{$_->run_pair->id_run()}++) }
-                    @{$runs}];
-  }
-  return $self->{recent_runs};
-}
-
-sub recent_mirrored_runs {
-  my ($self) = @_;
-
-  if(!$self->{recent_mirrored_runs}) {
-    my $days  = $self->{'days'} || $DEFAULT_SUMMARY_DAYS;
-    my $pkg   = ref $self;
-    my $query = qq(SELECT rs.id_run,
-                          r.priority,max(date)
-                   FROM   run_status rs,
-                          run        r,
-                          run_status_dict rsd
-                   WHERE  rs.date               > DATE_SUB(NOW(), INTERVAL $days DAY)
-                   AND    r.id_run              = rs.id_run
-                   AND    rs.id_run_status_dict = rsd.id_run_status_dict
-                   AND    rsd.description       = 'run mirrored'
-                   GROUP BY rs.id_run
-                   ORDER BY priority,date,id_run);
-    my $seen = {};
-
-    my $db_runs = $self->gen_getarray($pkg, $query);
-    my $runs    = [sort { $a->id_run() <=> $b->id_run() }
-                  grep { defined $_ }
-                  map  { ($_, $_->run_pair()?$_->run_pair():undef) } @{$db_runs}];
-
-    $self->{recent_mirrored_runs} = [grep { !$seen->{$_->id_run()}++ &&
-                                           (!$_->run_pair() || !$seen->{$_->run_pair->id_run()}++) }
-                                    @{$runs}];
-  }
-
-  return $self->{recent_mirrored_runs};
-}
-
-sub recent_pending_runs {
-  my ($self, $return_all) = @_;
-  if(!$self->{recent_pending_runs} || $return_all) {
-    my $days  = $self->{'days'} || $DEFAULT_SUMMARY_DAYS;
-    my $pkg   = ref $self;
-    my $query = qq(SELECT rs.id_run,
-                          r.priority,max(date)
-                   FROM   run_status rs,
-                          run        r,
-                          run_status_dict rsd
-                   WHERE  rs.date               > DATE_SUB(NOW(), INTERVAL $days DAY)
-                   AND    r.id_run              = rs.id_run
-                   AND    rs.id_run_status_dict = rsd.id_run_status_dict
-                   AND    rsd.description       = 'run pending'
-                   GROUP BY rs.id_run
-                   ORDER BY priority,date,id_run);
-    my $seen = {};
-
-    my $db_runs = $self->gen_getarray($pkg, $query);
-    if ($return_all) {
-      return $db_runs;
-    } else {
-      my $runs    = [sort { $a->id_run() <=> $b->id_run() }
-                     grep { defined $_ }
-                     map  { ($_, $_->run_pair()?$_->run_pair():undef) } @{$db_runs}];
-
-      $self->{recent_pending_runs} = [grep { !$seen->{$_->id_run()}++ &&
-                                             (!$_->run_pair() || !$seen->{$_->run_pair->id_run()}++) }
-                                           @{$runs}];
-    }
-  }
-
-  return $self->{recent_pending_runs};
 }
 
 sub run_finished_on_instrument {
@@ -1029,6 +931,56 @@ sub staging_server_name {
   return;
 }
 
+sub get_instruments {
+  my ($self) = @_;
+
+  if (!defined $self->{instruments}) {
+    croak q(Instrument array is undefined);
+  }
+
+  return $self->{instruments};
+}
+
+sub sort_instruments {
+  my ($self, $instruments)=@_;
+
+  my @current_instruments = sort _compare_alphanumeric @{$instruments};
+
+  my @sorted_instruments;
+  my @nonnv;
+  # move NV to the top
+  foreach my $instrument (@current_instruments){
+    if ($instrument->name =~ /^NV/xms){
+      push @sorted_instruments, $instrument;
+    }else {
+      push @nonnv, $instrument;
+    }
+  }
+  push @sorted_instruments, @nonnv;
+
+  return \@sorted_instruments;
+}
+
+sub _compare_alphanumeric {
+  # separate alphabetic part [0] and numeric part [1]
+  my @a = $a->name =~ m/([a-z]*)([0-9]*)/gixms;
+  my @b = $b->name =~ m/([a-z]*)([0-9]*)/gixms;
+
+  my $return = 0;
+  #compare alphabetic part
+  if (uc $a[0] gt uc $b[0]){
+    $return += 1;
+  }elsif (uc $b[0] gt uc $a[0]){
+    $return -= 1;
+  # if alphabetic parts are identical, compare numeric part
+  }elsif ($a[1] > $b[1]){
+    $return += 1;
+  }else{
+    $return -= 1;
+  }
+  return $return;
+}
+
 1;
 __END__
 
@@ -1132,14 +1084,6 @@ npg::model::run
  Active run is defined as a run that has no current status or its current status is not
  either 'run cancelled' or 'run stopped early'.
 
-=head2 recent_runs - arrayref of npg::model::runs with recent status changes (< X days ago, default 14)
-
-  my $arRecentRuns = $oRun->recent_runs();
-
-=head2 recent_mirrored_runs - arrayref of npg::model::runs, like 'recent_runs()' but only for 'run mirrored' states
-
-  my $arRecentMirroredRuns = $oRun->recent_mirrored_runs();
-
 =head2 id_user - holder for storing the id_user, particularly for creating new run_status on a new run
 
   $oRun->id_user($iIdUser);
@@ -1182,7 +1126,6 @@ npg::model::run
 
   eval { $oRun->remove_tags(['tag1','tag2'], $oRequestor); };
 
-=head2 recent_pending_runs
 =head2 run_finished_on_instrument
 =head2 run_folder - returns a run folder name (no HTML formating),
 
@@ -1226,6 +1169,19 @@ and loader user name under the 'loader' key
 =head2 is_dev method returns true if the run belongs to R&D team, false otherwise
 
 =head2 staging_server_name - from runfolder glob
+
+=head2 get_instruments
+
+returns an ArrayRef of instrument objects
+
+  my $instruments = $oRun->get_instruments();
+
+=head2 sort_instruments
+
+returns ArrayRef $instruments sorted by name, with NovaSeq instruments displayed first, or throws an error if
+$instruments is undefined
+
+  my $sorted_instruments = $oRun->sort_instruments($instruments);
 
 =head1 DIAGNOSTICS
 
@@ -1295,7 +1251,7 @@ and loader user name under the 'loader' key
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2006-2012,2013,2014,2015,2016,2017,2020 Genome Research Ltd.
+Copyright (C) 2006-2012,2013,2014,2015,2016,2017,2020, 2021 Genome Research Ltd.
 
 This file is part of NPG.
 

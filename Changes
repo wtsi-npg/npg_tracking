@@ -1,5 +1,134 @@
 LIST OF CHANGES
 
+release 92.3.1
+ - A WHILE loop in run_list.tt2 iterates over a number of pages (40 runs
+   per page) in a visual listing of runs. The number of pages is now
+   (January 2022) sufficiently high to trigger an error in Template Toolkit,
+   which, by default, allows 1000 iterations only. The value of
+   $Template::Directive::WHILE_MAX variable is, therefore, set to 2000.
+
+release 92.3.0
+ - New link in sigularity image to pass npg_tracking configuration file.
+ - Removed ability of the tracking server to provide directory views of
+   visible to the server /nfs partitions since nfs staging servers are
+   no longer used.
+ - Removed co-location functionality in npg_tracking views. Co-location checks
+   will not make sense once npg_tracking runs in containers in head nodes.
+   Staging areas are not local to head node/reachable from within the
+   container.
+ - Removed old team names from run add template.
+ - Removed unused daemon runners for staging daemons and the Jenkins server.
+ - Made NovaSeq instruments skip wash statuses after completing a run, this
+   does not affect statuses set manually through the UI.
+ - Added lab location to instrument pages. Instruments are also now 
+   colour-coded on the graphical instrument list page.
+
+release 92.2.0
+ - Added singularity definition for the tracking web server.
+ - Tracking web pages:
+     added folder name column to run listing pages,
+     added external instrument name to the instrument page.
+ - Patched and refined a script for adding roles to users.
+
+release 92.1.0
+ - Change LDAP URL to read-only URL
+ - Added a SOP for creating/decommitioning instruments.
+ - Removed the samplesheet daemon definition npg_tracking::daemon::samplesheet
+   and the auto-generator for samplesheets npg::daemon::samplesheet::auto.
+   Both are no longer in use, the functionality was moved to
+   https://github.com/wtsi-npg/npg_ml_warehouse, see
+   https://github.com/wtsi-npg/npg_ml_warehouse/commit/0b98fc4defb8338914f8d11448df4b30cd75528c
+
+release 92.0.0
+ - Create 'primer_panel' alias for the 'gbs_plex_name' methods in
+   st::api::lims. The new accessor will be used in contexts that are outside
+   of processing GBS runs.
+ - Remove the API wrapping around tracking XML API.
+   This API has not been used in production for a long time. The part of it
+   that links run id and batch id (npg::api::run) was used in tests. Tests
+   are amended either to use samplesheets is a source of LIMS data or, where
+   they are still using XML LIMS driver for st::api::lims, batch id is used
+   explicitly.
+   st::api::lims::xml previously had dependency on npg::api::run to allow          
+   for retrieval of batch_id from run XML API in cases where it was not            
+   supplied explicitly. This dependency is removed without changing the            
+   public interface of the class. Formally speaking, the batch_id                  
+   attribute remains optional for creating an instance of the class.               
+   However, failure to supply it will result in an error when trying to            
+   access batch XML API of the LIMS system.
+ - Remove code for sending run status events to LIMS, this functionality is
+   no longer required.
+ - Remove st::api::event class, which is no longer used.
+ - Stop generating XML output from the tracking server. Remove all templates
+   for generating XML output, all associated code in views, tests and test
+   data.
+
+release 91.15.0
+ - Remove status daemon. This daemon is no longer run since the pipeline
+   updates run and lane statuses by writing directly to the database. 
+   Remove the script, npg_status_watcher, for detecting run status JSON
+   files in run folders and updating database run and lane statuses,
+   which was run by the status daemon.
+ - Removed live tests for XML and warehouse drivers. Live data can change
+   at any time without notice, causing tests to fail.
+
+release 91.14.0
+ - Remove live tests for st::api::lims XML driver and other XML-based APIs.
+   The CI tests are mostly run on hosts with no access to either production
+   or development hosts. 
+ - NPG_TEST_TRACKING_CONFIGPATH environment variable can be used to set a
+   custom location of the Clearpress configuration file for unit tests.
+   The default location of the file, data/config.ini, is used if the
+   variable is unset. 
+ - Move README file to README.md, improve Markdown format. Add sections
+   describing environment variables and tags.
+ - Move db schema dump, which is only used for tests, from the data to t/data
+   directory.
+ - Block access to tsv files via httpd_sfweb.conf
+
+release 91.13.0
+ - Extend npg_status2file script to optionally save statuses to the tracking
+   database and renamed the script to npg_status_save.
+ - Move from Travis CI to GitHub Actions.
+ - metaref_repository attribute is added to the reference repository API
+
+release 91.12.0
+ - Change instrument and instrument format pages to only show current
+   instruments and instrument formats
+ - Remove superfluous columns in display tables for lists of instruments
+   and instrument formats
+ - Remove unused views (templates) for an instrument manufacturer
+ - Remove manufacturer model and view classes, create manufacturer_name
+   method in the instrument and instrument_format model classes
+
+release 91.11.0
+ - a partial reimplementation of the serialization framework for components
+   and compositions in order to speed-up frequently used methods 
+ - add geno files to disabled access list in http_sfweb.conf
+ - cookie decryption - use an up-to-date Crypt::CBC API and algorithm
+ - reduce the sleep type of the status daemon from 60 to 1 sec in order to
+   reduce the time it takes to loop over the run folders on lustre 
+
+release 91.10.0
+ - script npg_samplesheet4MiSeq is removed this utility has been moved
+   to a different git package; the samplesheet daemon stays in this
+   package till all MiSeq instruments are redirected off old staging servers 
+
+release 91.9.0
+ - Change label 'New Instrument Mod' to 'New Instrument Upgrade' on the Admin page
+ - Remove 'New Instrument Status' and 'New Run Status' options from Admin page
+ - Sort the dropdown menu of instruments on the 'New Run' page
+ - Staging servers usage page retired
+
+release 91.8.0
+ - BotSeq renamed Duplex-Seq
+ - added new functions to long_info for BotSeq analysis
+ - added support for NovaSeq v1.5 reagents, i5 index sequenced in opposite direction
+
+release 91.7.0
+ - remove the template for an unused tracking server url - run/summary -
+   and all underlying code to remove obsolete SQL queries used by that code
+
 release 91.6.0
  - enforce custom type NpgTrackingReadableFile to check that the
    given path is not only readable, but is actually a file

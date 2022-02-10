@@ -1,20 +1,15 @@
-#########
-# Author:        rmp
-# Created:       2006-10-31
-#
 package npg::model::instrument_format;
+
 use strict;
 use warnings;
 use base qw(npg::model);
-use English qw(-no_match_vars);
 use Carp;
+use Try::Tiny;
 use npg::model::instrument;
-use npg::model::manufacturer;
 
 our $VERSION = '0';
 
 __PACKAGE__->mk_accessors(fields());
-__PACKAGE__->has_a(q[manufacturer]);
 __PACKAGE__->has_many(q[instrument]);
 __PACKAGE__->has_all();
 
@@ -38,19 +33,24 @@ sub init {
     my $query = q(SELECT id_instrument_format
                   FROM   instrument_format
                   WHERE  model = ?);
-    my $ref   = [];
-    eval {
+    my $ref = [];
+    my $err;
+    try {
       $ref = $self->util->dbh->selectall_arrayref($query, {}, $self->model());
-
-    } or do {
-      carp $EVAL_ERROR;
-      return;
+    } catch {
+      $err = $_;
     };
 
-    if(@{$ref}) {
+    if ($err) {
+      carp $err;
+      return;
+    }
+
+    if (@{$ref}) {
       $self->{'id_instrument_format'} = $ref->[0]->[0];
     }
   }
+
   return 1;
 }
 
@@ -92,21 +92,33 @@ sub current_instruments {
   return $self->{'current_instruments'};
 }
 
-sub instrument_count {
+sub current_instruments_from_lab {
   my $self  = shift;
-  my $query = q(SELECT COUNT(*)
-                FROM   instrument
-                WHERE  id_instrument_format = ?);
-  my $ref = [];
-  eval {
-    $ref = $self->util->dbh->selectall_arrayref($query, {},
-                                                $self->id_instrument_format());
-  } or do {
-    carp $EVAL_ERROR;
-    return;
-  };
+  my $filter_lab = shift;
 
-  return $ref->[0]->[0] || q(0);
+  if(!$self->{'current_instruments'}) {
+    my $pkg   = 'npg::model::instrument';
+
+    my $query = sprintf q{SELECT %s
+                          FROM %s
+                          WHERE id_instrument_format = ?
+                          AND iscurrent              = 1
+                          AND lab                    = '%s'},
+                        join(q(, ), $pkg->fields()),
+                        $pkg->table(),
+                        $filter_lab;
+
+    $self->{'current_instruments'} =  $self->gen_getarray($pkg,
+                                                          $query,
+                                                          $self->id_instrument_format());
+  }
+
+  return $self->{'current_instruments'};
+}
+
+sub current_instruments_count {
+  my $self  = shift;
+  return scalar @{$self->current_instruments()};
 }
 
 sub is_used_sequencer_type {
@@ -128,27 +140,68 @@ sub _obtain_numerical_name_part {
 }
 
 sub current_instruments_by_format {
-  my ( $self ) = @_;
+  my $self = shift;
+
+  my $cgi = $self->util()->cgi();
+  my $filter_lab = $cgi->param('filter_lab');
 
   if ( ! $self->{current_instruments_by_format} ) {
-    my $href = {};
-    foreach my $format ( @{ $self->current_instrument_formats() } ) {
-      my $model = $format->model();
-      $model = $model eq q{HK} ? q{GA-II} : $model;
-      my @ordered = map  { $_->[0] }
-                    sort { $a->[1] <=> $b->[1] }
-                    map  { [ $_, $self->_obtain_numerical_name_part( $_->name() ) ] } @{ $format->current_instruments() };
-      if ( scalar @ordered ) {
-        $href->{$model} = \@ordered;
-      }
-    }
-    $self->{current_instruments_by_format} = $href;
+    $self->{current_instruments_by_format} =
+      $self->_map_current_instruments_by_format($filter_lab);
   }
 
   return $self->{current_instruments_by_format};
 }
 
+sub _map_current_instruments_by_format {
+  my ($self, $filter_lab) = @_;
+
+  my $href = {};
+  foreach my $format ( @{ $self->current_instrument_formats() } ) {
+    my $model = $format->model();
+    $model = $model eq q{HK} ? q{GA-II} : $model;
+    my $instruments = $filter_lab ?
+      $format->current_instruments_from_lab($filter_lab) :
+      $format->current_instruments();
+    if (@{$instruments}) {
+      my @ordered =
+        map  { $_->[0] }
+        sort { $a->[1] <=> $b->[1] }
+        map  { [ $_, $self->_obtain_numerical_name_part( $_->name() ) ] }
+        @{$instruments};
+      $href->{$model} = \@ordered;
+    }
+  }
+
+  return $href;
+}
+
+sub manufacturer_name {
+  my $self = shift;
+
+  my $name;
+  my $id_manufacturer = $self->id_manufacturer;
+  if( $id_manufacturer ) {
+    my $query = qq(SELECT name
+                   FROM   manufacturer
+                   WHERE  id_manufacturer = $id_manufacturer);
+    my $ref;
+    try {
+      $ref = $self->util->dbh->selectrow_arrayref($query);
+    } catch {
+      carp $_;
+    };
+
+    if($ref and @{$ref}) {
+      $name = $ref->[0];
+    }
+  }
+
+  return $name;
+}
+
 1;
+
 __END__
 
 =head1 NAME
@@ -172,9 +225,9 @@ npg::model::instrument_format
 
 initialise an object based on model being provided
 
-=head2 manufacturer - npg::model::manufacturer of instruments of this instrument_format
+=head2 manufacturer_name - the name of the manufacturer of this instrument format
 
-  my $oManufacturer = $oInstrumentformat->manufacturer();
+  my $oManufacturer = $oInstrumentformat->manufacturer_name();
 
 =head2 instruments - Arrayref of npg::model::instruments of this instrument_format
 
@@ -184,6 +237,11 @@ initialise an object based on model being provided
 
   my $arCurrentInstruments = $oInstrumentFormat->current_instruments();
 
+=head2 current_instruments_from_lab - Arrayref of npg::model::instruments with iscurrent=1 and from a lab
+
+  my $lab = "Sulston"
+  my $arCurrentSulstonInstruments = $oInstrumentFormat->current_instruments_from_lab($lab);
+
 =head2 instrument_formats - Arrayref of all instrument_formats (for all manufacturers)
 
   my $arInstrumentFormats = $oInstrumentFormat->instrument_formats();
@@ -192,9 +250,9 @@ initialise an object based on model being provided
 
   my $arCurrentInstrumentFormats = $oInstrumentFormat->current_instrument_formats();
 
-=head2 instrument_count - count of instruments of this instrument_format
+=head2 current_instruments_count - count of instruments of this instrument_format
 
-  my $iInstrumentCount = $oInstrumentFormat->instrument_count();
+  my $iCurrentInstrumentCount = $oInstrumentFormat->current_instrument_count();
 
 =head2 is_used_sequencer_type
 
@@ -228,13 +286,11 @@ Returns a hash ref containing keys of current formats (which have current instru
 
 =item npg::model
 
-=item English
-
 =item Carp
 
-=item npg::model::instrument
+=item Try::Tiny
 
-=item npg::model::manufacturer
+=item npg::model::instrument
 
 =back
 
@@ -244,11 +300,19 @@ Returns a hash ref containing keys of current formats (which have current instru
 
 =head1 AUTHOR
 
-Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+=over
+
+=item Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+
+=item Marina Gourtovaia
+
+=item Michael Kubiak
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2006,2008,2013,2014,2016,2018,2021 Genome Research Ltd.
 
 This file is part of NPG.
 

@@ -1,8 +1,9 @@
 use strict;
 use warnings;
-use Test::More tests => 95;
+use Test::More tests => 90;
 use Test::Exception;
 use t::util;
+use t::instrument;
 
 use_ok('npg::model::run');
 use_ok ('npg::model::instrument');
@@ -149,21 +150,6 @@ subtest 'listing runs' => sub {
   $util->requestor('public');
   my $annotation = npg::model::annotation->new({util => $util, id_annotation => 1});
   is($run->attach_annotation($annotation), 1, 'attach_annotation successful');
-  my $recent_runs = $run->recent_runs();
-  isa_ok($recent_runs, 'ARRAY', '$run->recent_runs()');
-  is($run->recent_runs(), $recent_runs, 'recent_runs cached');
-  is($recent_runs->[0], undef, 'no recent runs');
-  $run->{recent_runs} = undef;
-  my $recent_mirrored_runs = $run->recent_mirrored_runs();
-  isa_ok($recent_mirrored_runs, 'ARRAY', '$run->recent_mirrored_runs()');
-  is($run->recent_mirrored_runs(), $recent_mirrored_runs, 'recent_mirrored_runs cached');
-  is($recent_mirrored_runs->[0], undef, 'no recent mirrored runs');
-  $run->{recent_mirrored_runs} = undef;
-  $run->{'days'} = '40000';
-  $recent_runs = $run->recent_runs();
-  ok($recent_runs->[0], 'recent runs found');
-  $recent_mirrored_runs = $run->recent_mirrored_runs();
-  ok($recent_mirrored_runs->[0], 'recent mirrored runs found');
 
   is($run->id_user(), 1, '$run->id_user() got from current run status');
   is($run->id_user(5), 5, 'id_user set by $run->id_user(5)');
@@ -262,7 +248,7 @@ subtest 'listing runs' => sub {
 				    id_instrument        => 3,
 				    expected_cycle_count => 35,
 				    priority             => 1,
-				    team                 => 'joint',
+				    team                 => 'A',
 				    id_user              => $util->requestor->id_user(),
 				   });
   lives_ok { $model->create(); } 'Unpaired run created without supplying batch_id explicitly';
@@ -273,7 +259,7 @@ subtest 'listing runs' => sub {
 				    id_instrument        => 3,
 				    expected_cycle_count => 35,
 				    priority             => 1,
-				    team                 => 'joint',
+				    team                 => 'A',
 				    id_user              => $util->requestor->id_user(),
                                     batch_id             => undef,
 				});
@@ -286,7 +272,7 @@ subtest 'listing runs' => sub {
 				    id_instrument        => 3,
 				    expected_cycle_count => 35,
 				    priority             => 1,
-				    team                 => 'joint',
+				    team                 => 'A',
 				    id_user              => $util->requestor->id_user(),
 				    batch_id             => q{},
 				});
@@ -301,7 +287,7 @@ subtest 'listing runs' => sub {
 				    id_instrument        => 3,
 				    expected_cycle_count => 35,
 				    priority             => 1,
-				    team                 => 'joint',
+				    team                 => 'A',
 				    id_user              => $util->requestor->id_user(),
 				   });
   lives_ok { $model->create(); } 'created run ok - not paired';
@@ -328,7 +314,7 @@ subtest 'listing runs' => sub {
            id_instrument        => 3,
            expected_cycle_count => 35,
            priority             => 1,
-           team                 => 'B',
+           team                 => 'RAD',
            id_user              => $util->requestor->id_user(),
           });
   $run2->create();
@@ -355,7 +341,7 @@ subtest 'listing runs' => sub {
            id_instrument        => 3,
            expected_cycle_count => 35,
            priority             => 1,
-           team                 => 'C',
+           team                 => 'RAD',
            id_user              => $util->requestor->id_user(),
           });
   $run3->create();
@@ -469,10 +455,10 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a ne
 
 {
   my $m = npg::model::run->new({util => $util,});
-  is(join(q[ ], $m->teams), 'A B C RAD joint', 'ordered list of teams');
+  is(join(q[ ], $m->teams), 'A RAD', 'ordered list of teams');
   ok(!$m->validate_team(), 'team validation failed if no arg supplied');
   ok(!$m->validate_team('dodo'), 'team validation failed for non-existing team');
-  ok($m->validate_team('B'), 'team B validation succeeds');
+  ok($m->validate_team('A'), 'team A validation succeeds');
   ok(!$m->is_dev(), 'id_dev is false for a model without a defined run');
 
   $m = npg::model::run->new({util => $util, id_run => 9950,});
@@ -624,6 +610,40 @@ subtest 'run creation error due to problems with batch id' => sub {
    ok ($id_run_next_next != $id_run, 'a different run is created');
    ok ($id_run_next_next != $id_run_next, 'a different run is created');
 };
+{
+  my $model = npg::model::run->new({});
+  dies_ok{ $model->get_instruments }, "Accessing undefined instruments ArrayRef fails";
 
+  $model = npg::model::run->new({
+    instruments => \(t::instrument->new(name => "NV1")),
+  });
+  lives_ok{ $model->get_instruments }, "Accessing defined instruments ArrayRef succeeds";
+}
+
+{
+	#               0    1   2    3    4   5    6   7    8     9   10   11  12   13   14     15  16    17   18   19   20
+	my @names = (qw{NV74 HX1 NV21 HX57 MS6 NV78 NV9 HS57 cbot5 HX3 HF59 MS3 HF55 MS32 cbot45 NV2 cbot3 HS20 MS82 HX11 HX5},
+		#  21   22   23    24   25     26  27   28   29  30  31    32   33   34   35   36   37  38  39     40   41  42   43
+		qw{MS86 NV79 cbot9 HX25 cbot49 HF5 HX67 NV10 MS8 HX4 cbot1 MS62 MS47 MS18 MS49 NV15 HX9 HF1 cbot13 MS59 HS5 MS72 NV1});
+
+	my @order = (43, 15, 6, 28, 36, 2, 0, 5, 22, 31, 16, 8, 23, 39, 14, 25, 38, 26, 12, 10, 41, 17, 7, 1, 9, 30, 20, 37,
+		19, 24, 3, 27, 11, 4, 29, 34, 13, 33, 35, 40, 32, 42, 18, 21);
+
+	my @instruments;
+	foreach my $name (@names){
+		push @instruments, t::instrument->new(name => "$name");
+	}
+
+	my @ordered_instruments;
+	foreach my $position (@order){
+		push @ordered_instruments, $instruments[$position];
+	}
+
+  my $model = npg::model::run->new({
+    instruments => \@instruments,
+  });
+
+  is_deeply($model->sort_instruments($model->get_instruments), \@ordered_instruments, "Instrument dropdown for run;add sorted");
+}
 1;
 

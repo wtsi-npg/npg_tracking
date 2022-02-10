@@ -42,6 +42,7 @@ Readonly::Scalar our $REP_ROOT           => $ENV{'NPG_REPOSITORY_ROOT'} || $conf
 Readonly::Scalar our $SNV_DIR            => q[population_snv];
 Readonly::Scalar our $TRANSCRIPTOMES_DIR => q[transcriptomes];
 Readonly::Scalar our $REFERENCES_DIR     => q[references];
+Readonly::Scalar our $META_REFERENCES_DIR => q[meta_references];
 Readonly::Scalar our $ADAPTERS_DIR       => q[adapters];
 Readonly::Scalar our $GENOTYPES_DIR      => q[genotypes];
 Readonly::Scalar our $BAITS_DIR          => q[baits];
@@ -90,6 +91,21 @@ has 'ref_repository' => (isa         => 'NPG_TRACKING_REFERENCE_REPOSITORY',
 sub _build_ref_repository {
     my $self = shift;
     return catdir($self->repository, $REFERENCES_DIR);
+}
+
+=head2 metaref_repository
+
+An absolute path to the repository for meta references.
+
+=cut
+has 'metaref_repository' => (isa     => 'NPG_TRACKING_REFERENCE_REPOSITORY',
+                             is          => 'ro',
+                             required    => 0,
+                             lazy_build  => 1,
+);
+sub _build_metaref_repository {
+    my $self = shift;
+    return catdir($self->repository, $META_REFERENCES_DIR);
 }
 
 =head2 snv repository
@@ -654,7 +670,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 Genome Research Ltd
+Copyright (C) 2013,2014,2015,2018,2020,2021 Genome Research Ltd.
 
 This file is part of NPG.
 

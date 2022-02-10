@@ -6,8 +6,10 @@ use MooseX::StrictConstructor;
 use MooseX::Storage;
 use File::Spec;
 use File::Slurp;
+use Carp;
 
-use WTSI::DNAP::Utilities::Timestamp qw/create_current_timestamp/;
+use WTSI::DNAP::Utilities::Timestamp qw/create_current_timestamp
+                                        parse_timestamp/;
 use npg_tracking::util::types;
 
 with Storage( 'traits' => ['OnlyWhenBuilt'],
@@ -75,6 +77,40 @@ sub to_file {
   my $filename = $dir ? File::Spec->catfile($dir, $self->filename) : $self->filename;
   write_file($filename, $self->freeze());
   return $filename;
+}
+
+sub to_database {
+  my ($self, $schema, $logger) = @_;
+
+  $schema or croak 'Tracking database DBIx schema object is required';
+
+  my $run_row = $schema->resultset('Run')->find($self->id_run);
+  if (!$run_row) {
+    croak sprintf 'Run id %i does not exist', $self->id_run;
+  }
+
+  my $date = parse_timestamp($self->timestamp);
+  my $user = undef;
+
+  if ( !@{$self->lanes} ) {
+    my $saved = $run_row->update_run_status($self->status, $user, $date);
+    $logger and $logger->info(sprintf
+      'Run status %ssaved to the database', $saved ? q[] : q[not ]);
+  } else {
+    my %run_lanes = map { $_->position => $_} $run_row->run_lanes->all();
+    foreach my $pos (@{$self->lanes}) {
+      if (!exists $run_lanes{$pos}) {
+        croak sprintf 'Lane %i does not exist in run %i', $pos, $self->id_run;
+      }
+    }
+    foreach my $pos (sort { $a <=> $b} @{$self->lanes}) {
+      my $saved = $run_lanes{$pos}->update_status($self->status, $user, $date);
+      $logger and $logger->info(sprintf
+        'Lane %i status %ssaved to the database', $pos, $saved ? q[] : q[not ]);
+    }
+  }
+
+  return;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -146,6 +182,19 @@ npg_tracking::status
  my $path = $status_obj->to_file('mydir');
  my $path = $status_obj->to_file();
 
+=head2 to_database
+
+ Creates a run or lane status record in the tracking database for this object.
+ The first argument is a DBIx schema object for the database. The second
+ optional argument is a logger object. If set, will be used to log non-error
+ messages.
+ 
+ $status_obj->to_database($schema);
+ $status_obj->to_database($schema, $logger);
+
+ The original version of the code for this function was written for the status
+ monitor daemon, see C<npg_tracking::monitor::status::_update_status>.
+
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -168,6 +217,8 @@ npg_tracking::status
 
 =item Readonly
 
+=item Carp
+
 =item WTSI::DNAP::Utilities::Timestamp
 
 =item npg_tracking::glossary::run
@@ -185,13 +236,17 @@ status dictionaries.
 
 =head1 AUTHOR
 
-Kate Taylor E<lt>kt6@sanger.ac.ukE<gt>
+=over
 
-Marina Gourtovaia
+=item Kate Taylor
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2019 Genome Research Limited
+Copyright (C) 2014,2016,2019,2021 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

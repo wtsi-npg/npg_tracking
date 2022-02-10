@@ -15,7 +15,7 @@ our $VERSION = '0';
 
 our @EXPORT_OK = qw(person_info);  # symbols to export on request
 
-Readonly::Scalar our $SANGER_LDAP_SERVER => 'ldap.internal.sanger.ac.uk';
+Readonly::Scalar our $SANGER_LDAP_SERVER => 'ldap-ro.internal.sanger.ac.uk';
 Readonly::Scalar our $LDAP_SEARCH_BASE   => 'ou=people,dc=sanger,dc=ac,dc=uk';
 
 sub person_info {

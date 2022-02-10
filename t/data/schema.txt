@@ -1,0 +1,693 @@
+-- MySQL dump 10.13  Distrib 5.5.41, for debian-linux-gnu (x86_64)
+--
+-- Host: npgt-db    Database: npgt
+-- ------------------------------------------------------
+-- Server version	5.7.13-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `annotation`
+--
+
+DROP TABLE IF EXISTS `annotation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `annotation` (
+  `id_annotation` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_user` bigint(20) unsigned NOT NULL,
+  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `comment` text NOT NULL,
+  `attachment_name` varchar(128) DEFAULT NULL,
+  `attachment` longblob,
+  PRIMARY KEY (`id_annotation`),
+  KEY `ann_idu` (`id_user`),
+  CONSTRAINT `ann_idu` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `designation`
+--
+
+DROP TABLE IF EXISTS `designation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `designation` (
+  `id_designation` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `description` varchar(64) NOT NULL,
+  PRIMARY KEY (`id_designation`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `entity_type`
+--
+
+DROP TABLE IF EXISTS `entity_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `entity_type` (
+  `id_entity_type` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `description` char(64) NOT NULL DEFAULT '',
+  `iscurrent` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_entity_type`),
+  KEY `iscurrent` (`iscurrent`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `event`
+--
+
+DROP TABLE IF EXISTS `event`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `event` (
+  `id_event` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_event_type` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `description` varchar(1024) DEFAULT NULL,
+  `entity_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'the id of the entity having id_event_type.id_entity_type',
+  `id_user` bigint(20) unsigned NOT NULL,
+  `notification_sent` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id_event`),
+  KEY `ev_u` (`id_user`),
+  KEY `id_event_type` (`id_event_type`),
+  CONSTRAINT `ev_u` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `event_ibfk_1` FOREIGN KEY (`id_event_type`) REFERENCES `event_type` (`id_event_type`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `event_type`
+--
+
+DROP TABLE IF EXISTS `event_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `event_type` (
+  `id_event_type` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `description` char(64) NOT NULL DEFAULT '',
+  `id_entity_type` bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_event_type`),
+  KEY `evt_entityt` (`id_entity_type`),
+  CONSTRAINT `evt_entityt` FOREIGN KEY (`id_entity_type`) REFERENCES `entity_type` (`id_entity_type`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `instrument`
+--
+
+DROP TABLE IF EXISTS `instrument`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `instrument` (
+  `id_instrument` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` char(32) CHARACTER SET ascii NOT NULL DEFAULT '',
+  `id_instrument_format` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `external_name` char(32) NOT NULL DEFAULT '',
+  `serial` char(128) NOT NULL DEFAULT '',
+  `iscurrent` tinyint(1) NOT NULL DEFAULT '0',
+  `ipaddr` char(15) DEFAULT '',
+  `instrument_comp` varchar(32) DEFAULT NULL,
+  `mirroring_host` varchar(16) DEFAULT NULL,
+  `staging_dir` varchar(128) DEFAULT NULL,
+  `latest_contact` datetime DEFAULT NULL,
+  `percent_complete` tinyint(3) unsigned DEFAULT NULL,
+  `lab` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`id_instrument`,`name`),
+  UNIQUE KEY `name` (`name`),
+  KEY `id_if` (`id_instrument_format`),
+  CONSTRAINT `id_if` FOREIGN KEY (`id_instrument_format`) REFERENCES `instrument_format` (`id_instrument_format`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `instrument_annotation`
+--
+
+DROP TABLE IF EXISTS `instrument_annotation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `instrument_annotation` (
+  `id_instrument_annotation` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_instrument` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `id_annotation` bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_instrument_annotation`),
+  KEY `ia_idinstrument` (`id_instrument`),
+  KEY `ia_ida` (`id_annotation`),
+  CONSTRAINT `ia_ida` FOREIGN KEY (`id_annotation`) REFERENCES `annotation` (`id_annotation`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `ia_idinstrument` FOREIGN KEY (`id_instrument`) REFERENCES `instrument` (`id_instrument`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `instrument_designation`
+--
+
+DROP TABLE IF EXISTS `instrument_designation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `instrument_designation` (
+  `id_instrument_designation` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_instrument` bigint(20) unsigned NOT NULL,
+  `id_designation` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id_instrument_designation`),
+  KEY `id_ii` (`id_instrument`),
+  KEY `id_id` (`id_designation`),
+  CONSTRAINT `id_id` FOREIGN KEY (`id_designation`) REFERENCES `designation` (`id_designation`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `id_ii` FOREIGN KEY (`id_instrument`) REFERENCES `instrument` (`id_instrument`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `instrument_format`
+--
+
+DROP TABLE IF EXISTS `instrument_format`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `instrument_format` (
+  `id_instrument_format` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_manufacturer` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `model` char(64) DEFAULT NULL,
+  `iscurrent` tinyint(1) NOT NULL DEFAULT '0',
+  `default_tiles` int(10) unsigned NOT NULL DEFAULT '0',
+  `default_columns` int(10) unsigned NOT NULL DEFAULT '0',
+  `days_between_washes` int(10) unsigned DEFAULT NULL,
+  `runs_between_washes` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id_instrument_format`),
+  KEY `id_mfctr` (`id_manufacturer`),
+  CONSTRAINT `id_mfctr` FOREIGN KEY (`id_manufacturer`) REFERENCES `manufacturer` (`id_manufacturer`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `instrument_mod`
+--
+
+DROP TABLE IF EXISTS `instrument_mod`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `instrument_mod` (
+  `id_instrument_mod` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_instrument` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `id_instrument_mod_dict` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `date_added` datetime NOT NULL,
+  `date_removed` datetime DEFAULT NULL,
+  `id_user` bigint(20) unsigned NOT NULL,
+  `iscurrent` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_instrument_mod`),
+  KEY `im_id_i` (`id_instrument`),
+  KEY `im_id_imd` (`id_instrument_mod_dict`),
+  KEY `im_id_user` (`id_user`),
+  CONSTRAINT `im_id_i` FOREIGN KEY (`id_instrument`) REFERENCES `instrument` (`id_instrument`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `im_id_imd` FOREIGN KEY (`id_instrument_mod_dict`) REFERENCES `instrument_mod_dict` (`id_instrument_mod_dict`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `im_id_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `instrument_mod_dict`
+--
+
+DROP TABLE IF EXISTS `instrument_mod_dict`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `instrument_mod_dict` (
+  `id_instrument_mod_dict` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `description` char(128) NOT NULL DEFAULT '',
+  `revision` char(64) DEFAULT NULL,
+  PRIMARY KEY (`id_instrument_mod_dict`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `instrument_status`
+--
+
+DROP TABLE IF EXISTS `instrument_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `instrument_status` (
+  `id_instrument_status` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_instrument` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `id_instrument_status_dict` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `id_user` bigint(20) unsigned NOT NULL,
+  `comment` text,
+  `iscurrent` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_instrument_status`),
+  KEY `is_idu` (`id_user`),
+  KEY `is_idi` (`id_instrument`),
+  KEY `is_idisd` (`id_instrument_status_dict`),
+  KEY `i_iscurrent` (`iscurrent`),
+  CONSTRAINT `is_idi` FOREIGN KEY (`id_instrument`) REFERENCES `instrument` (`id_instrument`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `is_idisd` FOREIGN KEY (`id_instrument_status_dict`) REFERENCES `instrument_status_dict` (`id_instrument_status_dict`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `is_idu` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `instrument_status_annotation`
+--
+
+DROP TABLE IF EXISTS `instrument_status_annotation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `instrument_status_annotation` (
+  `id_instrument_status_annotation` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_instrument_status` bigint(20) unsigned NOT NULL,
+  `id_annotation` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`id_instrument_status_annotation`),
+  UNIQUE KEY `id_instrument_status` (`id_instrument_status`,`id_annotation`),
+  KEY `isa_ida` (`id_annotation`),
+  CONSTRAINT `isa_ida` FOREIGN KEY (`id_annotation`) REFERENCES `annotation` (`id_annotation`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `isa_idis` FOREIGN KEY (`id_instrument_status`) REFERENCES `instrument_status` (`id_instrument_status`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `instrument_status_dict`
+--
+
+DROP TABLE IF EXISTS `instrument_status_dict`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `instrument_status_dict` (
+  `id_instrument_status_dict` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `description` char(64) NOT NULL DEFAULT '',
+  `iscurrent` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id_instrument_status_dict`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `instrument_utilisation`
+--
+
+DROP TABLE IF EXISTS `instrument_utilisation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `instrument_utilisation` (
+  `id_instrument_utilisation` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `total_insts` int(4) unsigned NOT NULL DEFAULT '0',
+  `perc_utilisation_total_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
+  `perc_uptime_total_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
+  `official_insts` int(4) unsigned NOT NULL DEFAULT '0',
+  `perc_utilisation_official_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
+  `perc_uptime_official_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
+  `prod_insts` int(4) unsigned NOT NULL DEFAULT '0',
+  `perc_utilisation_prod_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
+  `perc_uptime_prod_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
+  `id_instrument_format` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`id_instrument_utilisation`),
+  UNIQUE KEY `uidx_date_format` (`date`,`id_instrument_format`),
+  KEY `inst_format` (`id_instrument_format`),
+  CONSTRAINT `inst_format` FOREIGN KEY (`id_instrument_format`) REFERENCES `instrument_format` (`id_instrument_format`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `manufacturer`
+--
+
+DROP TABLE IF EXISTS `manufacturer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `manufacturer` (
+  `id_manufacturer` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` char(128) CHARACTER SET latin1 DEFAULT NULL,
+  PRIMARY KEY (`id_manufacturer`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `run`
+--
+
+DROP TABLE IF EXISTS `run`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `run` (
+  `id_run` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_instrument` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `priority` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `actual_cycle_count` bigint(20) unsigned DEFAULT NULL,
+  `expected_cycle_count` bigint(20) unsigned DEFAULT NULL,
+  `id_run_pair` bigint(20) unsigned DEFAULT NULL,
+  `is_paired` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `batch_id` bigint(20) unsigned DEFAULT NULL,
+  `id_instrument_format` bigint(20) unsigned NOT NULL,
+  `flowcell_id` varchar(64) DEFAULT NULL,
+  `folder_name` varchar(64) DEFAULT NULL,
+  `folder_path_glob` varchar(256) DEFAULT NULL,
+  `team` char(10) NOT NULL,
+  PRIMARY KEY (`id_run`),
+  KEY `id_instrument` (`id_instrument`),
+  KEY `r_idif` (`id_instrument_format`),
+  KEY `r_id_run_pair` (`id_run_pair`),
+  CONSTRAINT `id_instrument` FOREIGN KEY (`id_instrument`) REFERENCES `instrument` (`id_instrument`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `r_idif` FOREIGN KEY (`id_instrument_format`) REFERENCES `instrument_format` (`id_instrument_format`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `run_annotation`
+--
+
+DROP TABLE IF EXISTS `run_annotation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `run_annotation` (
+  `id_run_annotation` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_run` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `id_annotation` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `run_current_ok` tinyint(1) unsigned DEFAULT NULL,
+  `current_cycle` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id_run_annotation`),
+  KEY `ra_idrun` (`id_run`),
+  KEY `ra_ida` (`id_annotation`),
+  CONSTRAINT `ra_ida` FOREIGN KEY (`id_annotation`) REFERENCES `annotation` (`id_annotation`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `ra_idrun` FOREIGN KEY (`id_run`) REFERENCES `run` (`id_run`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `run_lane`
+--
+
+DROP TABLE IF EXISTS `run_lane`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `run_lane` (
+  `id_run_lane` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_run` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `tile_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `tracks` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Double=2',
+  `position` int(10) unsigned DEFAULT '0',
+  PRIMARY KEY (`id_run_lane`),
+  UNIQUE KEY `uq_id_run_position` (`id_run`,`position`),
+  KEY `id_rn` (`id_run`),
+  CONSTRAINT `id_rn` FOREIGN KEY (`id_run`) REFERENCES `run` (`id_run`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `run_lane_annotation`
+--
+
+DROP TABLE IF EXISTS `run_lane_annotation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `run_lane_annotation` (
+  `id_run_lane_annotation` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_run_lane` bigint(20) unsigned NOT NULL,
+  `id_annotation` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`id_run_lane_annotation`),
+  KEY `rla_idrunlane` (`id_run_lane`),
+  KEY `rla_ida` (`id_annotation`),
+  CONSTRAINT `rla_ida` FOREIGN KEY (`id_annotation`) REFERENCES `annotation` (`id_annotation`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `rla_idrunlane` FOREIGN KEY (`id_run_lane`) REFERENCES `run_lane` (`id_run_lane`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `run_lane_status`
+--
+
+DROP TABLE IF EXISTS `run_lane_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `run_lane_status` (
+  `id_run_lane_status` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_run_lane` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `id_user` bigint(20) unsigned NOT NULL,
+  `iscurrent` tinyint(1) NOT NULL DEFAULT '0',
+  `id_run_lane_status_dict` bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_run_lane_status`),
+  KEY `rls_rl` (`id_run_lane`),
+  KEY `rls_user` (`id_user`),
+  KEY `rls_rlsd` (`id_run_lane_status_dict`),
+  CONSTRAINT `rls_rl` FOREIGN KEY (`id_run_lane`) REFERENCES `run_lane` (`id_run_lane`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `rls_rlsd` FOREIGN KEY (`id_run_lane_status_dict`) REFERENCES `run_lane_status_dict` (`id_run_lane_status_dict`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `rls_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `run_lane_status_dict`
+--
+
+DROP TABLE IF EXISTS `run_lane_status_dict`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `run_lane_status_dict` (
+  `id_run_lane_status_dict` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `description` varchar(64) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id_run_lane_status_dict`,`description`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `run_read`
+--
+
+DROP TABLE IF EXISTS `run_read`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `run_read` (
+  `id_run_read` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_run` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `intervention` tinyint(1) NOT NULL DEFAULT '0',
+  `read_order` int(10) unsigned DEFAULT '0',
+  `expected_cycle_count` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id_run_read`),
+  UNIQUE KEY `uq_id_run_order` (`id_run`,`read_order`),
+  KEY `fk_read_id_run` (`id_run`),
+  CONSTRAINT `fk_read_id_run` FOREIGN KEY (`id_run`) REFERENCES `run` (`id_run`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `run_status`
+--
+
+DROP TABLE IF EXISTS `run_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `run_status` (
+  `id_run_status` int(11) NOT NULL AUTO_INCREMENT,
+  `id_run` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `id_run_status_dict` int(11) NOT NULL DEFAULT '0',
+  `id_user` bigint(20) unsigned NOT NULL,
+  `iscurrent` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_run_status`),
+  KEY `id_rsd` (`id_run_status_dict`),
+  KEY `run_date_state` (`id_run`,`date`,`id_run_status_dict`),
+  KEY `id_usr2` (`id_user`),
+  KEY `rs_iscurrent` (`iscurrent`),
+  CONSTRAINT `id_rsd` FOREIGN KEY (`id_run_status_dict`) REFERENCES `run_status_dict` (`id_run_status_dict`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `id_run` FOREIGN KEY (`id_run`) REFERENCES `run` (`id_run`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `id_usr2` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `run_status_dict`
+--
+
+DROP TABLE IF EXISTS `run_status_dict`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `run_status_dict` (
+  `id_run_status_dict` int(11) NOT NULL AUTO_INCREMENT,
+  `description` varchar(64) NOT NULL DEFAULT '',
+  `iscurrent` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `temporal_index` smallint(5) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id_run_status_dict`),
+  KEY `description` (`description`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `st_cache`
+--
+
+DROP TABLE IF EXISTS `st_cache`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `st_cache` (
+  `id_cache` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_run` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `type` char(64) NOT NULL DEFAULT '',
+  `content` char(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id_cache`),
+  KEY `stc_id_run` (`id_run`),
+  KEY `type` (`type`),
+  CONSTRAINT `stc_id_run` FOREIGN KEY (`id_run`) REFERENCES `run` (`id_run`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tag`
+--
+
+DROP TABLE IF EXISTS `tag`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tag` (
+  `id_tag` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `tag` char(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id_tag`),
+  UNIQUE KEY `u_tag` (`tag`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tag_frequency`
+--
+
+DROP TABLE IF EXISTS `tag_frequency`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tag_frequency` (
+  `id_tag_frequency` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_tag` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `id_entity_type` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `frequency` bigint(20) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id_tag_frequency`),
+  KEY `tf_id_tag` (`id_tag`),
+  KEY `tf_id_entity_type` (`id_entity_type`),
+  CONSTRAINT `tf_id_entity_type` FOREIGN KEY (`id_entity_type`) REFERENCES `entity_type` (`id_entity_type`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `tf_id_tag` FOREIGN KEY (`id_tag`) REFERENCES `tag` (`id_tag`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tag_run`
+--
+
+DROP TABLE IF EXISTS `tag_run`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tag_run` (
+  `id_tag_run` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_run` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `id_tag` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `id_user` bigint(20) unsigned NOT NULL,
+  `date` date NOT NULL DEFAULT '0000-00-00',
+  PRIMARY KEY (`id_tag_run`),
+  UNIQUE KEY `u_idrun_idtag` (`id_run`,`id_tag`),
+  KEY `tr_id_run` (`id_run`),
+  KEY `tr_id_tag` (`id_tag`),
+  KEY `tr_id_user` (`id_user`),
+  CONSTRAINT `tr_id_run` FOREIGN KEY (`id_run`) REFERENCES `run` (`id_run`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `tr_id_tag` FOREIGN KEY (`id_tag`) REFERENCES `tag` (`id_tag`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `tr_id_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tag_run_lane`
+--
+
+DROP TABLE IF EXISTS `tag_run_lane`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tag_run_lane` (
+  `id_tag_run_lane` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_run_lane` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `id_tag` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `id_user` bigint(20) unsigned NOT NULL,
+  `date` date NOT NULL DEFAULT '0000-00-00',
+  PRIMARY KEY (`id_tag_run_lane`),
+  KEY `trl_id_run_lane` (`id_run_lane`),
+  KEY `trl_id_tag` (`id_tag`),
+  KEY `trl_id_user` (`id_user`),
+  CONSTRAINT `trl_id_run_lane` FOREIGN KEY (`id_run_lane`) REFERENCES `run_lane` (`id_run_lane`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `trl_id_tag` FOREIGN KEY (`id_tag`) REFERENCES `tag` (`id_tag`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `trl_id_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
+  `id_user` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `username` char(128) DEFAULT NULL,
+  `rfid` varchar(64) DEFAULT NULL,
+  `iscurrent` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id_user`),
+  UNIQUE KEY `uidx_username` (`username`),
+  UNIQUE KEY `rf_id` (`rfid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `user2usergroup`
+--
+
+DROP TABLE IF EXISTS `user2usergroup`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user2usergroup` (
+  `id_user_usergroup` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_user` bigint(20) unsigned NOT NULL,
+  `id_usergroup` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `level` tinyint(3) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id_user_usergroup`),
+  KEY `id_usergroup` (`id_usergroup`),
+  KEY `id_user` (`id_user`),
+  CONSTRAINT `id_user` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `id_usergroup` FOREIGN KEY (`id_usergroup`) REFERENCES `usergroup` (`id_usergroup`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `usergroup`
+--
+
+DROP TABLE IF EXISTS `usergroup`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `usergroup` (
+  `groupname` varchar(32) NOT NULL DEFAULT '',
+  `id_usergroup` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `is_public` tinyint(1) NOT NULL DEFAULT '0',
+  `description` varchar(128) DEFAULT '',
+  `iscurrent` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id_usergroup`) USING BTREE
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2017-02-28 18:13:48

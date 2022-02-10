@@ -2,10 +2,7 @@ package t::util;
 
 use strict;
 use warnings;
-use base qw(npg::util Exporter);
-use t::dbh;
 use Carp;
-use npg::model::user;
 use DateTime;
 use CGI;
 use English qw(-no_match_vars);
@@ -17,11 +14,40 @@ use MIME::Lite;
 use GD;
 use Readonly;
 
+# Inherit from npg::util, which, in turn, inherits from Clearpress::util
+use base qw(npg::util Exporter);
+
+use npg::model::user;
+use t::dbh;
+
 Readonly::Scalar our $DEFAULT_FIXTURES_PATH => q[t/data/fixtures];
 
 $ENV{HTTP_HOST}     = 'test.npg.com';
 $ENV{SCRIPT_NAME}   = '/cgi-bin/npg';
 $ENV{dev}           = 'test';
+
+sub configpath { # Overwrites parent's method of the same name.
+                 # A full path to the Clearpress-style configuration file
+                 # with database credentials.
+  my $self = shift;
+
+  if (!$self->{configpath}) {
+    # Use a custom path or whatever is used by the parent.
+    my $given_path = $ENV{'NPG_TEST_TRACKING_CONFIGPATH'} ||
+                     $self->SUPER::configpath();
+    my ($path) = $given_path =~ m{([a-z0-9/\._\-]+)}ixms;
+    (defined $path) or $path = q[];
+    ($path eq $given_path) or carp
+      "Conf. path '$given_path' is changed to '$path' after de-tainting";
+    -e $path or croak "ERROR: Conf. path '$path' does not exist";
+    -d $path and croak
+      "ERROR: Conf. path '$path' is a directory, should be a file";
+    -r $path or croak "ERROR: Conf. path '$path' is not readable";
+    $self->{configpath} = $path;
+  }
+
+  return $self->{configpath};
+}
 
 sub dbh {
   my ($self, @args) = @_;
@@ -98,8 +124,9 @@ sub load_fixtures {
   #########
   # build table definitions
   #
-  if(!-e "data/schema.txt") {
-    croak "Could not find data/schema.txt";
+  my $schema_dump = 't/data/schema.txt';
+  if(!-e $schema_dump) {
+    croak "Database schema dump '$schema_dump' does not exist";
   }
 
   if ($self->dbh) {
@@ -112,9 +139,10 @@ sub load_fixtures {
     $self->{'dbh'} = undef; #for good measure
   }
 
-  $self->log('Loading data/schema.txt');
-  my $cmd = q(cat data/schema.txt | mysql);
-  my $local_socket = $self->dbhost() eq 'localhost' && $ENV{'MYSQL_UNIX_PORT'} ? $ENV{'MYSQL_UNIX_PORT'} : q[];
+  my $cmd = qq(cat $schema_dump | mysql);
+  my $local_socket =
+    $self->dbhost() eq 'localhost' && $ENV{'MYSQL_UNIX_PORT'}
+    ? $ENV{'MYSQL_UNIX_PORT'} : q[];
   if ($local_socket) {
     $cmd .= q( --no-defaults); #do not read ~/.my.cnf
                                #this should be the first option
@@ -173,15 +201,14 @@ sub requestor {
     $self->{requestor} = $req;
   } elsif($req) {
     $self->{requestor} = npg::model::user->new({
-						util     => $self,
-						username => $req,
-					       });
+            util     => $self,
+            username => $req,});
   }
 
   $self->{requestor} ||= npg::model::user->new({
-						util     => $self,
-						username => 'public',
-					       });
+            util     => $self,
+            username => 'public',});
+
   return $self->{requestor};
 }
 
@@ -268,16 +295,16 @@ sub parse_html_to_get_expected {
 
   if ($html =~ m{^t/}xms) {
     $p = HTML::PullParser->new(
-			       file  => $html,
-			       start => '"S", tagname, @attr',
-			       end   => '"E", tagname',
-			      );
+             file  => $html,
+             start => '"S", tagname, @attr',
+             end   => '"E", tagname',
+         );
   } else {
     $p = HTML::PullParser->new(
-			       doc   => $html,
-			       start => '"S", tagname, @attr',
-			       end   => '"E", tagname',
-			      );
+            doc   => $html,
+            start => '"S", tagname, @attr',
+            end   => '"E", tagname',
+         );
   }
 
   my $count = 1;
@@ -342,7 +369,6 @@ sub catch_email {
 ##########
 # for parsing emails to get information from them, probably caught emails
 #
-
 sub parse_email {
   my ($self, $email, $for_mailer) = @_;
   my $parser = MIME::Parser->new();
@@ -350,13 +376,13 @@ sub parse_email {
   my $entity = $parser->parse_data($email);
   if(! $entity->bodyhandle->as_string() ) {return {};}
   my $ref    = {
-		annotation => $entity->bodyhandle->as_string(),
-		subject    => $entity->head->get('Subject', 0),
-		to         => $entity->head->get('To',0)   || undef,
-		cc         => $entity->head->get('Cc',0)   || undef,
-		bcc        => $entity->head->get('Bcc',0)  || undef,
-		from       => $entity->head->get('From',0) || undef,
-	       };
+    annotation => $entity->bodyhandle->as_string(),
+    subject    => $entity->head->get('Subject', 0),
+    to         => $entity->head->get('To',0)   || undef,
+    cc         => $entity->head->get('Cc',0)   || undef,
+    bcc        => $entity->head->get('Bcc',0)  || undef,
+    from       => $entity->head->get('From',0) || undef,
+  };
   if ($for_mailer) {
     $ref->{body}          = $entity->bodyhandle->as_string()     || undef;
     $ref->{precendence}   = $entity->head->get('Precedence',0)   || undef;

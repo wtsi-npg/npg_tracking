@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<instrument id_instrument="36" name="IL31" id_instrument_format="4" model="HK" external_name="" serial="" iscurrent="1" ipaddr="192.168.255.36" instrument_comp="il31win" mirroring_host="sf-1-1-09" staging_dir="/staging/IL31/incoming" >
-  <designations>
-    <designation id_designation="2" description="R&amp;D" />
-    <designation id_designation="3" description="Hot spare" />
-  </designations>
-</instrument>
