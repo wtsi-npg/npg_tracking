@@ -92,9 +92,7 @@ sub find_live {
                 if (! $run_row->folder_name ) {
                     warn qq[Folder name in db not available, will try to update using '$run_folder'.];
                     # check the id_run corresponds to a run with a status of run pending
-                    my $run_status_check = Monitor::RunFolder->new(id_run              => $id_run,
-                                                                   npg_tracking_schema => $self->schema);
-                    my $run_status = $run_status_check->tracking_run()->current_run_status_description();
+                    my $run_status = $run_row->current_run_status_description();
                     if ( $run_status ne qq[run pending] ) {
                         warn "Skipping run $run_dir, the id_run $id_run may be wrong as this run has a status of $run_status\n";
                         next;
@@ -105,10 +103,10 @@ sub find_live {
                          run_folder          => $run_folder,
                          id_run              => $id_run,
                          npg_tracking_schema => $self->schema )->check() ) {
-                    $path_for{$id_run} = $run_dir;
-                    warn "Cached $run_dir for run $id_run\n";
+                      $path_for{$id_run} = $run_dir;
+                      warn "Cached $run_dir for run $id_run\n";
                 } else {
-                  warn "Skipping $run_dir - not valid\n";
+                    warn "Skipping $run_dir - not valid\n";
                 }
             }
         } else {
