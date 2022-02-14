@@ -58,8 +58,8 @@ as this object's accessors. Example:
 =cut
 
 Readonly::Scalar our $CACHED_SAMPLESHEET_FILE_VAR_NAME => 'NPG_CACHED_SAMPLESHEET_FILE';
-Readonly::Scalar my $DEFAULT_DRIVER_TYPE              => 'xml';
-Readonly::Scalar my $SAMPLESHEET_DRIVER_TYPE          => 'samplesheet';
+Readonly::Scalar my $SAMPLESHEET_DRIVER_TYPE => 'samplesheet';
+Readonly::Scalar my $DEFAULT_DRIVER_TYPE => $SAMPLESHEET_DRIVER_TYPE;
 
 Readonly::Scalar my $PROC_NAME_INDEX       => 3;
 Readonly::Hash   my %QC_EVAL_MAPPING       => {'pass' => 1, 'fail' => 0, 'pending' => undef, };

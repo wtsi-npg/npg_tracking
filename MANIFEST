@@ -846,6 +846,9 @@ t/data/run_params/runParameters.hiseq4000.xml
 t/data/run_params/runParameters.hiseqx.upgraded.xml
 t/data/run_params/runParameters.hiseqx.xml
 t/data/run_params/runParameters.miseq.xml
+t/data/samplesheet/samplesheet_7753.csv
+t/data/samplesheet/samplesheet_27483.csv
+t/data/samplesheet/samplesheet_33990.csv
 t/data/samplesheet/1control7libs_extended.csv
 t/data/samplesheet/4pool4libs_extended.csv
 t/data/samplesheet/6946_extended.csv

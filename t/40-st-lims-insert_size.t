@@ -8,7 +8,8 @@ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/test40_lims_edited];
 use_ok('st::api::lims');
 
 {
-  my $lims = st::api::lims->new(batch_id => 4775, position => 1);
+  my $lims = st::api::lims->new(
+    batch_id => 4775, position => 1, driver_type => 'xml');
   my $lid = $lims->library_id;
 
   my $is_available = 0;
@@ -23,7 +24,8 @@ use_ok('st::api::lims');
   $lims->_entity_required_insert_size($lims, $is, \$is_available);
   is ($is_available, 1, 'is reported as available');
   
-  $lims = st::api::lims->new(batch_id => 4775, position => 2);
+  $lims = st::api::lims->new(
+    batch_id => 4775, position => 2, driver_type => 'xml');
   $is = {};
   $is_available = 0;
   $lims->_entity_required_insert_size($lims, $is, \$is_available);
@@ -34,7 +36,8 @@ use_ok('st::api::lims');
   $lims->_entity_required_insert_size($lims, $is, \$is_available);
   is ($is_available, 1, 'is reported as available');
   
-  $lims = st::api::lims->new(batch_id => 4775, position => 3);
+  $lims = st::api::lims->new(
+    batch_id => 4775, position => 3, driver_type => 'xml');
   $is = {};
   $is_available = 0;
   $lims->_entity_required_insert_size($lims, $is, \$is_available);
@@ -43,7 +46,8 @@ use_ok('st::api::lims');
 }
 
 {
-  my $lims = st::api::lims->new(batch_id => 4775, position => 1);
+  my $lims = st::api::lims->new(
+    batch_id => 4775, position => 1, driver_type => 'xml');
   my $lid = $lims->library_id;
   my $insert_size;
   lives_ok {$insert_size = $lims->required_insert_size} 'insert size for the first lane lives';
@@ -51,20 +55,24 @@ use_ok('st::api::lims');
   is ($insert_size->{$lid}->{q[from]}, 300, 'required FROM insert size');
   is ($insert_size->{$lid}->{q[to]}, 400, 'required TO insert size');
   
-  $lims = st::api::lims->new(batch_id => 4775, position => 3);
+  $lims = st::api::lims->new(
+    batch_id => 4775, position => 3, driver_type => 'xml');
   lives_ok {$insert_size = $lims->required_insert_size} 'insert size for the third lane where empty is hash is returned lives';
   is (keys %{$insert_size}, 0, 'no entries in the insert size hash');
   
-  $lims = st::api::lims->new(batch_id => 4775, position => 4);
+  $lims = st::api::lims->new(
+    batch_id => 4775, position => 4, driver_type => 'xml');
   lives_ok {$insert_size = $lims->required_insert_size} 'insert size for the control lane lives';
   is (keys %{$insert_size}, 0, 'no entries in the insert size hash');
   
-  $lims = st::api::lims->new(batch_id => 4775, position => 8);
+  $lims = st::api::lims->new(
+    batch_id => 4775, position => 8, driver_type => 'xml');
   ok ($lims ->is_pool, 'lane is a pool');
   lives_ok {$insert_size = $lims->required_insert_size} 'insert size for the pool where empty is hash is returned lives';
   is (keys %{$insert_size}, 0, 'no entries in the insert size hash');
   
-  $lims = st::api::lims->new(batch_id => 4775, position => 7);
+  $lims = st::api::lims->new(
+    batch_id => 4775, position => 7, driver_type => 'xml');
   ok ($lims ->is_pool, 'lane is a pool');
   lives_ok {$insert_size = $lims->required_insert_size} 'insert size for the pool lives';
   is (keys %{$insert_size}, 2, 'two entries in the insert size hash');
@@ -73,7 +81,8 @@ use_ok('st::api::lims');
   ok (!exists $insert_size->{2798525}->{q[from]}, 'no required FROM insert size');
   is ($insert_size->{2798525}->{q[to]}, 500, 'required TO insert size');
   
-  $lims = st::api::lims->new(batch_id => 4775, position => 7, tag_index => 2);
+  $lims = st::api::lims->new(
+    batch_id => 4775, position => 7, tag_index => 2, driver_type => 'xml');
   lives_ok {$insert_size = $lims->required_insert_size} 'insert size for the plex lives';
   is (keys %{$insert_size}, 1, 'one entry in the insert size hash');
   is ($insert_size->{2798524}->{q[from]}, 40, 'required FROM insert size');
@@ -81,13 +90,15 @@ use_ok('st::api::lims');
 }
 
 {
-  my $lims = st::api::lims->new(batch_id => 14706, position => 1, tag_index => 2);
+  my $lims = st::api::lims->new(
+    driver_type => 'xml', batch_id => 14706, position => 1, tag_index => 2);
   my $insert_size;
   lives_ok {$insert_size = $lims->required_insert_size} 'insert size for the plex without lib id lives';
   is ($insert_size->{2}->{q[from]}, 200, 'required FROM insert size');
   is ($insert_size->{2}->{q[to]}, 400, 'required TO insert size');
 
-  $lims = st::api::lims->new(batch_id => 14706, position => 2);
+  $lims = st::api::lims->new(
+    driver_type => 'xml', batch_id => 14706, position => 2);
   lives_ok {$insert_size = $lims->required_insert_size} 'insert size for the pool with plexes without lib ids lives';
   is (join(q[ ], sort keys %{$insert_size}), '1 2 3 4 5', 'tag index entries in the insert size hash');
   is ($insert_size->{5}->{q[from]}, 200, 'required FROM insert size');
