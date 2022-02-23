@@ -1,6 +1,6 @@
 LIST OF CHANGES
 
- - staging area daemon if the folder_name is not in the DB validate the id_run before updating the DB
+ - staging area daemon: when the folder_name is not in the DB, check the run is "run pending" for given id_run before updating the DB
  - Update URL for production Sequencescape LIMS
 
 release 91.0.0
