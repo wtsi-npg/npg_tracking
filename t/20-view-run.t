@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 30;
+use Test::More tests => 29;
 use Test::Exception;
 use Test::Deep;
 use CGI;
@@ -138,16 +138,6 @@ my $util = t::util->new({fixtures  => 1,});
            util           => $util,
           });
   unlike($str, qr/not\ authorised/mix, 'loader access to run;add');
-}
-
-{
-  my $str = t::request->new({
-           PATH_INFO      => '/run/1.xml',
-           REQUEST_METHOD => 'GET',
-           username       => 'public',
-           util           => $util,
-          });
-  ok($util->test_rendered($str, 't/data/rendered/run/1.xml'), 'read_xml render ok');
 }
 
 {

@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 33;
+use Test::More tests => 27;
 use Test::Exception;
 use HTTP::Headers;
 use CGI;
@@ -110,35 +110,6 @@ my $cgi = $util->cgi();
 }
 
 {
-  $cgi->param('description',q{});
-  my $view = npg::view::administration->new({
-    util    => $util,
-    model   => npg::model::administration->new({ util => $util }),
-    action  => q{create},
-    aspect  => q{create_instrument_status},
-    headers => HTTP::Headers->new()
-  });
-  $util->requestor('joe_engineer');
-  throws_ok { $view->render() } qr{No\ status\ given},
-    'error - no status given';
-
-  $cgi->param('description','new status');
-  $view = npg::view::administration->new({
-    util    => $util,
-    model   => npg::model::administration->new({ util => $util }),
-    action  => q{create},
-    aspect  => q{create_instrument_status},
-    headers => HTTP::Headers->new(),
-  });
-  my $render;
-  lives_ok { $render = $view->render() }
-    'engineers and admin authorised for create_instrument_status';
-  ok($util->test_rendered($render,
-    't/data/rendered/20-view-administration_create_instrument_status.html'),
-    'create_instrument_status renders ok');
-}
-
-{
   $cgi->param('username',q{});
   my $view = npg::view::administration->new({
     util    => $util,
@@ -209,32 +180,6 @@ my $cgi = $util->cgi();
   ok($util->test_rendered($render,
     't/data/rendered/20-view-administration_create_usergroup.html'),
     'create_usergroup renders ok');
-}
-
-{
-  $cgi->param('description',q{});
-  my $view = npg::view::administration->new({
-    util    => $util,
-    model   => npg::model::administration->new({ util => $util }),
-    action  => q{create},
-    aspect  => q{create_run_status},
-    headers => HTTP::Headers->new()
-  });
-  $util->requestor('joe_admin');
-  throws_ok { $view->render() } qr{No\ status\ given}, 'error - no status given';
-
-  $cgi->param('description','test');
-  $view = npg::view::administration->new({
-    util => $util,
-    model => npg::model::administration->new({ util => $util }),
-    action => q{create},
-    aspect => q{create_run_status},
-  });
-  my $render;
-  lives_ok { $render = $view->render() } 'admin authorised for create_run_status';
-  ok($util->test_rendered($render,
-    't/data/rendered/20-view-administration_create_run_status.html'),
-    'create_run_status renders ok');
 }
 
 {

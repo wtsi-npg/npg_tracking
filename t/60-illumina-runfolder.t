@@ -89,6 +89,14 @@ my $testrundir = catdir($testdir,q(090414_IL24_2726));
 </RunInfo>
 ENDXML
   close $fh;
+  my $runparametersfile = qq[$testrundir/runParameters.xml];
+  open($fh, '>', $runparametersfile) or die "Could not open file '$runparametersfile' $!";
+  print $fh <<"ENDXML";
+<?xml version="1.0"?>
+  <RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ </RunParameters>
+ENDXML
+ close $fh;
 
   my $lane_count;
   $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, name=> q(090414_IL24_2726), npg_tracking_schema => undef);

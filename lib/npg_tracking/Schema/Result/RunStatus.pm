@@ -250,7 +250,7 @@ in this table.
 
 sub event_report_types {
   my $self = shift;
-  my @types = qw/lims/;
+  my @types = ();
   my $description = $self->description();
   my @statuses = ('qc review pending', 'qc complete');
   if (any { $_ eq $description} @statuses) {
@@ -307,7 +307,7 @@ David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 Genome Research Limited
+Copyright (C) 2013,2014,2017,2021 Genome Research Ltd.
 
 This file is part of NPG.
 

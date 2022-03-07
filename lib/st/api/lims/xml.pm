@@ -1,8 +1,3 @@
-#########
-# Author:        Marina Gourtovaia
-# Created:       20 July 2011
-#
-
 package st::api::lims::xml;
 
 use Carp;
@@ -12,7 +7,6 @@ use MooseX::StrictConstructor;
 use XML::LibXML;
 use Readonly;
 
-use npg::api::run;
 use st::api::batch;
 use npg_tracking::util::types;
 
@@ -29,10 +23,9 @@ st::api::lims::xml
 
 =head1 SYNOPSIS
 
- $lims = st::api::lims::xml->new(id_run => 333) #run (batch) level object
- $lims = st::api::lims::xml->new(batch_id => 222) # as above
+ $lims = st::api::lims::xml->new(batch_id => 222) #run (batch) level object
  $lims = st::api::lims::xml->new(batch_id => 222, position => 3) # lane level object
- $lims = st::api::lims::xml->new(id_run => 333, position => 3, tag_index => 44) # plex level object
+ $lims = st::api::lims::xml->new(batch_id => 222, position => 3, tag_index => 44) # plex level object
 
 =head1 DESCRIPTION
 
@@ -76,7 +69,8 @@ Readonly::Hash our %DELEGATION      => {
 
 =head2 id_run
 
-Run id, optional attribute. If not set, batch_id should be set.
+Run id, optional attribute, redundant, retained for compatibility
+with old code and tests.
 
 =cut
 has '+id_run'   =>        (required        => 0,);
@@ -90,7 +84,9 @@ has '+position' =>        (required        => 0,);
 
 =head2 batch_id
 
-Batch id, optional attribute. If not set, id_run should be set.
+Batch id. This attribute is kept as optional to retain compatibility
+with old code and tests. To retrieve LIMS data, the attribute should
+be set by the caller. 
 
 =cut
 has 'batch_id'  =>        (isa             => 'NpgTrackingPositiveInt',
@@ -99,31 +95,7 @@ has 'batch_id'  =>        (isa             => 'NpgTrackingPositiveInt',
                           );
 sub _build_batch_id {
   my $self = shift;
-
-  if ($self->id_run) {
-    return $self->npg_api_run->batch_id;
-  }
-  croak q[Cannot build batch_id: id_run is not supplied];
-}
-
-=head2 npg_api_run
-
-np::api::run object when id_run given, otherwise undefined
-
-=cut
-has 'npg_api_run'  => (isa             => 'Maybe[npg::api::run]',
-                       is              => 'ro',
-                       lazy_build      => 1,
-                      );
-
-sub _build_npg_api_run {
-   my $self = shift;
-
-   my $run_obj = undef;
-   if ( $self->id_run ) {
-     $run_obj = npg::api::run->new({id_run => $self->id_run,});
-   }
-   return $run_obj;
+  croak q[Cannot build batch_id];
 }
 
 has 'purpose' => (isa => 'Str', is => 'ro', default => 'standard');
@@ -998,7 +970,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 GRL
+Copyright (C) 2013,2014,2015,2016,2021 Genome Research Ltd.
 
 This file is part of NPG.
 

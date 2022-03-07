@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<run_lane id_run_lane="[% model.id_run_lane %]" id_run="[% model.id_run %]" tile_count="[% model.tile_count %]" tracks="[% model.tracks %]" position="[% model.position %]" >
- <run id_run="[% model.run.id_run %]" id_instrument="[% model.run.id_instrument %]" priority="[% model.run.priority %]" actual_cycle_count="[% model.run.actual_cycle_count %]" expected_cycle_count="[% model.run.expected_cycle_count %]" is_paired="[% model.run.is_paired %]" id_run_pair="[% model.run.id_run_pair %]" />
-</run_lane>

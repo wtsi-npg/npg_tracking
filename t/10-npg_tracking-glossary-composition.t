@@ -221,7 +221,7 @@ subtest 'serialization to rpt' => sub {
   is ($c2->freeze2rpt, '1:3:6', 'rpt component string');
   my $c3 = test::npg_tracking::component->new(attr1 => 'value1');
   throws_ok {$c3->freeze2rpt}
-    qr/Either id_run or position key is undefined /,
+    qr/Can't locate object method "id_run"/,
     'failure to serialize component without core illumina attr';
 
   my $f = npg_tracking::glossary::composition::factory->new();
@@ -236,7 +236,7 @@ subtest 'serialization to rpt' => sub {
   $f = npg_tracking::glossary::composition::factory->new();
   $f->add_component($c3);
   throws_ok {$f->create_composition()->freeze2rpt}
-    qr/Either id_run or position key is undefined/,
+    qr/Can't locate object method "id_run"/,
     'failure to serialize component without core illumina attr';
 };
 

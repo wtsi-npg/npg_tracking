@@ -28,7 +28,7 @@ package main;
 my $basedir = tempdir( CLEANUP => 1 );
 
 subtest 'retrieving information from runParameters.xml' => sub {
-  plan tests => 142;
+  plan tests => 153;
 
   my $rf = join q[/], $basedir, 'runfolder';
   mkdir $rf;
@@ -50,6 +50,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
     RunParameters.nextseq.xml
     RunParameters.novaseq.xml
     RunParameters.novaseq.xp.xml
+    RunParameters.novaseq.xp.v1.5.xml
     runParameters.hiseq.rr.truseq.xml
                   /;
   my $dir = 't/data/run_params';
@@ -119,7 +120,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
 };
 
 subtest 'getting i5opposite for run' => sub {
-  plan tests => 14;
+  plan tests => 15;
 
   $basedir = tempdir( CLEANUP => 1 );
   my $rf = join q[/], $basedir, 'run_info';
@@ -144,6 +145,7 @@ subtest 'getting i5opposite for run' => sub {
     'runInfo.nextseq.xml'                  => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
     'runInfo.novaseq.xml'                  => { 'rpf' => 'RunParameters', 'i5opposite' => 0 },
     'runInfo.novaseq.xp.xml'               => { 'rpf' => 'RunParameters', 'i5opposite' => 0 },
+    'runInfo.novaseq.xp.v1.5.xml'          => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
   );
 
   my $run_info_dir = 't/data/run_info';
@@ -385,20 +387,6 @@ $ENV{TEST_DIR} = 't/data/long_info';
     }
   }
 
-  lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
-  cmp_ok($long_info->tile_count, '==', 48, 'correct tile count');
-  lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
-  cmp_ok($long_info->lane_count, '==', 8, 'correct lane count');
-  lives_ok  { $long_info = test::long_info->new({id_run => 5636}); } q{created role_test (HiSeq run 5636, RunInfo.xml) object ok};
-  cmp_ok($long_info->cycle_count, '==', 202, 'correct cycle count');
-
-  my $tilelayout_columns;
-  lives_ok  {
-    $long_info = test::long_info->new({id_run => 5636});
-    $tilelayout_columns = $long_info->tilelayout_columns;
-  } q{recreate object and call tilelayout_columns ok};
-  cmp_ok($tilelayout_columns, '==', 6, 'correct tile columns');
-
   $long_info=undef;
   lives_ok  { $long_info = test::long_info->new({id_run => 19395}); } q{created role_test (HiSeq run 19395, RunInfo.xml) object ok};
   cmp_ok($long_info->lane_tilecount->{1}, '==', 64, 'correct lane 1 tile count');
@@ -447,5 +435,19 @@ note($long_info->runfolder_path);
   lives_and { ok( $long_info->is_indexed, 'is_indexed ok');} 'is_indexed lives and ok';
   lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for dual index paired};
   lives_and { ok( $long_info->is_paired_read, 'is_paired_read ok');} 'is_paired_read lives and ok';
+  lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for dual index paired};
+  lives_and { ok( $long_info->is_dual_index, 'is_dual_index ok');} 'is_paired_read lives and ok';
+  lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for dual index paired};
+  lives_and { cmp_deeply( [$long_info->index_read1_cycle_range], [152,159], 'index_read1_cycle_range matches');} 'index_read1_cycle_range lives and matches';
+  lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for dual index paired};
+  lives_and { cmp_deeply( [$long_info->index_read2_cycle_range], [160,167], 'index_read2_cycle_range matches');} 'index_read2_cycle_range lives and matches';
+}
+
+#and a SP flowcell
+{
+  my $long_info;
+  my $rfpath = q(t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming//200303_A00562_0352_AHKFVLDRXX);
+  lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for SP flowcell};
+  cmp_ok( $long_info->surface_count, '==', 1, 'surface_count');
 }
 1;

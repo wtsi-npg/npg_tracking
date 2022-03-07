@@ -8,10 +8,12 @@ use IO::All;
 use File::Spec;
 use XML::LibXML;
 use Try::Tiny;
+use Readonly;
 
 requires qw{runfolder_path};
 
 our $VERSION = '0';
+Readonly::Scalar my $NOVASEQ_I5FLIP_REAGENT_VER              => 3;
 
 =head1 NAME
 
@@ -104,6 +106,25 @@ sub _build_index_length {
   return $end - $start + 1;
 }
 
+=head2 is_dual_index
+
+Boolean determines if the run has a second index read, this can be set on object construction
+
+  my $bIsDualIndex = $class->is_dual_index();
+
+=cut
+
+has q{is_dual_index} => (
+  isa           => q{Bool},
+  is            => q{ro},
+  lazy_build    => 1,
+  documentation => q{This run is a paired end read},
+);
+sub _build_is_dual_index {
+  my $self = shift;
+  return $self->index_read2_cycle_range ? 1 : 0;
+}
+
 =head2 lane_count
 
 Number of lanes configured for this run. May be set on Construction.
@@ -118,6 +139,22 @@ has q{lane_count} => (
   writer        => '_set_lane_count',
   predicate     => 'has_lane_count',
   documentation => q{The number of lanes on this run},
+);
+
+=head2 surface_count
+
+Number of surfaces configured for this run. May be set on Construction.
+
+  my $iSurfaceCount = $self->surface_count();
+
+=cut
+
+has q{surface_count} => (
+  is            => 'ro',
+  isa           => 'Int',
+  writer        => '_set_surface_count',
+  predicate     => 'has_surface_count',
+  documentation => q{The number of surfaces on this run},
 );
 
 =head2 read_cycle_counts
@@ -208,6 +245,42 @@ has _read2_cycle_range => (
     _push_read2_cycle_range => 'push',
     read2_cycle_range       => 'elements',
     has_read2_cycle_range   => 'count',
+  },
+);
+
+=head2 index_read1_cycle_range
+
+First and last cycles of index read 1, or nothing returned if no index_read 1
+
+=cut
+
+has q{_index_read1_cycle_range} => (
+  traits  => ['Array'],
+  is      => 'ro',
+  isa     => 'ArrayRef[Int]',
+  default => sub { [] },
+  handles => {
+    _push_index_read1_cycle_range  => 'push',
+    index_read1_cycle_range        => 'elements',
+    has_index_read1_cycle_range    => 'count',
+  },
+);
+
+=head2 index_read2_cycle_range
+
+First and last cycles of index_read 2, or nothing returned if no index_read 2
+
+=cut
+
+has _index_read2_cycle_range => (
+  traits  => ['Array'],
+  is      => 'ro',
+  isa     => 'ArrayRef[Int]',
+  default => sub { [] },
+  handles => {
+    _push_index_read2_cycle_range => 'push',
+    index_read2_cycle_range       => 'elements',
+    has_index_read2_cycle_range   => 'count',
   },
 );
 
@@ -388,10 +461,13 @@ sub _build_run_flowcell {
 
 foreach my $f ( qw(expected_cycle_count
                    lane_count
+                   surface_count 
                    read_cycle_counts
                    indexing_cycle_range
                    read1_cycle_range
                    read2_cycle_range
+                   index_read1_cycle_range
+                   index_read2_cycle_range
                    tilelayout_rows
                    tilelayout_columns) ) {
    before $f => sub {
@@ -510,6 +586,34 @@ sub _build_workflow_type {
   return _get_single_element_text($self->_run_params(), 'WorkflowType');
 }
 
+=head2 flowcell_mode
+
+=cut
+
+has q{flowcell_mode} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build_flowcell_mode {
+  my $self = shift;
+  return _get_single_element_text($self->_run_params(), 'FlowCellMode');
+}
+
+=head2 sbs_consumable_version
+
+=cut
+
+has q{sbs_consumable_version} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build_sbs_consumable_version{
+  my $self = shift;
+  return _get_single_element_text($self->_run_params(), 'SbsConsumableVersion')||1;
+}
+
 =head2 all_lanes_mergeable
 
 Method returns true if all lanes on the flowcell contain the
@@ -574,11 +678,12 @@ sub is_rapid_run_abovev2 {
 
 =head2 is_i5opposite
 
-A dual-indexed sequencing run on the MiniSeq, NextSeq, HiSeq 4000, or HiSeq 3000
+A dual-indexed sequencing run on the MiniSeq, NextSeq, HiSeq 4000, HiSeq 3000 or NovaSeq using v1.5 reagents
 performs the Index 2 Read after the Read 2 resynthesis step. This workflow
 requires a reverse complement of the Index 2 (i5) primer sequence compared to
 the primer sequence used on other Illumina platform, see
 https://support.illumina.com/content/dam/illumina-support/documents/documentation/system_documentation/miseq/indexed-sequencing-overview-guide-15057455-04.pdf
+For NovaSeq using v1.5 reagents the SbsConsumableVersion will be 3
 
 Method returns true if this is the case.
 
@@ -586,8 +691,11 @@ Method returns true if this is the case.
 
 sub is_i5opposite {
   my $self = shift;
-  return ($self->is_paired_read() && ($self->platform_HiSeqX()  or $self->platform_HiSeq4000() or
-                                      $self->platform_MiniSeq() or $self->platform_NextSeq()));
+  return ($self->is_paired_read() &&
+              ($self->platform_HiSeqX()  or $self->platform_HiSeq4000() or
+               $self->platform_MiniSeq() or $self->platform_NextSeq() or
+               ($self->platform_NovaSeq() &&
+                ($self->sbs_consumable_version() >= $NOVASEQ_I5FLIP_REAGENT_VER))));
 }
 
 =head2 uses_patterned_flowcell
@@ -697,6 +805,9 @@ sub _build__runinfo_store {
 
   my $fcl_el = $doc->getElementsByTagName('FlowcellLayout')->[0];
   if(not defined $fcl_el) {
+    if ( $self->platform_NovaSeq() ) {
+      croak q{No FlowCellLayout for NovaSeq run};
+    }
     $self->_set_lane_count($doc->getElementsByTagName('Lane')->size);
     $self->_set_expected_cycle_count($doc->getElementsByTagName('Cycles')->[0]->getAttribute('Incorporation'));
 
@@ -725,7 +836,12 @@ sub _build__runinfo_store {
 
   }else{
     $self->_set_lane_count($fcl_el->getAttribute('LaneCount'));
-    my $ncol = $fcl_el->getAttribute('SurfaceCount') * $fcl_el->getAttribute('SwathCount');
+    $self->_set_surface_count($fcl_el->getAttribute('SurfaceCount'));
+    if ( $self->platform_NovaSeq() && $self->flowcell_mode() eq 'SP' ) {
+      # NovaSeq SP flowcells only have one surface
+      $self->_set_surface_count(1);
+    }
+    my $ncol = $self->surface_count() * $fcl_el->getAttribute('SwathCount');
     my $nrow = $fcl_el->getAttribute('TileCount'); #informatic split on HiSeq
     $self->_set_tilelayout_columns($ncol);
     $self->_set_tilelayout_rows($nrow);
@@ -822,11 +938,13 @@ sub _set_values_at_end_of_read {
         if ( $rc->{start} == $end + 1 ) {
           $self->_pop_indexing_cycle_range();
           $self->_push_indexing_cycle_range( $rc->{index} );
+          $self->_push_index_read2_cycle_range( $rc->{start},$rc->{index} );
         } else {
           carp "Don't know how to deal with non adjacent indexing reads: $start,$end and $rc->{start},$rc->{index}"
         }
       } else {
         $self->_push_indexing_cycle_range( $rc->{start},$rc->{index} );
+        $self->_push_index_read1_cycle_range( $rc->{start},$rc->{index} );
       }
     } else {
       $self->_push_reads_indexed(0);

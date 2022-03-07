@@ -1,0 +1,8 @@
+ALTER TABLE `instrument`
+    ADD COLUMN `lab` VARCHAR(10) DEFAULT NULL;
+
+UPDATE `instrument` SET `lab`='Ogilvie' WHERE iscurrent=1 AND `name` NOT LIKE 'cBot%';
+
+UPDATE `instrument`
+    SET `lab`='Sulston'
+    WHERE iscurrent=1 AND name IN ('NV21', 'NV24', 'NV25', 'NV26', 'NV27', 'NV28');

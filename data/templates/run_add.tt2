@@ -11,12 +11,11 @@
 <div class="page_title">New run by team
 <select id="team" name="team">
 [% known_team=model.team;
-   # Pre-select teams for now; default to joint
+   # Pre-select teams for now; default to A
    IF !known_team;
-     known_team = requestor.is_member_of('r+d') ? 'RAD' : 'joint';
-   END;
-   IF !known_team %]<option value="empty">Select team</option>[% END %]
-[% FOREACH team=model.teams %]<option value="[% team %]"[% IF known_team && known_team == team %] selected="selected"[% END %]>[% team %]</option>[% END %]
+     known_team = requestor.is_member_of('r+d') ? 'RAD' : 'A';
+   END %]
+[% FOREACH team=model.teams %]<option value="[% team %]"[% IF known_team == team %] selected="selected"[% END %]>[% team %]</option>[% END %]
 </select></div>
 
  <table>
@@ -68,7 +67,11 @@
    <th>Instrument</th>
    <td><select onchange="ajax_instrument()" id="id_instrument" name="id_instrument">
      [% IF !this_instr_id %]<option value="empty">Select instrument</option>[% END %]
-   [% FOREACH instrument = model.instruments; IF instrument.does_sequencing %]
+   <!--
+    model.instruments contains an ArrayRef of current instruments, which is assigned in npg::view::run::add before the
+    template is rendered
+   -->
+   [% FOREACH instrument = model.sort_instruments(model.get_instruments); IF instrument.does_sequencing %]
      <option value="[% instrument.id_instrument %]" [% IF this_instr_id && instrument.id_instrument == this_instr_id %]selected="selected"[% END %]>[% instrument.name %] [% instrument.current_instrument_status.instrument_status_dict.description %]</option>[% END %][% END %]
    </select>
    <div id="instrument_details" />

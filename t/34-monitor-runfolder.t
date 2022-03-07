@@ -99,6 +99,14 @@ my $dir4rf = tempdir( CLEANUP => 1 );
   </RunInfo>
 ENDXML
     close $fh;
+    my $runparametersfile = qq[$fs_run_folder/runParameters.xml];
+    open($fh, '>', $runparametersfile) or die "Could not open file '$runparametersfile' $!";
+    print $fh <<"ENDXML";
+<?xml version="1.0"?>
+  <RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  </RunParameters>
+ENDXML
+    close $fh;
 
     my $test = Monitor::RunFolder->new( runfolder_path      => $fs_run_folder,
                                         npg_tracking_schema => $schema, );
@@ -135,6 +143,14 @@ ENDXML
   </RunInfo>
 ENDXML
     close $fh2;
+    my $runparametersfile2= qq[$fs_run_folder2/runParameters.xml];
+    open($fh2, '>', $runparametersfile2) or die "Could not open file '$runparametersfile2' $!";
+    print $fh2 <<"ENDXML";
+<?xml version="1.0"?>
+  <RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  </RunParameters>
+ENDXML
+    close $fh2;
 
     $test = Monitor::RunFolder->new( runfolder_path      => $fs_run_folder2,
                                      npg_tracking_schema => $schema, );
@@ -166,6 +182,10 @@ q{<?xml version="1.0"?>
     </AlignToPhiX>
   </Run>
 </RunInfo>};
+    my $run_parameters = 
+q{<?xml version="1.0"?>
+<RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+</RunParameters>};
 
     
     my $root = tempdir( CLEANUP => 1 );
@@ -185,6 +205,11 @@ q{<?xml version="1.0"?>
     open my $fh, '>', join(q[/], $rf, 'RunInfo.xml');
     print $fh $run_info;
     close $fh;
+
+    # create runParameters file
+    open my $fh2, '>', join(q[/], $rf, 'runParameters.xml');
+    print $fh2 $run_parameters;
+    close $fh2;
 
     warnings_like { $test->delete_superfluous_lanes() } [
       qr/Deleted lane 3/, qr/Deleted lane 4/, qr/Deleted lane 5/,

@@ -7,7 +7,7 @@ use MooseX::StrictConstructor;
 use List::MoreUtils qw/ bsearch/;
 use Carp;
 
-with Storage( 'traits' => ['OnlyWhenBuilt'],
+with Storage( 'traits' => [qw/OnlyWhenBuilt DisableCycleDetection/],
               'format' => '=npg_tracking::glossary::composition::serializable' );
 
 our $VERSION = '0';
