@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - staging area daemon: when the folder_name is not in the DB, check the run is "run pending" for given id_run before updating the DB
  - Switched the default st::api::lims driver from xml to samplesheet.
    Fixed tests, which implicitly relied on the xml driver being the default.
    Some tests used the default driver type. For those tests either test
