@@ -91,9 +91,20 @@ sub find_live {
             } else {
                 if (! $run_row->folder_name ) {
                   warn qq[Folder name in db not available, will try to update using '$run_folder'.];
+                  # check the id_run corresponds to a run with a status of "run pending" to reduce the
+                  # chance of incorrect updates if an incorrect id_run is entered by the loaders e.g. missing
+                  # digit so that it matches an old run which is "run canceled" such that the automatic run
+                  # folder deletion process would start removing it...
+                  # If a run is canceled (or run status changed) before this, the runfolder may not be processed
+                  # automatically...
+                  my $run_status = $run_row->current_run_status_description();
+                  if ( $run_status ne qq[run pending] ) {
+                      warn "Skipping run $run_dir, the id_run $id_run may be wrong as this run has a status of $run_status\n";
+                      next;
+                  }
+                  # TODO: check (or fix) instrument (using external_name) and slot
                   $run_row->update({'folder_name' => $run_folder}); # or validation will fail
-                }
-
+                }    
                 if ( npg_tracking::illumina::run::folder::validation->new(
                          run_folder          => $run_folder,
                          id_run              => $id_run,

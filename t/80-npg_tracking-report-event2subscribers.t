@@ -10,8 +10,6 @@ use File::Temp qw(tempdir);
 
 use t::dbic_util;
 
-local $ENV{'http_proxy'} = 'http://npgwibble.com'; #invalid proxy
-
 my $logfile = join q[/], tempdir(CLEANUP => 1), 'logfile';
 note "Log file: $logfile";
 Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
@@ -131,7 +129,7 @@ Lane 8: Samples
 LIMS
 
 subtest 'run status event' => sub {
-  plan tests => 18;
+  plan tests => 17;
 
   my $status_row = $schema->resultset('RunStatus')->create({
     id_user            => 8,
@@ -150,7 +148,6 @@ subtest 'run status event' => sub {
   is_deeply ($e->_subscribers(), [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk)],
     'correct ordered list of subscribers');
   is ($e->report_short(), 'Run 21915 was assigned status "run pending"', 'short report text');
-  throws_ok {$e->lims} qr/XML driver type is not allowed/, 'XML driver is not allowed';
 
   my $report = <<REPORT;
 Run 21915 was assigned status "run pending" on 2017-02-08 11:49:39 by joe_events
