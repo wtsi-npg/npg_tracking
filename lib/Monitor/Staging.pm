@@ -102,7 +102,15 @@ sub find_live {
                       warn "Skipping run $run_dir, the id_run $id_run may be wrong as this run has a status of $run_status\n";
                       next;
                   }
-                  # TODO: check (or fix) instrument (using external_name) and slot
+                  # check the instrument name is what is expected for this run
+                  my $db_external_name        = $run_row->instrument->external_name();
+                  my $staging_instrument_name = $check->instrument_name(); # from RunInfo.xml
+                  if ( $db_external_name) {
+                      if ($db_external_name ne $staging_instrument_name) {
+                          warn "Skipping run $run_dir, the id_run $id_run may be wrong the instrument name is $staging_instrument_name but we expected $db_external_name\n";
+                          next;
+                      }
+                  }
                   $run_row->update({'folder_name' => $run_folder}); # or validation will fail
                 }    
                 if ( npg_tracking::illumina::run::folder::validation->new(
