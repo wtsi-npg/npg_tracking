@@ -107,7 +107,7 @@ sub find_live {
                   my $staging_instrument_name = $check->instrument_name(); # from RunInfo.xml
                   if ( $db_external_name) {
                       if ($db_external_name ne $staging_instrument_name) {
-                          warn "Skipping run $run_dir, the id_run $id_run may be wrong the instrument name is $staging_instrument_name but we expected $db_external_name\n";
+                          warn "Skipping run $run_dir - instrument name mismatch for run $id_run, '$staging_instrument_name' on staging, '$db_external_name' in the database.\n";
                           next;
                       }
                   }
