@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 65;
+use Test::More tests => 67;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
@@ -441,13 +441,17 @@ note($long_info->runfolder_path);
   lives_and { cmp_deeply( [$long_info->index_read1_cycle_range], [152,159], 'index_read1_cycle_range matches');} 'index_read1_cycle_range lives and matches';
   lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for dual index paired};
   lives_and { cmp_deeply( [$long_info->index_read2_cycle_range], [160,167], 'index_read2_cycle_range matches');} 'index_read2_cycle_range lives and matches';
+
+  is ($long_info->instrument_name, 'M00119', 'instrument name from RunOnfo.xml');
 }
 
 #and a SP flowcell
 {
   my $long_info;
-  my $rfpath = q(t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming//200303_A00562_0352_AHKFVLDRXX);
-  lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for SP flowcell};
-  cmp_ok( $long_info->surface_count, '==', 1, 'surface_count');
+  my $rfpath = q(t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming/200303_A00562_0352_AHKFVLDRXX);
+  lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); }
+    q{create test role for SP flowcell};
+  cmp_ok ( $long_info->surface_count, '==', 1, 'surface_count');
+  is ($long_info->instrument_name, 'A00562', 'instrument name from RunInfo.xml');
 }
 1;
