@@ -99,17 +99,19 @@ sub find_live {
                   # automatically...
                   my $run_status = $run_row->current_run_status_description();
                   if ( $run_status ne qq[run pending] ) {
-                      warn "Skipping run $run_dir, the id_run $id_run may be wrong as this run has a status of $run_status\n";
+                      warn "Skipping $run_dir - the id_run $id_run may be wrong" .
+                           " as this run has a status of $run_status\n";
                       next;
                   }
                   # check the instrument name is what is expected for this run
                   my $db_external_name        = $run_row->instrument->external_name();
                   my $staging_instrument_name = $check->instrument_name(); # from RunInfo.xml
-                  if ( $db_external_name) {
-                      if ($db_external_name ne $staging_instrument_name) {
-                          warn "Skipping run $run_dir - instrument name mismatch for run $id_run, '$staging_instrument_name' on staging, '$db_external_name' in the database.\n";
-                          next;
-                      }
+                  if ( $db_external_name and
+                          ($db_external_name ne $staging_instrument_name)) {
+                      warn "Skipping $run_dir - instrument name mismatch" .
+                         " for run $id_run, '$staging_instrument_name' on staging," .
+                         " '$db_external_name' in the database.\n";
+                      next;
                   }
                   $run_row->update({'folder_name' => $run_folder}); # or validation will fail
                 }    
@@ -124,7 +126,7 @@ sub find_live {
                 }
             }
         } else {
-          warn "Skipping $run_dir - is not a directory\n";
+            warn "Skipping $run_dir - is not a directory\n";
         }
     }
 
