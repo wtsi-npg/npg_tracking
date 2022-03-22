@@ -455,6 +455,26 @@ sub _build_run_flowcell {
   return $flowcell;
 }
 
+=head2 instrument_name
+
+Instrument name from RunInfo.xml
+
+=cut
+
+has q{instrument_name} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build_instrument_name{
+  my $self = shift;
+
+  my $doc = $self->_runinfo_document;
+  my $name = _get_single_element_text($doc, 'Instrument');
+
+  return $name;
+}
+
 #########################################################
 # 'before' attribute modifiers definitions              #
 #########################################################

@@ -62,6 +62,7 @@ still retained in the relevant custom fields.
 my$config=get_config_staging_areas();
 Readonly::Scalar my $SAMPLESHEET_PATH => $config->{'samplesheets'}||q(samplesheets/);
 Readonly::Scalar my $MIN_COLUMN_NUM   => 3;
+Readonly::Scalar my $DEFAULT_LIMS_DRIVER_TYPE => 'xml';
 
 ##################################################################
 ####################### Public attributes ########################
@@ -177,6 +178,10 @@ sub _build_run {
 
 An attribute, an array of st::api::lims type objects.
 
+This attribute should normally be provided by the caller via the
+constuctor. If the attribute is not provided, it it built automatically.
+XML st::api::lims driver is used to access LIMS data.
+
 =cut
 
 has 'lims' => (
@@ -194,7 +199,9 @@ sub _build_lims {
       driver   => st::api::lims::warehouse->new(position=>1, tube_ean13_barcode=>$id)
     )];
   }
-  return [st::api::lims->new(batch_id => $id)->children];
+  return [st::api::lims->new(
+            batch_id => $id,
+            driver_type => $DEFAULT_LIMS_DRIVER_TYPE)->children];
 };
 
 =head2 output

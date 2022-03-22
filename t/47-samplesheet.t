@@ -20,7 +20,7 @@ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q(t/data/samplesheet);
 my $dir = tempdir( CLEANUP => 1 );
 
 subtest 'object creation' => sub {
-   plan tests => 7;
+  plan tests => 8;
 
   my $result = q();
   dies_ok { npg::samplesheet->new( repository=>$dir, output=>\$result)->process }
@@ -29,6 +29,7 @@ subtest 'object creation' => sub {
   my $ss;
   lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7007); } 'sample sheet object - no output provided';
   cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/MS0001309-300.csv', 'default output location (with zeroes trimmed appropriately)');
+  is($ss->lims->[0]->driver_type, 'xml', 'xml driver is used');
 
   lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946); } 'sample sheet object - no output provided';
   cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/000000000-A0616.csv', 'default output location');
