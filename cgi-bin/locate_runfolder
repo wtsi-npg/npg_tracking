@@ -75,10 +75,6 @@ sub main {
 
   my $UNSAFE = q[#];
   $uri .= q(/) . uri_escape($suffix,$UNSAFE);
-  if ($uri =~ /tileviz$/smx && !-e $uri) {
-    # Path for old-style run folders
-    $uri =~ s{/tileviz$}{/qc/tileviz}smx;
-  }
 
   print "Content-type: text/html\n\n",
     qq(<html><head><meta http-equiv="refresh" content="0;url=$uri" /></head></html>\n)
