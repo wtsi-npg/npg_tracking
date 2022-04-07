@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - fixed instrument name check
+
 release 92.4.0
  - Staging area daemon - when the folder name is not in the database,
    prior to updating the database check that for the given run id:
