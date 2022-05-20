@@ -130,7 +130,7 @@ my $statement = qq{
   where ist.id_instrument=i.id_instrument and
         ist.id_instrument_status_dict=isd.id_instrument_status_dict and
         i.id_instrument_format=ifr.id_instrument_format and 
-        ifr.model not in ('Cluster Station', 'cBot') and
+        ifr.model not in ('Cluster Station', 'cBot', 'cBot 2') and
         isd.description in ('down for repair', 'down for service', 'wash required') and
         (ist.date > '$start_time' and ist.date < '$now')
   order by ifr.model, i.name , ist.date, isd.description};
