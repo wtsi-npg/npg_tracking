@@ -10,6 +10,7 @@ use Getopt::Long;
 use DateTime;
 use DateTime::Duration;
 use DateTime::Format::Strptime;
+use List::MoreUtils qw(any);
 use npg_tracking::Schema;
 
 our $VERSION = '0';
@@ -36,7 +37,12 @@ my $from = $from_string ? $DT_PARSER->parse_datetime($from_string) :
 $to->subtract_datetime_absolute($from)->is_positive() ||
   croak q['to' time should be later than 'from' time];
 
-Readonly::Scalar my $ST => npg_tracking::Schema->connect()->storage();
+my $schema = npg_tracking::Schema->connect();
+my $ST = $schema->storage();
+
+my $now          = $DT_PARSER->format_datetime($to);
+my $start_time   = $DT_PARSER->format_datetime($from);
+my $all_time     = _duration($start_time, $now);
 
 sub _was_down {
   my ($id_instrument, $date)= @_;
@@ -116,9 +122,58 @@ sub _uptime {
   return sprintf '%.2f', $up;
 }
 
-my $now          = $DT_PARSER->format_datetime($to);
-my $start_time   = $DT_PARSER->format_datetime($from);
-my $all_time     = _duration($start_time, $now);
+sub _is_down {
+  my $instrument = shift;
+  my $current_status = $instrument->current_instrument_status();
+  return any { $current_status eq $_} ('down for repair', 'down for service');
+}
+
+sub _had_runs_or_current {
+  my $instrument = shift;
+  
+  if ($instrument->iscurrent) {
+    return 1;
+  }
+
+  return $instrument->runs->search(
+    {
+      'run_statuses.date' => {'between' => [$start_time, $now]},
+      'run_status_dict.description' => 'run pending',
+    },
+    {
+      join => { 'run_statuses' => 'run_status_dict' },
+    },
+  )->count();
+}
+
+sub _other_instruments {
+  my @instruments = @_;
+
+  my @names = map { $_->{name} } @instruments;
+  my @no_record_instruments = ();
+
+  my $rs = $schema->resultset('Instrument')->search(
+    {name => {'!=' => [-and => @names]}},
+    {join => 'instrument_format'}
+  );
+  while (my $instrument = $rs->next) {
+    if (_had_runs_or_current($instrument)) {
+      if ($instrument->name =~ /cbot/ixms) {
+        next;
+      }
+      my $is_down = _is_down($instrument);
+      push @no_record_instruments, {
+        name       => $instrument->name,
+        model      => $instrument->instrument_format->model(),
+        iscurrent  => $instrument->iscurrent ? 1 : 0,
+        down_count => $is_down ? 1 : 0,
+        down_time  => $is_down ? $all_time : 0
+      };
+    }
+  }
+
+  return @no_record_instruments;
+}
 
 #### Report title ####
 print qq[# ILLUMINA SEQUENCING INSTRUMENTS UPTIME FROM $start_time TO $now\n\n];
@@ -194,6 +249,9 @@ while ($i < $num_statuses) {
   $i++;
 }
 
+push @instruments, _other_instruments(@instruments);
+@instruments = sort { $a->{name} cmp $b->{name} } @instruments;
+
 #### Report header ####
 print join qq[\t], 'Model', 'Name', 'Current', 'Uptime, %', 'Num. Times Down';
 print qq[\n];
@@ -253,14 +311,21 @@ illumina_instruments_uptime
   period the instrument is down, the start of the reporting period is taken
   the start of the down time.
 
+  If the instrument does not have any status that was assigned during the
+  report period, it is excluded from the report unless it is marked as
+  a current instrument or had a run associated with it during the report
+  period. Such instruments are considered as 100% up if that was their last
+  status or 100% down if the last status was either 'down for repair' or
+  'down for service'.
+
   New types of sequencing instruments will be picked up automatically.
   Uptime for instruments that came or went during the report period and had
   down times will not be accurate since 100% will be the length of the report
   period rather than the length of the period in service during the report
   period. The number of times the instrument was down will still be accurate.
 
-  The instruments having 0 in the 'Current' column were taken out of service
-  during the report period. 
+  The instruments having 0 in the 'iscurrent' column were taken out of service
+  during the report period.
 
 =head1 REQUIRED ARGUMENTS
 
@@ -320,7 +385,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017 Genome Research Limited
+Copyright (C) 2017, 2022 Genome Research Ltd.
 
 This file is part of NPG.
 
