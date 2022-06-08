@@ -1,11 +1,17 @@
 LIST OF CHANGES
 
+ - Fixed the problem in the script that generates the Illumina instruments
+   uptime report. A few month ago the lab stopped recording the washing
+   cycle. As a consequence, statuses of some instruments do not get updated
+   for many months. The instruments with no status within the report period
+   were excluded from the report.
+
 release 92.4.0
  - Staging area daemon - when the folder name is not in the database,
    prior to updating the database check that for the given run id:
       1. the current run status is "run pending",
       2. the instrument name is consistent between the database record
-         and the RunIndo.xml file.
+         and the RunInfo.xml file.
  - Switched the default st::api::lims driver from xml to samplesheet.
    Fixed tests, which implicitly relied on the xml driver being the default.
    Some tests used the default driver type. For those tests either test
