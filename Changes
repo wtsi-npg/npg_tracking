@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - fixed instrument name check
  - Fixed the problem in the script that generates the Illumina instruments
    uptime report. A few month ago the lab stopped recording the washing
    cycle. As a consequence, statuses of some instruments do not get updated
