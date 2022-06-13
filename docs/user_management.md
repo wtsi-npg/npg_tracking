@@ -1,17 +1,9 @@
 # How to give users the permissions to set up a run 
 Users that use the NPG pipeline could ask, through a ticket, to be 
-granted some permissions to set up runs. Permissions should be granted 
-only to those that are well known to the group. So, before adding users 
-to a permission group, it is better to ask the team (if that person is 
-unknown to you).
+granted some permissions to set up runs.
 
-There are following the steps to grant permissions on the 
-[SFWEB platform](http://sfweb.internal.sanger.ac.uk:9000/perl/npg):
-
-1. Log in with your ```LDAP``` credentials to the website
-
-1. Assure you are added to the ```admin group``` by looking in the 
-    top-right corner below your name
+There are following the steps to grant permissions using the
+tracking web pages:
 
 1. Add a ```user```. From the option bar:
     
