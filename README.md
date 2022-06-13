@@ -67,3 +67,6 @@ explicitly stated. Any tag can be removed manually via a web page of a run.
 + `no_auto` - This tag can be manually assigned to a run to prevent it being
               considered by any automatic processing.
 
+User Management
+---------------
+Users may ask to get some permissions to create new runs in the tracking system. To grant permissions the [User Management guide](https://github.com/wtsi-npg/npg_tracking/tree/devel/docs/user_management.md) explains how to assign the users to different groups.
