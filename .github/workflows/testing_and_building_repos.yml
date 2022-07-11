@@ -42,7 +42,7 @@ jobs:
     #install libgd-dev and uuid-dev
     - name: install libgd-dev and uuid-dev 
       run:
-          sudo apt-get install -y libgd-dev uuid-dev 
+          sudo apt-get update -y && sudo apt-get install -y libgd-dev uuid-dev 
     
     - name: install cpanm
       run: |
