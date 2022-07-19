@@ -120,7 +120,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
 };
 
 subtest 'getting i5opposite for run' => sub {
-  plan tests => 15;
+  plan tests => 16;
 
   $basedir = tempdir( CLEANUP => 1 );
   my $rf = join q[/], $basedir, 'run_info';
@@ -146,6 +146,7 @@ subtest 'getting i5opposite for run' => sub {
     'runInfo.novaseq.xml'                  => { 'rpf' => 'RunParameters', 'i5opposite' => 0 },
     'runInfo.novaseq.xp.xml'               => { 'rpf' => 'RunParameters', 'i5opposite' => 0 },
     'runInfo.novaseq.xp.v1.5.xml'          => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
+    'runInfo.novaseq.xp.v1.5.single.xml'   => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
   );
 
   my $run_info_dir = 't/data/run_info';
