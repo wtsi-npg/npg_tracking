@@ -713,7 +713,7 @@ sub is_i5opposite {
   my $self = shift;
   return ( ($self->platform_NovaSeq() &&
                ($self->sbs_consumable_version() >= $NOVASEQ_I5FLIP_REAGENT_VER)) ||
-	   ($self->is_paired_read() &&
+     ($self->is_paired_read() &&
               ($self->platform_HiSeqX()  or $self->platform_HiSeq4000() or
                $self->platform_MiniSeq() or $self->platform_NextSeq())));
 }
