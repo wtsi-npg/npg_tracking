@@ -711,11 +711,11 @@ Method returns true if this is the case.
 
 sub is_i5opposite {
   my $self = shift;
-  return ($self->is_paired_read() &&
+  return ( ($self->platform_NovaSeq() &&
+               ($self->sbs_consumable_version() >= $NOVASEQ_I5FLIP_REAGENT_VER)) ||
+     ($self->is_paired_read() &&
               ($self->platform_HiSeqX()  or $self->platform_HiSeq4000() or
-               $self->platform_MiniSeq() or $self->platform_NextSeq() or
-               ($self->platform_NovaSeq() &&
-                ($self->sbs_consumable_version() >= $NOVASEQ_I5FLIP_REAGENT_VER))));
+               $self->platform_MiniSeq() or $self->platform_NextSeq())));
 }
 
 =head2 uses_patterned_flowcell
