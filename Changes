@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+release 92.6.0
+ - modified is_i5opposite for NovaSeq v1.5 single-end runs
+
 release 92.5.0
  - Fixed instrument name check.
  - Fixed the problem in the script that generates the Illumina instruments
