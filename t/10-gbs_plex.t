@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 13;
+use Test::More tests => 14;
 use Test::Exception;
 use Moose::Meta::Class;
 use File::Spec::Functions qw(catdir);
@@ -66,6 +66,9 @@ use_ok('npg_tracking::data::gbs_plex');
 
   is($fb->gbs_plex_ploidy_path, qq{$gbs_repos/Hs_W30467/default/all/bcftools/Hs_W30467.ploidy}, 
                               q{gbs_plex_ploidy_path bypassing lims object});
+
+  is($fb->gbs_plex_bed_path, qq{$gbs_repos/Hs_W30467/default/all/bcftools/Hs_W30467.primer.bed}, 
+                              q{gbs_plex_bed_path bypassing lims object});
 
   is($fb->refs->[0], qq{$gbs_repos/Hs_W30467/default/all/fasta/Hs_W30467.fa}, 
                               q{ref fasta path bypassing lims object});
