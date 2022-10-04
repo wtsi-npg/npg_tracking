@@ -771,6 +771,7 @@ t/data/repos1/gbs_plex/Hs_W30467/default/all/fasta/Hs_W30467.fa
 t/data/repos1/gbs_plex/Hs_W30467/default/all/bcftools/Hs_W30467.annotation.vcf
 t/data/repos1/gbs_plex/Hs_W30467/default/all/bcftools/Hs_W30467.info.json
 t/data/repos1/gbs_plex/Hs_W30467/default/all/bcftools/Hs_W30467.ploidy
+t/data/repos1/gbs_plex/Hs_W30467/default/all/bcftools/Hs_W30467.primer.bed
 t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/bcfdb/special_set.bcf
 t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/bcfdb/special_set.bcf.csi
 t/data/repos1/geno_refset/special_set/GRCh38_full_analysis_set_plus_decoy_hla/bcftools/special_set.annotation.vcf
