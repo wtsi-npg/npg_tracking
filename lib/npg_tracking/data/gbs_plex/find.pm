@@ -1,5 +1,3 @@
-
-
 package npg_tracking::data::gbs_plex::find;
 
 use strict;
@@ -96,6 +94,17 @@ has 'gbs_plex_ploidy_path' => ( isa        => q{Maybe[Str]},
 sub _build_gbs_plex_ploidy_path {
   my $self = shift;
   return $self->find_file($self->gbs_plex_path, q{bcftools}, q{ploidy});
+}
+
+
+has 'gbs_plex_bed_path' => ( isa        => q{Maybe[Str]},
+                             is         => q{ro},
+                             lazy       => 1,
+                             builder    => q{_build_gbs_plex_bed_path},);
+
+sub _build_gbs_plex_bed_path {
+  my $self = shift;
+  return $self->find_file($self->gbs_plex_path, q{bcftools}, q{primer.bed});
 }
 
 

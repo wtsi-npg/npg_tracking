@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+release 92.7.0
+ - add primer bed path to gbs_plex find.
+
 release 92.6.0
  - modified is_i5opposite for NovaSeq v1.5 single-end runs
 
