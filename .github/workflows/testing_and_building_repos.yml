@@ -4,10 +4,9 @@ jobs:
   build: 
     strategy:
       matrix:
-        os: ['ubuntu-18.04']
         perl: ['5.26'] 
         
-    runs-on: ${{matrix.os}}
+    runs-on: ubuntu-latest
     services:
        mysql:
          image: mysql:5.7
@@ -19,7 +18,7 @@ jobs:
            MYSQL_DATABASE: npgt
          options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=5 
  
-    name: Perl ${{ matrix.perl }} on ${{ matrix.os }}  
+    name: Perl ${{ matrix.perl }}
     steps:
     - uses: actions/checkout@v2 
     
@@ -37,12 +36,15 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/perl5ext
-        key: ${{ matrix.os}}-build-cpanm-external
+        key: ${{ runner.os }}-build-cpanm-external
 
     #install libgd-dev and uuid-dev
     - name: install libgd-dev and uuid-dev 
-      run:
-          sudo apt-get update -y && sudo apt-get install -y libgd-dev uuid-dev libgd-text-perl
+      run: |
+          sudo apt-get update
+          # https://github.com/actions/runner-images/issues/2139
+          sudo apt-get remove -y nginx libgd3
+          sudo apt-get install -y libgd-dev uuid-dev libgd-text-perl
     
     - name: install cpanm
       run: |
