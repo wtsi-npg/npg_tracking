@@ -1,6 +1,6 @@
-* All About Illumina Instruments
+# All About Illumina Instruments
 
-** Create Instrument
+## Create Instrument
 
 To create a new validated instrument, execute the appropriate one-liner using
 the correct instrument name.
@@ -24,7 +24,7 @@ NovaSeq instrument:
 perl -le 'use strict; use npg_tracking::Schema; my $s=npg_tracking::Schema->connect(); $s->txn_do(sub{my $m=$s->resultset(q(Instrument))->find_or_create({name=>q[NV22], instrument_format=>{model=>q(NovaSeq)}}); $m->update({iscurrent=>1, external_name=>q(A00518)}); $m->add_to_designations({description=>q(Accepted)}); print join",",$m->get_columns; print join",",$_->get_columns foreach $m->designations; print "current instrument status: ".$m->current_instrument_status;});'
 ```
 
-** Delete Instrument
+## Delete Instrument
 
 To decommission an instrument, set `iscurrent` attribute to 0:
 
