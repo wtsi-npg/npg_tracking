@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+release 92.8.0
+ - change CI runner from Ubuntu 18.04 to ubuntu-latest
+ - add ad-hoc api usage example for run annotation and tagging
+
 release 92.7.0
  - add primer bed path to gbs_plex find.
 
