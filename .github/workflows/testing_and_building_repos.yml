@@ -33,7 +33,7 @@ jobs:
     # Caching cpanm external modules
     - name: Cache cpanm external modules
       id: cpanmCache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/perl5ext
         key: ${{ runner.os }}-build-cpanm-external
