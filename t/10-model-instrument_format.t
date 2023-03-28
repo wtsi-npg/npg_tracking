@@ -24,8 +24,8 @@ my $util = t::util->new({fixtures => 1});
         });
   my $cifs = $if->current_instrument_formats();
   isa_ok($cifs, 'ARRAY');
-  is((scalar @{$cifs}), 7, 'unprimed cache cif');
-  is((scalar @{$if->current_instrument_formats()}), 7, 'primed cache cif');
+  is((scalar @{$cifs}), 9, 'unprimed cache cif');
+  is((scalar @{$if->current_instrument_formats()}), 9, 'primed cache cif');
   my $name;
   lives_ok { $name = $if->manufacturer_name }
     'no error calling manufacturer_name on an object used in list context';
