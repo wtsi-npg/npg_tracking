@@ -1,5 +1,10 @@
 LIST OF CHANGES
 
+Next release is about NovaSeqX - 93.0.0
+
+ - Introduced a new instrument format database record for NovaSeqX,
+   updated test data and one of the tests. 
+
 release 92.8.1
  - update version of github actions
 
