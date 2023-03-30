@@ -24,8 +24,8 @@ my $util = t::util->new({fixtures => 1});
         });
   my $cifs = $if->current_instrument_formats();
   isa_ok($cifs, 'ARRAY');
-  is((scalar @{$cifs}), 9, 'unprimed cache cif');
-  is((scalar @{$if->current_instrument_formats()}), 9, 'primed cache cif');
+  is((scalar @{$cifs}), 10, 'unprimed cache cif');
+  is((scalar @{$if->current_instrument_formats()}), 10, 'primed cache cif');
   my $name;
   lives_ok { $name = $if->manufacturer_name }
     'no error calling manufacturer_name on an object used in list context';
@@ -117,7 +117,8 @@ our $INS = q{npg::model::instrument};
     'MiSeq' => ['MS1'],
     'HiSeqX' => ['HX1','HX2'],
     'HiSeq' => ['HS1','HS2','HS3'],
-    'cBot' => ['cBot1']
+    'cBot' => ['cBot1'],
+    'cBot 2' => ['cBot20'],
   }; 
   my $model = npg::model::instrument_format->new({util => $util});
   my $instruments_by_format =

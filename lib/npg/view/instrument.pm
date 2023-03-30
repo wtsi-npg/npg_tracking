@@ -252,7 +252,7 @@ sub _read_png_colour {
     if ( $statuses->{run} !~ / run[ ](?: pending | in[ ]progress ) /smix ) {
        $finished_work = 1;
     }
-  } elsif ( $model->instrument_format->model() eq 'cBot' ) {
+  } elsif ( $model->instrument_format->model() =~ /^cBot/smx) {
     if ( !defined $model->percent_complete() ) {
         $finished_work = 1;
     }

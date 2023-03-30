@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use t::util;
-use Test::More tests => 125;
+use Test::More tests => 133;
 use Test::Deep;
 use Test::Exception;
 
@@ -259,15 +259,21 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
 }
 
 {
-  my $model = npg::model::instrument->new({util => $util, id_instrument => 48,});
-  ok(!$model->does_sequencing, 'instrument does not do sequencing');
-  ok(!$model->is_two_slot_instrument, 'is not two slot instrument');
-  ok($model->is_cbot_instrument, 'is cbot instrument');
-  ok (!$model->is_idle, 'instrument is not idle');
-  ok (!$model->status_to_change_to, 'no status to change to');
-  ok (!$model->autochange_status_if_needed, 'no autochange status for cbot');
-  is($model->fc_slots2current_runs, undef, 'does not have mapping of slots to current runs');
-  is($model->fc_slots2blocking_runs, undef, 'does not have mapping of slots to blocking runs')
+  for my $id ((48, 93)) {
+    my $model = npg::model::instrument->new({util => $util, id_instrument => $id,});
+    ok(!$model->does_sequencing, 'instrument does not do sequencing');
+    ok(!$model->is_two_slot_instrument, 'is not two slot instrument');
+    ok($model->is_cbot_instrument, 'is cbot instrument');
+    if ($id == 48) {
+      ok (!$model->is_idle, 'instrument is not idle');
+    } else {
+      ok ($model->is_idle, 'instrument is idle'); 
+    }
+    ok (!$model->status_to_change_to, 'no status to change to');
+    ok (!$model->autochange_status_if_needed, 'no autochange status for cbot');
+    is($model->fc_slots2current_runs, undef, 'does not have mapping of slots to current runs');
+    is($model->fc_slots2blocking_runs, undef, 'does not have mapping of slots to blocking runs')
+  }
 }
 
 {
