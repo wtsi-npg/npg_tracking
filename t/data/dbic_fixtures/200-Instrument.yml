@@ -114,4 +114,17 @@
   staging_dir: 
   latest_contact: 
   percent_complete: 
+- id_instrument: 69
+  name: NVX1
+  id_instrument_format: 12
+  external_name: ''
+  serial: ''
+  iscurrent: 1
+  ipaddr: 
+  instrument_comp:
+  mirroring_host: 
+  staging_dir: 
+  latest_contact: 
+  percent_complete:
+  lab: Ogilvie 
 

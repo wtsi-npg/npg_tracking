@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use t::util;
-use Test::More tests => 133;
+use Test::More tests => 141;
 use Test::Deep;
 use Test::Exception;
 
@@ -234,7 +234,6 @@ my $util = t::util->new({ fixtures => 1 });
   lives_ok {$model->status_reset('wash required')} 'no error changing status';
   is( $model->current_instrument_status->instrument_status_dict()->description(),
     'wash required', 'cbot current status is wash required');
-  #throws_ok {$model->status_reset('wash performed')} qr/cBot1 \"wash performed\" status cannot follow current \"wash required\" status/, 'error moving from "wash required" directly to "wash performed"';
   lives_ok {$model->status_reset('wash performed')} 'no error moving from "wash required" directly to "wash performed"';
   lives_ok {$model->status_reset('wash in progress')} 'no error changing status';
   lives_ok {$model->status_reset('wash performed')} 'no error changing status';
@@ -286,6 +285,19 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
   ok (!$model->status_to_change_to('analysis in progress'), 'no status to change to');
   ok (!$model->autochange_status_if_needed('analysis in progress'), 'no autochange status');
   throws_ok { $model->status_reset() } qr/Status to change to should be defined/, 'error when status to set to not given';
+}
+
+{
+  my $instrument = npg::model::instrument->new({util => $util, id_instrument => 94,});
+  is($instrument->name, 'NVX1', 'instrument name is correct');
+  is($instrument->instrument_format->model, 'NovaSeqX', 'instrument model is correct'); 
+  ok($instrument->does_sequencing, 'instrument does sequencing');
+  ok($instrument->is_two_slot_instrument, 'is two slot instrument');
+  ok(!$instrument->is_cbot_instrument, 'is not a cBot instrument');
+  my $expected = {fc_slotA => [], fc_slotB => [],};
+  cmp_deeply($instrument->fc_slots2current_runs, $expected, 'empty mapping of slots to current runs');
+  cmp_deeply($instrument->fc_slots2blocking_runs, $expected, 'empty mapping of slots to blocking runs');
+  ok ($instrument->is_idle, 'instrument is idle');
 }
 
 {

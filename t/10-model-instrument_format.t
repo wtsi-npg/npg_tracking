@@ -119,6 +119,7 @@ our $INS = q{npg::model::instrument};
     'HiSeq' => ['HS1','HS2','HS3'],
     'cBot' => ['cBot1'],
     'cBot 2' => ['cBot20'],
+    'NovaSeqX' => ['NVX1']
   }; 
   my $model = npg::model::instrument_format->new({util => $util});
   my $instruments_by_format =
@@ -140,7 +141,8 @@ our $INS = q{npg::model::instrument};
   $expected = {
     'GA-II' => [qw/IL2 IL3 IL4 IL5 IL6 IL7 IL8/],
     'HiSeqX' => ['HX2'],
-    'MiSeq' => ['MS1']
+    'MiSeq' => ['MS1'],
+    'NovaSeqX' => ['NVX1'],
   };
   $model = npg::model::instrument_format->new({util => $util});
   $instruments_by_format =
