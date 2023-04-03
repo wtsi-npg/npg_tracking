@@ -41,7 +41,6 @@ data/templates/instrument_format_list.tt2
 data/templates/instrument_format_read.tt2
 data/templates/instrument_formats_menu.tt2
 data/templates/instrument_list.tt2
-data/templates/instrument_list_cluster_station.tt2
 data/templates/instrument_list_graphical.tt2
 data/templates/instrument_list_textual.tt2
 data/templates/instrument_mod_add_ajax.tt2
