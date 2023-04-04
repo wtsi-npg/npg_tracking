@@ -590,6 +590,19 @@ sub platform_NovaSeq {
   return $self->_software_application_name() =~ /NovaSeq/xms;
 }
 
+=head2 platform_NovaSeqX
+
+Method returns true if sequencing was performed on an Illumina
+instrument belonging to NovaSeqX platform.
+
+=cut
+
+sub platform_NovaSeqX {
+  my $self = shift;
+  my $itype = _get_single_element_text($self->_run_params(), 'InstrumentType');
+  return $itype =~ /NovaSeqX/xms;
+}
+
 ##use critic
 
 =head2 workflow_type
@@ -698,10 +711,11 @@ sub is_rapid_run_abovev2 {
 
 =head2 is_i5opposite
 
-A dual-indexed sequencing run on the MiniSeq, NextSeq, HiSeq 4000, HiSeq 3000 or NovaSeq using v1.5 reagents
-performs the Index 2 Read after the Read 2 resynthesis step. This workflow
-requires a reverse complement of the Index 2 (i5) primer sequence compared to
-the primer sequence used on other Illumina platform, see
+A dual-indexed sequencing run on the MiniSeq, NextSeq, HiSeq 4000, HiSeq 3000
+or NovaSeq using v1.5 reagents performs the Index 2 Read after the Read 2
+resynthesis step. This workflow requires a reverse complement of the Index 2
+(i5) primer sequence compared to the primer sequence used on other Illumina
+platform, see
 https://support.illumina.com/content/dam/illumina-support/documents/documentation/system_documentation/miseq/indexed-sequencing-overview-guide-15057455-04.pdf
 For NovaSeq using v1.5 reagents the SbsConsumableVersion will be 3
 
