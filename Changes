@@ -1,5 +1,14 @@
 LIST OF CHANGES
 
+Next release is about NovaSeqX - 93.0.0
+
+ - Introduced a new instrument format database record for NovaSeqX,
+   updated test data and one of the tests. 
+ - Fixed visual representation for 'cBot 2' model:
+     the instrument now appears in teh visual listing,
+     the instrument does not appea in the list of sequencing instruments
+     when a new run is created.
+
 release 92.8.1
  - update version of github actions
 

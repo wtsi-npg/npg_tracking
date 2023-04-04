@@ -595,7 +595,8 @@ Returns true for sequencing instruments, false otherwse.
 
 sub does_sequencing {
   my $self = shift;
-  return ($self->instrument_format->model && $self->instrument_format->model ne $CBOT_INSTR_MODEL);
+  return ($self->instrument_format->model &&
+    ($self->instrument_format->model !~ /^$CBOT_INSTR_MODEL/smx));
 }
 
 =head2 is_idle

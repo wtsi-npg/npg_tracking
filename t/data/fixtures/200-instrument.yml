@@ -210,3 +210,17 @@
   staging_dir: ''
   latest_contact:
   lab: Ogilvie
+- external_name: ''
+  id_instrument: 93
+  id_instrument_format: 15
+  serial: ''
+  name: cBot20
+  iscurrent: 1
+  ipaddr: ''
+  instrument_comp: ''
+  mirroring_host:
+  staging_dir:
+  latest_contact:
+  percent_complete:
+  lab:
+
