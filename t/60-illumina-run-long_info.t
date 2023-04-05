@@ -28,7 +28,7 @@ package main;
 my $basedir = tempdir( CLEANUP => 1 );
 
 subtest 'retrieving information from runParameters.xml' => sub {
-  plan tests => 177;
+  plan tests => 153;
 
   my $rf = join q[/], $basedir, 'runfolder';
   mkdir $rf;
@@ -45,7 +45,6 @@ subtest 'retrieving information from runParameters.xml' => sub {
     runParameters.hiseq.xml
     runParameters.hiseqx.upgraded.xml
     runParameters.hiseqx.xml
-    RunParameters.miniseq.xml
     runParameters.miseq.xml
     RunParameters.nextseq.xml
     RunParameters.novaseq.xml
@@ -56,8 +55,8 @@ subtest 'retrieving information from runParameters.xml' => sub {
                   /;
   my $dir = 't/data/run_params';
 
-  my @platforms = qw/MiniSeq HiSeq HiSeq4000 HiSeqX
-                    MiSeq NextSeq NovaSeq NovaSeqX/;
+  my @platforms = qw/HiSeq HiSeq4000 HiSeqX
+                     MiSeq NextSeq NovaSeq NovaSeqX/;
   my @patterned_flowcell_platforms = map {lc $_} qw/HiSeq4000 HiSeqX NovaSeq/;
 
   for my $f (@rp_files) {
@@ -122,7 +121,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
 };
 
 subtest 'getting i5opposite for run' => sub {
-  plan tests => 16;
+  plan tests => 15;
 
   $basedir = tempdir( CLEANUP => 1 );
   my $rf = join q[/], $basedir, 'run_info';
@@ -142,7 +141,6 @@ subtest 'getting i5opposite for run' => sub {
     'runInfo.hiseq.xml'                    => { 'rpf' => 'runParameters', 'i5opposite' => 0 },
     'runInfo.hiseqx.upgraded.xml'          => { 'rpf' => 'runParameters', 'i5opposite' => 1 },
     'runInfo.hiseqx.xml'                   => { 'rpf' => 'runParameters', 'i5opposite' => 1 },
-    'runInfo.miniseq.xml'                  => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
     'runInfo.miseq.xml'                    => { 'rpf' => 'runParameters', 'i5opposite' => 0 },
     'runInfo.nextseq.xml'                  => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
     'runInfo.novaseq.xml'                  => { 'rpf' => 'RunParameters', 'i5opposite' => 0 },
@@ -444,7 +442,7 @@ $ENV{TEST_DIR} = 't/data/long_info';
   lives_ok { $long_info = test::long_info->new({runfolder_path=>$rfpath}); } q{create test role for dual index paired};
   lives_and { cmp_deeply( [$long_info->index_read2_cycle_range], [160,167], 'index_read2_cycle_range matches');} 'index_read2_cycle_range lives and matches';
 
-  is ($long_info->instrument_name, 'M00119', 'instrument name from RunOnfo.xml');
+  is ($long_info->instrument_name, 'M00119', 'instrument name from RunInfo.xml');
 }
 
 #and a SP flowcell
