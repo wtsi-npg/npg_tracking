@@ -459,7 +459,7 @@ Might be undefined.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2015,2018,2019,2020 Genome Research Ltd.
+Copyright (C) 2013,2014,2015,2018,2019,2020,2023 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
