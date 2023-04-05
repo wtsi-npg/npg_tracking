@@ -18,23 +18,28 @@ our $VERSION = '0';
 
 with q{npg_tracking::illumina::run};
 
+# Directories created by Illumina software
 Readonly::Scalar my  $DATA_DIR          => q{Data};
 Readonly::Scalar my  $CONFIG_DIR        => q{Config};
-Readonly::Scalar my  $QC_DIR            => q{qc};
 Readonly::Scalar my  $BASECALL_DIR      => q{BaseCalls};
 Readonly::Scalar my  $INTENSITIES_DIR   => q{Intensities};
+Readonly::Scalar my  $DRAGEN_ANALYSIS_DIR => q{Analysis};
+
+# Directories and links created by NPG software
 Readonly::Scalar my  $ANALYSIS_DIR_GLOB => q{_basecalls_};
 Readonly::Scalar my  $NO_CAL_DIR        => q{no_cal};
 Readonly::Scalar my  $ARCHIVE_DIR       => q{archive};
 Readonly::Scalar my  $NO_ARCHIVE_DIR    => q{no_archive};
 Readonly::Scalar my  $PP_ARCHIVE_DIR    => q{pp_archive};
 Readonly::Scalar our $SUMMARY_LINK      => q{Latest_Summary};
+Readonly::Scalar my  $QC_DIR            => q{qc};
 
 Readonly::Hash my %NPG_PATH  => (
   q{runfolder_path}    => 'Path to and including the run folder',
-  q{analysis_path}     => 'Path to the top level custom analysis directory',
+  q{dragen_analysis_path} => 'Path to the DRAGEN analysis directory',
   q{intensity_path}    => 'Path to the "Intensities" directory',
   q{basecall_path}     => 'Path to the "BaseCalls" directory',
+  q{analysis_path}     => 'Path to the top level custom analysis directory',
   q{recalibrated_path} => 'Path to the recalibrated qualities directory',
   q{archive_path}      => 'Path to the directory with data ready for archiving',
   q{no_archive_path}   => 'Path to the directory with data not to be archived',
@@ -128,6 +133,11 @@ sub _build_analysis_path {
 sub _build_intensity_path {
   my ($self) = @_;
   return catdir($self->runfolder_path(), $DATA_DIR, $INTENSITIES_DIR);
+}
+
+sub _build_dragen_analysis_path {
+  my $self = shift;
+  return catdir($self->runfolder_path(), $DRAGEN_ANALYSIS_DIR);
 }
 
 sub _build_basecall_path {
@@ -383,7 +393,14 @@ recalibrated directory, which will be used to construct other paths from.
 
 =head2 basecall_path - ro accessor to the BaseCalls level directory path
 
+=head2 dragen_analysis_path
+
+The default path for the output of the on-board DRAGEN analysis. This path
+might exist for runs performed on NovaSeqX Illumina instruments. 
+
 =head2 recalibrated_path - ro accessor to the recalibrated level directory path
+
+=head2 analysis_path
 
 =head2 archive_path - ro accessor to the archive level directory path
 
@@ -391,7 +408,7 @@ recalibrated directory, which will be used to construct other paths from.
 
 =head2 pp_archive_path
 
-read-only attribute, path to the archive directory for third party portable pipelines
+Path to the archive directory for third party portable pipelines.
 
 =head2 subpath
 
