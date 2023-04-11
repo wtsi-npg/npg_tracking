@@ -223,4 +223,18 @@
   latest_contact:
   percent_complete:
   lab:
+- external_name: ''
+  id_instrument: 94
+  id_instrument_format: 14
+  serial: ''
+  name: NVX1
+  iscurrent: 1
+  ipaddr: ''
+  instrument_comp: ''
+  mirroring_host:
+  staging_dir:
+  latest_contact:
+  percent_complete:
+  lab: Ogilvie
+
 

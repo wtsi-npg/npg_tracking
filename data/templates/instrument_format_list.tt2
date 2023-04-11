@@ -10,7 +10,7 @@
     </tr>
   </thead>
   <tbody>
-[% FOREACH instrument_format = model.instrument_formats %]
+[% FOREACH instrument_format = model.instrument_formats_sorted %]
   [% IF instrument_format.iscurrent %]
     <tr>
       <td>[% instrument_format.manufacturer_name %]</td>

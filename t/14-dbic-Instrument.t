@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 58;
+use Test::More tests => 62;
 use Test::Deep;
 use Test::Exception;
 use DateTime;
@@ -264,6 +264,14 @@ my $test_instrument_id = 6;
     $nv->autochange_status_if_needed('run complete', 'pipeline');
     is($nv->current_instrument_status, 'up', 'NovaSeq status remains at up when automatically
                                               changed from up');
+}
+
+{
+    my $nvx = $schema->resultset('Instrument')->find({id_instrument => 69});
+    is($nvx->name, 'NVX1', 'correct instrument name');
+    is($nvx->instrument_format->model, 'NovaSeqX', 'is NovaSeqX instrument'); 
+    is($nvx->lab, 'Ogilvie','correct lab location');
+    ok($nvx->does_sequencing(), 'is a sequencing instrument');
 }
 
 1;
