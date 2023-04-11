@@ -144,7 +144,7 @@ our $INS = q{npg::model::instrument};
     'GA-II' => [qw/IL2 IL3 IL4 IL5 IL6 IL7 IL8/],
     'HiSeqX' => ['HX2'],
     'MiSeq' => ['MS1'],
-    'NovaSeqX' => ['NVX1'],
+    'NovaSeqX' => ['NVX1']
   };
   $model = npg::model::instrument_format->new({util => $util});
   $instruments_by_format =
