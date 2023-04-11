@@ -263,7 +263,7 @@ Returns a hash ref containing keys of current formats (which have current instru
 
 =head2 instrument_formats_sorted
 
-Returns an array of  instrument format objects sorted by model name.
+Returns an array of instrument format objects sorted by model name.
 
 =head1 DIAGNOSTICS
 
