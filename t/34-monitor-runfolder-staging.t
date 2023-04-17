@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 58;
+use Test::More tests => 59;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -13,6 +13,7 @@ use Fcntl qw/S_ISGID/;
 use t::dbic_util;
 
 my $MOCK_STAGING = 't/data/gaii/staging';
+my $SECONDS_PER_HOUR = 60 * 60;
 
 BEGIN {
     local $ENV{'HOME'} = 't'; # t/.npg/npg_tracking config file does not contain
@@ -248,7 +249,6 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
 
     unlink $path_to_copy_complete or die "Could not delete file '$path_to_copy_complete' $!";
 
-    my $SECONDS_PER_HOUR = 60 * 60;
     my ($atime, $mtime) = (stat($path_to_rta_complete))[8,9];
     $atime -= 3 * $SECONDS_PER_HOUR; # make it 3 hours ago
     $mtime = $atime;
@@ -517,5 +517,34 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     $r= (stat($tmpdir))[2] & S_ISGID();
     ok( $r, 'now the gid bit is set');
 }
+
+subtest 'run completion for NovaSeqX' => sub {
+    plan tests => 4;
+
+    my $tmpdir = tempdir( CLEANUP => 1 );
+    copy('t/data/run_params/RunParameters.novaseqx.xml',"$tmpdir/RunParameters.xml")
+      or die "Copy failed: $!";
+    copy('t/data/run_info/runInfo.novaseqx.xml',"$tmpdir/RunInfo.xml")
+      or die "Copy failed: $!";
+
+    my $monitor = Monitor::RunFolder::Staging->new(runfolder_path => $tmpdir);
+    ok (!$monitor->is_run_complete(), 'run is not complete');
+
+    my $copy_complete_file = "$tmpdir/CopyComplete.txt";
+    touch_file($copy_complete_file);
+    my $rta_complete_file = "$tmpdir/RTAComplete.txt";
+    touch_file($rta_complete_file);
+    ok ($monitor->is_run_complete(), 'run is complete');
+    unlink $copy_complete_file;
+    ok (!$monitor->is_run_complete(), 'run is not complete');    
+    
+    my ($atime, $mtime) = (stat($rta_complete_file))[8,9];
+    $atime -= 12 * $SECONDS_PER_HOUR; # make it 12 hours ago
+    $mtime = $atime;
+    utime($atime, $mtime, $rta_complete_file)
+        or die "couldn't backdate $rta_complete_file, $!";
+    ok( $monitor->is_run_complete(),
+        'RTAComplete + long wait time is enough for NovaSeqX');
+};
 
 1;

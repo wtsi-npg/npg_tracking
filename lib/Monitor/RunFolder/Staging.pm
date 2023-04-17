@@ -68,20 +68,16 @@ sub _find_files {
     return @markers;
 }
 
-sub _has_copy_complete_file {
-    my ($self) = @_;
-    my @files = $self->_find_files($COPY_COMPLETE_FN);
-    return scalar @files;
-}
-
 sub is_run_complete {
     my ($self) = @_;
-
+    
     my @markers = $self->_find_files($RTA_COMPLETE_FN);
-
-    if ( scalar @markers ) { # Has RTAComplete
-        if ( $self->platform_NovaSeq() ) {
-            if ( $self->_has_copy_complete_file() ) {
+    my $has_rta_complete_file = scalar @markers;
+    my $has_copy_complete_file = $self->_find_files($COPY_COMPLETE_FN);
+ 
+    if ( $has_rta_complete_file ) {
+        if ( $self->platform_NovaSeq() or $self->platform_NovaSeqX()) {
+            if ( $has_copy_complete_file ) {
                 return 1;
             } else {
                 my $mtime = ( stat $markers[0] )[$MTIME_INDEX];
@@ -91,9 +87,9 @@ sub is_run_complete {
         }
         return 1;
     } else {
-        if ( $self->platform_NovaSeq() && $self->_has_copy_complete_file() ) {
+        if ( $has_copy_complete_file ) {
             my $rf = $self->runfolder_path();
-            carp "NovaSeq runfolder '$rf' with CopyComplete but not RTAComplete";
+            carp "Runfolder '$rf' with CopyComplete but not RTAComplete";
         }
     }
     return 0;
@@ -404,13 +400,12 @@ difference between the cycle counts within a limit set by $MAXIMUM_CYCLE_LAG
 
 =head2 is_run_complete
 
-If not a NovaSeq runfolder, it will return true if RTAComplete file is present.
+For a non-NovaSeq(X) runfolder, it will return true if the RTAComplete.txt file
+is present.
 
-If it is a NovaSeq runfolder will return true if RTAComplete and CopyComplete
-are present or if only RTAComplete is present but has been there for more than
-a timeout limit.
-
-Returns False otherwise.
+For a  NovaSeq(X) runfolder will return true if both RTAComplete.txt and
+CopyComplete.txt files are present or if only RTAComplete.tx is present,
+but has been there for longer than a timeout limit.
 
 =head2 validate_run_complete
 
