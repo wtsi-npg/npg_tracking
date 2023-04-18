@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Surface>Both</Surface>
+  <ReadType>SingleEnd</ReadType>
+  <Side>B</Side>
+  <Read1NumberOfCycles>3</Read1NumberOfCycles>
+  <PlannedRead1Cycles>3</PlannedRead1Cycles>
+  <RunNumber>225</RunNumber>
+  <RtaVersion>v3.3.3</RtaVersion>
+  <RecipeVersion>1.3.1</RecipeVersion>
+  <ExperimentName>1234</ExperimentName>
+  <RunStartDate>171212</RunStartDate>
+  <RunId>171212_A00150_0225_BH2FYTDRXX</RunId>
+  <InstrumentName>A00150</InstrumentName>
+  <PlatformType>HighThroughput</PlatformType>
+  <Application>NovaSeq Control Software</Application>
+  <ApplicationVersion>1.3.1</ApplicationVersion>
+  <WorkflowType>NovaSeqXp</WorkflowType>
+</RunParameters>
+

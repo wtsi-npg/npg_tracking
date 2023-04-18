@@ -165,15 +165,9 @@ sub check_tiles {
 
     print {*STDERR} "\tChecking Lanes, Cycles, Tiles...\n" or carp $OS_ERROR;
 
-    my @lanes   = glob "$path/$INTENSITIES_DIR_PATH/L*";
-    @lanes      = grep { m/ L \d+ $ /msx } @lanes;
+    my @lanes = grep { m/ L \d+ $ /msx }
+                glob "$path/$INTENSITIES_DIR_PATH/BaseCalls/L*";
     my $l_count = scalar @lanes;
-    if ( !$l_count ){
-        @lanes   = glob "$path/Data/Intensities/BaseCalls/L*";
-        @lanes      = grep { m/ L \d+ $ /msx } @lanes;
-        $l_count = scalar @lanes;
-    }
-
     if ( $l_count != $expected_lanes ) {
         carp "Missing lane(s) - [$expected_lanes $l_count]";
         return 0;
@@ -183,19 +177,6 @@ sub check_tiles {
 
         my @cycles  = grep { m/ C \d+ [.]1 $ /msx } glob "$lane/C*.1";
         my $c_count = scalar @cycles;
-
-        my $cifs_present = 0;
-        if ($c_count) {
-            #check first cycle for cif files - will actually fill in number of tiles but treat as boolean
-            $cifs_present = scalar grep { m/ s_ \d+ _ \d+ [.]cif $ /msx } glob "$cycles[0]/*.cif";
-        }
-
-        if(! $cifs_present) {
-            $lane =~ s{$INTENSITIES_DIR_PATH/L}{$INTENSITIES_DIR_PATH/BaseCalls/L}smx;
-            @cycles  = grep { m/ C \d+ [.]1 $ /msx } glob "$lane/C*.1";
-            $c_count = scalar @cycles;
-        }
-
         if ( $c_count != $expected_cycles ) {
             carp "Missing cycle(s) $lane - [$expected_cycles $c_count]";
             return 0;
@@ -207,17 +188,18 @@ sub check_tiles {
             return 0;
         }
         my $expected_tiles_this_lane = $expected_tiles->{$this_lane};
-
-        foreach my $cycle ( @cycles) {
-            my $filetype = $cifs_present ? 'cif'
-                                         : $self->platform_NovaSeq() ? 'cbcl' :'bcl';
-            if ( $self->platform_NovaSeq() ) {
+        my $platform_is_nv = $self->platform_NovaSeq() or
+                             $self->platform_NovaSeqX();
+        my $filetype = $platform_is_nv ? 'cbcl' : 'bcl';
+         
+        foreach my $cycle (@cycles) {
+            if ($platform_is_nv) {
                 my @cbcl_files = glob "$cycle/*.$filetype" . q({,.gz});
                 @cbcl_files = grep { m/ L \d+ _ \d+ [.] $filetype (?: [.] gz )? $ /msx } @cbcl_files;
                 my $count = scalar @cbcl_files;
                 # there should be one cbcl file per expected surface
                 if ( $count != $expected_surfaces ) {
-                    carp 'Missing cbcl(s) files: '
+                    carp 'Missing cbcl files: '
                        . "$cycle - [expected: $expected_surfaces, found: $count]";
                     return 0;
                 }
@@ -225,7 +207,6 @@ sub check_tiles {
                 my @tiles   = glob "$cycle/*.$filetype" . q({,.gz});
                 @tiles      = grep { m/ s_ \d+ _ \d+ [.] $filetype (?: [.] gz )? $ /msx } @tiles;
                 my $t_count = scalar @tiles;
-
                 if ( $t_count != $expected_tiles_this_lane ) {
                     carp 'Missing tile(s): '
                        . "$lane C#$cycle - [$expected_tiles_this_lane $t_count]";
