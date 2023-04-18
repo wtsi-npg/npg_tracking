@@ -485,7 +485,7 @@ sub status_to_change_to {
     }
     my $next_auto = $STATUS_CHANGE_AUTO{$current};
 
-    if ($self->instrument_format->model eq 'NovaSeq' &&
+    if ($self->instrument_format->model =~ /NovaSeq/smx &&
         $next_auto eq 'wash required'){
         $next_auto = 'up';
     }
