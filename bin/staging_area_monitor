@@ -66,7 +66,7 @@ sub check_path { ##### Function to deal with one run folder
         _log('Folder is in /analysis/');
 
         if( $run_status eq 'qc complete') {
-            _log('Moving run folder to outgoing');
+            _log('Moving run folder to /outgoing/');
             (not $DRY_RUN) and _log($folder->move_to_outgoing());
         }
         return; # Nothing else to do for a folder in /analysis/
@@ -74,7 +74,7 @@ sub check_path { ##### Function to deal with one run folder
 
     _log('Folder is in /incoming/');
 
-    # If we don't remember seeing it before set the folder name and glob;
+    # If we don't remember seeing it before, set the folder name and glob;
     # set staging tag, if appropriate, set/fix instrument side, workflow side.
     # Previously we avoided making changes to the db if status was at or after
     # 'run complete'. We might consider reinstating this rule.
@@ -102,12 +102,13 @@ sub check_path { ##### Function to deal with one run folder
     # Could delete the directory here. Leave it for now.
     return if $run_status eq 'data discarded';
 
+    my $latest_cycle = $folder->get_latest_cycle();
+    if ($folder->update_cycle_count($latest_cycle)) {
+        _log("Cycle count updated to $latest_cycle");
+    }
+
     if ( $run_status eq 'run pending' )  {
-        my $latest_cycle = $folder->get_latest_cycle($run_path);
         if ($latest_cycle) {
-            if ($folder->update_cycle_count($latest_cycle)) {
-                _log("Cycle count updated to $latest_cycle");
-            }
             $folder->update_run_status('run in progress');
             _log(q[Run status updated to 'run in progress']);
         }
@@ -115,20 +116,13 @@ sub check_path { ##### Function to deal with one run folder
     }
 
     if ( $run_status eq 'run in progress' ) {
-
         # The lane count comes from the run folder structure, which
         # we should have by now set up.
         $folder->delete_superfluous_lanes();
-        my $latest_cycle = $folder->get_latest_cycle($run_path);
-        if ($folder->update_cycle_count($latest_cycle)) {
-            _log("Cycle count updated to $latest_cycle");
-        }
         if ($folder->is_run_complete()) {
             $folder->update_run_status('run complete');
             _log(q[Run status updated to 'run complete']);
         }
-        $folder->update_copying_problem_tag($folder->cycle_lag($run_path));
-
         return;
     }
 
@@ -136,42 +130,35 @@ sub check_path { ##### Function to deal with one run folder
 
         # Inspect and update cycles.
         $folder->update_run_record(); # including expected cycle count!
-        my $latest_cycle = $folder->get_latest_cycle($run_path);
-        if ($folder->update_cycle_count($latest_cycle)) {
-            _log("Cycle count updated to $latest_cycle");
+
+        if ( $folder->mirroring_complete($run_path) &&
+             $folder->check_tiles($run_path) ) {
+
+            my $previous_size = $previous_size_of->{$run_path};
+            my ( $current_size, $latest_mod ) = $folder->monitor_stats();
+            _log("Run folder sizes: previous $previous_size, current $current_size");
+            $previous_size_of->{$run_path} = $current_size;   
+            # Check whether there's been any activity since last time.
+            if ( $current_size != $previous_size ) {
+                _log('Runfolder size is still changing.');
+                return;
+            }
+ 
+            # Check that no file is 'in the future'.
+            if ( $latest_mod > time ) {
+                _log("Files in 'future' $latest_mod are present.");
+                return;
+            }
+
+            # Set status to 'run mirrored' and move run folder
+            # from /incoming/ to /analysis/
+            $folder->update_run_status('run mirrored');
+            _log(q[Run status updated to 'run mirrored']);
+            _log('Moving run folder to analysis');
+            (not $DRY_RUN) and _log($folder->move_to_analysis());
+
+            return 'done';
         }
-        my $cycle_lag = $folder->cycle_lag($run_path);
-        $folder->update_copying_problem_tag($cycle_lag);
-
-        # Integrity check - return early if anything is amiss.
-        return if $cycle_lag;
-        return if !$folder->validate_run_complete();
-
-        my ( $total_size, $latest_mod ) = $folder->monitor_stats();
-
-        # Check that no file is 'in the future'.
-        if ( $latest_mod > time ) {
-            $previous_size_of->{$run_path} = $total_size;
-            _log("Not done: 'future' file $latest_mod");
-            return;
-        }
-
-        # Check that there's been no activity since last time.
-        if ( $total_size != $previous_size_of->{$run_path} ) {
-            _log(sprintf 'Sizes not equal: %d %d',
-                $previous_size_of->{$run_path}, $total_size);
-            $previous_size_of->{$run_path} = $total_size;
-            return;
-        }
-
-        # Set status to 'run mirrored' and move run folder
-        # from incoming to analysis
-        $folder->update_run_status('run mirrored');
-        _log(q[Run status updated to 'run mirrored']);
-        _log('Moving run folder to analysis');
-        (not $DRY_RUN) and _log($folder->move_to_analysis());
-
-        return 'done';
     }
    
     return; # Explicit false return is needed.
@@ -256,8 +243,9 @@ None
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-If dev environment variable is set to dev, the script has full functionality
-except for changes to the file system. Development database is used in this case.
+If dev environment variable is set to any value that is not 'live', the script
+has full functionality, but changes to the file system are not performed.
+Development tracking database is used in this case.
 
 =head1 INCOMPATIBILITIES
 
@@ -274,7 +262,7 @@ Marina Gourtovaia
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2015,2018,2019,2020 Genome Research Ltd.
+Copyright (C) 2013,2014,2015,2018,2019,2020,2023 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 59;
+use Test::More tests => 52;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -84,7 +84,8 @@ ENDXML
 }
 
 subtest 'updating run data from filesystem' => sub {
-    plan tests => 8;
+    plan tests => 6;
+
     my $basedir = tempdir( CLEANUP => 1 );
 
     my $fs_run_folder = qq[$basedir/IL3/incoming/100622_IL3_01234];
@@ -97,7 +98,7 @@ subtest 'updating run data from filesystem' => sub {
       id_instrument_format => 10,
       team => 'A',
       expected_cycle_count => 310,
-      actual_cycle_count => 0, # So there is no lag
+      actual_cycle_count => 0,
     };
 
     write_run_files($id_run, $fs_run_folder);
@@ -118,13 +119,6 @@ subtest 'updating run data from filesystem' => sub {
         '  folder name updated' );
     is( $run_folder->tracking_run()->folder_path_glob(), qq[$basedir/IL3/*/],
         '  folder path glob updated' );
-    is( $run_folder->cycle_lag(), 0, 'Mirroring is not lagging' );
-    $run->actual_cycle_count(20); # To produce lag
-    $run->update();
-
-    $run_folder = Monitor::RunFolder::Staging->new(runfolder_path      => $fs_run_folder,
-                                                   npg_tracking_schema => $schema);
-    is( $run_folder->cycle_lag(), 1, 'Mirroring is lagging' );
 };
 
 {
@@ -266,7 +260,9 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     ok($run_folder->is_run_complete(), 'RTAComplete + long wait time is enough for NovaSeq');
 };
 
-{
+subtest 'counting cycles and tiles' => sub {
+    plan tests => 10;
+
     my $tmpdir = tempdir( CLEANUP => 1 );
     my $bc_path = qq[$tmpdir/Data/Intensities/BaseCalls];
     make_path($bc_path);
@@ -312,21 +308,21 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     }
     $test = Monitor::RunFolder::Staging->new($ref);
     ok ($test->check_tiles(), 'All files present');
-}
-
-{
-    my $mock_path = $MOCK_STAGING . '/IL5/incoming/100708_IL3_04999';
-    my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                                 npg_tracking_schema => $schema );
-
-    my @missing_cycles;
-    lives_ok { @missing_cycles = $test->missing_cycles($mock_path); } q{missing_cycles ran ok};
-    is( scalar @missing_cycles, 0, q{no cycles missing} );
-    $test->{_cycle_numbers}->{$mock_path} = [ 1..3, 7..89, 100..120 ];
-    @missing_cycles = $test->missing_cycles($mock_path);
-    is_deeply( \@missing_cycles, [ 4..6, 90..99 ], q{missing cycles produced ok} );
-    is_deeply( $test->{_cycle_numbers}, {}, q{cache removed since acted upon} );
-}
+ 
+    is ($test->get_latest_cycle(), 3, 'correct latest cycle');
+    my $dir = "$bc_path/L002/C3.1";
+    move "$bc_path/L002/C3.1", "$bc_path/L002/C3.XX";
+    is ($test->get_latest_cycle(), 3, 'correct current cycle');
+    move "$bc_path/L001/C3.1", "$bc_path/L001/C3.XX";
+    is ($test->get_latest_cycle(), 2, 'correct current cycle');
+    move "$bc_path/L002/C2.1", "$bc_path/L002/C2.XX";
+    move "$bc_path/L001/C2.1", "$bc_path/L001/C2.XX";
+    is ($test->get_latest_cycle(), 1, 'correct current cycle');
+    move "$bc_path/L002/C1.1", "$bc_path/L002/C1.XX";
+    is ($test->get_latest_cycle(), 1, 'correct current cycle');
+    move "$bc_path/L001/C1.1", "$bc_path/L001/C1.XX";
+    is ($test->get_latest_cycle(), 0, 'correct current cycle');
+};
 
 {
     my $test = Monitor::RunFolder::Staging->new(
@@ -448,23 +444,20 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
 
 {
     my $tmpdir = tempdir( CLEANUP => 1 );
-    system('cp',  '-rp', $MOCK_STAGING . '/IL5/incoming/100621_IL5_01204', $tmpdir);
-    my $mock_path = $tmpdir . '/100621_IL5_01204';
-
-    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+    make_path("$tmpdir/Data/Intensities/Basecalls/L001/C1.1");
+    copy('t/data/run_info/runInfo.novaseq.xp.lite.xml', "$tmpdir/RunInfo.xml");
+    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $tmpdir,
                                                 npg_tracking_schema => $schema );
 
-    find( sub { utime time, time, $_ }, $mock_path );
-
+    find( sub { utime time, time, $_ }, $tmpdir );
     my $future_time = time + 1_000_000;
-    utime $future_time, $future_time, "$mock_path/Run.completed";
+    utime $future_time, $future_time, "$tmpdir/RunInfo.xml";
 
-    my ( $size, $date ) = $test->monitor_stats($mock_path);
-
+    my ( $size, $date ) = $test->monitor_stats($tmpdir);
     is( $date, $future_time, 'Find latest modification time' );
 
     # Seems a little fragile (and unnecessary) to insist on an exact match.
-    ok( $size > 1000, 'Find file size sum' );
+    ok( $size > 100, 'Find file size sum' );
 }
 
 {
