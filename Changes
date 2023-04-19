@@ -9,7 +9,8 @@ Next release is about NovaSeqX - 93.0.0
      the instrument does not appear in the list of sequencing instruments
      when a new run is created.
  - Added basic provisions for supporting analysis of NovaSeqX data:
-     dragen_analysis_path attribute, platform_NovaSeqX method.
+     dragen_analysis_path attribute, platform_NovaSeqX method,
+     correct identification of run completion.
  - Added visual representation for NovaSeqX.
  - Removed the GAII model from the 'Instrument Types' filter on the runs
    listing page.
