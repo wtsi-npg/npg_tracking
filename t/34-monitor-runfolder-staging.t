@@ -268,77 +268,50 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
 
 {
     my $tmpdir = tempdir( CLEANUP => 1 );
-    my $mock_path = qq[$tmpdir/IL12/incoming];
-    make_path($mock_path);
+    my $bc_path = qq[$tmpdir/Data/Intensities/BaseCalls];
+    make_path($bc_path);
+    copy('t/data/run_info/runInfo.novaseq.xp.lite.xml', "$tmpdir/RunInfo.xml");    
+    copy('t/data/run_params/RunParameters.novaseq.xp.lite.xml',
+        "$tmpdir/RunParameters.xml");
+    my $ref = {
+        id_run => 1234,
+        runfolder_path => $tmpdir,
+        npg_tracking_schema => $schema
+    };
 
-    system('cp',  '-rp', $MOCK_STAGING . '/IL12/incoming/100721_IL12_05222', $mock_path);
-    sleep 5;
-    $mock_path = qq[$mock_path/100721_IL12_05222];
-    my $id_run = 5222;
-    write_run_files($id_run, $mock_path);
-
-    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
-                                                npg_tracking_schema => $schema);
-
+    my $test = Monitor::RunFolder::Staging->new($ref);
     warning_like { $test->check_tiles() }
                  { carped => qr/Missing[ ]lane[(]s[)]/msx },
                  'Report missing lanes';
 
-    my $tmpdir2 = tempdir( CLEANUP => 1 );
-    $mock_path = qq[$tmpdir2/IL3/incoming];
-    make_path($mock_path);
-
-    system('cp',  '-rp', $MOCK_STAGING . '/IL3/incoming/100622_IL3_01234/', $mock_path);
-    sleep 5;
-    $mock_path = qq[$mock_path/100622_IL3_01234];
-    $id_run = 1234;
-    my $lanes = 2;
-
-    write_run_files($id_run, $mock_path);
-
-    $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
-                                             npg_tracking_schema => $schema);
-
+    map { make_path("$bc_path/L00" . $_) }   qw/1 2/;
+    $test = Monitor::RunFolder::Staging->new($ref);
     warning_like { $test->check_tiles() }
                  { carped => qr/Missing[ ]cycle[(]s[)]/msx },
                  'Report missing cycles';
 
-    my $tmpdir3 = tempdir( CLEANUP => 1 );
-    $mock_path = qq[$tmpdir3/IL5/incoming];
-    make_path($mock_path);
-
-    system('cp', '-rp', $MOCK_STAGING . '/IL5/incoming/100621_IL5_01204', $mock_path);
-    sleep 5;
-    $mock_path = qq[$mock_path/100621_IL5_01204];
-    $id_run = 1204;
-    my $lanes_1204 = 2;
-    my $cycles = 3;
-
-    write_run_files($id_run, $mock_path, $lanes_1204, $cycles);
-
-    $test = Monitor::RunFolder::Staging->new(runfolder_path => $mock_path,
-                                             npg_tracking_schema => $schema);
-
+    for my $lane ((1, 2)) {
+        for my $cycle ((1, 2, 3)) {
+            my $dir = sprintf '%s/L00%i/C%i.1', $bc_path, $lane, $cycle;
+            make_path($dir);
+        }
+    }
+    $test = Monitor::RunFolder::Staging->new($ref);
     warning_like { $test->check_tiles() }
-                 { carped => qr/Missing[ ]tile[(]s[)]/msx },
-                 'Report missing tiles';
+                 { carped => qr/Missing\ cbcl\ files/msx },
+                 'Report missing files';
 
-
-    my $tmpdir4 = tempdir( CLEANUP => 1 );
-    $mock_path = qq[$tmpdir4/IL5/incoming];
-    make_path($mock_path);
-
-    system('cp',  '-rp', $MOCK_STAGING . '/IL5/incoming/100708_IL3_04999', $mock_path);
-    sleep 5;
-    $mock_path = qq[$mock_path/100708_IL3_04999];
-    $id_run = 4999;
-
-    write_run_files($id_run, $mock_path);
-
-    $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
-                                             npg_tracking_schema => $schema);
-
-    lives_ok { $test->check_tiles() } 'All cif files present';
+    for my $lane ((1, 2)) {
+        for my $cycle ((1, 2, 3)) {
+            for my $surface ((1,2)) {
+                my $file = sprintf '%s/L00%i/C%i.1/L00%i_2.cbcl',
+                    $bc_path, $lane, $cycle, $surface;
+                `touch $file`;
+            }
+        }
+    }
+    $test = Monitor::RunFolder::Staging->new($ref);
+    ok ($test->check_tiles(), 'All files present');
 }
 
 {

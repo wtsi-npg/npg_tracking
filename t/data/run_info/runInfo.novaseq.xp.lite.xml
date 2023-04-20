@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunInfo>
+  <Run Id="171212_A00150_0225_BH2FYTDRXX" Number="225">
+    <Flowcell>H3WCVDSXX</Flowcell>
+    <Instrument>A00510</Instrument>
+    <Date>12/12/2017 3:20:00 PM</Date>
+    <Reads>
+      <Read Number="1" NumCycles="3" IsIndexedRead="N"/>
+    </Reads>
+    <FlowcellLayout LaneCount="2" SurfaceCount="2" SwathCount="2" TileCount="8" FlowcellSide="2">
+      <TileSet TileNamingConvention="FourDigit">
+        <Tiles>
+        </Tiles>
+      </TileSet>
+    </FlowcellLayout>
+  </Run>
+</RunInfo>
