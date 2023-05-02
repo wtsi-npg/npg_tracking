@@ -737,7 +737,7 @@ sub is_i5opposite {
 HiSeqX, HiSeq3000/4000, and NovaSeq(X) use patterned flowcells
 https://www.illumina.com/science/technology/next-generation-sequencing/sequencing-technology/patterned-flow-cells.html
 
-Method returns true if teh run is performed on one of those platforms.
+Method returns true if the run is performed on one of those platforms.
 
 =cut
 
