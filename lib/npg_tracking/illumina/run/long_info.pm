@@ -2,8 +2,7 @@ package npg_tracking::illumina::run::long_info;
 
 use Moose::Role;
 use Carp;
-use List::Util qw(first sum);
-use List::MoreUtils qw(pairwise);
+use List::Util qw(sum);
 use IO::All;
 use File::Spec;
 use XML::LibXML;
@@ -13,7 +12,8 @@ use Readonly;
 requires qw{runfolder_path};
 
 our $VERSION = '0';
-Readonly::Scalar my $NOVASEQ_I5FLIP_REAGENT_VER              => 3;
+
+Readonly::Scalar my $NOVASEQ_I5FLIP_REAGENT_VER => 3;
 
 =head1 NAME
 
@@ -32,7 +32,8 @@ npg_tracking::illumina::run::long_info
 
 =head1 DESCRIPTION
 
-This role provides methods providing information about the run, ideally from the filesystem.
+This role provides information about the Illumina sequencing run, sourcing
+it from the files in the run folder.
 
 =head1 SUBROUTINES/METHODS
 
@@ -44,7 +45,7 @@ This role provides methods providing information about the run, ideally from the
 
 =head2 is_paired_read
 
-Boolean determines if the run is a paired read or not, this can be set on object construction
+A boolean attribute, is set to a true value if the run is a paired read.
 
   my $bIsPairedRead = $class->is_paired_read();
 
@@ -63,7 +64,7 @@ sub _build_is_paired_read {
 
 =head2 is_indexed
 
-Boolean determines if the run is indexed or not, this can be set on object construction
+A boolean attribute, is set to a true value if run is indexed.
 
   my $bIsIndexed = $class->is_indexed();
 
@@ -92,7 +93,7 @@ has q{index_length} => (
   isa           => q{Int},
   is            => q{ro},
   lazy_build    => 1,
-  documentation => q{The length of the index 'barcode', normally the number of cycles performed},
+  documentation => q{The length of the index 'barcode'},
 );
 sub _build_index_length {
   my $self = shift;
@@ -108,7 +109,7 @@ sub _build_index_length {
 
 =head2 is_dual_index
 
-Boolean determines if the run has a second index read, this can be set on object construction
+A boolean attribute, is set to a true value if the run has a second index read.
 
   my $bIsDualIndex = $class->is_dual_index();
 
@@ -118,7 +119,8 @@ has q{is_dual_index} => (
   isa           => q{Bool},
   is            => q{ro},
   lazy_build    => 1,
-  documentation => q{This run is a paired end read},
+  documentation =>
+    q{A boolean flag. If true indicates that a dual index is being used},
 );
 sub _build_is_dual_index {
   my $self = shift;
@@ -127,7 +129,7 @@ sub _build_is_dual_index {
 
 =head2 lane_count
 
-Number of lanes configured for this run. May be set on Construction.
+An integer attribute, the number of lanes configured for this run.
 
   my $iLaneCount = $self->lane_count();
 
@@ -143,7 +145,7 @@ has q{lane_count} => (
 
 =head2 surface_count
 
-Number of surfaces configured for this run. May be set on Construction.
+An integer attribute, the number of surfaces configured for this run.
 
   my $iSurfaceCount = $self->surface_count();
 
@@ -195,7 +197,8 @@ has q{_reads_indexed} => (
 
 =head2 indexing_cycle_range
 
-First and last indexing cycles, or nothing returned if not indexed
+First and last indexing cycles as a list or an empty list if the run
+is not indexed.
 
 =cut
 
@@ -214,7 +217,7 @@ has q{_indexing_cycle_range} => (
 
 =head2 read1_cycle_range
 
-First and last cycles of read 1
+First and last cycles of read 1 as a list.
 
 =cut
 
@@ -232,7 +235,7 @@ has q{_read1_cycle_range} => (
 
 =head2 read2_cycle_range
 
-First and last cycles of read 2, or nothing returned if no read 2
+First and last cycles of read 2 as a list, or an empty list if no second read.
 
 =cut
 
@@ -250,7 +253,8 @@ has _read2_cycle_range => (
 
 =head2 index_read1_cycle_range
 
-First and last cycles of index read 1, or nothing returned if no index_read 1
+First and last cycles of index read 1 as a list, or an empty list if no
+index read 1.
 
 =cut
 
@@ -268,7 +272,8 @@ has q{_index_read1_cycle_range} => (
 
 =head2 index_read2_cycle_range
 
-First and last cycles of index_read 2, or nothing returned if no index_read 2
+First and last cycles of index_read 2 as a list, or an empty list nif no
+index_read 2.
 
 =cut
 
@@ -286,8 +291,8 @@ has _index_read2_cycle_range => (
 
 =head2 expected_cycle_count
 
-Number of cycles configured for this run and for which the output data (images or intensities or both) can be expected to be found below this folder. This number is extracted from the recipe file. It does not include the cycles for the paired read if that is performed as a separate run - the output data for that will be in a different runfolder.
-May be set on construction.
+Number of cycles configured for this run, for which the output data can
+be expected in the run folder.
 
   $iExpectedCycleCount = $self->expected_cycle_count();
 
@@ -306,7 +311,8 @@ sub _build_expected_cycle_count {
 
 =head2 cycle_count
 
-synonym for expected_cycle_count. May not be set on construction. Best to use expected_cycle_count.
+A method returning the value of the the expected_cycle_count attribute.
+Best to use the expected_cycle_count attribute directly.
 
 =cut
 
@@ -317,7 +323,7 @@ sub cycle_count {
 
 =head2 tilelayout_columns
 
-The number of tile columns in a lane. May be set on construction.
+An integer attribute, the number of tile columns in a lane.
 
   my $iTilelayoutColumns = $class->tilelayout_columns();
 
@@ -333,7 +339,7 @@ has q{tilelayout_columns} => (
 
 =head2 tilelayout_rows
 
-The number of tile rows in a lane. May be set on construction.
+An integer attribute, the number of tile rows in a lane.
 
   my $iTilelayoutRows = $class->tilelayout_rows();
 
@@ -372,9 +378,7 @@ sub _build_tile_count {
 
 =head2 lane_tilecount
 
-utilises the Data/Intensities/config.xml to generate a hashref of
-
-  {lanes} = tilecount_value
+Returns a hash with per lane tile counts.
 
 =cut
 
@@ -407,7 +411,7 @@ sub _build_lane_tilecount {
 =head2 experiment_name
 
 For platforms HiSeq, HiSeqX, Hiseq4000 and NovaSeq experiment name loaded from
-runParameters.xml.
+{r|R}unParameters.xml.
 
 =cut
 
@@ -429,8 +433,8 @@ sub _build_experiment_name {
 
 =head2 run_flowcell
 
-flowcell loaded from RunInfo.xml for platforms HiSeq and NovaSeq and
-ReagentKitBarcode from runParameters.xml for platform MiSeq
+The 'ReagentKitBarcode' from runParameters.xml for MiSeq and the flowcel
+identifier retrieved from RunInfo.xml for all other platforms. 
 
 =cut
 
@@ -642,25 +646,23 @@ has q{sbs_consumable_version} => (
   is         => 'ro',
   lazy_build => 1,
 );
-sub _build_sbs_consumable_version{
+sub _build_sbs_consumable_version {
   my $self = shift;
   return _get_single_element_text($self->_run_params(), 'SbsConsumableVersion')||1;
 }
 
 =head2 all_lanes_mergeable
 
-Method returns true if all lanes on the flowcell contain the
-same library and the sequencing data are thus mergeable across
-all lanes.
-
+Returns true if either the NovaSeq Standard (ie not NovaSeqXp) workflow
+was used or this was a rapid run since in the latter case same library is used
+on both lanes.
+ 
 =cut
 
 sub all_lanes_mergeable {
   my $self = shift;
   return (
-    ($self->workflow_type() =~ /NovaSeqStandard/xms) # ie not NovaSeqXp
-     or $self->is_rapid_run() # In our practice Rapid Runs always had the same
-                              # library on both lanes.
+    ($self->workflow_type() =~ /NovaSeqStandard/xms) or $self->is_rapid_run()
          );
 }
 
@@ -1016,13 +1018,15 @@ __END__
 
 =item List::Util
 
-=item List::MoreUtils
-
 =item IO::All
+
+=item File::Spec
 
 =item XML::LibXML
 
 =item Try::Tiny
+
+=item Readonly
 
 =back
 
