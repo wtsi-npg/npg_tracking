@@ -184,7 +184,7 @@ sub check_tiles {
             return 0;
         }
         my $expected_tiles_this_lane = $expected_tiles->{$this_lane};
-        my $platform_is_nv = $self->platform_NovaSeq() or
+        my $platform_is_nv = $self->platform_NovaSeq() ||
                              $self->platform_NovaSeqX();
         my $filetype = $platform_is_nv ? 'cbcl' : 'bcl';
          
