@@ -711,6 +711,36 @@ sub is_rapid_run_abovev2 {
   return $version && ($version > 2);
 }
 
+=head2 is_read_reverse_complement
+
+=cut
+
+has q{is_read_reverse_complement} => (
+  isa        => 'Str',
+  is         => 'ro',
+  lazy_build => 1,
+);
+sub _build_is_read_reverse_complement {
+  my $self = shift;
+
+  my $rc_flag = 0;
+
+  my @read_descriptions = $self->_runinfo_document()
+    ->getElementsByTagName('Reads')->[0]->getElementsByTagName('Read');
+  for my $read (@read_descriptions) {
+    my $flag_value = $read->getAttribute('IsReverseComplement');
+    if ($flag_value && ($flag_value eq q[Y])) {
+      my $read_number = $read->getAttribute('Number');
+      if ($read_number ne '3') {
+        croak "Read $read_number is marked as IsReverseComplement"; 
+      }
+      $rc_flag = 1;
+    }
+  }
+
+  return $rc_flag;
+}
+
 =head2 is_i5opposite
 
 A dual-indexed sequencing run on the MiniSeq, NextSeq, HiSeq 4000, HiSeq 3000
@@ -721,17 +751,28 @@ platform, see
 https://support.illumina.com/content/dam/illumina-support/documents/documentation/system_documentation/miseq/indexed-sequencing-overview-guide-15057455-04.pdf
 For NovaSeq using v1.5 reagents the SbsConsumableVersion will be 3
 
-Method returns true if this is the case.
+For  NovaSeqX, IsReverseComplement flag is explicitly set for each read
+in RunInfo.xml 
+
+Method returns true if the reverse complement shoudl be applied..
 
 =cut
 
 sub is_i5opposite {
   my $self = shift;
-  return ( ($self->platform_NovaSeq() &&
-               ($self->sbs_consumable_version() >= $NOVASEQ_I5FLIP_REAGENT_VER)) ||
-     ($self->is_paired_read() &&
-              ($self->platform_HiSeqX()  or $self->platform_HiSeq4000() or
-               $self->platform_MiniSeq() or $self->platform_NextSeq())));
+  
+  if ($self->is_read_reverse_complement()) {
+    return 1;
+  } elsif ($self->platform_NovaSeq()) {
+    if ($self->sbs_consumable_version() >= $NOVASEQ_I5FLIP_REAGENT_VER) {
+      return 1;
+    }
+  } elsif ($self->is_paired_read()) {
+    return ($self->platform_HiSeqX()  or $self->platform_HiSeq4000() or
+            $self->platform_MiniSeq() or $self->platform_NextSeq())
+  }
+
+  return;
 }
 
 =head2 uses_patterned_flowcell
