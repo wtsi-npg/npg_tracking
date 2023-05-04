@@ -434,7 +434,7 @@ sub _build_experiment_name {
 =head2 run_flowcell
 
 The 'ReagentKitBarcode' from runParameters.xml for MiSeq and the flowcel
-identifier retrieved from RunInfo.xml for all other platforms. 
+identifier retrieved from RunInfo.xml for all other platforms.
 
 =cut
 
@@ -485,7 +485,7 @@ sub _build_instrument_name{
 
 foreach my $f ( qw(expected_cycle_count
                    lane_count
-                   surface_count 
+                   surface_count
                    read_cycle_counts
                    indexing_cycle_range
                    read1_cycle_range
@@ -656,7 +656,7 @@ sub _build_sbs_consumable_version {
 Returns true if either the NovaSeq Standard (ie not NovaSeqXp) workflow
 was used or this was a rapid run since in the latter case same library is used
 on both lanes.
- 
+
 =cut
 
 sub all_lanes_mergeable {
@@ -732,7 +732,7 @@ sub _build_is_read_reverse_complement {
     if ($flag_value && ($flag_value eq q[Y])) {
       my $read_number = $read->getAttribute('Number');
       if ($read_number ne '3') {
-        croak "Read $read_number is marked as IsReverseComplement"; 
+        croak "Read $read_number is marked as IsReverseComplement";
       }
       $rc_flag = 1;
     }
@@ -752,7 +752,7 @@ https://support.illumina.com/content/dam/illumina-support/documents/documentatio
 For NovaSeq using v1.5 reagents the SbsConsumableVersion will be 3
 
 For  NovaSeqX, IsReverseComplement flag is explicitly set for each read
-in RunInfo.xml 
+in RunInfo.xml
 
 Method returns true if the reverse complement shoudl be applied..
 
@@ -760,7 +760,7 @@ Method returns true if the reverse complement shoudl be applied..
 
 sub is_i5opposite {
   my $self = shift;
-  
+
   if ($self->is_read_reverse_complement()) {
     return 1;
   } elsif ($self->platform_NovaSeq()) {
