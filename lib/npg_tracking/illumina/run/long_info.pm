@@ -761,8 +761,8 @@ Method returns true if the reverse complement shoudl be applied..
 sub is_i5opposite {
   my $self = shift;
 
-  if ($self->is_read_reverse_complement()) {
-    return 1;
+  if ($self->platform_NovaSeqX()) {
+    return $self->is_read_reverse_complement();
   } elsif ($self->platform_NovaSeq()) {
     if ($self->sbs_consumable_version() >= $NOVASEQ_I5FLIP_REAGENT_VER) {
       return 1;
