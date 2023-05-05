@@ -3,25 +3,22 @@
 ## Create Instrument
 
 To create a new validated instrument, execute the appropriate one-liner using
-the correct instrument name.
+the correct instrument names. The value of the `external_instrument` field is
+the unique manufacturer's name of the instrument.
+
 The initial status of the instrument is 'wash required'.
 
-HiSeq instrument:
-
-```
-perl -le 'use strict; use npg_tracking::Schema; my $s=npg_tracking::Schema->connect(); $s->txn_do(sub{my $m=$s->resultset(q(Instrument))->find_or_create({name=>q[HS86], instrument_format=>{model=>q(HiSeq)}}); $m->update({iscurrent=>1, instrument_comp=>lc $m->name}); $m->add_to_designations({description=>q(Accepted)}); print join",",$m->get_columns; print join",",$_->get_columns foreach $m->designations; print "current instrument status: ".$m->current_instrument_status;});'
-```
-
-HiSeqX instrument:
-
-```
-perl -le 'use strict; use npg_tracking::Schema; my $s=npg_tracking::Schema->connect(); $s->txn_do(sub{my $m=$s->resultset(q(Instrument))->find_or_create({name=>q[HX92], instrument_format=>{model=>q(HiSeqX)}}); $m->update({iscurrent=>1, instrument_comp=>lc $m->name}); $m->add_to_designations({description=>q(Accepted)}); print join",",$m->get_columns; print join",",$_->get_columns foreach $m->designations; print "current instrument status: ".$m->current_instrument_status;});'
-```
 
 NovaSeq instrument:
 
 ```
 perl -le 'use strict; use npg_tracking::Schema; my $s=npg_tracking::Schema->connect(); $s->txn_do(sub{my $m=$s->resultset(q(Instrument))->find_or_create({name=>q[NV22], instrument_format=>{model=>q(NovaSeq)}}); $m->update({iscurrent=>1, external_name=>q(A00518)}); $m->add_to_designations({description=>q(Accepted)}); print join",",$m->get_columns; print join",",$_->get_columns foreach $m->designations; print "current instrument status: ".$m->current_instrument_status;});'
+```
+
+NovaSeqX instrument:
+
+```
+perl -le 'use strict; use npg_tracking::Schema; my $s=npg_tracking::Schema->connect(); $s->txn_do(sub{my $m=$s->resultset(q(Instrument))->find_or_create({name=>q[NVX1], instrument_format=>{model=>q(NovaSeqX)}}); $m->update({iscurrent=>1, external_name=>q(Pi1-9)}); $m->add_to_designations({description=>q(Accepted)}); print join",",$m->get_columns; print join",",$_->get_columns foreach $m->designations; print "current instrument status: ".$m->current_instrument_status;});'
 ```
 
 ## Delete Instrument
