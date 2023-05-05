@@ -17,18 +17,17 @@ use Fcntl qw/S_ISGID/;
 use npg_tracking::util::config qw(get_config_staging_areas);
 
 extends 'Monitor::RunFolder';
-with qw/MooseX::Getopt Monitor::Roles::Cycle/;
 
 our $VERSION = '0';
 
-Readonly::Scalar my $MAXIMUM_CYCLE_LAG    => 6;
 Readonly::Scalar my $MTIME_INDEX          => 9;
 Readonly::Scalar my $SECONDS_PER_MINUTE   => 60;
 Readonly::Scalar my $MINUTES_PER_HOUR     => 60;
 Readonly::Scalar my $SECONDS_PER_HOUR     => $SECONDS_PER_MINUTE * $MINUTES_PER_HOUR;
 Readonly::Scalar my $MAX_COMPLETE_WAIT    => 6 * $SECONDS_PER_HOUR;
 Readonly::Scalar my $RTA_COMPLETE         => 10 * $SECONDS_PER_MINUTE;
-Readonly::Scalar my $INTENSITIES_DIR_PATH => 'Data/Intensities';
+Readonly::Scalar my $INTENSITIES_DIR_PATH => q[Data/Intensities];
+Readonly::Scalar my $BASECALLS_DIR_PATH   => qq[$INTENSITIES_DIR_PATH/BaseCalls];
 Readonly::Scalar my $MODE_INDEX           => 2;
 
 Readonly::Scalar my $RTA_COMPLETE_FN      => q[RTAComplete\.txt];
@@ -43,11 +42,6 @@ has 'status_update' => (isa          => 'Bool',
                         is           => 'ro',
                         default      => 1,
                        );
-
-sub cycle_lag {
-    my ($self) = @_;
-    return ( $self->delay() > $MAXIMUM_CYCLE_LAG ) ? 1 : 0;
-}
 
 sub _find_files {
     my ($self, $filename) = @_;
@@ -95,20 +89,6 @@ sub is_run_complete {
     return 0;
 }
 
-sub validate_run_complete {
-    my ($self) = @_;
-    my $path = $self->runfolder_path();
-
-    $self->{run_is_complete} = 0;
-
-    return 0 if $self->cycle_lag();
-    return 0 if !$self->mirroring_complete( $path );
-    return 0 if !$self->check_tiles( $path );
-
-    # What else goes here?
-    return 1;
-}
-
 sub mirroring_complete {
     my ($self) = @_;
 
@@ -150,6 +130,17 @@ sub monitor_stats {
     return ( $total_size, $latest_mod );
 }
 
+sub get_latest_cycle {                                                          
+    my ( $self ) = @_;
+    # We assume that there will always be a lane 1 here. So far this has been
+    # safe.
+    my @intensities_dirs = glob
+        join q[/], $self->runfolder_path, $BASECALLS_DIR_PATH, q[L001/C*];
+    my @cycle_numbers =
+        map { ( $_ =~ m{ L001/C (\d+) [.]1 $}gmsx ) } @intensities_dirs;
+    return max( @cycle_numbers, 0 );
+}
+
 sub check_tiles {
     my ($self) = @_;
 
@@ -161,8 +152,7 @@ sub check_tiles {
 
     print {*STDERR} "\tChecking Lanes, Cycles, Tiles...\n" or carp $OS_ERROR;
 
-    my @lanes = grep { m/ L \d+ $ /msx }
-                glob "$path/$INTENSITIES_DIR_PATH/BaseCalls/L*";
+    my @lanes = grep { m/ L \d+ $ /msx } glob "$path/$BASECALLS_DIR_PATH/L*";
     my $l_count = scalar @lanes;
     if ( $l_count != $expected_lanes ) {
         carp "Missing lane(s) - [$expected_lanes $l_count]";
@@ -345,14 +335,14 @@ sub _set_sgid {
 
 no Moose;
 __PACKAGE__->meta->make_immutable();
+
 1;
 
 __END__
 
 =head1 NAME
 
-Monitor::RunFolder::Staging - additional runfolder information specific to
-local staging
+Monitor::RunFolder::Staging
 
 =head1 VERSION
 
@@ -361,7 +351,6 @@ local staging
    C<<use Monitor::RunFolder::Staging;
       my $folder = Monitor:RunFolder::Staging->
                         new( runfolder_path => '/some/path' );
-      warn 'Lagging!' if $folder->cycle_lag();
       print $folder->id_run();>>
 
 =head1 DESCRIPTION
@@ -370,14 +359,6 @@ Inherits form Monitor::RunFolder and provides additional methods that are
 specific to local staging (incoming) folders.
 
 =head1 SUBROUTINES/METHODS
-
-=head2 cycle_lag
-
-If there is a problem mirroring data from the instrument to the staging area
-the actual_cycle_count field in the database (updated by the ga_II_checker
-script) will be ahead of the number of cycles represented in the staging area.
-This method checks for that and returns a Boolean - true for lag, false for no
-difference between the cycle counts within a limit set by $MAXIMUM_CYCLE_LAG
 
 =head2 is_run_complete
 
@@ -404,6 +385,8 @@ modification time of certain files. Return 0 if the tests fail (mirroring is
 Returns the sum of all file sizes in the tree below $self->runfolder_path(), and
 also the highest epoch time found.
 
+=head2 get_latest_cycle
+
 =head2 check_tiles
 
 Confirm number of lanes, cycles and tiles are as expected.
@@ -420,12 +403,6 @@ Returns true if the runfolder is in analysis upstream directory and false othenr
 =head2 move_to_outgoing
 
 Move the run folder from 'analysis' to 'outgoing'.
-
-=head2 tag_delayed
-
-If there is an unacceptable difference between the actual cycles recorded in
-the database and the highest cycle found on the staging area, then this
-tags the run with
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
@@ -472,7 +449,7 @@ Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2015,2016,2018,2019,2020 Genome Research Ltd.
+Copyright (C) 2013,2014,2015,2016,2018,2019,2020,2023 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

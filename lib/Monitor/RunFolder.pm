@@ -75,15 +75,6 @@ sub set_run_tags {
   return;
 }
 
-sub update_copying_problem_tag {
-  my ($self, $cycle_lag) = @_;
-
-  my $tag = 'copying_problem';
-  $cycle_lag ? $self->tracking_run()->set_tag($self->username, $tag)
-             : $self->tracking_run()->unset_tag($tag);
-  return;
-}
-
 sub delete_superfluous_lanes {
   my $self = shift;
 
@@ -193,14 +184,6 @@ value otherwise.
 
 Sets multiplex, paired or single read tags as appropriate.
 
-=head2 update_copying_problem_tag
-
-Sets or unset copying_problem tag depending on the methods argument.
-
-  $folder->update_copying_problem_tag(1); # sets tag
-  $folder->update_copying_problem_tag(0); # unsets tag
-  $folder->update_copying_problem_tag();  # unsets tag
-
 =head2 delete_superfluous_lanes
 
 Deletes database run_lane table records for lanes not present in a run folder.
@@ -240,7 +223,7 @@ Please inform the author of any found.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2015,2018,2019,2020 Genome Research Ltd.
+Copyright (C) 2013,2014,2015,2018,2019,2020,2023 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
