@@ -1,7 +1,7 @@
 Illumina Sequencing Instruments Tracking
 ========================================
 
-Currently supported instrument types: NovaSeq, HiSeq, MiSeq.
+Currently supported instrument types: NovaSeqX, NovaSeq, HiSeq, MiSeq.
 
 Top Level Directories
 ---------------------
@@ -66,6 +66,15 @@ explicitly stated. Any tag can be removed manually via a web page of a run.
                       it being considered by the archival daemon.
 + `no_auto` - This tag can be manually assigned to a run to prevent it being
               considered by any automatic processing.
+
+Runs Lifecycle
+--------------
+Run statuses are explained [here](docs/run_states.md)
+
+Sequencing Instrument Lifecycle and Management
+----------------------------------------------
+See [code snippets](docs/instruments.md) for creating and updating
+database records for instruments.
 
 User Management
 ---------------
