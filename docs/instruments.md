@@ -3,8 +3,8 @@
 ## Create Instrument
 
 To create a new validated instrument, execute the appropriate one-liner using
-the correct instrument names. The value of the `external_instrument` field is
-the unique manufacturer's name of the instrument.
+the correct instrument names. The value of the `external_name` field is the
+unique manufacturer's name of the instrument.
 
 The initial status of the instrument is 'wash required'.
 
