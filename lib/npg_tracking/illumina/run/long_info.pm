@@ -734,19 +734,18 @@ sub is_i5opposite {
 
 =head2 uses_patterned_flowcell
 
-HiSeqX, HiSeq3000/4000, and NovaSeq use patterned flowcells
+HiSeqX, HiSeq3000/4000, and NovaSeq(X) use patterned flowcells
 https://www.illumina.com/science/technology/next-generation-sequencing/sequencing-technology/patterned-flow-cells.html
 
-Method returns true if this is one of those platforms.
+Method returns true if the run is performed on one of those platforms.
 
 =cut
 
 sub uses_patterned_flowcell {
   my $self = shift;
 
-  return ($self->platform_HiSeqX
-          or $self->platform_HiSeq4000
-          or $self->platform_NovaSeq);
+  return ($self->platform_NovaSeq or $self->platform_NovaSeqX or
+          $self->platform_HiSeqX or $self->platform_HiSeq4000);
 }
 
 =head2 instrument_side

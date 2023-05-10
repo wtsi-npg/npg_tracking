@@ -57,7 +57,8 @@ subtest 'retrieving information from runParameters.xml' => sub {
 
   my @platforms = qw/HiSeq HiSeq4000 HiSeqX
                      MiSeq NextSeq NovaSeq NovaSeqX/;
-  my @patterned_flowcell_platforms = map {lc $_} qw/HiSeq4000 HiSeqX NovaSeq/;
+  my @patterned_flowcell_platforms = map {lc $_}
+                                     qw/HiSeq4000 HiSeqX NovaSeq NovaSeqX/;
 
   for my $f (@rp_files) {
     note $f;
