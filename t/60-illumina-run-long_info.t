@@ -8,6 +8,7 @@ use Moose::Meta::Class;
 use Cwd;
 use Carp;
 use File::Copy;
+use File::Slurp qw(edit_file_lines);
 
 BEGIN {
   local $ENV{'HOME'} = getcwd() . '/t';
@@ -122,7 +123,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
 };
 
 subtest 'getting i5opposite for run' => sub {
-  plan tests => 15;
+  plan tests => 19;
 
   $basedir = tempdir( CLEANUP => 1 );
   my $rf = join q[/], $basedir, 'run_info';
@@ -148,23 +149,31 @@ subtest 'getting i5opposite for run' => sub {
     'runInfo.novaseq.xp.xml'               => { 'rpf' => 'RunParameters', 'i5opposite' => 0 },
     'runInfo.novaseq.xp.v1.5.xml'          => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
     'runInfo.novaseq.xp.v1.5.single.xml'   => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
-  );
+    'runInfo.novaseqx.xml'                 => { 'rpf' => 'RunParameters', 'i5opposite' => 1 },
+ );
 
   my $run_info_dir = 't/data/run_info';
   my $run_param_dir = 't/data/run_params';
 
-  for my $file_name (sort keys %data) {
-    note $file_name;
-    my $expected_i5opposite = $data{$file_name}->{'i5opposite'};
+  my $copy_files = sub {
+    my $file_name = shift;
+
     my $param_prefix =  $data{$file_name}->{'rpf'};
     my $run_params_file_name = $file_name =~ s/runInfo/$param_prefix/r;
     my $run_params_file_path = qq[$rf/$param_prefix.xml];
+    copy(join(q[/],$run_info_dir,$file_name), qq[$rf/RunInfo.xml])
+      or die 'Failed to copy file';
+    copy(join(q[/],$run_param_dir,$run_params_file_name), $run_params_file_path)
+      or die 'Failed to copy file';
+    return $run_params_file_path;
+  };
 
-    copy(join(q[/],$run_info_dir,$file_name), qq[$rf/RunInfo.xml]) or die 'Failed to copy file';
-    copy(join(q[/],$run_param_dir,$run_params_file_name), $run_params_file_path) or die 'Failed to copy file';
+  for my $file_name (sort keys %data) {
+    note $file_name;
+    my $expected_i5opposite = $data{$file_name}->{'i5opposite'};
+    my $run_params_file_path = $copy_files->($file_name);
 
     my $li = $class->new_object();
-
     if ( $expected_i5opposite ) {
       ok($li->is_i5opposite, 'i5opposite');
     } else {
@@ -172,6 +181,33 @@ subtest 'getting i5opposite for run' => sub {
     }
     unlink $run_params_file_path or die "Failed to delete $run_params_file_path";
   }
+
+  $copy_files->('runInfo.novaseqx.xml');
+  my $run_info_file = qq[$rf/RunInfo.xml];
+  
+  edit_file_lines sub {
+    $_ =~ s/IsReverseComplement="Y"/IsReverseComplement="N"/
+  }, $run_info_file;
+  my $li = $class->new_object();
+  ok(!$li->is_i5opposite, 'i5opposite');
+
+  $copy_files->('runInfo.novaseqx.xml');
+  edit_file_lines sub {
+    $_ =~ s/Read Number="3"\ NumCycles/Read Number="5" NumCycles/
+  }, $run_info_file;
+  $li = $class->new_object();
+  throws_ok { $li->is_i5opposite }
+    qr/Read 5 is marked as IsReverseComplement/,
+    'error when unexpected read (not 3) marked as reverse complement';
+
+  $copy_files->('runInfo.novaseqx.xml');
+  edit_file_lines sub {
+    $_ =~ s/IsReverseComplement="(Y|N)"//
+  }, $run_info_file;
+  $li = $class->new_object();
+  throws_ok { $li->is_i5opposite }
+    qr/Expect NovaSeqX to have an explicit reverse complement flag/,
+    'error when no explicit reverse complement flag';
 };
 
 subtest 'getting flowcell for run' => sub {
