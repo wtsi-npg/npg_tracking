@@ -3,6 +3,7 @@ package npg_tracking::illumina::run::long_info;
 use Moose::Role;
 use Carp;
 use List::Util qw(sum);
+use List::MoreUtils qw(any);
 use IO::All;
 use File::Spec;
 use XML::LibXML;
@@ -711,33 +712,40 @@ sub is_rapid_run_abovev2 {
   return $version && ($version > 2);
 }
 
-=head2 is_read_reverse_complement
-
-=cut
-
-has q{is_read_reverse_complement} => (
-  isa        => 'Str',
+has q{_reverse_complement_explicit_flags} => (
+  isa        => 'HashRef',
   is         => 'ro',
   lazy_build => 1,
 );
-sub _build_is_read_reverse_complement {
+sub _build__reverse_complement_explicit_flags {
   my $self = shift;
-
-  my $rc_flag = 0;
 
   my @read_descriptions = $self->_runinfo_document()
     ->getElementsByTagName('Reads')->[0]->getElementsByTagName('Read');
-  for my $read (@read_descriptions) {
-    my $flag_value = $read->getAttribute('IsReverseComplement');
+  my %rc_flags = map
+    { $_->getAttribute('Number') => $_->getAttribute('IsReverseComplement') }
+    @read_descriptions;
+
+  return \%rc_flags;
+}
+
+sub _reverse_complement_explicit_flags_exist {
+  my $self = shift;
+  return any { defined } values %{$self->_reverse_complement_explicit_flags};
+}
+
+sub _does_runinfo_indicate_i5_is_rev_complement{
+  my $self = shift;
+  my $rc_flag = 0;
+  while (my ($lane_number, $flag_value) =
+      each %{$self->_reverse_complement_explicit_flags}) {
     if ($flag_value && ($flag_value eq q[Y])) {
-      my $read_number = $read->getAttribute('Number');
-      if ($read_number ne '3') {
-        croak "Read $read_number is marked as IsReverseComplement";
+      if ($lane_number ne '3') {
+        croak "Read $lane_number is marked as IsReverseComplement";
       }
       $rc_flag = 1;
     }
   }
-
   return $rc_flag;
 }
 
@@ -754,15 +762,18 @@ For NovaSeq using v1.5 reagents the SbsConsumableVersion will be 3
 For  NovaSeqX, IsReverseComplement flag is explicitly set for each read
 in RunInfo.xml
 
-Method returns true if the reverse complement shoudl be applied..
+Method returns true if the reverse complement should be applied.
 
 =cut
 
 sub is_i5opposite {
   my $self = shift;
 
-  if ($self->platform_NovaSeqX()) {
-    return $self->is_read_reverse_complement();
+  ##no critic(ControlStructures::ProhibitCascadingIfElse)
+  if ($self->_reverse_complement_explicit_flags_exist()) {
+    return $self->_does_runinfo_indicate_i5_is_rev_complement();
+  } elsif ($self->platform_NovaSeqX()) {
+    croak 'Expect NovaSeqX to have an explicit reverse complement flag';
   } elsif ($self->platform_NovaSeq()) {
     if ($self->sbs_consumable_version() >= $NOVASEQ_I5FLIP_REAGENT_VER) {
       return 1;
@@ -771,7 +782,7 @@ sub is_i5opposite {
     return ($self->platform_HiSeqX()  or $self->platform_HiSeq4000() or
             $self->platform_MiniSeq() or $self->platform_NextSeq())
   }
-
+  ##use critic
   return;
 }
 
@@ -1058,6 +1069,8 @@ __END__
 =item Carp
 
 =item List::Util
+
+=item List::MoreUtils
 
 =item IO::All
 
