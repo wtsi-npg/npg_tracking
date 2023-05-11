@@ -1,16 +1,17 @@
 LIST OF CHANGES
 
-Next release is about NovaSeqX - 93.0.0
-
+release 93.0.0
  - Introduced a new instrument format database record for NovaSeqX,
    updated test data and one of the tests. 
  - Fixed visual representation for 'cBot 2' model:
      the instrument now appears in the visual listing,
      the instrument does not appear in the list of sequencing instruments
      when a new run is created.
- - Added basic provisions for supporting analysis of NovaSeqX data:
+ - Added basic provisions for NovaSeqX run tracking:
      dragen_analysis_path attribute, platform_NovaSeqX method,
      correct identification of run completion.
+ - Added basic provisions for analysis of NovaSeqX data, ie extracting
+     relevant information from RunInfo.xml.
  - Added visual representation for NovaSeqX.
  - Removed the GAII model from the 'Instrument Types' filter on the runs
    listing page.
