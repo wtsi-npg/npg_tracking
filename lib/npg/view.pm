@@ -73,14 +73,6 @@ sub new {
   return $self;
 }
 
-sub get_inst_format {
-  my $self = shift;
-
-  my $inst_format = $self->util->cgi->param( q{inst_format} ) || q{HK};
-  $self->model->{'inst_format'} = $self->model->sanitise_input( $inst_format );
-  return $self->model->{'inst_format'};
-}
-
 sub authorised {
   my ( $self ) = @_;
   if ( $self->model() && $self->model->location_is_instrument()
@@ -223,12 +215,6 @@ View superclass for the NPG MVC application
 =head2 new - constructor
 
   my $oView = npg::view::<subclass>->new({'util' => $oUtil, ...});
-
-=head2 get_inst_format
-
-returns inst_format from cgi params, sanitised
-
-  my $sInstFormat = $oDerivedViewClass->get_inst_format();
 
 =head2 authorised
 

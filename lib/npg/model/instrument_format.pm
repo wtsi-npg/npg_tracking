@@ -5,6 +5,7 @@ use warnings;
 use base qw(npg::model);
 use Carp;
 use Try::Tiny;
+use List::MoreUtils qw(any);
 use npg::model::instrument;
 
 our $VERSION = '0';
@@ -121,16 +122,9 @@ sub current_instruments_count {
   return scalar @{$self->current_instruments()};
 }
 
-sub is_used_sequencer_type {
+sub is_recently_used_sequencer_format {
   my ( $self ) = @_;
-  my $types = {'HiSeq'      => 'HiSeq',
-               'MiSeq'      => 'MiSeq',
-               'HiSeqX'     => 'HiSeqX',
-               'HiSeq 4000' => 'HiSeq 4000',
-               'NovaSeq'    => 'NovaSeq',
-               'HK'         => 'GAII',
-              };
-  return $types->{$self->model()};
+  return any { $self->model() =~ /^$_/smx } qw/MiSeq NovaSeq HiSeq/;
 }
 
 sub _obtain_numerical_name_part {
@@ -254,11 +248,12 @@ initialise an object based on model being provided
 
   my $iCurrentInstrumentCount = $oInstrumentFormat->current_instrument_count();
 
-=head2 is_used_sequencer_type
+=head2 is_recently_used_sequencer_format
 
-This method returns the instrument type the format is commonly known as if this is a used sequence type, otherwise undef
+Returns true if the instrument format is a recently used sequencing
+instrument, otherwise returns false.
 
-  my $sIsUsedSequencerType = $oInstrumentFormat->is_used_sequencer_type();
+  my $is_recent_sequencer = $obj->is_recently_used_sequencer_format();
 
 =head2 current_instruments_by_format
 
@@ -268,7 +263,7 @@ Returns a hash ref containing keys of current formats (which have current instru
 
 =head2 instrument_formats_sorted
 
-  returns instrument format objects array sorted by model name
+Returns an array of instrument format objects sorted by model name.
 
 =head1 DIAGNOSTICS
 
@@ -290,6 +285,8 @@ Returns a hash ref containing keys of current formats (which have current instru
 
 =item Try::Tiny
 
+=item List::MoreUtil
+
 =item npg::model::instrument
 
 =back
@@ -302,7 +299,7 @@ Returns a hash ref containing keys of current formats (which have current instru
 
 =over
 
-=item Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+=item Roger Pettett
 
 =item Marina Gourtovaia
 
@@ -312,7 +309,7 @@ Returns a hash ref containing keys of current formats (which have current instru
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2006,2008,2013,2014,2016,2018,2021 Genome Research Ltd.
+Copyright (C) 2006,2008,2013,2014,2016,2018,2021,2023 Genome Research Ltd.
 
 This file is part of NPG.
 

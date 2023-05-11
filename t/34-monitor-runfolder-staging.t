@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 58;
+use Test::More tests => 52;
 use Test::Exception;
 use Test::Warn;
 use Test::Deep;
@@ -13,6 +13,7 @@ use Fcntl qw/S_ISGID/;
 use t::dbic_util;
 
 my $MOCK_STAGING = 't/data/gaii/staging';
+my $SECONDS_PER_HOUR = 60 * 60;
 
 BEGIN {
     local $ENV{'HOME'} = 't'; # t/.npg/npg_tracking config file does not contain
@@ -83,7 +84,8 @@ ENDXML
 }
 
 subtest 'updating run data from filesystem' => sub {
-    plan tests => 8;
+    plan tests => 6;
+
     my $basedir = tempdir( CLEANUP => 1 );
 
     my $fs_run_folder = qq[$basedir/IL3/incoming/100622_IL3_01234];
@@ -96,7 +98,7 @@ subtest 'updating run data from filesystem' => sub {
       id_instrument_format => 10,
       team => 'A',
       expected_cycle_count => 310,
-      actual_cycle_count => 0, # So there is no lag
+      actual_cycle_count => 0,
     };
 
     write_run_files($id_run, $fs_run_folder);
@@ -117,13 +119,6 @@ subtest 'updating run data from filesystem' => sub {
         '  folder name updated' );
     is( $run_folder->tracking_run()->folder_path_glob(), qq[$basedir/IL3/*/],
         '  folder path glob updated' );
-    is( $run_folder->cycle_lag(), 0, 'Mirroring is not lagging' );
-    $run->actual_cycle_count(20); # To produce lag
-    $run->update();
-
-    $run_folder = Monitor::RunFolder::Staging->new(runfolder_path      => $fs_run_folder,
-                                                   npg_tracking_schema => $schema);
-    is( $run_folder->cycle_lag(), 1, 'Mirroring is lagging' );
 };
 
 {
@@ -248,7 +243,6 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
 
     unlink $path_to_copy_complete or die "Could not delete file '$path_to_copy_complete' $!";
 
-    my $SECONDS_PER_HOUR = 60 * 60;
     my ($atime, $mtime) = (stat($path_to_rta_complete))[8,9];
     $atime -= 3 * $SECONDS_PER_HOUR; # make it 3 hours ago
     $mtime = $atime;
@@ -266,94 +260,69 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     ok($run_folder->is_run_complete(), 'RTAComplete + long wait time is enough for NovaSeq');
 };
 
-{
+subtest 'counting cycles and tiles' => sub {
+    plan tests => 10;
+
     my $tmpdir = tempdir( CLEANUP => 1 );
-    my $mock_path = qq[$tmpdir/IL12/incoming];
-    make_path($mock_path);
+    my $bc_path = qq[$tmpdir/Data/Intensities/BaseCalls];
+    make_path($bc_path);
+    copy('t/data/run_info/runInfo.novaseq.xp.lite.xml', "$tmpdir/RunInfo.xml");    
+    copy('t/data/run_params/RunParameters.novaseq.xp.lite.xml',
+        "$tmpdir/RunParameters.xml");
+    my $ref = {
+        id_run => 1234,
+        runfolder_path => $tmpdir,
+        npg_tracking_schema => $schema
+    };
 
-    system('cp',  '-rp', $MOCK_STAGING . '/IL12/incoming/100721_IL12_05222', $mock_path);
-    sleep 5;
-    $mock_path = qq[$mock_path/100721_IL12_05222];
-    my $id_run = 5222;
-    write_run_files($id_run, $mock_path);
-
-    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
-                                                npg_tracking_schema => $schema);
-
+    my $test = Monitor::RunFolder::Staging->new($ref);
     warning_like { $test->check_tiles() }
                  { carped => qr/Missing[ ]lane[(]s[)]/msx },
                  'Report missing lanes';
 
-    my $tmpdir2 = tempdir( CLEANUP => 1 );
-    $mock_path = qq[$tmpdir2/IL3/incoming];
-    make_path($mock_path);
-
-    system('cp',  '-rp', $MOCK_STAGING . '/IL3/incoming/100622_IL3_01234/', $mock_path);
-    sleep 5;
-    $mock_path = qq[$mock_path/100622_IL3_01234];
-    $id_run = 1234;
-    my $lanes = 2;
-
-    write_run_files($id_run, $mock_path);
-
-    $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
-                                             npg_tracking_schema => $schema);
-
+    map { make_path("$bc_path/L00" . $_) }   qw/1 2/;
+    $test = Monitor::RunFolder::Staging->new($ref);
     warning_like { $test->check_tiles() }
                  { carped => qr/Missing[ ]cycle[(]s[)]/msx },
                  'Report missing cycles';
 
-    my $tmpdir3 = tempdir( CLEANUP => 1 );
-    $mock_path = qq[$tmpdir3/IL5/incoming];
-    make_path($mock_path);
-
-    system('cp', '-rp', $MOCK_STAGING . '/IL5/incoming/100621_IL5_01204', $mock_path);
-    sleep 5;
-    $mock_path = qq[$mock_path/100621_IL5_01204];
-    $id_run = 1204;
-    my $lanes_1204 = 2;
-    my $cycles = 3;
-
-    write_run_files($id_run, $mock_path, $lanes_1204, $cycles);
-
-    $test = Monitor::RunFolder::Staging->new(runfolder_path => $mock_path,
-                                             npg_tracking_schema => $schema);
-
+    for my $lane ((1, 2)) {
+        for my $cycle ((1, 2, 3)) {
+            my $dir = sprintf '%s/L00%i/C%i.1', $bc_path, $lane, $cycle;
+            make_path($dir);
+        }
+    }
+    $test = Monitor::RunFolder::Staging->new($ref);
     warning_like { $test->check_tiles() }
-                 { carped => qr/Missing[ ]tile[(]s[)]/msx },
-                 'Report missing tiles';
+                 { carped => qr/Missing\ cbcl\ files/msx },
+                 'Report missing files';
 
-
-    my $tmpdir4 = tempdir( CLEANUP => 1 );
-    $mock_path = qq[$tmpdir4/IL5/incoming];
-    make_path($mock_path);
-
-    system('cp',  '-rp', $MOCK_STAGING . '/IL5/incoming/100708_IL3_04999', $mock_path);
-    sleep 5;
-    $mock_path = qq[$mock_path/100708_IL3_04999];
-    $id_run = 4999;
-
-    write_run_files($id_run, $mock_path);
-
-    $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
-                                             npg_tracking_schema => $schema);
-
-    lives_ok { $test->check_tiles() } 'All cif files present';
-}
-
-{
-    my $mock_path = $MOCK_STAGING . '/IL5/incoming/100708_IL3_04999';
-    my $test = Monitor::RunFolder::Staging->new( runfolder_path => $mock_path,
-                                                 npg_tracking_schema => $schema );
-
-    my @missing_cycles;
-    lives_ok { @missing_cycles = $test->missing_cycles($mock_path); } q{missing_cycles ran ok};
-    is( scalar @missing_cycles, 0, q{no cycles missing} );
-    $test->{_cycle_numbers}->{$mock_path} = [ 1..3, 7..89, 100..120 ];
-    @missing_cycles = $test->missing_cycles($mock_path);
-    is_deeply( \@missing_cycles, [ 4..6, 90..99 ], q{missing cycles produced ok} );
-    is_deeply( $test->{_cycle_numbers}, {}, q{cache removed since acted upon} );
-}
+    for my $lane ((1, 2)) {
+        for my $cycle ((1, 2, 3)) {
+            for my $surface ((1,2)) {
+                my $file = sprintf '%s/L00%i/C%i.1/L00%i_2.cbcl',
+                    $bc_path, $lane, $cycle, $surface;
+                `touch $file`;
+            }
+        }
+    }
+    $test = Monitor::RunFolder::Staging->new($ref);
+    ok ($test->check_tiles(), 'All files present');
+ 
+    is ($test->get_latest_cycle(), 3, 'correct latest cycle');
+    my $dir = "$bc_path/L002/C3.1";
+    move "$bc_path/L002/C3.1", "$bc_path/L002/C3.XX";
+    is ($test->get_latest_cycle(), 3, 'correct current cycle');
+    move "$bc_path/L001/C3.1", "$bc_path/L001/C3.XX";
+    is ($test->get_latest_cycle(), 2, 'correct current cycle');
+    move "$bc_path/L002/C2.1", "$bc_path/L002/C2.XX";
+    move "$bc_path/L001/C2.1", "$bc_path/L001/C2.XX";
+    is ($test->get_latest_cycle(), 1, 'correct current cycle');
+    move "$bc_path/L002/C1.1", "$bc_path/L002/C1.XX";
+    is ($test->get_latest_cycle(), 1, 'correct current cycle');
+    move "$bc_path/L001/C1.1", "$bc_path/L001/C1.XX";
+    is ($test->get_latest_cycle(), 0, 'correct current cycle');
+};
 
 {
     my $test = Monitor::RunFolder::Staging->new(
@@ -475,23 +444,20 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
 
 {
     my $tmpdir = tempdir( CLEANUP => 1 );
-    system('cp',  '-rp', $MOCK_STAGING . '/IL5/incoming/100621_IL5_01204', $tmpdir);
-    my $mock_path = $tmpdir . '/100621_IL5_01204';
-
-    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
+    make_path("$tmpdir/Data/Intensities/Basecalls/L001/C1.1");
+    copy('t/data/run_info/runInfo.novaseq.xp.lite.xml', "$tmpdir/RunInfo.xml");
+    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $tmpdir,
                                                 npg_tracking_schema => $schema );
 
-    find( sub { utime time, time, $_ }, $mock_path );
-
+    find( sub { utime time, time, $_ }, $tmpdir );
     my $future_time = time + 1_000_000;
-    utime $future_time, $future_time, "$mock_path/Run.completed";
+    utime $future_time, $future_time, "$tmpdir/RunInfo.xml";
 
-    my ( $size, $date ) = $test->monitor_stats($mock_path);
-
+    my ( $size, $date ) = $test->monitor_stats($tmpdir);
     is( $date, $future_time, 'Find latest modification time' );
 
     # Seems a little fragile (and unnecessary) to insist on an exact match.
-    ok( $size > 1000, 'Find file size sum' );
+    ok( $size > 100, 'Find file size sum' );
 }
 
 {
@@ -517,5 +483,34 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     $r= (stat($tmpdir))[2] & S_ISGID();
     ok( $r, 'now the gid bit is set');
 }
+
+subtest 'run completion for NovaSeqX' => sub {
+    plan tests => 4;
+
+    my $tmpdir = tempdir( CLEANUP => 1 );
+    copy('t/data/run_params/RunParameters.novaseqx.xml',"$tmpdir/RunParameters.xml")
+      or die "Copy failed: $!";
+    copy('t/data/run_info/runInfo.novaseqx.xml',"$tmpdir/RunInfo.xml")
+      or die "Copy failed: $!";
+
+    my $monitor = Monitor::RunFolder::Staging->new(runfolder_path => $tmpdir);
+    ok (!$monitor->is_run_complete(), 'run is not complete');
+
+    my $copy_complete_file = "$tmpdir/CopyComplete.txt";
+    touch_file($copy_complete_file);
+    my $rta_complete_file = "$tmpdir/RTAComplete.txt";
+    touch_file($rta_complete_file);
+    ok ($monitor->is_run_complete(), 'run is complete');
+    unlink $copy_complete_file;
+    ok (!$monitor->is_run_complete(), 'run is not complete');    
+    
+    my ($atime, $mtime) = (stat($rta_complete_file))[8,9];
+    $atime -= 12 * $SECONDS_PER_HOUR; # make it 12 hours ago
+    $mtime = $atime;
+    utime($atime, $mtime, $rta_complete_file)
+        or die "couldn't backdate $rta_complete_file, $!";
+    ok( $monitor->is_run_complete(),
+        'RTAComplete + long wait time is enough for NovaSeqX');
+};
 
 1;

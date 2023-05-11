@@ -485,7 +485,7 @@ sub status_to_change_to {
     }
     my $next_auto = $STATUS_CHANGE_AUTO{$current};
 
-    if ($self->instrument_format->model eq 'NovaSeq' &&
+    if ($self->instrument_format->model =~ /NovaSeq/smx &&
         $next_auto eq 'wash required'){
         $next_auto = 'up';
     }
@@ -595,7 +595,8 @@ Returns true for sequencing instruments, false otherwse.
 
 sub does_sequencing {
   my $self = shift;
-  return ($self->instrument_format->model && $self->instrument_format->model ne $CBOT_INSTR_MODEL);
+  return ($self->instrument_format->model &&
+    ($self->instrument_format->model !~ /^$CBOT_INSTR_MODEL/smx));
 }
 
 =head2 is_idle

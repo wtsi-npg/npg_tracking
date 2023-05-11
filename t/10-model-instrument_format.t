@@ -1,8 +1,10 @@
 use strict;
 use warnings;
-use t::util;
-use Test::More tests => 21;
+use List::MoreUtils qw/any/;
+use Test::More tests => 31;
 use Test::Exception;
+
+use t::util;
 
 our $IF = 'npg::model::instrument_format';
 
@@ -24,8 +26,8 @@ my $util = t::util->new({fixtures => 1});
         });
   my $cifs = $if->current_instrument_formats();
   isa_ok($cifs, 'ARRAY');
-  is((scalar @{$cifs}), 7, 'unprimed cache cif');
-  is((scalar @{$if->current_instrument_formats()}), 7, 'primed cache cif');
+  is((scalar @{$cifs}), 10, 'unprimed cache cif');
+  is((scalar @{$if->current_instrument_formats()}), 10, 'primed cache cif');
   my $name;
   lives_ok { $name = $if->manufacturer_name }
     'no error calling manufacturer_name on an object used in list context';
@@ -117,7 +119,9 @@ our $INS = q{npg::model::instrument};
     'MiSeq' => ['MS1'],
     'HiSeqX' => ['HX1','HX2'],
     'HiSeq' => ['HS1','HS2','HS3'],
-    'cBot' => ['cBot1']
+    'cBot' => ['cBot1'],
+    'cBot 2' => ['cBot20'],
+    'NovaSeqX' => ['NVX1']
   }; 
   my $model = npg::model::instrument_format->new({util => $util});
   my $instruments_by_format =
@@ -139,7 +143,8 @@ our $INS = q{npg::model::instrument};
   $expected = {
     'GA-II' => [qw/IL2 IL3 IL4 IL5 IL6 IL7 IL8/],
     'HiSeqX' => ['HX2'],
-    'MiSeq' => ['MS1']
+    'MiSeq' => ['MS1'],
+    'NovaSeqX' => ['NVX1']
   };
   $model = npg::model::instrument_format->new({util => $util});
   $instruments_by_format =
@@ -151,6 +156,22 @@ our $INS = q{npg::model::instrument};
   $instruments_by_format =
     map2names($model->_map_current_instruments_by_format('Unknown'));
   is_deeply ($instruments_by_format, {}, 'empty map for an unknown lab');
+}
+
+{
+  my @no_show_formats = qw/HL GAII MiniSeq cBot/;
+  my @show_formats =
+    ('MiSeq', 'HiSeq', 'HiSeqX', 'HiSeq 4000', 'NovaSeq', 'NovaSeqX'); 
+  for my $format (@no_show_formats, @show_formats) {
+    my $format_object = npg::model::instrument_format->new(
+      {util => $util, model => $format});
+    my $flag = $format_object->is_recently_used_sequencer_format();
+    if (any { $_ eq $format } @no_show_formats) {
+      ok (!$flag, "$format is not a recent sequencer format");
+    } else {
+      ok ($flag, "$format is a recent sequencer format");
+    }
+  }
 }
 
 1;

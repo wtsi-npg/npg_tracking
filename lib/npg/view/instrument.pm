@@ -252,7 +252,7 @@ sub _read_png_colour {
     if ( $statuses->{run} !~ / run[ ](?: pending | in[ ]progress ) /smix ) {
        $finished_work = 1;
     }
-  } elsif ( $model->instrument_format->model() eq 'cBot' ) {
+  } elsif ( $model->instrument_format->model() =~ /^cBot/smx) {
     if ( !defined $model->percent_complete() ) {
         $finished_work = 1;
     }
@@ -424,15 +424,6 @@ sub read_png { ## no critic (Subroutines::ProhibitExcessComplexity)
   if ($src_height > $height) {$src_height = $height;}
   my $x_start = int ($width - $src_width)/2;
   $im->copy($src, $x_start, 0, 0, 0, $src_width, $src_height);
-
-  # if current_runs have copying_problem tag add drive error icon
-  if (my @r = @{$model->current_runs}) {
-    if (any {$_->has_tag_with_value(q(copying_problem))} @r) {
-      my $im_fn_ds  = sprintf q(%s/gfx/drive_error.png), $util->data_path();
-      my $src_ds    = GD::Image->newFromPng($im_fn_ds);
-      $im->copy($src_ds, $im->width - $src_ds->width - $ALERT_MARGIN , $Y_ALERT_TOP, 0,0,$src_ds->width,$src_ds->height);
-    }
-  }
 
   # if the instrument is down, draw a circle with a line across
   if($ins_status =~ /down/xms) {

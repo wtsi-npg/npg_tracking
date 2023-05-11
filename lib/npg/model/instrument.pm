@@ -382,7 +382,8 @@ sub latest_annotation {
 
 sub does_sequencing {
   my $self = shift;
-  return ($self->instrument_format->model && ($self->instrument_format->model ne $CBOT_INSTR_MODEL));
+  return ($self->instrument_format->model &&
+    ($self->instrument_format->model !~ /^$CBOT_INSTR_MODEL/smx));
 }
 
 sub is_two_slot_instrument {
@@ -393,7 +394,8 @@ sub is_two_slot_instrument {
 
 sub is_cbot_instrument {
   my $self = shift;
-  return ($self->instrument_format->model && ($self->instrument_format->model eq $CBOT_INSTR_MODEL));
+  return ($self->instrument_format->model &&
+    ($self->instrument_format->model =~ /^$CBOT_INSTR_MODEL/smx));
 }
 
 sub is_miseq_instrument {
@@ -560,7 +562,6 @@ sub possible_next_statuses4status {
   }
   return $STATUS_GRAPH{$status};
 }
-
 
 sub possible_next_statuses {
   my $self = shift;
