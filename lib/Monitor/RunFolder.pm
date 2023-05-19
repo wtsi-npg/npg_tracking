@@ -2,16 +2,18 @@ package Monitor::RunFolder;
 
 use Moose;
 use Carp;
+use Readonly;
 
 extends 'npg_tracking::illumina::runfolder';
-with qw/ Monitor::Roles::Username /;
 
 our $VERSION = '0';
+
+Readonly::Scalar my $USERNAME => 'pipeline';
 
 sub update_run_status {
   my ($self, $status_description) = @_;
   $self->tracking_run()
-       ->update_run_status($status_description, $self->username());
+       ->update_run_status($status_description, $USERNAME);
   return;
 }
 
@@ -36,7 +38,7 @@ sub set_instrument_side {
     my $db_iside = $self->tracking_run()->instrument_side || q[];
     if ($db_iside ne $li_iside) {
       my $is_set = $self->tracking_run()
-                        ->set_instrument_side($li_iside, $self->username());
+                        ->set_instrument_side($li_iside, $USERNAME);
       if ($is_set) {
         return $li_iside;
       }
@@ -52,7 +54,7 @@ sub set_workflow_type {
     my $db_wftype = $self->tracking_run()->workflow_type || q[];
     if ($db_wftype ne $li_wftype) {
       my $is_set = $self->tracking_run()
-                        ->set_workflow_type($li_wftype, $self->username());
+                        ->set_workflow_type($li_wftype, $USERNAME);
       if ($is_set) {
         return $li_wftype;
       }
@@ -65,11 +67,11 @@ sub set_run_tags {
   my $self = shift;
 
   $self->is_paired_read()
-    ? $self->tracking_run()->set_tag( $self->username, 'paired_read' )
-    : $self->tracking_run()->set_tag( $self->username, 'single_read' );
+    ? $self->tracking_run()->set_tag( $USERNAME, 'paired_read' )
+    : $self->tracking_run()->set_tag( $USERNAME, 'single_read' );
 
   $self->is_indexed()
-    ? $self->tracking_run()->set_tag( $self->username, 'multiplex' )
+    ? $self->tracking_run()->set_tag( $USERNAME, 'multiplex' )
     : $self->tracking_run()->unset_tag( 'multiplex' );
 
   return;
@@ -203,13 +205,13 @@ finding the run folder. Updates extected cycle count value if needed.
 
 =item Carp
 
+=item Readonly
+
 =back
 
 =head1 INCOMPATIBILITIES
 
 =head1 BUGS AND LIMITATIONS
-
-Please inform the author of any found.
 
 =head1 AUTHOR
 

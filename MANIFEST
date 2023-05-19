@@ -119,8 +119,6 @@ htdocs/js/wtsi/prototype-1.6.0.3.js
 htdocs/js/wtsi/sorttable.js
 htdocs/js/wtsi/zebra.js
 INSTALL
-lib/Monitor/Roles/Schema.pm
-lib/Monitor/Roles/Username.pm
 lib/Monitor/RunFolder.pm
 lib/Monitor/RunFolder/Staging.pm
 lib/Monitor/Staging.pm

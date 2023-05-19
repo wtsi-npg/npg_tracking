@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use English qw(-no_match_vars);
 use File::Copy;
-use Test::More tests => 35;
+use Test::More tests => 34;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -34,10 +34,6 @@ my $dir4rf = tempdir( CLEANUP => 1 );
 
     is( $test->tracking_run()->current_run_status_description(), 'analysis pending',
         'Retrieve current run status' );
-
-    # Test Monitor::Roles::Username
-    is( $test->username(), 'pipeline',
-        'Retrieve default username for updates' );
 }
 
 {

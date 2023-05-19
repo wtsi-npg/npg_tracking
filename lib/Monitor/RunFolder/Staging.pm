@@ -222,7 +222,7 @@ sub move_to_analysis {
         }
         if ($self->status_update) {
             my $status = 'analysis pending';
-            $self->tracking_run()->update_run_status($status, $self->username() );
+            $self->tracking_run()->update_run_status($status);
             push @ms, "Updated Run Status to $status";
         }
     }

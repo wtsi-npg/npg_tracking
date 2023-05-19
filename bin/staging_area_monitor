@@ -11,6 +11,7 @@ use Readonly;
 use Try::Tiny;
 use List::MoreUtils qw(any);
 
+use npg_tracking::Schema;
 use Monitor::Staging;
 use Monitor::RunFolder::Staging;
 
@@ -176,7 +177,8 @@ sub check_path { ##### Function to deal with one run folder
 
 sub main {
 
-    my $monitor   = Monitor::Staging->new();
+    my $schema    = npg_tracking::Schema->connect();
+    my $monitor   = Monitor::Staging->new(schema => $schema);
     my @area_list = $monitor->validate_areas(@ARGV);
     @area_list or croak 'No valid arguments';
 
@@ -195,7 +197,7 @@ sub main {
                 _log_noindent("Considering $run_path");
                 my $done;
                 try {
-                    $done = check_path($run_path, $monitor->schema, $previous_size_of);
+                    $done = check_path($run_path, $schema, $previous_size_of);
                 } finally {
                     if (@_) {
                         _log("ERROR: Execution for $run_path died with: @_\n");

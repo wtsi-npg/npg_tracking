@@ -9,11 +9,7 @@ use MooseX::StrictConstructor;
 use npg_tracking::illumina::run::folder::validation;
 use npg_tracking::illumina::run::folder::location;
 
-with 'Monitor::Roles::Schema';
-
-
 our $VERSION = '0';
-
 
 has known_areas => (
     is      => 'ro',
@@ -21,6 +17,11 @@ has known_areas => (
     default => sub { [ @npg_tracking::illumina::run::folder::location::STAGING_AREAS ] },
 );
 
+has schema => (
+    is         => 'ro',
+    required   => 1,
+    isa        => 'npg_tracking::Schema',
+);
 
 sub validate_areas {
     my ( $self, @arguments ) = @_;
@@ -107,19 +108,19 @@ sub find_live {
                   my $db_external_name = $run_row->instrument->external_name();
                   if (! $db_external_name ){
                       warn qq[No instrument external_name for '$id_run' found in database, skipping\n];
-		      next;
-	          }
+                      next;
+                  }
                   my $staging_instrument_name;
                   try {
                       $staging_instrument_name = $check->instrument_name(); # from RunInfo.xml
-		      warn "Retrieved instrument_name $staging_instrument_name\n";
-		  } catch {
+                      warn "Retrieved instrument_name $staging_instrument_name\n";
+                  } catch {
                       warn "error retrieving instrument_name from RunInfo.xml\n";
-		  };
-		  if ( ! defined $staging_instrument_name ) {
-                     warn "instrument_name is undefined, skipping $run_dir\n";
-		     next;
-	          } else {
+                  };
+                  if ( ! defined $staging_instrument_name ) {
+                      warn "instrument_name is undefined, skipping $run_dir\n";
+                      next;
+                  } else {
                       if ($db_external_name ne $staging_instrument_name) {
                           warn "Skipping $run_dir - instrument name mismatch" .
                              " for run $id_run, '$staging_instrument_name' on staging," .
@@ -127,7 +128,7 @@ sub find_live {
                           next;
                       }
                       $run_row->update({'folder_name' => $run_folder}); # or validation will fail
-		  }
+                  }
                 }    
                 if ( npg_tracking::illumina::run::folder::validation->new(
                          run_folder          => $run_folder,
@@ -189,7 +190,7 @@ short read sequencer.
 =head1 DESCRIPTION
 
 This class gets various bits of information from the staging area for a short
-read sequencer (GA-II and HiSeq).
+read sequencer.
 
 =head1 SUBROUTINES/METHODS
 
@@ -238,7 +239,7 @@ they match /staging_area/machine/{incoming, analysis}/run_folder
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2015,2018,2019,2020 Genome Research Ltd.
+Copyright (C) 2013,2014,2015,2018,2019,2020,2023 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

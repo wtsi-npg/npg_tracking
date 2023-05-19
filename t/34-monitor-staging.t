@@ -18,7 +18,7 @@ my $schema = t::dbic_util->new->test_schema(fixture_path => q[t/data/dbic_fixtur
 
 {
     my $test;
-    lives_ok { $test = Monitor::Staging->new( _schema => $schema ) }
+    lives_ok { $test = Monitor::Staging->new( schema => $schema ) }
          'Object creation ok';
     throws_ok { $test->find_live() }
               qr/Top[ ]level[ ]staging[ ]path[ ]required/msx,
@@ -38,7 +38,7 @@ my $schema = t::dbic_util->new->test_schema(fixture_path => q[t/data/dbic_fixtur
       mkdir $dir;
       push @staging_areas, $dir;
     }
-    my $mtest = Monitor::Staging->new( _schema => $schema, known_areas => \@staging_areas);
+    my $mtest = Monitor::Staging->new( schema => $schema, known_areas => \@staging_areas);
     my @val_area_output;
 
     warning_is { @val_area_output = $mtest->validate_areas() }
@@ -72,7 +72,7 @@ my $schema = t::dbic_util->new->test_schema(fixture_path => q[t/data/dbic_fixtur
     my $run = $schema->resultset('Run')->search({id_run => 5222})->next;
     $run->update_run_status('run cancelled');
 
-    my $test = Monitor::Staging->new( _schema => $schema );
+    my $test = Monitor::Staging->new( schema => $schema );
     my $root = tempdir( CLEANUP => 1 );
     my @path = map { $root . $_ }
                qw(/IL5/outgoing/100713_IL24_0433
