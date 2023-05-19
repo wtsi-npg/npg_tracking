@@ -63,8 +63,8 @@ use_ok('npg_tracking::data::bait');
    'bait path not found where bait name is all white space';
 
   # There is no bait name for this lane
-  my %ref = (id_run => 7753, position => 2, tag_index => 1);
-  my $test =npg_tracking::data::bait->new(repository => $repos, %ref,
+  %ref = (id_run => 7753, position => 2, tag_index => 1);
+  $test =npg_tracking::data::bait->new(repository => $repos, %ref,
     lims => st::api::lims->new(%ref));
   lives_and { is $test->bait_path, undef } 'bait path undefined';
   is($test->bait_intervals_path, undef, 'bait CTR file undefined');
@@ -72,4 +72,3 @@ use_ok('npg_tracking::data::bait');
 }
 
 1;
-
