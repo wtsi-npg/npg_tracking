@@ -1,21 +1,15 @@
 package Monitor::Staging;
 
 use Moose;
-use Monitor::RunFolder;
+use namespace::autoclean;
 use Carp;
 use Try::Tiny;
 use MooseX::StrictConstructor;
 
 use npg_tracking::illumina::run::folder::validation;
-use npg_tracking::illumina::run::folder::location;
+use Monitor::RunFolder;
 
 our $VERSION = '0';
-
-has known_areas => (
-    is      => 'ro',
-    isa     => 'ArrayRef',
-    default => sub { [ @npg_tracking::illumina::run::folder::location::STAGING_AREAS ] },
-);
 
 has schema => (
     is         => 'ro',
@@ -24,36 +18,20 @@ has schema => (
 );
 
 sub validate_areas {
-    my ( $self, @arguments ) = @_;
+    my ( $self, @staging_areas ) = @_;
 
-    carp 'Empty argument list' if !@arguments;
-    my $known_areas = $self->known_areas();
-
-    my %check;
-    foreach (@arguments) {
-        my $area = $_;
-
-        if (m/^ \d+ $/msx) {
-            if ( !defined $known_areas->[ $_ + 0 ] ) {
-                carp "Parameter out of bounds: $_";
-                next;
-            }
-            $area = $known_areas->[$_];
-        }
-
-        if ( !-d $area ) {
-            carp "Staging directory not found: $area";
-            next;
-        }
-
-        carp "$area specified twice" if $check{$area};
-
-        $check{$area}++;
+    if (!@staging_areas) {
+        croak 'Empty argument list of staging areas';
     }
-
-    my @validated = sort { $a cmp $b } keys %check;
-
-    return @validated;
+    if (@staging_areas > 1) {
+        croak 'Multiple staging areas cannot be processed';
+    }
+    my $staging_area = $staging_areas[0];
+    if ( !-d $staging_area ) {
+        croak "Staging directory not found: $staging_area";
+    }
+   
+    return $staging_area;
 }
 
 
@@ -65,7 +43,7 @@ sub find_live {
 
     my %path_for;
 
-    foreach my $run_dir ( glob $staging_area . q{/{IL,HS}*/{incoming,analysis}/*} ) {
+    foreach my $run_dir ( glob $staging_area . q{/IL*/{incoming,analysis}/*} ) {
 
         warn "\n\nFound $run_dir\n";
 
@@ -168,15 +146,15 @@ sub find_live {
     return values %path_for;
 }
 
-no Moose;
 __PACKAGE__->meta->make_immutable();
+
 1;
 
 __END__
 
 =head1 NAME
 
-Monitor::Staging - interrogate the staging area of an Illumina
+Monitor::Staging - interrogate the staging area designated to an Illumina
 short read sequencer.
 
 =head1 VERSION
@@ -185,7 +163,6 @@ short read sequencer.
 
     C<<use Monitor::Staging;
        my $stage_poll = Monitor::Staging->new();>>
-
 
 =head1 DESCRIPTION
 
@@ -196,15 +173,17 @@ read sequencer.
 
 =head2 validate_areas
 
-Check if the parameters passed to the method are valid staging areas. They
-may be passed as absolute paths or as integer indices of some (hard-coded)
-external array.
+Check if the argument passed to the method is a valid staging areas,
+ie an existing directory. Error if no argument or multiple arguments
+is/are given.
 
 =head2 find_live
 
 Take a staging area path as a required argument and return a list of all run
-directories (no tests or repeats) found in incoming and analysis folders below it. I.e.
-they match /staging_area/machine/{incoming, analysis}/run_folder
+directories (no tests or repeats) found in incoming and analysis folders below
+it.
+
+The path pattern should match /[staging_area]/IL*/{incoming, analysis}/[run_folder]
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
@@ -214,6 +193,8 @@ they match /staging_area/machine/{incoming, analysis}/run_folder
 =over
 
 =item Moose
+
+=item namespace::autoclean
 
 =item Carp
 
