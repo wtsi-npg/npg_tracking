@@ -135,8 +135,7 @@ sub check_path { ##### Function to deal with one run folder
             $folder->update_run_record(); # Inspect and update cycles,
                                           # including expected cycle count!
 
-            if ( $folder->mirroring_complete($run_path) &&
-                 $folder->check_tiles($run_path) ) {
+            if ( $folder->check_tiles($run_path) ) {
 
                 my $previous_size = $previous_size_of->{$run_path};
                 my ( $current_size, $latest_mod ) = $folder->monitor_stats();

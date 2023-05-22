@@ -6,9 +6,7 @@ use English qw(-no_match_vars);
 use File::Copy;
 use File::Find;
 use File::Basename;
-use IO::All;
 use List::Util qw(max);
-use Perl6::Slurp;
 use Readonly;
 use List::MoreUtils qw(any);
 use Try::Tiny;
@@ -25,92 +23,48 @@ Readonly::Scalar my $SECONDS_PER_MINUTE   => 60;
 Readonly::Scalar my $MINUTES_PER_HOUR     => 60;
 Readonly::Scalar my $SECONDS_PER_HOUR     => $SECONDS_PER_MINUTE * $MINUTES_PER_HOUR;
 Readonly::Scalar my $MAX_COMPLETE_WAIT    => 6 * $SECONDS_PER_HOUR;
-Readonly::Scalar my $RTA_COMPLETE         => 10 * $SECONDS_PER_MINUTE;
 Readonly::Scalar my $INTENSITIES_DIR_PATH => q[Data/Intensities];
 Readonly::Scalar my $BASECALLS_DIR_PATH   => qq[$INTENSITIES_DIR_PATH/BaseCalls];
 Readonly::Scalar my $MODE_INDEX           => 2;
 
-Readonly::Scalar my $RTA_COMPLETE_FN      => q[RTAComplete\.txt];
-Readonly::Scalar my $COPY_COMPLETE_FN     => q[CopyComplete\.txt];
-
-has 'rta_complete_wait' => (isa          => 'Int',
-                            is           => 'ro',
-                            default      => $RTA_COMPLETE,
-                           );
+Readonly::Scalar my $RTA_COMPLETE_FN      => q[RTAComplete.txt];
+Readonly::Scalar my $COPY_COMPLETE_FN     => q[CopyComplete.txt];
 
 has 'status_update' => (isa          => 'Bool',
                         is           => 'ro',
                         default      => 1,
                        );
 
-sub _find_files {
-    my ($self, $filename) = @_;
-    my $run_path = $self->runfolder_path();
-
-    my @file_list;
-
-    # The trailing slash forces IO::All to cope with symlinks.
-    eval { @file_list = io("$run_path/")->all_files(); 1; }
-        or do { carp $EVAL_ERROR; return 0; };
-
-    my @markers = map {q().$_} grep { basename($_) =~ m/\A $filename \Z/msx } @file_list;
-
-    if ( scalar @markers > 1 ) {
-      carp qq[Unexpected to find multiple files matching pattern '$filename' in staging.];
-    }
-
-    return @markers;
+sub _find_file {
+    my ($self, $file_path) = @_;
+    my $file = join q[/], $self->runfolder_path(), $file_path;
+    return -f $file ? $file : q();
 }
 
 sub is_run_complete {
     my ($self) = @_;
     
-    my @markers = $self->_find_files($RTA_COMPLETE_FN);
-    my $has_rta_complete_file = scalar @markers;
-    my $has_copy_complete_file = $self->_find_files($COPY_COMPLETE_FN);
+    my $rta_complete_file = $self->_find_file($RTA_COMPLETE_FN);
+    my $copy_complete_file = $self->_find_file($COPY_COMPLETE_FN);
  
-    if ( $has_rta_complete_file ) {
+    if ( $rta_complete_file ) {
         if ( $self->platform_NovaSeq() or $self->platform_NovaSeqX()) {
-            if ( $has_copy_complete_file ) {
+            if ( $copy_complete_file ) {
                 return 1;
             } else {
-                my $mtime = ( stat $markers[0] )[$MTIME_INDEX];
+                my $mtime = ( stat $rta_complete_file )[$MTIME_INDEX];
                 my $last_modified = time() - $mtime;
                 return $last_modified > $MAX_COMPLETE_WAIT;
             }
         }
         return 1;
     } else {
-        if ( $has_copy_complete_file ) {
+        if ( $copy_complete_file ) {
             my $rf = $self->runfolder_path();
             carp "Runfolder '$rf' with CopyComplete but not RTAComplete";
         }
     }
     return 0;
-}
-
-sub mirroring_complete {
-    my ($self) = @_;
-
-    print {*STDERR} "\tChecking for mirroring complete.\n" or carp $OS_ERROR;
-
-    my $run_path = $self->runfolder_path();
-
-    my @markers = $self->_find_files($RTA_COMPLETE_FN);
-
-    my $mtime = ( scalar @markers )
-                ? ( stat $markers[0] )[$MTIME_INDEX]
-                : time;
-    my $last_modified = time() - $mtime;
-
-    my $events_file  = $self->runfolder_path() . q{/Events.log};
-    my $events_log   = ( -e $events_file ) ? slurp($events_file) : q{};
-    my $events_regex =
-        qr{Copying[ ]logs[ ]to[ ]network[ ]run[ ]folder\s* \Z }msx;
-
-    return ( $last_modified > $self->rta_complete_wait ) ? 1
-         : ( $events_log =~ $events_regex )       ? 1
-         :                                          0;
 }
 
 sub monitor_stats {
@@ -374,12 +328,6 @@ but has been there for longer than a timeout limit.
 Perform a series of checks to make sure the run really is complete. Return 0
 if any of them fails. If all pass return 1.
 
-=head2 mirroring_complete
-
-Determines if mirroring is complete by checking for the presence and last
-modification time of certain files. Return 0 if the tests fail (mirroring is
-*not* complete), otherwise return 1.
-
 =head2 monitor_stats
 
 Returns the sum of all file sizes in the tree below $self->runfolder_path(), and
@@ -422,11 +370,7 @@ Move the run folder from 'analysis' to 'outgoing'.
 
 =item File::Basename
 
-=item IO::All
-
 =item List::Util
-
-=item Perl6::Slurp
 
 =item Readonly
 

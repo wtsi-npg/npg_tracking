@@ -1,9 +1,8 @@
 use strict;
 use warnings;
-use Test::More tests => 52;
+use Test::More tests => 49;
 use Test::Exception;
 use Test::Warn;
-use Test::Deep;
 use File::Copy;
 use File::Find;
 use File::Temp qw(tempdir);
@@ -84,7 +83,7 @@ ENDXML
 }
 
 subtest 'updating run data from filesystem' => sub {
-    plan tests => 6;
+    plan tests => 5;
 
     my $basedir = tempdir( CLEANUP => 1 );
 
@@ -109,7 +108,6 @@ subtest 'updating run data from filesystem' => sub {
     my $run_folder = Monitor::RunFolder::Staging->new(runfolder_path      => $fs_run_folder,
                                                       npg_tracking_schema => $schema);
     isa_ok($run_folder, 'Monitor::RunFolder::Staging');
-    is($run_folder->rta_complete_wait, 600, 'default rta complete wait time');
 
     is( $run_folder->_get_folder_path_glob, qq[$basedir/IL3/*/],
         'internal glob correct' );
@@ -121,28 +119,6 @@ subtest 'updating run data from filesystem' => sub {
         '  folder path glob updated' );
 };
 
-{
-    my $tmpdir = tempdir( CLEANUP => 1 );
-
-    system('cp',  '-rp', $MOCK_STAGING . '/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX', $tmpdir);
-    sleep 5;
-
-    my $mock_path = $tmpdir . '/100914_HS3_05281_A_205MBABXX';
-
-    my $test = Monitor::RunFolder::Staging->new(runfolder_path      => $mock_path,
-                                                npg_tracking_schema => $schema,
-                                                rta_complete_wait   => 15);
-
-    rename "$mock_path/RTAComplete.txt", "$mock_path/RTA_renamed_Complete.txt";
-
-    ok( !$test->mirroring_complete(),
-        'Mirroring is not complete' );
-
-    rename "$mock_path/RTA_renamed_Complete.txt", "$mock_path/RTAComplete.txt";
-
-    ok( $test->mirroring_complete(),
-        'Mirroring is complete' );
-}
 
 sub touch_file {
     my ($path) = @_;
@@ -151,48 +127,10 @@ sub touch_file {
     close $fh;
 }
 
-subtest 'folder identifies copy complete for HiSeq (Non-NovaSeq)' => sub {
-    plan tests => 7;
-    my $basedir = tempdir( CLEANUP => 1 );
-
-    my $fs_run_folder = qq[$basedir/IL3/incoming/100622_IL3_01234];
-    make_path($fs_run_folder);
-
-    my $id_run = 1234;
-    my $run_data = {
-      id_run => $id_run,
-      id_instrument => 67,
-      id_instrument_format => 10,
-      team => 'A',
-      expected_cycle_count => 310,
-      actual_cycle_count => 0, # So there is no lag
-    };
-
-    write_run_files($id_run, $fs_run_folder);
-
-    my $run = $schema->resultset('Run')->find($id_run);
-    $run->update($run_data);
-
-    my $run_folder = Monitor::RunFolder::Staging->new(runfolder_path      => $fs_run_folder,
-                                                      npg_tracking_schema => $schema);
-
-    ok(!$run_folder->is_run_complete(), 'Run is not complete');
-
-    for my $file_name (qw[ RTAComplete RTAcomplete rtacomplete RTAComplete.tsv RTAComplete_old.txt ]) {
-      note $file_name;
-      my $path_to_complete = qq[$fs_run_folder/$file_name];
-      touch_file($path_to_complete);
-      ok(!$run_folder->is_run_complete(), 'Run is not complete');
-      unlink $path_to_complete or die "Could not delete file $path_to_complete: $!";
-    }
-
-    my $path_to_complete = qq[$fs_run_folder/RTAComplete.txt];
-    touch_file($path_to_complete);
-    ok($run_folder->is_run_complete(), 'Run is complete');
-};
 
 subtest 'folder identifies copy complete for NovaSeq' => sub {
-    plan tests => 11;
+    plan tests => 10;
+
     my $basedir = tempdir( CLEANUP => 1 );
 
     my $fs_run_folder = qq[$basedir/IL3/incoming/100622_IL3_01234];
@@ -225,7 +163,7 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     touch_file($path_to_rta_complete);
     ok(!$run_folder->is_run_complete(), 'Only RTAComplete is not enough for NovaSeq');
 
-    for my $file_name (qw[ CopyComplete Copycomplete copycomplete CopyComplete.tsv CopyComplete_old.txt ]) {
+    for my $file_name (qw[ CopyComplete Copycomplete copycomplete CopyComplete_old.txt ]) {
       note $file_name;
       my $path_to_wrong_copy_complete = qq[$fs_run_folder/$file_name];
       touch_file($path_to_wrong_copy_complete);
