@@ -129,7 +129,7 @@ sub touch_file {
 
 
 subtest 'folder identifies copy complete for NovaSeq' => sub {
-    plan tests => 10;
+    plan tests => 12;
 
     my $basedir = tempdir( CLEANUP => 1 );
 
@@ -174,7 +174,11 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     unlink $path_to_rta_complete or die "Could not delete file $path_to_rta_complete: $!";
 
     touch_file($path_to_copy_complete);
-    ok(!$run_folder->is_run_complete(), 'Only CopyComplete is not enough for NovaSeq');
+    my $complete = 1;
+    warning_like { $complete = $run_folder->is_run_complete() }
+        { carped => qr/with CopyComplete\.txt but not RTAComplete\.txt/ },
+        'Missing RTAComplete.txt is logged';
+    is($complete, 0, 'Only CopyComplete.txt file is not enough for NovaSeq');
 
     touch_file($path_to_rta_complete);
     ok($run_folder->is_run_complete(), 'RTAComplete + CopyComplete is enough for NovaSeq');
@@ -195,7 +199,12 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
 
     utime($atime, $mtime, $path_to_rta_complete)
         or die "couldn't backdate $path_to_rta_complete, $!";
-    ok($run_folder->is_run_complete(), 'RTAComplete + long wait time is enough for NovaSeq');
+    $complete = 0;
+    warnings_like { $complete = $run_folder->is_run_complete() } [
+        { carped => qr/with RTAComplete\.txt but not CopyComplete\.txt/ },
+        { carped => qr/Has waited for over 21600 secs, consider copied/ }
+    ], 'Missing CopyComplete.txt and end of the wait are logged';
+    is($complete, 1, 'RTAComplete + long wait time is enough for NovaSeq');
 };
 
 subtest 'counting cycles and tiles' => sub {
@@ -423,7 +432,7 @@ subtest 'counting cycles and tiles' => sub {
 }
 
 subtest 'run completion for NovaSeqX' => sub {
-    plan tests => 4;
+    plan tests => 5;
 
     my $tmpdir = tempdir( CLEANUP => 1 );
     copy('t/data/run_params/RunParameters.novaseqx.xml',"$tmpdir/RunParameters.xml")
@@ -447,7 +456,13 @@ subtest 'run completion for NovaSeqX' => sub {
     $mtime = $atime;
     utime($atime, $mtime, $rta_complete_file)
         or die "couldn't backdate $rta_complete_file, $!";
-    ok( $monitor->is_run_complete(),
+
+    my $complete = 0;
+    warnings_like { $complete = $monitor->is_run_complete() } [
+        { carped => qr/with RTAComplete\.txt but not CopyComplete\.txt/ },
+        { carped => qr/Has waited for over 21600 secs, consider copied/ }
+    ], 'Missing CopyComplete.txt and end of the wait are logged';
+    ok( $complete,
         'RTAComplete + long wait time is enough for NovaSeqX');
 };
 

@@ -46,25 +46,40 @@ sub is_run_complete {
     
     my $rta_complete_file = $self->_find_file($RTA_COMPLETE_FN);
     my $copy_complete_file = $self->_find_file($COPY_COMPLETE_FN);
- 
+    my $is_run_complete = 0;
+
     if ( $rta_complete_file ) {
         if ( $self->platform_NovaSeq() or $self->platform_NovaSeqX()) {
             if ( $copy_complete_file ) {
-                return 1;
+                $is_run_complete = 1;
             } else {
                 my $mtime = ( stat $rta_complete_file )[$MTIME_INDEX];
                 my $last_modified = time() - $mtime;
-                return $last_modified > $MAX_COMPLETE_WAIT;
+                if  ($last_modified > $MAX_COMPLETE_WAIT) {
+                    carp sprintf q[Runfolder '%s' with %s but not %s],
+                        $self->runfolder_path(),
+                        $RTA_COMPLETE_FN,
+                        $COPY_COMPLETE_FN;
+                    # Do we ever wait for this long and proceed regardless?
+                    # Log to find out.
+                    carp qq[Has waited for over $MAX_COMPLETE_WAIT secs, ] .
+                        q[consider copied];
+                    $is_run_complete = 1;
+                }
             }
+        } else {
+            $is_run_complete = 1;
         }
-        return 1;
     } else {
         if ( $copy_complete_file ) {
-            my $rf = $self->runfolder_path();
-            carp "Runfolder '$rf' with CopyComplete but not RTAComplete";
+            carp sprintf q[Runfolder '%s' with %s but not %s],
+                $self->runfolder_path(),
+                $COPY_COMPLETE_FN,
+                $RTA_COMPLETE_FN;
         }
     }
-    return 0;
+
+    return $is_run_complete;
 }
 
 sub monitor_stats {
