@@ -6,6 +6,7 @@ use English qw(-no_match_vars);
 use File::Copy;
 use File::Find;
 use File::Basename;
+use File::Slurp;
 use List::Util qw(max);
 use Readonly;
 use List::MoreUtils qw(any);
@@ -29,6 +30,9 @@ Readonly::Scalar my $MODE_INDEX           => 2;
 
 Readonly::Scalar my $RTA_COMPLETE_FN      => q[RTAComplete.txt];
 Readonly::Scalar my $COPY_COMPLETE_FN     => q[CopyComplete.txt];
+Readonly::Scalar my $ONBOARD_ANALYSIS_COMPLETE_FN =>
+                                             q[Secondary_Analysis_Complete.txt];
+Readonly::Scalar my $ONBOARD_ANALYSIS_SAMPLESHEET_FN => q[SampleSheet.csv]; 
 
 has 'status_update' => (isa          => 'Bool',
                         is           => 'ro',
@@ -80,6 +84,43 @@ sub is_run_complete {
     }
 
     return $is_run_complete;
+}
+
+
+
+sub is_onboard_analysis_planned {
+    my $self = shift;
+
+    my $planned = 0;
+    if ($self->platform_NovaSeqX()) {
+        my $ss = join q[/],
+            $self->runfolder_path(), $ONBOARD_ANALYSIS_SAMPLESHEET_FN;
+        my $have_ss = -f $ss;
+        carp sprintf 'Samplesheet %s for the onboard analysis%sfound',
+            $ss, $have_ss ? q[ ] : q[ not ];
+        if ($have_ss) {
+            $planned = any { $_ =~ /^\[BCLConvert/smx } read_file($ss);
+            carp sprintf 'Samplesheet %s %s the BCLConvert section',
+                $ss, $planned ? q[has] : q[dooen't have];
+        }
+    }
+    return $planned;
+}
+
+sub has_onboard_analysis_finished {
+    my $self = shift;
+
+    my $analysis_dir = $self->dragen_analysis_path();
+    my $found = 0;
+    if (-d $analysis_dir) {
+        my $file = join q[/], $analysis_dir, $ONBOARD_ANALYSIS_COMPLETE_FN;
+        $found = -f $file;
+        carp sprintf '%s is%sfound', $file, $found ? q[ ] : q[ not ];         
+    } else {
+        carp "No DRAGEN analysis directory $analysis_dir";
+    }
+
+    return $found;
 }
 
 sub monitor_stats {
@@ -345,8 +386,8 @@ if any of them fails. If all pass return 1.
 
 =head2 monitor_stats
 
-Returns the sum of all file sizes in the tree below $self->runfolder_path(), and
-also the highest epoch time found.
+Returns the sum of all file sizes in the tree below $self->runfolder_path()
+and the highest epoch time found.
 
 =head2 get_latest_cycle
 
@@ -361,11 +402,23 @@ Move the run folder from 'incoming' to 'analysis'. Then set the run status to
 
 =head2 is_in_analysis
 
-Returns true if the runfolder is in analysis upstream directory and false othenrwise
+Returns true if the runfolder is in analysis upstream directory and
+false otherwise.
 
 =head2 move_to_outgoing
 
 Move the run folder from 'analysis' to 'outgoing'.
+
+=head2 is_onboard_analysis_planned
+
+Returns true if the run folder for the NovaSeq SeriesX run contains a
+samplesheet with a section for the bcl on board data conversion. Always returns
+false for other instrument types.
+
+=head2 has_onboard_analysis_finished
+
+Returns true if the file that inticates that the onboard analysis has finished
+is present in the run folder.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
