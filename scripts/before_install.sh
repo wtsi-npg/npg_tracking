@@ -9,7 +9,7 @@ cpanm --quiet --notest Alien::Tidyp
 
 # WTSI NPG Perl repo dependencies
 repos=""
-for repo in perl-dnap-utilities; do
+for repo in perl-dnap-utilities ml_warehouse; do
     cd /tmp
     # Always clone master when using depth 1 to get current tag
     git clone --branch master --depth 1 ${WTSI_NPG_GITHUB_URL}/${repo}.git ${repo}.git

@@ -218,6 +218,7 @@ my $builder = $class->new(
 
                 'WTSI::DNAP::Utilities::Loggable'  => '>= 0.5.3',
                 'WTSI::DNAP::Utilities::Timestamp' => '0',
+                'WTSI::DNAP::Warehouse::Schema'    => '0',
             },
          );
 
