@@ -158,7 +158,7 @@ override 'children' => sub {
         foreach my $tag_index (@{$attrs}) {
           $init->{'tag_index'} = $tag_index;
           push @children, $package_name->new($init);
-	}
+        }
       }
     } else {
       my $attrs = $self->children_attrs(
@@ -294,7 +294,7 @@ David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017 Genome Research Ltd.
+Copyright (C) 2017, 2023 Genome Research Ltd.
 
 This file is part of NPG.
 

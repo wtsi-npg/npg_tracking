@@ -186,7 +186,7 @@ sub _build__lchildren {
         foreach my $tag_index (@{$self->children_attrs($rs_array, 'tag_index')}) {
           $init->{'tag_index'} = $tag_index;
           push @children, $package_name->new($init);
-	}
+        }
       }
     } else {
       foreach my $position (@{$self->children_attrs($rs_array, 'position')}) {
@@ -302,7 +302,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017 Genome Research Ltd.
+Copyright (C) 2017, 2023 Genome Research Ltd.
 
 This file is part of NPG.
 
