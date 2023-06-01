@@ -3,8 +3,8 @@ package npg_tracking::report::events;
 use Moose;
 use MooseX::StrictConstructor;
 use namespace::autoclean;
-use Class::Load qw/try_load_class load_class/;
 use List::MoreUtils qw/any uniq/;
+use Class::Load qw/load_class/;
 use Try::Tiny;
 use FindBin qw($Bin);
 use Readonly;
@@ -12,6 +12,7 @@ use Readonly;
 use npg_tracking::util::types;
 use npg_tracking::util::abs_path qw/abs_path/;
 use npg_tracking::Schema;
+use WTSI::DNAP::Warehouse::Schema;
 
 with qw/ MooseX::Getopt
          WTSI::DNAP::Utilities::Loggable /;
@@ -19,7 +20,6 @@ with qw/ MooseX::Getopt
 our $VERSION = '0';
 
 Readonly::Array  my @COMMON_REPORT_TYPES  => qw/subscribers/;
-Readonly::Scalar my $WH_SCHEMA_CLASS_NAME => q[WTSI::DNAP::Warehouse::Schema];
 Readonly::Scalar my $TEMPLATE_DIR         =>
                                           q[data/npg_tracking_email/templates];
 
@@ -40,7 +40,7 @@ sub _build_schema_npg {
 }
 
 has 'schema_mlwh' => (
-  isa        => "Maybe[$WH_SCHEMA_CLASS_NAME]",
+  isa        => 'Maybe[WTSI::DNAP::Warehouse::Schema]',
   is         => 'ro',
   required   => 0,
   lazy_build => 1,
@@ -48,18 +48,7 @@ has 'schema_mlwh' => (
 );
 sub _build_schema_mlwh {
   my $self = shift;
-  my ($loaded, $error) = try_load_class($WH_SCHEMA_CLASS_NAME);
-  my $schema;
-  if (!$loaded) {
-    $self->info("Failed to load ${WH_SCHEMA_CLASS_NAME}: $error");
-  } else {
-    try {
-      $schema = $WH_SCHEMA_CLASS_NAME->connect();
-    } catch {
-      $self->info("Failed to connect: $_");
-    };
-  }
-  return $schema;
+  return WTSI::DNAP::Warehouse::Schema->connect();
 }
 
 has '_template_dir_path' => (
@@ -184,10 +173,8 @@ npg_tracking::report::events
  DBIx handle for a warehouse containing LIMs data, see
  C<WTSI::DNAP::Warehouse::Schema>. This attribute will be built if not set.
  
- To avoid circular dependencies between different NPG packages, if the
- C<WTSI::DNAP::Warehouse::Schema> class cannot be loaded, this attribute is
- assigned an undefined value and its value will not be propagated
- to individual reporter modules.
+ For ease of testing this attribute can explicitly be set to undefined,
+ in which case its value will not be propagated to individual reporter modules.
 
 =head2 process
 
@@ -213,9 +200,9 @@ npg_tracking::report::events
 
 =item namespace::autoclean
 
-=item Class::Load
-
 =item List::MoreUtils
+
+=item Class::Load
 
 =item Try::Tiny
 
@@ -224,6 +211,8 @@ npg_tracking::report::events
 =item npg_tracking::util::abs_path
 
 =item npg_tracking::Schema
+
+=item WTSI::DNAP::Warehouse::Schema
 
 =item Readonly
 
@@ -239,7 +228,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017,2021 Genome Research Ltd.
+Copyright (C) 2017,2021,2023 Genome Research Ltd.
 
 This file is part of NPG.
 

@@ -2,7 +2,6 @@ use strict;
 use warnings;
 use Test::More tests => 8;
 use Test::Exception;
-use Class::Load qw/try_load_class/;
 use Log::Log4perl qw(:levels);
 use File::Temp qw(tempdir);
 use JSON;
@@ -13,8 +12,6 @@ use Cwd qw/cwd/;
 use npg_tracking::util::abs_path qw/abs_path/;
 use t::dbic_util;
 
-local $ENV{'no_proxy'}   = q[];
-local $ENV{'http_proxy'} = 'http://npgwibble.com'; #invalid proxy
 local $ENV{'HOME'}       = 't'; # ensures we cannot read production
                                 # db credentials
 my $logfile = join q[/], tempdir(CLEANUP => 1), 'logfile';
@@ -25,8 +22,6 @@ Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
                           utf8   => 1});
 
 use_ok ('npg_tracking::report::events');
-
-my ($mlwh_schema_loaded) = try_load_class('WTSI::DNAP::Warehouse::Schema');
 
 my $schema_factory = t::dbic_util->new();
 my $schema = $schema_factory->test_schema();
@@ -101,8 +96,11 @@ for my $name (@entity_types) {
   $entity2event{$name} = $event->id_event_type();
 }
 
+my $mlwh_schema =
+  $schema_factory->create_test_db('WTSI::DNAP::Warehouse::Schema');
+
 subtest 'can create an object' => sub {
-  plan tests => 7;
+  plan tests => 3;
   my $e;
   lives_ok {
     $e = npg_tracking::report::events->new(dry_run     => 1,
@@ -111,28 +109,11 @@ subtest 'can create an object' => sub {
   } 'created object with mlwh schema set to undefined explicitly';
   is($e->_template_dir_path(), abs_path(join(q[/], cwd(), 'data', 'npg_tracking_email', 'templates' )),
     'templates directory found');
-  SKIP: {
-    skip 'WTSI::DNAP::Warehouse::Schema is available', 2 unless !$mlwh_schema_loaded;
-    lives_ok {
-      $e = npg_tracking::report::events->new(dry_run    => 1,
-                                             schema_npg => $schema)
-    } 'created object with, WTSI::DNAP::Warehouse::Schema not available';
-    lives_and ( sub {is $e->schema_mlwh, undef}, 'mlwh schema is undefined');
-  };
-  SKIP: {
-    skip 'WTSI::DNAP::Warehouse::Schema is not available', 3 unless $mlwh_schema_loaded;
-    lives_ok {
-      $e = npg_tracking::report::events->new(dry_run    => 1,
-                                             schema_npg => $schema)
-    } 'created object when WTSI::DNAP::Warehouse::Schema is available';
-    lives_and ( sub {is $e->schema_mlwh, undef}, 'mlwh schema is undefined');
-    my $mlwh_schema = $schema_factory->create_test_db('WTSI::DNAP::Warehouse::Schema');
-    lives_ok {
-      npg_tracking::report::events->new(dry_run     => 1,
-                                        schema_npg  => $schema,
-                                        schema_mlwh => $mlwh_schema)
-    } 'created object with mlwh schema object passed explicitly';
-  };
+  lives_ok {
+    npg_tracking::report::events->new(dry_run     => 1,
+                                      schema_npg  => $schema,
+                                      schema_mlwh => $mlwh_schema)
+  } 'created object with mlwh schema object passed explicitly';
 };
 
 subtest 'process instrument events' => sub {
@@ -251,7 +232,6 @@ subtest 'process run and runlane events' => sub {
   plan tests => 2;
 
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} = 't/data/report/samplesheet_21915.csv';
-  local $ENV{'NPG_WEBSERVICE_CACHE_DIR'}    = 't/data/report';
 
   my $event_rs      = $schema->resultset('Event');
   my $rsd_rs        = $schema->resultset('RunStatusDict');
@@ -346,13 +326,6 @@ subtest 'tests with mlwarehouse driver' => sub {
   my $num_tests = 4;
   plan tests => $num_tests;
 
-  SKIP: {
-    skip 'WTSI::DNAP::Warehouse::Schema is not available',
-      $num_tests unless $mlwh_schema_loaded;
-
-    my $mlwh_schema = $schema_factory->create_test_db('WTSI::DNAP::Warehouse::Schema');
-    local $ENV{'NPG_WEBSERVICE_CACHE_DIR'}    = 't/data/report';
-
     # We created a test database, but there are no data there
     my $e = npg_tracking::report::events->new(dry_run     => 1,
                                               schema_npg  => $schema,
@@ -390,7 +363,6 @@ subtest 'tests with mlwarehouse driver' => sub {
     lives_ok {@counts = $e->process()} 'no error processing four new events';
     ok (($counts[0] == 3) && ($counts[1] == 1),
       'three successes, one failure with wh LIMs data available');
-  };
 };
 
 1;

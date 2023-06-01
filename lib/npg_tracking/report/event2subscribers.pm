@@ -72,9 +72,7 @@ sub _build_lims {
         $ref->{'mlwh_schema'}      = $self->schema_mlwh();
       }
       # Fall back on some other driver type, for example,
-      # samplesheet. This will allow for testing this utility
-      # in the absence of WTSI::DNAP::Warehouse::Schema and
-      # associated with this schema LIMs drivers.
+      # samplesheet. This will allow to easily test this utility.
       my $lims = st::api::lims->new($ref);
       # Explicitly forbid using the xml driver.
       if ($lims->driver_type() eq 'xml') {
@@ -331,7 +329,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017,2021 Genome Research Ltd.
+Copyright (C) 2017,2021,2023 Genome Research Ltd.
 
 This file is part of NPG.
 
