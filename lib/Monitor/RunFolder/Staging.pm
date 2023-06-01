@@ -101,7 +101,7 @@ sub is_onboard_analysis_planned {
         if ($have_ss) {
             $planned = any { $_ =~ /^\[BCLConvert/smx } read_file($ss);
             carp sprintf 'Samplesheet %s %s the BCLConvert section',
-                $ss, $planned ? q[has] : q[dooen't have];
+                $ss, $planned ? q[has] : q[doesn't have];
         }
     }
     return $planned;
