@@ -50,7 +50,7 @@ sub check_path { ##### Function to deal with one run folder
     my $id_run = $folder->tracking_run()->id_run;
 
     _log("Run $id_run status $run_status");
-    if ($folder->platform_is_NovaSeqX()) {
+    if ($folder->platform_NovaSeqX()) {
         _log("... run on NovaSeqX instrument");
     }
 
