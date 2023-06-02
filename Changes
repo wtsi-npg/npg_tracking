@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+release 94.0.1
+ - Fixed a bug - an incorrect method name - in the staging area
+   daemon script.
+
 release 94.0.0
  - Added checks for on-board analysis in progress
  - Improved logging for a long wait case
