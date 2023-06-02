@@ -11,6 +11,7 @@ use Readonly;
 use Try::Tiny;
 use List::MoreUtils qw(any);
 
+use npg_tracking::Schema;
 use Monitor::Staging;
 use Monitor::RunFolder::Staging;
 
@@ -49,6 +50,9 @@ sub check_path { ##### Function to deal with one run folder
     my $id_run = $folder->tracking_run()->id_run;
 
     _log("Run $id_run status $run_status");
+    if ($folder->platform_is_NovaSeqX()) {
+        _log("... run on NovaSeqX instrument");
+    }
 
     my $db_flowcell_barcode      = $folder->tracking_run()->flowcell_id;
     my $staging_flowcell_barcode = $folder->run_flowcell; # from RunParameters.xml
@@ -134,8 +138,7 @@ sub check_path { ##### Function to deal with one run folder
             $folder->update_run_record(); # Inspect and update cycles,
                                           # including expected cycle count!
 
-            if ( $folder->mirroring_complete($run_path) &&
-                 $folder->check_tiles($run_path) ) {
+            if ( $folder->check_tiles($run_path) ) {
 
                 my $previous_size = $previous_size_of->{$run_path};
                 my ( $current_size, $latest_mod ) = $folder->monitor_stats();
@@ -151,6 +154,12 @@ sub check_path { ##### Function to deal with one run folder
                 # Check that no file is 'in the future'.
                 if ( $latest_mod > time ) {
                     _log("Files in 'future' $latest_mod are present.");
+                    return;
+                }
+
+                # Check if we are waiting for the onboard analysis to finish.
+                if ($folder->is_onboard_analysis_planned() &&
+                    !$folder->has_onboard_analysis_finished()) {
                     return;
                 }
 
@@ -171,14 +180,14 @@ sub check_path { ##### Function to deal with one run folder
 } ###### End of function to deal with one run folder
 
 ###########################################################
-###############   Main daemon loop  #######################
+###############   Main daemon loop.  ######################
 ###########################################################
 
 sub main {
 
-    my $monitor   = Monitor::Staging->new();
-    my @area_list = $monitor->validate_areas(@ARGV);
-    @area_list or croak 'No valid arguments';
+    my $schema  = npg_tracking::Schema->connect();
+    my $monitor = Monitor::Staging->new(schema => $schema);
+    my $staging_area = $monitor->validate_areas(@ARGV);
 
     my $time = sub {
         return strftime '%a %b %e %T %Y%n', localtime;
@@ -190,21 +199,19 @@ sub main {
 
         _log_noindent($time->());
 
-        foreach my $area (@area_list) {
-            foreach my $run_path ( $monitor->find_live($area) ) {
-                _log_noindent("Considering $run_path");
-                my $done;
-                try {
-                    $done = check_path($run_path, $monitor->schema, $previous_size_of);
-                } finally {
-                    if (@_) {
-                        _log("ERROR: Execution for $run_path died with: @_\n");
-                    } else {
-                        _log("Succesfully processed $run_path");
-                    }
-                };
-                $done and delete $previous_size_of->{$run_path};
-            }
+        foreach my $run_path ( $monitor->find_live($staging_area) ) {
+            _log_noindent("Considering $run_path");
+            my $done;
+            try {
+                $done = check_path($run_path, $schema, $previous_size_of);
+            } finally {
+                if (@_) {
+                    _log("ERROR: Execution for $run_path died with: @_\n");
+                } else {
+                    _log("Succesfully processed $run_path");
+                }
+            };
+            $done and delete $previous_size_of->{$run_path};
         }
 
         _log_noindent("Gone to sleep for $SLEEP_INTERVAL seconds at " . $time->());
@@ -224,11 +231,14 @@ staging_area_monitor
 
 =head1 SYNOPSIS
 
-    staging_area_monitor /nfs/sf10 [/nfs/sf8] ...
+  # Assuming staging_area_path is an existing path
+
+  staging_area_monitor staging_area_path 
 
 =head1 DESCRIPTION
 
-Monitor one or more staging areas supplied as command-line arguments.
+Monitors one staging area. The staging area path is supplied as a
+command-line argument.
 
 The script runs an infinite loop so do not call it via a crontab.
 

@@ -1,5 +1,20 @@
 LIST OF CHANGES
 
+release 94.0.0
+ - Added checks for on-board analysis in progress
+ - Improved logging for a long wait case
+ - Simplified run complete and mirrored detection
+ - Simplified the staging area daemon.
+   Bring the code in accordance with the current practice:
+   - consider only one staging area,
+   - narrow down the glob pattern for areas below the staging
+     area to 'IL*'.
+ - Removed roles which defined attributes that were used
+   in one class only.
+ - Changed the way the connection to the database is established
+   by the staging monitor. Set up the connection explicitly in
+   the script rather than inside one of the classess.
+
 release 93.0.0
  - Introduced a new instrument format database record for NovaSeqX,
    updated test data and one of the tests. 

@@ -6,9 +6,8 @@ use English qw(-no_match_vars);
 use File::Copy;
 use File::Find;
 use File::Basename;
-use IO::All;
+use File::Slurp;
 use List::Util qw(max);
-use Perl6::Slurp;
 use Readonly;
 use List::MoreUtils qw(any);
 use Try::Tiny;
@@ -25,92 +24,103 @@ Readonly::Scalar my $SECONDS_PER_MINUTE   => 60;
 Readonly::Scalar my $MINUTES_PER_HOUR     => 60;
 Readonly::Scalar my $SECONDS_PER_HOUR     => $SECONDS_PER_MINUTE * $MINUTES_PER_HOUR;
 Readonly::Scalar my $MAX_COMPLETE_WAIT    => 6 * $SECONDS_PER_HOUR;
-Readonly::Scalar my $RTA_COMPLETE         => 10 * $SECONDS_PER_MINUTE;
 Readonly::Scalar my $INTENSITIES_DIR_PATH => q[Data/Intensities];
 Readonly::Scalar my $BASECALLS_DIR_PATH   => qq[$INTENSITIES_DIR_PATH/BaseCalls];
 Readonly::Scalar my $MODE_INDEX           => 2;
 
-Readonly::Scalar my $RTA_COMPLETE_FN      => q[RTAComplete\.txt];
-Readonly::Scalar my $COPY_COMPLETE_FN     => q[CopyComplete\.txt];
-
-has 'rta_complete_wait' => (isa          => 'Int',
-                            is           => 'ro',
-                            default      => $RTA_COMPLETE,
-                           );
+Readonly::Scalar my $RTA_COMPLETE_FN      => q[RTAComplete.txt];
+Readonly::Scalar my $COPY_COMPLETE_FN     => q[CopyComplete.txt];
+Readonly::Scalar my $ONBOARD_ANALYSIS_COMPLETE_FN =>
+                                             q[Secondary_Analysis_Complete.txt];
+Readonly::Scalar my $ONBOARD_ANALYSIS_SAMPLESHEET_FN => q[SampleSheet.csv]; 
 
 has 'status_update' => (isa          => 'Bool',
                         is           => 'ro',
                         default      => 1,
                        );
 
-sub _find_files {
-    my ($self, $filename) = @_;
-    my $run_path = $self->runfolder_path();
-
-    my @file_list;
-
-    # The trailing slash forces IO::All to cope with symlinks.
-    eval { @file_list = io("$run_path/")->all_files(); 1; }
-        or do { carp $EVAL_ERROR; return 0; };
-
-    my @markers = map {q().$_} grep { basename($_) =~ m/\A $filename \Z/msx } @file_list;
-
-    if ( scalar @markers > 1 ) {
-      carp qq[Unexpected to find multiple files matching pattern '$filename' in staging.];
-    }
-
-    return @markers;
+sub _find_file {
+    my ($self, $file_path) = @_;
+    my $file = join q[/], $self->runfolder_path(), $file_path;
+    return -f $file ? $file : q();
 }
 
 sub is_run_complete {
     my ($self) = @_;
     
-    my @markers = $self->_find_files($RTA_COMPLETE_FN);
-    my $has_rta_complete_file = scalar @markers;
-    my $has_copy_complete_file = $self->_find_files($COPY_COMPLETE_FN);
- 
-    if ( $has_rta_complete_file ) {
+    my $rta_complete_file = $self->_find_file($RTA_COMPLETE_FN);
+    my $copy_complete_file = $self->_find_file($COPY_COMPLETE_FN);
+    my $is_run_complete = 0;
+
+    if ( $rta_complete_file ) {
         if ( $self->platform_NovaSeq() or $self->platform_NovaSeqX()) {
-            if ( $has_copy_complete_file ) {
-                return 1;
+            if ( $copy_complete_file ) {
+                $is_run_complete = 1;
             } else {
-                my $mtime = ( stat $markers[0] )[$MTIME_INDEX];
+                my $mtime = ( stat $rta_complete_file )[$MTIME_INDEX];
                 my $last_modified = time() - $mtime;
-                return $last_modified > $MAX_COMPLETE_WAIT;
+                if  ($last_modified > $MAX_COMPLETE_WAIT) {
+                    carp sprintf q[Runfolder '%s' with %s but not %s],
+                        $self->runfolder_path(),
+                        $RTA_COMPLETE_FN,
+                        $COPY_COMPLETE_FN;
+                    # Do we ever wait for this long and proceed regardless?
+                    # Log to find out.
+                    carp qq[Has waited for over $MAX_COMPLETE_WAIT secs, ] .
+                        q[consider copied];
+                    $is_run_complete = 1;
+                }
             }
+        } else {
+            $is_run_complete = 1;
         }
-        return 1;
     } else {
-        if ( $has_copy_complete_file ) {
-            my $rf = $self->runfolder_path();
-            carp "Runfolder '$rf' with CopyComplete but not RTAComplete";
+        if ( $copy_complete_file ) {
+            carp sprintf q[Runfolder '%s' with %s but not %s],
+                $self->runfolder_path(),
+                $COPY_COMPLETE_FN,
+                $RTA_COMPLETE_FN;
         }
     }
-    return 0;
+
+    return $is_run_complete;
 }
 
-sub mirroring_complete {
-    my ($self) = @_;
 
-    print {*STDERR} "\tChecking for mirroring complete.\n" or carp $OS_ERROR;
 
-    my $run_path = $self->runfolder_path();
+sub is_onboard_analysis_planned {
+    my $self = shift;
 
-    my @markers = $self->_find_files($RTA_COMPLETE_FN);
+    my $planned = 0;
+    if ($self->platform_NovaSeqX()) {
+        my $ss = join q[/],
+            $self->runfolder_path(), $ONBOARD_ANALYSIS_SAMPLESHEET_FN;
+        my $have_ss = -f $ss;
+        carp sprintf 'Samplesheet %s for the onboard analysis%sfound',
+            $ss, $have_ss ? q[ ] : q[ not ];
+        if ($have_ss) {
+            $planned = any { $_ =~ /^\[BCLConvert/smx } read_file($ss);
+            carp sprintf 'Samplesheet %s %s the BCLConvert section',
+                $ss, $planned ? q[has] : q[doesn't have];
+        }
+    }
+    return $planned;
+}
 
-    my $mtime = ( scalar @markers )
-                ? ( stat $markers[0] )[$MTIME_INDEX]
-                : time;
-    my $last_modified = time() - $mtime;
+sub has_onboard_analysis_finished {
+    my $self = shift;
 
-    my $events_file  = $self->runfolder_path() . q{/Events.log};
-    my $events_log   = ( -e $events_file ) ? slurp($events_file) : q{};
-    my $events_regex =
-        qr{Copying[ ]logs[ ]to[ ]network[ ]run[ ]folder\s* \Z }msx;
+    my $analysis_dir = $self->dragen_analysis_path();
+    my $found = 0;
+    if (-d $analysis_dir) {
+        my $file = join q[/], $analysis_dir, $ONBOARD_ANALYSIS_COMPLETE_FN;
+        $found = -f $file;
+        carp sprintf '%s is%sfound', $file, $found ? q[ ] : q[ not ];         
+    } else {
+        carp "No DRAGEN analysis directory $analysis_dir";
+    }
 
-    return ( $last_modified > $self->rta_complete_wait ) ? 1
-         : ( $events_log =~ $events_regex )       ? 1
-         :                                          0;
+    return $found;
 }
 
 sub monitor_stats {
@@ -222,7 +232,7 @@ sub move_to_analysis {
         }
         if ($self->status_update) {
             my $status = 'analysis pending';
-            $self->tracking_run()->update_run_status($status, $self->username() );
+            $self->tracking_run()->update_run_status($status);
             push @ms, "Updated Run Status to $status";
         }
     }
@@ -374,16 +384,10 @@ but has been there for longer than a timeout limit.
 Perform a series of checks to make sure the run really is complete. Return 0
 if any of them fails. If all pass return 1.
 
-=head2 mirroring_complete
-
-Determines if mirroring is complete by checking for the presence and last
-modification time of certain files. Return 0 if the tests fail (mirroring is
-*not* complete), otherwise return 1.
-
 =head2 monitor_stats
 
-Returns the sum of all file sizes in the tree below $self->runfolder_path(), and
-also the highest epoch time found.
+Returns the sum of all file sizes in the tree below $self->runfolder_path()
+and the highest epoch time found.
 
 =head2 get_latest_cycle
 
@@ -398,11 +402,23 @@ Move the run folder from 'incoming' to 'analysis'. Then set the run status to
 
 =head2 is_in_analysis
 
-Returns true if the runfolder is in analysis upstream directory and false othenrwise
+Returns true if the runfolder is in analysis upstream directory and
+false otherwise.
 
 =head2 move_to_outgoing
 
 Move the run folder from 'analysis' to 'outgoing'.
+
+=head2 is_onboard_analysis_planned
+
+Returns true if the run folder for the NovaSeq SeriesX run contains a
+samplesheet with a section for the bcl on board data conversion. Always returns
+false for other instrument types.
+
+=head2 has_onboard_analysis_finished
+
+Returns true if the file that inticates that the onboard analysis has finished
+is present in the run folder.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
@@ -422,11 +438,7 @@ Move the run folder from 'analysis' to 'outgoing'.
 
 =item File::Basename
 
-=item IO::All
-
 =item List::Util
-
-=item Perl6::Slurp
 
 =item Readonly
 
