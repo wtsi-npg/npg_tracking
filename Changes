@@ -11,8 +11,8 @@ release 94.0.0
      area to 'IL*'.
  - Removed roles which defined attributes that were used
    in one class only.
- - Chaned the way the connection to the database is established
-   in the staging monitor. Set up the connection explicitly in
+ - Changed the way the connection to the database is established
+   by the staging monitor. Set up the connection explicitly in
    the script rather than inside one of the classess.
 
 release 93.0.0
