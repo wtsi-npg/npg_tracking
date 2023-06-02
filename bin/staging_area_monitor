@@ -21,6 +21,7 @@ Readonly::Scalar my $SLEEP_INTERVAL => 60 * 15;
 Readonly::Scalar my $DRY_RUN => $ENV{'dev'} && ($ENV{'dev'} ne 'live');
 Readonly::Array  my @UPDATES_FOR_INCOMING_ALLOWED_STATUSES =>
   ('run pending', 'run in progress', 'run complete');
+Readonly::Scalar my $USERNAME => 'pipeline';
 
 local $OUTPUT_AUTOFLUSH = 1;
 
@@ -87,7 +88,7 @@ sub check_path { ##### Function to deal with one run folder
     # 'run complete'. We might consider reinstating this rule.
     if ( not defined $previous_size_of->{$run_path} ) {
         $folder->update_run_record();
-        $folder->tracking_run()->set_tag( $folder->username(), 'staging' );
+        $folder->tracking_run()->set_tag( $USERNAME, 'staging' );
         _log('Set staging tag');
         try {
             my $iside = $folder->set_instrument_side();

@@ -1,8 +1,9 @@
 LIST OF CHANGES
 
 release 94.0.1
- - Fixed a bug - an incorrect method name - in the staging area
-   daemon script.
+ - Fixed bugs in the staging area daemon script:
+     - an incorrect method name
+     - use of previously deleted method
 
 release 94.0.0
  - Added checks for on-board analysis in progress
