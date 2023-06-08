@@ -1,4 +1,4 @@
-package npg_tracking::daemon::samplesheet::auto;
+package npg::samplesheet::auto;
 
 use Moose;
 use namespace::autoclean;
@@ -22,16 +22,16 @@ Readonly::Scalar my $DEFAULT_SLEEP => 90;
 
 =head1 NAME
 
-npg_tracking::daemon::samplesheet::auto
+npg::samplesheet::auto
 
 =head1 VERSION
 
 =head1 SYNOPSIS
 
-  use npg_tracking::daemon::samplesheet::auto;
+  use npg::samplesheet::auto;
   use Log::Log4perl qw(:easy);
   BEGIN{ Log::Log4perl->easy_init({level=>$INFO,}); }
-  npg_tracking::daemon::samplesheet::auto->new()->loop();
+  npg::samplesheet::auto->new()->loop();
 
 =head1 DESCRIPTION
 
@@ -246,7 +246,7 @@ David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2012,2013,2014,2019,2021 GRL.
+Copyright (C) 2012,2013,2014,2019,2021,2023 GRL.
 
 This file is part of NPG.
 
