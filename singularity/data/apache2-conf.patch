@@ -1,8 +1,0 @@
-126,128c126,128
-< # These need to be set in envvars file
-< User ${APACHE_RUN_USER}
-< Group ${APACHE_RUN_GROUP}
----
-> ## These need to be set in envvars file
-> #User ${APACHE_RUN_USER}
-> #Group ${APACHE_RUN_GROUP}
