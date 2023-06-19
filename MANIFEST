@@ -163,6 +163,7 @@ lib/npg_tracking/report/event2followers.pm
 lib/npg_tracking/report/event2subscribers.pm
 lib/npg_tracking/report/events.pm
 lib/npg/samplesheet.pm
+lib/npg/samplesheet/novaseq_xseries.pm
 lib/npg/util.pm
 lib/npg/util/mailer.pm
 lib/npg/view.pm
@@ -415,6 +416,7 @@ t/40-st-sample.t
 t/40-st-study.t
 t/45-st-api-lims-traversal.t
 t/47-samplesheet.t
+t/47-npg_samplesheet_novaseq_xseries.t
 t/50-controller.t
 t/50-decorator.t
 t/60-illumina-runfolder.t
