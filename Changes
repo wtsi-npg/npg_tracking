@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - Remove singularity recipe and related files
+
 release 94.0.1
  - Fixed bugs in the staging area daemon script:
    - an incorrect method name
