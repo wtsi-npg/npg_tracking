@@ -278,6 +278,8 @@ __END__
 
 =item Carp
 
+=item List::MoreUtils
+
 =item WTSI::DNAP::Warehouse::Schema
 
 =item WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell
@@ -294,7 +296,7 @@ David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017, 2023 Genome Research Ltd.
+Copyright (C) 2016, 2017, 2023 Genome Research Ltd.
 
 This file is part of NPG.
 

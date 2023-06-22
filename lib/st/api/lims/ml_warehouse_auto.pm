@@ -93,16 +93,6 @@ __END__
 
 =item Carp
 
-=item npg_tracking::util::types
-
-=item npg_tracking::glossary::lane
-
-=item npg_tracking::glossary::tag
-
-=item npg_tracking::glossary::flowcell
-
-=item st::api::lims
-
 =item st::api::lims::ml_warehouse
 
 =item WTSI::DNAP::Warehouse::Schema
@@ -121,7 +111,7 @@ David K. Jackson E<lt>David.Jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 Genome Research Ltd.
+Copyright (C) 2016, 2016, 2023 Genome Research Ltd.
 
 This file is part of NPG.
 

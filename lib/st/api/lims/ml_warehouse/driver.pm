@@ -5,7 +5,7 @@ use Carp;
 
 use st::api::lims;
 use npg_tracking::util::types;
-use WTSI::DNAP::Warehouse::Schema::Result::IseqFlowcell;
+use WTSI::DNAP::Warehouse::Schema;
 
 with qw/  npg_tracking::glossary::lane
           npg_tracking::glossary::tag
@@ -254,8 +254,6 @@ __END__
 
 =item Carp
 
-=item List::MoreUtils
-
 =item npg_tracking::util::types
 
 =item npg_tracking::glossary::lane
@@ -267,8 +265,6 @@ __END__
 =item st::api::lims
 
 =item WTSI::DNAP::Warehouse::Schema
-
-=item WTSI::DNAP::Warehouse::Schema::Query::IseqFlowcell
 
 =back
 
@@ -282,7 +278,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017 Genome Research Ltd.
+Copyright (C) 2017, 2023 Genome Research Ltd.
 
 This file is part of NPG.
 
