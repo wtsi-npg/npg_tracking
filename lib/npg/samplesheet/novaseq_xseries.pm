@@ -111,7 +111,12 @@ sub _build_batch_id {
   if (!$self->has_id_run) {
     croak 'Run ID is not supplied, cannot get LIMS batch ID';
   }
-  return $self->run()->batch_id();
+  my $batch_id = $self->run()->batch_id();
+  if (!defined $batch_id) {
+    croak 'Batch ID is not set in the database record for run ' . $self->id_run;
+  }
+
+  return $batch_id;
 }
 
 =head2 align
@@ -207,30 +212,19 @@ has 'run' => (
 );
 sub _build_run {
   my $self=shift;
+
   if (!$self->has_id_run) {
     croak 'Run ID is not supplied, cannot retrieve run database record';
   }
-  return $self->npg_tracking_schema->resultset(q(Run))->find($self->id_run);
-}
-
-=head2 instrument
-
-DBIx object for a row in the instrument table of the tracking database.
-
-=cut
-has 'instrument' => (
-  'isa'        => 'npg_tracking::Schema::Result::Instrument',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-  'traits'     => [ 'NoGetopt' ],
-);
-sub _build_instrument {
-  my $self=shift;
-  my $instrument = $self->run()->instrument();
-  if ($instrument->instrument_format()->model() !~ /NovaSeqX/smx) {
-    croak 'Intrument type is not NovaSeq X Series';
+  my $run = $self->npg_tracking_schema->resultset(q(Run))->find($self->id_run);
+  if (!$run) {
+    croak 'The database record for run ' . $self->id_run  . ' does not exist';
   }
-  return $instrument;
+  if ($run->instrument_format()->model() !~ /NovaSeqX/smx) {
+    croak 'Instrument model is not NovaSeq X Series';
+  }
+
+  return $run;
 }
 
 =head2 lims
@@ -271,24 +265,14 @@ has 'run_name' => (
 sub _build_run_name {
   my $self = shift;
 
-  my $date = DateTime->now()->strftime('%y%m%d'); # 230602 for 2 June 2023
   my $run_name;
   if ($self->has_id_run()) {
-    my $side = $self->run()->is_tag_set('fc_slotA') ? 'A' :
-              ($self->run()->is_tag_set('fc_slotB') ? 'B' : q[]);
-    if (!$side) {
-      croak 'Slot is not set for run ' . $self->id_run;
-    }
-    $run_name = join q[_],
-      $date,
-      $self->instrument()->name(),
-      $self->id_run,
-      $side;
+    $run_name = $self->id_run;
   } else {
     my $ug = Data::UUID->new();
     my @a = split /-/xms, $ug->to_string($ug->create());
     # Add a random string at the end so that the batch can be reused.
-    $run_name = sprintf '%s_ssbatch%s_%s',  $date, $self->batch_id(), $a[0];
+    $run_name = sprintf 'ssbatch%s_%s', $self->batch_id(), $a[0];
   }
 
   return $run_name;
@@ -307,11 +291,26 @@ has 'file_name' => (
 );
 sub _build_file_name {
   my $self = shift;
-  my $file_name = $self->run_name;
+
+  my $file_name;
   if ($self->has_id_run) {
-    $file_name .= q[_ssbatch] . $self->batch_id;
+    my $side = $self->run->is_tag_set('fc_slotA') ? 'A' :
+              ($self->run->is_tag_set('fc_slotB') ? 'B' : q[]);
+    if (!$side) {
+      croak 'Slot is not set for run ' . $self->id_run;
+    }
+    $file_name = join q[_],
+      $self->run->instrument->name,
+      $self->id_run,
+      $side,
+      q[ssbatch] . $self->batch_id;
+  } else {
+    $file_name = $self->run_name;
   }
-  $file_name .= q[.csv];
+
+  my $date =  DateTime->now()->strftime('%y%m%d'); # 230602 for 2 June 2023 
+  $file_name = sprintf '%s_%s.csv', $date, $file_name;
+
   return $file_name;
 }
 
