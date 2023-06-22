@@ -39,27 +39,14 @@ npg_samplesheet_generator_NovaSeqXSeries
                 samples are present
   C<keep_fastq> - an option to keep FASTQ files for aligned data, false
                   default
+  C<dragen_max_number_of_configs> - DRAGEN analysis can deal with a limited
+                  number of distinct configurations. Set this attribute if
+                  processing not on-board.
 
 =head1 DESCRIPTION
 
-Samplesheet generation to initiate on-board DRAGEN analysis on the
-NovaSeq Series X instrument.
-
-See specification in
-L<https://support-docs.illumina.com/SHARE/SampleSheetv2/Content/SHARE/SampleSheetv2/Settings_fNV_mX.htm> 
-
-A full listing of analysis options is available in
-L<https://support-docs.illumina.com/SW/DRAGEN_v41/Content/SW/DRAGEN/OptionReference.htm>
-
-DRAGEN aligner info:
-L<https://support-docs.illumina.com/SW/DRAGEN_v40/Content/SW/DRAGEN/GraphMapper_fDG.htm>
-
-Prepare a reference:
-L<https://support-docs.illumina.com/SW/DRAGEN_v41/Content/SW/DRAGEN/RefGenIntro.htm>
-L<https://support-docs.illumina.com/SW/DRAGEN_v41/Content/SW/DRAGEN/RefGenPipe_fDG.htm>
-
-Import a reference:
-L<https://support-docs.illumina.com/IN/NovaSeqX/Content/IN/NovaSeqX/ImportResources.htm>
+Samplesheet generation to initiate DRAGEN analysis of data sequenced
+on the NovaSeq Series X Illumina instrument.
 
 =head1 EXIT STATUS
 

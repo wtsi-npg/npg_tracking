@@ -15,6 +15,7 @@ use Data::UUID;
 
 use st::api::lims;
 use npg_tracking::Schema;
+use npg_tracking::util::types;
 use WTSI::DNAP::Warehouse::Schema;
 
 with qw / MooseX::Getopt
@@ -47,6 +48,10 @@ Readonly::Hash my %REFERENCE_MAPING => (
 # The version of the software currently onboard.
 Readonly::Scalar my $SOFTWARE_VERSION => '4.1.5';
 
+# DRAGEN can process a limited number of distinct configurations.
+# For on-board analysis it's 4.
+Readonly::Scalar my $DRAGEN_MAX_NUMBER_OF_CONFIGS => 4;
+
 =head1 NAME
 
 npg::samplesheet::novaseq_xseries
@@ -55,8 +60,15 @@ npg::samplesheet::novaseq_xseries
 
 =head1 DESCRIPTION
 
-Samplesheet generation to initiate on-board DRAGEN analysis on the
-NovaSeq Series X instrument.
+Samplesheet generation to initiate DRAGEN analysis of the data sequenced on
+the NovaSeq Series X instrument.
+
+The DRAGEN analysis can process a limited number of distinct analysis
+configurations. The germline and RNA alignment sections of the generated
+samplesheet will contain as many samples as possible within the limit set by 
+the C<dragen_max_number_of_configs> attribute. The default value for this
+attribute is 4, which is the number of distinct configurations that the
+on-board DRAGEN analysis can handle.
 
 See specification in
 L<https://support-docs.illumina.com/SHARE/SampleSheetv2/Content/SHARE/SampleSheetv2/Settings_fNV_mX.htm> 
@@ -163,6 +175,27 @@ has 'varcall' => (
   'required' => 0,
   'documentation' => 'Variant calling mode, defaults to None, other valid ' .
                      'options are SmallVariantCaller and AllVariantCallers',
+);
+
+=head2 dragen_max_number_of_configs
+
+=cut
+
+has 'dragen_max_number_of_configs' => (
+  'isa'      => 'NpgTrackingPositiveInt',
+  'is'       => 'ro',
+  'default'  => $DRAGEN_MAX_NUMBER_OF_CONFIGS,
+  'required' => 0,
+  'documentation' => 'DRAGEN analysis can deal with a limited number of ' .
+                     'distinct configurations. Set this attribute if ' .
+                     'processing not on-board',
+);
+
+has '_current_number_of_configs' => (
+  'isa'      => 'Int',
+  'is'       => 'rw',
+  'default'  => 0,
+  'required' => 0,
 );
 
 =head2 npg_tracking_schema
@@ -398,6 +431,8 @@ sub process {
   $self->add_common_headers();
   $self->_add_line();
   $self->add_bclconvert_section();
+  $self->_current_number_of_configs(1);
+
   if ($self->align) {
     $self->_add_line();
     my $num_samples = $self->add_germline_section();
@@ -405,8 +440,14 @@ sub process {
     if ($num_samples) {
       $self->_add_line();
     }
-    $num_samples = $self->add_rna_section();
-    carp "$num_samples samples are added to the RNA section";
+    if ($self->_current_number_of_configs ==
+        $self->dragen_max_number_of_configs) {
+      carp sprintf 'Already used %i distinct analysis configurations, ' .
+        'will skip RNA section', $self->dragen_max_number_of_configs;
+    } else {
+      $num_samples = $self->add_rna_section();
+      carp "$num_samples samples are added to the RNA section";
+    }
   }
 
   my $csv = Text::CSV->new({
@@ -637,6 +678,26 @@ sub _add_samples {
   return;
 }
 
+sub _can_add_sample {
+  my ($self, $distinct_configs, $config) = @_;
+
+  $config or return;
+
+  # An existing configuration can always be added.
+  if (!$distinct_configs->{$config}) { # This is a new configuration.
+    if ($self->_current_number_of_configs < $self->dragen_max_number_of_configs) {
+      # Add to the dictionary of distinct configs.
+      $distinct_configs->{$config} = 1;
+      # Increment the global count of distinct contigs.
+      $self->_current_number_of_configs($self->_current_number_of_configs + 1);
+    } else {
+      return;
+    }
+  }
+
+  return 1;
+}
+
 =head2 add_germline_section
 
 Conditionally adds the DragenGermline_Settings and DragenGermline_Data
@@ -653,6 +714,7 @@ sub add_germline_section {
 
   my @to_align = ();
   my @ref_matches = keys %REFERENCE_MAPING;
+  my $distinct_configs = {};
 
   foreach my $p ( $self->products() ) {
 
@@ -664,11 +726,10 @@ sub add_germline_section {
            do_libtype_tenx_test($lib_type)) ) {
 
       my $match = first { $r =~ /$_/xms} @ref_matches;
-      if ($match) {
+      if ($self->_can_add_sample($distinct_configs, $match)) {
         # TODO Are all variant calling modes compatible with all
         # references?
-        push @to_align,
-          [$p->[1], $REFERENCE_MAPING{$match}, $self->varcall];
+        push @to_align, [$p->[1], $REFERENCE_MAPING{$match}, $self->varcall];
       }
     }
   }
@@ -702,6 +763,7 @@ sub add_rna_section {
 
   my @to_align = ();
   my @ref_matches = keys %REFERENCE_MAPING;
+  my $distinct_configs = {};
 
   foreach my $p ( $self->products() ) {
 
@@ -712,7 +774,7 @@ sub add_rna_section {
          (do_ref_rna_alignment_test($r) || do_libtype_rna_alignment_test($lib_type)) ) {
 
       my $match = first { $r =~ /$_/xms} @ref_matches;
-      if ($match) {
+      if ($self->_can_add_sample($distinct_configs, $match)) {
         push @to_align, [$p->[1], $REFERENCE_MAPING{$match}];
       }
     }
@@ -777,6 +839,8 @@ __END__
 =item st::api::lims
 
 =item npg_tracking::Schema
+
+=item npg_tracking::util::types
 
 =item WTSI::DNAP::Warehouse::Schema
 
