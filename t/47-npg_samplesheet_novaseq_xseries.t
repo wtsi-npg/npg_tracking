@@ -22,13 +22,14 @@ my $schema_wh = $class->new_object({})->create_test_db(
 my $date = DateTime->now()->strftime('%y%m%d');
 
 subtest 'create the generator object, test simple attributes' => sub {
-  plan tests => 12;
+  plan tests => 13;
 
   my $g = npg::samplesheet::novaseq_xseries->new(
     npg_tracking_schema => $schema_tracking,
     mlwh_schema         => $schema_wh,
   );
   isa_ok($g, 'npg::samplesheet::novaseq_xseries');
+  is($g->dragen_max_number_of_configs, 4, 'correct default number of configs');
   throws_ok { $g->batch_id }
     qr/Run ID is not supplied, cannot get LIMS batch ID/,
     'error retrieving batch id';
