@@ -354,7 +354,7 @@ sub _log {
 
 
 sub update_run_from_path { ##### Method to deal with one run folder
-    my ($folder, $hash_previous_size_of,$DRY_RUN) = @_; # folder is like "self" - code converted from function "check_path"
+    my ($folder, $hash_previous_size_of,$inhibit_folder_move) = @_; # folder is like "self" - code converted from function "check_path"
     my $schema = $folder->npg_tracking_schema();
     my $run_path = $folder->runfolder_path; # in case path was transformed
 
@@ -386,7 +386,7 @@ sub update_run_from_path { ##### Method to deal with one run folder
 
         if( $run_status eq 'qc complete') {
             _log('Moving run folder to /outgoing/');
-            (not $DRY_RUN) and _log($folder->move_to_outgoing());
+            (not $inhibit_folder_move) and _log($folder->move_to_outgoing());
         }
         return; # Nothing else to do for a folder in /analysis/
     }
@@ -480,7 +480,7 @@ sub update_run_from_path { ##### Method to deal with one run folder
                 $folder->update_run_status('run mirrored');
                 _log(q[Run status updated to 'run mirrored']);
                 _log('Moving run folder to analysis');
-                (not $DRY_RUN) and _log($folder->move_to_analysis());
+                (not $inhibit_folder_move) and _log($folder->move_to_analysis());
 
                 return 'done';
             }
