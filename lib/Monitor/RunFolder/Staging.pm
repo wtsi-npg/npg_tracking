@@ -567,6 +567,18 @@ false for other instrument types.
 Returns true if the file that inticates that the onboard analysis has finished
 is present in the run folder.
 
+=head2 update_run_from_path
+
+   C<<$folder->update_run_from_path($hash_ref_runfolder_size_state_store,
+         $inhibit_folder_move);>>
+
+Uses information found in the runfolder, dependent on its location, to update 
+the tracking database. Your'll need to trace the code for the exact logic...
+It will also move the run folder until the flag to inhibit this is passed.
+It takes a hash ref contain the (size) state of run folders - this is (in some
+logical paths) used to help determine whether certain processes have 
+completed.
+
 =head1 CONFIGURATION AND ENVIRONMENT
 
 =head1 DEPENDENCIES
