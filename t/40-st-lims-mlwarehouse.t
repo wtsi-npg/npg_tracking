@@ -1,24 +1,17 @@
 use strict;
 use warnings;
-use Test::More;
+use Test::More tests => 6;
 use Test::Exception;
 
-my $driver_package = 'st::api::lims::ml_warehouse';
-my $available = eval "require $driver_package";
-if (!$available) {
-  plan skip_all => "$driver_package is not deployed or cannot be loaded";
-} else {
-  plan tests => 6;
+use_ok('st::api::lims');
 
-  use_ok('st::api::lims');
-
-  my $schema_wh;
-  lives_ok { $schema_wh = Moose::Meta::Class->create_anon_class(
+my $schema_wh;
+lives_ok { $schema_wh = Moose::Meta::Class->create_anon_class(
     roles => [qw/npg_testing::db/])->new_object({})->create_test_db(
     q[WTSI::DNAP::Warehouse::Schema],q[t/data/fixtures_lims_wh]) 
-  } 'ml_warehouse test db created';
+} 'ml_warehouse test db created';
 
-  subtest 'family tree, product table entries are absent' => sub {
+subtest 'family tree, product table entries are absent' => sub {
     plan tests => 11;
 
     my @lanes = st::api::lims->new(
@@ -45,9 +38,9 @@ if (!$available) {
     is($plex->tag_index, 26, 'tag index');
     is($plex->id_run, 15454, 'id_run is propagated');
     is($plex->qc_state, undef, 'qc state undefined');
-  };
+};
 
-  subtest 'family tree, product table entries are present' => sub {
+subtest 'family tree, product table entries are present' => sub {
     plan tests => 33;
     
     my $id_run = 15440;
@@ -110,9 +103,9 @@ if (!$available) {
       is($plex->qc_state, $qc_value,
         'qc state for directly constructed plex-level object');
     }
-  };
+};
 
-  subtest 'gbs plex name, primer panel' => sub {
+subtest 'gbs plex name, primer panel' => sub {
     plan tests => 13;
 
     my $id_run = 24135;
@@ -149,9 +142,9 @@ if (!$available) {
                              driver_type => 'ml_warehouse', mlwh_schema => $schema_wh);
     is($l->gbs_plex_name, undef, 'gbs_plex_name undefined');
     is($l->primer_panel, undef, 'primer_panel undefined');
-  };
+};
 
-  subtest 'sample controls' => sub {
+subtest 'sample controls' => sub {
     plan tests => 6;
 
     my $init = {id_flowcell_lims => 57543, position => 1,
@@ -169,7 +162,6 @@ if (!$available) {
         is($l->sample_control_type, undef, 'sample control type is undefined');
       }
     }
-  };
-}
+};
 
 1;
