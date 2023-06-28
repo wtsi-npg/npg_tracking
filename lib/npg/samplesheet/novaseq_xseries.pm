@@ -46,7 +46,7 @@ Readonly::Hash my %REFERENCE_MAPING => (
 );
 
 # The version of the software currently onboard.
-Readonly::Scalar my $SOFTWARE_VERSION => '4.1.5';
+Readonly::Scalar my $SOFTWARE_VERSION => '4.1.7';
 
 # DRAGEN can process a limited number of distinct configurations.
 # For on-board analysis it's 4.
