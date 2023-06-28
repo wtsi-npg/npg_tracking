@@ -1,6 +1,10 @@
 LIST OF CHANGES
 
+release 95.0.0
  - Remove singularity recipe and related files
+ - Import mlwh drivers
+ - Reimplemented waiting for the onboard analysis
+ - Added a samplesheet generator for NovaSeqX
 
 release 94.0.1
  - Fixed bugs in the staging area daemon script:
