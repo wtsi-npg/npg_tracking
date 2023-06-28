@@ -45,7 +45,7 @@ Readonly::Hash my %REFERENCE_MAPING => (
     'Escherichia_coli' => 'eschColi_K12_1-rna-8-1667494624-2',
 );
 
-# The version of the software currently onboard.
+# The version of the DRAGEN software currently on-board of the instrument.
 Readonly::Scalar my $SOFTWARE_VERSION => '4.1.7';
 
 # DRAGEN can process a limited number of distinct configurations.
@@ -60,8 +60,9 @@ npg::samplesheet::novaseq_xseries
 
 =head1 DESCRIPTION
 
-Samplesheet generation to initiate DRAGEN analysis of the data sequenced on
-the NovaSeq Series X instrument.
+Generation of a samplesheet that is used to configure a sequencing run on
+the NovaSeq Series X instrument and the DRAGEN analysis of the data sequenced
+on this instrument model.
 
 The DRAGEN analysis can process a limited number of distinct analysis
 configurations. The germline and RNA alignment sections of the generated
@@ -69,6 +70,11 @@ samplesheet will contain as many samples as possible within the limit set by
 the C<dragen_max_number_of_configs> attribute. The default value for this
 attribute is 4, which is the number of distinct configurations that the
 on-board DRAGEN analysis can handle.
+
+In the BCLConvert section, each combination of index lengths counts as a
+unique configuration. If the number of these configurations exceeds the value
+of the the C<dragen_max_number_of_configs> attribute, no DRAGEN analysis
+sections are added to the samplesheet. 
 
 See specification in
 L<https://support-docs.illumina.com/SHARE/SampleSheetv2/Content/SHARE/SampleSheetv2/Settings_fNV_mX.htm> 
@@ -430,25 +436,36 @@ sub process {
 
   $self->add_common_headers();
   $self->_add_line();
-  $self->add_bclconvert_section();
-  $self->_current_number_of_configs(1);
+  my $num_samples = $self->add_bclconvert_section();
+  carp "$num_samples samples are added to the BCLConvert section";
 
-  if ($self->align) {
-    $self->_add_line();
-    my $num_samples = $self->add_germline_section();
-    carp "$num_samples samples are added to the Germline section";
-    if ($num_samples) {
-      $self->_add_line();
+  if ($num_samples) {
+    if ($self->align) {
+      if ($self->_current_number_of_configs ==
+          $self->dragen_max_number_of_configs) {
+        carp sprintf 'Used max. number of analysis configurations, %i, ' .
+          'will stop at BCLConvert', $self->dragen_max_number_of_configs;
+      } else {
+        $self->_add_line();
+        $num_samples = $self->add_germline_section();
+        carp "$num_samples samples are added to the Germline section";
+        if ($num_samples) {
+          $self->_add_line();
+        }
+        if ($self->_current_number_of_configs ==
+            $self->dragen_max_number_of_configs) {
+          carp sprintf 'Used max. number of analysis configurations, %i, ' .
+            'will skip RNA section', $self->dragen_max_number_of_configs;
+        } else {
+          $num_samples = $self->add_rna_section();
+          carp "$num_samples samples are added to the RNA section";
+        }
+      }
     }
-    if ($self->_current_number_of_configs ==
-        $self->dragen_max_number_of_configs) {
-      carp sprintf 'Already used %i distinct analysis configurations, ' .
-        'will skip RNA section', $self->dragen_max_number_of_configs;
-    } else {
-      $num_samples = $self->add_rna_section();
-      carp "$num_samples samples are added to the RNA section";
-    }
+  } else {
+    carp 'Too many BCLConvert configurations, cannot run any DRAGEN analysis';
   }
+
 
   my $csv = Text::CSV->new({
     eol      => qq[\n],
@@ -479,7 +496,12 @@ sub process {
 
 =head2 add_bclconvert_section
 
-Unconditionally adds BCLConvert_Settings and BCLConvert_Data sections.
+Adds BCLConvert_Settings and BCLConvert_Data sections.
+
+Returns the number of samples added to the section or zero if the section
+has not been added. The latter happens if the number of unique configurations
+for BCLConvert exceeds the maximum number of allowed configurations.
+In this case no further analysis sections should be added to the samplesheet.
 
 =cut
 
@@ -488,8 +510,9 @@ sub add_bclconvert_section {
 
   my ($index1_length, $index2_length) = @{$self->_index_reads_length()};
 
-  $self->_add_line('[BCLConvert_Settings]');
-  $self->_add_line(q[SoftwareVersion], $SOFTWARE_VERSION);
+  my @lines = ();
+  push @lines, ['[BCLConvert_Settings]'];
+  push @lines, [q[SoftwareVersion], $SOFTWARE_VERSION];
 
   # Not clear what CLI analysis option thie coresponds to.
   # Looks likely to be a list of lanes to run a tag collision check.
@@ -503,7 +526,7 @@ sub add_bclconvert_section {
   # When 1 will be appropriate for this trim?
   # $add_line->(qw(TrimUMI 0));
   # dragen is the other compression options
-  $self->_add_line(qw(FastqCompressionFormat gzip));
+  push @lines, [qw(FastqCompressionFormat gzip)];
 
   # Barcode mismatch tolerances, the default is 1.
   # These settings can be omitted.
@@ -524,8 +547,8 @@ sub add_bclconvert_section {
   # $add_line->(qw(AdapterRead1 SOME));
   # $add_line->(qw(AdapterRead2 OTHER));
 
-  $self->_add_line();
-  $self->_add_line('[BCLConvert_Data]');
+  push @lines, [];
+  push @lines, ['[BCLConvert_Data]'];
 
   my @data_header = qw(Lane Sample_ID);
   if ($index1_length) {
@@ -535,7 +558,7 @@ sub add_bclconvert_section {
     }
     push @data_header, q[OverrideCycles];
   }
-  $self->_add_line(@data_header);
+  push @lines, \@data_header;
 
   # Override Cycles - Specifies the sequencing and indexing cycles to be used
   # when processing the sequencing data. Must adhere to the
@@ -562,6 +585,7 @@ sub add_bclconvert_section {
     return $expression;
   };
 
+  my $distinct_configs = {};
   for my $product ( $self->products() ) {
 
     my @product_data = ($product->[0], $product->[1]);
@@ -582,13 +606,26 @@ sub add_bclconvert_section {
       }
       push @override_cycles, q[Y] . $READ2_LENGTH;
     }
-    if (@override_cycles) {
-      push @product_data, join q[;], @override_cycles;
+    my $override_cycles_string = join q[;], @override_cycles;
+    # Might be an empty string ...
+    my $config = $override_cycles_string;
+    $config ||= 'no_deplex';
+    if ($self->_can_add_sample($distinct_configs, $config)) {
+      if (@override_cycles) {
+        push @product_data, $override_cycles_string;
+      }
+      push @lines, \@product_data;
+    } else {
+      @lines = ();
+      last;
     }
-    $self->_add_line(@product_data);
   }
 
-  return;
+  for my $line (@lines) {
+    $self->_add_line(@{$line});
+  }
+
+  return scalar @lines;
 }
 
 =head2 add_common_headers
