@@ -385,24 +385,18 @@ sub _build__products {
     my $position = $lane->position;
     my @lane_products = $lane->is_pool ? $lane->children() : ($lane);
     for my $p (@lane_products) {
-      my $i7 = $p->tag_sequences->[0] || q();
-      my $i5 = $p->tag_sequences->[1] || q();
-      if ($i5) { # reverse-complement
-        $i5 =~ tr/[ACGT]/[TGCA]/;
-        $i5 = reverse $i5;
-      }
       push @products, [
         $position,
         $p->sample_name,
-        $i7,
-        $i5,
+        $p->tag_sequences->[0] || q(),
+        $p->tag_sequences->[1] || q(),
         $p->reference_genome() || q(),
         $p->library_type() || q()
       ];
     }
   }
 
-  # sort by sample ID
+  # Sort by sample name
   @products = sort { $a->[1] cmp $b->[1] } @products;
 
   return \@products;
