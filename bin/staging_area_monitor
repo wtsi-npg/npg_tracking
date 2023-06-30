@@ -160,7 +160,7 @@ sub check_path { ##### Function to deal with one run folder
 
                 # Check if we are waiting for the onboard analysis to finish.
                 if ($folder->is_onboard_analysis_planned() &&
-                    !$folder->has_onboard_analysis_finished()) {
+                    !$folder->is_onboard_analysis_output_copied()) {
                     return;
                 }
 
