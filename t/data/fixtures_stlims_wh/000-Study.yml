@@ -1,0 +1,172 @@
+---
+- abbreviation: 333STDY
+  abstract: "The aim of this project is to identify the somatic mutations"
+  accession_number: EGAS00001000014
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 1
+  contaminated_human_dna: 0
+  created: 2009-06-24 16:43:05
+  data_access_group: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genomic sequencing
+  data_release_strategy: managed
+  data_release_timing: standard
+  deleted_at: ~
+  description: "Genomic libraries (500 bps) will be generated from  total genomic DNA"
+  ega_dac_accession_number: EGAC00001000012
+  ega_policy_accession_number: EGAP00001000001
+  ena_project_id: PRJEB9
+  ethically_approved: 1
+  id_lims: SQSCP
+  id_study_lims: 333
+  id_study_tmp: 307
+  last_updated: 2013-05-22 15:55:22
+  name: CLL whole genome
+  recorded_at: 2014-11-19 14:47:41
+  reference_genome: Homo_sapiens (CGP_GRCh37.NCBI.allchr_MT)
+  remove_x_and_autosomes: 0
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: CLL Cancer Whole Genome Sequencing
+  study_type: Cancer Genomics
+  study_visibility: Hold
+  uuid_study_lims: 03433c90-6ffb-11e4-b9db-68b59977951c
+- abbreviation: 700STDY
+  abstract: "Purpose of experiment\t\t\t\t\t\r\n\t\t\t\t\t\r\nâˆ’ To evaluate kapa hifi qPCR kit\t\t\t\t\t\r\nâˆ’ To evaluate kapa hifi and \"robust\" enzymes"
+  accession_number: ~
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 0
+  contaminated_human_dna: 0
+  created: 2010-10-07 15:11:00
+  data_access_group: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genomic sequencing
+  data_release_strategy: not applicable
+  data_release_timing: never
+  deleted_at: ~
+  description: "âˆ’ I have agreed to alpha test the kapa hifi qPCR kit."
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: 0
+  ethically_approved: ~
+  id_lims: SQSCP
+  id_study_lims: 700
+  id_study_tmp: 673
+  last_updated: 2012-11-26 14:15:35
+  name: Kapa HiFi test
+  recorded_at: 2014-11-19 14:48:12
+  reference_genome: ' '
+  remove_x_and_autosomes: 0
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: hifi test
+  study_type: Whole Genome Sequencing
+  study_visibility: Hold
+  uuid_study_lims: 160d91e0-6ffb-11e4-b9db-68b59977951c
+- abbreviation: UK10K_UKSCZ
+  abstract: "The samples from patients with schizophrenia have been collected\r\n"
+  accession_number: EGAS00001000123
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 1
+  contaminated_human_dna: 0
+  created: 2010-11-18 11:24:33
+  data_access_group: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genomic sequencing
+  data_release_strategy: managed
+  data_release_timing: standard
+  deleted_at: ~
+  description: "\tIn the UK10K project we propose a series of complementary genetic approaches. "
+  ega_dac_accession_number: EGAC00001000024
+  ega_policy_accession_number: EGAP00001000021
+  ena_project_id: 0
+  ethically_approved: 1
+  id_lims: SQSCP
+  id_study_lims: 1679
+  id_study_tmp: 1651
+  last_updated: 2013-04-05 11:19:51
+  name: UK10K_NEURO_UKSCZ
+  recorded_at: 2014-11-19 14:49:06
+  reference_genome: Homo_sapiens (1000Genomes)
+  remove_x_and_autosomes: 0
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: 'UK10K exome sequence: UK schizophrenia samples'
+  study_type: Exome Sequencing
+  study_visibility: Hold
+  uuid_study_lims: 366635a0-6ffb-11e4-b9db-68b59977951c
+- abbreviation: SC_DDD
+  abstract: 'Some abstract. '
+  accession_number: ~
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 1
+  contaminated_human_dna: 0
+  created: 2011-06-15 12:45:05
+  data_access_group: ddd
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genomic sequencing
+  data_release_strategy: managed
+  data_release_timing: standard
+  deleted_at: ~
+  description: 'Some description.'
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: 1
+  id_lims: SQSCP
+  id_study_lims: 1866
+  id_study_tmp: 1838
+  last_updated: 2013-11-28 08:49:32
+  name: SEQCAP_DDD_MAIN
+  recorded_at: 2014-11-19 14:49:19
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5)
+  remove_x_and_autosomes: 0
+  separate_y_chromosome_data: 0
+  state: inactive
+  study_title: DDD_Exomes
+  study_type: Exome Sequencing
+  study_visibility: Hold
+  uuid_study_lims: 3e2b5860-6ffb-11e4-b9db-68b59977951c
+- abbreviation: 2077STDY
+  abstract: R and D tests
+  accession_number: ~
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 0
+  contaminated_human_dna: 0
+  created: 2012-01-04 08:54:44
+  data_access_group: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genomic sequencing
+  data_release_strategy: not applicable
+  data_release_timing: never
+  deleted_at: ~
+  description: R and D tests
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: ~
+  id_lims: SQSCP
+  id_study_lims: 2077
+  id_study_tmp: 2044
+  last_updated: 2014-02-27 14:31:34
+  name: MQ R and Tests 2012
+  recorded_at: 2014-11-19 14:49:33
+  reference_genome: ' '
+  remove_x_and_autosomes: 0
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: MQ R and D Tests 2012
+  study_type: Whole Genome Sequencing
+  study_visibility: Hold
+  uuid_study_lims: 460a92d0-6ffb-11e4-b9db-68b59977951c
+

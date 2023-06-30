@@ -1,0 +1,4240 @@
+---
+- accession_number: EGAN00001001569
+  consent_withdrawn: 0
+  control: ~
+  created: 2009-07-01 16:23:00
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 7283
+  cohort: plan2
+  donor_id: d5678
+  supplier_name: sample_33
+  id_sample_tmp: 6323
+  last_updated: 2012-08-03 10:07:02
+  organism: Human
+  recorded_at: 2014-11-18 11:11:50
+  reference_genome: Homo_sapiens (CGP_GRCh37.NCBI.allchr_MT)
+  replicate: ~
+  sample_visibility: Hold
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: fdb13110-6a55-11e4-8e19-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2009-11-05 20:03:54
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 9836
+  id_sample_tmp: 8662
+  last_updated: 2012-08-03 10:07:02
+  organism: ~
+  recorded_at: 2014-11-18 11:13:01
+  reference_genome: ' '
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: ~
+  uuid_sample_lims: 3abfaf50-6a56-11e4-8e19-68b59977951c
+- accession_number: EGAN00001017478
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:57
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092799
+  id_sample_tmp: 1090772
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:14:59
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f437f4e0-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017479
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:58
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092801
+  id_sample_tmp: 1090774
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:14:59
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f44191d0-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017480
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:58
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092803
+  id_sample_tmp: 1090776
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  cohort: plan1
+  donor_id: 5678
+  supplier_name: sample_33
+  recorded_at: 2014-11-18 21:14:59
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f44b2ec0-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017481
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:58
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092805
+  id_sample_tmp: 1090778
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:14:59
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f454cbb0-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017482
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:58
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092807
+  id_sample_tmp: 1090780
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f45e68a0-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017483
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:58
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092809
+  id_sample_tmp: 1090782
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f4680590-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017484
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:58
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092811
+  id_sample_tmp: 1090784
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f47217b0-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017485
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:58
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092813
+  id_sample_tmp: 1090786
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f47c50e0-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017486
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:58
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092815
+  id_sample_tmp: 1090788
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f486d830-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017487
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:58
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092817
+  id_sample_tmp: 1090790
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f4909c30-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017488
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:58
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092819
+  id_sample_tmp: 1090792
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f49a3920-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017489
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:58
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092821
+  id_sample_tmp: 1090794
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f4a49960-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017490
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092823
+  id_sample_tmp: 1090796
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f4ae3650-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017491
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092825
+  id_sample_tmp: 1090798
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f4bc1900-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017492
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092827
+  id_sample_tmp: 1090800
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f4c60410-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017493
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092829
+  id_sample_tmp: 1090802
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f4cfc810-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017494
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092831
+  id_sample_tmp: 1090804
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f4d98c10-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017495
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092833
+  id_sample_tmp: 1090806
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f4e32900-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017496
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092835
+  id_sample_tmp: 1090808
+  last_updated: 2012-10-02 15:12:05
+  organism: ~
+  recorded_at: 2014-11-18 21:15:00
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f4ecc5f0-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017497
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092837
+  id_sample_tmp: 1090810
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f4f689f0-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017498
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092839
+  id_sample_tmp: 1090812
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f50026e0-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017499
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092841
+  id_sample_tmp: 1090814
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f50a8720-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017500
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092843
+  id_sample_tmp: 1090816
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f5142410-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017501
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092845
+  id_sample_tmp: 1090818
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f51ef980-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017502
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:32:59
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092847
+  id_sample_tmp: 1090820
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f528bd80-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017503
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:33:00
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092849
+  id_sample_tmp: 1090822
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f5325a70-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017504
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:33:00
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092851
+  id_sample_tmp: 1090824
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f53bf760-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017505
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:33:00
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092853
+  id_sample_tmp: 1090826
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f5463090-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017506
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:33:00
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092855
+  id_sample_tmp: 1090828
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f55042b0-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017507
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:33:00
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092857
+  id_sample_tmp: 1090830
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f559b890-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017508
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:33:00
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092859
+  id_sample_tmp: 1090832
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f5632e70-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017509
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:33:00
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092861
+  id_sample_tmp: 1090834
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f56cf270-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017510
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:33:00
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092863
+  id_sample_tmp: 1090836
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f576b670-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017511
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:33:00
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092865
+  id_sample_tmp: 1090838
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:01
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f580c890-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017512
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:33:01
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092867
+  id_sample_tmp: 1090840
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:02
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f58adab0-6f67-11e4-a268-68b59977951c
+- accession_number: EGAN00001017513
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-03-03 20:33:01
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1092869
+  id_sample_tmp: 1090842
+  last_updated: 2012-10-02 15:12:07
+  organism: ~
+  recorded_at: 2014-11-18 21:15:02
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: f594ecd0-6f67-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-08-06 14:24:41
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1255141
+  id_sample_tmp: 1234191
+  last_updated: 2012-08-03 10:07:02
+  organism: ~
+  recorded_at: 2014-11-18 22:38:57
+  reference_genome: ' '
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: ~
+  uuid_sample_lims: af021930-6f73-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-10-17 14:31:31
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1289832
+  id_sample_tmp: 1268554
+  last_updated: 2012-08-03 10:07:02
+  organism: Salmonella pullorum
+  recorded_at: 2014-11-18 22:58:56
+  reference_genome: Salmonella_pullorum (449_87)
+  replicate: ~
+  sample_visibility: Hold
+  strain: 449_87
+  taxon_id: 590
+  uuid_sample_lims: 79cd28b0-6f76-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-10-17 14:31:32
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1289833
+  id_sample_tmp: 1268555
+  last_updated: 2012-08-03 10:07:02
+  organism: Bordetella Pertussis
+  recorded_at: 2014-11-18 22:58:56
+  reference_genome: Bordetella_pertussis (ST24)
+  replicate: ~
+  sample_visibility: Hold
+  strain: Bpst24
+  taxon_id: 520
+  uuid_sample_lims: 79d16e70-6f76-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-10-17 14:31:32
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1289834
+  id_sample_tmp: 1268556
+  last_updated: 2012-08-03 10:07:02
+  organism: Plasmodium Falciparum
+  recorded_at: 2014-11-18 22:58:56
+  reference_genome: Plasmodium_falciparum (3D7)
+  replicate: ~
+  sample_visibility: Hold
+  strain: 3D7
+  taxon_id: 5820
+  uuid_sample_lims: 79d5b430-6f76-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-10-17 14:31:32
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1289835
+  id_sample_tmp: 1268557
+  last_updated: 2012-08-03 10:07:02
+  organism: Homo sapiens
+  recorded_at: 2014-11-18 22:58:56
+  reference_genome: Homo_sapiens (GRCh37_53)
+  replicate: ~
+  sample_visibility: Hold
+  strain: colo_829
+  taxon_id: 9606
+  uuid_sample_lims: 79d9d2e0-6f76-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-10-17 14:31:33
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1289836
+  id_sample_tmp: 1268558
+  last_updated: 2012-08-03 10:07:02
+  organism: Salmonella pullorum
+  recorded_at: 2014-11-18 22:58:56
+  reference_genome: Salmonella_pullorum (449_87)
+  replicate: ~
+  sample_visibility: Hold
+  strain: 449_87
+  taxon_id: 590
+  uuid_sample_lims: 79ddf190-6f76-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-10-17 14:31:33
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1289837
+  id_sample_tmp: 1268559
+  last_updated: 2012-08-03 10:07:02
+  organism: Bordetella Pertussis
+  recorded_at: 2014-11-18 22:58:56
+  reference_genome: Bordetella_pertussis (ST24)
+  replicate: ~
+  sample_visibility: Hold
+  strain: Bpst24
+  taxon_id: 520
+  uuid_sample_lims: 79e23750-6f76-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-10-17 14:31:33
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1289838
+  id_sample_tmp: 1268560
+  last_updated: 2012-08-03 10:07:02
+  organism: Plasmodium Falciparum
+  recorded_at: 2014-11-18 22:58:57
+  reference_genome: Plasmodium_falciparum (3D7)
+  replicate: ~
+  sample_visibility: Hold
+  strain: 3D7
+  taxon_id: 5820
+  uuid_sample_lims: 79e67d10-6f76-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-10-17 14:31:33
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1289839
+  id_sample_tmp: 1268561
+  last_updated: 2012-08-03 10:07:02
+  organism: Homo sapiens
+  recorded_at: 2014-11-18 22:58:57
+  reference_genome: Homo_sapiens (GRCh37_53)
+  replicate: ~
+  sample_visibility: Hold
+  strain: colo_829
+  taxon_id: 9606
+  uuid_sample_lims: 79ea74b0-6f76-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-10-17 14:31:34
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1289840
+  id_sample_tmp: 1268562
+  last_updated: 2012-08-03 10:07:02
+  organism: Salmonella pullorum
+  recorded_at: 2014-11-18 22:58:57
+  reference_genome: Salmonella_pullorum (449_87)
+  replicate: ~
+  sample_visibility: Hold
+  strain: 449_87
+  taxon_id: 590
+  uuid_sample_lims: 79eeba70-6f76-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-10-17 14:31:34
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1289841
+  id_sample_tmp: 1268563
+  last_updated: 2012-08-03 10:07:02
+  organism: Bordetella Pertussis
+  recorded_at: 2014-11-18 22:58:57
+  reference_genome: Bordetella_pertussis (ST24)
+  replicate: ~
+  sample_visibility: Hold
+  strain: Bpst24
+  taxon_id: 520
+  uuid_sample_lims: 7a5cbe80-6f76-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-10-17 14:31:34
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1289842
+  id_sample_tmp: 1268564
+  last_updated: 2012-08-03 10:07:02
+  organism: Plasmodium Falciparum
+  recorded_at: 2014-11-18 22:58:57
+  reference_genome: Plasmodium_falciparum (3D7)
+  replicate: ~
+  sample_visibility: Hold
+  strain: 3D7
+  taxon_id: 5820
+  uuid_sample_lims: 7a610440-6f76-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-10-17 14:31:35
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1289843
+  id_sample_tmp: 1268565
+  last_updated: 2012-08-03 10:07:02
+  organism: Homo sapiens
+  recorded_at: 2014-11-18 22:58:57
+  reference_genome: Homo_sapiens (GRCh37_53)
+  replicate: ~
+  sample_visibility: Hold
+  strain: colo_829
+  taxon_id: 9606
+  uuid_sample_lims: 7a6522f0-6f76-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-09 14:52:11
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299687
+  id_sample_tmp: 1278330
+  last_updated: 2012-10-02 21:31:42
+  organism: ~
+  recorded_at: 2014-11-18 23:04:39
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 45f4a5d0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-09 14:52:12
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299693
+  id_sample_tmp: 1278336
+  last_updated: 2012-10-02 21:31:42
+  organism: ~
+  recorded_at: 2014-11-18 23:04:39
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 46117ca0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 1
+  control: ~
+  created: 2011-11-09 14:52:12
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299694
+  id_sample_tmp: 1278337
+  last_updated: 2012-10-02 21:31:42
+  organism: ~
+  recorded_at: 2014-11-18 23:04:39
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 46163790-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-09 14:52:12
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299695
+  id_sample_tmp: 1278338
+  last_updated: 2012-10-02 21:31:42
+  organism: ~
+  recorded_at: 2014-11-18 23:04:39
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 461af280-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-09 14:52:12
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299699
+  id_sample_tmp: 1278342
+  last_updated: 2012-10-02 21:31:42
+  organism: ~
+  recorded_at: 2014-11-18 23:04:39
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 462e2c60-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-09 14:52:12
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299700
+  id_sample_tmp: 1278343
+  last_updated: 2012-10-02 21:31:42
+  organism: ~
+  recorded_at: 2014-11-18 23:04:39
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 4632e750-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-09 14:52:12
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299701
+  id_sample_tmp: 1278344
+  last_updated: 2012-10-02 21:31:42
+  organism: ~
+  recorded_at: 2014-11-18 23:04:39
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 4637c950-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-09 14:52:12
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299712
+  id_sample_tmp: 1278355
+  last_updated: 2012-10-02 21:31:49
+  organism: ~
+  recorded_at: 2014-11-18 23:04:40
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 466c6de0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-09 14:52:13
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299717
+  id_sample_tmp: 1278360
+  last_updated: 2012-10-02 21:31:49
+  organism: ~
+  recorded_at: 2014-11-18 23:04:40
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 468489c0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-09 14:52:13
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299722
+  id_sample_tmp: 1278365
+  last_updated: 2012-10-02 21:31:49
+  organism: ~
+  recorded_at: 2014-11-18 23:04:40
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 469eef90-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 1
+  control: ~
+  created: 2011-11-09 14:52:13
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299723
+  id_sample_tmp: 1278366
+  last_updated: 2012-10-02 21:31:49
+  organism: ~
+  recorded_at: 2014-11-18 23:04:40
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 46a3aa80-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-09 14:52:13
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299726
+  id_sample_tmp: 1278369
+  last_updated: 2012-10-02 21:31:49
+  organism: ~
+  recorded_at: 2014-11-18 23:04:40
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 46b25080-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-09 14:52:13
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299727
+  id_sample_tmp: 1278370
+  last_updated: 2012-10-02 21:31:49
+  organism: ~
+  recorded_at: 2014-11-18 23:04:40
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 46b70b70-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-09 14:52:13
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1299728
+  id_sample_tmp: 1278371
+  last_updated: 2012-10-02 21:31:49
+  organism: ~
+  recorded_at: 2014-11-18 23:04:40
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 46bc3b90-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:14
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302355
+  id_sample_tmp: 1280919
+  last_updated: 2012-10-02 21:38:30
+  organism: ~
+  recorded_at: 2014-11-18 23:06:08
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7b5580f0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:14
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302356
+  id_sample_tmp: 1280920
+  last_updated: 2012-10-02 21:38:30
+  organism: ~
+  recorded_at: 2014-11-18 23:06:08
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7b5de560-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:14
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302357
+  id_sample_tmp: 1280921
+  last_updated: 2012-10-02 21:38:30
+  organism: ~
+  recorded_at: 2014-11-18 23:06:09
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7b62ee70-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:15
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302359
+  id_sample_tmp: 1280923
+  last_updated: 2012-10-02 21:38:30
+  organism: ~
+  recorded_at: 2014-11-18 23:06:09
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7b6c8b60-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:15
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302365
+  id_sample_tmp: 1280929
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7b893b20-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:15
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302366
+  id_sample_tmp: 1280930
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7b8df610-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:15
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302367
+  id_sample_tmp: 1280931
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7b92d810-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:15
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302368
+  id_sample_tmp: 1280932
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7b97ba10-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:15
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302369
+  id_sample_tmp: 1280933
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7b9c9c10-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:15
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302370
+  id_sample_tmp: 1280934
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7ba15700-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:15
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302372
+  id_sample_tmp: 1280936
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7baaf3f0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:15
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302375
+  id_sample_tmp: 1280939
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7bb972e0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:16
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302380
+  id_sample_tmp: 1280944
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7bd1dce0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:16
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302387
+  id_sample_tmp: 1280951
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7bf6a2f0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:16
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302389
+  id_sample_tmp: 1280953
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7c003fe0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:16
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302390
+  id_sample_tmp: 1280954
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7c04fad0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:16
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302395
+  id_sample_tmp: 1280959
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7c1d3dc0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-11 16:46:16
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302398
+  id_sample_tmp: 1280962
+  last_updated: 2012-10-02 21:38:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:10
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7c2be3c0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 13:08:47
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302473
+  id_sample_tmp: 1281037
+  last_updated: 2012-10-02 21:38:52
+  organism: ~
+  recorded_at: 2014-11-18 23:06:13
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7def1790-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:01
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302547
+  id_sample_tmp: 1281111
+  last_updated: 2012-10-02 21:39:14
+  organism: ~
+  recorded_at: 2014-11-18 23:06:15
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7f8d3730-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:01
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302548
+  id_sample_tmp: 1281112
+  last_updated: 2012-10-02 21:39:14
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7f921930-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:02
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302549
+  id_sample_tmp: 1281113
+  last_updated: 2012-10-02 21:39:14
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7f96d420-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:02
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302550
+  id_sample_tmp: 1281114
+  last_updated: 2012-10-02 21:39:14
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7f9b8f10-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:02
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302551
+  id_sample_tmp: 1281115
+  last_updated: 2012-10-02 21:39:14
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7fa07110-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:02
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302552
+  id_sample_tmp: 1281116
+  last_updated: 2012-10-02 21:39:14
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7fa55310-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:02
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302553
+  id_sample_tmp: 1281117
+  last_updated: 2012-10-02 21:39:14
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7faa0e00-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:02
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302554
+  id_sample_tmp: 1281118
+  last_updated: 2012-10-02 21:39:15
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7faef000-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:02
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302555
+  id_sample_tmp: 1281119
+  last_updated: 2012-10-02 21:39:15
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7fb3d200-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:02
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302560
+  id_sample_tmp: 1281124
+  last_updated: 2012-10-02 21:39:15
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7fcbede0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:03
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302565
+  id_sample_tmp: 1281129
+  last_updated: 2012-10-02 21:39:15
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7fe47ef0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:03
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302566
+  id_sample_tmp: 1281130
+  last_updated: 2012-10-02 21:39:15
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7fe960f0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:03
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302567
+  id_sample_tmp: 1281131
+  last_updated: 2012-10-02 21:39:15
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7fee6a00-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:03
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302568
+  id_sample_tmp: 1281132
+  last_updated: 2012-10-02 21:39:15
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7ff324f0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:03
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302570
+  id_sample_tmp: 1281134
+  last_updated: 2012-10-02 21:39:15
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 7ffd3710-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:03
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302573
+  id_sample_tmp: 1281137
+  last_updated: 2012-10-02 21:39:15
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 800f5f80-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:03
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302575
+  id_sample_tmp: 1281139
+  last_updated: 2012-10-02 21:39:15
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 80192380-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:03
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302576
+  id_sample_tmp: 1281140
+  last_updated: 2012-10-02 21:39:15
+  organism: ~
+  recorded_at: 2014-11-18 23:06:16
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 801dde70-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:03
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302579
+  id_sample_tmp: 1281143
+  last_updated: 2012-10-02 21:39:15
+  organism: ~
+  recorded_at: 2014-11-18 23:06:17
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 802c5d60-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:04
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302586
+  id_sample_tmp: 1281150
+  last_updated: 2012-10-02 21:39:22
+  organism: ~
+  recorded_at: 2014-11-18 23:06:17
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 805939c0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:04
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302587
+  id_sample_tmp: 1281151
+  last_updated: 2012-10-02 21:39:22
+  organism: ~
+  recorded_at: 2014-11-18 23:06:17
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 805e1bc0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:04
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302590
+  id_sample_tmp: 1281154
+  last_updated: 2012-10-02 21:39:22
+  organism: ~
+  recorded_at: 2014-11-18 23:06:17
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 806cc1c0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:04
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302591
+  id_sample_tmp: 1281155
+  last_updated: 2012-10-02 21:39:22
+  organism: ~
+  recorded_at: 2014-11-18 23:06:17
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 8071a3c0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:04
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302592
+  id_sample_tmp: 1281156
+  last_updated: 2012-10-02 21:39:22
+  organism: ~
+  recorded_at: 2014-11-18 23:06:17
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 807685c0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 15:20:04
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302594
+  id_sample_tmp: 1281158
+  last_updated: 2012-10-02 21:39:22
+  organism: ~
+  recorded_at: 2014-11-18 23:06:17
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 807ffba0-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 17:02:30
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302643
+  id_sample_tmp: 1281207
+  last_updated: 2012-10-02 21:39:30
+  organism: ~
+  recorded_at: 2014-11-18 23:06:19
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 81704f10-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 17:02:31
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302645
+  id_sample_tmp: 1281209
+  last_updated: 2012-10-02 21:39:30
+  organism: ~
+  recorded_at: 2014-11-18 23:06:19
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 817d4760-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 17:02:31
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302646
+  id_sample_tmp: 1281210
+  last_updated: 2012-10-02 21:39:30
+  organism: ~
+  recorded_at: 2014-11-18 23:06:19
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 81827780-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 17:02:31
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302651
+  id_sample_tmp: 1281215
+  last_updated: 2012-10-02 21:39:30
+  organism: ~
+  recorded_at: 2014-11-18 23:06:19
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 819aba70-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 17:02:31
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302653
+  id_sample_tmp: 1281217
+  last_updated: 2012-10-02 21:39:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:19
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 81a47e70-6f77-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2011-11-12 17:02:31
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1302654
+  id_sample_tmp: 1281218
+  last_updated: 2012-10-02 21:39:37
+  organism: ~
+  recorded_at: 2014-11-18 23:06:19
+  reference_genome: Not suitable for alignment
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: 81a93960-6f77-11e4-a268-68b59977951c
+- accession_number: EGAN00001083713
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:43
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318722
+  id_sample_tmp: 1297197
+  last_updated: 2012-10-03 10:46:46
+  organism: ~
+  recorded_at: 2014-11-18 23:15:38
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cee8f610-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083715
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:44
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318724
+  id_sample_tmp: 1297199
+  last_updated: 2012-10-03 11:06:51
+  organism: ~
+  recorded_at: 2014-11-18 23:15:38
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cef29300-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083717
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:44
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318726
+  id_sample_tmp: 1297201
+  last_updated: 2012-10-03 11:06:52
+  organism: ~
+  recorded_at: 2014-11-18 23:15:38
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cefc2ff0-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083719
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:44
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318728
+  id_sample_tmp: 1297203
+  last_updated: 2012-10-03 11:06:52
+  organism: ~
+  recorded_at: 2014-11-18 23:15:38
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf05f3f0-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083721
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:46
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318730
+  id_sample_tmp: 1297205
+  last_updated: 2012-10-03 10:46:53
+  organism: ~
+  recorded_at: 2014-11-18 23:15:38
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf0f90e0-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083723
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:46
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318732
+  id_sample_tmp: 1297207
+  last_updated: 2012-10-03 10:46:55
+  organism: ~
+  recorded_at: 2014-11-18 23:15:38
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf1906c0-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083725
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:46
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318734
+  id_sample_tmp: 1297209
+  last_updated: 2012-10-03 10:46:56
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf227ca0-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083728
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:47
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318737
+  id_sample_tmp: 1297212
+  last_updated: 2012-10-03 10:46:59
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf30fb90-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083729
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:47
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318738
+  id_sample_tmp: 1297213
+  last_updated: 2012-10-03 11:06:52
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf35b680-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083734
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:48
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318743
+  id_sample_tmp: 1297218
+  last_updated: 2012-10-03 11:06:52
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf4dd260-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083736
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:48
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318745
+  id_sample_tmp: 1297220
+  last_updated: 2012-10-03 11:06:52
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf5af1c0-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083738
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:48
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318747
+  id_sample_tmp: 1297222
+  last_updated: 2012-10-03 10:47:08
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf6503e0-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083740
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:48
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318749
+  id_sample_tmp: 1297224
+  last_updated: 2012-10-03 10:47:10
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf6ec7e0-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083742
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:48
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318751
+  id_sample_tmp: 1297226
+  last_updated: 2012-10-03 10:47:12
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf783dc0-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083744
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:48
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318753
+  id_sample_tmp: 1297228
+  last_updated: 2012-10-03 10:47:13
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf81b3a0-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083747
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:48
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318756
+  id_sample_tmp: 1297231
+  last_updated: 2012-10-03 11:06:52
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf9059a0-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083748
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:48
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318757
+  id_sample_tmp: 1297232
+  last_updated: 2012-10-03 11:06:52
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf951490-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083749
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:48
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318758
+  id_sample_tmp: 1297233
+  last_updated: 2012-10-03 11:06:52
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf99cf80-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083750
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:49
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318759
+  id_sample_tmp: 1297234
+  last_updated: 2012-10-03 11:06:52
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cf9eb180-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083751
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:49
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318760
+  id_sample_tmp: 1297235
+  last_updated: 2012-10-03 10:47:21
+  organism: ~
+  recorded_at: 2014-11-18 23:15:39
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cfa36c70-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083761
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:49
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318770
+  id_sample_tmp: 1297245
+  last_updated: 2012-10-03 10:47:31
+  organism: ~
+  recorded_at: 2014-11-18 23:15:40
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cfd3cb40-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083763
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:49
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318772
+  id_sample_tmp: 1297247
+  last_updated: 2012-10-03 10:47:32
+  organism: ~
+  recorded_at: 2014-11-18 23:15:40
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: ~
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cfdd6830-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083764
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:50
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318773
+  id_sample_tmp: 1297248
+  last_updated: 2012-10-03 11:06:53
+  organism: ~
+  recorded_at: 2014-11-18 23:15:40
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cfe1fc10-6f78-11e4-a268-68b59977951c
+- accession_number: EGAN00001083765
+  consent_withdrawn: 0
+  control: 0
+  created: 2011-12-07 15:04:50
+  deleted_at: ~
+  description: ~
+  id_lims: SQSCP
+  id_sample_lims: 1318774
+  id_sample_tmp: 1297249
+  last_updated: 2012-10-03 11:06:53
+  organism: ~
+  recorded_at: 2014-11-18 23:15:40
+  reference_genome: Homo_sapiens (1000Genomes)
+  replicate: ~
+  sample_visibility: Public
+  strain: ~
+  taxon_id: 9606
+  uuid_sample_lims: cfe6de10-6f78-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:47
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650304
+  id_sample_tmp: 1627542
+  name: first
+  last_updated: 2013-06-19 07:41:47
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9bf444b0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:48
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650305
+  id_sample_tmp: 1627543
+  last_updated: 2013-06-19 07:41:48
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9bf86360-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:48
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650306
+  id_sample_tmp: 1627544
+  last_updated: 2013-06-19 07:41:48
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9bfc8210-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:48
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650307
+  id_sample_tmp: 1627545
+  last_updated: 2013-06-19 07:41:48
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c00a0c0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:48
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650308
+  id_sample_tmp: 1627546
+  last_updated: 2013-06-19 07:41:48
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c04e680-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:48
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650309
+  id_sample_tmp: 1627547
+  last_updated: 2013-06-19 07:41:48
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c08de20-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:48
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650310
+  id_sample_tmp: 1627548
+  last_updated: 2013-06-19 07:41:48
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c0cfcd0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:48
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650311
+  id_sample_tmp: 1627549
+  last_updated: 2013-06-19 07:41:48
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c111b80-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:48
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650312
+  id_sample_tmp: 1627550
+  last_updated: 2013-06-19 07:41:48
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c151320-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:48
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650313
+  id_sample_tmp: 1627551
+  last_updated: 2013-06-19 07:41:48
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c197ff0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:49
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650314
+  id_sample_tmp: 1627552
+  last_updated: 2013-06-19 07:41:49
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c1d9ea0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:49
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650315
+  id_sample_tmp: 1627553
+  last_updated: 2013-06-19 07:41:49
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c21e460-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:49
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650316
+  id_sample_tmp: 1627554
+  last_updated: 2013-06-19 07:41:49
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c260310-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:49
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650317
+  id_sample_tmp: 1627555
+  last_updated: 2013-06-19 07:41:49
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c29fab0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:49
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650318
+  id_sample_tmp: 1627556
+  last_updated: 2013-06-19 07:41:49
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c2e1960-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:50
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650319
+  id_sample_tmp: 1627557
+  last_updated: 2013-06-19 07:41:50
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c323810-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:50
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650320
+  id_sample_tmp: 1627558
+  last_updated: 2013-06-19 07:41:50
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:29
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c3656c0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:50
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650321
+  id_sample_tmp: 1627559
+  last_updated: 2013-06-19 07:41:50
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c3a9c80-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:50
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650322
+  id_sample_tmp: 1627560
+  last_updated: 2013-06-19 07:41:50
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c3e9420-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:50
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650323
+  id_sample_tmp: 1627561
+  last_updated: 2013-06-19 07:41:50
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c42b2d0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:50
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650324
+  id_sample_tmp: 1627562
+  last_updated: 2013-06-19 07:41:50
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c46d180-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:51
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650325
+  id_sample_tmp: 1627563
+  last_updated: 2013-06-19 07:41:51
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c4b1740-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:51
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650326
+  id_sample_tmp: 1627564
+  last_updated: 2013-06-19 07:41:51
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c4f35f0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:51
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650327
+  id_sample_tmp: 1627565
+  last_updated: 2013-06-19 07:41:51
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c5354a0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:51
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650328
+  id_sample_tmp: 1627566
+  last_updated: 2013-06-19 07:41:51
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c574c40-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:51
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650329
+  id_sample_tmp: 1627567
+  last_updated: 2013-06-19 07:41:51
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c5b9200-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:51
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650330
+  id_sample_tmp: 1627568
+  last_updated: 2013-06-19 07:41:51
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c5fb0b0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:52
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650331
+  id_sample_tmp: 1627569
+  last_updated: 2013-06-19 07:41:52
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c63cf60-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:52
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650332
+  id_sample_tmp: 1627570
+  last_updated: 2013-06-19 07:41:52
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c67ee10-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:52
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650333
+  id_sample_tmp: 1627571
+  last_updated: 2013-06-19 07:41:52
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c6c0cc0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:52
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650334
+  id_sample_tmp: 1627572
+  last_updated: 2013-06-19 07:41:52
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c702b70-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:52
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650335
+  id_sample_tmp: 1627573
+  last_updated: 2013-06-19 07:41:52
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c744a20-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:52
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650336
+  id_sample_tmp: 1627574
+  last_updated: 2013-06-19 07:41:52
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c788fe0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:52
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650337
+  id_sample_tmp: 1627575
+  last_updated: 2013-06-19 07:41:52
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c7cae90-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:53
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650338
+  id_sample_tmp: 1627576
+  last_updated: 2013-06-19 07:41:53
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c80cd40-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:53
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650339
+  id_sample_tmp: 1627577
+  last_updated: 2013-06-19 07:41:53
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c851300-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:53
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650340
+  id_sample_tmp: 1627578
+  last_updated: 2013-06-19 07:41:53
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c8931b0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:53
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650341
+  id_sample_tmp: 1627579
+  last_updated: 2013-06-19 07:41:53
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c8d7770-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:53
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650342
+  id_sample_tmp: 1627580
+  last_updated: 2013-06-19 07:41:53
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c919620-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:53
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650343
+  id_sample_tmp: 1627581
+  last_updated: 2013-06-19 07:41:53
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c95b4d0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:53
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650344
+  id_sample_tmp: 1627582
+  last_updated: 2013-06-19 07:41:53
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c99fa90-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:54
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650345
+  id_sample_tmp: 1627583
+  last_updated: 2013-06-19 07:41:54
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9c9e1940-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:54
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650346
+  id_sample_tmp: 1627584
+  last_updated: 2013-06-19 07:41:54
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9ca210e0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:54
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650347
+  id_sample_tmp: 1627585
+  last_updated: 2013-06-19 07:41:54
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9ca62f90-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:54
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650348
+  id_sample_tmp: 1627586
+  last_updated: 2013-06-19 07:41:54
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9caa4e40-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:54
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650349
+  id_sample_tmp: 1627587
+  last_updated: 2013-06-19 07:41:54
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cae6cf0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:54
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650350
+  id_sample_tmp: 1627588
+  last_updated: 2013-06-19 07:41:54
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cb2b2b0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:54
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650351
+  id_sample_tmp: 1627589
+  last_updated: 2013-06-19 07:41:54
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cb6f870-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:55
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650352
+  id_sample_tmp: 1627590
+  last_updated: 2013-06-19 07:41:55
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cbbb360-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:55
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650353
+  id_sample_tmp: 1627591
+  last_updated: 2013-06-19 07:41:55
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cbff920-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:55
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650354
+  id_sample_tmp: 1627592
+  last_updated: 2013-06-19 07:41:55
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cc417d0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:55
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650355
+  id_sample_tmp: 1627593
+  last_updated: 2013-06-19 07:41:55
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cc83680-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:55
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650356
+  id_sample_tmp: 1627594
+  last_updated: 2013-06-19 07:41:55
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:30
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9ccc2e20-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:55
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650357
+  id_sample_tmp: 1627595
+  last_updated: 2013-06-19 07:41:55
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cd1ac60-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:55
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650358
+  id_sample_tmp: 1627596
+  last_updated: 2013-06-19 07:41:55
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cd61930-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:56
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650359
+  id_sample_tmp: 1627597
+  last_updated: 2013-06-19 07:41:56
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cda37e0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:56
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650360
+  id_sample_tmp: 1627598
+  last_updated: 2013-06-19 07:41:56
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cdea4b0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:56
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650361
+  id_sample_tmp: 1627599
+  last_updated: 2013-06-19 07:41:56
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9ce29c50-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:56
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650362
+  id_sample_tmp: 1627600
+  last_updated: 2013-06-19 07:41:56
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9ce6e210-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:56
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650363
+  id_sample_tmp: 1627601
+  last_updated: 2013-06-19 07:41:56
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9ceb9d00-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:56
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650364
+  id_sample_tmp: 1627602
+  last_updated: 2013-06-19 07:41:56
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cf009d0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:56
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650365
+  id_sample_tmp: 1627603
+  last_updated: 2013-06-19 07:41:56
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cf42880-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:56
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650366
+  id_sample_tmp: 1627604
+  last_updated: 2013-06-19 07:41:56
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cf82020-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:57
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650367
+  id_sample_tmp: 1627605
+  last_updated: 2013-06-19 07:41:57
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9cfc3ed0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:57
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650368
+  id_sample_tmp: 1627606
+  last_updated: 2013-06-19 07:41:57
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d005d80-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:57
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650369
+  id_sample_tmp: 1627607
+  last_updated: 2013-06-19 07:41:57
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d04a340-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:57
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650370
+  id_sample_tmp: 1627608
+  last_updated: 2013-06-19 07:41:57
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d095e30-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:57
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650371
+  id_sample_tmp: 1627609
+  last_updated: 2013-06-19 07:41:57
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d0e4030-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:57
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650372
+  id_sample_tmp: 1627610
+  last_updated: 2013-06-19 07:41:57
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d1237d0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:57
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650373
+  id_sample_tmp: 1627611
+  last_updated: 2013-06-19 07:41:57
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d16cbb0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:57
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650374
+  id_sample_tmp: 1627612
+  last_updated: 2013-06-19 07:41:57
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d1aea60-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:58
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650375
+  id_sample_tmp: 1627613
+  last_updated: 2013-06-19 07:41:58
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d1f0910-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:58
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650376
+  id_sample_tmp: 1627614
+  last_updated: 2013-06-19 07:41:58
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d234ed0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:58
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650377
+  id_sample_tmp: 1627615
+  last_updated: 2013-06-19 07:41:58
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d276d80-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:58
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650378
+  id_sample_tmp: 1627616
+  last_updated: 2013-06-19 07:41:58
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d2bb340-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:58
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650379
+  id_sample_tmp: 1627617
+  last_updated: 2013-06-19 07:41:58
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d2fd1f0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:58
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650380
+  id_sample_tmp: 1627618
+  last_updated: 2013-06-19 07:41:58
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d33f0a0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:58
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650381
+  id_sample_tmp: 1627619
+  last_updated: 2013-06-19 07:41:58
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d380f50-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:58
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650382
+  id_sample_tmp: 1627620
+  last_updated: 2013-06-19 07:41:59
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d3c5510-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:59
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650383
+  id_sample_tmp: 1627621
+  last_updated: 2013-06-19 07:41:59
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d4073c0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:59
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650384
+  id_sample_tmp: 1627622
+  last_updated: 2013-06-19 07:41:59
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d449270-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:59
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650385
+  id_sample_tmp: 1627623
+  last_updated: 2013-06-19 07:41:59
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:31
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d488a10-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:59
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650386
+  id_sample_tmp: 1627624
+  last_updated: 2013-06-19 07:41:59
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d4cf6e0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:59
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650387
+  id_sample_tmp: 1627625
+  last_updated: 2013-06-19 07:41:59
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d50ee80-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:59
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650388
+  id_sample_tmp: 1627626
+  last_updated: 2013-06-19 07:41:59
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d550d30-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:41:59
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650389
+  id_sample_tmp: 1627627
+  last_updated: 2013-06-19 07:41:59
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d592be0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:42:00
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650390
+  id_sample_tmp: 1627628
+  last_updated: 2013-06-19 07:42:00
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d5d71a0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:42:00
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650391
+  id_sample_tmp: 1627629
+  last_updated: 2013-06-19 07:42:00
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d619050-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:42:00
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650392
+  id_sample_tmp: 1627630
+  last_updated: 2013-06-19 07:42:00
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d65af00-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:42:00
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650393
+  id_sample_tmp: 1627631
+  last_updated: 2013-06-19 07:42:00
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d69cdb0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:42:00
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650394
+  id_sample_tmp: 1627632
+  last_updated: 2013-06-19 07:42:00
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d6e1370-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:42:00
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650395
+  id_sample_tmp: 1627633
+  last_updated: 2013-06-19 07:42:01
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d723220-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:42:01
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650396
+  id_sample_tmp: 1627634
+  last_updated: 2013-06-19 07:42:01
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d7650d0-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:42:01
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650397
+  id_sample_tmp: 1627635
+  last_updated: 2013-06-19 07:42:01
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d7a6f80-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:42:01
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650398
+  id_sample_tmp: 1627636
+  last_updated: 2013-06-19 07:42:01
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d7e6720-6f93-11e4-a268-68b59977951c
+- accession_number: ~
+  consent_withdrawn: 0
+  control: ~
+  created: 2013-06-19 07:42:01
+  deleted_at: ~
+  description: genomic DNA
+  id_lims: SQSCP
+  id_sample_lims: 1650399
+  id_sample_tmp: 1627637
+  last_updated: 2013-06-19 07:42:01
+  organism: Anopheles_gambiae (PEST)
+  recorded_at: 2014-11-19 02:27:32
+  reference_genome: Anopheles_gambiae (PEST)
+  replicate: ~
+  name: second
+  sample_visibility: Hold
+  strain: PEST
+  taxon_id: 7165
+  uuid_sample_lims: 9d82ace0-6f93-11e4-a268-68b59977951c
+
