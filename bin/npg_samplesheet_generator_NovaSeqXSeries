@@ -1,0 +1,118 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+
+use npg::samplesheet::novaseq_xseries;
+
+our $VERSION = '0';
+
+npg::samplesheet::novaseq_xseries->new_with_options()->process();
+
+1;
+
+=head1 NAME
+
+npg_samplesheet_generator_NovaSeqXSeries
+
+=head1 USAGE
+
+  npg_samplesheet_generator_NovaSeqXSeries [options]
+
+=head1 REQUIRED ARGUMENTS
+
+=head1 OPTIONS
+
+  C<help>     - displays help message and exists
+
+  C<varcall>  - variant calling mode, defaults to C<None>, other valid options
+                C<SmallVariantCaller> and C<AllVariantCallers>
+  
+  C<batch_id> - LIMS batch identifier, optional
+
+  C<id_run>   - NPG run ID, optional; if supplied, the record for this run
+                should exists in the run tracking database
+  C<align>    - a boolean option, false by default; if set, the DRAGEN
+                germline analysis section is added to the file if suitable
+                samples are present
+  C<keep_fastq> - an option to keep FASTQ files for aligned data, false
+                  default
+  C<dragen_max_number_of_configs> - DRAGEN analysis can deal with a limited
+                  number of distinct configurations. Set this attribute if
+                  processing not on-board.
+
+=head1 DESCRIPTION
+
+Samplesheet generation to initiate DRAGEN analysis of data sequenced
+on the NovaSeq Series X Illumina instrument.
+
+=head1 EXIT STATUS
+
+0
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION
+
+Access to the ml warehouse database is required.
+
+=head1 DEPENDENCIES
+
+=over
+
+=item strict
+
+=item warnings
+
+=item Carp
+
+=item Text::CSV
+
+=item Readonly
+
+=item List::MoreUtils
+
+=item List::Util
+
+=item Getopt::Long
+
+=item Pod::Usage
+
+=item DateTime
+
+=item Data::UUID
+
+=item st::api::lims
+
+=item npg_tracking::Schema
+
+=back
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 INCOMPATIBILITIES
+
+=head1 AUTHOR
+
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2023 Genome Research Ltd
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut
