@@ -30,6 +30,13 @@ Readonly::Scalar my $MODE_INDEX           => 2;
 
 Readonly::Scalar my $RTA_COMPLETE_FN      => q[RTAComplete.txt];
 Readonly::Scalar my $COPY_COMPLETE_FN     => q[CopyComplete.txt];
+Readonly::Scalar my $DEFAULT_ONBOARD_ANALYSIS_DN => q[1];
+# The file with the name below flags the completion of a particular
+# DRAGEN analysys. However, it's the CopyComplete.txt file in the particular
+# analysis directory (/Analysis/1/, /Analysis/2/, etc.) that flags the
+# completion of the analysis output to staging. In future we might track
+# the DRAGEN analysis timeline, so keep this variable, though it is not
+# used at the moment.
 Readonly::Scalar my $ONBOARD_ANALYSIS_COMPLETE_FN =>
                                              q[Secondary_Analysis_Complete.txt];
 Readonly::Scalar my $ONBOARD_ANALYSIS_SAMPLESHEET_FN => q[SampleSheet.csv]; 
@@ -107,13 +114,15 @@ sub is_onboard_analysis_planned {
     return $planned;
 }
 
-sub has_onboard_analysis_finished {
+sub is_onboard_analysis_output_copied {
+
     my $self = shift;
 
     my $analysis_dir = $self->dragen_analysis_path();
     my $found = 0;
     if (-d $analysis_dir) {
-        my $file = join q[/], $analysis_dir, $ONBOARD_ANALYSIS_COMPLETE_FN;
+        my $file = join q[/], $analysis_dir,
+                              $DEFAULT_ONBOARD_ANALYSIS_DN, $COPY_COMPLETE_FN;
         $found = -f $file;
         carp sprintf '%s is%sfound', $file, $found ? q[ ] : q[ not ];         
     } else {
@@ -415,10 +424,11 @@ Returns true if the run folder for the NovaSeq SeriesX run contains a
 samplesheet with a section for the bcl on board data conversion. Always returns
 false for other instrument types.
 
-=head2 has_onboard_analysis_finished
+=head2 is_onboard_analysis_output_copied
 
-Returns true if the file that inticates that the onboard analysis has finished
-is present in the run folder.
+Returns true if the file that flags the end of the transfer of the onboard
+analysis output to staging is present in the default DRAGEN analysis directory
+([RUNFOLDER_NAME]/Analysis/1/ at the moment).
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

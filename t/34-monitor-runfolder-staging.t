@@ -465,7 +465,7 @@ subtest 'run completion for NovaSeqX' => sub {
 };
 
 subtest 'onboard analysis completion for NovaSeqX' => sub {
-    plan tests => 6;
+    plan tests => 8;
 
     my $tmpdir = tempdir( CLEANUP => 1 );
     copy('t/data/run_params/RunParameters.novaseqx.xml',"$tmpdir/RunParameters.xml")
@@ -477,8 +477,8 @@ subtest 'onboard analysis completion for NovaSeqX' => sub {
     
     ok (!$monitor->is_onboard_analysis_planned(),
         'onboard analysis is not planned');
-    ok (!$monitor->has_onboard_analysis_finished(),
-        'onboard analysis has not finished');
+    ok (!$monitor->is_onboard_analysis_output_copied(),
+        'onboard analysis has not been copied');
 
     my $ss_file = "$tmpdir/SampleSheet.csv";
     open my $fh, '>', $ss_file or die 'Cannot open a file for writing';
@@ -487,18 +487,27 @@ subtest 'onboard analysis completion for NovaSeqX' => sub {
     ok (!$monitor->is_onboard_analysis_planned(),
         'onboard analysis is not planned');
 
-    mkdir "$tmpdir/Analysis";
-    ok (!$monitor->has_onboard_analysis_finished(),
-        'onboard analysis has not finished');
-
+    my $adir = "$tmpdir/Analysis";
+    mkdir $adir;
+    ok (!$monitor->is_onboard_analysis_output_copied(),
+        'onboard analysis has not been copied');
+    
     open $fh, '>>', $ss_file or die 'Cannot open a file for appending';
     print $fh "[BCLConvert_Settings]\n" or die 'Cannot print';
     close $fh or die 'Cannot close the file handle';
     ok ($monitor->is_onboard_analysis_planned(), 'onboard analysis is planned');
+    ok (!$monitor->is_onboard_analysis_output_copied(),
+        'onboard analysis has not been copied');
+    
+    mkdir "$adir/2"; 
+    `touch $adir/2/CopyComplete.txt`;
+    ok (!$monitor->is_onboard_analysis_output_copied(),
+        'onboard analysis has not been copied');
 
-    `touch $tmpdir/Analysis/Secondary_Analysis_Complete.txt`;
-    ok ($monitor->has_onboard_analysis_finished(),
-        'onboard analysis has finished');     
+    mkdir "$adir/1";
+    `touch $adir/1/CopyComplete.txt`;
+    ok ($monitor->is_onboard_analysis_output_copied(),
+      'onboard analysis has been copied');     
 };
 
 subtest 'no onboard analysis planned for NovaSeq' => sub {
