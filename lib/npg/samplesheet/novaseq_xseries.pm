@@ -508,10 +508,10 @@ sub add_bclconvert_section {
   push @lines, ['[BCLConvert_Settings]'];
   push @lines, [q[SoftwareVersion], $SOFTWARE_VERSION];
 
-  # Not clear what CLI analysis option thie coresponds to.
+  # Not clear what CLI analysis option thie corresponds to.
   # Looks likely to be a list of lanes to run a tag collision check.
   # According to @srl, bcl-covert tries to correct one error by default
-  # but it checks the tags allow this I.e that they all differ by at least
+  # but it checks the tags allow this, i.e. that they all differ by at least
   # 3 bases, if they don't it disables the error correction
   # $add_line->(qw(CombinedIndexCollisionCheck 1;3;4;6));
 
