@@ -1,26 +1,36 @@
 #!/usr/bin/env perl
-#########
-# Author:        js10
-# Created:       2018-05-30
-#
 
 use strict;
 use warnings;
-
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
-use Carp;
-use autodie qw(:all);
+use Getopt::Long;
+use Pod::Usage;
 
-use Monitor::Staging;
 use Monitor::RunFolder::Staging;
 
 our $VERSION = '0';
 
-use Readonly;
+my $help;
+my $runfolder_path;
+my $status_update = 0;
 
-my $mon = Monitor::RunFolder::Staging->new_with_options(status_update => 0);
-my @ms = $mon->move_to_analysis();
+GetOptions (
+    'help'             => \$help,
+    'runfolder_path=s' => \$runfolder_path,
+    'status_update!'   => \$status_update,
+);
+if ($help) { pod2usage(0); }
+
+if (!defined $runfolder_path || $runfolder_path == q[]) {
+    die "ERROR: --runfolder_path argument is required\n";
+}
+
+my @ms = Monitor::RunFolder::Staging->new(
+    runfolder_path => $runfolder_path,
+    status_update  => $status_update
+)->move_to_analysis();
+
 print join "\n", @ms;
 
 1;
@@ -30,23 +40,38 @@ __END__
 
 =head1 NAME
 
-npg_move_runfolder - move 'incoming' to 'analysis' and change group.
+npg_move_runfolder - move the run folder given as an argument from
+'incoming' to 'analysis' and change group.
 
 =head1 VERSION
 
 =head1 SYNOPSIS
 
-    C<npg_move_runfolder --runfolder_path path>
+  C<npg_move_runfolder --runfolder_path path>
 
 =head1 DESCRIPTION
 
-This script moves a given run folder from 'incoming' directory to 'analysis' directory
-and changes the group name to that found in the staging configuration.
-By default it does not change the run status.
+This script moves a given run folder from 'incoming' directory to 'analysis'
+directory and changes the group name to that found in the staging
+configuration. By default it does not change the run status.
+
+=head1 REQUIRED ARGUMENTS
+
+  C<runfolder_path>
+
+=head1 OPTIONS
+
+  C<help>           - displays help message and exists
+
+  C<runfolder_path> - the path of the run folder, required
+  
+  C<status_update>  - a boolean option, defaults to false, meaning that
+                      the run status update is not performed
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-Depends on the presence of the npg tracking system.
+If the run status update is performed, write access to the tracking
+database is required.
 
 =head1 INCOMPATIBILITIES
 
@@ -58,7 +83,7 @@ Jennifer Liddle, E<lt>js10@sanger.ac.ukE<gt>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (C) 2018 GRL, by Jennifer Liddle
+Copyright (C) 2018, 2023 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
