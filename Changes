@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - Fixed a regression in the npg_move_runfolder script,
+   which made it unusable.
+
 release 95.0.0
  - Remove singularity recipe and related files
  - Import mlwh drivers
