@@ -1,0 +1,122 @@
+---
+- abbreviation: 198STDY
+  abstract: ~
+  accession_number: ~
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 0
+  contaminated_human_dna: 0
+  created: 2008-11-13 13:27:48
+  data_access_group: ~
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genotyping or cytogenetics
+  data_release_strategy: open
+  data_release_timing: standard
+  deleted_at: ~
+  description: None
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: ~
+  faculty_sponsor: None
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 198
+  id_study_tmp: 177
+  last_updated: 2021-10-15 08:54:34
+  name: Illumina Controls
+  prelim_id: ~
+  recorded_at: 2021-10-15 08:54:35
+  reference_genome: ' '
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: ~
+  study_type: Resequencing
+  study_visibility: Hold
+  uuid_study_lims: 2aa1cd2e-a557-11df-8092-00144f01a414
+- abbreviation: 2899STDY
+  abstract: ~
+  accession_number: ~
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 0
+  contaminated_human_dna: 0
+  created: 2014-01-06 09:24:16
+  data_access_group: ~
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: transcriptomics
+  data_release_strategy: open
+  data_release_timing: standard
+  deleted_at: ~
+  description: ~
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: ~
+  faculty_sponsor: ~
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 2899
+  id_study_tmp: 2866
+  last_updated: 2021-10-15 08:55:26
+  name: Parent-of-origin allelic expression bias in mouse olfaction system
+  prelim_id: ~
+  recorded_at: 2021-10-15 08:55:40
+  reference_genome: Mus_musculus (GRCm38)
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: Detecting parent-of-origin allelic expression bias in mouse olfaction system
+  study_type: Transcriptome Analysis
+  study_visibility: Hold
+  uuid_study_lims: 5060f850-76b4-11e3-9e87-68b59976a382
+- abbreviation: macrophage_miRNA
+  abstract: ~
+  accession_number: ~
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 1
+  contaminated_human_dna: 0
+  created: 2014-01-14 10:49:48
+  data_access_group: ~
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: transcriptomics
+  data_release_strategy: managed
+  data_release_timing: standard
+  deleted_at: ~
+  description: ~
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: 1
+  faculty_sponsor: ~
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 2910
+  id_study_tmp: 2877
+  last_updated: 2021-10-15 08:55:27
+  name: 'I1548 - miRNA expression in response to LPS stimulus in macrophages'
+  prelim_id: ~
+  recorded_at: 2021-10-15 08:55:40
+  reference_genome: ~
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: miRNA expression in response to LPS stimulus in macrophages
+  study_type: Transcriptome Analysis
+  study_visibility: Hold
+  uuid_study_lims: 9699b400-7d09-11e3-b3de-68b59976a382
+

@@ -481,6 +481,9 @@ t/data/fixtures/400-run_status.yml
 t/data/fixtures/400-tag_run.yml
 t/data/fixtures/400-tag_run_lane.yml
 t/data/fixtures/500-st_cache.yml
+t/data/fixtures_lims_transcriptome/000-Sample.yml
+t/data/fixtures_lims_transcriptome/000-Study.yml
+t/data/fixtures_lims_transcriptome/100-IseqFlowcell.yml
 t/data/fixtures_lims_wh/00-IseqRunStatusDict.yml
 t/data/fixtures_lims_wh/000-Sample.yml
 t/data/fixtures_lims_wh/000-Study.yml
