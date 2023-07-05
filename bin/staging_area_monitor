@@ -19,9 +19,6 @@ our $VERSION = '0';
 
 Readonly::Scalar my $SLEEP_INTERVAL => 60 * 15;
 Readonly::Scalar my $DRY_RUN => $ENV{'dev'} && ($ENV{'dev'} ne 'live');
-Readonly::Array  my @UPDATES_FOR_INCOMING_ALLOWED_STATUSES =>
-  ('run pending', 'run in progress', 'run complete');
-Readonly::Scalar my $USERNAME => 'pipeline';
 
 local $OUTPUT_AUTOFLUSH = 1;
 
@@ -38,147 +35,6 @@ sub _log_noindent {
 _log_noindent($DRY_RUN ? 'DRY RUN, no run folder moves' : 'LIVE RUN');
 
 main();
-
-sub check_path { ##### Function to deal with one run folder
-    my ($run_path, $schema, $previous_size_of) = @_;
-
-    my $folder = Monitor::RunFolder::Staging->new(
-                   runfolder_path      => $run_path,
-                   npg_tracking_schema => $schema);
-    $run_path = $folder->runfolder_path; # in case path was transformed
-
-    my $run_status = $folder->tracking_run()->current_run_status_description();
-    my $id_run = $folder->tracking_run()->id_run;
-
-    _log("Run $id_run status $run_status");
-    if ($folder->platform_NovaSeqX()) {
-        _log("... run on NovaSeqX instrument");
-    }
-
-    my $db_flowcell_barcode      = $folder->tracking_run()->flowcell_id;
-    my $staging_flowcell_barcode = $folder->run_flowcell; # from RunParameters.xml
-    $staging_flowcell_barcode    ||= q[];
-    if ($db_flowcell_barcode) { # database flowcell barcode validation
-        if ($db_flowcell_barcode ne $staging_flowcell_barcode) {
-            croak 'Flowcell barcode mismatch between database and staging: ' .
-            join q[ ], $db_flowcell_barcode, $staging_flowcell_barcode;
-        } 
-    } else { # save flowcell barcode to the tracking database
-        $staging_flowcell_barcode or croak
-            "Staging flowcell barcode is not defined for run $id_run";
-        _log("Saving staging flowcell barcode $staging_flowcell_barcode to the database.");
-        $folder->tracking_run()->update({flowcell_id => $staging_flowcell_barcode});
-    }
-
-    if ($folder->is_in_analysis) {
-        _log('Folder is in /analysis/');
-
-        if( $run_status eq 'qc complete') {
-            _log('Moving run folder to /outgoing/');
-            (not $DRY_RUN) and _log($folder->move_to_outgoing());
-        }
-        return; # Nothing else to do for a folder in /analysis/
-    }
-
-    _log('Folder is in /incoming/');
-
-    # If we don't remember seeing it before, set the folder name and glob;
-    # set staging tag, if appropriate, set/fix instrument side, workflow side.
-    # Previously we avoided making changes to the db if status was at or after
-    # 'run complete'. We might consider reinstating this rule.
-    if ( not defined $previous_size_of->{$run_path} ) {
-        $folder->update_run_record();
-        $folder->tracking_run()->set_tag( $USERNAME, 'staging' );
-        _log('Set staging tag');
-        try {
-            my $iside = $folder->set_instrument_side();
-            if ($iside) {
-                _log("Instrument side is set to $iside");
-            }
-            my $wf_type = $folder->set_workflow_type();
-            if ($wf_type) {
-                _log("Workflow type is set to $wf_type");
-            }
-            $folder->set_run_tags();
-        } catch {
-            _log('Error: ' . $_);
-        };
-
-        $previous_size_of->{$run_path} = 0;
-    }
-
-    # Could delete the directory here. Leave it for now.
-    return if $run_status eq 'data discarded';
-
-    if (any { $run_status eq $_ } @UPDATES_FOR_INCOMING_ALLOWED_STATUSES) {
-        
-        my $latest_cycle = $folder->get_latest_cycle();
-        if ($folder->update_cycle_count($latest_cycle)) {
-            _log("Cycle count updated to $latest_cycle");
-        }
-        
-        if ( $run_status eq 'run pending' )  {
-
-            if ($latest_cycle) {
-                $folder->update_run_status('run in progress');
-                _log(q[Run status updated to 'run in progress']);
-            }
-
-        } elsif ( $run_status eq 'run in progress' ) {
-
-            # The lane count comes from the run folder structure, which
-            # we should have by now set up.
-            $folder->delete_superfluous_lanes();
-            if ($folder->is_run_complete()) {
-                $folder->update_run_status('run complete');
-                _log(q[Run status updated to 'run complete']);
-            }
-
-        } else { # run status is 'run complete'
-
-            $folder->update_run_record(); # Inspect and update cycles,
-                                          # including expected cycle count!
-
-            if ( $folder->check_tiles($run_path) ) {
-
-                my $previous_size = $previous_size_of->{$run_path};
-                my ( $current_size, $latest_mod ) = $folder->monitor_stats();
-                _log(sprintf 'Run folder sizes: previous %i, current %i',
-                    $previous_size, $current_size);
-                $previous_size_of->{$run_path} = $current_size;
- 
-                if ( $current_size != $previous_size ) {
-                    _log('Runfolder size is still changing.');
-                    return;
-                }
-
-                # Check that no file is 'in the future'.
-                if ( $latest_mod > time ) {
-                    _log("Files in 'future' $latest_mod are present.");
-                    return;
-                }
-
-                # Check if we are waiting for the onboard analysis to finish.
-                if ($folder->is_onboard_analysis_planned() &&
-                    !$folder->is_onboard_analysis_output_copied()) {
-                    return;
-                }
-
-                # Set status to 'run mirrored' and move run folder
-                # from /incoming/ to /analysis/
-                $folder->update_run_status('run mirrored');
-                _log(q[Run status updated to 'run mirrored']);
-                _log('Moving run folder to analysis');
-                (not $DRY_RUN) and _log($folder->move_to_analysis());
-
-                return 'done';
-            }
-        }
-    }
-   
-    return;
-
-} ###### End of function to deal with one run folder
 
 ###########################################################
 ###############   Main daemon loop.  ######################
@@ -204,7 +60,9 @@ sub main {
             _log_noindent("Considering $run_path");
             my $done;
             try {
-                $done = check_path($run_path, $schema, $previous_size_of);
+                $done = Monitor::RunFolder::Staging->new(
+                   runfolder_path      => $run_path,
+                   npg_tracking_schema => $schema)->update_run_from_path($previous_size_of, $DRY_RUN);
             } finally {
                 if (@_) {
                     _log("ERROR: Execution for $run_path died with: @_\n");

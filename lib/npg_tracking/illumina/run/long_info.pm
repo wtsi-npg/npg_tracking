@@ -986,7 +986,8 @@ sub _get_xml_document {
     croak 'Directory path required';
   }
 
-  my @files = grep { m/\/$reg_expr\Z/xms } io($dir)->all;
+  my @files = grep { m/\/$reg_expr\Z/xms } io("$dir/")->all;
+  # "/" suffix of $dir/ to cope with a symlink for a run folder
   if (@files < 1) {
     croak qq{File not found for $reg_expr in $dir};
   }
