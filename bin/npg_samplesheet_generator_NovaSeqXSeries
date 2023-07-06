@@ -21,32 +21,21 @@ npg_samplesheet_generator_NovaSeqXSeries
 
   npg_samplesheet_generator_NovaSeqXSeries [options]
 
+  # To list all options and their description run
+  npg_samplesheet_generator_NovaSeqXSeries --help
+
+  # ... or have a look at npg::samplesheet::novaseq_xseries
+
 =head1 REQUIRED ARGUMENTS
 
 =head1 OPTIONS
 
-  C<help>     - displays help message and exists
-
-  C<varcall>  - variant calling mode, defaults to C<None>, other valid options
-                C<SmallVariantCaller> and C<AllVariantCallers>
-  
-  C<batch_id> - LIMS batch identifier, optional
-
-  C<id_run>   - NPG run ID, optional; if supplied, the record for this run
-                should exists in the run tracking database
-  C<align>    - a boolean option, false by default; if set, the DRAGEN
-                germline analysis section is added to the file if suitable
-                samples are present
-  C<keep_fastq> - an option to keep FASTQ files for aligned data, false
-                  default
-  C<dragen_max_number_of_configs> - DRAGEN analysis can deal with a limited
-                  number of distinct configurations. Set this attribute if
-                  processing not on-board.
+  help, batch_id, id_run, dragen_analysis, align, varcall, keep_fastq,
+  dragen_max_number_of_configs
 
 =head1 DESCRIPTION
 
-Samplesheet generation to initiate DRAGEN analysis of data sequenced
-on the NovaSeq Series X Illumina instrument.
+Samplesheet generation for the NovaSeq Series X Illumina sequencing instrument.
 
 =head1 EXIT STATUS
 
@@ -56,7 +45,7 @@ on the NovaSeq Series X Illumina instrument.
 
 =head1 CONFIGURATION
 
-Access to the ml warehouse database is required.
+Read access to the ml warehouse database is required.
 
 =head1 DEPENDENCIES
 
@@ -66,27 +55,9 @@ Access to the ml warehouse database is required.
 
 =item warnings
 
-=item Carp
+=item FindBin
 
-=item Text::CSV
-
-=item Readonly
-
-=item List::MoreUtils
-
-=item List::Util
-
-=item Getopt::Long
-
-=item Pod::Usage
-
-=item DateTime
-
-=item Data::UUID
-
-=item st::api::lims
-
-=item npg_tracking::Schema
+=item npg::samplesheet::novaseq_xseries
 
 =back
 

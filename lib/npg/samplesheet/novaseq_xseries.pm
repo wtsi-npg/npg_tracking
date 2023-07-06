@@ -8,7 +8,6 @@ use Carp;
 use Text::CSV;
 use List::MoreUtils qw(any none uniq);
 use List::Util qw(first max);
-use Getopt::Long;
 use Pod::Usage;
 use DateTime;
 use Data::UUID;
@@ -137,9 +136,26 @@ sub _build_batch_id {
   return $batch_id;
 }
 
+=head2 dragen_analysis
+
+A boolean option, true by default; if set, the DRAGEN analysis sections
+are added to the samplesheet, if set to false, these sections are not added.
+
+=cut
+
+has 'dragen_analysis' => (
+  'isa'      => 'Bool',
+  'is'       => 'ro',
+  'default'  => 1,
+  'required' => 0,
+  'documentation' => 'A boolean option, true by default. If set to false, ' .
+                     'the DRAGEN analysis sections are not added to the ' .
+                     'samplesheet',
+);
+
 =head2 align
 
-A boolean option, false by default; if set, the DRAGEN germline iand/or
+A boolean option, false by default; if set, the DRAGEN germline and/or
 RNA analysis is added to the samplesheet if suitable samples are present.
 
 =cut
@@ -429,37 +445,41 @@ sub process {
   my $self = shift;
 
   $self->add_common_headers();
-  $self->_add_line();
-  my $num_samples = $self->add_bclconvert_section();
-  carp "$num_samples samples are added to the BCLConvert section";
 
-  if ($num_samples) {
-    if ($self->align) {
-      if ($self->_current_number_of_configs ==
-          $self->dragen_max_number_of_configs) {
-        carp sprintf 'Used max. number of analysis configurations, %i, ' .
-          'will stop at BCLConvert', $self->dragen_max_number_of_configs;
-      } else {
-        $self->_add_line();
-        $num_samples = $self->add_germline_section();
-        carp "$num_samples samples are added to the Germline section";
-        if ($num_samples) {
-          $self->_add_line();
-        }
+  if ($self->dragen_analysis) {
+    $self->_add_line();
+    my $num_samples = $self->add_bclconvert_section();
+    carp "$num_samples samples are added to the BCLConvert section";
+
+    if ($num_samples) {
+      if ($self->align) {
         if ($self->_current_number_of_configs ==
             $self->dragen_max_number_of_configs) {
           carp sprintf 'Used max. number of analysis configurations, %i, ' .
-            'will skip RNA section', $self->dragen_max_number_of_configs;
+            'will stop at BCLConvert', $self->dragen_max_number_of_configs;
         } else {
-          $num_samples = $self->add_rna_section();
-          carp "$num_samples samples are added to the RNA section";
+          $self->_add_line();
+          $num_samples = $self->add_germline_section();
+          carp "$num_samples samples are added to the Germline section";
+          if ($num_samples) {
+            $self->_add_line();
+          }
+          if ($self->_current_number_of_configs ==
+              $self->dragen_max_number_of_configs) {
+            carp sprintf 'Used max. number of analysis configurations, %i, ' .
+              'will skip RNA section', $self->dragen_max_number_of_configs;
+          } else {
+            $num_samples = $self->add_rna_section();
+            carp "$num_samples samples are added to the RNA section";
+          }
         }
       }
+    } else {
+      carp 'Too many BCLConvert configurations, cannot run any DRAGEN analysis';
     }
   } else {
-    carp 'Too many BCLConvert configurations, cannot run any DRAGEN analysis';
+    carp 'Not adding DRAGEN analysis';
   }
-
 
   my $csv = Text::CSV->new({
     eol      => qq[\n],
@@ -860,8 +880,6 @@ __END__
 =item List::Util
 
 =item Getopt::Long
-
-=item Pod::Usage
 
 =item DateTime
 
