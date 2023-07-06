@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 51;
+use Test::More tests => 50;
 use Test::Exception;
 use Test::Warn;
 use File::Copy;
@@ -465,7 +465,7 @@ subtest 'run completion for NovaSeqX' => sub {
 };
 
 subtest 'onboard analysis completion for NovaSeqX' => sub {
-    plan tests => 8;
+    plan tests => 6;
 
     my $tmpdir = tempdir( CLEANUP => 1 );
     copy('t/data/run_params/RunParameters.novaseqx.xml',"$tmpdir/RunParameters.xml")
@@ -475,30 +475,20 @@ subtest 'onboard analysis completion for NovaSeqX' => sub {
 
     my $monitor = Monitor::RunFolder::Staging->new(runfolder_path => $tmpdir);
     
-    ok (!$monitor->is_onboard_analysis_planned(),
+    ok (!$monitor->onboard_analysis_planned(),
         'onboard analysis is not planned');
     ok (!$monitor->is_onboard_analysis_output_copied(),
         'onboard analysis has not been copied');
 
-    my $ss_file = "$tmpdir/SampleSheet.csv";
-    open my $fh, '>', $ss_file or die 'Cannot open a file for writing';
-    print $fh "[Header]\n[Cloud_BCLConvert_Settings]\n" or die 'Cannot print';
-    close $fh or die 'Cannot close the file handle';
-    ok (!$monitor->is_onboard_analysis_planned(),
-        'onboard analysis is not planned');
-
+    copy('t/data/run_params/RunParameters.novaseqx.onboard.xml',
+      "$tmpdir/RunParameters.xml") or die "Copy failed: $!";
     my $adir = "$tmpdir/Analysis";
     mkdir $adir;
+    $monitor = Monitor::RunFolder::Staging->new(runfolder_path => $tmpdir);
+    ok ($monitor->onboard_analysis_planned(), 'onboard analysis is planned');
     ok (!$monitor->is_onboard_analysis_output_copied(),
         'onboard analysis has not been copied');
-    
-    open $fh, '>>', $ss_file or die 'Cannot open a file for appending';
-    print $fh "[BCLConvert_Settings]\n" or die 'Cannot print';
-    close $fh or die 'Cannot close the file handle';
-    ok ($monitor->is_onboard_analysis_planned(), 'onboard analysis is planned');
-    ok (!$monitor->is_onboard_analysis_output_copied(),
-        'onboard analysis has not been copied');
-    
+ 
     mkdir "$adir/2"; 
     `touch $adir/2/CopyComplete.txt`;
     ok (!$monitor->is_onboard_analysis_output_copied(),
@@ -509,27 +499,5 @@ subtest 'onboard analysis completion for NovaSeqX' => sub {
     ok ($monitor->is_onboard_analysis_output_copied(),
       'onboard analysis has been copied');     
 };
-
-subtest 'no onboard analysis planned for NovaSeq' => sub {
-    plan tests => 2;
-
-    my $tmpdir = tempdir( CLEANUP => 1 );
-    copy('t/data/run_params/RunParameters.novaseq.xml',"$tmpdir/RunParameters.xml")
-      or die "Copy failed: $!";
-    copy('t/data/run_info/runInfo.novaseq.xml',"$tmpdir/RunInfo.xml")
-      or die "Copy failed: $!";
-    my $monitor = Monitor::RunFolder::Staging->new(runfolder_path => $tmpdir);
-    
-    ok (!$monitor->is_onboard_analysis_planned(),
-        'onboard analysis is not planned');
-
-    my $ss_file = "$tmpdir/SampleSheet.csv";
-    open my $fh, '>', $ss_file or die 'Cannot open a file for writing';
-    print $fh "[Header]\n[BCLConvert_Settings]\n" or die 'Cannot print';
-    close $fh or die 'Cannot close the file handle';
-    ok (!$monitor->is_onboard_analysis_planned(),
-        'onboard analysis is not planned');
-};
-
 
 1;

@@ -726,6 +726,7 @@ t/data/run_params/RunParameters.novaseq.xml
 t/data/run_params/RunParameters.novaseq.xp.xml
 t/data/run_params/RunParameters.novaseq.xp.v1.5.xml
 t/data/run_params/RunParameters.novaseqx.xml
+t/data/run_params/RunParameters.novaseqx.onboard.xml
 t/data/run_params/runParameters.hiseq.rr.single.xml
 t/data/run_params/runParameters.hiseq.rr.twoind.xml
 t/data/run_params/runParameters.hiseq.rr.xml
