@@ -46,7 +46,7 @@ sub main {
                                    # optionally prepended by some url,
                                    # neither of which we need to capture.
        /?                  # An occasional extra slash
-       ((?:/\S+?/\*)?)     # Run folder path glob.
+       ((?:/\S+?/\S*?\*)?)     # Run folder path glob.
        /
        ([^/?]+)            # Run folder name.
        (.*) }smx;
