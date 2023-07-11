@@ -39,7 +39,6 @@ Readonly::Scalar my $DEFAULT_ONBOARD_ANALYSIS_DN => q[1];
 # used at the moment.
 Readonly::Scalar my $ONBOARD_ANALYSIS_COMPLETE_FN =>
                                              q[Secondary_Analysis_Complete.txt];
-Readonly::Scalar my $ONBOARD_ANALYSIS_SAMPLESHEET_FN => q[SampleSheet.csv]; 
 
 Readonly::Array  my @UPDATES_FOR_INCOMING_ALLOWED_STATUSES =>
   ('run pending', 'run in progress', 'run complete');
@@ -95,27 +94,6 @@ sub is_run_complete {
     }
 
     return $is_run_complete;
-}
-
-
-
-sub is_onboard_analysis_planned {
-    my $self = shift;
-
-    my $planned = 0;
-    if ($self->platform_NovaSeqX()) {
-        my $ss = join q[/],
-            $self->runfolder_path(), $ONBOARD_ANALYSIS_SAMPLESHEET_FN;
-        my $have_ss = -f $ss;
-        carp sprintf 'Samplesheet %s for the onboard analysis%sfound',
-            $ss, $have_ss ? q[ ] : q[ not ];
-        if ($have_ss) {
-            $planned = any { $_ =~ /^\[BCLConvert/smx } read_file($ss);
-            carp sprintf 'Samplesheet %s %s the BCLConvert section',
-                $ss, $planned ? q[has] : q[doesn't have];
-        }
-    }
-    return $planned;
 }
 
 sub is_onboard_analysis_output_copied {
@@ -478,7 +456,7 @@ sub update_run_from_path { ##### Method to deal with one run folder
                 }
 
                 # Check if we are waiting for the onboard analysis to finish.
-                if ($folder->is_onboard_analysis_planned() &&
+                if ($folder->onboard_analysis_planned() &&
                     !$folder->is_onboard_analysis_output_copied()) {
                     return;
                 }
@@ -563,12 +541,6 @@ false otherwise.
 =head2 move_to_outgoing
 
 Move the run folder from 'analysis' to 'outgoing'.
-
-=head2 is_onboard_analysis_planned
-
-Returns true if the run folder for the NovaSeq SeriesX run contains a
-samplesheet with a section for the bcl on board data conversion. Always returns
-false for other instrument types.
 
 =head2 is_onboard_analysis_output_copied
 

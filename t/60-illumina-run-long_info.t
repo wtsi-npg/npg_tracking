@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 67;
+use Test::More tests => 68;
 use Test::Exception;
 use Test::Deep;
 use File::Temp qw(tempdir);
@@ -29,7 +29,7 @@ package main;
 my $basedir = tempdir( CLEANUP => 1 );
 
 subtest 'retrieving information from runParameters.xml' => sub {
-  plan tests => 153;
+  plan tests => 167;
 
   my $rf = join q[/], $basedir, 'runfolder';
   mkdir $rf;
@@ -118,8 +118,29 @@ subtest 'retrieving information from runParameters.xml' => sub {
       ok (!$li->uses_patterned_flowcell, 'not patterned flowcell');
     }
 
+    ok (!$li->onboard_analysis_planned(), 'onboard analysis is not planned');
+
     unlink $name;
   }
+};
+
+subtest 'detecting onboard analysis' => sub {
+  plan tests => 1;
+
+  my $rf = join q[/], $basedir, 'runfolder_onboard';
+  mkdir $rf;
+  copy('t/data/run_params/RunParameters.novaseqx.onboard.xml',
+    "$rf/RunParameters.xml");
+
+  my $class = Moose::Meta::Class->create_anon_class(
+    methods => {"runfolder_path" => sub {$rf}},
+    roles   => [qw/npg_tracking::illumina::run::long_info/]
+  );
+  my $li = $class->new_object(); 
+  ok ($li->onboard_analysis_planned(), 'onboard analysis is planned');
+
+  my $o = $li->onboard_analysis_planned();
+  diag  $o;
 };
 
 subtest 'getting i5opposite for run' => sub {

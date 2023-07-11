@@ -814,6 +814,22 @@ sub instrument_side {
     _get_single_element_text($self->_run_params(), 'FCPosition');
 }
 
+=head2 onboard_analysis_planned
+
+Returns true if the RunParameter.xml file contains a section indicating
+that DRAGEN analysis is planned, returns false otherwise. Of all locally
+available sequencing instruments, ony NovaSeqX instruments are expected
+to have this section.
+
+=cut
+
+sub onboard_analysis_planned {
+  my $self = shift;
+  my $workflows = _get_single_element_text(
+    $self->_run_params(), 'SecondaryAnalysisWorkflow');
+  return $workflows && ($workflows =~ /DRAGEN/xms);
+}
+
 #########################################################
 #       Private attributes                              #
 #########################################################
