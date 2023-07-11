@@ -25,6 +25,19 @@ sub _error {
   return;
 }
 
+sub _list_folders {
+  my @list = @_;
+  print "Content-type: text/html\n\n",
+  "<html><head></head><body>\n",
+  "<h2>NPG Tracking Server</h2>\n",
+  "<h3>multiple folders found</h3>\n<ul>\n",
+  (map{"<li><a href='$_'>$_</a></li>\n"}@list),
+  "</ul>\n</body></html>\n"
+    or croak "Error printing: $ERRNO";
+  return;
+}
+
+
 sub _script_name {
   my $name = $PROGRAM_NAME;
   ($name) = $name =~ m{([^/?]+)\Z}smx;
@@ -40,41 +53,36 @@ sub main {
   # Apache httpd server, this depends on whether mod-rewrite is enabled
   # in the server, the version of the server and the history of its updates.
   my $script_name = _script_name();
-  my ($pathglob, $runfolder, $suffix) = $path_info =~
+  my ($pathglob) = $path_info =~
 
     m{ \A(?:(?:.+/)?$script_name)? # Optionally, the name of this script,
                                    # optionally prepended by some url,
                                    # neither of which we need to capture.
        /?                  # An occasional extra slash
-       ((?:/\S+?/\S*?\*)?)     # Run folder path glob.
-       /
-       ([^/?]+)            # Run folder name.
-       (.*) }smx;
+       (/[\/a-zA-Z0-9_*{},-]+?)     # path glob.
+       \z
+      }smx;
 
-  if (!($pathglob && $runfolder)) {
-    _error('Failed to get pathglob or run folder or both', $path_info);
+  if (!($pathglob )) {
+    _error('Failed to get pathglob', $path_info);
     return;
   }
 
-  my @folders = sort { -M $a <=> -M $b } glob "$pathglob/$runfolder";
+  my @folders = grep {length} # remove empty entries post-detaint
+                map { /([\/a-z0-9_-]+)/imsx; $1 } # detaint
+                sort { -M $a <=> -M $b }
+	       	glob $pathglob;
   if (!@folders) {
-    _error('Run folder not found', $path_info);
+    _error('Folder not found', $pathglob);
     return;
   }
 
-  my ($uri)  = $folders[0]=~/([\/a-z0-9_-]+)/imsx; # detaint
-  if (!$uri) {
-    _error('Detainting has not left anything', $path_info);
+  if (@folders > 1) {
+    _list_folders(@folders);
     return;
   }
 
-  my $rellink = readlink "$uri/Latest_Summary";
-  if (defined $rellink) {
-    $suffix =~ s{^/Latest_Summary}{/$rellink}smx;
-  }
-
-  my $UNSAFE = q[#];
-  $uri .= q(/) . uri_escape($suffix,$UNSAFE);
+  my $uri = $folders[0];
 
   print "Content-type: text/html\n\n",
     qq(<html><head><meta http-equiv="refresh" content="0;url=$uri" /></head></html>\n)
