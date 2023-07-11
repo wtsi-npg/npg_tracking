@@ -69,9 +69,9 @@ sub main {
   }
 
   my @folders = grep {length} # remove empty entries post-detaint
-                map { /([\/a-z0-9_-]+)/imsx; $1 } # detaint
+                map { /([\/a-z0-9_-]+)/imsx ? $1 : q() } #detaint
                 sort { -M $a <=> -M $b }
-	       	glob $pathglob;
+                glob $pathglob;
   if (!@folders) {
     _error('Folder not found', $pathglob);
     return;
