@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 45;
+use Test::More tests => 46;
 use Test::Exception;
 use File::Temp qw/ tempdir /;
 use Moose::Meta::Class;
@@ -30,7 +30,7 @@ sub _build_run_folder {
 
   my $path = $self->_short_path();
   return first {$_ ne q()} reverse splitdir($path);
-  
+
 }
 
 
@@ -39,7 +39,7 @@ has q{_short_path}                => ( isa => q{Str}, is => q{ro}, lazy_build =>
 sub _build__short_path {
   my ($self) = @_;
   my @dir = $self->has_run_folder() ? glob $self->_folder_path_glob_pattern() . $self->run_folder()
-          : $self->has_id_run()     ? glob $self->_folder_path_glob_pattern() . q(*_{r,}) . $self->id_run() . q{*} 
+          : $self->has_id_run()     ? glob $self->_folder_path_glob_pattern() . q(*_{r,}) . $self->id_run() . q{*}
           : $self->has_name()       ? glob $self->_folder_path_glob_pattern() . q{*} . $self->name()
           :                           croak q{No run_folder, name or id_run provided}
           ;
@@ -70,6 +70,12 @@ sub _folder_path_glob_pattern {
   return $self->pattern_prefix . $FOLDER_PATH_PREFIX_GLOB_PATTERN;
 }
 
+
+package test::nvx_short_info;
+use Moose;
+with 'npg_tracking::illumina::run::short_info';
+
+has experiment_name => (is => 'rw');
 
 package main;
 
@@ -187,7 +193,7 @@ my $run_folder = q{123456_IL2_1234};
   });
   is($short_info->short_reference(), $id_run, q{HS short_reference returns id_run});
   is($short_info->name(),q{HS2_1234}, q{HS name worked out correctly});
-  is($short_info->short_reference(), q{123456_HS2_1234_B_205NNABXX}, q{HS short_reference returns run_folder});  
+  is($short_info->short_reference(), q{123456_HS2_1234_B_205NNABXX}, q{HS short_reference returns run_folder});
 }
 
 #### test where name is give in the constructor
@@ -243,7 +249,7 @@ my $run_folder = q{123456_IL2_1234};
 
     my $name;
     my $flowcell_id;
-    lives_ok { 
+    lives_ok {
       $name = $short_info->name();
       $flowcell_id= $short_info->flowcell_id();
     } q{MiSeq runfolder - kit id in place of flowcell};
@@ -263,6 +269,24 @@ subtest 'process run_folder when no id_run present' => sub {
   throws_ok  {
     $short_info->id_run();
   }  qr[Unable to identify id_run], q[Throws when it obtain id_run];
+};
+
+subtest 'Test id_run extraction from within experiment_name' => sub {
+  plan tests => 5;
+  my $short_info = test::nvx_short_info->new(experiment_name => '45678_NVX1_A', run_folder => 'not_a_folder');
+  is($short_info->id_run, '45678', 'id_run parsed from experiment name');
+
+  $short_info = test::nvx_short_info->new(experiment_name => '  45678_NVX1_A   ', run_folder => 'not_a_folder');
+  is($short_info->id_run, '45678', 'id_run parsed from loosely formatted experiment name');
+
+  $short_info = test::nvx_short_info->new(experiment_name => '45678', run_folder => 'not_a_folder');
+  is($short_info->id_run, '45678', 'Bare id_run as experiment name is fine');
+
+  $short_info = test::nvx_short_info->new(experiment_name => 'NovaSeqX_WHGS_TruSeqPF_NA12878', run_folder => 'not_a_folder');
+  throws_ok { $short_info->id_run } qr{Unable to identify id_run with data provided}, 'Custom run name cannot be parsed';
+
+  $short_info = test::nvx_short_info->new(id_run => '45678', experiment_name => '56789_NVX1_A', run_folder => 'not_a_folder');
+  is($short_info->id_run, '45678', 'Set id_run wins over experiment_name');
 };
 
 1;

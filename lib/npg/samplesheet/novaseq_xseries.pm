@@ -66,7 +66,7 @@ on this instrument model.
 
 The DRAGEN analysis can process a limited number of distinct analysis
 configurations. The germline and RNA alignment sections of the generated
-samplesheet will contain as many samples as possible within the limit set by 
+samplesheet will contain as many samples as possible within the limit set by
 the C<dragen_max_number_of_configs> attribute. The default value for this
 attribute is 4, which is the number of distinct configurations that the
 on-board DRAGEN analysis can handle.
@@ -74,10 +74,10 @@ on-board DRAGEN analysis can handle.
 In the BCLConvert section, each combination of index lengths counts as a
 unique configuration. If the number of these configurations exceeds the value
 of the the C<dragen_max_number_of_configs> attribute, no DRAGEN analysis
-sections are added to the samplesheet. 
+sections are added to the samplesheet.
 
 See specification in
-L<https://support-docs.illumina.com/SHARE/SampleSheetv2/Content/SHARE/SampleSheetv2/Settings_fNV_mX.htm> 
+L<https://support-docs.illumina.com/SHARE/SampleSheetv2/Content/SHARE/SampleSheetv2/Settings_fNV_mX.htm>
 
 A full listing of analysis options is available in
 L<https://support-docs.illumina.com/SW/DRAGEN_v41/Content/SW/DRAGEN/OptionReference.htm>
@@ -171,7 +171,7 @@ has 'keep_fastq' => (
 
 Variant calling mode, defaults to C<None>, other valid options are
 C<SmallVariantCaller> and C<AllVariantCallers>
- 
+
 =cut
 
 has 'varcall' => (
@@ -308,13 +308,15 @@ sub _build_run_name {
   if ($self->has_id_run()) {
     $run_name = $self->id_run;
   } else {
+    # Run is not tracked, generate a placeholder ID
     my $ug = Data::UUID->new();
     my @a = split /-/xms, $ug->to_string($ug->create());
     # Add a random string at the end so that the batch can be reused.
-    $run_name = sprintf 'ssbatch%s_%s', $self->batch_id(), $a[0];
+    return sprintf 'ssbatch%s_%s', $self->batch_id(), $a[0];
   }
 
-  return $run_name;
+  # Embed instrument's Sanger network name and slot
+  return sprintf '%s_%s_%s', $run_name, $self->run->instrument->name, $self->get_instrument_side;
 }
 
 =head2 file_name
@@ -333,21 +335,16 @@ sub _build_file_name {
 
   my $file_name;
   if ($self->has_id_run) {
-    my $side = $self->run->is_tag_set('fc_slotA') ? 'A' :
-              ($self->run->is_tag_set('fc_slotB') ? 'B' : q[]);
-    if (!$side) {
-      croak 'Slot is not set for run ' . $self->id_run;
-    }
     $file_name = join q[_],
       $self->run->instrument->name,
       $self->id_run,
-      $side,
+      $self->get_instrument_side,
       q[ssbatch] . $self->batch_id;
   } else {
     $file_name = $self->run_name;
   }
 
-  my $date =  DateTime->now()->strftime('%y%m%d'); # 230602 for 2 June 2023 
+  my $date =  DateTime->now()->strftime('%y%m%d'); # 230602 for 2 June 2023
   $file_name = sprintf '%s_%s.csv', $date, $file_name;
 
   return $file_name;
@@ -642,7 +639,7 @@ sub add_common_headers {
   $self->_add_line(qw(InstrumentType NovaSeqXPlus));
   $self->_add_line();
 
-  # Reads section                                                              
+  # Reads section
   $self->_add_line('[Reads]');
   $self->_add_line(q[Read1Cycles], $READ1_LENGTH);
   $self->_add_line(q[Read2Cycles], $READ2_LENGTH);
@@ -694,6 +691,24 @@ sub do_libtype_tenx_test {
   my $lt = shift;
   return any { $lt =~ /$_/xmsi } @TENX_ANALYSES_LIB_TYPES;
 }
+
+=head2 get_instrument_side
+
+Consult run tags to determine which slot/side of the instrument this run is
+intended to be inserted into. Croaks when no value has been set.
+
+=cut
+
+sub get_instrument_side {
+  my $self = shift;
+  my $side = $self->run->is_tag_set('fc_slotA') ? 'A' :
+            ($self->run->is_tag_set('fc_slotB') ? 'B' : q[]);
+  if (! $side) {
+    croak 'Slot is not set for run ' . $self->id_run;
+  }
+  return $side;
+}
+
 
 sub _add_samples {
   my ($self, @samples) = @_;
