@@ -272,12 +272,18 @@ subtest 'process run_folder when no id_run present' => sub {
 };
 
 subtest 'Test id_run extraction from within experiment_name' => sub {
-  plan tests => 5;
+  plan tests => 7;
   my $short_info = test::nvx_short_info->new(experiment_name => '45678_NVX1_A', run_folder => 'not_a_folder');
   is($short_info->id_run, '45678', 'id_run parsed from experiment name');
 
   $short_info = test::nvx_short_info->new(experiment_name => '  45678_NVX1_A   ', run_folder => 'not_a_folder');
   is($short_info->id_run, '45678', 'id_run parsed from loosely formatted experiment name');
+
+  $short_info = test::nvx_short_info->new(experiment_name => '45678_NVX1_A   ', run_folder => 'not_a_folder');
+  is($short_info->id_run, '45678', 'id_run parsed from experiment name with postfix spaces');
+
+  $short_info = test::nvx_short_info->new(experiment_name => '  45678_NVX1_A', run_folder => 'not_a_folder');
+  is($short_info->id_run, '45678', 'id_run parsed from experiment name with prefixed spaces');
 
   $short_info = test::nvx_short_info->new(experiment_name => '45678', run_folder => 'not_a_folder');
   is($short_info->id_run, '45678', 'Bare id_run as experiment name is fine');

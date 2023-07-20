@@ -78,7 +78,7 @@ subtest 'create the generator object, test simple attributes' => sub {
       id_run              => 47446,
       batch_id            => 97071,
     );
-    is ($g->file_name, "${date}_NVX1_47446_${slot}_ssbatch97071.csv",
+    is ($g->file_name, "${date}_47446_NVX1_${slot}_ssbatch97071.csv",
       'correct file name is generated');
     is($g->run_name, "47446_NVX1_${slot}",
       'run name is constructed from run ID when possible');
@@ -102,7 +102,7 @@ subtest 'create the generator object, test simple attributes' => sub {
     mlwh_schema         => $schema_wh,
     id_run              => 47446,
   );
-  is ($g->file_name, "${date}_NVX1_47446_B_ssbatch99888.csv",
+  is ($g->file_name, "${date}_47446_NVX1_B_ssbatch99888.csv",
     'correct file name is generated');
 
   $run_row->update({id_instrument_format => 10, id_instrument => 68});

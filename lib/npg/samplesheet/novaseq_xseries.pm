@@ -306,17 +306,17 @@ sub _build_run_name {
 
   my $run_name;
   if ($self->has_id_run()) {
-    $run_name = $self->id_run;
+    # Embed instrument's Sanger network name and slot
+    $run_name = sprintf '%s_%s_%s', $self->id_run, $self->run->instrument->name, $self->get_instrument_side;
   } else {
     # Run is not tracked, generate a placeholder ID
     my $ug = Data::UUID->new();
     my @a = split /-/xms, $ug->to_string($ug->create());
     # Add a random string at the end so that the batch can be reused.
-    return sprintf 'ssbatch%s_%s', $self->batch_id(), $a[0];
+    $run_name = sprintf 'ssbatch%s_%s', $self->batch_id(), $a[0];
   }
 
-  # Embed instrument's Sanger network name and slot
-  return sprintf '%s_%s_%s', $run_name, $self->run->instrument->name, $self->get_instrument_side;
+  return $run_name;
 }
 
 =head2 file_name
@@ -336,9 +336,7 @@ sub _build_file_name {
   my $file_name;
   if ($self->has_id_run) {
     $file_name = join q[_],
-      $self->run->instrument->name,
-      $self->id_run,
-      $self->get_instrument_side,
+      $self->run_name,
       q[ssbatch] . $self->batch_id;
   } else {
     $file_name = $self->run_name;
