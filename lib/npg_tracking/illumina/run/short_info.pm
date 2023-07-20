@@ -117,9 +117,8 @@ sub _build_id_run {
     ($id_run, undef) = $self->experiment_name() =~ m{
       \A
       [\s]*
-      ([\d]+)      # id_run
-      (_[\w\d]*)?  # instrument name or other embedded info
-      [\s]*
+      ([\d]+)     # id_run
+      ([\w\d\s]*) # instrument name or other embedded info
       \Z
     }xms;
   }
