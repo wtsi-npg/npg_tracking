@@ -13,7 +13,7 @@
   <RunCounter>8</RunCounter>
   <RecipeName>10B Sequencing</RecipeName>
   <RecipeVersion>10B-01.01.00</RecipeVersion>
-  <ExperimentName>47539_NX1_B</ExperimentName>
+  <ExperimentName>47539</ExperimentName>
   <FlowCellName>NovaSeqXSeries B3</FlowCellName>
   <FlowCellType>NovaSeqXSeriesB3</FlowCellType>
   <ScanSpeedMmPerSec>1.2345678</ScanSpeedMmPerSec>
@@ -65,15 +65,4 @@
     <Read ReadName="Index2" Cycles="2" />
     <Read ReadName="Read2" Cycles="2" />
   </PlannedReads>
-  <SecondaryAnalysisInfo>
-    <SecondaryAnalysisInfo>
-      <SecondaryAnalysisPlatformVersion>4.1.7</SecondaryAnalysisPlatformVersion>
-      <SecondaryAnalysisWorkflow>
-        <string>DRAGEN BCL Convert</string>
-        <string>DRAGEN Germline</string>
-        <string>DRAGEN Germline</string>
-        <string>DRAGEN RNA</string>
-      </SecondaryAnalysisWorkflow>
-    </SecondaryAnalysisInfo>
-  </SecondaryAnalysisInfo>
 </RunParameters>
