@@ -9,7 +9,7 @@
   team: 'RAD'
   is_paired: 0
   priority: 1
-  flowcell_id: 
+  flowcell_id:
 - actual_cycle_count: 64
   batch_id: 4861
   expected_cycle_count: 64
