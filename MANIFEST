@@ -406,6 +406,7 @@ t/30-api-util.t
 t/34-monitor-runfolder-staging.t
 t/34-monitor-runfolder.t
 t/34-monitor-staging.t
+t/35-monitor_one_runfolder.t
 t/40-st-base.t
 t/40-st-batch.t
 t/40-st-lims-insert_size.t
@@ -1346,6 +1347,8 @@ t/data/test45/st/studies/297.xml
 t/data/test45/st/studies/333.xml
 t/data/test45/st/studies/365.xml
 t/data/test45/st/studies/700.xml
+t/data/test_staging_daemon/novaseqxplus/RunInfo.xml
+t/data/test_staging_daemon/novaseqxplus/RunParameters.xml
 t/data/gaii/staging/IL12/incoming/100721_IL12_05222/Data/Intensities/L001/.gitignore
 t/data/gaii/staging/IL3/incoming/100622_IL3_01234/Data/Intensities/L001/C1.1/.gitignore
 t/data/gaii/staging/IL3/incoming/100622_IL3_01234/Data/Intensities/L001/C10.1/.gitignore
