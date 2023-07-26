@@ -12,7 +12,7 @@ use_ok('npg::samplesheet::novaseq_xseries');
 my $class = Moose::Meta::Class->create_anon_class(roles=>[qw/npg_testing::db/]);
 
 my $schema_tracking = $class->new_object({})->create_test_db(
-  q[npg_tracking::Schema], q[t/data/dbic_fixtures] 
+  q[npg_tracking::Schema], q[t/data/dbic_fixtures]
 );
 
 my $schema_wh = $class->new_object({})->create_test_db(
@@ -22,7 +22,7 @@ my $schema_wh = $class->new_object({})->create_test_db(
 my $date = DateTime->now()->strftime('%y%m%d');
 
 subtest 'create the generator object, test simple attributes' => sub {
-  plan tests => 13;
+  plan tests => 14;
 
   my $g = npg::samplesheet::novaseq_xseries->new(
     npg_tracking_schema => $schema_tracking,
@@ -51,21 +51,21 @@ subtest 'create the generator object, test simple attributes' => sub {
   like($g->run_name, qr/\Assbatch97071_[\w]+\Z/,
     'run name when id_run is not given');
   like($g->file_name, qr/\A${date}_ssbatch97071_[\w]+\.csv\Z/,
-    'samplesheet file name when id_run is not given');    
-  
-  $g = npg::samplesheet::novaseq_xseries->new(
-    npg_tracking_schema => $schema_tracking,
-    mlwh_schema         => $schema_wh,
-    id_run              => 47446,
-    batch_id            => 97071,
-  );
-  is($g->run_name, '47446', 'run name is run ID when the latter is known');
+    'samplesheet file name when id_run is not given');
+
   my $run_row = $schema_tracking->resultset('Run')->create({
     id_run => 47446,
     id_instrument_format => 12,
     id_instrument => 69,
     team => 'A'
   });
+
+  $g = npg::samplesheet::novaseq_xseries->new(
+    npg_tracking_schema => $schema_tracking,
+    mlwh_schema         => $schema_wh,
+    id_run              => 47446,
+    batch_id            => 97071,
+  );
   throws_ok { $g->file_name } qr/Slot is not set for run 47446/,
     'error when the slot is unknown';
 
@@ -78,13 +78,15 @@ subtest 'create the generator object, test simple attributes' => sub {
       id_run              => 47446,
       batch_id            => 97071,
     );
-    is ($g->file_name, "${date}_NVX1_47446_${slot}_ssbatch97071.csv",
+    is ($g->file_name, "${date}_47446_NVX1_${slot}_ssbatch97071.csv",
       'correct file name is generated');
+    is($g->run_name, "47446_NVX1_${slot}",
+      'run name is constructed from run ID when possible');
     if ($slot eq 'A') {
       $run_row->unset_tag($tag);
     }
   }
- 
+
   $g = npg::samplesheet::novaseq_xseries->new(
     npg_tracking_schema => $schema_tracking,
     mlwh_schema         => $schema_wh,
@@ -100,7 +102,7 @@ subtest 'create the generator object, test simple attributes' => sub {
     mlwh_schema         => $schema_wh,
     id_run              => 47446,
   );
-  is ($g->file_name, "${date}_NVX1_47446_B_ssbatch99888.csv",
+  is ($g->file_name, "${date}_47446_NVX1_B_ssbatch99888.csv",
     'correct file name is generated');
 
   $run_row->update({id_instrument_format => 10, id_instrument => 68});
@@ -111,7 +113,7 @@ subtest 'create the generator object, test simple attributes' => sub {
   );
   throws_ok { $g->file_name }
     qr/Instrument model is not NovaSeq X Series/,
-    'error when the run is registered on the wrong instrument model';  
+    'error when the run is registered on the wrong instrument model';
 };
 
 1;

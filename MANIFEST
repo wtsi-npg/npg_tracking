@@ -3,6 +3,7 @@ bin/event_notifications
 bin/illumina_instruments_uptime
 bin/npg_daemon_control
 bin/npg_move_runfolder
+bin/npg_samplesheet4MiSeq
 bin/npg_status_save
 bin/staging_area_monitor
 bin/npg_deletable_dr_runs
@@ -164,6 +165,7 @@ lib/npg_tracking/report/event2subscribers.pm
 lib/npg_tracking/report/events.pm
 lib/npg/samplesheet.pm
 lib/npg/samplesheet/novaseq_xseries.pm
+lib/npg/samplesheet/auto.pm
 lib/npg/util.pm
 lib/npg/util/mailer.pm
 lib/npg/view.pm
@@ -404,6 +406,7 @@ t/30-api-util.t
 t/34-monitor-runfolder-staging.t
 t/34-monitor-runfolder.t
 t/34-monitor-staging.t
+t/35-monitor_one_runfolder.t
 t/40-st-base.t
 t/40-st-batch.t
 t/40-st-lims-insert_size.t
@@ -417,6 +420,7 @@ t/40-st-study.t
 t/45-st-api-lims-traversal.t
 t/47-samplesheet.t
 t/47-npg_samplesheet_novaseq_xseries.t
+t/47-npg_samplesheet_auto.t
 t/50-controller.t
 t/50-decorator.t
 t/60-illumina-runfolder.t
@@ -481,6 +485,9 @@ t/data/fixtures/400-run_status.yml
 t/data/fixtures/400-tag_run.yml
 t/data/fixtures/400-tag_run_lane.yml
 t/data/fixtures/500-st_cache.yml
+t/data/fixtures_lims_transcriptome/000-Sample.yml
+t/data/fixtures_lims_transcriptome/000-Study.yml
+t/data/fixtures_lims_transcriptome/100-IseqFlowcell.yml
 t/data/fixtures_lims_wh/00-IseqRunStatusDict.yml
 t/data/fixtures_lims_wh/000-Sample.yml
 t/data/fixtures_lims_wh/000-Study.yml
@@ -723,6 +730,7 @@ t/data/run_params/RunParameters.novaseq.xml
 t/data/run_params/RunParameters.novaseq.xp.xml
 t/data/run_params/RunParameters.novaseq.xp.v1.5.xml
 t/data/run_params/RunParameters.novaseqx.xml
+t/data/run_params/RunParameters.novaseqx.onboard.xml
 t/data/run_params/runParameters.hiseq.rr.single.xml
 t/data/run_params/runParameters.hiseq.rr.twoind.xml
 t/data/run_params/runParameters.hiseq.rr.xml
@@ -1339,6 +1347,8 @@ t/data/test45/st/studies/297.xml
 t/data/test45/st/studies/333.xml
 t/data/test45/st/studies/365.xml
 t/data/test45/st/studies/700.xml
+t/data/test_staging_daemon/novaseqxplus/RunInfo.xml
+t/data/test_staging_daemon/novaseqxplus/RunParameters.xml
 t/data/gaii/staging/IL12/incoming/100721_IL12_05222/Data/Intensities/L001/.gitignore
 t/data/gaii/staging/IL3/incoming/100622_IL3_01234/Data/Intensities/L001/C1.1/.gitignore
 t/data/gaii/staging/IL3/incoming/100622_IL3_01234/Data/Intensities/L001/C10.1/.gitignore

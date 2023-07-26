@@ -1,0 +1,1703 @@
+---
+- accession_number: ~
+  age: ~
+  cell_type: ~
+  cohort: ~
+  common_name: ~
+  compound: ~
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2011-08-06 14:24:41
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: ~
+  developmental_stage: ~
+  disease: ~
+  disease_state: ~
+  dna_source: Genomic
+  donor_id: ~
+  dose: ~
+  ethnicity: ~
+  extraction_method: ~
+  father: ~
+  gc_content: Neutral
+  gender: ~
+  genotype: ~
+  geographical_region: ~
+  growth_condition: ~
+  id_lims: SQSCP
+  id_sample_lims: 1255141
+  id_sample_tmp: 1237247
+  immunoprecipitate: ~
+  is_resubmitted: ~
+  last_updated: 2021-04-12 19:48:50
+  marked_as_consent_withdrawn_by: ~
+  mother: ~
+  name: phiX_for_spiked_buffers
+  organism: ~
+  organism_part: ~
+  phenotype: ~
+  public_name: ~
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 20:28:54
+  reference_genome: PhiX (Sanger-SNPs)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: ~
+  subject: ~
+  supplier_name: ~
+  taxon_id: 10847
+  time_point: ~
+  treatment: ~
+  uuid_sample_lims: d3a59c4c-c037-11e0-834c-00144f01a414
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:37
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from MOE of the brain of S-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: CAST/EiJ
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807467
+  id_sample_tmp: 1785733
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: C57BL/6J
+  name: ZSL_S1_MOE
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mBLpCAST-1-MOE
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:46
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 333275f0-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:37
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from MOE of the brain of S-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: CAST/EiJ
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807468
+  id_sample_tmp: 1785734
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: C57BL/6J
+  name: ZSL_S2_MOE
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mBLpCAST-2-MOE
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:46
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 3366f370-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:37
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from MOE of the brain of S-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: CAST/EiJ
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807469
+  id_sample_tmp: 1785735
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: C57BL/6J
+  name: ZSL_S3_MOE
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mBLpCAST-3-MOE
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:46
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 3386b070-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:37
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from MOE of the brain of S-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: CAST/EiJ
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807470
+  id_sample_tmp: 1785736
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: C57BL/6J
+  name: ZSL_S4_MOE
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mBLpCAST-4-MOE
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:46
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 339cf790-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:37
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from MOE of the brain of S-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: CAST/EiJ
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807471
+  id_sample_tmp: 1785737
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: C57BL/6J
+  name: ZSL_S5_MOE
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mBLpCAST-5-MOE
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:46
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 33acaf00-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:38
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: 'RNA from OB of the brain of S- cross'
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: CAST/EiJ
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807472
+  id_sample_tmp: 1785738
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: C57BL/6J
+  name: ZSL_S1_BULB
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mBLpCAST-1-OB
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:46
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 33ba1c80-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:38
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: 'RNA from OB of the brain of S- cross'
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: CAST/EiJ
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807473
+  id_sample_tmp: 1785739
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: C57BL/6J
+  name: ZSL_S2_BULB
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mBLpCAST-2-OB
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:46
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 33c7b110-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:38
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: 'RNA from OB of the brain of S- cross'
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: CAST/EiJ
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807474
+  id_sample_tmp: 1785740
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: C57BL/6J
+  name: ZSL_S3_BULB
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mBLpCAST-3-OB
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:46
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 33d63000-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:38
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: 'RNA from OB of the brain of S- cross'
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: CAST/EiJ
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807475
+  id_sample_tmp: 1785741
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: C57BL/6J
+  name: ZSL_S4_BULB
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mBLpCAST-4-OB
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:46
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 33e6aac0-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:38
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: 'RNA from OB of the brain of S- cross'
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: CAST/EiJ
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807476
+  id_sample_tmp: 1785742
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: C57BL/6J
+  name: ZSL_S5_BULB
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mBLpCAST-5-OB
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:46
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 33f72580-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:38
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from MOE of the brain of M-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: C57BL/6J
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807477
+  id_sample_tmp: 1785743
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: CAST/EiJ
+  name: ZSL_M1_MOE
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mCASTpBL-1-MOE
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:46
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 34147180-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:38
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from MOE of the brain of M-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: C57BL/6J
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807478
+  id_sample_tmp: 1785744
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: CAST/EiJ
+  name: ZSL_M2_MOE
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mCASTpBL-2-MOE
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:47
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 34249e20-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:38
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from MOE of the brain of M-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: C57BL/6J
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807479
+  id_sample_tmp: 1785745
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: CAST/EiJ
+  name: ZSL_M3_MOE
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mCASTpBL-3-MOE
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:47
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 343b8180-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:39
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from MOE of the brain of M-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: C57BL/6J
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807480
+  id_sample_tmp: 1785746
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: CAST/EiJ
+  name: ZSL_M4_MOE
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mCASTpBL-4-MOE
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:47
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 344fa5c0-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:39
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from MOE of the brain of M-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: C57BL/6J
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807481
+  id_sample_tmp: 1785747
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: CAST/EiJ
+  name: ZSL_M5_MOE
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mCASTpBL-5-MOE
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:47
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 34646640-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:39
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from OB of the brain of M-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: C57BL/6J
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807482
+  id_sample_tmp: 1785748
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: CAST/EiJ
+  name: ZSL_M1_BULB
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mCASTpBL-1-OB
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:47
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 347974e0-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:39
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from OB of the brain of M-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: C57BL/6J
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807483
+  id_sample_tmp: 1785749
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: CAST/EiJ
+  name: ZSL_M2_BULB
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mCASTpBL-2-OB
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:47
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 349142a0-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:39
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from OB of the brain of M-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: C57BL/6J
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807484
+  id_sample_tmp: 1785750
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: CAST/EiJ
+  name: ZSL_M3_BULB
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mCASTpBL-3-OB
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:47
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 34a518c0-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:39
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from OB of the brain of M-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: C57BL/6J
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807485
+  id_sample_tmp: 1785751
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: CAST/EiJ
+  name: ZSL_M4_BULB
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mCASTpBL-4-OB
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:47
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 34b915f0-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: 14 weeks
+  cell_type: N/A
+  cohort: ~
+  common_name: Mus musculus
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-06 09:30:39
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: RNA from OB of the brain of M-cross
+  developmental_stage: Adult
+  disease: N/A
+  disease_state: N/A
+  dna_source: Brain
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: C57BL/6J
+  gc_content: Neutral
+  gender: Female
+  genotype: F1 hybred
+  geographical_region: ~
+  growth_condition: Normal
+  id_lims: SQSCP
+  id_sample_lims: 1807486
+  id_sample_tmp: 1785752
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:39:58
+  marked_as_consent_withdrawn_by: ~
+  mother: CAST/EiJ
+  name: ZSL_M5_BULB
+  organism: Mouse
+  organism_part: Brain
+  phenotype: N/A
+  public_name: mCASTpBL-5-OB
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:46:47
+  reference_genome: Mus_musculus (GRCm38)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: F1 hybred
+  subject: N/A
+  supplier_name: ~
+  taxon_id: 10090
+  time_point: N/A
+  treatment: N/A
+  uuid_sample_lims: 34cbdaa0-76b5-11e3-9714-68b59976a382
+- accession_number: ~
+  age: N/A
+  cell_type: iPS-derived macrophage
+  cohort: ~
+  common_name: Homo sapiens
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-28 11:23:55
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: Total RNA from iPS-derived macrophages using mirVana
+  developmental_stage: N/A
+  disease: N/A
+  disease_state: N/A
+  dna_source: Genomic
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: ~
+  gc_content: Neutral
+  gender: Not Applicable
+  genotype: N/A
+  geographical_region: ~
+  growth_condition: N/A
+  id_lims: SQSCP
+  id_sample_lims: 1830658
+  id_sample_tmp: 1808338
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:41:26
+  marked_as_consent_withdrawn_by: ~
+  mother: ~
+  name: abc
+  organism: Human
+  organism_part: N/A
+  phenotype: Normal
+  public_name: abc
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:49:44
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: ~
+  subject: ~
+  supplier_name: ~
+  taxon_id: 9606
+  time_point: N/A
+  treatment: control
+  uuid_sample_lims: ac43efe0-880e-11e3-a7f3-68b59976a382
+- accession_number: ~
+  age: N/A
+  cell_type: iPS-derived macrophage
+  cohort: ~
+  common_name: Homo sapiens
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-28 11:23:55
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: Total RNA from iPS-derived macrophages using mirVana
+  developmental_stage: N/A
+  disease: N/A
+  disease_state: N/A
+  dna_source: Genomic
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: ~
+  gc_content: Neutral
+  gender: Not Applicable
+  genotype: N/A
+  geographical_region: ~
+  growth_condition: N/A
+  id_lims: SQSCP
+  id_sample_lims: 1830659
+  id_sample_tmp: 1808339
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:41:26
+  marked_as_consent_withdrawn_by: ~
+  mother: ~
+  name: abc
+  organism: Human
+  organism_part: N/A
+  phenotype: Normal
+  public_name: abc
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:49:44
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: ~
+  subject: ~
+  supplier_name: ~
+  taxon_id: 9606
+  time_point: N/A
+  treatment: LPS
+  uuid_sample_lims: ac816e10-880e-11e3-a7f3-68b59976a382
+- accession_number: ~
+  age: N/A
+  cell_type: iPS-derived macrophage
+  cohort: ~
+  common_name: Homo sapiens
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-28 11:23:55
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: Total RNA from iPS-derived macrophages using mirVana
+  developmental_stage: N/A
+  disease: N/A
+  disease_state: N/A
+  dna_source: Genomic
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: ~
+  gc_content: Neutral
+  gender: Not Applicable
+  genotype: N/A
+  geographical_region: ~
+  growth_condition: N/A
+  id_lims: SQSCP
+  id_sample_lims: 1830660
+  id_sample_tmp: 1808340
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:41:26
+  marked_as_consent_withdrawn_by: ~
+  mother: ~
+  name: abc
+  organism: Human
+  organism_part: N/A
+  phenotype: Normal
+  public_name: abc
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:49:44
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: ~
+  subject: ~
+  supplier_name: ~
+  taxon_id: 9606
+  time_point: N/A
+  treatment: control
+  uuid_sample_lims: ac9bfaf0-880e-11e3-a7f3-68b59976a382
+- accession_number: ~
+  age: N/A
+  cell_type: iPS-derived macrophage
+  cohort: ~
+  common_name: Homo sapiens
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-01-28 11:23:55
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: Total RNA from iPS-derived macrophages using mirVana
+  developmental_stage: N/A
+  disease: N/A
+  disease_state: N/A
+  dna_source: Genomic
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: ~
+  gc_content: Neutral
+  gender: Not Applicable
+  genotype: N/A
+  geographical_region: ~
+  growth_condition: N/A
+  id_lims: SQSCP
+  id_sample_lims: 1830661
+  id_sample_tmp: 1808341
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:41:26
+  marked_as_consent_withdrawn_by: ~
+  mother: ~
+  name: abc
+  organism: Human
+  organism_part: N/A
+  phenotype: Normal
+  public_name: abc
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:49:44
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: ~
+  subject: ~
+  supplier_name: ~
+  taxon_id: 9606
+  time_point: N/A
+  treatment: LPS
+  uuid_sample_lims: acb6aee0-880e-11e3-a7f3-68b59976a382
+- accession_number: ~
+  age: N/A
+  cell_type: iPS-derived macrophage
+  cohort: ~
+  common_name: Homo sapiens
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-02-05 12:29:16
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: Total RNA from iPS-derived macrophages using mirVana
+  developmental_stage: N/A
+  disease: N/A
+  disease_state: N/A
+  dna_source: Genomic
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: ~
+  gc_content: Neutral
+  gender: Not Applicable
+  genotype: N/A
+  geographical_region: ~
+  growth_condition: N/A
+  id_lims: SQSCP
+  id_sample_lims: 1846288
+  id_sample_tmp: 1823966
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:42:25
+  marked_as_consent_withdrawn_by: ~
+  mother: ~
+  name: abc
+  organism: Human
+  organism_part: N/A
+  phenotype: Normal
+  public_name: abc
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:51:39
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: ~
+  subject: ~
+  supplier_name: ~
+  taxon_id: 9606
+  time_point: N/A
+  treatment: control
+  uuid_sample_lims: 21000c30-8e61-11e3-b3b8-68b59976a382
+- accession_number: ~
+  age: N/A
+  cell_type: iPS-derived macrophage
+  cohort: ~
+  common_name: Homo sapiens
+  compound: N/A
+  concentration_determined_by: ~
+  consent_withdrawn: 0
+  control: ~
+  control_type: ~
+  country_of_origin: ~
+  created: 2014-02-05 12:29:16
+  customer_measured_concentration: ~
+  customer_measured_volume: ~
+  date_of_consent_withdrawn: ~
+  date_of_sample_collection: ~
+  date_of_sample_extraction: ~
+  deleted_at: ~
+  description: Total RNA from iPS-derived macrophages using mirVana
+  developmental_stage: N/A
+  disease: N/A
+  disease_state: N/A
+  dna_source: Genomic
+  donor_id: ~
+  dose: N/A
+  ethnicity: ~
+  extraction_method: ~
+  father: ~
+  gc_content: Neutral
+  gender: Not Applicable
+  genotype: N/A
+  geographical_region: ~
+  growth_condition: N/A
+  id_lims: SQSCP
+  id_sample_lims: 1846289
+  id_sample_tmp: 1823967
+  immunoprecipitate: N/A
+  is_resubmitted: ~
+  last_updated: 2021-04-12 20:42:25
+  marked_as_consent_withdrawn_by: ~
+  mother: ~
+  name: abc
+  organism: Human
+  organism_part: N/A
+  phenotype: Normal
+  public_name: abc
+  purification_method: ~
+  purified: ~
+  recorded_at: 2021-04-12 21:51:39
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5)
+  replicate: ~
+  sample_type: ~
+  sample_visibility: Hold
+  sanger_sample_id: ~
+  sibling: ~
+  storage_conditions: ~
+  strain: ~
+  subject: ~
+  supplier_name: ~
+  taxon_id: 9606
+  time_point: N/A
+  treatment: LPS
+  uuid_sample_lims: 2119fcd0-8e61-11e3-b3b8-68b59976a382
+

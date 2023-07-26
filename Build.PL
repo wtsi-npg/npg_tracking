@@ -140,6 +140,7 @@ my $builder = $class->new(
                 'DBIx::Class'                     => '0.08119',
                 'DBIx::Class::Core'               => 0,
                 'DBIx::Class::Schema'             => 0,
+                'DBIx::Class::Schema::Loader'     => 0,
                 'DBIx::Class::InflateColumn::DateTime' => 0,
                 'Digest::MD5'                     => 0,
                 'Digest::SHA'                     => 0,

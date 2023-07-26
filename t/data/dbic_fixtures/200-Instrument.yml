@@ -126,5 +126,18 @@
   staging_dir: 
   latest_contact: 
   percent_complete:
-  lab: Ogilvie 
+  lab: Ogilvie
+- id_instrument: 70
+  name: NVX2
+  id_instrument_format: 14
+  external_name: 'LH00210'
+  serial: ''
+  iscurrent: 1
+  ipaddr: 
+  instrument_comp:
+  mirroring_host: 
+  staging_dir: 
+  latest_contact: 
+  percent_complete:
+  lab: Ogilvie
 

@@ -39,7 +39,10 @@ Readonly::Scalar my $DEFAULT_ONBOARD_ANALYSIS_DN => q[1];
 # used at the moment.
 Readonly::Scalar my $ONBOARD_ANALYSIS_COMPLETE_FN =>
                                              q[Secondary_Analysis_Complete.txt];
-Readonly::Scalar my $ONBOARD_ANALYSIS_SAMPLESHEET_FN => q[SampleSheet.csv]; 
+
+Readonly::Array  my @UPDATES_FOR_INCOMING_ALLOWED_STATUSES =>
+  ('run pending', 'run in progress', 'run complete');
+Readonly::Scalar my $USERNAME => 'pipeline';
 
 has 'status_update' => (isa          => 'Bool',
                         is           => 'ro',
@@ -91,27 +94,6 @@ sub is_run_complete {
     }
 
     return $is_run_complete;
-}
-
-
-
-sub is_onboard_analysis_planned {
-    my $self = shift;
-
-    my $planned = 0;
-    if ($self->platform_NovaSeqX()) {
-        my $ss = join q[/],
-            $self->runfolder_path(), $ONBOARD_ANALYSIS_SAMPLESHEET_FN;
-        my $have_ss = -f $ss;
-        carp sprintf 'Samplesheet %s for the onboard analysis%sfound',
-            $ss, $have_ss ? q[ ] : q[ not ];
-        if ($have_ss) {
-            $planned = any { $_ =~ /^\[BCLConvert/smx } read_file($ss);
-            carp sprintf 'Samplesheet %s %s the BCLConvert section',
-                $ss, $planned ? q[has] : q[doesn't have];
-        }
-    }
-    return $planned;
 }
 
 sub is_onboard_analysis_output_copied {
@@ -352,6 +334,148 @@ sub _set_sgid {
     return;
 }
 
+sub _log {
+    my @ms = map { "\t$_\n" } @_;
+    print {*STDOUT}  @ms or carp $OS_ERROR;
+}
+
+
+sub update_run_from_path { ##### Method to deal with one run folder
+    my ($folder, $hash_previous_size_of,$inhibit_folder_move) = @_; # folder is like "self" - code converted from function "check_path"
+    my $run_path = $folder->runfolder_path; # in case path was transformed
+
+    my $run_status = $folder->tracking_run()->current_run_status_description();
+    my $id_run = $folder->tracking_run()->id_run;
+
+    _log("Run $id_run status $run_status");
+    if ($folder->platform_NovaSeqX()) {
+        _log("... run on NovaSeqX instrument");
+    }
+
+    my $db_flowcell_barcode      = $folder->tracking_run()->flowcell_id;
+    my $staging_flowcell_barcode = $folder->run_flowcell; # from RunParameters.xml
+    $staging_flowcell_barcode    ||= q[];
+    if ($db_flowcell_barcode) { # database flowcell barcode validation
+        if ($db_flowcell_barcode ne $staging_flowcell_barcode) {
+            croak 'Flowcell barcode mismatch between database and staging: ' .
+            join q[ ], $db_flowcell_barcode, $staging_flowcell_barcode;
+        } 
+    } else { # save flowcell barcode to the tracking database
+        $staging_flowcell_barcode or croak
+            "Staging flowcell barcode is not defined for run $id_run";
+        _log("Saving staging flowcell barcode $staging_flowcell_barcode to the database.");
+        $folder->tracking_run()->update({flowcell_id => $staging_flowcell_barcode});
+    }
+
+    if ($folder->is_in_analysis) {
+        _log('Folder is in /analysis/');
+
+        if( $run_status eq 'qc complete') {
+            _log('Moving run folder to /outgoing/');
+            (not $inhibit_folder_move) and _log($folder->move_to_outgoing());
+        }
+        return; # Nothing else to do for a folder in /analysis/
+    }
+
+    _log('Folder is in /incoming/');
+
+    # If we don't remember seeing it before, set the folder name and glob;
+    # set staging tag, if appropriate, set/fix instrument side, workflow side.
+    # Previously we avoided making changes to the db if status was at or after
+    # 'run complete'. We might consider reinstating this rule.
+    if ( not defined $hash_previous_size_of->{$run_path} ) {
+        $folder->update_run_record();
+        $folder->tracking_run()->set_tag( $USERNAME, 'staging' );
+        _log('Set staging tag');
+        try {
+            my $iside = $folder->set_instrument_side();
+            if ($iside) {
+                _log("Instrument side is set to $iside");
+            }
+            my $wf_type = $folder->set_workflow_type();
+            if ($wf_type) {
+                _log("Workflow type is set to $wf_type");
+            }
+            $folder->set_run_tags();
+        } catch {
+            _log('Error: ' . $_);
+        };
+
+        $hash_previous_size_of->{$run_path} = 0;
+    }
+
+    # Could delete the directory here. Leave it for now.
+    return if $run_status eq 'data discarded';
+
+    if (any { $run_status eq $_ } @UPDATES_FOR_INCOMING_ALLOWED_STATUSES) {
+        
+        my $latest_cycle = $folder->get_latest_cycle();
+        if ($folder->update_cycle_count($latest_cycle)) {
+            _log("Cycle count updated to $latest_cycle");
+        }
+        
+        if ( $run_status eq 'run pending' )  {
+
+            if ($latest_cycle) {
+                $folder->update_run_status('run in progress');
+                _log(q[Run status updated to 'run in progress']);
+            }
+
+        } elsif ( $run_status eq 'run in progress' ) {
+
+            # The lane count comes from the run folder structure, which
+            # we should have by now set up.
+            $folder->delete_superfluous_lanes();
+            if ($folder->is_run_complete()) {
+                $folder->update_run_status('run complete');
+                _log(q[Run status updated to 'run complete']);
+            }
+
+        } else { # run status is 'run complete'
+
+            $folder->update_run_record(); # Inspect and update cycles,
+                                          # including expected cycle count!
+
+            if ( $folder->check_tiles($run_path) ) {
+
+                my $previous_size = $hash_previous_size_of->{$run_path};
+                my ( $current_size, $latest_mod ) = $folder->monitor_stats();
+                _log(sprintf 'Run folder sizes: previous %i, current %i',
+                    $previous_size, $current_size);
+                $hash_previous_size_of->{$run_path} = $current_size;
+ 
+                if ( $current_size != $previous_size ) {
+                    _log('Runfolder size is still changing.');
+                    return;
+                }
+
+                # Check that no file is 'in the future'.
+                if ( $latest_mod > time ) {
+                    _log("Files in 'future' $latest_mod are present.");
+                    return;
+                }
+
+                # Check if we are waiting for the onboard analysis to finish.
+                if ($folder->onboard_analysis_planned() &&
+                    !$folder->is_onboard_analysis_output_copied()) {
+                    return;
+                }
+
+                # Set status to 'run mirrored' and move run folder
+                # from /incoming/ to /analysis/
+                $folder->update_run_status('run mirrored');
+                _log(q[Run status updated to 'run mirrored']);
+                _log('Moving run folder to analysis');
+                (not $inhibit_folder_move) and _log($folder->move_to_analysis());
+
+                return 'done';
+            }
+        }
+    }
+   
+    return;
+
+} ###### End of method to deal with one run folder
 no Moose;
 __PACKAGE__->meta->make_immutable();
 
@@ -418,17 +542,23 @@ false otherwise.
 
 Move the run folder from 'analysis' to 'outgoing'.
 
-=head2 is_onboard_analysis_planned
-
-Returns true if the run folder for the NovaSeq SeriesX run contains a
-samplesheet with a section for the bcl on board data conversion. Always returns
-false for other instrument types.
-
 =head2 is_onboard_analysis_output_copied
 
 Returns true if the file that flags the end of the transfer of the onboard
 analysis output to staging is present in the default DRAGEN analysis directory
 ([RUNFOLDER_NAME]/Analysis/1/ at the moment).
+
+=head2 update_run_from_path
+
+   C<<$folder->update_run_from_path($hash_ref_runfolder_size_state_store,
+         $inhibit_folder_move);>>
+
+Uses information found in the runfolder, dependent on its location, to update 
+the tracking database. Your'll need to trace the code for the exact logic...
+It will also move the run folder until the flag to inhibit this is passed.
+It takes a hash ref contain the (size) state of run folders - this is (in some
+logical paths) used to help determine whether certain processes have 
+completed.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

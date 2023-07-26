@@ -95,8 +95,10 @@ sub _build_id_run {
     $self->run_folder();
   }
 
+  # Try to read id_run from the folder name
   ($inst_t, $inst_i, $id_run) = $self->run_folder() =~ /$NAME_PATTERN/gmsx;
 
+  # Failing that try the tracking DB.
   if ( !$id_run ) {
     if ($self->can(q(npg_tracking_schema)) and  $self->npg_tracking_schema()) {
       my $rs = $self->npg_tracking_schema()->resultset('Run')
@@ -107,8 +109,18 @@ sub _build_id_run {
     }
   }
 
+  # When no id_run is set (as in pick-up runs) attempt to parse an id_run from
+  # the experiment name recorded in the Illumina XML file.
+  # We embed additional information in NovaSeqX samplesheets which have no
+  # meaning here. See L<Samplesheet generator|npg::samplesheet::novaseq_xseries>
   if ( !$id_run && $self->can('experiment_name') && $self->experiment_name() ) {
-    ($id_run) = $self->experiment_name() =~ /\A[\s]*([\d]+)[\s]*\Z/xms;
+    ($id_run, undef) = $self->experiment_name() =~ m{
+      \A
+      [\s]*
+      ([\d]+)     # id_run
+      ([\w\d\s]*) # instrument name or other embedded info
+      \Z
+    }xms;
   }
 
   if( !$id_run ) {
