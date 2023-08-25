@@ -1,4 +1,3 @@
-.github/workflows/testing_and_building_repos.yml
 bin/event_notifications
 bin/illumina_instruments_uptime
 bin/npg_daemon_control
@@ -1468,6 +1467,5 @@ t/useragent.pm
 t/util.pm
 wtsi_local/httpd.conf
 wtsi_local/httpd_sfweb.conf
-
 META.yml
 META.json
