@@ -23,18 +23,18 @@ subtest 'object creation' => sub {
   plan tests => 8;
 
   my $result = q();
-  dies_ok { npg::samplesheet->new( repository=>$dir, output=>\$result)->process }
+  dies_ok { npg::samplesheet->new( lims_driver_type=>'xml', repository=>$dir, output=>\$result)->process }
     'sample sheet process fails when neither run object nor id_run given';
 
   my $ss;
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7007); } 'sample sheet object - no output provided';
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>7007); } 'sample sheet object - no output provided';
   cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/MS0001309-300.csv', 'default output location (with zeroes trimmed appropriately)');
   is($ss->lims->[0]->driver_type, 'xml', 'xml driver is used');
 
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946); } 'sample sheet object - no output provided';
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946); } 'sample sheet object - no output provided';
   cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/000000000-A0616.csv', 'default output location');
 
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7007); } 'sample sheet object - no output provided';
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>7007); } 'sample sheet object - no output provided';
   my $orig_flowcell_id = $ss->run->flowcell_id;
   $ss->run->flowcell_id(q(MS2000132-500V2));
   cmp_ok($ss->output, 'eq', '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/MS2000132-500V2.csv', 'default output location copes with V2 MiSeq cartirdges/reagent kits');
@@ -91,13 +91,13 @@ RESULT_7007
 
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7007, output=>\$result); } 'sample sheet object for unplexed paired run';
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>7007, output=>\$result); } 'sample sheet object for unplexed paired run';
   lives_ok { $ss->process(); } ' sample sheet generated';
   is_string($result, $expected_result_7007);
 
   my $run = $schema->resultset(q(Run))->find(7007);
   $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, run=>$run, output=>\$result); } 'sample sheet object from run object - no id_run given';
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, run=>$run, output=>\$result); } 'sample sheet object from run object - no id_run given';
   lives_ok { $ss->process(); } ' sample sheet generated';
   is_string($result, $expected_result_7007);
 };
@@ -107,7 +107,7 @@ subtest 'default samplesheet for a plexed paired run' => sub {
 
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, output=>\$result); } 'samplesheet object for plexed paired run';
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, output=>\$result); } 'samplesheet object for plexed paired run';
   my $expected_result = << 'RESULT_6946';
 [Header],,,,
 Investigator Name,mq1,,,
@@ -150,7 +150,7 @@ subtest 'default samplesheet for a plexed paired run with reference fallback' =>
 
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7825, output=>\$result); } 'sample sheet object for plexed paired run';
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>7825, output=>\$result); } 'sample sheet object for plexed paired run';
   my $expected_result = << 'RESULT_7825';
 [Header],,,,
 Investigator Name,nh4,,,
@@ -187,7 +187,7 @@ subtest 'default samplesheet, mkfastq option enabled' => sub {
   # with the mkfastq option we get an extra leading column, Lane
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7826, mkfastq => 1, output=>\$result); }
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>7826, mkfastq => 1, output=>\$result); }
     'sample sheet object mkfastq';
   my $expected_result = << 'RESULT_mkfastq';
 [Header],,,,,
@@ -224,7 +224,7 @@ subtest 'default samplesheet for dual index' => sub {
 
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>7826, output=>\$result); } 'sample sheet object for dual index';
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>7826, output=>\$result); } 'sample sheet object for dual index';
   my $expected_result = << 'RESULT_7826';
 [Header],,,,
 Investigator Name,nh4,,,
@@ -260,13 +260,13 @@ subtest 'extended samplesheets' => sub {
 
   my $ss;
   my $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, extend => 1, id_run=>7007, output=>\$result); } 'extended sample sheet object for unplexed paired run';
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, extend => 1, id_run=>7007, output=>\$result); } 'extended sample sheet object for unplexed paired run';
   ok(!$ss->_dual_index, 'no dual index');
   lives_ok { $ss->process(); } ' sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/7007_extended.csv'));
 
   $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); } 'extended sample sheet object for plexed paired run';
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); } 'extended sample sheet object for plexed paired run';
   ok(!$ss->_dual_index, 'no dual index');
   lives_ok { $ss->process(); } ' sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/6946_extended.csv'));
@@ -276,7 +276,7 @@ subtest 'extended samplesheets' => sub {
   $schema->resultset('Run')->find(6946)->update({batch_id => 4775});
 
   $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for unplexed paired 8 lane run with a control lane';
   lives_ok { $ss->process(); } 'sample sheet generated';
   is_string($result, read_file('t/data/samplesheet/1control7libs_extended.csv'));
@@ -286,7 +286,7 @@ subtest 'extended samplesheets' => sub {
   $schema->resultset('Run')->find(6946)->update({batch_id => 16249});
 
   $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for plexed paired 8 lane run';
   ok(!$ss->_dual_index, 'no dual index');
   lives_ok { $ss->process(); } 'sample sheet generated';
@@ -297,7 +297,7 @@ subtest 'extended samplesheets' => sub {
   $schema->resultset('Run')->find(6946)->update({batch_id => 23798});
 
   $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for plexed paired run with both pool and library lanes';
   ok($ss->_dual_index, 'dual index from a 16 char first index');
   lives_ok { $ss->process(); } 'sample sheet generated';
@@ -307,7 +307,7 @@ subtest 'extended samplesheets' => sub {
   $schema->resultset('Run')->find(6946)->update({batch_id => 1,});
 
   $result = q();
-  lives_ok { $ss = npg::samplesheet->new(repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
+  lives_ok { $ss = npg::samplesheet->new(lims_driver_type=>'xml', repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946, extend => 1, output=>\$result); }
     'extended sample sheet object for plexed paired run with both pool and library lanes';
   ok($ss->_dual_index, 'dual index from two indexes in LIMs');
   lives_ok { $ss->process(); } 'sample sheet generated';

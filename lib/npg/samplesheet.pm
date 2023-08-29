@@ -62,11 +62,24 @@ still retained in the relevant custom fields.
 my$config=get_config_staging_areas();
 Readonly::Scalar my $SAMPLESHEET_PATH => $config->{'samplesheets'}||q(samplesheets/);
 Readonly::Scalar my $MIN_COLUMN_NUM   => 3;
-Readonly::Scalar my $DEFAULT_LIMS_DRIVER_TYPE => 'xml';
+Readonly::Scalar my $DEFAULT_LIMS_DRIVER_TYPE => 'ml_warehouse';
 
 ##################################################################
 ####################### Public attributes ########################
 ##################################################################
+
+=head2 lims_driver_type
+
+LIMs driver type to use, defaults to ml_warehouse.
+
+=cut
+
+has 'lims_driver_type' => (
+  'isa'      => 'Str',
+  'required' => 0,
+  'is'       => 'ro',
+  'default'  => $DEFAULT_LIMS_DRIVER_TYPE,
+);
 
 =head2 id_run
 
@@ -180,7 +193,6 @@ An attribute, an array of st::api::lims type objects.
 
 This attribute should normally be provided by the caller via the
 constuctor. If the attribute is not provided, it it built automatically.
-XML st::api::lims driver is used to access LIMS data.
 
 =cut
 
@@ -201,7 +213,7 @@ sub _build_lims {
   }
   return [st::api::lims->new(
             batch_id => $id,
-            driver_type => $DEFAULT_LIMS_DRIVER_TYPE)->children];
+            driver_type => $self->lims_driver_type)->children];
 };
 
 =head2 output
