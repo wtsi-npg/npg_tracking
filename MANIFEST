@@ -500,6 +500,10 @@ t/data/fixtures_stlims_wh/000-Study.yml
 t/data/fixtures_stlims_wh/100-IseqFlowcell.yml
 t/data/fixtures_stlims_wh/100-StudyUser.yml
 t/data/fixtures_stlims_wh/200-IseqProductMetric.yml
+t/data/fixtures_lims_wh_samplesheet/000-Sample.yml
+t/data/fixtures_lims_wh_samplesheet/000-Study.yml
+t/data/fixtures_lims_wh_samplesheet/100-StudyUser.yml
+t/data/fixtures_lims_wh_samplesheet/100-IseqFlowcell.yml
 t/data/gaii/staging/IL3/incoming/100622_IL3_01234/this_run_is_not_complete_yet
 t/data/gaii/staging/IL5/incoming/not_a_dir
 t/data/gaii/staging/IL999/incoming/100622_IL3_01234/Recipe_GA2-PEM_2x76Cycle_v7.7.xml
@@ -743,12 +747,13 @@ t/data/run_params/RunParameters.novaseq.xp.lite.xml
 t/data/samplesheet/samplesheet_7753.csv
 t/data/samplesheet/samplesheet_27483.csv
 t/data/samplesheet/samplesheet_33990.csv
-t/data/samplesheet/1control7libs_extended.csv
 t/data/samplesheet/4pool4libs_extended.csv
 t/data/samplesheet/6946_extended.csv
 t/data/samplesheet/7007_extended.csv
 t/data/samplesheet/8pools_extended.csv
 t/data/samplesheet/dual_index_extended.csv
+t/data/samplesheet/dual_index_default_new.csv
+t/data/samplesheet/dual_index_extended_new.csv
 t/data/samplesheet/miseq_default.csv
 t/data/samplesheet/miseq_default_dual_index.csv
 t/data/samplesheet/miseq_extended.csv

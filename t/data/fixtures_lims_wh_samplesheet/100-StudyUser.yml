@@ -1,0 +1,37 @@
+---
+- email: user1@sanger.ac.uk
+  id_study_tmp: 5963
+  id_study_users_tmp: 530314
+  last_updated: 2021-10-15 08:56:39
+  login: user1
+  name: Claire
+  role: manager
+- email: user2@sanger.ac.uk
+  id_study_tmp: 5963
+  id_study_users_tmp: 530316
+  last_updated: 2021-10-15 08:56:39
+  login: user2
+  name: Calli
+  role: manager
+- email: user3@sanger.ac.uk
+  id_study_tmp: 5963
+  id_study_users_tmp: 530318
+  last_updated: 2021-10-15 08:56:39
+  login: user3
+  name: Laura
+  role: manager
+- email: user1@sanger.ac.uk
+  id_study_tmp: 5963
+  id_study_users_tmp: 530320
+  last_updated: 2021-10-15 08:56:39
+  login: user1
+  name: Claire
+  role: owner
+- email: user4@sanger.ac.uk
+  id_study_tmp: 5963
+  id_study_users_tmp: 530322
+  last_updated: 2021-10-15 08:56:39
+  login: user4
+  name: Margarete
+  role: follower
+
