@@ -5,6 +5,8 @@ LIST OF CHANGES
  - Added 'lims_driver_type' attribute to npg::samplesheet.
  - Updated the tests for samplesheet generation, which are using the xml
    LIMS driver, to set the driver type explicitly.
+ - In samplesheet generation, dropped a special case of MiSeq instruments
+   without a batch; last use in production was over 5 years ago.
 
 release 96.0.0
  - Fixed a regression in the npg_move_runfolder script,

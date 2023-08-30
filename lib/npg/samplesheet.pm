@@ -204,13 +204,6 @@ has 'lims' => (
 sub _build_lims {
   my $self=shift;
   my $id = $self->run->batch_id;
-  if ($id=~/\A\d{13}\z/smx) {
-    load_class 'st::api::lims::warehouse';
-    return [st::api::lims->new(
-      position => 1,
-      driver   => st::api::lims::warehouse->new(position=>1, tube_ean13_barcode=>$id)
-    )];
-  }
   return [st::api::lims->new(
             batch_id => $id,
             driver_type => $self->lims_driver_type)->children];
