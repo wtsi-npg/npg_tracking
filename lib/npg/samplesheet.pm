@@ -15,6 +15,7 @@ use st::api::lims;
 use st::api::lims::samplesheet;
 use npg_tracking::util::config qw(get_config_staging_areas);
 use npg_tracking::util::abs_path qw(abs_path);
+use WTSI::DNAP::Warehouse::Schema;
 
 with 'npg_tracking::glossary::run';
 
@@ -170,6 +171,21 @@ sub _build_npg_tracking_schema {
   return $s
 }
 
+=head2 mlwh_schema
+ 
+DBIx schema class for ml_warehouse access.
+
+=cut
+
+has 'mlwh_schema' => (
+                isa        => 'WTSI::DNAP::Warehouse::Schema',
+                is         => 'ro',
+                required   => 0,
+                lazy_build => 1,);
+sub _build_mlwh_schema {
+  return WTSI::DNAP::Warehouse::Schema->connect();
+}
+
 =head2 run
 
 An attribute, DBIx object for a row in the run table of the tracking database.
@@ -203,10 +219,20 @@ has 'lims' => (
 );
 sub _build_lims {
   my $self=shift;
-  my $id = $self->run->batch_id;
-  return [st::api::lims->new(
-            batch_id => $id,
-            driver_type => $self->lims_driver_type)->children];
+
+  my $ref = {driver_type => $self->lims_driver_type};
+  my $batch_id = $self->run->batch_id;
+  if ($self->lims_driver_type eq $DEFAULT_LIMS_DRIVER_TYPE) {
+    $ref->{'id_flowcell_lims'} = $batch_id;
+    $ref->{'mlwh_schema'} = $self->mlwh_schema;
+  } elsif ($self->lims_driver_type eq 'xml') {
+    $ref->{'batch_id'} = $batch_id;
+  } else {
+    croak sprintf 'Lazy-build for driver type %s is not inplemented',
+      $self->lims_driver_type;
+  }
+
+  return [st::api::lims->new($ref)->children];
 };
 
 =head2 output
@@ -597,6 +623,8 @@ __END__
 
 =item open
 
+=item WTSI::DNAP::Warehouse::Schema
+
 =back
 
 =head1 INCOMPATIBILITIES
@@ -609,7 +637,7 @@ David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2019,2020 Genome Research Ltd.
+Copyright (C) 2019,2020, 2023 Genome Research Ltd.
 
 This file is part of NPG.
 
