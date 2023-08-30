@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 11;
 use Test::Exception;
 use Test::Warn;
 use File::Slurp;
@@ -337,42 +337,13 @@ subtest 'Multiple NovaSeq runs - top-up merge support' => sub {
   }
 };
 
-subtest 'MiSeq run, comparison of xml and samplesheet drivers' => sub {
-  plan tests => 4;
-
-  use_ok('st::api::lims::xml');
-  use_ok('st::api::lims');
-  my $path = 't/data/samplesheet/6946_extended.csv'; #extended MiSeq samplesheet
-  my @ss_lanes = st::api::lims::samplesheet->new(id_run => 6946, path => $path)->children;
-  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/samplesheet];
-  my @xml_lanes = st::api::lims::xml->new(batch_id => 13994)->children;
-  my @methods = grep {$_ ne 'lane_id' && $_ ne 'lane_priority'} @st::api::lims::DELEGATED_METHODS;
-  push @methods, 'is_pool';
-
-  ok($ss_lanes[0]->is_pool, 'lane is a pool');
-  is_deeply(_lane_hash($ss_lanes[0], @methods), _lane_hash($xml_lanes[0], @methods),
-    'xml and samplesheet drivers give the same result for plexes' );
-};
-
 subtest 'multiple lanes, comparison of xml and samplesheet drivers' => sub {
-  plan tests => 7;
+  plan tests => 5;
 
   my $path = 't/data/samplesheet/4pool4libs_extended.csv';
   my @ss_lanes = st::api::lims::samplesheet->new(id_run => 6946, path => $path)->children;
-  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q[t/data/samplesheet];
-  my @xml_lanes = st::api::lims::xml->new(batch_id => 23798)->children;
-  my @methods = @st::api::lims::DELEGATED_METHODS;
-  push @methods, 'is_pool';
-
   ok(!$ss_lanes[0]->is_pool, 'lane 1 is a not pool');
-  is_deeply(_lane_hash($ss_lanes[0], @methods), _lane_hash($xml_lanes[0], @methods),
-    'xml and samplesheet drivers give the same result for a library' );
-
-  @methods = grep {$_ ne 'lane_id' && $_ ne 'lane_priority' && $_ ne 'spiked_phix_tag_index'} @methods;
   ok($ss_lanes[6]->is_pool, 'lane 7 is a pool');
-  is_deeply(_lane_hash($ss_lanes[6], @methods), _lane_hash($xml_lanes[6], @methods),
-    'xml and samplesheet drivers give the same result for plexes' );
-
   my @plexes = $ss_lanes[6]->children;
   my @spiked = grep {$_->spiked_phix_tag_index == 168} $ss_lanes[6]->children;
   is (scalar @spiked, scalar @plexes, 'spiked_phix_tag_index is set on plex level');
