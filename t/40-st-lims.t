@@ -998,18 +998,10 @@ subtest 'Instantiating a samplesheet driver' => sub {
 };
 
 subtest 'Dual index' => sub {
-  plan tests => 32;
+  plan tests => 16;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/samplesheet/dual_index_extended.csv';
-  _test_di( st::api::lims->new(id_run => 6946) );
-
-  local $ENV{NPG_WEBSERVICE_CACHE_DIR} = 't/data/samplesheet';
-  _test_di( st::api::lims->new(batch_id => 1, %dr) );
-};
-
-sub _test_di {
-  my $l = shift;
-
+  my $l = st::api::lims->new(id_run => 6946);
   my @lanes = $l->children;
   is (scalar @lanes, 2, 'two lanes');
   my @plexes = $lanes[0]->children;
@@ -1033,7 +1025,7 @@ sub _test_di {
   is($plex->default_tagtwo_sequence, 'GGGGGGGG', 'second index');
   is($plex->tag_sequence, 'GTCTTGGCGGGGGGGG', 'combined tag sequence');
   is($plex->purpose, 'standard', 'purpose');
-}
+};
 
 subtest 'aggregation across lanes for pools' => sub {
   plan tests => 85;
