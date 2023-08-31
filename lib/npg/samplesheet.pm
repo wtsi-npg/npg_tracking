@@ -15,6 +15,7 @@ use st::api::lims;
 use st::api::lims::samplesheet;
 use npg_tracking::util::config qw(get_config_staging_areas);
 use npg_tracking::util::abs_path qw(abs_path);
+use WTSI::DNAP::Warehouse::Schema;
 
 with 'npg_tracking::glossary::run';
 
@@ -62,11 +63,24 @@ still retained in the relevant custom fields.
 my$config=get_config_staging_areas();
 Readonly::Scalar my $SAMPLESHEET_PATH => $config->{'samplesheets'}||q(samplesheets/);
 Readonly::Scalar my $MIN_COLUMN_NUM   => 3;
-Readonly::Scalar my $DEFAULT_LIMS_DRIVER_TYPE => 'xml';
+Readonly::Scalar my $DEFAULT_LIMS_DRIVER_TYPE => 'ml_warehouse';
 
 ##################################################################
 ####################### Public attributes ########################
 ##################################################################
+
+=head2 lims_driver_type
+
+LIMs driver type to use, defaults to ml_warehouse.
+
+=cut
+
+has 'lims_driver_type' => (
+  'isa'      => 'Str',
+  'required' => 0,
+  'is'       => 'ro',
+  'default'  => $DEFAULT_LIMS_DRIVER_TYPE,
+);
 
 =head2 id_run
 
@@ -157,6 +171,22 @@ sub _build_npg_tracking_schema {
   return $s
 }
 
+=head2 mlwh_schema
+ 
+DBIx schema class for ml_warehouse access.
+
+=cut
+
+has 'mlwh_schema' => (
+  'isa'        => 'WTSI::DNAP::Warehouse::Schema',
+  'is'         => 'ro',
+  'required'   => 0,
+  'lazy_build' => 1,
+);
+sub _build_mlwh_schema {
+  return WTSI::DNAP::Warehouse::Schema->connect();
+}
+
 =head2 run
 
 An attribute, DBIx object for a row in the run table of the tracking database.
@@ -180,7 +210,6 @@ An attribute, an array of st::api::lims type objects.
 
 This attribute should normally be provided by the caller via the
 constuctor. If the attribute is not provided, it it built automatically.
-XML st::api::lims driver is used to access LIMS data.
 
 =cut
 
@@ -191,17 +220,20 @@ has 'lims' => (
 );
 sub _build_lims {
   my $self=shift;
-  my $id = $self->run->batch_id;
-  if ($id=~/\A\d{13}\z/smx) {
-    load_class 'st::api::lims::warehouse';
-    return [st::api::lims->new(
-      position => 1,
-      driver   => st::api::lims::warehouse->new(position=>1, tube_ean13_barcode=>$id)
-    )];
+
+  my $ref = {driver_type => $self->lims_driver_type};
+  my $batch_id = $self->run->batch_id;
+  if ($self->lims_driver_type eq $DEFAULT_LIMS_DRIVER_TYPE) {
+    $ref->{'id_flowcell_lims'} = $batch_id;
+    $ref->{'mlwh_schema'} = $self->mlwh_schema;
+  } elsif ($self->lims_driver_type eq 'xml') {
+    $ref->{'batch_id'} = $batch_id;
+  } else {
+    croak sprintf 'Lazy-build for driver type %s is not inplemented',
+      $self->lims_driver_type;
   }
-  return [st::api::lims->new(
-            batch_id => $id,
-            driver_type => $DEFAULT_LIMS_DRIVER_TYPE)->children];
+
+  return [st::api::lims->new($ref)->children];
 };
 
 =head2 output
@@ -592,6 +624,8 @@ __END__
 
 =item open
 
+=item WTSI::DNAP::Warehouse::Schema
+
 =back
 
 =head1 INCOMPATIBILITIES
@@ -604,7 +638,7 @@ David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2019,2020 Genome Research Ltd.
+Copyright (C) 2019,2020, 2023 Genome Research Ltd.
 
 This file is part of NPG.
 
