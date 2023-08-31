@@ -178,10 +178,11 @@ DBIx schema class for ml_warehouse access.
 =cut
 
 has 'mlwh_schema' => (
-                isa        => 'WTSI::DNAP::Warehouse::Schema',
-                is         => 'ro',
-                required   => 0,
-                lazy_build => 1,);
+  'isa'        => 'WTSI::DNAP::Warehouse::Schema',
+  'is'         => 'ro',
+  'required'   => 0,
+  'lazy_build' => 1,
+);
 sub _build_mlwh_schema {
   return WTSI::DNAP::Warehouse::Schema->connect();
 }
