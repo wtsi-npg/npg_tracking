@@ -1,5 +1,17 @@
 LIST OF CHANGES
 
+release 97.0.0
+ - Change CI workflow to standard file name
+ - Change to Perl versions from Perlbrew
+ - Add Perl 5.34.1 to the test matrix
+ - Switched the default LIMS driver in samplesheet generation from 'xml'
+   to 'ml_warehouse'.
+ - Added 'lims_driver_type' attribute to npg::samplesheet.
+ - Updated the tests for samplesheet generation, which are using the xml
+   LIMS driver, to set the driver type explicitly.
+ - In samplesheet generation, dropped a special case of MiSeq instruments
+   without a batch; last use in production was over 5 years ago.
+
 release 96.0.0
  - Fixed a regression in the npg_move_runfolder script,
    which made it unusable.

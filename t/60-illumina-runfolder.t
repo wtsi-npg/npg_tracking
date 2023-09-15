@@ -13,12 +13,12 @@ use t::dbic_util;
 
 use_ok('npg_tracking::illumina::runfolder');
 
-my $CLEANUP=1;
+my $schema = t::dbic_util->new->test_schema();
 
 my $testrundata = catfile(rel2abs(dirname(__FILE__)),q(data),q(090414_IL24_2726.tar.bz2));
 
 my $origdir = getcwd;
-my $testdir = catfile(tempdir( CLEANUP => $CLEANUP ), q()); #we need a trailing slash after our directory for the globbing later
+my $testdir = catfile(tempdir( CLEANUP => 1 ), q()); #we need a trailing slash after our directory for the globbing later
 chdir $testdir or die "Cannot change to temporary directory $testdir";
 diag ("Extracting $testrundata to $testdir");
 system('tar','xjf',$testrundata) == 0 or Archive::Tar->extract_archive($testrundata, 1);
@@ -125,7 +125,6 @@ ENDXML
   my $new_name = q(4567XXTT98);
   my $testrundir_new = catdir($testdir, $new_name);
   rename $testrundir, $testrundir_new;
-  my $schema = t::dbic_util->new->test_schema();
   my $id_run = 33333;
   my $data = {
     actual_cycle_count   => 30,
@@ -192,8 +191,6 @@ subtest 'getting id_run from experiment name in run parameters' => sub {
   my $rf = join q[/], $basedir, 'runfolder_id_run';
   mkdir $rf;
 
-  use npg_tracking::illumina::runfolder;
-
   my %data = (
     'runParameters.hiseq4000.xml'       => { 'rpf' => 'runParameters', 'expname' => '24359' },
     'runParameters.hiseq.rr.single.xml' => { 'rpf' => 'runParameters', 'expname' => '25835' },
@@ -203,7 +200,6 @@ subtest 'getting id_run from experiment name in run parameters' => sub {
     'runParameters.hiseq.xml'           => { 'rpf' => 'runParameters', 'expname' => '24235' },
     'runParameters.hiseqx.upgraded.xml' => { 'rpf' => 'runParameters', 'expname' => '24420' },
     'runParameters.hiseqx.xml'          => { 'rpf' => 'runParameters', 'expname' => '24422' },
-#    'RunParameters.novaseq.xml'         => { 'rpf' => 'RunParameters', 'expname' => 'Coriell_24PF_auto_PoolF_NEBreagents_TruseqAdap_500pM_NV7B' },
   );
 
   my $expname_data = \%data;
@@ -218,8 +214,10 @@ subtest 'getting id_run from experiment name in run parameters' => sub {
     use File::Copy;
     copy(join(q[/],$run_param_dir,$file_name), $run_params_file_path) or die 'Failed to copy file';
 
-    use npg_tracking::illumina::runfolder;
-    my $li = new npg_tracking::illumina::runfolder( runfolder_path => $rf );
+    my $li = new npg_tracking::illumina::runfolder(
+      runfolder_path => $rf,
+      npg_tracking_schema => $schema
+    );
 
     is($li->id_run(), $expected_experiment_name, q[Expected id_run parsed from experiment name in run params]);
     `rm $run_params_file_path`
