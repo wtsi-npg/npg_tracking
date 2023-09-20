@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 28;
+use Test::More tests => 29;
 use Test::Exception;
 use Archive::Tar;
 use IO::File;
@@ -222,6 +222,84 @@ subtest 'getting id_run from experiment name in run parameters' => sub {
     is($li->id_run(), $expected_experiment_name, q[Expected id_run parsed from experiment name in run params]);
     `rm $run_params_file_path`
   }
+};
+
+subtest 'duplicate runfolders' => sub {
+  plan tests => 9;
+
+  my $staging = tempdir( CLEANUP => 1 );
+  my $new_id_run = 898989;
+  for (qw(incoming analysis outgoing)) {
+    mkdir(catdir($staging, $_));
+  }
+  my $rf_name = '230920_NV11_47885';
+  my $run_row = $schema->resultset('Run')->create({
+    id_run               => $new_id_run,
+    id_instrument        => 10,
+    id_instrument_format => 10,
+    team                 => 'A',
+    folder_name          => $rf_name,
+    folder_path_glob     => "$staging/*/"
+  });
+  $run_row->set_tag(1, 'staging');
+
+  for (qw(analysis outgoing)) { 
+    mkdir("$staging/$_/$rf_name");
+  }
+
+  my $rf_obj = npg_tracking::illumina::runfolder->new(
+    id_run => $new_id_run, npg_tracking_schema => $schema);  
+  throws_ok { $rf_obj->runfolder_path() }
+    qr/Ambiguous paths for run folder found/,
+    'error with a runfolder both in analysis and outgoing';
+
+  $rf_obj = npg_tracking::illumina::runfolder->new(
+    id_run => $new_id_run, npg_tracking_schema => $schema);  
+  mkdir("$staging/incoming/$rf_name"); 
+  throws_ok { $rf_obj->runfolder_path() }
+    qr/Ambiguous paths for run folder found/,
+    'error with a runfolder in incoming, analysis and outgoing';
+
+  rmdir("$staging/outgoing/$rf_name");
+  my $path;
+  $rf_obj = npg_tracking::illumina::runfolder->new(
+    id_run => $new_id_run, npg_tracking_schema => $schema);
+  lives_ok { $path = $rf_obj->runfolder_path() }
+    'no error with a runfolder in both incoming and analysis';
+  is($path, "$staging/analysis/$rf_name",
+    'correct runfolder path is retrieved');
+  
+  mkdir("$staging/outgoing/$rf_name");
+  rmdir("$staging/analysis/$rf_name");
+  $rf_obj = npg_tracking::illumina::runfolder->new(
+    id_run => $new_id_run, npg_tracking_schema => $schema);
+  lives_ok { $path = $rf_obj->runfolder_path() }
+    'no error with a runfolder in both incoming and outgoing';
+  is ($path, join(q[/], $staging, 'outgoing', $rf_name),
+    'correct path is retrieved');
+
+  $staging = catdir($staging, 'incoming');
+  $run_row->update({folder_path_glob => "$staging/*/"});
+  for (qw(incoming analysis outgoing)) {
+    mkdir(catdir($staging, $_));
+  }
+  for (qw(incoming outgoing)) { 
+    mkdir("$staging/$_/$rf_name");
+  }
+
+  $rf_obj = npg_tracking::illumina::runfolder->new(
+    id_run => $new_id_run, npg_tracking_schema => $schema);  
+  throws_ok { $rf_obj->runfolder_path() }
+    qr/Ambiguous paths for run folder found/,
+    'error with multiple runfolders with paths in incoming';
+
+  rmdir("$staging/outgoing/$rf_name");
+  $rf_obj = npg_tracking::illumina::runfolder->new(
+    id_run => $new_id_run, npg_tracking_schema => $schema);
+  lives_ok { $path = $rf_obj->runfolder_path() }
+    'no error with a runfolder only in incoming';
+  is ($path, join(q[/], $staging, 'incoming', $rf_name),
+    'correct path is retrieved');
 };
 
 1;
