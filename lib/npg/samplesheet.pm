@@ -284,11 +284,11 @@ sub _build__limsreflist {
       foreach my $attr (qw/library_id sample_publishable_name/) {
         my $value = _csv_compatible_value($tmpl->$attr);
         if (!$value) {
-          croak sprintf '%s is not available for position %i %s',
+          carp sprintf '%s is not available for position %i %s',
             $attr, $tmpl->position,
             defined $tmpl->tag_index ? 'tag index ' . $tmpl->tag_index : q[];
         }
-        if ($self->mkfastq) {
+        if (!$value || $self->mkfastq) {
           # when making a samplesheet for mkfastq, replace value by run_position
           $value = $self->id_run . q[_] . $tmpl->position;
           if($self->_index_read) {

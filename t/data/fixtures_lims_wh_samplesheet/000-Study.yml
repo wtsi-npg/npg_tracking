@@ -1,0 +1,363 @@
+---
+- abbreviation: 198STDY
+  abstract: ~
+  accession_number: ~
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 0
+  contaminated_human_dna: 0
+  created: 2008-11-13 13:27:48
+  data_access_group: ~
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genotyping or cytogenetics
+  data_release_strategy: open
+  data_release_timing: standard
+  deleted_at: ~
+  description: None
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: ~
+  faculty_sponsor: None
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 198
+  id_study_tmp: 177
+  last_updated: 2021-10-15 08:54:34
+  name: Illumina Controls
+  prelim_id: ~
+  recorded_at: 2021-10-15 08:54:35
+  reference_genome: ' '
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: ~
+  study_type: Resequencing
+  study_visibility: Hold
+  uuid_study_lims: 2aa1cd2e-a557-11df-8092-00144f01a414
+- abbreviation: 521STDY
+  abstract: Transcriptome sequencing of Strongyloides ratti
+  accession_number: ERP001672
+  aligned: 1
+  array_express_accession_number: E-ERAD-92
+  contains_human_dna: 0
+  contaminated_human_dna: 0
+  created: 2010-04-06 16:05:29
+  data_access_group: ~
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: transcriptomics
+  data_release_strategy: open
+  data_release_timing: standard
+  deleted_at: ~
+  description: "Strongyloides ratti is a common gastro-intestinal parasite of the rat."
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: ~
+  faculty_sponsor: Matthew
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 521
+  id_study_tmp: 496
+  last_updated: 2021-10-15 08:54:39
+  name: Strongyloides ratti transcriptomics
+  prelim_id: ~
+  recorded_at: 2021-10-15 08:54:42
+  reference_genome: ' '
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: Transcriptome sequencing of Strongyloides ratti
+  study_type: Transcriptome Analysis
+  study_visibility: Hold
+  uuid_study_lims: 2d6848da-a557-11df-8092-00144f01a414
+- abbreviation: 700STDY
+  abstract: "Purpose of experiment"
+  accession_number: ~
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 0
+  contaminated_human_dna: 0
+  created: 2010-10-07 15:11:00
+  data_access_group: ~
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genomic sequencing
+  data_release_strategy: not applicable
+  data_release_timing: never
+  deleted_at: ~
+  description: "I have agreed to alpha test the kapa hifi qPCR kit."
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: 0
+  ethically_approved: ~
+  faculty_sponsor: Harold
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 700
+  id_study_tmp: 675
+  last_updated: 2021-10-15 08:54:42
+  name: Kapa HiFi test
+  prelim_id: ~
+  recorded_at: 2021-10-15 08:54:47
+  reference_genome: ' '
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: hifi test
+  study_type: Whole Genome Sequencing
+  study_visibility: Hold
+  uuid_study_lims: e5f58d0c-d66e-11df-98a7-00144f206e2e
+- abbreviation: 1697STDY
+  abstract: 'Identification of ivermectin resistance-conferring loci by sequencing and comparing the genomes of susceptible parents, resistant parents and backcross strains.'
+  accession_number: ERP000430
+  aligned: 0
+  array_express_accession_number: ~
+  contains_human_dna: 0
+  contaminated_human_dna: 0
+  created: 2010-12-07 15:59:16
+  data_access_group: ~
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genomic sequencing
+  data_release_strategy: open
+  data_release_timing: standard
+  deleted_at: ~
+  description: Two H. contortus ivermectin resistance strains have been backcrossed.
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: ~
+  faculty_sponsor: Matthew Berriman
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 1697
+  id_study_tmp: 1671
+  last_updated: 2021-10-15 08:54:57
+  name: Haemonchus contortus Ivermectin Resistance
+  prelim_id: ~
+  recorded_at: 2021-10-15 08:55:05
+  reference_genome: ' '
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: Haemonchus contortus Ivermectin Resistance
+  study_type: Whole Genome Sequencing
+  study_visibility: Hold
+  uuid_study_lims: 1b37a392-021b-11e0-9fca-00144f01a414
+- abbreviation: MPRandD
+  abstract: To establish a robust Mate Pair library preparation protocol
+  accession_number: ~
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 0
+  contaminated_human_dna: 0
+  created: 2011-09-23 09:50:04
+  data_access_group: ~
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genomic sequencing
+  data_release_strategy: not applicable
+  data_release_timing: never
+  deleted_at: ~
+  description: R&D
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: 0
+  ethically_approved: ~
+  faculty_sponsor: Harold
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 1980
+  id_study_tmp: 1954
+  last_updated: 2021-10-15 08:55:04
+  name: Mate Pair R&D
+  prelim_id: ~
+  recorded_at: 2021-10-15 08:55:12
+  reference_genome: Homo_sapiens (GRCh38_15)
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: Mate Pair R&D
+  study_type: Whole Genome Sequencing
+  study_visibility: Hold
+  uuid_study_lims: 69e77f84-e5c9-11e0-8713-68b59976a382
+- abbreviation: 2239STDY
+  abstract: 'Cancer is driven by mutation'
+  accession_number: EGAS00001000290
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 1
+  contaminated_human_dna: 0
+  created: 2012-06-08 10:15:39
+  data_access_group: cancer
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genomic sequencing
+  data_release_strategy: managed
+  data_release_timing: standard
+  deleted_at: ~
+  description: 'Wholegenome libraries will be prepared.'
+  ega_dac_accession_number: EGAC00001000010
+  ega_policy_accession_number: EGAP00001000037
+  ena_project_id: PRJEB12
+  ethically_approved: 1
+  faculty_sponsor: Peter
+  hmdmc_number: 10/050
+  id_lims: SQSCP
+  id_study_lims: 2239
+  id_study_tmp: 2208
+  last_updated: 2021-10-15 08:55:10
+  name: MPN Whole Genomes
+  prelim_id: ~
+  recorded_at: 2021-10-15 08:55:20
+  reference_genome: Homo_sapiens (CGP_GRCh37.NCBI.allchr_MT)
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: Myeloproliferative Disease Whole Genomes
+  study_type: Cancer Genomics
+  study_visibility: Hold
+  uuid_study_lims: e5bfd278-b152-11e1-b267-68b59976a382
+- abbreviation: 2501STDY
+  abstract: "Epigenetic mechanisms including non-coding RNAs"
+  accession_number: ERP002223
+  aligned: 1
+  array_express_accession_number: E-ERAD-155
+  contains_human_dna: 0
+  contaminated_human_dna: 0
+  created: 2013-01-16 13:54:59
+  data_access_group: ~
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: transcriptomics
+  data_release_strategy: not applicable
+  data_release_timing: never
+  deleted_at: ~
+  description: "In order to examine the impact of genetic variation on epigenetic marking and control of gene expression."
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: ~
+  faculty_sponsor: David
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 2501
+  id_study_tmp: 2470
+  last_updated: 2021-10-15 08:55:16
+  name: Mouse model to quantify genotype-epigenotype variations_RNA
+  prelim_id: ~
+  recorded_at: 2021-10-15 08:55:27
+  reference_genome: Mus_musculus (GRCm38)
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: 'Mouse model to quantify genotype-epigenotype variations     '
+  study_type: Transcriptome Analysis
+  study_visibility: Public
+  uuid_study_lims: 516ac470-5fe4-11e2-9109-68b59976a382
+- abbreviation: 2658STDY
+  abstract: "This study aims to investigate."
+  accession_number: ERP003293
+  aligned: 1
+  array_express_accession_number: E-ERAD-186
+  contains_human_dna: 0
+  contaminated_human_dna: 0
+  created: 2013-06-06 20:47:20
+  data_access_group: ~
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: transcriptomics
+  data_release_strategy: open
+  data_release_timing: standard
+  deleted_at: ~
+  description: "This study aims to investigate\r\n"
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: ~
+  faculty_sponsor: Sarah Teichmann
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 2658
+  id_study_tmp: 2627
+  last_updated: 2021-10-15 08:55:20
+  name: Single-cell analysis of the transcriptomic heterogeneity of ground state pluripotency
+  prelim_id: ~
+  recorded_at: 2021-10-15 08:55:32
+  reference_genome: Mus_musculus (NCBIm37)
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: 'Single-cell analysis of the transcriptomic heterogeneity of ground state pluripotency     '
+  study_type: Transcriptome Analysis
+  study_visibility: Hold
+  uuid_study_lims: 48187e10-ceea-11e2-941e-68b59976a382
+
+- abbreviation: 6133STDY
+  abstract: 'Aim to determine age at acquisition of clonal haematopoiesis mutations, clonal architecture, and dynamics of clonal expansions.'
+  accession_number: ~
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 1
+  contaminated_human_dna: 0
+  created: 2020-02-12 11:42:56
+  data_access_group: cancer
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genomic sequencing
+  data_release_strategy: managed
+  data_release_timing: standard
+  deleted_at: ~
+  description: Sequencing of blood stem cell-derived colonies.
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: 1
+  faculty_sponsor: George
+  hmdmc_number: 17/006
+  id_lims: SQSCP
+  id_study_lims: 6133
+  id_study_tmp: 5963
+  last_updated: 2021-10-15 08:56:39
+  name: ImmunoAgeing_Colonies_WGS
+  prelim_id: ~
+  recorded_at: 2021-10-15 08:57:06
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5 + ensembl_75_transcriptome)
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: ImmunoAgeing_Colonies_WGS
+  study_type: Cancer Genomics
+  study_visibility: Hold
+  uuid_study_lims: d0099f20-4d8c-11ea-90fc-fa163e2f1184
+
