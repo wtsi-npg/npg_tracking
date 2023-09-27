@@ -282,7 +282,6 @@ lib/st/api/lims/ml_warehouse/driver.pm
 lib/st/api/lims/ml_warehouse.pm
 lib/st/api/lims/ml_warehouse_auto.pm 
 lib/st/api/lims/ml_warehouse_fc_cache.pm
-lib/st/api/lims/xml.pm
 lib/st/api/project.pm
 lib/st/api/sample.pm
 lib/st/api/study.pm
@@ -408,7 +407,6 @@ t/34-monitor-staging.t
 t/35-monitor_one_runfolder.t
 t/40-st-base.t
 t/40-st-batch.t
-t/40-st-lims-insert_size.t
 t/40-st-lims-mlwarehouse.t
 t/40-st-lims-ml_warehouse-drivers.t
 t/40-st-lims-samplesheet.t
@@ -416,7 +414,6 @@ t/40-st-lims.t
 t/40-st-project.t
 t/40-st-sample.t
 t/40-st-study.t
-t/45-st-api-lims-traversal.t
 t/47-samplesheet.t
 t/47-npg_samplesheet_novaseq_xseries.t
 t/47-npg_samplesheet_auto.t

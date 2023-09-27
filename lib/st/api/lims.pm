@@ -139,9 +139,9 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
     'request'      => [qw/ request_id /],
 };
 
-Readonly::Array my @METHODS             => sort map { @{$_} } values %METHODS_PER_CATEGORY;
-Readonly::Array my @DELEGATED_METHODS   => sort map { @{$METHODS_PER_CATEGORY{$_}} }
-                                             grep {$_ ne 'primary'} keys %METHODS_PER_CATEGORY;
+Readonly::Array my @METHODS           => sort map { @{$_} } values %METHODS_PER_CATEGORY;
+Readonly::Array my @DELEGATED_METHODS => sort map { @{$METHODS_PER_CATEGORY{$_}} }
+                                         grep {$_ ne 'primary'} keys %METHODS_PER_CATEGORY;
 
 has '_driver_arguments' => (
                         isa      => 'HashRef',
@@ -247,7 +247,7 @@ foreach my $object_type (keys %ATTRIBUTE_LIST_METHODS) {
 
 =head2 driver_type
 
-Driver type (xml, etc), currently defaults to xml
+Driver type, currently defaults to 'samplesheet'
 
 =cut
 has 'driver_type' => ( isa        => 'Str',
@@ -257,7 +257,7 @@ has 'driver_type' => ( isa        => 'Str',
                      );
 sub _build_driver_type {
   my $self = shift;
-  if($self->has_driver && $self->driver){
+  if ($self->has_driver && $self->driver){
     my $type = ref $self->driver;
     my $prefix = __PACKAGE__ . q(::);
     $type =~ s/\A\Q$prefix\E//smx;
@@ -273,7 +273,7 @@ sub _build_driver_type {
 
 =head2 driver
 
-Driver object (xml, warehouse, mlwarehouse, samplesheet ...)
+Driver object (mlwarehouse, samplesheet)
 
 =cut
 has 'driver' => ( 'isa'       => 'Maybe[Object]',
@@ -530,7 +530,7 @@ sub _build_tags {
 =head2 required_insert_size
 
 Read-only accessor, not possible to set from the constructor.
-Returns a has reference of expected insert sizes.
+Returns a hash reference of expected insert sizes.
 
 =cut
 has 'required_insert_size'  => (isa             => 'HashRef',
