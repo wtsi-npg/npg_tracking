@@ -542,43 +542,27 @@ sub _build_required_insert_size {
   my $self = shift;
 
   my $is_hash = {};
-  my $size_element_defined = 0;
-  if (defined $self->position && !$self->is_control) {
+  if (defined $self->position) {
     my @alims = $self->associated_lims;
-    if (!@alims) {
-      @alims = ($self);
-    }
+    @alims = @alims ? @alims : ($self);
     foreach my $lims (@alims) {
-      $self->_entity_required_insert_size($lims, $is_hash, \$size_element_defined);
-    }
-  }
-  return $is_hash;
-}
-sub _entity_required_insert_size {
-  my ($self, $lims, $is_hash, $isize_defined) = @_;
-
-  if (!$is_hash) {
-    croak q[Isize hash ref should be supplied];
-  }
-  if (!$lims) {
-    croak q[Lims object should be supplied];
-  }
-
-  if (!$lims->is_control) {
-    my $is = $lims->required_insert_size_range;
-    if ($is && keys %{$is}) {
-      ${$isize_defined} = 1;
+      if ($lims->is_control) {
+        next;
+      }
+      my $is = $lims->required_insert_size_range || {};
       foreach my $key (qw/to from/) {
         my $value = $is->{$key};
         if ($value) {
-          my $lib_key = $lims->library_id || $lims->tag_index || $lims->sample_id;
+          my $lib_key = $lims->library_id || $lims->sample_id;
           $is_hash->{$lib_key}->{$key} = $value;
         }
       }
     }
   }
-  return;
+
+  return $is_hash;
 }
+
 
 =head2 seq_qc_state
 

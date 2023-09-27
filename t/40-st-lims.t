@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 15;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -618,6 +618,41 @@ subtest 'Dual index' => sub {
   is($plex->default_tagtwo_sequence, 'GGGGGGGG', 'second index');
   is($plex->tag_sequence, 'GTCTTGGCGGGGGGGG', 'combined tag sequence');
   is($plex->purpose, 'standard', 'purpose');
+};
+
+subtest 'Insert size' => sub {
+  plan tests => 14;
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/samplesheet/4pool4libs_extended.csv';
+
+  my $lims = st::api::lims->new(id_run => 9999);
+  is_deeply($lims->required_insert_size, {}, 'no insert size on run level');
+  
+  $lims = st::api::lims->new(id_run => 9999, position => 1);
+  my $id = $lims->library_id;
+  my $insert_size = $lims->required_insert_size;
+  is (keys %{$insert_size}, 1, 'one entry in the insert size hash');
+  is ($insert_size->{$id}->{q[from]}, 400, 'required FROM insert size');
+  is ($insert_size->{$id}->{q[to]}, 550, 'required TO insert size');
+  
+  $lims = st::api::lims->new(id_run => 9999, position => 7);
+  ok ($lims->is_pool, 'lane is a pool');
+  $insert_size = $lims->required_insert_size;
+  is (keys %{$insert_size}, 2, 'two entries in the insert size hash');
+  $id = '8324594';
+  is ($insert_size->{$id}->{q[from]}, 100, 'required FROM insert size');
+  is ($insert_size->{$id}->{q[to]}, 1000, 'required TO insert size'); 
+  $id = '8324595';
+  is ($insert_size->{$id}->{q[from]}, 100, 'required FROM insert size');
+  is ($insert_size->{$id}->{q[to]}, 1000, 'required TO insert size');
+  ok (!exists $insert_size->{q[6946_7_ACAACGCAAT]}, 'no required insert size');
+  
+  $lims = st::api::lims->new(id_run => 9999, position => 7, tag_index => 77);
+  $insert_size = $lims->required_insert_size;
+  is (keys %{$insert_size}, 1, 'one entry in the insert size hash');
+  is ($insert_size->{$id}->{q[from]}, 100, 'required FROM insert size');
+  is ($insert_size->{$id}->{q[to]}, 1000, 'required TO insert size');
 };
 
 1;
