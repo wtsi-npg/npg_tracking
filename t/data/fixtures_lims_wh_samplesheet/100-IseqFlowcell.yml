@@ -859,7 +859,7 @@
   tag_set_name: 'Sanger_168tags - 10 mer tags'
   team: Illumina-C
   workflow: ~
-- bait_name: ~
+- bait_name: Fox bait
   cost_code: S0702
   entity_id_lims: 8381744
   entity_type: library

@@ -1,13 +1,12 @@
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 19;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
+use Moose::Meta::Class;
 
 my $num_delegated_methods = 48;
-
-local $ENV{'http_proxy'} = 'http://wibble.com';
 
 use_ok('st::api::lims');
 
@@ -653,6 +652,169 @@ subtest 'Insert size' => sub {
   is (keys %{$insert_size}, 1, 'one entry in the insert size hash');
   is ($insert_size->{$id}->{q[from]}, 100, 'required FROM insert size');
   is ($insert_size->{$id}->{q[to]}, 1000, 'required TO insert size');
+};
+
+subtest 'Study and sample properties' => sub {
+  plan tests => 12;
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/samplesheet/4pool4libs_extended.csv';
+  
+  my $lims = st::api::lims->new(id_run => 9999, position => 1);
+  is( $lims->study_title(), 'Haemonchus contortus Ivermectin Resistance',
+    'study title' );
+  is( $lims->study_name(), 'Haemonchus contortus Ivermectin Resistance',
+    'study name');
+  is( $lims->study_accession_number(), 'ERP000430', 'study accession number');
+  is( $lims->study_publishable_name(), 'ERP000430',
+    'study accession number returned as publishable name');
+  ok( !$lims->alignments_in_bam, 'no alignments');
+
+  $lims = st::api::lims->new(id_run => 9999, position => 7, tag_index=> 76);
+  ok($lims->alignments_in_bam, 'do alignments');
+  like( $lims->study_title(),
+    qr/Mouse model to quantify genotype-epigenotype variations /,
+    'study title');
+  is( $lims->study_name(),
+    'Mouse model to quantify genotype-epigenotype variations_RNA',
+    'study name');
+  is( $lims->study_publishable_name(), 'ERP002223',
+    'accession is returned as study publishable name');
+  is( $lims->sample_publishable_name(), 'ERS354534',
+    'sample publishable name returns accession');
+  ok(!$lims->separate_y_chromosome_data, 'do not separate y chromosome data');
+
+  $lims = st::api::lims->new(id_run => 9999, position => 7); 
+  is( $lims->study_name(),
+    'Mouse model to quantify genotype-epigenotype variations_RNA',
+    'study name');
+};
+
+subtest 'Bait name' => sub {
+  plan tests => 8;
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/samplesheet/samplesheet_7753.csv';
+  
+  my $lims = st::api::lims->new(id_run => 7753);
+  is($lims->bait_name, undef, 'bait name undefined on run level');
+  $lims = st::api::lims->new(id_run => 7753, position => 1);
+  is($lims->bait_name, undef, 'bait name undefined on a pool level');
+  $lims = st::api::lims->new(id_run => 7753, position => 1, tag_index=> 2);
+  is($lims->bait_name,'Human all exon 50MB', 'bait name for a plex');
+  $lims = st::api::lims->new(id_run => 7753, position => 1, tag_index=> 3);
+  is($lims->bait_name, 'Human all exon 50MB',
+    'bait name with white space around it');  
+  $lims = st::api::lims->new(id_run => 7753, position => 1, tag_index=> 5);
+  is($lims->bait_name, undef, 'all white space bait name');  
+  $lims = st::api::lims->new(id_run => 7753, position => 2, tag_index=> 1);
+  is($lims->bait_name, undef, 'no bait name');
+  
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/samplesheet/4pool4libs_extended.csv';
+  
+  $lims = st::api::lims->new(id_run => 9999, position => 1);
+  is($lims->bait_name, undef,
+    'bait name undefined for a non-pool lane if there is no bait element');
+  $lims = st::api::lims->new(id_run => 9999, position => 2);
+  is($lims->bait_name,'Fox bait', 'bait name for a non-pool lane');
+};
+
+subtest 'Consent and separation of human data' => sub {
+  plan tests => 17;
+
+  my $schema_wh;
+  lives_ok { $schema_wh = Moose::Meta::Class->create_anon_class(
+    roles => [qw/npg_testing::db/])->new_object({})->create_test_db(
+    q[WTSI::DNAP::Warehouse::Schema],q[t/data/fixtures_lims_wh_samplesheet]) 
+  } 'ml_warehouse test db created';
+
+  my $lims = st::api::lims->new(
+    driver_type => 'ml_warehouse',
+    mlwh_schema => $schema_wh,
+    id_flowcell_lims => 13994,
+    position => 1,
+    tag_index => 4
+  );
+  is( $lims->sample_consent_withdrawn, 1, 'sample consent is withdrawn');
+
+  $lims = st::api::lims->new(
+    driver_type => 'ml_warehouse',
+    mlwh_schema => $schema_wh,
+    id_flowcell_lims => 13994,
+    position => 1,
+    tag_index => 5
+  );
+  is( $lims->sample_consent_withdrawn, 0, 'sample consent is not withdrawn');
+  
+  $lims = st::api::lims->new(
+    driver_type => 'ml_warehouse',
+    mlwh_schema => $schema_wh,
+    id_flowcell_lims => 13994,
+    position => 1,
+  );
+  ok( $lims->is_pool, 'lane is a pool');
+  ok( $lims->contains_nonconsented_human, 'lane contains unconsented human');
+  ok( $lims->separate_y_chromosome_data, 'Y chromosome should be separated');
+  ok( $lims->contains_nonconsented_xahuman,
+    'lane does contain nonconsented X and autosomal human');
+ 
+  $lims = st::api::lims->new(
+    driver_type => 'ml_warehouse',
+    mlwh_schema => $schema_wh,
+    id_flowcell_lims => 13994,
+    position => 1,
+    tag_index => 0 
+  );
+  ok( $lims->contains_nonconsented_human, 'tag0 contains unconsented human');
+  ok( $lims->separate_y_chromosome_data, 'tag0 Y chromosome should be separated');
+  ok( $lims->contains_nonconsented_xahuman,
+    'tag0 does contain nonconsented X and autosomal human');
+
+  $lims = st::api::lims->new(
+    driver_type => 'ml_warehouse',
+    mlwh_schema => $schema_wh,
+    id_flowcell_lims => 13994
+  );
+  ok( !$lims->contains_nonconsented_human,
+    'unconsented human flag does not propagate to the batch level');
+  ok( !$lims->separate_y_chromosome_data,
+    'Y chromosome separation flag does not propagate to the batch level');
+  ok( !$lims->contains_nonconsented_xahuman,
+    'nonconsented X and autosomal human flag does not propagate to the batch level');
+
+  $lims = st::api::lims->new(
+    driver_type => 'ml_warehouse',
+    mlwh_schema => $schema_wh,
+    id_flowcell_lims => 76873,
+    position => 1,
+  );
+  ok( $lims->is_pool, 'lane is a pool');
+  ok( !$lims->contains_nonconsented_human,
+    'lane does not contain unconsented human');
+  ok( !$lims->separate_y_chromosome_data, 'Y chromosome should not be separated');
+  ok( !$lims->contains_nonconsented_xahuman,
+    'lane does not contain nonconsented X and autosomal human');
+};
+
+subtest 'Library types' => sub {
+  plan tests => 6;
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/samplesheet/4pool4libs_extended.csv';
+  
+  my $lims = st::api::lims->new(id_run => 9999);
+  is($lims->library_type, undef, 'library type undefined on a batch level');
+  $lims = st::api::lims->new(id_run => 9999, position => 2); # non-pool lane
+  is($lims->library_type, 'No PCR', 'library type');
+  $lims = st::api::lims->new(id_run => 9999, position => 8);
+  is($lims->library_type, undef, 'library type undefined for a pool');
+  $lims = st::api::lims->new(id_run => 9999, position => 8, tag_index => 0);
+  is($lims->library_type, undef, 'library type undefined for tag 0');
+  $lims = st::api::lims->new(id_run => 9999, position => 8, tag_index => 88);
+  is($lims->library_type, 'Pre-quality controlled', 'library type');
+  $lims = st::api::lims->new(id_run => 9999, position => 8, tag_index => 168);
+  is($lims->library_type, undef, 'library type is not specified');
 };
 
 1;
