@@ -18,7 +18,7 @@ perl -le 'use strict; use npg_tracking::Schema; my $s=npg_tracking::Schema->conn
 NovaSeqX instrument:
 
 ```
-perl -le 'use strict; use npg_tracking::Schema; my $s=npg_tracking::Schema->connect(); $s->txn_do(sub{my $m=$s->resultset(q(Instrument))->find_or_create({name=>q[NVX1], instrument_format=>{model=>q(NovaSeqX)}}); $m->update({iscurrent=>1, external_name=>q(Pi1-9)}); $m->add_to_designations({description=>q(Accepted)}); print join",",$m->get_columns; print join",",$_->get_columns foreach $m->designations; print "current instrument status: ".$m->current_instrument_status;});'
+perl -le 'use strict; use npg_tracking::Schema; my $s=npg_tracking::Schema->connect(); $s->txn_do(sub{my $m=$s->resultset(q(Instrument))->find_or_create({name=>q[NX1], instrument_format=>{model=>q(NovaSeqX)}}); $m->update({iscurrent=>1, external_name=>q(Pi1-9)}); $m->add_to_designations({description=>q(Accepted)}); print join",",$m->get_columns; print join",",$_->get_columns foreach $m->designations; print "current instrument status: ".$m->current_instrument_status;});'
 ```
 
 ## Delete Instrument
