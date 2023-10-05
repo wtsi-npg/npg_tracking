@@ -9,7 +9,7 @@ use File::Path qw/make_path/;
 use Moose::Meta::Class;
 
 use t::dbic_util;
-local $ENV{'dev'} = q(wibble); # ensure we're not going live anywhere
+local $ENV{'dev'} = q(wibble);
 local $ENV{'HOME'} = q(t/);
 
 use_ok('npg::samplesheet');

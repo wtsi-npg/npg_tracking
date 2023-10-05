@@ -139,9 +139,9 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
     'request'      => [qw/ request_id /],
 };
 
-Readonly::Array my @METHODS             => sort map { @{$_} } values %METHODS_PER_CATEGORY;
-Readonly::Array my @DELEGATED_METHODS   => sort map { @{$METHODS_PER_CATEGORY{$_}} }
-                                             grep {$_ ne 'primary'} keys %METHODS_PER_CATEGORY;
+Readonly::Array my @METHODS           => sort map { @{$_} } values %METHODS_PER_CATEGORY;
+Readonly::Array my @DELEGATED_METHODS => sort map { @{$METHODS_PER_CATEGORY{$_}} }
+                                         grep {$_ ne 'primary'} keys %METHODS_PER_CATEGORY;
 
 has '_driver_arguments' => (
                         isa      => 'HashRef',
@@ -247,7 +247,7 @@ foreach my $object_type (keys %ATTRIBUTE_LIST_METHODS) {
 
 =head2 driver_type
 
-Driver type (xml, etc), currently defaults to xml
+Driver type, currently defaults to 'samplesheet'
 
 =cut
 has 'driver_type' => ( isa        => 'Str',
@@ -257,7 +257,7 @@ has 'driver_type' => ( isa        => 'Str',
                      );
 sub _build_driver_type {
   my $self = shift;
-  if($self->has_driver && $self->driver){
+  if ($self->has_driver && $self->driver){
     my $type = ref $self->driver;
     my $prefix = __PACKAGE__ . q(::);
     $type =~ s/\A\Q$prefix\E//smx;
@@ -273,7 +273,7 @@ sub _build_driver_type {
 
 =head2 driver
 
-Driver object (xml, warehouse, mlwarehouse, samplesheet ...)
+Driver object (mlwarehouse, samplesheet)
 
 =cut
 has 'driver' => ( 'isa'       => 'Maybe[Object]',
@@ -530,7 +530,7 @@ sub _build_tags {
 =head2 required_insert_size
 
 Read-only accessor, not possible to set from the constructor.
-Returns a has reference of expected insert sizes.
+Returns a hash reference of expected insert sizes.
 
 =cut
 has 'required_insert_size'  => (isa             => 'HashRef',
@@ -542,43 +542,27 @@ sub _build_required_insert_size {
   my $self = shift;
 
   my $is_hash = {};
-  my $size_element_defined = 0;
-  if (defined $self->position && !$self->is_control) {
+  if (defined $self->position) {
     my @alims = $self->associated_lims;
-    if (!@alims) {
-      @alims = ($self);
-    }
+    @alims = @alims ? @alims : ($self);
     foreach my $lims (@alims) {
-      $self->_entity_required_insert_size($lims, $is_hash, \$size_element_defined);
-    }
-  }
-  return $is_hash;
-}
-sub _entity_required_insert_size {
-  my ($self, $lims, $is_hash, $isize_defined) = @_;
-
-  if (!$is_hash) {
-    croak q[Isize hash ref should be supplied];
-  }
-  if (!$lims) {
-    croak q[Lims object should be supplied];
-  }
-
-  if (!$lims->is_control) {
-    my $is = $lims->required_insert_size_range;
-    if ($is && keys %{$is}) {
-      ${$isize_defined} = 1;
+      if ($lims->is_control) {
+        next;
+      }
+      my $is = $lims->required_insert_size_range || {};
       foreach my $key (qw/to from/) {
         my $value = $is->{$key};
         if ($value) {
-          my $lib_key = $lims->library_id || $lims->tag_index || $lims->sample_id;
+          my $lib_key = $lims->library_id || $lims->sample_id;
           $is_hash->{$lib_key}->{$key} = $value;
         }
       }
     }
   }
-  return;
+
+  return $is_hash;
 }
+
 
 =head2 seq_qc_state
 

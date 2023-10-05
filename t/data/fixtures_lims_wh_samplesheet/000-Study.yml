@@ -85,7 +85,7 @@
   aligned: 1
   array_express_accession_number: ~
   contains_human_dna: 0
-  contaminated_human_dna: 0
+  contaminated_human_dna: 1
   created: 2010-10-07 15:11:00
   data_access_group: ~
   data_deletion_period: ~
@@ -111,9 +111,9 @@
   prelim_id: ~
   recorded_at: 2021-10-15 08:54:47
   reference_genome: ' '
-  remove_x_and_autosomes: 0
+  remove_x_and_autosomes: 1
   s3_email_list: ~
-  separate_y_chromosome_data: 0
+  separate_y_chromosome_data: 1
   state: active
   study_title: hifi test
   study_type: Whole Genome Sequencing
