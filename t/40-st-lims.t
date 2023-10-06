@@ -661,15 +661,16 @@ subtest 'Insert size' => sub {
   $insert_size = $lims->required_insert_size;
   is (keys %{$insert_size}, 1, 'one entry in the insert size hash');
   is ($insert_size->{$id}->{q[from]}, 100, 'required FROM insert size');
-  is ($insert_size->{$id}->{q[to]}, 1000, 'required TO insert size');
+  is ($insert_size->{$id}->{q[to]}, 1000,'required TO insert size');
 };
 
 subtest 'Study and sample properties' => sub {
-  plan tests => 12;
+  plan tests => 47;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
     't/data/samplesheet/4pool4libs_extended.csv';
   
+  # A simple non-indexed lane.
   my $lims = st::api::lims->new(id_run => 9999, position => 1);
   is( $lims->study_title(), 'Haemonchus contortus Ivermectin Resistance',
     'study title' );
@@ -679,9 +680,15 @@ subtest 'Study and sample properties' => sub {
   is( $lims->study_publishable_name(), 'ERP000430',
     'study accession number returned as publishable name');
   ok( !$lims->alignments_in_bam, 'no alignments');
+  is( $lims->sample_reference_genome, 'Haemonchus_contortus (V1_21June13)',
+    'sample reference genome');
+  is( $lims->study_reference_genome, q[ ], 'study reference genome');
+  is( $lims->reference_genome, 'Haemonchus_contortus (V1_21June13)',
+    'reference genome');
 
+  # Individual plex.
   $lims = st::api::lims->new(id_run => 9999, position => 7, tag_index=> 76);
-  ok($lims->alignments_in_bam, 'do alignments');
+  ok( $lims->alignments_in_bam, 'do alignments');
   like( $lims->study_title(),
     qr/Mouse model to quantify genotype-epigenotype variations /,
     'study title');
@@ -692,12 +699,58 @@ subtest 'Study and sample properties' => sub {
     'accession is returned as study publishable name');
   is( $lims->sample_publishable_name(), 'ERS354534',
     'sample publishable name returns accession');
-  ok(!$lims->separate_y_chromosome_data, 'do not separate y chromosome data');
+  ok( !$lims->separate_y_chromosome_data, 'do not separate y chromosome data');
+  is( $lims->sample_reference_genome, undef, 'sample reference genome');
+  is( $lims->study_reference_genome, 'Mus_musculus (GRCm38)',
+    'study reference genome');
+  is( $lims->reference_genome, 'Mus_musculus (GRCm38)', 'reference genome');
 
-  $lims = st::api::lims->new(id_run => 9999, position => 7); 
-  is( $lims->study_name(),
-    'Mouse model to quantify genotype-epigenotype variations_RNA',
-    'study name');
+  # Indexed lane and tag zero for the same lane.
+  for my $l (
+    st::api::lims->new(id_run => 9999, position => 7),
+    st::api::lims->new(id_run => 9999, position => 7, tag_index => 0)
+  ) { 
+    is( $l->study_name(),
+      'Mouse model to quantify genotype-epigenotype variations_RNA',
+      'study name');
+    is( $l->sample_name, undef, 'sample name undefined');
+    is( $l->sample_reference_genome, undef, 'sample reference genome');
+    is( $l->study_reference_genome, 'Mus_musculus (GRCm38)',
+      'study reference genome');
+    is( $l->reference_genome, 'Mus_musculus (GRCm38)', 'reference genome');
+  }
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/samplesheet/samplesheet_47539.csv';
+  
+  # Multiple sample references within a pool, the same study.
+  my $study_name = 'SeqOps Novaseq X Validation';
+  my $ref = 'Homo_sapiens (GRCh38_15_plus_hs38d1) [minimap2]';
+  for my $l (
+    st::api::lims->new(id_run => 47539, position => 1),
+    st::api::lims->new(id_run => 47537, position => 1, tag_index => 0)
+  ) { 
+    is( $l->study_name(), $study_name, 'study name');
+    is( $l->sample_name, undef, 'sample name undefined');
+    is( $l->sample_reference_genome, undef, 'sample reference genome undefined');
+    is( $l->study_reference_genome, $ref, 'study reference genome');
+    is( $l->reference_genome, $ref, 'reference genome - fallback to study');
+  }
+
+  my $sample_ref = 'Homo_sapiens (GRCh38_full_analysis_set_plus_decoy_hla)';
+  $lims = st::api::lims->new(id_run => 47537, position => 1, tag_index => 1);
+  is( $lims->study_name(), $study_name, 'study name');
+  is( $lims->sample_name, 'RefStds_PCR8021331', 'sample name');
+  is( $lims->sample_reference_genome, $sample_ref, 'sample reference genome');
+  is( $lims->study_reference_genome, $ref, 'study reference genome');
+  is( $lims->reference_genome, $sample_ref, 'reference genome as for the sample');
+  
+  $lims = st::api::lims->new(id_run => 47537, position => 4, tag_index => 2);
+  is( $lims->study_name(),$study_name, 'study name');
+  is( $lims->sample_name, 'RefStds_PCR-free8023829', 'sample name');
+  is( $lims->sample_reference_genome, undef, 'sample reference genome undefined');
+  is( $lims->study_reference_genome, $ref, 'study reference genome');
+  is( $lims->reference_genome, $ref, 'reference genome - fall back to study');
 };
 
 subtest 'Bait name' => sub {
