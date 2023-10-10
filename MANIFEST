@@ -756,6 +756,7 @@ t/data/samplesheet/miseq_default_dual_index.csv
 t/data/samplesheet/miseq_extended.csv
 t/data/samplesheet/multilane.csv
 t/data/samplesheet/novaseq_multirun.csv
+t/data/samplesheet/samplesheet_47539.csv
 t/data/st_api_lims_new/st/assets/3033734.xml
 t/data/st_api_lims_new/st/assets/3111688.xml
 t/data/st_api_lims_new/st/batches/12141.xml

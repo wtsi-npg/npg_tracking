@@ -190,52 +190,62 @@ subtest 'Run-level object via samplesheet driver' => sub {
   is ($plexes[95]->sample_name, 'LIA_96', 'sample_name of the last plex');
 };
 
-subtest 'Lane-level object via samplesheet driver' => sub {
-  plan tests => 14;
+subtest 'Lane-level and tag zero objects via samplesheet driver' => sub {
+  plan tests => 20;
 
   my $path = 't/data/samplesheet/miseq_default.csv';
-  lives_ok {st::api::lims->new(id_run => 10262, position =>2, path => $path, driver_type => 'samplesheet')}
-    'no error instantiation an object for a non-existing lane';
-  throws_ok {st::api::lims->new(id_run => 10262, position =>2, path => $path, driver_type => 'samplesheet')->library_id}
-    qr/Position 2 not defined in/, 'error invoking a driver method on an object for a non-existing lane';
-  lives_ok {st::api::lims->new(id_run => 10262, position =>2, driver_type => 'samplesheet')}
-    'no error instantiation an object without path';
 
-  my $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 0, path => $path);
-  is (scalar $ss->children, 96, '96 children returned for tag zero');
-  is ($ss->is_pool, 1, 'tag zero is a pool');
-  is ($ss->library_id, undef, 'tag_zero library_id undefined');
-  is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
-  is ($ss->tag_sequence, undef, 'tag sequence undefined');
-  is ($ss->purpose, undef, 'purpose');
+  my $l;
+  lives_ok { $l = st::api::lims->new(
+    id_run => 10262, position => 2, path => $path)
+  } 'no error instantiation an object for a non-existing lane';
+  throws_ok { $l->library_id }
+    qr/Position 2 not defined in/,
+    'error invoking a driver method on an object for a non-existing lane';
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $path;
-  $ss=st::api::lims->new(id_run => 10262, position =>1);
-  is ($ss->path, $path, 'samplesheet path captured from NPG_CACHED_SAMPLESHEET_FILE') or diag explain $ss;
-  is ($ss->position, 1, 'correct position');
-  is ($ss->is_pool, 1, 'lane is a pool');
-  is ($ss->library_id, undef, 'pool lane library_id undefined');
-  is (scalar $ss->children, 96, '96 plexes returned');
+
+  my $lane = st::api::lims->new(id_run => 10262, position => 1);
+  is ($lane->tag_index, undef, 'tag index is undefined for a lane');
+  my $tag_zero = st::api::lims->new(id_run => 10262, position => 1, tag_index => 0);
+  is ($tag_zero->tag_index, 0, 'tag index is zero for tag zero');
+  for my $ss (($lane, $tag_zero)) {
+    is ($ss->path, $path,
+      'samplesheet path captured from NPG_CACHED_SAMPLESHEET_FILE')
+       or diag explain $ss;
+    is ($ss->position, 1, 'correct position');
+    is ($ss->is_pool, 1, 'entity is a pool');
+    is (scalar $ss->children, 96, '96 plexes returned');
+    is ($ss->library_id, undef, 'library_id undefined');
+    is ($ss->sample_name, undef, 'sample name is undefined');
+    is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
+    is ($ss->tag_sequence, undef, 'tag sequence undefined');
+  }
 };
 
-subtest 'Plex-level object via samplesheet driver' => sub {
+subtest 'Plex-level objects via samplesheet driver' => sub {
   plan tests => 10;
 
   my $path = 't/data/samplesheet/miseq_default.csv';
-  lives_ok {st::api::lims->new(id_run => 10262, position =>1, tag_index=>999,path => $path, driver_type => 'samplesheet')}
-    'no error instantiation an object for a non-existing tag_index';
-  throws_ok {st::api::lims->new(id_run => 10262, position =>1, tag_index => 999, path => $path, driver_type => 'samplesheet')->children}
-    qr/Tag index 999 not defined in/, 'error invoking a driver method on an object for a non-existing tag_index';
+  my $l;
+  lives_ok { $l = st::api::lims->new(
+    id_run => 10262, position => 1, tag_index => 999, path => $path
+  )} 'no error instantiation an object for a non-existing tag_index';
+  throws_ok { $l->children() }
+    qr/Tag index 999 not defined in/,
+    'error invoking a driver method on an object for a non-existing tag_index';
 
-  my $ss=st::api::lims->new(id_run => 10262, position =>1, tag_index => 3, path => $path, driver_type => 'samplesheet');
-  is ($ss->position, 1, 'correct position');
-  is ($ss->tag_index, 3, 'correct tag_index');
-  is ($ss->is_pool, 0, 'plex is not a pool');
-  is ($ss->default_tag_sequence, 'TTAGGCAT', 'correct default tag sequence');
-  is ($ss->tag_sequence, $ss->default_tag_sequence, 'tag sequence is the same as default tag sequence');
-  is ($ss->library_id, 7583413, 'library id is correct');
-  is ($ss->sample_name, 'LIA_3', 'sample name is correct');
-  is (scalar $ss->children, 0, 'zero children returned');
+  $l =st::api::lims->new(
+    id_run => 10262, position => 1, tag_index => 3, path => $path);
+  is ($l->position, 1, 'correct position');
+  is ($l->tag_index, 3, 'correct tag_index');
+  is ($l->is_pool, 0, 'plex is not a pool');
+  is ($l->default_tag_sequence, 'TTAGGCAT', 'correct default tag sequence');
+  is ($l->tag_sequence, $l->default_tag_sequence,
+    'tag sequence is the same as default tag sequence');
+  is ($l->library_id, 7583413, 'library id is correct');
+  is ($l->sample_name, 'LIA_3', 'sample name is correct');
+  is (scalar $l->children, 0, 'zero children returned'); 
 };
 
 subtest 'Samplesheet driver for a one-component composition' => sub {
@@ -651,15 +661,16 @@ subtest 'Insert size' => sub {
   $insert_size = $lims->required_insert_size;
   is (keys %{$insert_size}, 1, 'one entry in the insert size hash');
   is ($insert_size->{$id}->{q[from]}, 100, 'required FROM insert size');
-  is ($insert_size->{$id}->{q[to]}, 1000, 'required TO insert size');
+  is ($insert_size->{$id}->{q[to]}, 1000,'required TO insert size');
 };
 
 subtest 'Study and sample properties' => sub {
-  plan tests => 12;
+  plan tests => 47;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
     't/data/samplesheet/4pool4libs_extended.csv';
   
+  # A simple non-indexed lane.
   my $lims = st::api::lims->new(id_run => 9999, position => 1);
   is( $lims->study_title(), 'Haemonchus contortus Ivermectin Resistance',
     'study title' );
@@ -669,9 +680,15 @@ subtest 'Study and sample properties' => sub {
   is( $lims->study_publishable_name(), 'ERP000430',
     'study accession number returned as publishable name');
   ok( !$lims->alignments_in_bam, 'no alignments');
+  is( $lims->sample_reference_genome, 'Haemonchus_contortus (V1_21June13)',
+    'sample reference genome');
+  is( $lims->study_reference_genome, q[ ], 'study reference genome');
+  is( $lims->reference_genome, 'Haemonchus_contortus (V1_21June13)',
+    'reference genome');
 
+  # Individual plex.
   $lims = st::api::lims->new(id_run => 9999, position => 7, tag_index=> 76);
-  ok($lims->alignments_in_bam, 'do alignments');
+  ok( $lims->alignments_in_bam, 'do alignments');
   like( $lims->study_title(),
     qr/Mouse model to quantify genotype-epigenotype variations /,
     'study title');
@@ -682,12 +699,58 @@ subtest 'Study and sample properties' => sub {
     'accession is returned as study publishable name');
   is( $lims->sample_publishable_name(), 'ERS354534',
     'sample publishable name returns accession');
-  ok(!$lims->separate_y_chromosome_data, 'do not separate y chromosome data');
+  ok( !$lims->separate_y_chromosome_data, 'do not separate y chromosome data');
+  is( $lims->sample_reference_genome, undef, 'sample reference genome');
+  is( $lims->study_reference_genome, 'Mus_musculus (GRCm38)',
+    'study reference genome');
+  is( $lims->reference_genome, 'Mus_musculus (GRCm38)', 'reference genome');
 
-  $lims = st::api::lims->new(id_run => 9999, position => 7); 
-  is( $lims->study_name(),
-    'Mouse model to quantify genotype-epigenotype variations_RNA',
-    'study name');
+  # Indexed lane and tag zero for the same lane.
+  for my $l (
+    st::api::lims->new(id_run => 9999, position => 7),
+    st::api::lims->new(id_run => 9999, position => 7, tag_index => 0)
+  ) { 
+    is( $l->study_name(),
+      'Mouse model to quantify genotype-epigenotype variations_RNA',
+      'study name');
+    is( $l->sample_name, undef, 'sample name undefined');
+    is( $l->sample_reference_genome, undef, 'sample reference genome');
+    is( $l->study_reference_genome, 'Mus_musculus (GRCm38)',
+      'study reference genome');
+    is( $l->reference_genome, 'Mus_musculus (GRCm38)', 'reference genome');
+  }
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/samplesheet/samplesheet_47539.csv';
+  
+  # Multiple sample references within a pool, the same study.
+  my $study_name = 'SeqOps Novaseq X Validation';
+  my $ref = 'Homo_sapiens (GRCh38_15_plus_hs38d1) [minimap2]';
+  for my $l (
+    st::api::lims->new(id_run => 47539, position => 1),
+    st::api::lims->new(id_run => 47537, position => 1, tag_index => 0)
+  ) { 
+    is( $l->study_name(), $study_name, 'study name');
+    is( $l->sample_name, undef, 'sample name undefined');
+    is( $l->sample_reference_genome, undef, 'sample reference genome undefined');
+    is( $l->study_reference_genome, $ref, 'study reference genome');
+    is( $l->reference_genome, $ref, 'reference genome - fallback to study');
+  }
+
+  my $sample_ref = 'Homo_sapiens (GRCh38_full_analysis_set_plus_decoy_hla)';
+  $lims = st::api::lims->new(id_run => 47537, position => 1, tag_index => 1);
+  is( $lims->study_name(), $study_name, 'study name');
+  is( $lims->sample_name, 'RefStds_PCR8021331', 'sample name');
+  is( $lims->sample_reference_genome, $sample_ref, 'sample reference genome');
+  is( $lims->study_reference_genome, $ref, 'study reference genome');
+  is( $lims->reference_genome, $sample_ref, 'reference genome as for the sample');
+  
+  $lims = st::api::lims->new(id_run => 47537, position => 4, tag_index => 2);
+  is( $lims->study_name(),$study_name, 'study name');
+  is( $lims->sample_name, 'RefStds_PCR-free8023829', 'sample name');
+  is( $lims->sample_reference_genome, undef, 'sample reference genome undefined');
+  is( $lims->study_reference_genome, $ref, 'study reference genome');
+  is( $lims->reference_genome, $ref, 'reference genome - fall back to study');
 };
 
 subtest 'Bait name' => sub {
