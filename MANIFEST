@@ -186,7 +186,6 @@ lib/npg/view/user2usergroup.pm
 lib/npg/view/usergroup.pm
 lib/npg_testing/db.pm
 lib/npg_testing/html.pm
-lib/npg_testing/intweb.pm
 lib/npg_tracking/daemon.pm
 lib/npg_tracking/data/bait.pm
 lib/npg_tracking/data/bait/find.pm
@@ -416,7 +415,6 @@ t/70-bin-npg_status2file.t
 t/80-npg_tracking-report-events.t
 t/80-npg_tracking-report-event2followers.t
 t/80-npg_tracking-report-event2subscribers.t
-t/90-reference.t
 t/data/schema.txt
 t/data/090414_IL24_2726.tar.bz2
 t/data/dbic_fixtures/000-Designation.yml
