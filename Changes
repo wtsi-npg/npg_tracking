@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - update httpd.conf with new values for mpm event
+
 release 97.0.0
  - Change CI workflow to standard file name
  - Change to Perl versions from Perlbrew
