@@ -203,6 +203,7 @@ sub BUILD {
 Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
     'library'      => [qw/ id
                            name
+                           type
                          /],
     'sample'       => [qw/ accession_number
                            cohort
@@ -357,9 +358,6 @@ sub _build_tag_sequence {
 Read-only array accessor, not possible to set from the constructor.
 Empty array on a lane level and for zero tag_index.
 
-Might return not the index given by LIMs, but the one contained in the
-sample description.
-
 If dual index is used, the array contains two sequences. The secons index
 might come from LIMS or, if LIMs has one long index, it will be split in two.
 
@@ -372,34 +370,24 @@ has 'tag_sequences' =>   (isa             => 'ArrayRef',
 sub _build_tag_sequences {
   my $self = shift;
 
-  my ($seq, $seq2);
-  if ($self->tag_index) {
-    if (!$self->spiked_phix_tag_index || $self->tag_index != $self->spiked_phix_tag_index) {
-      if ($self->sample_description) {
-        $seq = _tag_sequence_from_sample_description($self->sample_description);
-      }
-    }
-    if (!$seq) {
-      $seq = $self->default_tag_sequence;
-      if ($seq && $self->default_tagtwo_sequence) {
-        $seq2 = $self->default_tagtwo_sequence;
-      }
-    }
-  }
-
   my @sqs = ();
-  if ($seq) {
-    push @sqs, $seq;
-  }
-  if ($seq2) {
-    push @sqs, $seq2;
-  }
 
-  if (scalar @sqs == 1) {
-    if (length($sqs[0]) == $DUAL_INDEX_TAG_LENGTH) {
-      my $tag_length = $DUAL_INDEX_TAG_LENGTH/2;
-      push @sqs, substr $sqs[0], $tag_length;
-      $sqs[0] = substr $sqs[0], 0, $tag_length;
+  if ($self->tag_index) {
+    my $seq = $self->default_tag_sequence;
+    if ($seq) {
+      push @sqs, $seq;
+      $seq = $self->default_tagtwo_sequence;
+      if ($seq) {
+        push @sqs, $seq;
+      }
+    }
+
+    if (scalar @sqs == 1) {
+      if (length($sqs[0]) == $DUAL_INDEX_TAG_LENGTH) {
+        my $tag_length = $DUAL_INDEX_TAG_LENGTH/2;
+        push @sqs, substr $sqs[0], $tag_length;
+        $sqs[0] = substr $sqs[0], 0, $tag_length;
+      }
     }
   }
 
@@ -1101,44 +1089,14 @@ has 'library_type' =>     (isa             => 'Maybe[Str]',
                           );
 sub _build_library_type {
   my $self = shift;
-  if($self->is_pool) { return; }
-  return _derived_library_type($self);
-}
 
-sub _derived_library_type {
-  my $o = shift;
-  my $type = $o->default_library_type;
-  if ($o->tag_index && $o->sample_description &&
-      _tag_sequence_from_sample_description($o->sample_description)) {
-    $type = '3 prime poly-A pulldown';
+  my $type;
+  if (!$self->is_pool) {
+    $type = $self->default_library_type;
   }
   $type ||= undef;
+
   return $type;
-}
-
-sub _tag_sequence_from_sample_description {
-  my $desc = shift;
-  my @x = _parse_sample_description($desc);
-  return $x[0];
-}
-
-sub _parse_sample_description {
-  my $desc = shift;
-  my $tag=undef;
-  my $start=undef;
-  my $end=undef;
-  my $read=undef;
-  if ($desc && (($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx))) {
-    ($tag) = $desc =~ /\(([ACGT]+)\)/smx;
-    if ($desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ read\ 1/smx) {
-        ($start, $end, $read) = ($1, $2, 1);
-    } elsif ($desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ non\-index\ read\ (\d)/smx) {
-        ($start, $end, $read) = ($1, $2, $3);
-    } else {
-        croak q[Error parsing sample description ] . $desc;
-    }
-  }
-  return ($tag, $start, $end, $read);
 }
 
 =head2 library_types
@@ -1146,10 +1104,6 @@ sub _parse_sample_description {
 A list of library types, excluding spiked phix library
 
 =cut
-sub library_types {
-  my ($self) = @_;
-  return $self->_list_of_attributes('_derived_library_type',0);
-}
 
 =head2 driver_method_list
 

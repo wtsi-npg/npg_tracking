@@ -861,7 +861,7 @@ subtest 'Consent and separation of human data' => sub {
 };
 
 subtest 'Library types' => sub {
-  plan tests => 6;
+  plan tests => 7;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
     't/data/samplesheet/4pool4libs_extended.csv';
@@ -872,6 +872,8 @@ subtest 'Library types' => sub {
   is($lims->library_type, 'No PCR', 'library type');
   $lims = st::api::lims->new(id_run => 9999, position => 8);
   is($lims->library_type, undef, 'library type undefined for a pool');
+  is(join(q[,], $lims->library_types), q[Pre-quality controlled],
+    'library types');
   $lims = st::api::lims->new(id_run => 9999, position => 8, tag_index => 0);
   is($lims->library_type, undef, 'library type undefined for tag 0');
   $lims = st::api::lims->new(id_run => 9999, position => 8, tag_index => 88);
