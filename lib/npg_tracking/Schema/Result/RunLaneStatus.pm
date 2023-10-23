@@ -151,7 +151,7 @@ __PACKAGE__->belongs_to(
   "run_lane",
   "npg_tracking::Schema::Result::RunLane",
   { id_run_lane => "id_run_lane" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 run_lane_status_dict
@@ -166,7 +166,7 @@ __PACKAGE__->belongs_to(
   "run_lane_status_dict",
   "npg_tracking::Schema::Result::RunLaneStatusDict",
   { id_run_lane_status_dict => "id_run_lane_status_dict" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 user
@@ -181,12 +181,12 @@ __PACKAGE__->belongs_to(
   "user",
   "npg_tracking::Schema::Result::User",
   { id_user => "id_user" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:38
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:TkFv5J36/M51WwS1WQKs8Q
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:7J1yidKBoNfzfqgW3W45Lg
 
 # Created:       2010-04-08
 

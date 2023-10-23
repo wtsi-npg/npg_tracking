@@ -130,7 +130,7 @@ __PACKAGE__->belongs_to(
   "annotation",
   "npg_tracking::Schema::Result::Annotation",
   { id_annotation => "id_annotation" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 instrument_status
@@ -145,12 +145,12 @@ __PACKAGE__->belongs_to(
   "instrument_status",
   "npg_tracking::Schema::Result::InstrumentStatus",
   { id_instrument_status => "id_instrument_status" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:1Nry/5/Z7srL49QFt5725A
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:cJbTbXRF+P8weHj/iJAYqw
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08

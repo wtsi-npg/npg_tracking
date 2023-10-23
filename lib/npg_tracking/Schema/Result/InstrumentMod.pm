@@ -167,7 +167,7 @@ __PACKAGE__->belongs_to(
   "instrument",
   "npg_tracking::Schema::Result::Instrument",
   { id_instrument => "id_instrument" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 instrument_mod_dict
@@ -182,7 +182,7 @@ __PACKAGE__->belongs_to(
   "instrument_mod_dict",
   "npg_tracking::Schema::Result::InstrumentModDict",
   { id_instrument_mod_dict => "id_instrument_mod_dict" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 user
@@ -197,12 +197,12 @@ __PACKAGE__->belongs_to(
   "user",
   "npg_tracking::Schema::Result::User",
   { id_user => "id_user" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:jx8LcIOopsROPJYpt927EQ
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:HQKv7jeoJGBuxHmYHptWjg
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
