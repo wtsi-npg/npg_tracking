@@ -563,32 +563,6 @@ sub _build_required_insert_size {
   return $is_hash;
 }
 
-
-=head2 seq_qc_state
-
- 1 for passes, 0 for failed, undef if the value is not set.
-
- This method is deprecated as of 08 March 2016. It should not be used in any
- new code. The only place where this method is used in production code is
- the old warehouse loader. Deprecation warning is not appropriate because the
- old wh loader logs will be flooded.
-
-=cut
-sub  seq_qc_state {
-  my $self = shift;
-  my $state = $self->driver ? $self->driver->qc_state : q[];
-  if (!defined $state || $state eq '1' || $state eq '0') {
-    return $state;
-  }
-  if ($state eq q[]) {
-    return;
-  }
-  if (!exists  $QC_EVAL_MAPPING{$state}) {
-    croak qq[Unexpected value '$state' for seq qc state in ] . $self->to_string;
-  }
-  return $QC_EVAL_MAPPING{$state};
-}
-
 =head2 reference_genome
 
 Read-only accessor, not possible to set from the constructor.
