@@ -222,7 +222,7 @@ sub refs {
       $spiked_phix_index = $self->lims->spiked_phix_tag_index;
     }
 
-    my @alims = $self->lims->associated_lims;
+    my @alims = $self->lims->descendants;
     if (!@alims) {
       @alims = ($self->lims);
     }
@@ -471,7 +471,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017 GRL
+Copyright (C) 2013,2014,2015,2016,2017,2018,2019,2023 Genome Research Ltd.
 
 This file is part of NPG.
 
