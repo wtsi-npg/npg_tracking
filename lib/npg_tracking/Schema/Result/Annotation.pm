@@ -193,12 +193,12 @@ __PACKAGE__->belongs_to(
   "user",
   "npg_tracking::Schema::Result::User",
   { id_user => "id_user" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:38
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:fw1PGLynbasn+IKgeZzzTw
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:21CP732yEziG9roi+KTB8Q
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08

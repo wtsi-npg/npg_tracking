@@ -205,7 +205,7 @@ __PACKAGE__->belongs_to(
   "instrument",
   "npg_tracking::Schema::Result::Instrument",
   { id_instrument => "id_instrument" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 instrument_format
@@ -220,7 +220,7 @@ __PACKAGE__->belongs_to(
   "instrument_format",
   "npg_tracking::Schema::Result::InstrumentFormat",
   { id_instrument_format => "id_instrument_format" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 run_annotations
@@ -314,8 +314,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-03-29 17:02:05
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:T5Bt3yeyrr0HVBcwmlVzgA
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:CQYOGdpHICplAd+i+cHeUA
 
 # Created:       2010-04-08
 

@@ -117,12 +117,12 @@ __PACKAGE__->belongs_to(
   "run",
   "npg_tracking::Schema::Result::Run",
   { id_run => "id_run" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:44
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:z94U+kHMmuqp4fmUf2A6RQ
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:WIckqgeVZpWwwqbDDY86eQ
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08

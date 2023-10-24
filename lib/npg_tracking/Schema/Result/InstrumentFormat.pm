@@ -189,7 +189,7 @@ __PACKAGE__->belongs_to(
   "manufacturer",
   "npg_tracking::Schema::Result::Manufacturer",
   { id_manufacturer => "id_manufacturer" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 runs
@@ -208,8 +208,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:65VhDik9vcGwGAJCX00ATg
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:esNDL3mLvW19/fKjWfsX/g
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
