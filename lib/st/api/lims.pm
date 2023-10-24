@@ -543,7 +543,7 @@ sub _build_required_insert_size {
 
   my $is_hash = {};
   if (defined $self->position) {
-    my @alims = $self->associated_lims;
+    my @alims = $self->descendants;
     @alims = @alims ? @alims : ($self);
     foreach my $lims (@alims) {
       if ($lims->is_control) {
@@ -561,32 +561,6 @@ sub _build_required_insert_size {
   }
 
   return $is_hash;
-}
-
-
-=head2 seq_qc_state
-
- 1 for passes, 0 for failed, undef if the value is not set.
-
- This method is deprecated as of 08 March 2016. It should not be used in any
- new code. The only place where this method is used in production code is
- the old warehouse loader. Deprecation warning is not appropriate because the
- old wh loader logs will be flooded.
-
-=cut
-sub  seq_qc_state {
-  my $self = shift;
-  my $state = $self->driver ? $self->driver->qc_state : q[];
-  if (!defined $state || $state eq '1' || $state eq '0') {
-    return $state;
-  }
-  if ($state eq q[]) {
-    return;
-  }
-  if (!exists  $QC_EVAL_MAPPING{$state}) {
-    croak qq[Unexpected value '$state' for seq qc state in ] . $self->to_string;
-  }
-  return $QC_EVAL_MAPPING{$state};
 }
 
 =head2 reference_genome
@@ -1038,20 +1012,6 @@ sub descendants {
   return @lims;
 }
 
-=head2 associated_lims
-
-The same as descendants. Retained for backward compatibility
-
-=cut
-*associated_lims = \&descendants; #backward compat
-
-=head2 associated_child_lims
-
-The same as children. Retained for backward compatibility
-
-=cut
-*associated_child_lims = \&children; #backward compat
-
 =head2 children_ia
 
 Method providing fast (index-based) access to child lims object.
@@ -1096,13 +1056,6 @@ sub sample_publishable_name {
   my $self = shift;
   return $self->sample_accession_number() || $self->sample_public_name() || $self->sample_name();
 }
-
-=head2 associated_child_lims_ia
-
-The same as children_ia. Retained for backward compatibility
-
-=cut
-*associated_child_lims_ia = \&children_ia; #backward compat
 
 sub _list_of_attributes {
   my ($self, $attr_name, $with_spiked_control) = @_;
@@ -1422,7 +1375,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2015,2016,2017,2018,2019,2020,2021 Genome Research Ltd.
+Copyright (C) 2013,2014,2015,2016,2017,2018,2019,2020,2021,2023 Genome Research Ltd.
 
 This file is part of NPG.
 
