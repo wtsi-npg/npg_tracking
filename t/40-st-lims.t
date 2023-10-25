@@ -6,7 +6,7 @@ use Test::Warn;
 use File::Temp qw/ tempdir /;
 use Moose::Meta::Class;
 
-my $num_delegated_methods = 48;
+my $num_delegated_methods = 45;
 
 use_ok('st::api::lims');
 
