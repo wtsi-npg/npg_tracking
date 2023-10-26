@@ -88,7 +88,7 @@ subtest 'retrieving information from runParameters.xml' => sub {
 
     if ($f =~ /\.rr\./) {
       ok ($li->is_rapid_run(), 'is rapid run');
-      ok (!$li->all_lanes_mergeable(), 'lanes are not meargeable');
+      ok (!$li->all_lanes_mergeable(), 'lanes are not mergeable');
       if ($f =~ /\.truseq\./) {
         ok (!$li->is_rapid_run_v2(), 'rapid run version is not 2');
         ok ($li->is_rapid_run_v1(), 'rapid run version is 1');
@@ -101,10 +101,10 @@ subtest 'retrieving information from runParameters.xml' => sub {
       ok (!$li->is_rapid_run(), 'is not rapid run');
       if ($f =~ /\.novaseq\./) {
         if ($f =~ /\.xp\./) {
-          ok (!$li->all_lanes_mergeable(), 'lanes are not meargeable');
+          ok (!$li->all_lanes_mergeable(), 'lanes are not mergeable');
           is ($li->workflow_type, 'NovaSeqXp', 'Xp workflow type');
         } else {
-          ok ($li->all_lanes_mergeable(), 'all lanes meargeable');
+          ok ($li->all_lanes_mergeable(), 'all lanes mergeable');
           is ($li->workflow_type, 'NovaSeqStandard', 'Standard workflow type');
         }
       }
