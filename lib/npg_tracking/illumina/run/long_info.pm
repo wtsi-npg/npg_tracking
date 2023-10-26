@@ -654,17 +654,14 @@ sub _build_sbs_consumable_version {
 
 =head2 all_lanes_mergeable
 
-Returns true if either the NovaSeq Standard (ie not NovaSeqXp) workflow
-was used or this was a rapid run since in the latter case same library is used
-on both lanes.
+Returns true if the NovaSeq Standard (ie not NovaSeqXp) workflow was used
+since it is guaranteed that the same library is used on all lanes.
 
 =cut
 
 sub all_lanes_mergeable {
   my $self = shift;
-  return (
-    ($self->workflow_type() =~ /NovaSeqStandard/xms) or $self->is_rapid_run()
-         );
+  return ($self->workflow_type() =~ /NovaSeqStandard/xms);
 }
 
 =head2 is_rapid_run
