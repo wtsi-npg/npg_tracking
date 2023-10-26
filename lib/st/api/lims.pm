@@ -128,12 +128,7 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
                            study_separate_y_chromosome_data
                       /],
 
-    'project'      => [qw/ project_id
-                           project_name
-                           project_cost_code
-                      /],
-
-    'request'      => [qw/ request_id /],
+    'project'      => [qw/ project_cost_code /],
 };
 
 Readonly::Array my @METHODS           => sort map { @{$_} } values %METHODS_PER_CATEGORY;
@@ -208,9 +203,6 @@ sub BUILD {
 Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
     'library'      => [qw/ id
                            name
-                         /],
-    'project'      => [qw/ id
-
                          /],
     'sample'       => [qw/ accession_number
                            cohort
@@ -1177,13 +1169,6 @@ Similar to study_names, but for ids.
 =head2 study_titles
 
 Similar to study_names, but for study_titles.
-
-=cut
-
-
-=head2 project_ids
-
-A list of project ids, similar to study_ids.
 
 =cut
 
