@@ -910,6 +910,86 @@ sub aggregate_xlanes {
   return @aggregated;
 }
 
+=head2 aggregate_libraries
+
+=cut
+sub aggregate_libraries() {
+  my ($self, $lane_lims_array) = @_;
+
+  my @id_runs = uniq map { $_->id_run } @{$lane_lims_array};
+  if (@id_runs != 1) {
+    croak 'Multiple run IDs in a potential library merge';
+  }
+
+  my $all_lims_objects = {};
+  my $lims_objects_by_library = {};
+
+  my @all_single_lims_objs = map { $_->is_pool ? $_->children() : $_ }
+                             @{$lane_lims_array};
+
+  foreach my $obj (@all_single_lims_objs) {
+    if ($obj->is_control()) { # Do not merge spiked PhiX libraries.
+      push @{$all_lims_objects->{'single'}}, $obj;
+    } else {
+      push @{$lims_objects_by_library->{$obj->library_id}}, $obj;
+    }
+  }
+
+  my $merge_set = {};
+
+  # Do not use $self for this to retain ability to use this method as a class
+  # method.
+  my %init = %{$lane_lims_array->[0]->_driver_arguments()};
+
+  foreach my $library_id (keys %{$lims_objects_by_library}) {
+    my @lib_lims = @{$lims_objects_by_library->{$library_id}};
+    if (@lib_lims == 1) {
+      push @{$all_lims_objects->{'single'}}, $lib_lims[0];
+    } else {
+      my @study_ids = uniq map { $_->study_id } @lib_lims;
+      if (@study_ids != 1) {
+        croak 'Multiple studies in a potential merge';
+      }
+      my @tag_indexes =
+        uniq
+        map { defined $_->tag_index ? $_->tag_index : 'undefined' }
+        @lib_lims;
+      if (@tag_indexes != 1) {
+        croak 'Inconsistent tag indexes in a potential merge';
+      }
+      my @lanes = uniq  map {$_->position} @lib_lims;
+      if (@lanes != @lib_lims) {
+        croak 'Intra-lane merge is detected in a potential merge';
+      }
+      my $lane_set = join q[,], @lanes;
+      $all_lims_objects->{'merges'}->{$lane_set}->{$tag_indexes[0]} =
+        __PACKAGE__->new(
+          %init,
+          rpt_list => npg_tracking::glossary::rpt->deflate_rpts(\@lib_lims)
+        );
+    }
+  }
+
+  # Lane sets should not intersect.
+  my @positions =
+    map { (split /,/smx, $_) }
+    keys %{$all_lims_objects->{'merges'}};
+  if (@positions != uniq @positions) {
+    croak 'No clean split between lanes in potential merges';
+  }
+
+  # Within each set sort LIMS objects by tag index and keep
+  # the sorted list.
+  foreach my $lane_set ( keys %{$all_lims_objects->{'merges'}} ) {
+    my @sorted_lims_onjects =
+      map {$all_lims_objects->{'merges'}->{$lane_set}->{$_}}
+      (sort { $a <=> $b } keys %{$all_lims_objects->{'merges'}->{$lane_set}});
+    $all_lims_objects->{'merges'}->{$lane_set} = \@sorted_lims_onjects;
+  }
+
+  return $all_lims_objects;
+}
+
 =head2 create_tag_zero_object
  
 Using id_run and position values of this object, creates and returns
