@@ -221,6 +221,68 @@ Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
                          /]
 };
 
+=head2 library_names
+
+A list of library names. if $self->is_pool is true, returns unique library
+names of plex-level objects, otherwise returns object's own library name.
+Takes an optional argument with_spiked_control, wich defaults to true.
+
+=head2 library_ids
+
+Similar to library_names, but for ids.
+
+=head2 library_types
+
+Similar to library_names, but for types.
+
+=head2 sample_names
+
+A list of sample names. if $self->is_pool is true, returns unique sample
+names of plex-level objects, otherwise returns object's own sample name.
+Takes an optional argument with_spiked_control, wich defaults to true.
+
+=head2 sample_cohorts
+
+Similar to sample_names, but for cohorts.
+
+=head2 sample_donor_ids
+
+Similar to sample_names, but for donor_ids.
+
+=head2 sample_ids
+
+Similar to sample_names, but for ids.
+
+=head2 sample_public_names
+
+Similar to sample_names, but for public_names.
+
+=head2 sample_supplier_names
+
+Similar to sample_names, but for supplier_names.
+
+=head2 study_names
+
+A list of study names. if $self->is_pool is true, returns unique study
+names of plex-level objects, otherwise returns object's own study name.
+Takes an optional argument with_spiked_control, wich defaults to true.
+
+=head2 study_accession_numbers
+
+Similar to study_names, but for accession_numbers.
+
+=head2 study_ids
+
+Similar to study_names, but for ids.
+
+=head2 study_titles
+
+Similar to study_names, but for study_titles.
+
+=cut
+
+# Dynamicaly generate methods for getting 'plural' values.
+# The methods are documented above.
 foreach my $object_type (keys %ATTRIBUTE_LIST_METHODS) {
   foreach my $property (@{$ATTRIBUTE_LIST_METHODS{$object_type}}) {
     my $attr_name   = join q[_], $object_type, $property;
@@ -987,96 +1049,6 @@ sub _single_attribute {
   return;
 }
 
-=head2 library_names
-
-A list of library names. if $self->is_pool is true, returns unique library
-names of plex-level objects, otherwise returns object's own library name.
-Takes an optional argument with_spiked_control, wich defaults to true.
-
-
-=cut
-
-=head2 library_ids
-
-Similar to library_names, but for ids.
-
-=cut
-
-
-=head2 sample_names
-
-A list of sample names. if $self->is_pool is true, returns unique sample
-names of plex-level objects, otherwise returns object's own sample name.
-Takes an optional argument with_spiked_control, wich defaults to true.
-
-=cut
-
-
-=head2 sample_cohorts
-
-Similar to sample_names, but for cohorts.
-
-=cut
-
-
-=head2 sample_donor_ids
-
-Similar to sample_names, but for donor_ids.
-
-=cut
-
-
-=head2 sample_ids
-
-Similar to sample_names, but for ids.
-
-=cut
-
-
-=head2 sample_public_names
-
-Similar to sample_names, but for public_names.
-
-=cut
-
-
-=head2 sample_supplier_names
-
-Similar to sample_names, but for supplier_names.
-
-=cut
-
-
-=head2 study_names
-
-A list of study names. if $self->is_pool is true, returns unique study
-names of plex-level objects, otherwise returns object's own study name.
-Takes an optional argument with_spiked_control, wich defaults to true.
-
-=cut
-
-
-=head2 study_accession_numbers
-
-Similar to study_names, but for accession_numbers.
-
-=cut
-
-
-=head2 study_ids
-
-Similar to study_names, but for ids.
-
-=cut
-
-
-=head2 study_titles
-
-Similar to study_names, but for study_titles.
-
-=cut
-
-
 =head2 library_type
 
 Read-only accessor, not possible to set from the constructor.
@@ -1098,12 +1070,6 @@ sub _build_library_type {
 
   return $type;
 }
-
-=head2 library_types
-
-A list of library types, excluding spiked phix library
-
-=cut
 
 =head2 driver_method_list
 
