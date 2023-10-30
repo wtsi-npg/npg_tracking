@@ -537,9 +537,8 @@ sub _build_reference_genome {
   my $self = shift;
   my $rg = $self->_trim_value($self->sample_reference_genome);
   if (!$rg ) {
-    my @children = ();
     if ($self->is_pool || $self->is_composition) {
-      @children = $self->children();
+      my @children = $self->children();
       if ($self->is_composition) {
         # Tag zero and lane components have their own children.
         my @tmp_children = map { ($_->children) } @children;
