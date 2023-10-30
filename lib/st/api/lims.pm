@@ -547,12 +547,12 @@ sub _build_reference_genome {
           @children = @tmp_children;
         }
       }
-      my @sample_ref_gemomes =
+      my @sample_ref_genomes =
         grep { $_ }
         map { $self->_trim_value($_->sample_reference_genome) }
         grep { !$_->is_phix_spike }
         @children;
-      if (@sample_ref_gemomes) {
+      if (@sample_ref_genomes) {
         return;
       }
     }
