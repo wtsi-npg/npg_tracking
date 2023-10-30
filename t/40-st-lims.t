@@ -665,7 +665,7 @@ subtest 'Insert size' => sub {
 };
 
 subtest 'Study and sample properties' => sub {
-  plan tests => 47;
+  plan tests => 75;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
     't/data/samplesheet/4pool4libs_extended.csv';
@@ -728,22 +728,24 @@ subtest 'Study and sample properties' => sub {
   my $ref = 'Homo_sapiens (GRCh38_15_plus_hs38d1) [minimap2]';
   for my $l (
     st::api::lims->new(id_run => 47539, position => 1),
-    st::api::lims->new(id_run => 47537, position => 1, tag_index => 0)
+    st::api::lims->new(id_run => 47537, position => 1, tag_index => 0),
+    st::api::lims->new(rpt_list => '47539:1'),
+    st::api::lims->new(rpt_list => '47539:1:0')
   ) { 
     is( $l->study_name(), $study_name, 'study name');
     is( $l->sample_name, undef, 'sample name undefined');
     is( $l->sample_reference_genome, undef, 'sample reference genome undefined');
     is( $l->study_reference_genome, $ref, 'study reference genome');
-    is( $l->reference_genome, $ref, 'reference genome - fallback to study');
+    is( $l->reference_genome, undef, 'no fallback to study');
   }
 
-  my $sample_ref = 'Homo_sapiens (GRCh38_full_analysis_set_plus_decoy_hla)';
+  my $ref2 = 'Homo_sapiens (GRCh38_full_analysis_set_plus_decoy_hla)';
   $lims = st::api::lims->new(id_run => 47537, position => 1, tag_index => 1);
   is( $lims->study_name(), $study_name, 'study name');
   is( $lims->sample_name, 'RefStds_PCR8021331', 'sample name');
-  is( $lims->sample_reference_genome, $sample_ref, 'sample reference genome');
+  is( $lims->sample_reference_genome, $ref2, 'sample reference genome');
   is( $lims->study_reference_genome, $ref, 'study reference genome');
-  is( $lims->reference_genome, $sample_ref, 'reference genome as for the sample');
+  is( $lims->reference_genome, $ref2, 'reference genome as for the sample');
   
   $lims = st::api::lims->new(id_run => 47537, position => 4, tag_index => 2);
   is( $lims->study_name(),$study_name, 'study name');
@@ -751,6 +753,44 @@ subtest 'Study and sample properties' => sub {
   is( $lims->sample_reference_genome, undef, 'sample reference genome undefined');
   is( $lims->study_reference_genome, $ref, 'study reference genome');
   is( $lims->reference_genome, $ref, 'reference genome - fall back to study');
+
+  $lims = st::api::lims->new(id_run => 47537, position => 4, tag_index => 1);
+  is( $lims->sample_reference_genome, $ref2, 'sample reference genome');
+  is( $lims->study_reference_genome, $ref, 'study reference genome');
+  is( $lims->reference_genome, $ref2, 'reference genome');
+
+  # The fact that in tests below sample_reference_genome and, as a consequence,
+  # reference_genome methods return a reference rather than stay undefined
+  # seems wrong. The two samples in the pool have the same referenceand and
+  # for one it is undefined. If in this case no value was considered as an
+  # unknown reference, both methods would have returned an undefined value.
+  for my $l (
+    st::api::lims->new(id_run => 47539, position => 4),
+    st::api::lims->new(id_run => 47537, position => 4, tag_index => 0),
+  ) {
+    is( $l->sample_reference_genome, $ref2, 'sample reference genome');
+    is( $l->study_reference_genome, $ref, 'study reference genome');
+    is( $l->reference_genome, $ref2, 'ref genome');
+  }
+
+  $lims = st::api::lims->new(rpt_list => '47539:1:0;47539:4:0'); 
+  is( $lims->sample_reference_genome, undef, 'sample reference genome undefined');
+  is( $lims->study_reference_genome, $ref, 'study reference genome');
+  is( $lims->reference_genome, undef, 'ref genome');
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/samplesheet/samplesheet_27483.csv';
+  # Spiked lane, no sample references, single study.
+  $ref = 'Homo_sapiens (GRCh38_15 + ensembl_78_transcriptome)';
+  for my $l (
+    st::api::lims->new(id_run => 27483, position => 8),
+    st::api::lims->new(id_run => 27483, position => 8, tag_index => 0),
+  ) {
+    is( $l->sample_reference_genome, undef, 'sample reference genome undefined');
+    is( $l->study_reference_genome, $ref, 'study reference genome');
+    is( $l->reference_genome, $ref, 'fall back to study genome');
+  }
+  
 };
 
 subtest 'Bait name' => sub {

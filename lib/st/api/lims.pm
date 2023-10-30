@@ -212,6 +212,7 @@ Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
                            id
                            name
                            public_name
+                           reference_genome
                            supplier_name
                          /],
     'study'        => [qw/ accession_number
@@ -522,7 +523,9 @@ sub _build_required_insert_size {
 
 Read-only accessor, not possible to set from the constructor.
 Returns pre-set reference genome, retrieving it either from a sample,
-or, failing that, from a study.
+or, failing that, from a study. The exception from the latter rule is
+tag zero or lane objects, where a fall-back to the study genome is
+disabled if the child objects have different sample reference genomes.
 
 =cut
 has 'reference_genome' => (isa             => 'Maybe[Str]',
@@ -534,6 +537,24 @@ sub _build_reference_genome {
   my $self = shift;
   my $rg = $self->_trim_value($self->sample_reference_genome);
   if (!$rg ) {
+    if ($self->is_pool || $self->is_composition) {
+      my @children = $self->children();
+      if ($self->is_composition) {
+        # Tag zero and lane components have their own children.
+        my @tmp_children = map { ($_->children) } @children;
+        if (@tmp_children) {
+          @children = @tmp_children;
+        }
+      }
+      my @sample_ref_genomes =
+        grep { $_ }
+        map { $self->_trim_value($_->sample_reference_genome) }
+        grep { !$_->is_phix_spike }
+        @children;
+      if (@sample_ref_genomes) {
+        return;
+      }
+    }
     $rg = $self->_trim_value($self->study_reference_genome);
   }
   return $rg;
