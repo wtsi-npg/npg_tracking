@@ -203,6 +203,7 @@ sub BUILD {
 Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
     'library'      => [qw/ id
                            name
+                           type
                          /],
     'sample'       => [qw/ accession_number
                            cohort
@@ -220,6 +221,68 @@ Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
                          /]
 };
 
+=head2 library_names
+
+A list of library names. if $self->is_pool is true, returns unique library
+names of plex-level objects, otherwise returns object's own library name.
+Takes an optional argument with_spiked_control, wich defaults to true.
+
+=head2 library_ids
+
+Similar to library_names, but for ids.
+
+=head2 library_types
+
+Similar to library_names, but for types.
+
+=head2 sample_names
+
+A list of sample names. if $self->is_pool is true, returns unique sample
+names of plex-level objects, otherwise returns object's own sample name.
+Takes an optional argument with_spiked_control, wich defaults to true.
+
+=head2 sample_cohorts
+
+Similar to sample_names, but for cohorts.
+
+=head2 sample_donor_ids
+
+Similar to sample_names, but for donor_ids.
+
+=head2 sample_ids
+
+Similar to sample_names, but for ids.
+
+=head2 sample_public_names
+
+Similar to sample_names, but for public_names.
+
+=head2 sample_supplier_names
+
+Similar to sample_names, but for supplier_names.
+
+=head2 study_names
+
+A list of study names. if $self->is_pool is true, returns unique study
+names of plex-level objects, otherwise returns object's own study name.
+Takes an optional argument with_spiked_control, wich defaults to true.
+
+=head2 study_accession_numbers
+
+Similar to study_names, but for accession_numbers.
+
+=head2 study_ids
+
+Similar to study_names, but for ids.
+
+=head2 study_titles
+
+Similar to study_names, but for study_titles.
+
+=cut
+
+# Dynamicaly generate methods for getting 'plural' values.
+# The methods are documented above.
 foreach my $object_type (keys %ATTRIBUTE_LIST_METHODS) {
   foreach my $property (@{$ATTRIBUTE_LIST_METHODS{$object_type}}) {
     my $attr_name   = join q[_], $object_type, $property;
@@ -316,90 +379,6 @@ for my $m ( @METHODS ){
 # All methods are created, now aliases for methods can be defined.
 alias primer_panel => 'gbs_plex_name';
 
-=head2 inline_index_read
-
-index read
-
-=cut
-
-has 'inline_index_read' => (isa        => 'Maybe[Int]',
-                            is         => 'ro',
-                            init_arg   => undef,
-                            lazy_build => 1,
-                           );
-
-sub _build_inline_index_read {
-  my $self = shift;
-  my @x = _parse_sample_description($self->_sample_description);
-  return $x[3];  ## no critic (ProhibitMagicNumbers)
-}
-
-has 'inline_index_end' => (isa        => 'Maybe[Int]',
-                           is         => 'ro',
-                           init_arg   => undef,
-                           lazy_build => 1,
-                          );
-
-=head2 inline_index_end
-
-index end
-
-=cut
-
-sub _build_inline_index_end {
-  my $self = shift;
-  my @x = _parse_sample_description($self->_sample_description);
-  return $x[2];
-}
-
-=head2 inline_index_start
-
-index start
-
-=cut
-
-has 'inline_index_start' => (isa        => 'Maybe[Int]',
-                             is         => 'ro',
-                             init_arg   => undef,
-                             lazy_build => 1,
-                            );
-
-sub _build_inline_index_start {
-  my $self = shift;
-  my @x = _parse_sample_description($self->_sample_description);
-  return $x[1];
-}
-
-=head2 inline_index_exists
-
-=cut
-
-has 'inline_index_exists' => (isa        => 'Bool',
-                              is         => 'ro',
-                              init_arg   => undef,
-                              lazy_build => 1,
-                             );
-
-sub _build_inline_index_exists {
-  my $self = shift;
-  return _tag_sequence_from_sample_description($self->_sample_description) ? 1 : 0;
-}
-
-has '_sample_description' => (isa        => 'Maybe[Str]',
-                              is         => 'ro',
-                              init_arg   => undef,
-                              lazy_build => 1,
-                             );
-
-sub _build__sample_description {
-  my $self = shift;
-  return $self->sample_description if ($self->sample_description);
-  foreach my $c ($self->children) {
-    return $c->sample_description if ($c->sample_description);
-  }
-  return;
-}
-
 =head2 is_phix_spike
 
 True for a plex library that is the spiked phiX.
@@ -441,9 +420,6 @@ sub _build_tag_sequence {
 Read-only array accessor, not possible to set from the constructor.
 Empty array on a lane level and for zero tag_index.
 
-Might return not the index given by LIMs, but the one contained in the
-sample description.
-
 If dual index is used, the array contains two sequences. The secons index
 might come from LIMS or, if LIMs has one long index, it will be split in two.
 
@@ -456,34 +432,24 @@ has 'tag_sequences' =>   (isa             => 'ArrayRef',
 sub _build_tag_sequences {
   my $self = shift;
 
-  my ($seq, $seq2);
-  if ($self->tag_index) {
-    if (!$self->spiked_phix_tag_index || $self->tag_index != $self->spiked_phix_tag_index) {
-      if ($self->sample_description) {
-        $seq = _tag_sequence_from_sample_description($self->sample_description);
-      }
-    }
-    if (!$seq) {
-      $seq = $self->default_tag_sequence;
-      if ($seq && $self->default_tagtwo_sequence) {
-        $seq2 = $self->default_tagtwo_sequence;
-      }
-    }
-  }
-
   my @sqs = ();
-  if ($seq) {
-    push @sqs, $seq;
-  }
-  if ($seq2) {
-    push @sqs, $seq2;
-  }
 
-  if (scalar @sqs == 1) {
-    if (length($sqs[0]) == $DUAL_INDEX_TAG_LENGTH) {
-      my $tag_length = $DUAL_INDEX_TAG_LENGTH/2;
-      push @sqs, substr $sqs[0], $tag_length;
-      $sqs[0] = substr $sqs[0], 0, $tag_length;
+  if ($self->tag_index) {
+    my $seq = $self->default_tag_sequence;
+    if ($seq) {
+      push @sqs, $seq;
+      $seq = $self->default_tagtwo_sequence;
+      if ($seq) {
+        push @sqs, $seq;
+      }
+    }
+
+    if (scalar @sqs == 1) {
+      if (length($sqs[0]) == $DUAL_INDEX_TAG_LENGTH) {
+        my $tag_length = $DUAL_INDEX_TAG_LENGTH/2;
+        push @sqs, substr $sqs[0], $tag_length;
+        $sqs[0] = substr $sqs[0], 0, $tag_length;
+      }
     }
   }
 
@@ -1083,96 +1049,6 @@ sub _single_attribute {
   return;
 }
 
-=head2 library_names
-
-A list of library names. if $self->is_pool is true, returns unique library
-names of plex-level objects, otherwise returns object's own library name.
-Takes an optional argument with_spiked_control, wich defaults to true.
-
-
-=cut
-
-=head2 library_ids
-
-Similar to library_names, but for ids.
-
-=cut
-
-
-=head2 sample_names
-
-A list of sample names. if $self->is_pool is true, returns unique sample
-names of plex-level objects, otherwise returns object's own sample name.
-Takes an optional argument with_spiked_control, wich defaults to true.
-
-=cut
-
-
-=head2 sample_cohorts
-
-Similar to sample_names, but for cohorts.
-
-=cut
-
-
-=head2 sample_donor_ids
-
-Similar to sample_names, but for donor_ids.
-
-=cut
-
-
-=head2 sample_ids
-
-Similar to sample_names, but for ids.
-
-=cut
-
-
-=head2 sample_public_names
-
-Similar to sample_names, but for public_names.
-
-=cut
-
-
-=head2 sample_supplier_names
-
-Similar to sample_names, but for supplier_names.
-
-=cut
-
-
-=head2 study_names
-
-A list of study names. if $self->is_pool is true, returns unique study
-names of plex-level objects, otherwise returns object's own study name.
-Takes an optional argument with_spiked_control, wich defaults to true.
-
-=cut
-
-
-=head2 study_accession_numbers
-
-Similar to study_names, but for accession_numbers.
-
-=cut
-
-
-=head2 study_ids
-
-Similar to study_names, but for ids.
-
-=cut
-
-
-=head2 study_titles
-
-Similar to study_names, but for study_titles.
-
-=cut
-
-
 =head2 library_type
 
 Read-only accessor, not possible to set from the constructor.
@@ -1185,54 +1061,14 @@ has 'library_type' =>     (isa             => 'Maybe[Str]',
                           );
 sub _build_library_type {
   my $self = shift;
-  if($self->is_pool) { return; }
-  return _derived_library_type($self);
-}
 
-sub _derived_library_type {
-  my $o = shift;
-  my $type = $o->default_library_type;
-  if ($o->tag_index && $o->sample_description &&
-      _tag_sequence_from_sample_description($o->sample_description)) {
-    $type = '3 prime poly-A pulldown';
+  my $type;
+  if (!$self->is_pool) {
+    $type = $self->default_library_type;
   }
   $type ||= undef;
+
   return $type;
-}
-
-sub _tag_sequence_from_sample_description {
-  my $desc = shift;
-  my @x = _parse_sample_description($desc);
-  return $x[0];
-}
-
-sub _parse_sample_description {
-  my $desc = shift;
-  my $tag=undef;
-  my $start=undef;
-  my $end=undef;
-  my $read=undef;
-  if ($desc && (($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx))) {
-    ($tag) = $desc =~ /\(([ACGT]+)\)/smx;
-    if ($desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ read\ 1/smx) {
-        ($start, $end, $read) = ($1, $2, 1);
-    } elsif ($desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ non\-index\ read\ (\d)/smx) {
-        ($start, $end, $read) = ($1, $2, $3);
-    } else {
-        croak q[Error parsing sample description ] . $desc;
-    }
-  }
-  return ($tag, $start, $end, $read);
-}
-
-=head2 library_types
-
-A list of library types, excluding spiked phix library
-
-=cut
-sub library_types {
-  my ($self) = @_;
-  return $self->_list_of_attributes('_derived_library_type',0);
 }
 
 =head2 driver_method_list
