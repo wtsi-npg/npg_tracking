@@ -1,9 +1,9 @@
 LIST OF CHANGES
 
  - Removed the use of 'xml' lims driver from all tests.
- - Deleted 'xml' lims driver class and all classes, which supported this
+ - Deleted 'xml' lims driver class and all classes which supported this
    functionality, together with all related tests and test data.
- - In release 97.0.0, ihe default LIMS driver type in samplesheet generation
+ - In release 97.0.0, the default LIMS driver type in samplesheet generation
    was changed to 'ml_warehouse'. Following this change, the code for
    auto-generation of MiSeq default samplesheets is now simplified to exclude
    an explicit creation of LIMS objects.
@@ -11,7 +11,7 @@ LIST OF CHANGES
    removal:
      - deleted all previously deprecated methods ('seq_qc_state',
        'associated_lims', 'associated_child_lims', 'associated_child_lims_ia');
-     - deleted methods, for which we do not have data in ml warehouse, our
+     - deleted methods for which we do not have data in ml warehouse, our
        primary source of LIMS data ('request_id', 'project_id', 'project_name');
      - deleted all code for computing inline tag indexes and inferring
        tag sequences and library types from sample description since
@@ -19,7 +19,7 @@ LIST OF CHANGES
      - reimplemented the 'reference_genome' method to exclude a fallback to
        a study reference for tag zero and lane-level objects when samples
        have different references.
- - Restricted the 'all_lanes_mergeable' flag in the 'lonf_info' role to
+ - Restricted the 'all_lanes_mergeable' flag in the 'long_info' role to
    NovaSeq Standard workflow, ie dropped an additional case of HiSeq Rapid Run
    since HiSeq instruments are no longer used.
  - Updated DBIx classes from the prod database. Changes are due to the MySQL
