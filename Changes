@@ -30,6 +30,9 @@ LIST OF CHANGES
    instruments well after the run was mirrored and the runfolder moved to
    'analysis'). The duplicate runfolder in 'incoming' is disregarded'.
 
+release 97.0.1
+ - update httpd.conf with new values for mpm event
+
 release 97.0.0
  - Change CI workflow to standard file name
  - Change to Perl versions from Perlbrew
