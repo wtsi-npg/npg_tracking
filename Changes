@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 97.0.1
  - update httpd.conf with new values for mpm event
 
 release 97.0.0
