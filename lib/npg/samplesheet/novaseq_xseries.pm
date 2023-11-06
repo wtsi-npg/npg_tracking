@@ -33,16 +33,10 @@ Readonly::Array  my @RNA_ANALYSES_REFS => qw(tophat2 star hisat2);
 Readonly::Array  my @RNA_ANALYSES_LIB_TYPES => qw(rna cdna);
 Readonly::Array  my @TENX_ANALYSES_LIB_TYPES => qw(chromium haplotagging);
 Readonly::Array  my @VAR_CALL_MODES   =>
-    qw(None SmallVariantCaller AllVariantCallers);
+  qw(None SmallVariantCaller AllVariantCallers);
 
-# Not mapping PhiX on purpose - an easy way to avoid invoking
-# an extra Germline pipeline in a situation when the number of
-# unique analysis configurations is limited to 4 locally and 8
-# in the cloud, with one of them being BCLConvert.
-# Was 'PhiX' => 'phix-rna-8-1667499364-2'
 Readonly::Hash my %REFERENCE_MAPING => (
-    'Homo_sapiens'=> 'hg38-alt_masked.cnv.graph.hla.rna-8-1667497097-2',
-    'Escherichia_coli' => 'eschColi_K12_1-rna-8-1667494624-2',
+  'Homo_sapiens' => 'hg38-alt_masked.cnv.graph.hla.rna-8-1667497097-2'
 );
 
 # The version of the DRAGEN software currently on-board of the instrument.
