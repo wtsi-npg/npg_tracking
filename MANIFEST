@@ -395,6 +395,7 @@ t/34-monitor-runfolder-staging.t
 t/34-monitor-runfolder.t
 t/34-monitor-staging.t
 t/35-monitor_one_runfolder.t
+t/40-st-lims-merge.t
 t/40-st-lims-mlwarehouse.t
 t/40-st-lims-ml_warehouse-drivers.t
 t/40-st-lims-samplesheet.t
