@@ -3,7 +3,6 @@ use warnings;
 use Test::More tests => 16;
 use Test::Exception;
 use Test::Warn;
-use File::Temp qw/ tempdir /;
 use Moose::Meta::Class;
 
 my $num_delegated_methods = 45;

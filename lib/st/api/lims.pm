@@ -11,6 +11,7 @@ use Class::Load qw/load_class/;
 
 use npg_tracking::util::types;
 use npg_tracking::glossary::rpt;
+use npg_tracking::glossary::composition::factory::rpt_list;
 
 our $VERSION = '0';
 
@@ -62,6 +63,8 @@ Readonly::Scalar my $SAMPLESHEET_DRIVER_TYPE => 'samplesheet';
 Readonly::Scalar my $DEFAULT_DRIVER_TYPE => $SAMPLESHEET_DRIVER_TYPE;
 
 Readonly::Scalar my $DUAL_INDEX_TAG_LENGTH => 16;
+
+Readonly::Scalar my $TAG_INDEX_4_UNDEFINED => -1;
 
 Readonly::Hash   my  %METHODS_PER_CATEGORY => {
     'primary'    =>   [qw/ tag_index
@@ -912,82 +915,156 @@ sub aggregate_xlanes {
 
 =head2 aggregate_libraries
 
+Given a list of lane-level C<st::api::lims> objects, finds their children,
+which can be merged and analysed together across all or some of the lanes.
+If children are not present, considers lane-level object as a single
+library.
+
+All argument lane objects should belong to the same run. It is assumed that
+they all use the same C<st::api::lims> driver type.
+
+Returns two lists of objects, one for merged entities and one for singletons,
+which are wrapped into a dictionary. Either of these lists can be empty. Both
+of the lists are guaranteed not to be empty at the same time.
+
+Tag zero objects are neither added nor explicitly removed. Objects for
+spiked-in controls (if present) are always added to the list of singletons.
+
+The lists of singletons and merges are returned as sorted lists. For a given
+set of input lane-level  C<st::api::lims> objects the same lists are always
+returned.
+
+Criteria for entities to be eligible for a merge:
+  they are not controls,
+  they belong to the same library,
+  they share the same tag index,
+  they belong to different lanes, one per lane,
+  they belong to the same study.
+
+This method can be used both as instance and as a class method.
+
+  my $all_lims = st::api::lims->aggregate_libraries($run_lims->children());
+  for my $l (@{$all_lims->{'singles'}}) {
+    print 'No merge for ' . $l->to_string;    
+  }
+  for my $l (@{$all_lims->{'merges'}}) {
+    print 'Merged entity ' . $l->to_string;
+  }
+
 =cut
+
 sub aggregate_libraries() {
   my ($self, $lane_lims_array) = @_;
 
-  my @id_runs = uniq map { $_->id_run } @{$lane_lims_array};
-  if (@id_runs != 1) {
-    croak 'Multiple run IDs in a potential library merge';
-  }
+  # This restriction might be lifted in future.
+  _check_value_is_unique('id_run', 'run IDs', $lane_lims_array);
 
-  my $all_lims_objects = {};
   my $lims_objects_by_library = {};
-
+  my @singles = ();
   my @all_single_lims_objs = map { $_->is_pool ? $_->children() : $_ }
                              @{$lane_lims_array};
-
   foreach my $obj (@all_single_lims_objs) {
-    if ($obj->is_control()) { # Do not merge spiked PhiX libraries.
-      push @{$all_lims_objects->{'single'}}, $obj;
+    if ($obj->is_control()) {
+      push @singles, $obj;
     } else {
       push @{$lims_objects_by_library->{$obj->library_id}}, $obj;
     }
   }
 
-  my $merge_set = {};
-
-  # Do not use $self for this to retain ability to use this method as a class
-  # method.
+  # Get the common st::api::lims driver arguments, which will be used
+  # to create objects for merged entities.
+  # Do not use $self for copying the driver arguments in order to retain
+  # ability to use this method as a class method.
   my %init = %{$lane_lims_array->[0]->_driver_arguments()};
+  delete $init{position};
+  delete $init{id_run};
 
+  my $merges = {};
+  my $lane_set_delim = q[,];
   foreach my $library_id (keys %{$lims_objects_by_library}) {
     my @lib_lims = @{$lims_objects_by_library->{$library_id}};
     if (@lib_lims == 1) {
-      push @{$all_lims_objects->{'single'}}, $lib_lims[0];
+      push @singles, @lib_lims;
     } else {
-      my @study_ids = uniq map { $_->study_id } @lib_lims;
-      if (@study_ids != 1) {
-        croak 'Multiple studies in a potential merge';
+      _check_merge_correctness(\@lib_lims);
+      my $lane_set = join $lane_set_delim,
+        sort { $a <=> $b } map { $_->position } @lib_lims;
+      my $tag_index = $lib_lims[0]->tag_index ;
+      if (!defined $tag_index) {
+        $tag_index = $TAG_INDEX_4_UNDEFINED;
       }
-      my @tag_indexes =
-        uniq
-        map { defined $_->tag_index ? $_->tag_index : 'undefined' }
-        @lib_lims;
-      if (@tag_indexes != 1) {
-        croak 'Inconsistent tag indexes in a potential merge';
-      }
-      my @lanes = uniq  map {$_->position} @lib_lims;
-      if (@lanes != @lib_lims) {
-        croak 'Intra-lane merge is detected in a potential merge';
-      }
-      my $lane_set = join q[,], @lanes;
-      $all_lims_objects->{'merges'}->{$lane_set}->{$tag_indexes[0]} =
-        __PACKAGE__->new(
-          %init,
-          rpt_list => npg_tracking::glossary::rpt->deflate_rpts(\@lib_lims)
-        );
+      #####
+      # rpt_list which we use to instantiate the object below has to be
+      # ordered correctly. Wrong order might not change the properties of
+      # the resulting st::api::lims object. However, difficult to track
+      # bugs might result in a situation when the value of this
+      # attribute for the object itself and for the composition object
+      # for this object differs.
+      my $rpt_list = npg_tracking::glossary::rpt->deflate_rpts(\@lib_lims);
+      $rpt_list = npg_tracking::glossary::composition::factory::rpt_list
+        ->new(rpt_list => $rpt_list)->create_composition()
+        ->freeze2rpt();
+      $merges->{$lane_set}->{$tag_index} = __PACKAGE__->new(
+        %init, rpt_list => $rpt_list
+      );
     }
   }
 
-  # Lane sets should not intersect.
-  my @positions =
-    map { (split /,/smx, $_) }
-    keys %{$all_lims_objects->{'merges'}};
-  if (@positions != uniq @positions) {
+  # Lane sets should not intersect. Error if a lane belongs to multiple sets.
+  my @all_lanes_in_merged_sets = map { (split /$lane_set_delim/smx, $_) }
+                                 keys %{$merges};
+  if (@all_lanes_in_merged_sets != uniq @all_lanes_in_merged_sets) {
     croak 'No clean split between lanes in potential merges';
   }
 
-  # Within each set sort LIMS objects by tag index and keep
-  # the sorted list.
-  foreach my $lane_set ( keys %{$all_lims_objects->{'merges'}} ) {
-    my @sorted_lims_onjects =
-      map {$all_lims_objects->{'merges'}->{$lane_set}->{$_}}
-      (sort { $a <=> $b } keys %{$all_lims_objects->{'merges'}->{$lane_set}});
-    $all_lims_objects->{'merges'}->{$lane_set} = \@sorted_lims_onjects;
+  my $all_lims_objects = {'singles' => [], 'merges' => []};
+  # Arrange in a predictable consistent orger.
+  foreach my $lane_set ( sort keys %{$merges} ) {
+    my @tag_indexes = sort { $a <=> $b } keys %{$merges->{$lane_set}};
+    push @{$all_lims_objects->{'merges'}},
+      (map { $merges->{$lane_set}->{$_} } @tag_indexes);
+  }
+  $all_lims_objects->{'singles'} = [
+    sort {##no critic (BuiltinFunctions::ProhibitReverseSortBlock BuiltinFunctions::RequireSimpleSortBlock)
+      my $index_a = defined $a->tag_index ?
+        $a->tag_index : $TAG_INDEX_4_UNDEFINED;
+      my $index_b = defined $b->tag_index ?
+        $b->tag_index : $TAG_INDEX_4_UNDEFINED;
+      $a->position <=> $b->position || $index_a <=> $index_b
+    }
+    @singles
+  ];
+
+  # Sanity check.
+  my $num_objects = @{$all_lims_objects->{'merges'}} +
+                    @{$all_lims_objects->{'singles'}};
+  if ($num_objects == 0) {
+    croak 'Invalid aggregation by library, no objects returned';
   }
 
   return $all_lims_objects;
+}
+
+sub _check_merge_correctness{
+  my $lib_lims = shift;
+  my @lanes = uniq  map {$_->position} @{$lib_lims};
+  if (@lanes != @{$lib_lims}) {
+    croak 'Intra-lane merge is detected';
+  }
+  _check_value_is_unique('study_id', 'studies', $lib_lims);
+  _check_value_is_unique('tag_index', 'tag indexes', $lib_lims);
+  return;
+}
+
+sub _check_value_is_unique {
+  my ($method_name, $property_name, $objects) = @_;
+  my @values = uniq
+               map { defined $_->$method_name ? $_->$method_name : 'undefined' }
+               @{$objects};
+  if (@values != 1) {
+    croak "Multiple $property_name in a potential merge by library";
+  }
+  return;
 }
 
 =head2 create_tag_zero_object
