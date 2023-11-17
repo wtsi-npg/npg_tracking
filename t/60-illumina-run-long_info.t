@@ -29,7 +29,7 @@ package main;
 my $basedir = tempdir( CLEANUP => 1 );
 
 subtest 'retrieving information from runParameters.xml' => sub {
-  plan tests => 167;
+  plan tests => 177;
 
   my $rf = join q[/], $basedir, 'runfolder';
   mkdir $rf;
@@ -52,7 +52,8 @@ subtest 'retrieving information from runParameters.xml' => sub {
     RunParameters.novaseq.xp.xml
     RunParameters.novaseq.xp.v1.5.xml
     runParameters.hiseq.rr.truseq.xml
-    RunParameters.novaseqx.xml  
+    RunParameters.novaseqx.xml
+    RunParameters.novaseqx.prod.xml 
                   /;
   my $dir = 't/data/run_params';
 
@@ -117,8 +118,11 @@ subtest 'retrieving information from runParameters.xml' => sub {
     } else {
       ok (!$li->uses_patterned_flowcell, 'not patterned flowcell');
     }
-
-    ok (!$li->onboard_analysis_planned(), 'onboard analysis is not planned');
+    if ($f =~ /novaseqx\.prod/) {
+      ok ($li->onboard_analysis_planned(), 'onboard analysis is planned');
+    } else {
+      ok (!$li->onboard_analysis_planned(), 'onboard analysis is not planned');
+    }
 
     unlink $name;
   }

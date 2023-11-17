@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunParameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Side>B</Side>
+  <Application>NovaSeqXSeries Control Software</Application>
+  <SystemSuiteVersion>1.2.0.26276</SystemSuiteVersion>
+  <OutputFolder>//nx2-esa.dnapipelines.sanger.ac.uk/staging/IL_seq_data/incoming/20231019_LH00275_0006_B19NJCA4LE</OutputFolder>
+  <CloudUploadMode>InstrumentPerformance</CloudUploadMode>
+  <RunSetupMode>LocalOrchestrated</RunSetupMode>
+  <SecondaryAnalysisMode>LocalAnalysis</SecondaryAnalysisMode>
+  <InstrumentType>NovaSeqXPlus</InstrumentType>
+  <InstrumentSerialNumber>LH00275</InstrumentSerialNumber>
+  <RunId>20231019_LH00275_0006_B19NJCA4LE</RunId>
+  <RunCounter>6</RunCounter>
+  <RecipeName>25B Sequencing</RecipeName>
+  <RecipeVersion>25B-01.02.00</RecipeVersion>
+  <ExperimentName>47999_NX2_B</ExperimentName>
+  <FlowCellName>NovaSeqXSeries B4</FlowCellName>
+  <FlowCellType>NovaSeqXSeriesB4</FlowCellType>
+  <ConsumableInfo>
+    <ConsumableInfo>
+      <SerialNumber>19NJCA4LE</SerialNumber>
+      <LotNumber>9345L1E1</LotNumber>
+      <PartNumber>20088038</PartNumber>
+      <ExpirationDate>2024-04-29T00:00:00+01:00</ExpirationDate>
+      <Type>FlowCell</Type>
+      <Mode>4</Mode>
+      <Version>1.0</Version>
+      <Name>25B</Name>
+    </ConsumableInfo>
+    <ConsumableInfo>
+      <SerialNumber>LC2305090085-1</SerialNumber>
+      <LotNumber>23050901</LotNumber>
+      <PartNumber>20089853</PartNumber>
+      <ExpirationDate>2024-08-09T00:00:00+01:00</ExpirationDate>
+      <Type>Buffer</Type>
+      <Mode>3</Mode>
+      <Version>1.0</Version>
+      <Name>Universal</Name>
+    </ConsumableInfo>
+    <ConsumableInfo>
+      <SerialNumber>LC1001941-LS1</SerialNumber>
+      <LotNumber>1000018698</LotNumber>
+      <PartNumber>20101913</PartNumber>
+      <ExpirationDate>2025-08-25T00:00:00+01:00</ExpirationDate>
+      <Type>SampleTube</Type>
+      <Mode>3</Mode>
+      <Version>1.0</Version>
+      <Name>8 Lane</Name>
+    </ConsumableInfo>
+    <ConsumableInfo>
+      <SerialNumber>LC4044182-25B3</SerialNumber>
+      <LotNumber>20784608</LotNumber>
+      <PartNumber>20066626</PartNumber>
+      <ExpirationDate>2024-08-20T00:00:00+01:00</ExpirationDate>
+      <Type>Reagent</Type>
+      <Mode>4</Mode>
+      <Version>1.5</Version>
+      <Name>25B 300c</Name>
+    </ConsumableInfo>
+    <ConsumableInfo>
+      <SerialNumber>LC2000520-LI5</SerialNumber>
+      <LotNumber>17792769</LotNumber>
+      <PartNumber>20090674</PartNumber>
+      <ExpirationDate>2024-05-11T00:00:00+01:00</ExpirationDate>
+      <Type>Lyo</Type>
+      <Mode>11</Mode>
+      <Version>1.5</Version>
+      <Name>High</Name>
+    </ConsumableInfo>
+  </ConsumableInfo>
+  <PlannedReads>
+    <Read ReadName="Read1" Cycles="151" />
+    <Read ReadName="Index1" Cycles="8" />
+    <Read ReadName="Index2" Cycles="8" />
+    <Read ReadName="Read2" Cycles="151" />
+  </PlannedReads>
+  <SecondaryAnalysisInfo>
+    <SecondaryAnalysisInfo>
+      <SecondaryAnalysisPlatformVersion>4.1.7</SecondaryAnalysisPlatformVersion>
+      <SecondaryAnalysisWorkflow>
+        <string>DRAGEN BCL Convert</string>
+        <string>DRAGEN Germline</string>
+      </SecondaryAnalysisWorkflow>
+    </SecondaryAnalysisInfo>
+  </SecondaryAnalysisInfo>
+  <DisableBclCopy>false</DisableBclCopy>
+</RunParameters>

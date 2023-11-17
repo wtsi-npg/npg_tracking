@@ -592,7 +592,8 @@ instrument belonging to NovaSeq platform.
 
 sub platform_NovaSeq {
   my $self = shift;
-  return $self->_software_application_name() =~ /NovaSeq/xms;
+  return (!$self->platform_NovaSeqX() &&
+    ($self->_software_application_name() =~ /NovaSeq[ ]/xms));
 }
 
 =head2 platform_NovaSeqX
