@@ -630,7 +630,7 @@ subtest 'Dual index' => sub {
 };
 
 subtest 'Insert size' => sub {
-  plan tests => 14;
+  plan tests => 20;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
     't/data/samplesheet/4pool4libs_extended.csv';
@@ -657,11 +657,25 @@ subtest 'Insert size' => sub {
   is ($insert_size->{$id}->{q[to]}, 1000, 'required TO insert size');
   ok (!exists $insert_size->{q[6946_7_ACAACGCAAT]}, 'no required insert size');
   
-  $lims = st::api::lims->new(id_run => 9999, position => 7, tag_index => 77);
+  for my $l ((
+    st::api::lims->new(id_run => 9999, position => 7, tag_index => 77),
+    st::api::lims->new(rpt_list => '9999:7:77')
+  )) {
+    $insert_size = $l->required_insert_size;
+    is (keys %{$insert_size}, 1, 'one entry in the insert size hash');
+    is ($insert_size->{$id}->{q[from]}, 100, 'required FROM insert size');
+    is ($insert_size->{$id}->{q[to]}, 1000,'required TO insert size');
+  }
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    q[t/data/samplesheet/samplesheet_47995.csv];
+  
+  $lims = st::api::lims->new(rpt_list => '47995:1:3;47995:2:3');
   $insert_size = $lims->required_insert_size;
   is (keys %{$insert_size}, 1, 'one entry in the insert size hash');
+  $id = '65934645';
   is ($insert_size->{$id}->{q[from]}, 100, 'required FROM insert size');
-  is ($insert_size->{$id}->{q[to]}, 1000,'required TO insert size');
+  is ($insert_size->{$id}->{q[to]}, 400,'required TO insert size');
 };
 
 subtest 'Study and sample properties' => sub {
