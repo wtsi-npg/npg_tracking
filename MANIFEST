@@ -420,6 +420,7 @@ t/data/schema.txt
 t/data/090414_IL24_2726.tar.bz2
 t/data/dbic_fixtures/000-Designation.yml
 t/data/dbic_fixtures/000-EntityType.yml
+t/data/dbic_fixtures/000-InstrumentModDict.yml
 t/data/dbic_fixtures/000-InstrumentStatusDict.yml
 t/data/dbic_fixtures/000-Manufacturer.yml
 t/data/dbic_fixtures/000-RunLaneStatusDict.yml
@@ -432,6 +433,7 @@ t/data/dbic_fixtures/100-InstrumentFormat.yml
 t/data/dbic_fixtures/100-User2usergroup.yml
 t/data/dbic_fixtures/200-Event.yml
 t/data/dbic_fixtures/200-Instrument.yml
+t/data/dbic_fixtures/300-InstrumentMod.yml
 t/data/dbic_fixtures/300-Run.yml
 t/data/dbic_fixtures/300-RunLane.yml
 t/data/dbic_fixtures/400-RunLaneStatus.yml

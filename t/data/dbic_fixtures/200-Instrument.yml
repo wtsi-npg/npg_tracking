@@ -15,6 +15,14 @@
   iscurrent: 1
   ipaddr: 
   instrument_comp: nv2
+- id_instrument: 10
+  name: MS2
+  id_instrument_format: 2
+  external_name: 'M00523'
+  serial: ''
+  iscurrent: 1
+  ipaddr: 
+  instrument_comp: mc2
 - external_name: cBot2
   id_instrument: 49
   id_instrument_format: 7

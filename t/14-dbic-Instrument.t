@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Test::Deep;
 use Test::Exception;
 use DateTime;
@@ -232,6 +232,37 @@ subtest 'instrument and associated runs' => sub {
   $run->update_run_status('run cancelled', 'pipeline');
   is( $test->current_runs()->count(), 0, 'no current runs' );
   ok( $test->is_idle, 'instrument is idle');
+};
+
+subtest 'retrieve latest instrument modification revision' => sub {
+  plan tests => 7;
+
+  # No modifications are registered for this instrument.
+  my $instr = $schema->resultset('Instrument')->search({name => 'HS1'})->next();
+  is( $instr->latest_revision_for_modification('Dragen'), undef,
+    'Dragen mod revision is not available');
+
+  # One modification one version is registered for this instrument.
+  $instr = $schema->resultset('Instrument')->search({name => 'NV2'})->next();
+  is( $instr->latest_revision_for_modification('NVCS'), 'v1.7.5',
+    'correct NVCS modification revision');
+  is( $instr->latest_revision_for_modification('Dragen'), undef,
+    'Dragen mod revision is not available');
+  
+  # A few versions of the same modification are registered for instruments.
+  $instr = $schema->resultset('Instrument')->search({name => 'NV1'})->next();
+  is( $instr->latest_revision_for_modification('NVCS'), 'v1.8.1',
+    'correct NVCS modification revision');
+  $instr = $schema->resultset('Instrument')->search({name => 'MS2'})->next();
+  is( $instr->latest_revision_for_modification('MCS'), 'v3.1.0.13',
+    'correct MCS modification revision');
+  
+  # A few versions of different modifications.
+  $instr = $schema->resultset('Instrument')->search({name => 'NVX1'})->next();
+  is( $instr->latest_revision_for_modification('Dragen'), 'v4.1.7',
+    'correct Dragen modification revision');
+  is( $instr->latest_revision_for_modification('NXCS'), 'v1.2.0',
+    'correct NXCS modification revision');
 };
 
 1;

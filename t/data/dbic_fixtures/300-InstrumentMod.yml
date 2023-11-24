@@ -1,0 +1,78 @@
+---
+- date_added: 2014-12-04 13:58:34
+  date_removed: ~
+  id_instrument: 10
+  id_instrument_mod: 1
+  id_instrument_mod_dict: 86
+  id_user: 4
+  iscurrent: 1
+- date_added: 2014-12-04 13:58:51
+  date_removed: ~
+  id_instrument: 10
+  id_instrument_mod: 2
+  id_instrument_mod_dict: 96
+  id_user: 4
+  iscurrent: 1
+- date_added: 2014-12-04 13:59:07
+  date_removed: ~
+  id_instrument: 10
+  id_instrument_mod: 3
+  id_instrument_mod_dict: 97
+  id_user: 4
+  iscurrent: 1
+- date_added: 2023-10-20 11:56:10
+  date_removed: ~
+  id_instrument: 69
+  id_instrument_mod: 4
+  id_instrument_mod_dict: 102
+  id_user: 105
+  iscurrent: 1
+- date_added: 2023-10-22 12:52:59
+  date_removed: ~
+  id_instrument: 69
+  id_instrument_mod: 5
+  id_instrument_mod_dict: 103
+  id_user: 4
+  iscurrent: 1
+- date_added: 2023-11-02 12:55:26
+  date_removed: ~
+  id_instrument: 69
+  id_instrument_mod: 6
+  id_instrument_mod_dict: 104
+  id_user: 4
+  iscurrent: 1
+- date_added: 2023-11-02 12:59:05
+  date_removed: ~
+  id_instrument: 69
+  id_instrument_mod: 7
+  id_instrument_mod_dict: 105
+  id_user: 4
+  iscurrent: 1
+- date_added: 2023-11-02 12:50:05
+  date_removed: ~
+  id_instrument: 1
+  id_instrument_mod: 8
+  id_instrument_mod_dict: 101
+  id_user: 4
+  iscurrent: 1
+- date_added: 2023-10-02 12:50:05
+  date_removed: ~
+  id_instrument: 1
+  id_instrument_mod: 9
+  id_instrument_mod_dict: 100
+  id_user: 4
+  iscurrent: 1
+- date_added: 2023-09-02 12:50:05
+  date_removed: ~
+  id_instrument: 1
+  id_instrument_mod: 10
+  id_instrument_mod_dict: 98
+  id_user: 4
+  iscurrent: 1
+- date_added: 2023-09-10 12:50:05
+  date_removed: ~
+  id_instrument: 2
+  id_instrument_mod: 11
+  id_instrument_mod_dict: 99
+  id_user: 4
+  iscurrent: 1
