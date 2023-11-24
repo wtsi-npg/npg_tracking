@@ -498,7 +498,7 @@ sub _build_required_insert_size {
   my $self = shift;
 
   my $is_hash = {};
-  if (defined $self->position) {
+  if (defined $self->position or defined $self->rpt_list) {
     my @alims = $self->descendants;
     @alims = @alims ? @alims : ($self);
     foreach my $lims (@alims) {
