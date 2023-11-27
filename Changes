@@ -40,6 +40,7 @@ LIST OF CHANGES
    instruments well after the run was mirrored and the runfolder moved to
    'analysis'). The duplicate runfolder in 'incoming' is disregarded'.
  - DRAGEN samplesheet generation - limit analysis to human samples only.
+ - Fixed incorrect string comparison in the npg_move_runfolder script.
 
 release 97.0.2
  - pin DBD::mysql to 4.050 to keep temp support for old mysql clients
