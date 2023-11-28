@@ -13,8 +13,8 @@ jobs:
     env:
       PERL_CACHE: ~/perl5 # Perlbrew and CPAN modules installed here, cached
       NPG_LIB: ~/perl5npg # NPG modules installed here, not cached
-      WTSI_NPG_GITHUB_URL: https://github.com/wtsi-npg
-      WTSI_NPG_BUILD_BRANCH: ${GITHUB_HEAD_REF}
+      WSI_NPG_GITHUB_URL: https://github.com/wtsi-npg
+      WSI_NPG_BUILD_BRANCH: ${GITHUB_TARGET_REF}
 
 
     strategy:

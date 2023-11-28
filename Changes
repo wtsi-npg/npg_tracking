@@ -41,6 +41,8 @@ LIST OF CHANGES
    'analysis'). The duplicate runfolder in 'incoming' is disregarded'.
  - DRAGEN samplesheet generation - limit analysis to human samples only.
  - Fixed incorrect string comparison in the npg_move_runfolder script.
+ - Ensure that pull requests to the master branch source dependencies from
+   master branches (devel branch was hardcoded).
 
 release 97.0.2
  - pin DBD::mysql to 4.050 to keep temp support for old mysql clients

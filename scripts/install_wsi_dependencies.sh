@@ -22,8 +22,8 @@ for repo in "$@" ; do
 
     # Shift off master to appropriate branch (if possible)
     git ls-remote --heads --exit-code origin "$WSI_NPG_BUILD_BRANCH" && \
-	    git pull origin "$WSI_NPG_BUILD_BRANCH" && \
-	    echo "Switched to branch $WSI_NPG_BUILD_BRANCH"
+      git pull origin "$WSI_NPG_BUILD_BRANCH" && \
+      echo "Switched to branch $WSI_NPG_BUILD_BRANCH"
     repos="$repos /tmp/${repo}.git"
 done
 
