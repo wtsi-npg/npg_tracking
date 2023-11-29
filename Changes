@@ -1,5 +1,5 @@
 LIST OF CHANGES
-some change
+some more change
  - Removed the use of 'xml' lims driver from all tests.
  - Deleted 'xml' lims driver class and all classes which supported this
    functionality, together with all related tests and test data.
