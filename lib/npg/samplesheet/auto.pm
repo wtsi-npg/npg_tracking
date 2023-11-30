@@ -11,7 +11,6 @@ use File::Spec::Functions;
 use npg::samplesheet;
 use npg_tracking::Schema;
 use WTSI::DNAP::Warehouse::Schema;
-use st::api::lims;
 use st::api::lims::samplesheet;
 
 with q(MooseX::Log::Log4perl);
@@ -107,17 +106,10 @@ sub process {
     my $id_run = $r->id_run;
     $self->log->info('Considering ' . join q[,],$id_run,$r->instrument->name);
 
-    my $l = st::api::lims->new(
-      position         => 1,
-      id_run           => $id_run,
-      id_flowcell_lims => $r->batch_id,
-      driver_type      => q(ml_warehouse),
-      mlwh_schema      => $self->mlwh_schema
+    my $ss = npg::samplesheet->new(
+      run => $r, mlwh_schema => $self->mlwh_schema
     );
-
-    my $ss = npg::samplesheet->new(run => $r, lims => [$l]);
-
-    my$o=$ss->output;
+    my $o = $ss->output;
     my $generate_new = 1;
 
     if(-e $o) {
@@ -227,8 +219,6 @@ __END__
 =item npg_tracking::Schema
 
 =item npg::samplesheet
-
-=item st:api::lims
 
 =item st::api::lims::samplesheet
 

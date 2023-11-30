@@ -121,7 +121,6 @@ my $builder = $class->new(
                 'base'                            => '2.12',
                 'Carp'                            => '1.04',
                 'CGI'                             => '3.52',
-                'Class::Accessor'                 => '0.31',
                 'Class::Load'                     => 0,
                 'Class::Std'                      => '0.0.8',
                 'ClearPress'                      => '>= 473.3.3',

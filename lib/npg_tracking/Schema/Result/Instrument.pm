@@ -241,7 +241,7 @@ __PACKAGE__->belongs_to(
   "instrument_format",
   "npg_tracking::Schema::Result::InstrumentFormat",
   { id_instrument_format => "id_instrument_format" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 instrument_mods
@@ -290,8 +290,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2022-01-10 16:30:08
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:7AZ9QOLc9VZulP3ExZljWQ
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:EZWWx8ih32aSy82wpKEPLQ
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08

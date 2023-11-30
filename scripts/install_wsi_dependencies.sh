@@ -21,9 +21,10 @@ for repo in "$@" ; do
     cd "/tmp/${repo}.git"
 
     # Shift off master to appropriate branch (if possible)
+    echo "Want to switch to branch $WSI_NPG_BUILD_BRANCH"
     git ls-remote --heads --exit-code origin "$WSI_NPG_BUILD_BRANCH" && \
-	    git pull origin "$WSI_NPG_BUILD_BRANCH" && \
-	    echo "Switched to branch $WSI_NPG_BUILD_BRANCH"
+      git pull origin "$WSI_NPG_BUILD_BRANCH" && \
+      echo "Switched to branch $WSI_NPG_BUILD_BRANCH"
     repos="$repos /tmp/${repo}.git"
 done
 

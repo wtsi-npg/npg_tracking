@@ -592,7 +592,8 @@ instrument belonging to NovaSeq platform.
 
 sub platform_NovaSeq {
   my $self = shift;
-  return $self->_software_application_name() =~ /NovaSeq/xms;
+  return (!$self->platform_NovaSeqX() &&
+    ($self->_software_application_name() =~ /NovaSeq[ ]/xms));
 }
 
 =head2 platform_NovaSeqX
@@ -654,17 +655,14 @@ sub _build_sbs_consumable_version {
 
 =head2 all_lanes_mergeable
 
-Returns true if either the NovaSeq Standard (ie not NovaSeqXp) workflow
-was used or this was a rapid run since in the latter case same library is used
-on both lanes.
+Returns true if the NovaSeq Standard (ie not NovaSeqXp) workflow was used
+since it is guaranteed that the same library is used on all lanes.
 
 =cut
 
 sub all_lanes_mergeable {
   my $self = shift;
-  return (
-    ($self->workflow_type() =~ /NovaSeqStandard/xms) or $self->is_rapid_run()
-         );
+  return ($self->workflow_type() =~ /NovaSeqStandard/xms);
 }
 
 =head2 is_rapid_run

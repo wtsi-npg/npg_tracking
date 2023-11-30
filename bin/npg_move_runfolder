@@ -22,7 +22,7 @@ GetOptions (
 );
 if ($help) { pod2usage(0); }
 
-if (!defined $runfolder_path || $runfolder_path == q[]) {
+if (!defined $runfolder_path || $runfolder_path eq q[]) {
     die "ERROR: --runfolder_path argument is required\n";
 }
 

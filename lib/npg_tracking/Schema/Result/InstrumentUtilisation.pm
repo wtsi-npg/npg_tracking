@@ -259,12 +259,12 @@ __PACKAGE__->belongs_to(
   "instrument_format",
   "npg_tracking::Schema::Result::InstrumentFormat",
   { id_instrument_format => "id_instrument_format" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2013-07-23 16:11:42
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:XRcRHyyuFbfg8mml8Zazow
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rbmVI5hlEgTZFDj665rTkw
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08

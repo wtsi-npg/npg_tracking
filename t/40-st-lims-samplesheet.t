@@ -337,7 +337,7 @@ subtest 'Multiple NovaSeq runs - top-up merge support' => sub {
   }
 };
 
-subtest 'multiple lanes, comparison of xml and samplesheet drivers' => sub {
+subtest 'multiple lanes' => sub {
   plan tests => 5;
 
   my $path = 't/data/samplesheet/4pool4libs_extended.csv';

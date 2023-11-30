@@ -159,7 +159,7 @@ __PACKAGE__->belongs_to(
   "run",
   "npg_tracking::Schema::Result::Run",
   { id_run => "id_run" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 run_lane_annotations
@@ -208,8 +208,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07036 @ 2015-04-09 18:30:04
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:sx8IuqL2QoP14bT5pPCLHw
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:r1nt5B+vzIvP6TfQpID2TA
 
 # Created:       2010-04-08
 

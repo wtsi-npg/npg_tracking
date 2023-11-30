@@ -18,6 +18,9 @@ our $VERSION = '0';
 
 with q{npg_tracking::illumina::run};
 
+# Top-level directory where instruments create runfolders
+Readonly::Scalar my  $INCOMING_DIR      => q{/incoming/};
+
 # Directories created by Illumina software
 Readonly::Scalar my  $DATA_DIR          => q{Data};
 Readonly::Scalar my  $CONFIG_DIR        => q{Config};
@@ -287,11 +290,18 @@ sub _get_path_from_glob_pattern {
     croak q{No paths to run folder found};
   }
 
-  my %fs_inode_hash; #ignore multiple paths point to the same folder
+  my %fs_inode_hash; # ignore multiple paths point to the same folder
   @dir = grep { not $fs_inode_hash { join q(,), stat $_ }++ } @dir;
-
   if ( @dir > 1 ) {
-    croak q{Ambiguous paths for run folder found: } . join qq{\n}, @dir;
+    # Ignore the case when some of the directories are in the /incoming/
+    # folder - these are likely to be spurious directories created by
+    # instruments well after the run was mirrored and moved to /analysis/
+    # or even to /outgoing/.
+    my @dir_not_incoming = grep { $_ !~ /$INCOMING_DIR/xms } @dir;
+    if (!@dir_not_incoming || (@dir_not_incoming > 1)) {
+      croak q{Ambiguous paths for run folder found: } . join qq{\n}, @dir;
+    }
+    @dir = @dir_not_incoming;
   }
 
   return shift @dir;

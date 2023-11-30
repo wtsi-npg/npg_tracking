@@ -143,7 +143,7 @@ __PACKAGE__->belongs_to(
   "run",
   "npg_tracking::Schema::Result::Run",
   { id_run => "id_run" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 run_status_dict
@@ -158,7 +158,7 @@ __PACKAGE__->belongs_to(
   "run_status_dict",
   "npg_tracking::Schema::Result::RunStatusDict",
   { id_run_status_dict => "id_run_status_dict" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 user
@@ -173,12 +173,12 @@ __PACKAGE__->belongs_to(
   "user",
   "npg_tracking::Schema::Result::User",
   { id_user => "id_user" },
-  { is_deferrable => 1, on_delete => "NO ACTION", on_update => "NO ACTION" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07036 @ 2014-02-20 10:43:39
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:orIX7xdPPHiChilWRRZiUA
+# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:dT2INHDh66tlPrPsaEnGaA
 
 # Created:       2010-04-08
 

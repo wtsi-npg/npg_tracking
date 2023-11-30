@@ -11,6 +11,7 @@ use Class::Load qw/load_class/;
 
 use npg_tracking::util::types;
 use npg_tracking::glossary::rpt;
+use npg_tracking::glossary::composition::factory::rpt_list;
 
 our $VERSION = '0';
 
@@ -61,10 +62,9 @@ Readonly::Scalar our $CACHED_SAMPLESHEET_FILE_VAR_NAME => 'NPG_CACHED_SAMPLESHEE
 Readonly::Scalar my $SAMPLESHEET_DRIVER_TYPE => 'samplesheet';
 Readonly::Scalar my $DEFAULT_DRIVER_TYPE => $SAMPLESHEET_DRIVER_TYPE;
 
-Readonly::Scalar my $PROC_NAME_INDEX       => 3;
-Readonly::Hash   my %QC_EVAL_MAPPING       => {'pass' => 1, 'fail' => 0, 'pending' => undef, };
-Readonly::Scalar my $INLINE_INDEX_END      => 10;
 Readonly::Scalar my $DUAL_INDEX_TAG_LENGTH => 16;
+
+Readonly::Scalar my $TAG_INDEX_4_UNDEFINED => -1;
 
 Readonly::Hash   my  %METHODS_PER_CATEGORY => {
     'primary'    =>   [qw/ tag_index
@@ -131,17 +131,12 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
                            study_separate_y_chromosome_data
                       /],
 
-    'project'      => [qw/ project_id
-                           project_name
-                           project_cost_code
-                      /],
-
-    'request'      => [qw/ request_id /],
+    'project'      => [qw/ project_cost_code /],
 };
 
-Readonly::Array my @METHODS             => sort map { @{$_} } values %METHODS_PER_CATEGORY;
-Readonly::Array my @DELEGATED_METHODS   => sort map { @{$METHODS_PER_CATEGORY{$_}} }
-                                             grep {$_ ne 'primary'} keys %METHODS_PER_CATEGORY;
+Readonly::Array my @METHODS           => sort map { @{$_} } values %METHODS_PER_CATEGORY;
+Readonly::Array my @DELEGATED_METHODS => sort map { @{$METHODS_PER_CATEGORY{$_}} }
+                                         grep {$_ ne 'primary'} keys %METHODS_PER_CATEGORY;
 
 has '_driver_arguments' => (
                         isa      => 'HashRef',
@@ -211,9 +206,7 @@ sub BUILD {
 Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
     'library'      => [qw/ id
                            name
-                         /],
-    'project'      => [qw/ id
-
+                           type
                          /],
     'sample'       => [qw/ accession_number
                            cohort
@@ -222,6 +215,7 @@ Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
                            id
                            name
                            public_name
+                           reference_genome
                            supplier_name
                          /],
     'study'        => [qw/ accession_number
@@ -231,6 +225,68 @@ Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
                          /]
 };
 
+=head2 library_names
+
+A list of library names. if $self->is_pool is true, returns unique library
+names of plex-level objects, otherwise returns object's own library name.
+Takes an optional argument with_spiked_control, wich defaults to true.
+
+=head2 library_ids
+
+Similar to library_names, but for ids.
+
+=head2 library_types
+
+Similar to library_names, but for types.
+
+=head2 sample_names
+
+A list of sample names. if $self->is_pool is true, returns unique sample
+names of plex-level objects, otherwise returns object's own sample name.
+Takes an optional argument with_spiked_control, wich defaults to true.
+
+=head2 sample_cohorts
+
+Similar to sample_names, but for cohorts.
+
+=head2 sample_donor_ids
+
+Similar to sample_names, but for donor_ids.
+
+=head2 sample_ids
+
+Similar to sample_names, but for ids.
+
+=head2 sample_public_names
+
+Similar to sample_names, but for public_names.
+
+=head2 sample_supplier_names
+
+Similar to sample_names, but for supplier_names.
+
+=head2 study_names
+
+A list of study names. if $self->is_pool is true, returns unique study
+names of plex-level objects, otherwise returns object's own study name.
+Takes an optional argument with_spiked_control, wich defaults to true.
+
+=head2 study_accession_numbers
+
+Similar to study_names, but for accession_numbers.
+
+=head2 study_ids
+
+Similar to study_names, but for ids.
+
+=head2 study_titles
+
+Similar to study_names, but for study_titles.
+
+=cut
+
+# Dynamicaly generate methods for getting 'plural' values.
+# The methods are documented above.
 foreach my $object_type (keys %ATTRIBUTE_LIST_METHODS) {
   foreach my $property (@{$ATTRIBUTE_LIST_METHODS{$object_type}}) {
     my $attr_name   = join q[_], $object_type, $property;
@@ -247,7 +303,7 @@ foreach my $object_type (keys %ATTRIBUTE_LIST_METHODS) {
 
 =head2 driver_type
 
-Driver type (xml, etc), currently defaults to xml
+Driver type, currently defaults to 'samplesheet'
 
 =cut
 has 'driver_type' => ( isa        => 'Str',
@@ -257,7 +313,7 @@ has 'driver_type' => ( isa        => 'Str',
                      );
 sub _build_driver_type {
   my $self = shift;
-  if($self->has_driver && $self->driver){
+  if ($self->has_driver && $self->driver){
     my $type = ref $self->driver;
     my $prefix = __PACKAGE__ . q(::);
     $type =~ s/\A\Q$prefix\E//smx;
@@ -273,7 +329,7 @@ sub _build_driver_type {
 
 =head2 driver
 
-Driver object (xml, warehouse, mlwarehouse, samplesheet ...)
+Driver object (mlwarehouse, samplesheet)
 
 =cut
 has 'driver' => ( 'isa'       => 'Maybe[Object]',
@@ -327,90 +383,6 @@ for my $m ( @METHODS ){
 # All methods are created, now aliases for methods can be defined.
 alias primer_panel => 'gbs_plex_name';
 
-=head2 inline_index_read
-
-index read
-
-=cut
-
-has 'inline_index_read' => (isa        => 'Maybe[Int]',
-                            is         => 'ro',
-                            init_arg   => undef,
-                            lazy_build => 1,
-                           );
-
-sub _build_inline_index_read {
-  my $self = shift;
-  my @x = _parse_sample_description($self->_sample_description);
-  return $x[3];  ## no critic (ProhibitMagicNumbers)
-}
-
-has 'inline_index_end' => (isa        => 'Maybe[Int]',
-                           is         => 'ro',
-                           init_arg   => undef,
-                           lazy_build => 1,
-                          );
-
-=head2 inline_index_end
-
-index end
-
-=cut
-
-sub _build_inline_index_end {
-  my $self = shift;
-  my @x = _parse_sample_description($self->_sample_description);
-  return $x[2];
-}
-
-=head2 inline_index_start
-
-index start
-
-=cut
-
-has 'inline_index_start' => (isa        => 'Maybe[Int]',
-                             is         => 'ro',
-                             init_arg   => undef,
-                             lazy_build => 1,
-                            );
-
-sub _build_inline_index_start {
-  my $self = shift;
-  my @x = _parse_sample_description($self->_sample_description);
-  return $x[1];
-}
-
-=head2 inline_index_exists
-
-=cut
-
-has 'inline_index_exists' => (isa        => 'Bool',
-                              is         => 'ro',
-                              init_arg   => undef,
-                              lazy_build => 1,
-                             );
-
-sub _build_inline_index_exists {
-  my $self = shift;
-  return _tag_sequence_from_sample_description($self->_sample_description) ? 1 : 0;
-}
-
-has '_sample_description' => (isa        => 'Maybe[Str]',
-                              is         => 'ro',
-                              init_arg   => undef,
-                              lazy_build => 1,
-                             );
-
-sub _build__sample_description {
-  my $self = shift;
-  return $self->sample_description if ($self->sample_description);
-  foreach my $c ($self->children) {
-    return $c->sample_description if ($c->sample_description);
-  }
-  return;
-}
-
 =head2 is_phix_spike
 
 True for a plex library that is the spiked phiX.
@@ -452,9 +424,6 @@ sub _build_tag_sequence {
 Read-only array accessor, not possible to set from the constructor.
 Empty array on a lane level and for zero tag_index.
 
-Might return not the index given by LIMs, but the one contained in the
-sample description.
-
 If dual index is used, the array contains two sequences. The secons index
 might come from LIMS or, if LIMs has one long index, it will be split in two.
 
@@ -467,34 +436,24 @@ has 'tag_sequences' =>   (isa             => 'ArrayRef',
 sub _build_tag_sequences {
   my $self = shift;
 
-  my ($seq, $seq2);
-  if ($self->tag_index) {
-    if (!$self->spiked_phix_tag_index || $self->tag_index != $self->spiked_phix_tag_index) {
-      if ($self->sample_description) {
-        $seq = _tag_sequence_from_sample_description($self->sample_description);
-      }
-    }
-    if (!$seq) {
-      $seq = $self->default_tag_sequence;
-      if ($seq && $self->default_tagtwo_sequence) {
-        $seq2 = $self->default_tagtwo_sequence;
-      }
-    }
-  }
-
   my @sqs = ();
-  if ($seq) {
-    push @sqs, $seq;
-  }
-  if ($seq2) {
-    push @sqs, $seq2;
-  }
 
-  if (scalar @sqs == 1) {
-    if (length($sqs[0]) == $DUAL_INDEX_TAG_LENGTH) {
-      my $tag_length = $DUAL_INDEX_TAG_LENGTH/2;
-      push @sqs, substr $sqs[0], $tag_length;
-      $sqs[0] = substr $sqs[0], 0, $tag_length;
+  if ($self->tag_index) {
+    my $seq = $self->default_tag_sequence;
+    if ($seq) {
+      push @sqs, $seq;
+      $seq = $self->default_tagtwo_sequence;
+      if ($seq) {
+        push @sqs, $seq;
+      }
+    }
+
+    if (scalar @sqs == 1) {
+      if (length($sqs[0]) == $DUAL_INDEX_TAG_LENGTH) {
+        my $tag_length = $DUAL_INDEX_TAG_LENGTH/2;
+        push @sqs, substr $sqs[0], $tag_length;
+        $sqs[0] = substr $sqs[0], 0, $tag_length;
+      }
     }
   }
 
@@ -530,7 +489,7 @@ sub _build_tags {
 =head2 required_insert_size
 
 Read-only accessor, not possible to set from the constructor.
-Returns a has reference of expected insert sizes.
+Returns a hash reference of expected insert sizes.
 
 =cut
 has 'required_insert_size'  => (isa             => 'HashRef',
@@ -542,74 +501,34 @@ sub _build_required_insert_size {
   my $self = shift;
 
   my $is_hash = {};
-  my $size_element_defined = 0;
-  if (defined $self->position && !$self->is_control) {
-    my @alims = $self->associated_lims;
-    if (!@alims) {
-      @alims = ($self);
-    }
+  if (defined $self->position or defined $self->rpt_list) {
+    my @alims = $self->descendants;
+    @alims = @alims ? @alims : ($self);
     foreach my $lims (@alims) {
-      $self->_entity_required_insert_size($lims, $is_hash, \$size_element_defined);
-    }
-  }
-  return $is_hash;
-}
-sub _entity_required_insert_size {
-  my ($self, $lims, $is_hash, $isize_defined) = @_;
-
-  if (!$is_hash) {
-    croak q[Isize hash ref should be supplied];
-  }
-  if (!$lims) {
-    croak q[Lims object should be supplied];
-  }
-
-  if (!$lims->is_control) {
-    my $is = $lims->required_insert_size_range;
-    if ($is && keys %{$is}) {
-      ${$isize_defined} = 1;
+      if ($lims->is_control) {
+        next;
+      }
+      my $is = $lims->required_insert_size_range || {};
       foreach my $key (qw/to from/) {
         my $value = $is->{$key};
         if ($value) {
-          my $lib_key = $lims->library_id || $lims->tag_index || $lims->sample_id;
+          my $lib_key = $lims->library_id || $lims->sample_id;
           $is_hash->{$lib_key}->{$key} = $value;
         }
       }
     }
   }
-  return;
-}
 
-=head2 seq_qc_state
-
- 1 for passes, 0 for failed, undef if the value is not set.
-
- This method is deprecated as of 08 March 2016. It should not be used in any
- new code. The only place where this method is used in production code is
- the old warehouse loader. Deprecation warning is not appropriate because the
- old wh loader logs will be flooded.
-
-=cut
-sub  seq_qc_state {
-  my $self = shift;
-  my $state = $self->driver ? $self->driver->qc_state : q[];
-  if (!defined $state || $state eq '1' || $state eq '0') {
-    return $state;
-  }
-  if ($state eq q[]) {
-    return;
-  }
-  if (!exists  $QC_EVAL_MAPPING{$state}) {
-    croak qq[Unexpected value '$state' for seq qc state in ] . $self->to_string;
-  }
-  return $QC_EVAL_MAPPING{$state};
+  return $is_hash;
 }
 
 =head2 reference_genome
 
 Read-only accessor, not possible to set from the constructor.
 Returns pre-set reference genome, retrieving it either from a sample,
-or, failing that, from a study.
+or, failing that, from a study. The exception from the latter rule is
+tag zero or lane objects, where a fall-back to the study genome is
+disabled if the child objects have different sample reference genomes.
 
 =cut
 has 'reference_genome' => (isa             => 'Maybe[Str]',
@@ -621,6 +540,24 @@ sub _build_reference_genome {
   my $self = shift;
   my $rg = $self->_trim_value($self->sample_reference_genome);
   if (!$rg ) {
+    if ($self->is_pool || $self->is_composition) {
+      my @children = $self->children();
+      if ($self->is_composition) {
+        # Tag zero and lane components have their own children.
+        my @tmp_children = map { ($_->children) } @children;
+        if (@tmp_children) {
+          @children = @tmp_children;
+        }
+      }
+      my @sample_ref_genomes =
+        grep { $_ }
+        map { $self->_trim_value($_->sample_reference_genome) }
+        grep { !$_->is_phix_spike }
+        @children;
+      if (@sample_ref_genomes) {
+        return;
+      }
+    }
     $rg = $self->_trim_value($self->study_reference_genome);
   }
   return $rg;
@@ -976,6 +913,160 @@ sub aggregate_xlanes {
   return @aggregated;
 }
 
+=head2 aggregate_libraries
+
+Given a list of lane-level C<st::api::lims> objects, finds their children,
+which can be merged and analysed together across all or some of the lanes.
+If children are not present, considers lane-level object as a single
+library.
+
+All argument lane objects should belong to the same run. It is assumed that
+they all use the same C<st::api::lims> driver type.
+
+Returns two lists of objects, one for merged entities and one for singletons,
+which are wrapped into a dictionary. Either of these lists can be empty. Both
+of the lists are guaranteed not to be empty at the same time.
+
+Tag zero objects are neither added nor explicitly removed. Objects for
+spiked-in controls (if present) are always added to the list of singletons.
+
+The lists of singletons and merges are returned as sorted lists. For a given
+set of input lane-level  C<st::api::lims> objects the same lists are always
+returned.
+
+Criteria for entities to be eligible for a merge:
+  they are not controls,
+  they belong to the same library,
+  they share the same tag index,
+  they belong to different lanes, one per lane,
+  they belong to the same study.
+
+This method can be used both as instance and as a class method.
+
+  my $all_lims = st::api::lims->aggregate_libraries($run_lims->children());
+  for my $l (@{$all_lims->{'singles'}}) {
+    print 'No merge for ' . $l->to_string;    
+  }
+  for my $l (@{$all_lims->{'merges'}}) {
+    print 'Merged entity ' . $l->to_string;
+  }
+
+=cut
+
+sub aggregate_libraries() {
+  my ($self, $lane_lims_array) = @_;
+
+  # This restriction might be lifted in future.
+  _check_value_is_unique('id_run', 'run IDs', $lane_lims_array);
+
+  my $lims_objects_by_library = {};
+  my @singles = ();
+  my @all_single_lims_objs = map { $_->is_pool ? $_->children() : $_ }
+                             @{$lane_lims_array};
+  foreach my $obj (@all_single_lims_objs) {
+    if ($obj->is_control()) {
+      push @singles, $obj;
+    } else {
+      push @{$lims_objects_by_library->{$obj->library_id}}, $obj;
+    }
+  }
+
+  # Get the common st::api::lims driver arguments, which will be used
+  # to create objects for merged entities.
+  # Do not use $self for copying the driver arguments in order to retain
+  # ability to use this method as a class method.
+  my %init = %{$lane_lims_array->[0]->_driver_arguments()};
+  delete $init{position};
+  delete $init{id_run};
+
+  my $merges = {};
+  my $lane_set_delim = q[,];
+  foreach my $library_id (keys %{$lims_objects_by_library}) {
+    my @lib_lims = @{$lims_objects_by_library->{$library_id}};
+    if (@lib_lims == 1) {
+      push @singles, @lib_lims;
+    } else {
+      _check_merge_correctness(\@lib_lims);
+      my $lane_set = join $lane_set_delim,
+        sort { $a <=> $b } map { $_->position } @lib_lims;
+      my $tag_index = $lib_lims[0]->tag_index ;
+      if (!defined $tag_index) {
+        $tag_index = $TAG_INDEX_4_UNDEFINED;
+      }
+      #####
+      # rpt_list which we use to instantiate the object below has to be
+      # ordered correctly. Wrong order might not change the properties of
+      # the resulting st::api::lims object. However, difficult to track
+      # bugs might result in a situation when the value of this
+      # attribute for the object itself and for the composition object
+      # for this object differs.
+      my $rpt_list = npg_tracking::glossary::rpt->deflate_rpts(\@lib_lims);
+      $rpt_list = npg_tracking::glossary::composition::factory::rpt_list
+        ->new(rpt_list => $rpt_list)->create_composition()
+        ->freeze2rpt();
+      $merges->{$lane_set}->{$tag_index} = __PACKAGE__->new(
+        %init, rpt_list => $rpt_list
+      );
+    }
+  }
+
+  # Lane sets should not intersect. Error if a lane belongs to multiple sets.
+  my @all_lanes_in_merged_sets = map { (split /$lane_set_delim/smx, $_) }
+                                 keys %{$merges};
+  if (@all_lanes_in_merged_sets != uniq @all_lanes_in_merged_sets) {
+    croak 'No clean split between lanes in potential merges';
+  }
+
+  my $all_lims_objects = {'singles' => [], 'merges' => []};
+  # Arrange in a predictable consistent orger.
+  foreach my $lane_set ( sort keys %{$merges} ) {
+    my @tag_indexes = sort { $a <=> $b } keys %{$merges->{$lane_set}};
+    push @{$all_lims_objects->{'merges'}},
+      (map { $merges->{$lane_set}->{$_} } @tag_indexes);
+  }
+  $all_lims_objects->{'singles'} = [
+    sort {##no critic (BuiltinFunctions::ProhibitReverseSortBlock BuiltinFunctions::RequireSimpleSortBlock)
+      my $index_a = defined $a->tag_index ?
+        $a->tag_index : $TAG_INDEX_4_UNDEFINED;
+      my $index_b = defined $b->tag_index ?
+        $b->tag_index : $TAG_INDEX_4_UNDEFINED;
+      $a->position <=> $b->position || $index_a <=> $index_b
+    }
+    @singles
+  ];
+
+  # Sanity check.
+  my $num_objects = @{$all_lims_objects->{'merges'}} +
+                    @{$all_lims_objects->{'singles'}};
+  if ($num_objects == 0) {
+    croak 'Invalid aggregation by library, no objects returned';
+  }
+
+  return $all_lims_objects;
+}
+
+sub _check_merge_correctness{
+  my $lib_lims = shift;
+  my @lanes = uniq  map {$_->position} @{$lib_lims};
+  if (@lanes != @{$lib_lims}) {
+    croak 'Intra-lane merge is detected';
+  }
+  _check_value_is_unique('study_id', 'studies', $lib_lims);
+  _check_value_is_unique('tag_index', 'tag indexes', $lib_lims);
+  return;
+}
+
+sub _check_value_is_unique {
+  my ($method_name, $property_name, $objects) = @_;
+  my @values = uniq
+               map { defined $_->$method_name ? $_->$method_name : 'undefined' }
+               @{$objects};
+  if (@values != 1) {
+    croak "Multiple $property_name in a potential merge by library";
+  }
+  return;
+}
+
 =head2 create_tag_zero_object
  
 Using id_run and position values of this object, creates and returns
@@ -1054,20 +1145,6 @@ sub descendants {
   return @lims;
 }
 
-=head2 associated_lims
-
-The same as descendants. Retained for backward compatibility
-
-=cut
-*associated_lims = \&descendants; #backward compat
-
-=head2 associated_child_lims
-
-The same as children. Retained for backward compatibility
-
-=cut
-*associated_child_lims = \&children; #backward compat
-
 =head2 children_ia
 
 Method providing fast (index-based) access to child lims object.
@@ -1113,13 +1190,6 @@ sub sample_publishable_name {
   return $self->sample_accession_number() || $self->sample_public_name() || $self->sample_name();
 }
 
-=head2 associated_child_lims_ia
-
-The same as children_ia. Retained for backward compatibility
-
-=cut
-*associated_child_lims_ia = \&children_ia; #backward compat
-
 sub _list_of_attributes {
   my ($self, $attr_name, $with_spiked_control) = @_;
   my @l = ();
@@ -1157,103 +1227,6 @@ sub _single_attribute {
   return;
 }
 
-=head2 library_names
-
-A list of library names. if $self->is_pool is true, returns unique library
-names of plex-level objects, otherwise returns object's own library name.
-Takes an optional argument with_spiked_control, wich defaults to true.
-
-
-=cut
-
-=head2 library_ids
-
-Similar to library_names, but for ids.
-
-=cut
-
-
-=head2 sample_names
-
-A list of sample names. if $self->is_pool is true, returns unique sample
-names of plex-level objects, otherwise returns object's own sample name.
-Takes an optional argument with_spiked_control, wich defaults to true.
-
-=cut
-
-
-=head2 sample_cohorts
-
-Similar to sample_names, but for cohorts.
-
-=cut
-
-
-=head2 sample_donor_ids
-
-Similar to sample_names, but for donor_ids.
-
-=cut
-
-
-=head2 sample_ids
-
-Similar to sample_names, but for ids.
-
-=cut
-
-
-=head2 sample_public_names
-
-Similar to sample_names, but for public_names.
-
-=cut
-
-
-=head2 sample_supplier_names
-
-Similar to sample_names, but for supplier_names.
-
-=cut
-
-
-=head2 study_names
-
-A list of study names. if $self->is_pool is true, returns unique study
-names of plex-level objects, otherwise returns object's own study name.
-Takes an optional argument with_spiked_control, wich defaults to true.
-
-=cut
-
-
-=head2 study_accession_numbers
-
-Similar to study_names, but for accession_numbers.
-
-=cut
-
-
-=head2 study_ids
-
-Similar to study_names, but for ids.
-
-=cut
-
-
-=head2 study_titles
-
-Similar to study_names, but for study_titles.
-
-=cut
-
-
-=head2 project_ids
-
-A list of project ids, similar to study_ids.
-
-=cut
-
-
 =head2 library_type
 
 Read-only accessor, not possible to set from the constructor.
@@ -1266,54 +1239,14 @@ has 'library_type' =>     (isa             => 'Maybe[Str]',
                           );
 sub _build_library_type {
   my $self = shift;
-  if($self->is_pool) { return; }
-  return _derived_library_type($self);
-}
 
-sub _derived_library_type {
-  my $o = shift;
-  my $type = $o->default_library_type;
-  if ($o->tag_index && $o->sample_description &&
-      _tag_sequence_from_sample_description($o->sample_description)) {
-    $type = '3 prime poly-A pulldown';
+  my $type;
+  if (!$self->is_pool) {
+    $type = $self->default_library_type;
   }
   $type ||= undef;
+
   return $type;
-}
-
-sub _tag_sequence_from_sample_description {
-  my $desc = shift;
-  my @x = _parse_sample_description($desc);
-  return $x[0];
-}
-
-sub _parse_sample_description {
-  my $desc = shift;
-  my $tag=undef;
-  my $start=undef;
-  my $end=undef;
-  my $read=undef;
-  if ($desc && (($desc =~ m/base\ indexing\ sequence/ismx) && ($desc =~ m/enriched\ mRNA/ismx))) {
-    ($tag) = $desc =~ /\(([ACGT]+)\)/smx;
-    if ($desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ read\ 1/smx) {
-        ($start, $end, $read) = ($1, $2, 1);
-    } elsif ($desc =~ /bases\ (\d+)\ to\ (\d+)\ of\ non\-index\ read\ (\d)/smx) {
-        ($start, $end, $read) = ($1, $2, $3);
-    } else {
-        croak q[Error parsing sample description ] . $desc;
-    }
-  }
-  return ($tag, $start, $end, $read);
-}
-
-=head2 library_types
-
-A list of library types, excluding spiked phix library
-
-=cut
-sub library_types {
-  my ($self) = @_;
-  return $self->_list_of_attributes('_derived_library_type',0);
 }
 
 =head2 driver_method_list
@@ -1438,7 +1371,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2015,2016,2017,2018,2019,2020,2021 Genome Research Ltd.
+Copyright (C) 2013,2014,2015,2016,2017,2018,2019,2020,2021,2023 Genome Research Ltd.
 
 This file is part of NPG.
 
