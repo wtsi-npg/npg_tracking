@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 98.0.0
  - Removed the use of 'xml' lims driver from all tests.
  - Deleted 'xml' lims driver class and all classes which supported this
    functionality, together with all related tests and test data.
