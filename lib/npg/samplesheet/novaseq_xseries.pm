@@ -39,9 +39,6 @@ Readonly::Hash my %REFERENCE_MAPING => (
   'Homo_sapiens' => 'hg38-alt_masked.cnv.graph.hla.rna-8-1667497097-2'
 );
 
-# The version of the DRAGEN software currently on-board of the instrument.
-Readonly::Scalar my $SOFTWARE_VERSION => '4.1.7';
-
 # DRAGEN can process a limited number of distinct configurations.
 # For on-board analysis it's 4.
 Readonly::Scalar my $DRAGEN_MAX_NUMBER_OF_CONFIGS => 4;
@@ -90,6 +87,36 @@ L<https://support-docs.illumina.com/IN/NovaSeqX/Content/IN/NovaSeqX/ImportResour
 
 =cut
 
+=head2
+
+DRAGEN software version that is installed on the instrument where the run
+is performed.
+
+=cut
+
+has 'dragen_software_version' => (
+  'isa' => 'Str',
+  'is'  => 'ro',
+  'lazy_build' => 1,
+  'required'   => 0,
+  'documentation' => 'DRAGEN software version',
+);
+sub _build_dragen_software_version {
+  my $self = shift;
+
+  if (!$self->has_id_run) {
+    croak 'DRAGEN software version cannot be retrieved. ' .
+      'Either supply it as an argument or supply existing id_run';
+  }
+  my $software_version =
+    $self->run->instrument->latest_revision_for_modification('Dragen');
+  if (!$software_version) {
+    croak 'Failed to get DRAGEN software version from instrument records';
+  }
+  return $software_version;
+};
+
+
 =head2 id_run
 
 NPG run ID, an optional attribute. If supplied, the record for this run
@@ -116,7 +143,7 @@ has 'batch_id' => (
   'lazy_build' => 1,
   'required'   => 0,
   'documentation' => 'LIMS batch identifier, optional. If not set, will be ' .
-                     'retrieved from the trackign database record for the run',
+                     'retrieved from the tracking database record for the run',
 );
 sub _build_batch_id {
   my $self = shift;
@@ -492,10 +519,9 @@ sub add_bclconvert_section {
   my $self = shift;
 
   my ($index1_length, $index2_length) = @{$self->_index_reads_length()};
-
   my @lines = ();
   push @lines, ['[BCLConvert_Settings]'];
-  push @lines, [q[SoftwareVersion], $SOFTWARE_VERSION];
+  push @lines, [q[SoftwareVersion], $self->dragen_software_version];
 
   # Not clear what CLI analysis option thie corresponds to.
   # Looks likely to be a list of lanes to run a tag collision check.
@@ -775,7 +801,7 @@ sub add_germline_section {
   if (@to_align) {
 
     $self->_add_line('[DragenGermline_Settings]');
-    $self->_add_line(q[SoftwareVersion], $SOFTWARE_VERSION);
+    $self->_add_line(q[SoftwareVersion], $self->dragen_software_version);
     $self->_add_line(qw(MapAlignOutFormat cram));
     # Accepted values are true or false. Not clear whether this can be
     # set per sample.
@@ -820,7 +846,7 @@ sub add_rna_section {
 
   if (@to_align) {
     $self->_add_line('[DragenRNA_Settings]');
-    $self->_add_line(q(SoftwareVersion), $SOFTWARE_VERSION);
+    $self->_add_line(q(SoftwareVersion), $self->dragen_software_version);
     $self->_add_line(qw(MapAlignOutFormat cram));
     $self->_add_line(q(KeepFastq), $self->keep_fastq ? 'TRUE' : 'FALSE');
     $self->_add_line(qw(RnaPipelineMode FullPipeline));
