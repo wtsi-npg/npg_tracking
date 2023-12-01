@@ -647,6 +647,42 @@ sub _runs_with_status {
     );
 }
 
+=head2 latest_revision_for_modification
+
+Returns the most recent revision for a modification described by the
+argument string. If either no or no current modification is
+available for the given description, an undefined value is returned.
+
+  print $in->current_modification_revision('NXCS');   # v1.1.0
+  print $in->current_modification_revision('Dragen'); # v4.1.7
+  my $revision = $in->current_modification_revision('NVCS');
+  defined $revision ? print $revision : print 'Not available'; # Not available 
+
+=cut
+
+sub latest_revision_for_modification() {
+  my ($self, $mod_description) = @_;
+  
+  my @rows = $self->instrument_mods->search(
+    { 
+      'iscurrent' => 1,
+      'date_removed' => undef,
+      'instrument_mod_dict.description' => $mod_description
+    },
+    {
+      'join' => 'instrument_mod_dict',
+      'prefetch' => 'instrument_mod_dict',
+      'order_by' => {'-desc' => 'date_added'}
+    }
+  )->all();
+
+  if (@rows) {
+    return $rows[0]->instrument_mod_dict->revision();
+  }
+
+  return;
+}
+
 =head1 DESCRIPTION
   DBIx model for an instrument.
   Contains duplicates of functions in npg::model::instrument.
