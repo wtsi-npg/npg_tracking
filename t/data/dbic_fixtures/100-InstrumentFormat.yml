@@ -7,6 +7,14 @@
   default_columns: 8
   days_between_washes: 14
   runs_between_washes: 1
+- id_instrument_format: 2
+  id_manufacturer: 10
+  model: MiSeq
+  iscurrent: 1
+  default_tiles: 12
+  default_columns: 1
+  days_between_washes: 28
+  runs_between_washes: 1
 - id_instrument_format: 4
   id_manufacturer: 10
   model: HK
