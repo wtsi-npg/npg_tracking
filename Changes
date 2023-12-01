@@ -1,5 +1,15 @@
 LIST OF CHANGES
 
+release 98.1.0
+ - Added a new method, latest_revision_for_modification, to
+   npg_tracking::Schema::Result::Instrument to retrieve the latest modification
+   revision for the instrument.
+ - Added 'dragen_software_version' script argument
+   for bin/npg_samplesheet_generator_NovaSeqXSeries. If not set and
+   id_run is defined, defaults to the record for the latest 'Dragen'
+   modification for the NovaSeqX instrument on which the flowcell will be
+   sequenced.
+
 release 98.0.0
  - Removed the use of 'xml' lims driver from all tests.
  - Deleted 'xml' lims driver class and all classes which supported this
