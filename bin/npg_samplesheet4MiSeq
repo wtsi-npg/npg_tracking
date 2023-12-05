@@ -13,7 +13,7 @@ our $VERSION = '0';
 Log::Log4perl->easy_init($INFO);
 
 my $log = Log::Log4perl->get_logger('main');
-$log->info('Starting npg samplesheet');
+$log->info('Starting npg samplesheet daemon for MiSeq instruments');
 
 npg::samplesheet::auto->new()->loop();
 
