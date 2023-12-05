@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 11;
 use Test::LongString;
 use Test::Exception;
 use File::Slurp;
@@ -26,22 +26,8 @@ local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q(t/data/samplesheet);
 
 my $dir = tempdir( CLEANUP => 1 );
 
-subtest 'error on an unknown driver type' => sub {
-  plan tests => 1;
-
-  throws_ok {
-    npg::samplesheet->new(
-      lims_driver_type    => 'foo',
-      repository          => $dir,
-      npg_tracking_schema => $schema,
-      mlwh_schema         => $mlwh_schema,
-      id_run              => 7007)->lims()
-  } qr/Lazy-build for driver type foo is not inplemented/,
-  'error with the driver type for which LIMS objects cannot be built';
-};
-
 subtest 'simple tests for the default driver' => sub {
-   plan tests => 2;
+   plan tests => 1;
 
    my $ss = npg::samplesheet->new(
       repository          => $dir,
@@ -49,7 +35,6 @@ subtest 'simple tests for the default driver' => sub {
       mlwh_schema         => $mlwh_schema,
       id_run              => 7007
    );
-   is ($ss->lims_driver_type, 'ml_warehouse', 'correct default driver type');
    my $lims = $ss->lims();
    is (@{$lims}, 1, 'LIMS data for 1 lane is built');
 };

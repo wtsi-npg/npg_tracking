@@ -69,19 +69,6 @@ Readonly::Scalar my $DEFAULT_LIMS_DRIVER_TYPE => 'ml_warehouse';
 ####################### Public attributes ########################
 ##################################################################
 
-=head2 lims_driver_type
-
-LIMs driver type to use, defaults to ml_warehouse.
-
-=cut
-
-has 'lims_driver_type' => (
-  'isa'      => 'Str',
-  'required' => 0,
-  'is'       => 'ro',
-  'default'  => $DEFAULT_LIMS_DRIVER_TYPE,
-);
-
 =head2 id_run
 
 An optional attribute
@@ -208,8 +195,12 @@ sub _build_run {
 
 An attribute, an array of st::api::lims type objects.
 
+To generate a samplesheet for the whole run, provide an array of
+at::api::lims objects for all lanes of the run.
+
 This attribute should normally be provided by the caller via the
-constuctor. If the attribute is not provided, it it built automatically.
+constuctor. If the attribute is not provided, it is built automatically,
+using the ml_warehouse lims driver.
 
 =cut
 
@@ -221,19 +212,13 @@ has 'lims' => (
 sub _build_lims {
   my $self=shift;
 
-  my $ref = {driver_type => $self->lims_driver_type};
-  my $batch_id = $self->run->batch_id;
-  if ($self->lims_driver_type eq $DEFAULT_LIMS_DRIVER_TYPE) {
-    $ref->{'id_flowcell_lims'} = $batch_id;
-    $ref->{'mlwh_schema'} = $self->mlwh_schema;
-  } elsif ($self->lims_driver_type eq 'xml') {
-    $ref->{'batch_id'} = $batch_id;
-  } else {
-    croak sprintf 'Lazy-build for driver type %s is not inplemented',
-      $self->lims_driver_type;
-  }
+  my $run_lims = st::api::lims->new(
+    driver_type      => $DEFAULT_LIMS_DRIVER_TYPE,
+    id_flowcell_lims => $self->run->batch_id,
+    mlwh_schema      => $self->mlwh_schema
+  );
 
-  return [st::api::lims->new($ref)->children];
+  return [$run_lims->children()];
 };
 
 =head2 output
