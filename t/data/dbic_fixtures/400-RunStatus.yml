@@ -341,3 +341,9 @@
   id_run_status_dict: 20
   id_user: 7
   iscurrent: 1
+- date: 2023-10-17 13:30:49
+  id_run: 47995
+  id_run_status: 103933
+  id_run_status_dict: 1
+  id_user: 3
+  iscurrent: 0

@@ -134,3 +134,124 @@
   study_type: Resequencing
   study_visibility: Hold
   uuid_study_lims: 8bedafde-5a6e-11e7-aeaa-68b59976a384
+- abbreviation: 6050STDY
+  abstract: 'Study somatic mutation in neurons.'
+  accession_number: EGAS00001004066
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 1
+  contaminated_human_dna: 0
+  created: 2019-11-27 14:47:43
+  data_access_group: cancer
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: other sequencing-based assay
+  data_release_strategy: not applicable
+  data_release_timing: never
+  deleted_at: ~
+  description: "Bottleneck sequencing of human tissue."
+  ega_dac_accession_number: EGAC00001000000
+  ega_policy_accession_number: EGAP00001000001
+  ena_project_id: ~
+  ethically_approved: 1
+  faculty_sponsor: David Davidson
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 6050
+  id_study_tmp: 5880
+  last_updated: 2023-04-19 11:24:32
+  name: 'Bottleneck Sequencing of Human Tissue - (WGS)'
+  prelim_id: ~
+  recorded_at: 2023-04-19 11:24:32
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5)
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: Bottleneck Sequencing Of Human Tissue (Wgs)
+  study_type: Cancer Genomics
+  study_visibility: Hold
+  uuid_study_lims: de933b7c-1124-11ea-a0f7-fa163e9d6485
+- abbreviation: 6751STDY
+  abstract: Investigating the driver landscape.
+  accession_number: EGAS00001005918
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 1
+  contaminated_human_dna: 0
+  created: 2022-01-06 12:51:48
+  data_access_group: cancer
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genotyping or cytogenetics
+  data_release_strategy: not applicable
+  data_release_timing: never
+  deleted_at: ~
+  description: 'Targeted NanoSeq.'
+  ega_dac_accession_number: EGAC00001000000
+  ega_policy_accession_number: EGAP00001000001
+  ena_project_id: ~
+  ethically_approved: 1
+  faculty_sponsor: John Johnson
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 6751
+  id_study_tmp: 6592
+  last_updated: 2023-04-14 13:29:10
+  name: Targeted NanoSeq_Synovium
+  prelim_id: ~
+  recorded_at: 2023-04-14 13:29:10
+  reference_genome: Homo_sapiens (1000Genomes_hs37d5 + ensembl_75_transcriptome)
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: Targeted NanoSeq_Synovium
+  study_type: Cancer Genomics
+  study_visibility: Hold
+  uuid_study_lims: 696db2e8-6eef-11ec-8245-fa163eea3084
+- abbreviation: BGE
+  abstract: N/A
+  accession_number: ~
+  aligned: 1
+  array_express_accession_number: ~
+  contains_human_dna: 1
+  contaminated_human_dna: 0
+  created: 2023-11-02 15:51:12
+  data_access_group: mercury
+  data_deletion_period: ~
+  data_destination: ~
+  data_release_delay_period: ~
+  data_release_delay_reason: ~
+  data_release_sort_of_study: genotyping or cytogenetics
+  data_release_strategy: not applicable
+  data_release_timing: never
+  deleted_at: ~
+  description: 'This is a pilot study to assess a new pipeline.'
+  ega_dac_accession_number: ~
+  ega_policy_accession_number: ~
+  ena_project_id: ~
+  ethically_approved: 0
+  faculty_sponsor: Mary Thompson
+  hmdmc_number: ~
+  id_lims: SQSCP
+  id_study_lims: 7524
+  id_study_tmp: 7469
+  last_updated: 2023-11-02 15:51:36
+  name: HG_BGE_Pilot
+  prelim_id: ~
+  recorded_at: 2023-11-02 15:51:36
+  reference_genome: Homo_sapiens (GRCh38_full_analysis_set_plus_decoy_hla)
+  remove_x_and_autosomes: 0
+  s3_email_list: ~
+  separate_y_chromosome_data: 0
+  state: active
+  study_title: BGE Pilot
+  study_type: Exome Sequencing
+  study_visibility: Hold
+  uuid_study_lims: a5d57e6e-7997-11ee-b5c4-024293460e78
+

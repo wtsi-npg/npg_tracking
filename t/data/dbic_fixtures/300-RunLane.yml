@@ -169,3 +169,44 @@
   position: 8
   tile_count: 120
   tracks: 2
+- id_run: 47995
+  id_run_lane: 53234
+  position: 1
+  tile_count: 704
+  tracks: 1
+- id_run: 47995
+  id_run_lane: 53235
+  position: 2
+  tile_count: 704
+  tracks: 1
+- id_run: 47995
+  id_run_lane: 53236
+  position: 3
+  tile_count: 704
+  tracks: 1
+- id_run: 47995
+  id_run_lane: 53237
+  position: 4
+  tile_count: 704
+  tracks: 1
+- id_run: 47995
+  id_run_lane: 53238
+  position: 5
+  tile_count: 704
+  tracks: 1
+- id_run: 47995
+  id_run_lane: 53239
+  position: 6
+  tile_count: 704
+  tracks: 1
+- id_run: 47995
+  id_run_lane: 53240
+  position: 7
+  tile_count: 704
+  tracks: 1
+- id_run: 47995
+  id_run_lane: 53241
+  position: 8
+  tile_count: 704
+  tracks: 1
+

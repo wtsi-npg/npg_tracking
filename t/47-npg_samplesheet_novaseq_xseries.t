@@ -1,9 +1,10 @@
 use strict;
 use warnings;
-use Test::More tests => 2;
+use Test::More tests => 3;
 use Test::Exception;
 use Moose::Meta::Class;
 use DateTime;
+use Perl6::Slurp;
 
 use npg_testing::db;
 
@@ -16,7 +17,7 @@ my $schema_tracking = $class->new_object({})->create_test_db(
 );
 
 my $schema_wh = $class->new_object({})->create_test_db(
-  q[WTSI::DNAP::Warehouse::Schema]
+  q[WTSI::DNAP::Warehouse::Schema], q[t/data/fixtures_lims_wh]
 );
 
 my $date = DateTime->now()->strftime('%y%m%d');
@@ -114,6 +115,60 @@ subtest 'create the generator object, test simple attributes' => sub {
   throws_ok { $g->file_name }
     qr/Instrument model is not NovaSeq X Series/,
     'error when the run is registered on the wrong instrument model';
+};
+
+subtest 'generate a samplesheet' => sub {
+  plan tests => 6;
+
+  my $file_name = '47995_NVX1_A_ssbatch98292.csv';
+  my $compare_file_root =
+    't/data/samplesheet/dragen/231206_47995_NVX1_A_ssbatch98292';
+
+  my $g = npg::samplesheet::novaseq_xseries->new(
+    npg_tracking_schema => $schema_tracking,
+    mlwh_schema         => $schema_wh,
+    id_run              => 47995,
+    file_name           => $file_name
+  );
+
+  # The code creates a new samplesheet in the working directory.
+  # This will be changed in future.
+  $g->process();
+  ok (-e $file_name, 'the samplesheet file exists');
+  my $compare_file = $compare_file_root . '.csv';
+  is (slurp($file_name), slurp($compare_file),
+    'the samplesheet is generated correctly');
+  unlink $file_name;
+ 
+  $g = npg::samplesheet::novaseq_xseries->new(
+    npg_tracking_schema => $schema_tracking,
+    mlwh_schema         => $schema_wh,
+    id_run              => 47995,
+    file_name           => $file_name,
+    align               => 1,
+    keep_fastq          => 1
+  );
+  $g->process();
+  ok (-e $file_name, 'the samplesheet file exists');
+  $compare_file = $compare_file_root . '_align.csv';
+  is (slurp($file_name), slurp($compare_file),
+    'the samplesheet is generated correctly');
+  unlink $file_name;
+
+  $g = npg::samplesheet::novaseq_xseries->new(
+    npg_tracking_schema => $schema_tracking,
+    mlwh_schema         => $schema_wh,
+    id_run              => 47995,
+    file_name           => $file_name,
+    align               => 1,
+    varcall             => 'AllVariantCallers'
+  );
+  $g->process();
+  ok (-e $file_name, 'the samplesheet file exists');
+  $compare_file = $compare_file_root . '_varcall.csv';
+  is (slurp($file_name), slurp($compare_file),
+    'the samplesheet is generated correctly');
+  unlink $file_name;
 };
 
 1;
