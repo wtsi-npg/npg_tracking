@@ -1,9 +1,10 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 12;
 use Test::Exception;
 use File::Temp qw/ tempdir /;
 use Moose::Meta::Class;
+use Log::Log4perl qw(:easy);
 
 use_ok('npg::samplesheet::auto');
 
@@ -16,8 +17,17 @@ my $schema = $util->create_test_db(q[npg_tracking::Schema]);
   my $sm;
   lives_ok { $sm = npg::samplesheet::auto->new(
     npg_tracking_schema => $schema,
-    mlwh_schema         => $schema_wh) } 'miseq monitor object';
+    mlwh_schema         => $schema_wh) } 'MiSeq monitor object';
   isa_ok($sm, 'npg::samplesheet::auto');
+  is ($sm->instrument_format, 'MiSeq', 'default instrument format is MiSeq');
+
+  throws_ok { npg::samplesheet::auto->new(
+    npg_tracking_schema => $schema,
+    mlwh_schema         => $schema_wh,
+    instrument_format   => 'NovaSeq'
+  )}
+  qr/Samplesheet auto-generator is not implemented for NovaSeq instrument format/,
+  'MiSeq error for an invalid instrument format';
 }
 
 {
@@ -30,9 +40,18 @@ my $schema = $util->create_test_db(q[npg_tracking::Schema]);
 
 {
   my $dir = tempdir(UNLINK => 1);
+
+  my $sm = npg::samplesheet::auto->new(
+    npg_tracking_schema => $schema,
+    mlwh_schema         => $schema_wh
+  );
+
   my $file = join q[/], $dir, 'myfile';
   `touch $file`;
-  npg::samplesheet::auto::_move_samplesheet($file);
+  lives_ok {
+    $sm->_move_samplesheet_if_needed($file . '_some');
+  } 'OK to call with a file path that does not exist';
+  $sm->_move_samplesheet_if_needed($file);
   ok(!-e $file, 'original file does not exist');
   ok(-e $file.'_invalid', 'file has been moved');
 
@@ -42,7 +61,7 @@ my $schema = $util->create_test_db(q[npg_tracking::Schema]);
   $file = join q[/], $sdir, 'myfile';
   `touch $file`;
   my $new_file = join q[/], $sdir . '_old', 'myfile_invalid';
-  npg::samplesheet::auto::_move_samplesheet($file);
+  $sm->_move_samplesheet_if_needed($file);
   ok(!-e $file, 'original file does not exist');
   ok(-e $new_file, 'moved file is in samplesheet_old directory');
 }

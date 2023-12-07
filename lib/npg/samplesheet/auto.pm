@@ -7,6 +7,7 @@ use File::Basename;
 use Readonly;
 use File::Copy;
 use File::Spec::Functions;
+use Carp;
 
 use npg::samplesheet;
 use npg_tracking::Schema;
@@ -17,7 +18,10 @@ with q(MooseX::Log::Log4perl);
 
 our $VERSION = '0';
 
+Readonly::Scalar my $MISEQ_INSTRUMENT_FORMAT => 'MiSeq';
 Readonly::Scalar my $DEFAULT_SLEEP => 90;
+
+##no critic (Subroutines::ProhibitUnusedPrivateSubroutine)
 
 =head1 NAME
 
@@ -30,12 +34,12 @@ npg::samplesheet::auto
   use npg::samplesheet::auto;
   use Log::Log4perl qw(:easy);
   BEGIN{ Log::Log4perl->easy_init({level=>$INFO,}); }
-  npg::samplesheet::auto->new()->loop();
+  npg::samplesheet::auto->new(instrument_format => 'MiSeq')->loop();
 
 =head1 DESCRIPTION
 
-Class for creating  Illumina MiSeq samplesheets automatically
-for runs which are pending.
+Class for creating Illumina samplesheets automatically for runs which are
+pending. Currently is implemented only for MiSeq instruments'
 
 =head1 SUBROUTINES/METHODS
 
@@ -65,6 +69,16 @@ sub _build_mlwh_schema {
   return WTSI::DNAP::Warehouse::Schema->connect();
 }
 
+=head2 instrument_format
+
+=cut
+
+has 'instrument_format' => (
+  'isa'     => 'Str',
+  'is'      => 'ro',
+  'default' => $MISEQ_INSTRUMENT_FORMAT,
+);
+
 =head2 sleep_interval
 
 =cut
@@ -74,6 +88,24 @@ has 'sleep_interval' => (
   'isa'     => 'Int',
   'default' => $DEFAULT_SLEEP,
 );
+
+=head2 BUILD
+
+Tests that a valid instrument format is used.
+
+=cut
+
+sub BUILD {
+  my $self = shift;
+  if ($self->instrument_format ne $MISEQ_INSTRUMENT_FORMAT) {
+    my $m = sprintf
+      'Samplesheet auto-generator is not implemented for %s instrument format',
+      $self->instrument_format;
+    $self->log->fatal($m);
+    croak $m;
+  }
+  return;
+}
 
 =head2 loop
 
@@ -96,34 +128,30 @@ of them if one does not already exist.
 
 sub process {
   my $self = shift;
+
   my $rt = $self->_pending->run_statuses->search({iscurrent=>1})
                 ->related_resultset(q(run));
   my $rs = $rt->search(
-    {q(run.id_instrument_format) => $self->_miseq->id_instrument_format});
-  $self->log->debug( $rs->count. q[ ] .($self->_miseq->model).
+    {q(run.id_instrument_format) => $self->_instr_format_obj->id_instrument_format});
+  $self->log->debug( $rs->count. q[ ] .($self->_instr_format_obj->model).
     q[ runs marked as ] .($self->_pending->description));
-  while(my$r=$rs->next){
+
+  while(my$r=$rs->next) { # Loop over pending runs for this instrument format;
+
     my $id_run = $r->id_run;
     $self->log->info('Considering ' . join q[,],$id_run,$r->instrument->name);
 
     my $ss = npg::samplesheet->new(
       run => $r, mlwh_schema => $self->mlwh_schema
     );
-    my $o = $ss->output;
-    my $generate_new = 1;
-
-    if(-e $o) {
-      my $other_id_run = _id_run_from_samplesheet($o);
-      if ($other_id_run && $other_id_run == $id_run) {
-        $self->log->info(qq($o already exists for $id_run));
-        $generate_new = 0;
-      } else {
-        $self->log->info(qq(Will move existing $o));
-        _move_samplesheet($o);
-      }
-    }
+    my $method_name =
+      '_valid_samplesheet_file_exists_for_' . $self->instrument_format;
+    my $generate_new = !$self->$method_name($ss, $id_run);
 
     if ($generate_new) {
+      # Do not overwrite existing file if it exists.
+      my $o = $ss->output;
+      $self->_move_samplesheet_if_needed($o);
       try {
         $ss->process;
         $self->log->info(qq($o created for run ).($r->id_run));
@@ -133,17 +161,23 @@ sub process {
       }
     }
   }
+
   return;
 }
 
-has '_miseq' => (
+has '_instr_format_obj' => (
   'is'         => 'ro',
   'lazy_build' => 1,
 );
-sub _build__miseq {
+sub _build__instr_format_obj {
   my $self=shift;
-  return $self->npg_tracking_schema->resultset(q(InstrumentFormat))
-              ->find({q(model)=>q(MiSeq)});
+  my $row = $self->npg_tracking_schema->resultset(q(InstrumentFormat))
+              ->find({q(model)=>$self->instrument_format});
+  if (!$row) {
+    croak sprintf 'Instrument format %s is not registered',
+      $self->instrument_format;
+  }
+  return $row;
 }
 
 has '_pending' => (
@@ -169,8 +203,14 @@ sub _id_run_from_samplesheet {
   return $id_run;
 }
 
-sub _move_samplesheet {
-  my $file_path = shift;
+sub _move_samplesheet_if_needed {
+  my ($self, $file_path) = @_;
+
+  if (!-e $file_path) {
+    return;
+  }
+
+  $self->log->info(qq(Will move existing $file_path));
 
   my($filename, $dirname) = fileparse($file_path);
   $dirname =~ s/\/$//smx; #drop last forward slash if any
@@ -183,6 +223,21 @@ sub _move_samplesheet {
   if (!$moved) {
     move($file_path, catdir($dirname, $filename_dest));
   }
+  return;
+}
+
+sub _valid_samplesheet_file_exists_for_MiSeq {##no critic (NamingConventions::Capitalization)
+  my ($self, $ss_object, $id_run) = @_;
+
+  my $o = $ss_object->output;
+  if(-e $o) {
+    my $other_id_run = _id_run_from_samplesheet($o);
+    if ($other_id_run && $other_id_run == $id_run) {
+      $self->log->info(qq($o already exists for $id_run));
+      return 1;
+    }
+  }
+
   return;
 }
 
@@ -215,6 +270,8 @@ __END__
 =item File::Spec::Functions
 
 =item Try::Tiny
+
+=item Carp
 
 =item npg_tracking::Schema
 
