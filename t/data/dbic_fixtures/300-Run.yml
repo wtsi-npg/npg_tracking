@@ -314,3 +314,17 @@
   is_paired: 0
   priority: 1
   team: 'RAD'
+- actual_cycle_count: 318
+  batch_id: 98292
+  expected_cycle_count: 318
+  flowcell_id: 22FCNFLT3
+  folder_name: 20231017_LH00210_0012_B22FCNFLT3
+  folder_path_glob: '/{export,nfs}/esa-sv-20201215-01/IL_seq_data/*/'
+  id_instrument: 69
+  id_instrument_format: 12
+  id_run: 47995
+  id_run_pair: ~
+  is_paired: 0
+  priority: 1
+  team: A
+
