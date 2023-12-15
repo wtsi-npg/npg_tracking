@@ -118,7 +118,7 @@ subtest 'create the generator object, test simple attributes' => sub {
 };
 
 subtest 'generate a samplesheet' => sub {
-  plan tests => 6;
+  plan tests => 8;
 
   my $file_name = '47995_NVX1_A_ssbatch98292.csv';
   my $compare_file_root =
@@ -130,6 +130,9 @@ subtest 'generate a samplesheet' => sub {
     id_run              => 47995,
     file_name           => $file_name
   );
+
+  is_deeply ($g->index_read_length(), [8,8], 'correct lengths of index reads');
+  is_deeply ($g->read_length(), [151,151], 'correct lengths of reads');
 
   # The code creates a new samplesheet in the working directory.
   # This will be changed in future.
