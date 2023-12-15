@@ -2,22 +2,16 @@ package npg::samplesheet;
 
 use Moose;
 use namespace::autoclean;
-use Class::Load qw(load_class);
 use Template;
-use Carp qw(carp croak confess);
+use Carp;
 use List::MoreUtils qw(any uniq);
 use URI::Escape qw(uri_escape_utf8);
 use Readonly;
 use open q(:encoding(UTF8));
 
-use npg_tracking::Schema;
-use st::api::lims;
 use st::api::lims::samplesheet;
-use npg_tracking::util::config qw(get_config_staging_areas);
-use npg_tracking::util::abs_path qw(abs_path);
-use WTSI::DNAP::Warehouse::Schema;
 
-with 'npg_tracking::glossary::run';
+extends 'npg::samplesheet::base';
 
 our $VERSION = '0';
 
@@ -60,10 +54,7 @@ still retained in the relevant custom fields.
 
 =cut
 
-my$config=get_config_staging_areas();
-Readonly::Scalar my $SAMPLESHEET_PATH => $config->{'samplesheets'}||q(samplesheets/);
-Readonly::Scalar my $MIN_COLUMN_NUM   => 3;
-Readonly::Scalar my $DEFAULT_LIMS_DRIVER_TYPE => 'ml_warehouse';
+Readonly::Scalar my $MIN_COLUMN_NUM => 3;
 
 ##################################################################
 ####################### Public attributes ########################
@@ -84,26 +75,7 @@ sub _build_id_run {
   if($self->has_tracking_run()){
     return $self->run()->id_run();
   }
-  confess 'id_run or a run is required';
-}
-
-=head2 samplesheet_path
-
-An optional attribute.
-
-=cut
-
-has 'samplesheet_path' => (
-  'isa'        => 'Str',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-);
-sub _build_samplesheet_path {
-  if($ENV{dev} and not $ENV{dev}=~/live/smix){
-    my ($suffix) = $ENV{dev}=~/(\w+)/smix;
-    return $SAMPLESHEET_PATH . $suffix . q(/);
-  }
-  return $SAMPLESHEET_PATH;
+  croak 'id_run or a run is required';
 }
 
 =head2 extend
@@ -138,88 +110,6 @@ An attribute, a path to the root of the reference repository.
 =cut
 
 has 'repository' => ( 'isa' => 'Str', 'is' => 'ro' );
-
-=head2 npg_tracking_schema
-
-An attribute, DBIx Schema object for the tracking database.
-
-=cut
-
-has 'npg_tracking_schema' => (
-  'isa'        => 'npg_tracking::Schema',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-);
-sub _build_npg_tracking_schema {
-  my ($self) = @_;
-  my$s = $self->has_tracking_run() ?
-         $self->run()->result_source()->schema() :
-         npg_tracking::Schema->connect();
-  return $s
-}
-
-=head2 mlwh_schema
- 
-DBIx schema class for ml_warehouse access.
-
-=cut
-
-has 'mlwh_schema' => (
-  'isa'        => 'WTSI::DNAP::Warehouse::Schema',
-  'is'         => 'ro',
-  'required'   => 0,
-  'lazy_build' => 1,
-);
-sub _build_mlwh_schema {
-  return WTSI::DNAP::Warehouse::Schema->connect();
-}
-
-=head2 run
-
-An attribute, DBIx object for a row in the run table of the tracking database.
-
-=cut
-
-has 'run' => (
-  'isa'        => 'npg_tracking::Schema::Result::Run',
-  'is'         => 'ro',
-  'predicate'  => 'has_tracking_run',
-  'lazy_build' => 1,
-);
-sub _build_run {
-  my $self=shift;
-  return $self->npg_tracking_schema->resultset(q(Run))->find($self->id_run);
-}
-
-=head2 lims
-
-An attribute, an array of st::api::lims type objects.
-
-To generate a samplesheet for the whole run, provide an array of
-at::api::lims objects for all lanes of the run.
-
-This attribute should normally be provided by the caller via the
-constuctor. If the attribute is not provided, it is built automatically,
-using the ml_warehouse lims driver.
-
-=cut
-
-has 'lims' => (
-  'isa'        => 'ArrayRef[st::api::lims]',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-);
-sub _build_lims {
-  my $self=shift;
-
-  my $run_lims = st::api::lims->new(
-    driver_type      => $DEFAULT_LIMS_DRIVER_TYPE,
-    id_flowcell_lims => $self->run->batch_id,
-    mlwh_schema      => $self->mlwh_schema
-  );
-
-  return [$run_lims->children()];
-};
 
 =head2 output
 
@@ -595,8 +485,6 @@ __END__
 
 =item namespace::autoclean
 
-=item Class::Load
-
 =item Template
 
 =item Readonly
@@ -608,8 +496,6 @@ __END__
 =item URI::Escape
 
 =item open
-
-=item WTSI::DNAP::Warehouse::Schema
 
 =back
 
@@ -623,7 +509,7 @@ David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2019,2020, 2023 Genome Research Ltd.
+Copyright (C) 2019, 2020, 2023 Genome Research Ltd.
 
 This file is part of NPG.
 

@@ -5,10 +5,13 @@ use Test::Exception;
 use Moose::Meta::Class;
 use DateTime;
 use Perl6::Slurp;
+use File::Temp qw/ tempdir /;
 
 use npg_testing::db;
 
 use_ok('npg::samplesheet::novaseq_xseries');
+
+my $dir = tempdir(UNLINK => 1);
 
 my $class = Moose::Meta::Class->create_anon_class(roles=>[qw/npg_testing::db/]);
 
@@ -23,7 +26,7 @@ my $schema_wh = $class->new_object({})->create_test_db(
 my $date = DateTime->now()->strftime('%y%m%d');
 
 subtest 'create the generator object, test simple attributes' => sub {
-  plan tests => 14;
+  plan tests => 16;
 
   my $g = npg::samplesheet::novaseq_xseries->new(
     npg_tracking_schema => $schema_tracking,
@@ -102,9 +105,20 @@ subtest 'create the generator object, test simple attributes' => sub {
     npg_tracking_schema => $schema_tracking,
     mlwh_schema         => $schema_wh,
     id_run              => 47446,
+    samplesheet_path    => "$dir/one/"
   );
-  is ($g->file_name, "${date}_47446_NVX1_B_ssbatch99888.csv",
+  my $file_name = $g->file_name;
+  is ($file_name, "${date}_47446_NVX1_B_ssbatch99888.csv",
     'correct file name is generated');
+  is ($g->output, "$dir/one/$file_name", 'correct output path is generated');
+
+  $g = npg::samplesheet::novaseq_xseries->new(
+    npg_tracking_schema => $schema_tracking,
+    mlwh_schema         => $schema_wh,
+    id_run              => 47446,
+    samplesheet_path    => q[]
+  );
+  is ($g->output, $file_name, 'correct output path is generated');
 
   $run_row->update({id_instrument_format => 10, id_instrument => 68});
   $g = npg::samplesheet::novaseq_xseries->new(
@@ -118,7 +132,7 @@ subtest 'create the generator object, test simple attributes' => sub {
 };
 
 subtest 'generate a samplesheet' => sub {
-  plan tests => 8;
+  plan tests => 9;
 
   my $file_name = '47995_NVX1_A_ssbatch98292.csv';
   my $compare_file_root =
@@ -128,50 +142,55 @@ subtest 'generate a samplesheet' => sub {
     npg_tracking_schema => $schema_tracking,
     mlwh_schema         => $schema_wh,
     id_run              => 47995,
-    file_name           => $file_name
+    file_name           => $file_name,
+    samplesheet_path    => $dir,
   );
 
   is_deeply ($g->index_read_length(), [8,8], 'correct lengths of index reads');
   is_deeply ($g->read_length(), [151,151], 'correct lengths of reads');
+  my $path = $g->output();
+  is ($path, "$dir/$file_name", 'correct samplesheet path');
 
   # The code creates a new samplesheet in the working directory.
   # This will be changed in future.
   $g->process();
-  ok (-e $file_name, 'the samplesheet file exists');
+  ok (-e $path, 'the samplesheet file exists');
   my $compare_file = $compare_file_root . '.csv';
-  is (slurp($file_name), slurp($compare_file),
+  is (slurp($path), slurp($compare_file),
     'the samplesheet is generated correctly');
-  unlink $file_name;
+  unlink $path;
  
   $g = npg::samplesheet::novaseq_xseries->new(
     npg_tracking_schema => $schema_tracking,
     mlwh_schema         => $schema_wh,
     id_run              => 47995,
     file_name           => $file_name,
+    samplesheet_path    => $dir,
     align               => 1,
     keep_fastq          => 1
   );
   $g->process();
-  ok (-e $file_name, 'the samplesheet file exists');
+  ok (-e $path, 'the samplesheet file exists');
   $compare_file = $compare_file_root . '_align.csv';
-  is (slurp($file_name), slurp($compare_file),
+  is (slurp($path), slurp($compare_file),
     'the samplesheet is generated correctly');
-  unlink $file_name;
+  unlink $path;
 
   $g = npg::samplesheet::novaseq_xseries->new(
     npg_tracking_schema => $schema_tracking,
     mlwh_schema         => $schema_wh,
     id_run              => 47995,
     file_name           => $file_name,
+    samplesheet_path    => $dir,
     align               => 1,
     varcall             => 'AllVariantCallers'
   );
   $g->process();
-  ok (-e $file_name, 'the samplesheet file exists');
+  ok (-e $path, 'the samplesheet file exists');
   $compare_file = $compare_file_root . '_varcall.csv';
-  is (slurp($file_name), slurp($compare_file),
+  is (slurp($path), slurp($compare_file),
     'the samplesheet is generated correctly');
-  unlink $file_name;
+  unlink $path;
 };
 
 1;
