@@ -8,7 +8,6 @@ use MooseX::Getopt::Meta::Attribute::Trait::NoGetopt;
 
 use npg_tracking::Schema;
 use st::api::lims;
-use npg_tracking::util::config qw(get_config_staging_areas);
 use WTSI::DNAP::Warehouse::Schema;
 
 with 'npg_tracking::glossary::run';
@@ -31,8 +30,7 @@ A parent class for samplesheet generator. Provides common attributes.
 
 =cut
 
-my$config=get_config_staging_areas();
-Readonly::Scalar my $SAMPLESHEET_PATH => $config->{'samplesheets'}||q(samplesheets/);
+Readonly::Scalar my $SAMPLESHEET_PATH => 'samplesheets/';
 Readonly::Scalar my $LIMS_DRIVER_TYPE => 'ml_warehouse';
 
 =head1 SUBROUTINES/METHODS
@@ -48,15 +46,8 @@ A directory where the samplesheet will be created, an optional attribute.
 has 'samplesheet_path' => (
   'isa'        => 'Str',
   'is'         => 'ro',
-  'lazy_build' => 1,
+  'default'    => $SAMPLESHEET_PATH,
 );
-sub _build_samplesheet_path {
-  if($ENV{dev} and not $ENV{dev}=~/live/smix){
-    my ($suffix) = $ENV{dev}=~/(\w+)/smix;
-    return $SAMPLESHEET_PATH . $suffix . q(/);
-  }
-  return $SAMPLESHEET_PATH;
-}
 
 
 =head2 id_run
@@ -220,8 +211,6 @@ __END__
 =item npg_tracking::Schema
 
 =item  st::api::lims
-
-=item npg_tracking::util::config
 
 =item npg_tracking::glossary::run
 
