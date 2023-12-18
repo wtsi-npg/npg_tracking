@@ -201,7 +201,7 @@ has 'read_length' => (
   'is'         => 'ro',
   'lazy_build' => 1,
   'required'   => 0,
-  'documentation' => 'An array containing the length of the forward and the ' .
+  'documentation' => 'An array containing the length of the forward and ' .
                      'reverse read',
 );
 sub _build_read_length {
@@ -585,15 +585,17 @@ used when processing the sequencing data. Must adhere to the following
 requirements:
 
 - Must be same number of fields (delimited by semicolon) as sequencing and
-  indexing reads specified in RunInfo.xml or Reads section.
+  indexing reads specified in RunInfo.xml or 'Reads' section.
 
-- Indexing reads are specified with I, sequencing reads are specified with
-  Y, UMI cycles are specified with U, and trimmed reads are specified with N.
+- Indexing reads are specified with 'I',
+  sequencing reads are specified with 'Y',
+  UMI cycles are specified with 'U',
+  and trimmed reads are specified with 'N'.
 
 - The number of cycles specified for each read must equal the number of cycles
   specified for that read in the RunInfo.xml file.
 
-- Only one Y or I sequence can be specified per read.
+- Only one 'Y' or 'I' sequence can be specified per read.
 
 =cut
 

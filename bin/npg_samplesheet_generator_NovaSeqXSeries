@@ -57,6 +57,12 @@ npg_samplesheet_generator_NovaSeqXSeries
                 DRAGEN analysis can deal with a limited number of distinct
                 configurations. Set this attribute if processing off-board.
 
+  C<dragen_software_version> -
+                DRAGEN software version to use, optional
+
+  C<file_name> -
+                name of the samplesheet CSV file, optional
+
 =head1 DESCRIPTION
 
 Generates a samplesheet for the NovaSeq Series X Illumina instrument and
