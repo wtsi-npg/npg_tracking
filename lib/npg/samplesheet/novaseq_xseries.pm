@@ -18,6 +18,8 @@ with    'MooseX::Getopt';
 
 our $VERSION = '0';
 
+Readonly::Scalar our $NX_INSTRUMENT_FORMAT => 'NovaSeqX';
+
 Readonly::Scalar my $READ1_LENGTH => 151;
 Readonly::Scalar my $READ2_LENGTH => 151;
 Readonly::Scalar my $LIST_INDEX_TAG1  => 2;
@@ -325,7 +327,7 @@ sub _build_run_name {
 
   my $run_name;
   if ($self->id_run()) {
-    if ($self->run->instrument_format()->model() !~ /NovaSeqX/smx) {
+    if ($self->run->instrument_format()->model() !~ /$NX_INSTRUMENT_FORMAT/smx) {
       croak 'Instrument is not registered as NovaSeq X Series ' .
             'in the tracking database';
     }

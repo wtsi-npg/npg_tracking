@@ -8,11 +8,13 @@ use Readonly;
 use File::Copy;
 use File::Spec::Functions;
 use Carp;
+use List::MoreUtils qw(none);
 
-use npg::samplesheet;
 use npg_tracking::Schema;
 use WTSI::DNAP::Warehouse::Schema;
 use st::api::lims::samplesheet;
+use npg::samplesheet;
+use npg::samplesheet::novaseq_xseries;
 
 with q(MooseX::Log::Log4perl);
 
@@ -20,6 +22,10 @@ our $VERSION = '0';
 
 Readonly::Scalar my $MISEQ_INSTRUMENT_FORMAT => 'MiSeq';
 Readonly::Scalar my $DEFAULT_SLEEP => 90;
+Readonly::Array my @INSTRUMENT_FORMATS => (
+  $MISEQ_INSTRUMENT_FORMAT,
+  $npg::samplesheet::novaseq_xseries::NX_INSTRUMENT_FORMAT
+);
 
 ##no critic (Subroutines::ProhibitUnusedPrivateSubroutine)
 
@@ -97,7 +103,7 @@ Tests that a valid instrument format is used.
 
 sub BUILD {
   my $self = shift;
-  if ($self->instrument_format ne $MISEQ_INSTRUMENT_FORMAT) {
+  if (none {$self->instrument_format eq $_ } @INSTRUMENT_FORMATS) {
     my $m = sprintf
       'Samplesheet auto-generator is not implemented for %s instrument format',
       $self->instrument_format;
@@ -141,9 +147,20 @@ sub process {
     my $id_run = $r->id_run;
     $self->log->info('Considering ' . join q[,],$id_run,$r->instrument->name);
 
-    my $ss = npg::samplesheet->new(
-      run => $r, mlwh_schema => $self->mlwh_schema
-    );
+    my $ss;
+    if ($self->instrument_format eq $MISEQ_INSTRUMENT_FORMAT) {
+      $ss = npg::samplesheet->new(
+        run => $r, mlwh_schema => $self->mlwh_schema
+      );
+    } else {
+      $ss = npg::samplesheet::novaseq_xseries->new(
+        run => $r, id_run => $id_run,
+        mlwh_schema => $self->mlwh_schema,
+        align => 1, keep_fastq => 1,
+        varcall => q(AllVariantCallers)
+      );
+    }
+
     my $method_name =
       '_valid_samplesheet_file_exists_for_' . $self->instrument_format;
     my $generate_new = !$self->$method_name($ss, $id_run);
@@ -237,6 +254,22 @@ sub _valid_samplesheet_file_exists_for_MiSeq {##no critic (NamingConventions::Ca
       return 1;
     }
   }
+
+  return;
+}
+
+sub _valid_samplesheet_file_exists_for_NovaSeqX {##no critic (NamingConventions::Capitalization)
+  my ($self, $ss_object, $id_run) = @_;
+
+  # The default samplesheet name starts with the date string. A new
+  # samplesheet will be generated each day. Not a problem since the run
+  # should either progress or be cancelled. 
+
+  my $o = $ss_object->output;
+  if (-e $o) {
+    $self->log->info(qq($o already exists for $id_run));
+    return 1;
+  };
 
   return;
 }

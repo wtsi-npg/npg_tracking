@@ -1,17 +1,20 @@
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 14;
 use Test::Exception;
 use File::Temp qw/ tempdir /;
 use Moose::Meta::Class;
 use Log::Log4perl qw(:easy);
+use File::chdir;
 
 use_ok('npg::samplesheet::auto');
 
 my $util = Moose::Meta::Class->create_anon_class(
              roles => [qw/npg_testing::db/])->new_object({});
-my $schema_wh = $util->create_test_db(q[WTSI::DNAP::Warehouse::Schema]);
-my $schema = $util->create_test_db(q[npg_tracking::Schema]);
+my $schema_wh = $util->create_test_db(q[WTSI::DNAP::Warehouse::Schema],
+                                      q[t/data/fixtures_lims_wh]);
+my $schema = $util->create_test_db(q[npg_tracking::Schema],
+                                   q[t/data/dbic_fixtures]);
 
 {
   my $sm;
@@ -27,7 +30,7 @@ my $schema = $util->create_test_db(q[npg_tracking::Schema]);
     instrument_format   => 'NovaSeq'
   )}
   qr/Samplesheet auto-generator is not implemented for NovaSeq instrument format/,
-  'MiSeq error for an invalid instrument format';
+  'Error for an invalid instrument format';
 }
 
 {
@@ -35,7 +38,7 @@ my $schema = $util->create_test_db(q[npg_tracking::Schema]);
       't/data/samplesheet/miseq_default.csv'), 10262,
       'id run retrieved from a samplesheet');
   lives_and { is npg::samplesheet::auto::_id_run_from_samplesheet('some_file'), undef}
-      'undef reftuned for a non-exisitng samplesheet';
+      'undef returned for a non-exisitng samplesheet';
 }
 
 {
@@ -64,6 +67,29 @@ my $schema = $util->create_test_db(q[npg_tracking::Schema]);
   $sm->_move_samplesheet_if_needed($file);
   ok(!-e $file, 'original file does not exist');
   ok(-e $new_file, 'moved file is in samplesheet_old directory');
+}
+
+{
+  my $dir = tempdir(UNLINK => 1);
+  mkdir "$dir/samplesheets";
+
+  my $id_run = 47995;
+  my $run_row = $schema->resultset('Run')->find($id_run);
+  $run_row->update_run_status('run pending');
+  is ($run_row->current_run_status_description(), 'run pending',
+    "run $id_run should be picked up by the daemon");
+  {
+    local $CWD = $dir;
+    diag `ls -l`;
+    npg::samplesheet::auto->new(
+      npg_tracking_schema => $schema,
+      mlwh_schema         => $schema_wh,
+      instrument_format   => 'NovaSeqX'
+    )->process();
+  }
+  my $glob = q[*_47995_NVX1_A_ssbatch98292.csv];
+  my @files = glob "$dir/samplesheets/$glob";
+  is (@files, 1, 'one NovaSeqX samplesheet file is generated');
 }
 
 1;
