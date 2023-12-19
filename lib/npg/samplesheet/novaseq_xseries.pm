@@ -8,7 +8,6 @@ use Carp;
 use Text::CSV;
 use List::MoreUtils qw(any none uniq);
 use List::Util qw(first max);
-use Getopt::Long;
 use Pod::Usage;
 use DateTime;
 use Data::UUID;
@@ -87,7 +86,7 @@ L<https://support-docs.illumina.com/IN/NovaSeqX/Content/IN/NovaSeqX/ImportResour
 
 =cut
 
-=head2
+=head2 dragen_software_version
 
 DRAGEN software version that is installed on the instrument where the run
 is performed.
@@ -130,6 +129,7 @@ has '+id_run' => (
                      'run should exists in the run tracking database',
 );
 
+
 =head2 batch_id
 
 LIMS batch ID, an optional attribute. If not set, the C<id_run> attribute
@@ -158,9 +158,60 @@ sub _build_batch_id {
   return $batch_id;
 }
 
+
+=head2 index_read_length
+
+An array containing the length of the first and the second (if applicable)
+indexing read.
+
+If not set, is computed as the longest first and second barcode as reported
+by the LIMS system.
+
+=cut
+
+has 'index_read_length' => (
+  'isa'        => 'ArrayRef',
+  'is'         => 'ro',
+  'lazy_build' => 1,
+  'required'   => 0,
+  'documentation' => 'An array containing the length of the first and the ' .
+                     'second (if applicable) indexing read..',
+);
+sub _build_index_read_length {
+  my $self = shift;
+  my $index1_length = max (
+    map { length $_->[$LIST_INDEX_TAG1] } $self->products
+  );
+  my $index2_length = max (
+    map { length $_->[$LIST_INDEX_TAG2] } $self->products
+  );
+  return [$index1_length, $index2_length];
+}
+
+
+=head2 read_length
+
+An array containing the length of the forward and the reverse read.
+If not set, is currently hardcoded as [151, 151].
+
+=cut
+
+has 'read_length' => (
+  'isa'        => 'ArrayRef',
+  'is'         => 'ro',
+  'lazy_build' => 1,
+  'required'   => 0,
+  'documentation' => 'An array containing the length of the forward and ' .
+                     'reverse read',
+);
+sub _build_read_length {
+  return [$READ1_LENGTH, $READ2_LENGTH];
+}
+
+
 =head2 align
 
-A boolean option, false by default; if set, the DRAGEN germline iand/or
+A boolean option, false by default; if set, the DRAGEN germline and/or
 RNA analysis is added to the samplesheet if suitable samples are present.
 
 =cut
@@ -173,6 +224,7 @@ has 'align' => (
                      'germline analysis section is added to the file if ' .
                      'suitable samples are present.',
 );
+
 
 =head2 keep_fastq
 
@@ -187,6 +239,7 @@ has 'keep_fastq' => (
   'documentation' => 'An option to keep FASTQ files for aligned data, false ' .
                      'by default.',
 );
+
 
 =head2 varcall
 
@@ -204,6 +257,7 @@ has 'varcall' => (
                      'options are SmallVariantCaller and AllVariantCallers',
 );
 
+
 =head2 dragen_max_number_of_configs
 
 =cut
@@ -218,12 +272,6 @@ has 'dragen_max_number_of_configs' => (
                      'processing not on-board',
 );
 
-has '_current_number_of_configs' => (
-  'isa'      => 'Int',
-  'is'       => 'rw',
-  'default'  => 0,
-  'required' => 0,
-);
 
 =head2 npg_tracking_schema
 
@@ -241,6 +289,7 @@ sub _build_npg_tracking_schema {
   return npg_tracking::Schema->connect();
 }
 
+
 =head2 mlwh_schema
 
 DBIx Schema object for the mlwh database.
@@ -256,6 +305,7 @@ has 'mlwh_schema' => (
 sub _build_mlwh_schema {
   return WTSI::DNAP::Warehouse::Schema->connect();
 }
+
 
 =head2 run
 
@@ -287,6 +337,7 @@ sub _build_run {
   return $run;
 }
 
+
 =head2 lims
 
 An attribute, an array of C<st::api::lims> type objects.
@@ -311,6 +362,7 @@ sub _build_lims {
           )->children()];
 }
 
+
 =head2 run_name
 
 =cut
@@ -328,7 +380,8 @@ sub _build_run_name {
   my $run_name;
   if ($self->has_id_run()) {
     # Embed instrument's Sanger network name and slot
-    $run_name = sprintf '%s_%s_%s', $self->id_run, $self->run->instrument->name, $self->get_instrument_side;
+    $run_name = sprintf '%s_%s_%s', $self->id_run,
+      $self->run->instrument->name, $self->get_instrument_side;
   } else {
     # Run is not tracked, generate a placeholder ID
     my $ug = Data::UUID->new();
@@ -339,6 +392,7 @@ sub _build_run_name {
 
   return $run_name;
 }
+
 
 =head2 file_name
 
@@ -369,18 +423,12 @@ sub _build_file_name {
   return $file_name;
 }
 
-has '_all_lines' => (
-  'isa'        => 'ArrayRef',
-  'is'         => 'ro',
-  'default'    => sub { return []; } ,
-  'required'   => 0,
-);
 
-sub _add_line {
-  my ($self, @columns) = @_;
-  push @{$self->_all_lines()}, @columns ? \@columns : [];
-  return;
-}
+=head2 products
+
+A list of products as given by LIMS, a read-only accessor.
+
+=cut
 
 has '_products' => (
   'isa'        => 'ArrayRef',
@@ -418,22 +466,6 @@ sub _build__products {
   return \@products;
 }
 
-has '_index_reads_length' => (
-  'isa'        => 'ArrayRef',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-  'required'   => 0,
-);
-sub _build__index_reads_length {
-  my $self = shift;
-  my $index1_length = max (
-    map { length $_->[$LIST_INDEX_TAG1] } $self->products
-  );
-  my $index2_length = max (
-    map { length $_->[$LIST_INDEX_TAG2] } $self->products
-  );
-  return [$index1_length, $index2_length];
-}
 
 =head2 process
 
@@ -504,6 +536,41 @@ sub process {
   return;
 }
 
+=head2 add_common_headers
+
+Adds the top-level header section.
+
+=cut
+
+sub add_common_headers {
+  my $self = shift;
+
+  my ($index1_length, $index2_length) = @{$self->index_read_length()};
+  $self->_add_line('[Header]');
+  $self->_add_line(q[FileFormatVersion], 2);
+  $self->_add_line(q[RunName], $self->run_name);
+  $self->_add_line(qw(InstrumentPlatform NovaSeqXSeries));
+  $self->_add_line(qw(InstrumentType NovaSeqXPlus));
+  $self->_add_line();
+
+  # Reads section
+  $self->_add_line('[Reads]');
+  $self->_add_line(q[Read1Cycles], $self->read_length()->[0]);
+  $self->_add_line(q[Read2Cycles], $self->read_length()->[1]);
+  if ($index1_length) {
+    $self->_add_line('Index1Cycles', $index1_length);
+    if ($index2_length) {
+      $self->_add_line('Index2Cycles', $index2_length);
+    }
+  }
+
+  $self->_add_line();
+  $self->_add_line('[Sequencing_Settings]');
+
+  return;
+}
+
+
 =head2 add_bclconvert_section
 
 Adds BCLConvert_Settings and BCLConvert_Data sections.
@@ -513,49 +580,33 @@ has not been added. The latter happens if the number of unique configurations
 for BCLConvert exceeds the maximum number of allowed configurations.
 In this case no further analysis sections should be added to the samplesheet.
 
+The OverrideCycles column specifies the sequencing and indexing cycles to be
+used when processing the sequencing data. Must adhere to the following
+requirements:
+
+- Must be same number of fields (delimited by semicolon) as sequencing and
+  indexing reads specified in RunInfo.xml or 'Reads' section.
+
+- Indexing reads are specified with 'I',
+  sequencing reads are specified with 'Y',
+  UMI cycles are specified with 'U',
+  and trimmed reads are specified with 'N'.
+
+- The number of cycles specified for each read must equal the number of cycles
+  specified for that read in the RunInfo.xml file.
+
+- Only one 'Y' or 'I' sequence can be specified per read.
+
 =cut
 
 sub add_bclconvert_section {
   my $self = shift;
 
-  my ($index1_length, $index2_length) = @{$self->_index_reads_length()};
+  my ($index1_length, $index2_length) = @{$self->index_read_length()};
   my @lines = ();
   push @lines, ['[BCLConvert_Settings]'];
   push @lines, [q[SoftwareVersion], $self->dragen_software_version];
-
-  # Not clear what CLI analysis option thie corresponds to.
-  # Looks likely to be a list of lanes to run a tag collision check.
-  # According to @srl, bcl-covert tries to correct one error by default
-  # but it checks the tags allow this, i.e. that they all differ by at least
-  # 3 bases, if they don't it disables the error correction
-  # $add_line->(qw(CombinedIndexCollisionCheck 1;3;4;6));
-
-  # CreateFastqForIndexReads might be an option. Do we need these files?
-  # $add_line->(qw(CreateFastqForIndexReads 1));
-  # When 1 will be appropriate for this trim?
-  # $add_line->(qw(TrimUMI 0));
-  # dragen is the other compression options
   push @lines, [qw(FastqCompressionFormat gzip)];
-
-  # Barcode mismatch tolerances, the default is 1.
-  # These settings can be omitted.
-  #if ($index1_length) {
-  #  $add_line->(qw(BarcodeMismatchesIndex1 1));
-  #  if ($index2_length) {
-  #    $add_line->(qw(BarcodeMismatchesIndex2 1));
-  #  }
-  #}
-
-  # Adapter trimming settings. The sequence of the Read 1 (or 2) adapter
-  # to be masked or trimmed. To trim multiple adapters, separate the sequences
-  # with a plus sign (+) indicating independent adapters that must be
-  # independently assessed for masking or trimming for each read.
-  # Characters must be A, C, G, or T.
-  # It seems that this settign can also be a column in teh data section
-  #
-  # $add_line->(qw(AdapterRead1 SOME));
-  # $add_line->(qw(AdapterRead2 OTHER));
-
   push @lines, [];
   push @lines, ['[BCLConvert_Data]'];
 
@@ -568,17 +619,6 @@ sub add_bclconvert_section {
     push @data_header, q[OverrideCycles];
   }
   push @lines, \@data_header;
-
-  # Override Cycles - Specifies the sequencing and indexing cycles to be used
-  # when processing the sequencing data. Must adhere to the
-  # following requirements:
-  # - Must be same number of fields (delimited by semicolon) as sequencing and
-  #   indexing reads specified in RunInfo.xml or Reads section.
-  # - Indexing reads are specified with I, sequencing reads are specified with
-  #   Y, UMI cycles are specified with U, and trimmed reads are specified with N.
-  # - The number of cycles specified for each read must equal the number of
-  #   cycles specified for that read in the RunInfo.xml file.
-  # - Only one Y or I sequence can be specified per read.
 
   my $index_override = sub {
     my ($max_length, $barcode) = @_;
@@ -604,7 +644,7 @@ sub add_bclconvert_section {
     if ($index1_length) {
       my $i7 = $product->[$LIST_INDEX_TAG1];
       push @product_data, $i7;
-      push @override_cycles, q[Y] . $READ1_LENGTH;
+      push @override_cycles, q[Y] . $self->read_length()->[0];
       push @override_cycles,
         $index_override->($index1_length, $i7);
       if ($index2_length) {
@@ -613,7 +653,7 @@ sub add_bclconvert_section {
         push @override_cycles,
           $index_override->($index2_length, $i5);
       }
-      push @override_cycles, q[Y] . $READ2_LENGTH;
+      push @override_cycles, q[Y] . $self->read_length()->[1];
     }
     my $override_cycles_string = join q[;], @override_cycles;
     # Might be an empty string ...
@@ -637,130 +677,6 @@ sub add_bclconvert_section {
   return scalar @lines;
 }
 
-=head2 add_common_headers
-
-Adds the top-level header section.
-
-=cut
-
-sub add_common_headers {
-  my $self = shift;
-
-  my ($index1_length, $index2_length) = @{$self->_index_reads_length()};
-  $self->_add_line('[Header]');
-  $self->_add_line(q[FileFormatVersion], 2);
-  $self->_add_line(q[RunName], $self->run_name);
-  $self->_add_line(qw(InstrumentPlatform NovaSeqXSeries));
-  # NovaSeqxPlus or NovaSeqX.
-  # If the run id is given, this should come from the tracking database
-  # when we fix the type there.
-  $self->_add_line(qw(InstrumentType NovaSeqXPlus));
-  $self->_add_line();
-
-  # Reads section
-  $self->_add_line('[Reads]');
-  $self->_add_line(q[Read1Cycles], $READ1_LENGTH);
-  $self->_add_line(q[Read2Cycles], $READ2_LENGTH);
-  if ($index1_length) {
-    $self->_add_line('Index1Cycles', $index1_length);
-    if ($index2_length) {
-      $self->_add_line('Index2Cycles', $index2_length);
-    }
-  }
-
-  $self->_add_line();
-  $self->_add_line('[Sequencing_Settings]');
-
-  return;
-}
-
-=head2 can_do_alignment
-
-=cut
-
-sub can_do_alignment {
-  my $r = shift;
-  return $r && !($r =~ /Not suitable/xmsi);
-}
-
-=head2 do_ref_rna_alignment_test
-
-=cut
-
-sub do_ref_rna_alignment_test {
-  my $r = shift;
-  return any { $r =~ /$_/xmsi } @RNA_ANALYSES_REFS;
-}
-
-=head2 do_libtype_rna_alignment_test
-
-=cut
-
-sub do_libtype_rna_alignment_test {
-  my $lt = shift;
-  return any { $lt =~ /$_/xmsi } @RNA_ANALYSES_LIB_TYPES;
-}
-
-=head2 do_libtype_tenx_test
-
-=cut
-
-sub do_libtype_tenx_test {
-  my $lt = shift;
-  return any { $lt =~ /$_/xmsi } @TENX_ANALYSES_LIB_TYPES;
-}
-
-=head2 get_instrument_side
-
-Consult run tags to determine which slot/side of the instrument this run is
-intended to be inserted into. Croaks when no value has been set.
-
-=cut
-
-sub get_instrument_side {
-  my $self = shift;
-  my $side = $self->run->is_tag_set('fc_slotA') ? 'A' :
-            ($self->run->is_tag_set('fc_slotB') ? 'B' : q[]);
-  if (! $side) {
-    croak 'Slot is not set for run ' . $self->id_run;
-  }
-  return $side;
-}
-
-
-sub _add_samples {
-  my ($self, @samples) = @_;
-
-  my $done = {};
-  foreach my $sample (@samples) {
-    if (!$done->{$sample->[0]}) {
-      $self->_add_line(@{$sample});
-      $done->{$sample->[0]} = 1;
-    }
-  }
-
-  return;
-}
-
-sub _can_add_sample {
-  my ($self, $distinct_configs, $config) = @_;
-
-  $config or return;
-
-  # An existing configuration can always be added.
-  if (!$distinct_configs->{$config}) { # This is a new configuration.
-    if ($self->_current_number_of_configs < $self->dragen_max_number_of_configs) {
-      # Add to the dictionary of distinct configs.
-      $distinct_configs->{$config} = 1;
-      # Increment the global count of distinct contigs.
-      $self->_current_number_of_configs($self->_current_number_of_configs + 1);
-    } else {
-      return;
-    }
-  }
-
-  return 1;
-}
 
 =head2 add_germline_section
 
@@ -816,6 +732,7 @@ sub add_germline_section {
   return scalar @to_align;
 }
 
+
 =head2 add_rna_section
 
 Conditionally adds the DragenRNA_Settings and DragenRNA_Data sections.
@@ -834,8 +751,9 @@ sub add_rna_section {
     my $r = $p->[$LIST_INDEX_REF];
     my $lib_type = $p->[$LIST_INDEX_LIBTYPE];
 
-    if ( can_do_alignment($r) &&
-         (do_ref_rna_alignment_test($r) || do_libtype_rna_alignment_test($lib_type)) ) {
+    if ( can_do_alignment($r) && (
+           do_ref_rna_alignment_test($r) ||
+           do_libtype_rna_alignment_test($lib_type)) ) {
 
       my $match = first { $r =~ /$_/xms} @ref_matches;
       if ($self->_can_add_sample($distinct_configs, $match)) {
@@ -858,6 +776,126 @@ sub add_rna_section {
   }
 
   return scalar @to_align;
+}
+
+
+=head2 can_do_alignment
+
+=cut
+
+sub can_do_alignment {
+  my $r = shift;
+  return $r && !($r =~ /Not suitable/xmsi);
+}
+
+
+=head2 do_ref_rna_alignment_test
+
+=cut
+
+sub do_ref_rna_alignment_test {
+  my $r = shift;
+  return any { $r =~ /$_/xmsi } @RNA_ANALYSES_REFS;
+}
+
+
+=head2 do_libtype_rna_alignment_test
+
+=cut
+
+sub do_libtype_rna_alignment_test {
+  my $lt = shift;
+  return any { $lt =~ /$_/xmsi } @RNA_ANALYSES_LIB_TYPES;
+}
+
+
+=head2 do_libtype_tenx_test
+
+=cut
+
+sub do_libtype_tenx_test {
+  my $lt = shift;
+  return any { $lt =~ /$_/xmsi } @TENX_ANALYSES_LIB_TYPES;
+}
+
+
+=head2 get_instrument_side
+
+Consult run tags to determine which slot/side of the instrument this run is
+intended to be inserted into. Croaks when no value has been set.
+
+=cut
+
+sub get_instrument_side {
+  my $self = shift;
+  my $side = $self->run->is_tag_set('fc_slotA') ? 'A' :
+            ($self->run->is_tag_set('fc_slotB') ? 'B' : q[]);
+  if (! $side) {
+    croak 'Slot is not set for run ' . $self->id_run;
+  }
+  return $side;
+}
+
+##################################################################
+#  Private attributes and methods                                #
+##################################################################
+
+# A writable counter.
+has '_current_number_of_configs' => (
+  'isa'      => 'Int',
+  'is'       => 'rw',
+  'default'  => 0,
+  'required' => 0,
+);
+
+
+has '_all_lines' => (
+  'isa'        => 'ArrayRef',
+  'is'         => 'ro',
+  'default'    => sub { return []; } ,
+  'required'   => 0,
+);
+
+
+sub _add_line {
+  my ($self, @columns) = @_;
+  push @{$self->_all_lines()}, @columns ? \@columns : [];
+  return;
+}
+
+sub _add_samples {
+  my ($self, @samples) = @_;
+
+  my $done = {};
+  foreach my $sample (@samples) {
+    if (!$done->{$sample->[0]}) {
+      $self->_add_line(@{$sample});
+      $done->{$sample->[0]} = 1;
+    }
+  }
+
+  return;
+}
+
+
+sub _can_add_sample {
+  my ($self, $distinct_configs, $config) = @_;
+
+  $config or return;
+
+  # An existing configuration can always be added.
+  if (!$distinct_configs->{$config}) { # This is a new configuration.
+    if ($self->_current_number_of_configs < $self->dragen_max_number_of_configs) {
+      # Add to the dictionary of distinct configs.
+      $distinct_configs->{$config} = 1;
+      # Increment the global count of distinct contigs.
+      $self->_current_number_of_configs($self->_current_number_of_configs + 1);
+    } else {
+      return;
+    }
+  }
+
+  return 1;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -891,8 +929,6 @@ __END__
 =item List::MoreUtils
 
 =item List::Util
-
-=item Getopt::Long
 
 =item Pod::Usage
 
