@@ -150,13 +150,15 @@ sub process {
     my $ss;
     if ($self->instrument_format eq $MISEQ_INSTRUMENT_FORMAT) {
       $ss = npg::samplesheet->new(
-        run => $r, mlwh_schema => $self->mlwh_schema
+        run => $r,
+        mlwh_schema => $self->mlwh_schema
       );
     } else {
       $ss = npg::samplesheet::novaseq_xseries->new(
-        run => $r, id_run => $id_run,
+        id_run => $id_run,
+        run => $r,
         mlwh_schema => $self->mlwh_schema,
-        align => 1, keep_fastq => 1
+        align => 1
       );
     }
 

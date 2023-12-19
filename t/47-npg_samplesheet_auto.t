@@ -93,7 +93,9 @@ my $schema = $util->create_test_db(q[npg_tracking::Schema],
   is (@files, 1, 'one NovaSeqX samplesheet file is generated');
   my $compare_file = 't/data/samplesheet/dragen/' .
                      '231206_47995_NVX1_A_ssbatch98292_align.csv';
-  is (slurp($files[0]), slurp($compare_file),
+  my $expected = slurp($compare_file);
+  $expected =~ s/KeepFastq,TRUE,,,/KeepFastq,FALSE,,,/;
+  is (slurp($files[0]), $expected,
     'the NovaSeqX samplesheet is generated correctly');
 }
 
