@@ -1,11 +1,12 @@
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 15;
 use Test::Exception;
 use File::Temp qw/ tempdir /;
 use Moose::Meta::Class;
 use Log::Log4perl qw(:easy);
 use File::chdir;
+use Perl6::Slurp;
 
 use_ok('npg::samplesheet::auto');
 
@@ -90,6 +91,10 @@ my $schema = $util->create_test_db(q[npg_tracking::Schema],
   my $glob = q[*_47995_NVX1_A_ssbatch98292.csv];
   my @files = glob "$dir/samplesheets/$glob";
   is (@files, 1, 'one NovaSeqX samplesheet file is generated');
+  my $compare_file = 't/data/samplesheet/dragen/' .
+                     '231206_47995_NVX1_A_ssbatch98292_align.csv';
+  is (slurp($files[0]), slurp($compare_file),
+    'the NovaSeqX samplesheet is generated correctly');
 }
 
 1;

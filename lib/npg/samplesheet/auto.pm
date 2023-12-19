@@ -156,8 +156,7 @@ sub process {
       $ss = npg::samplesheet::novaseq_xseries->new(
         run => $r, id_run => $id_run,
         mlwh_schema => $self->mlwh_schema,
-        align => 1, keep_fastq => 1,
-        varcall => q(AllVariantCallers)
+        align => 1, keep_fastq => 1
       );
     }
 
