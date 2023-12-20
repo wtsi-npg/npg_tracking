@@ -26,7 +26,7 @@ my $schema_wh = $class->new_object({})->create_test_db(
 my $date = DateTime->now()->strftime('%y%m%d');
 
 subtest 'create the generator object, test simple attributes' => sub {
-  plan tests => 16;
+  plan tests => 17;
 
   my $g = npg::samplesheet::novaseq_xseries->new(
     npg_tracking_schema => $schema_tracking,
@@ -116,6 +116,14 @@ subtest 'create the generator object, test simple attributes' => sub {
     npg_tracking_schema => $schema_tracking,
     mlwh_schema         => $schema_wh,
     id_run              => 47446,
+    samplesheet_path    => "$dir/one///"
+  );
+  is ($g->output, "$dir/one/$file_name", 'correct output path is generated');
+  
+  $g = npg::samplesheet::novaseq_xseries->new(
+    npg_tracking_schema => $schema_tracking,
+    mlwh_schema         => $schema_wh,
+    id_run              => 47446,
     samplesheet_path    => q[]
   );
   is ($g->output, $file_name, 'correct output path is generated');
@@ -127,7 +135,7 @@ subtest 'create the generator object, test simple attributes' => sub {
     id_run              => 47446,
   );
   throws_ok { $g->file_name }
-    qr/Instrument model is not NovaSeq X Series/,
+    qr/Instrument is not registered as NovaSeq X Series/,
     'error when the run is registered on the wrong instrument model';
 };
 

@@ -210,7 +210,7 @@ __END__
 
 =item npg_tracking::Schema
 
-=item  st::api::lims
+=item st::api::lims
 
 =item npg_tracking::glossary::run
 

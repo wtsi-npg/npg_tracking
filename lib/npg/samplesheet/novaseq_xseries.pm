@@ -143,7 +143,7 @@ sub _build_file_name {
     $file_name = $self->run_name;
   }
 
-  my $date =  DateTime->now()->strftime('%y%m%d'); # 230602 for 2 June 2023
+  my $date = DateTime->now()->strftime('%y%m%d'); # 230602 for 2 June 2023
   $file_name = sprintf '%s_%s.csv', $date, $file_name;
 
   return $file_name;
@@ -176,7 +176,7 @@ sub _build_output {
   my $dir = $self->samplesheet_path();
   my $path = $self->file_name;
   if ($dir) {
-    $dir =~ s{/\Z}{}xms; # Trim trailing slash if present.
+    $dir =~ s{[/]+\Z}{}xms; # Trim trailing slash if present.
     $path = join q[/], $dir, $path;
   }
 
@@ -326,7 +326,8 @@ sub _build_run_name {
   my $run_name;
   if ($self->id_run()) {
     if ($self->run->instrument_format()->model() !~ /NovaSeqX/smx) {
-      croak 'Instrument model is not NovaSeq X Series';
+      croak 'Instrument is not registered as NovaSeq X Series ' .
+            'in the tracking database';
     }
     # Embed instrument's Sanger network name and slot
     $run_name = sprintf '%s_%s_%s', $self->id_run,
