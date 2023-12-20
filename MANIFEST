@@ -161,6 +161,7 @@ lib/npg_tracking/report/event2followers.pm
 lib/npg_tracking/report/event2subscribers.pm
 lib/npg_tracking/report/events.pm
 lib/npg/samplesheet.pm
+lib/npg/samplesheet/base.pm
 lib/npg/samplesheet/novaseq_xseries.pm
 lib/npg/samplesheet/auto.pm
 lib/npg/util.pm

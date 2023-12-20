@@ -9,8 +9,6 @@ use File::Path qw/make_path/;
 use Moose::Meta::Class;
 
 use t::dbic_util;
-local $ENV{'dev'} = q(wibble);
-local $ENV{'HOME'} = q(t/);
 
 use_ok('npg::samplesheet');
 use_ok('st::api::lims');
@@ -21,8 +19,6 @@ my $class = Moose::Meta::Class->create_anon_class(roles=>[qw/npg_testing::db/]);
 my $mlwh_schema = $class->new_object({})->create_test_db(
   q[WTSI::DNAP::Warehouse::Schema], q[t/data/fixtures_lims_wh_samplesheet]
 );
-
-local $ENV{NPG_WEBSERVICE_CACHE_DIR} = q(t/data/samplesheet);
 
 my $dir = tempdir( CLEANUP => 1 );
 
@@ -51,22 +47,19 @@ subtest 'object creation' => sub {
   lives_ok { $ss = npg::samplesheet->new(mlwh_schema => $mlwh_schema,
     repository=>$dir, npg_tracking_schema=>$schema, id_run=>7007); }
     'samplesheet object - no output provided';
-  cmp_ok($ss->output, 'eq',
-    '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/MS0001309-300.csv',
+  cmp_ok($ss->output, 'eq', 'samplesheets/MS0001309-300.csv',
     'default output location (with zeroes trimmed appropriately)');
 
   lives_ok { $ss = npg::samplesheet->new(mlwh_schema => $mlwh_schema,
     repository=>$dir, npg_tracking_schema=>$schema, id_run=>6946); }
     'samplesheet object - no output provided';
-  cmp_ok($ss->output, 'eq',
-    '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/000000000-A0616.csv',
+  cmp_ok($ss->output, 'eq', 'samplesheets/000000000-A0616.csv',
     'default output location');
 
   lives_ok { $ss = npg::samplesheet->new(mlwh_schema => $mlwh_schema, repository=>$dir, npg_tracking_schema=>$schema, id_run=>7007); } 'samplesheet object - no output provided';
   my $orig_flowcell_id = $ss->run->flowcell_id;
   $ss->run->flowcell_id(q(MS2000132-500V2));
-  cmp_ok($ss->output, 'eq',
-    '/nfs/sf49/ILorHSorMS_sf49/samplesheets/wibble/MS2000132-500V2.csv',
+  cmp_ok($ss->output, 'eq', 'samplesheets/MS2000132-500V2.csv',
     'default output location copes with V2 MiSeq cartirdges/reagent kits');
 };
 

@@ -3,7 +3,6 @@ my $VAR1 = {
   'staging_areas' => {
     'indexes' => [18 .. 32, 34 .. 47, 49 .. 55],
     'prefix' => '/nfs/sf',
-    'samplesheets' => '/nfs/sf49/ILorHSorMS_sf49/samplesheets/'
   },
   'staging_areas2webservers' => {
     'gs01'    => {'npg_tracking' => 'http://gso1.san.ac.uk:678',

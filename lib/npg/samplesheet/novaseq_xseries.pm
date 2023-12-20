@@ -8,17 +8,13 @@ use Carp;
 use Text::CSV;
 use List::MoreUtils qw(any none uniq);
 use List::Util qw(first max);
-use Pod::Usage;
 use DateTime;
 use Data::UUID;
 
-use st::api::lims;
-use npg_tracking::Schema;
-use npg_tracking::util::types;
-use WTSI::DNAP::Warehouse::Schema;
+use st::api::lims::samplesheet;
 
-with qw / MooseX::Getopt
-          npg_tracking::glossary::run /;
+extends 'npg::samplesheet::base';
+with    'MooseX::Getopt';
 
 our $VERSION = '0';
 
@@ -38,9 +34,8 @@ Readonly::Hash my %REFERENCE_MAPING => (
   'Homo_sapiens' => 'hg38-alt_masked.cnv.graph.hla.rna-8-1667497097-2'
 );
 
-# DRAGEN can process a limited number of distinct configurations.
-# For on-board analysis it's 4.
 Readonly::Scalar my $DRAGEN_MAX_NUMBER_OF_CONFIGS => 4;
+Readonly::Scalar my $END_OF_LINE => qq[\n];
 
 =head1 NAME
 
@@ -116,48 +111,89 @@ sub _build_dragen_software_version {
 };
 
 
-=head2 id_run
+has '+samplesheet_path' => (
+  'documentation' => 'A directory where the samplesheet will be created, ' .
+  'optional',
+);
 
-NPG run ID, an optional attribute. If supplied, the record for this run
-should exists in the run tracking database.
+
+=head2 file_name
+
+CSV file name to write the samplesheet data to.
 
 =cut
 
+has 'file_name' => (
+  'isa'        => 'Str',
+  'is'         => 'ro',
+  'lazy_build' => 1,
+  'required'   => 0,
+  'documentation' => 'CSV file name to write the samplesheet data to, ' .
+                     'optional',
+);
+sub _build_file_name {
+  my $self = shift;
+
+  my $file_name;
+  if ($self->has_id_run) {
+    $file_name = join q[_],
+      $self->run_name,
+      q[ssbatch] . $self->batch_id;
+  } else {
+    $file_name = $self->run_name;
+  }
+
+  my $date = DateTime->now()->strftime('%y%m%d'); # 230602 for 2 June 2023
+  $file_name = sprintf '%s_%s.csv', $date, $file_name;
+
+  return $file_name;
+}
+
+
+=head2 output
+
+A full path of the samplesheet file. If not supplied, is built using the
+values of C<samplesheet_path> and C<file_name> attributes.
+
+If the C<samplesheet_path> attribute is set to an empty string, the current
+working directory is assumed.
+
+Do not remove this attribute or change its name in order to be compliant with
+the samplesheet daemon C<npg::samplesheet::auto>.
+
+=cut
+
+has 'output' => (
+  'isa'        => 'Str',
+  'is'         => 'ro',
+  'lazy_build' => 1,
+  'isa'        => 'Str',
+  'documentation' => 'A path of the samplesheet file, optional',
+);
+sub _build_output {
+  my $self = shift;
+
+  my $dir = $self->samplesheet_path();
+  my $path = $self->file_name;
+  if ($dir) {
+    $dir =~ s{[/]+\Z}{}xms; # Trim trailing slash if present.
+    $path = join q[/], $dir, $path;
+  }
+
+  return $path;
+}
+
+
 has '+id_run' => (
-  'required'  => 0,
   'documentation' => 'NPG run ID, optional; if supplied, the record for this '.
                      'run should exists in the run tracking database',
 );
 
 
-=head2 batch_id
-
-LIMS batch ID, an optional attribute. If not set, the C<id_run> attribute
-should be set.
-
-=cut
-
-has 'batch_id' => (
-  'isa' => 'Str|Int',
-  'is'  => 'ro',
-  'lazy_build' => 1,
-  'required'   => 0,
+has '+batch_id' => (
   'documentation' => 'LIMS batch identifier, optional. If not set, will be ' .
                      'retrieved from the tracking database record for the run',
 );
-sub _build_batch_id {
-  my $self = shift;
-  if (!$self->has_id_run) {
-    croak 'Run ID is not supplied, cannot get LIMS batch ID';
-  }
-  my $batch_id = $self->run()->batch_id();
-  if (!defined $batch_id) {
-    croak 'Batch ID is not set in the database record for run ' . $self->id_run;
-  }
-
-  return $batch_id;
-}
-
 
 =head2 index_read_length
 
@@ -175,7 +211,7 @@ has 'index_read_length' => (
   'lazy_build' => 1,
   'required'   => 0,
   'documentation' => 'An array containing the length of the first and the ' .
-                     'second (if applicable) indexing read..',
+                     'second (if applicable) indexing read.',
 );
 sub _build_index_read_length {
   my $self = shift;
@@ -273,96 +309,6 @@ has 'dragen_max_number_of_configs' => (
 );
 
 
-=head2 npg_tracking_schema
-
-DBIx Schema object for the tracking database.
-
-=cut
-
-has 'npg_tracking_schema' => (
-  'isa'        => 'npg_tracking::Schema',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-  'traits'     => [ 'NoGetopt' ],
-);
-sub _build_npg_tracking_schema {
-  return npg_tracking::Schema->connect();
-}
-
-
-=head2 mlwh_schema
-
-DBIx Schema object for the mlwh database.
-
-=cut
-
-has 'mlwh_schema' => (
-  'isa'        => 'WTSI::DNAP::Warehouse::Schema',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-  'traits'     => [ 'NoGetopt' ],
-);
-sub _build_mlwh_schema {
-  return WTSI::DNAP::Warehouse::Schema->connect();
-}
-
-
-=head2 run
-
-DBIx object for a row in the run table of the tracking database.
-
-=cut
-
-has 'run' => (
-  'isa'        => 'npg_tracking::Schema::Result::Run',
-  'is'         => 'ro',
-  'predicate'  => 'has_tracking_run',
-  'lazy_build' => 1,
-  'traits'     => [ 'NoGetopt' ],
-);
-sub _build_run {
-  my $self=shift;
-
-  if (!$self->has_id_run) {
-    croak 'Run ID is not supplied, cannot retrieve run database record';
-  }
-  my $run = $self->npg_tracking_schema->resultset(q(Run))->find($self->id_run);
-  if (!$run) {
-    croak 'The database record for run ' . $self->id_run  . ' does not exist';
-  }
-  if ($run->instrument_format()->model() !~ /NovaSeqX/smx) {
-    croak 'Instrument model is not NovaSeq X Series';
-  }
-
-  return $run;
-}
-
-
-=head2 lims
-
-An attribute, an array of C<st::api::lims> type objects.
-
-If the attribute is not provided, it is built automatically.
-c<ml_warehouse st::api::lims> driver is used to access LIMS data.
-
-=cut
-
-has 'lims' => (
-  'isa'        => 'ArrayRef[st::api::lims]',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-  'traits'     => [ 'NoGetopt' ],
-);
-sub _build_lims {
-  my $self=shift;
-  return [st::api::lims->new(
-            id_flowcell_lims => $self->batch_id,
-            driver_type => q[ml_warehouse],
-            mlwh_schema => $self->mlwh_schema
-          )->children()];
-}
-
-
 =head2 run_name
 
 =cut
@@ -378,7 +324,11 @@ sub _build_run_name {
   my $self = shift;
 
   my $run_name;
-  if ($self->has_id_run()) {
+  if ($self->id_run()) {
+    if ($self->run->instrument_format()->model() !~ /NovaSeqX/smx) {
+      croak 'Instrument is not registered as NovaSeq X Series ' .
+            'in the tracking database';
+    }
     # Embed instrument's Sanger network name and slot
     $run_name = sprintf '%s_%s_%s', $self->id_run,
       $self->run->instrument->name, $self->get_instrument_side;
@@ -391,36 +341,6 @@ sub _build_run_name {
   }
 
   return $run_name;
-}
-
-
-=head2 file_name
-
-=cut
-
-has 'file_name' => (
-  'isa'        => 'Str',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-  'required'   => 0,
-  'documentation' => 'CSV file name or path to write samplesheet data to',
-);
-sub _build_file_name {
-  my $self = shift;
-
-  my $file_name;
-  if ($self->has_id_run) {
-    $file_name = join q[_],
-      $self->run_name,
-      q[ssbatch] . $self->batch_id;
-  } else {
-    $file_name = $self->run_name;
-  }
-
-  my $date =  DateTime->now()->strftime('%y%m%d'); # 230602 for 2 June 2023
-  $file_name = sprintf '%s_%s.csv', $date, $file_name;
-
-  return $file_name;
 }
 
 
@@ -471,6 +391,9 @@ sub _build__products {
 
 Generates a samplesheet and saves it to a file.
 
+Do not remove this method or change its name in order to stay compliant
+with samplesheet daemon C<npg::samplesheet::auto>.
+
 =cut
 
 sub process {
@@ -508,30 +431,7 @@ sub process {
     carp 'Too many BCLConvert configurations, cannot run any DRAGEN analysis';
   }
 
-
-  my $csv = Text::CSV->new({
-    eol      => qq[\n],
-    sep_char => q[,],
-  });
-
-  my $max_num_columns = max map { scalar @{$_} } @{$self->_all_lines};
-
-  my $file_name = $self->file_name;
-  ## no critic (InputOutput::RequireBriefOpen)
-  open my $fh, q[>], $file_name
-    or croak "Failed to open $file_name for writing";
-
-  for my $line (@{$self->_all_lines}) {
-    my @columns = @{$line};
-    # Pad the row.
-    while (scalar @columns < $max_num_columns) {
-      push @columns, q[];
-    }
-    $csv->print($fh, \@columns);
-  }
-
-  close $fh or carp "Problems closing $file_name";
-  ## use critic
+  $self->_generate_output();
 
   return;
 }
@@ -898,6 +798,37 @@ sub _can_add_sample {
   return 1;
 }
 
+
+sub _generate_output {
+  my $self = shift;
+
+  my $csv = Text::CSV->new({
+    eol => $END_OF_LINE,
+    sep_char => $st::api::lims::samplesheet::SAMPLESHEET_RECORD_SEPARATOR
+  });
+
+  my $max_num_columns = max map { scalar @{$_} } @{$self->_all_lines};
+
+  my $file_path = $self->output;
+  ## no critic (InputOutput::RequireBriefOpen)
+  open my $fh, q[>], $file_path
+    or croak "Failed to open $file_path for writing";
+
+  for my $line (@{$self->_all_lines}) {
+    my @columns = @{$line};
+    # Pad the row.
+    while (scalar @columns < $max_num_columns) {
+      push @columns, q[];
+    }
+    $csv->print($fh, \@columns);
+  }
+
+  close $fh or carp "Problems closing $file_path";
+  ## use critic
+
+  return;
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
@@ -930,19 +861,9 @@ __END__
 
 =item List::Util
 
-=item Pod::Usage
-
 =item DateTime
 
 =item Data::UUID
-
-=item st::api::lims
-
-=item npg_tracking::Schema
-
-=item npg_tracking::util::types
-
-=item WTSI::DNAP::Warehouse::Schema
 
 =back
 
@@ -956,7 +877,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2023 Genome Research Ltd
+Copyright (C) 2023 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
