@@ -1,10 +1,11 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 use Test::Exception;
 use List::MoreUtils qw/all none/;
 use File::Slurp;
 use File::Temp qw/tempdir/;
+use Moose::Meta::Class;
 
 use_ok('npg_tracking::glossary::rpt');
 use_ok('st::api::lims');
@@ -366,6 +367,32 @@ subtest 'Multiple lane sets in aggregation by library' => sub {
   is_deeply (\@rpt_lists, \@expected_rpt_lists,
     'merges list - correct object, correct sort order');
 };
+
+subtest 'mlwarehouse driver in aggregation by library' => sub {
+  plan tests => 5;
+
+  my $class = Moose::Meta::Class->create_anon_class(roles=>[qw/npg_testing::db/]);
+  my $schema_wh = $class->new_object({})->create_test_db(
+    q[WTSI::DNAP::Warehouse::Schema], q[t/data/fixtures_lims_wh]
+  );
+
+  my $id_run = 47995;
+  my @lane_lims = st::api::lims->new(
+    id_run           => $id_run,
+    id_flowcell_lims => 98292,
+    driver_type      => 'ml_warehouse',
+    mlwh_schema      => $schema_wh,
+  )->children();
+  my $lims = st::api::lims->aggregate_libraries(\@lane_lims);
+  # Test that lims objects are viable, ie it is possible to retrieve
+  # their properties.
+  is (@{$lims->{'singles'}}, 8, 'list of singles contains 8 objects');
+  lives_ok { $lims->{'singles'}->[0]->sample_name } 'can retrieve sample name';
+  is (@{$lims->{'merges'}}, 87, 'list of merges contains 87 objects');
+  lives_ok { $lims->{'merges'}->[0]->sample_name } 'can retrieve sample name';
+  lives_ok { $lims->{'merges'}->[86]->sample_name } 'can retrieve sample name';
+};
+
 
 sub _generate_rpt_lists {
   my ($id_run, $positions, $tag_indexes) = @_;

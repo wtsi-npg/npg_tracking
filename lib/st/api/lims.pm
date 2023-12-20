@@ -167,7 +167,6 @@ sub BUILD {
   my %dargs=();
   my %pargs=();
   my %primary_arg_type = map {$_ => 1} @{$METHODS_PER_CATEGORY{'primary'}};
-
   my $driver_class=$self->_driver_package_name;
 
   foreach my$k (grep {defined && $_ !~ /^_/smx} map{ $_->has_init_arg ? $_->init_arg : $_->name}
@@ -196,6 +195,28 @@ sub BUILD {
   croak 'Unknown attributes: '.join q(, ), keys %args if keys %args;
   $self->_set__primary_arguments(\%pargs);
   return;
+}
+
+=head2 copy_init_args
+
+Returns a hash reference that can be used to initialise st::api::lims
+objects similar to this object. The driver details, if present in this
+object, are returned under the 'driver_type' key and, if relevant,
+'mlwh_schema' key. 
+
+=cut
+sub copy_init_args {
+  my $self = shift;
+
+  my %init = %{$self->_driver_arguments()};
+  if ($self->driver_type()) {
+    $init{'driver_type'} = $self->driver_type();
+    if (!$init{'mlwh_schema'} && $init{'driver_type'} =~ /warehouse/smx) {
+      $init{'mlwh_schema'} =  $self->driver()->mlwh_schema;
+    }
+  }
+
+  return \%init;
 }
 
 # Mapping of LIMS object types to attributes for which methods are to
@@ -724,7 +745,7 @@ sub _build__cached_children {
   my $self = shift;
 
   my @children = ();
-  my @basic_attrs = qw/id_run position tag_index/;
+  my @basic_attrs = @{$METHODS_PER_CATEGORY{'primary'}};
   my $driver_type = $self->driver_type;
 
   if ($self->driver) {
@@ -760,7 +781,9 @@ sub _build__cached_children {
         my %init = %{$self->_driver_arguments()};
         $init{'driver_type'} = $driver_type;
         foreach my $attr (@basic_attrs) {
-          $init{$attr} = $component->$attr;
+          if ($component->can($attr)) {
+            $init{$attr} = $component->$attr;
+          }
         }
         push @children, __PACKAGE__->new(\%init);
       }
@@ -953,7 +976,7 @@ This method can be used both as instance and as a class method.
 
 =cut
 
-sub aggregate_libraries() {
+sub aggregate_libraries {
   my ($self, $lane_lims_array) = @_;
 
   # This restriction might be lifted in future.
@@ -975,9 +998,9 @@ sub aggregate_libraries() {
   # to create objects for merged entities.
   # Do not use $self for copying the driver arguments in order to retain
   # ability to use this method as a class method.
-  my %init = %{$lane_lims_array->[0]->_driver_arguments()};
-  delete $init{position};
-  delete $init{id_run};
+  my $init = $lane_lims_array->[0]->copy_init_args();
+  delete $init->{position};
+  delete $init->{id_run};
 
   my $merges = {};
   my $lane_set_delim = q[,];
@@ -1005,7 +1028,7 @@ sub aggregate_libraries() {
         ->new(rpt_list => $rpt_list)->create_composition()
         ->freeze2rpt();
       $merges->{$lane_set}->{$tag_index} = __PACKAGE__->new(
-        %init, rpt_list => $rpt_list
+        %{$init}, rpt_list => $rpt_list
       );
     }
   }
@@ -1045,7 +1068,7 @@ sub aggregate_libraries() {
   return $all_lims_objects;
 }
 
-sub _check_merge_correctness{
+sub _check_merge_correctness {
   my $lib_lims = shift;
   my @lanes = uniq  map {$_->position} @{$lib_lims};
   if (@lanes != @{$lib_lims}) {
