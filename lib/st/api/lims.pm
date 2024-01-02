@@ -1129,13 +1129,12 @@ attributes. The new object has the same driver settings as the original object.
 sub create_lane_object {
   my ($self, $id_run, $position) = @_;
   ($id_run and $position) or croak 'id_run and position are expected as arguments';
-  my %init = %{$self->_driver_arguments()};
-  $init{'driver_type'} = $self->driver_type;
-  delete $init{'tag_index'};
-  delete $init{'rpt_list'};
-  $init{'id_run'}   = $id_run;
-  $init{'position'} = $position;
-  return __PACKAGE__->new(%init);
+  my $init = $self->copy_init_args();
+  delete $init->{'tag_index'};
+  delete $init->{'rpt_list'};
+  $init->{'id_run'}   = $id_run;
+  $init->{'position'} = $position;
+  return __PACKAGE__->new(%{$init});
 }
 
 =head2 cached_samplesheet_var_name

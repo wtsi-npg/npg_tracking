@@ -12,6 +12,68 @@ use_ok('st::api::lims');
 
 my $tmp_dir = tempdir( CLEANUP => 1 );
 
+my $class = Moose::Meta::Class->create_anon_class(roles=>[qw/npg_testing::db/]);
+my $schema_wh = $class->new_object({})->create_test_db(
+  q[WTSI::DNAP::Warehouse::Schema], q[t/data/fixtures_lims_wh]
+);
+
+subtest 'Lane object from plex object' => sub {
+  plan tests => 25;
+ 
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/test40_lims/samplesheet_novaseq4lanes.csv';
+
+  my $l = st::api::lims->new(rpt_list => '25846:1:1;25846:2:1');
+
+  my $e = qr/id_run and position are expected as arguments/;
+  throws_ok { $l->create_lane_object() } $e, 'no arguments - error';
+  throws_ok { $l->create_lane_object(1) } $e, 'one argument - error';
+  throws_ok { $l->create_lane_object(1, 0) } $e,
+    'one of argument is false - error';
+
+  my $test_lane = sub {
+    my ($lane_l, $id_run, $position) = @_;
+    is ($lane_l->id_run, $id_run, "run id is $id_run");
+    is ($lane_l->position, $position, "position is $position");
+    is ($lane_l->rpt_list, undef, 'rpt_list is undefined');
+    is ($lane_l->tag_index, undef, 'tag index is undefined');
+    ok ($lane_l->is_pool, 'the entity is a pool');
+  };
+
+  for my $p ((1,2)) {
+    my $lane = $l->create_lane_object(25846, $p);
+    $test_lane->($lane, 25846, $p);
+  }
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = q[];
+  
+  my $id_run = 47995;
+  my @objects = ();
+  push @objects,  st::api::lims->new(
+    id_run           => $id_run,
+    position         => 1,
+    tag_index        => 1,
+    id_flowcell_lims => 98292,
+    driver_type      => 'ml_warehouse',
+    mlwh_schema      => $schema_wh,
+  );
+  
+  $l = st::api::lims->new(
+    id_run           => $id_run,
+    id_flowcell_lims => 98292,
+    driver_type      => 'ml_warehouse',
+    mlwh_schema      => $schema_wh,
+  );
+  $l = ($l->children())[0];
+  push @objects, ($l->children())[0];
+  
+  for my $l_obj (@objects) { 
+    my $lane = $l_obj->create_lane_object($id_run, 2);
+    is ($lane->driver->mlwh_schema, $schema_wh,
+      'the original db connection is retained');
+    $test_lane->($lane, $id_run, 2);
+  }
+};
+
 subtest 'Aggregation across lanes for pools' => sub {
   plan tests => 82;
   
@@ -131,29 +193,6 @@ subtest 'Aggregation across lanes for non-pools' => sub {
   ok (!defined $l->id_run, "id_run not defined");
   ok (!$l->is_phix_spike, 'is not phix spike');
   _compare_properties_2($l);
-};
-
-subtest 'Aggregation across lanes for a tag' => sub {
-  plan tests => 13;
- 
-  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/test40_lims/samplesheet_novaseq4lanes.csv';
-
-  my $l = st::api::lims->new(rpt_list => '25846:1:1;25846:2:1');
-
-  my $e = qr/id_run and position are expected as arguments/;
-  throws_ok { $l->create_lane_object() } $e, 'no arguments - error';
-  throws_ok { $l->create_lane_object(1) } $e, 'one argument - error';
-  throws_ok { $l->create_lane_object(1, 0) } $e,
-    'one of argument is false - error';
-
-  for my $p ((1,2)) {
-    my $lane_l = $l->create_lane_object(25846, $p);
-    is ($lane_l->id_run, 25846, 'run id is 25846');
-    is ($lane_l->position, $p, "position is $p");
-    is ($lane_l->rpt_list, undef, 'rpt_list is undefined');
-    is ($lane_l->tag_index, undef, 'tag index is undefined');
-    ok ($lane_l->is_pool, 'the entity is a pool');
-  }
 };
 
 subtest 'Error conditions in aggregation by library' => sub {
