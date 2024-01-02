@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 use Test::Exception;
 
 use_ok('st::api::lims');
@@ -162,6 +162,31 @@ subtest 'sample controls' => sub {
         is($l->sample_control_type, undef, 'sample control type is undefined');
       }
     }
+};
+
+subtest 'using rpt_list argument' => sub { 
+    plan tests => 14;
+    
+    my $lims = st::api::lims->new(
+        rpt_list         => '47995:1:3;47995:2:3',
+        id_flowcell_lims => 98292,
+        driver_type      => 'ml_warehouse',
+        mlwh_schema      => $schema_wh,
+    );
+    my $sample_name = '6751STDY13219555';
+    is ($lims->sample_name, $sample_name, 'correct sample name');
+    my @children = $lims->children();
+    is (@children, 2, 'two child objects');
+    for my $i ((0, 1)) {
+        my $child = $children[$i];
+        is ($child->driver_type, 'ml_warehouse', 'child driver type is correct');
+        is ($child->driver->mlwh_schema, $schema_wh,
+            q[child's driver is using the original db connection]);
+        is ($child->id_run, 47995, 'child run is is correct');
+        is ($child->tag_index, 3, 'child tag index is is correct');
+        is ($child->position, $i+1, 'child position is is correct');
+        is ($child->sample_name, $sample_name, 'child sample name is correct');  
+    }  
 };
 
 1;
