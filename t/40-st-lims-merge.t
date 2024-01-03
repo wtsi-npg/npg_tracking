@@ -75,7 +75,7 @@ subtest 'Create lane object from plex object' => sub {
 };
 
 subtest 'Create tag zero object' => sub {
-  plan tests => 4;
+  plan tests => 10;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
     't/data/test40_lims/samplesheet_novaseq4lanes.csv';
@@ -97,6 +97,36 @@ subtest 'Create tag zero object' => sub {
   $l = st::api::lims->new(id_run => 25846, position => 3, tag_index => 5);
   is ($l->create_tag_zero_object()->to_string(), $description,
     'created tag zero object from plex-level object');
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = q[];
+  
+  my $id_run = 47995;
+  my @objects = ();
+  push @objects,  st::api::lims->new(
+    id_run           => $id_run,
+    position         => 1,
+    id_flowcell_lims => 98292,
+    driver_type      => 'ml_warehouse',
+    mlwh_schema      => $schema_wh,
+  );
+  
+  $l = st::api::lims->new(
+    id_run           => $id_run,
+    id_flowcell_lims => 98292,
+    driver_type      => 'ml_warehouse',
+    mlwh_schema      => $schema_wh,
+  );
+  $l = ($l->children())[0];
+  push @objects, ($l->children())[0];
+  
+  for my $l_obj (@objects) { 
+    my $t0 = $l_obj->create_tag_zero_object();
+    is ($t0->driver->mlwh_schema, $schema_wh,
+      'the original db connection is retained');
+    my @names = $t0->sample_names();
+    is (@names, 18, '18 sample names are retrieved');
+    is ($names[0], '6751STDY13219539', 'first sample name is correct');
+  }
 };
 
 subtest 'Aggregation across lanes for pools' => sub {

@@ -1092,7 +1092,7 @@ sub _check_value_is_unique {
 
 =head2 create_tag_zero_object
  
-Using id_run and position values of this object, creates and returns
+Using run ID and position values of this object, creates and returns
 st::api::lims object for tag zero. The new object has the same driver
 settings as the original object.
 
@@ -1109,10 +1109,9 @@ sub create_tag_zero_object {
   if (!defined $self->position) {
     croak 'Position should be defined';
   }
-  my %init = %{$self->_driver_arguments()};
-  $init{'driver_type'} = $self->driver_type;
-  $init{'tag_index'}   = 0;
-  return __PACKAGE__->new(%init);
+  my $init = $self->copy_init_args();
+  $init->{'tag_index'}   = 0;
+  return __PACKAGE__->new(%{$init});
 }
 
 =head2 create_lane_object
