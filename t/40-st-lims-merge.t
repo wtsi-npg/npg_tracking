@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 11;
 use Test::Exception;
 use List::MoreUtils qw/all none/;
 use File::Slurp;
@@ -17,7 +17,7 @@ my $schema_wh = $class->new_object({})->create_test_db(
   q[WTSI::DNAP::Warehouse::Schema], q[t/data/fixtures_lims_wh]
 );
 
-subtest 'Lane object from plex object' => sub {
+subtest 'Create lane object from plex object' => sub {
   plan tests => 25;
  
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/test40_lims/samplesheet_novaseq4lanes.csv';
@@ -72,6 +72,31 @@ subtest 'Lane object from plex object' => sub {
       'the original db connection is retained');
     $test_lane->($lane, $id_run, 2);
   }
+};
+
+subtest 'Create tag zero object' => sub {
+  plan tests => 4;
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/test40_lims/samplesheet_novaseq4lanes.csv';
+
+  my $l = st::api::lims->new(id_run => 25846);
+  throws_ok { $l->create_tag_zero_object() } qr/Position should be defined/,
+    'method cannot be called on run-level object';
+  $l = st::api::lims->new(rpt_list => '25846:2:1');
+  throws_ok { $l->create_tag_zero_object() } qr/Position should be defined/,
+    'method cannot be called on an object for a composition';
+
+  my $description = 'st::api::lims object, driver - samplesheet, ' .
+    'id_run 25846, ' .
+    'path t/data/test40_lims/samplesheet_novaseq4lanes.csv, ' .
+    'position 3, tag_index 0';
+  $l = st::api::lims->new(id_run => 25846, position => 3);
+  is ($l->create_tag_zero_object()->to_string(), $description,
+    'created tag zero object from lane-level object');
+  $l = st::api::lims->new(id_run => 25846, position => 3, tag_index => 5);
+  is ($l->create_tag_zero_object()->to_string(), $description,
+    'created tag zero object from plex-level object');
 };
 
 subtest 'Aggregation across lanes for pools' => sub {
