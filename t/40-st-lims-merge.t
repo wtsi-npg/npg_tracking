@@ -130,9 +130,10 @@ subtest 'Create tag zero object' => sub {
 };
 
 subtest 'Aggregation across lanes for pools' => sub {
-  plan tests => 82;
+  plan tests => 89;
   
-  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/test40_lims/samplesheet_novaseq4lanes.csv';
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/test40_lims/samplesheet_novaseq4lanes.csv';
 
   my $l = st::api::lims->new(rpt_list => '25846:1:3');
   throws_ok { $l->aggregate_xlanes() } qr/Not run-level object/,
@@ -235,6 +236,35 @@ subtest 'Aggregation across lanes for pools' => sub {
     'sample names including spiked phix');
   is (join(q[:], $tag_zero->sample_names(1)), join(q[:], @sample_names),
     'sample names including spiked phix');
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = q[];
+  
+  my $id_run = 47995;
+  $l = st::api::lims->new(
+    id_run           => $id_run,
+    id_flowcell_lims => 98292,
+    driver_type      => 'ml_warehouse',
+    mlwh_schema      => $schema_wh,
+  );
+  
+  @merged = $l->aggregate_xlanes(qw/1 2/);
+  is (scalar @merged, 19, 'number of aggregates is number of tags plus two');
+  $tag_zero = pop @merged;
+  $tag_spiked = pop @merged;
+  $tag_last = pop @merged;
+  $tag_first = shift @merged;
+  is ($tag_zero->rpt_list, "$id_run:1:0;$id_run:2:0",
+    'rpt list for tag zero object');
+  my @tag_zero_sample_names = $tag_zero->sample_names();
+  is (@tag_zero_sample_names, 18, '18 sample names are retrieved');
+  is ($tag_zero_sample_names[0], '6751STDY13219539',
+    'first sample name is correct');
+  is ($tag_spiked->rpt_list, "$id_run:1:888;$id_run:2:888",
+    'rpt list for spiked in tag object');
+  is ($tag_last->rpt_list, "$id_run:1:17;$id_run:2:17",
+    'rpt list for tag 21 object');
+  is ($tag_first->rpt_list, "$id_run:1:1;$id_run:2:1",
+    'rpt list for tag 1 object');
 };
 
 subtest 'Aggregation across lanes for non-pools' => sub {

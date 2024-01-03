@@ -897,9 +897,8 @@ sub aggregate_xlanes {
     return;
   }; # End of test function
 
-  my %init = %{$self->_driver_arguments()};
-  $init{'driver_type'} = $self->driver_type;
-  delete $init{'id_run'};
+  my $init = $self->copy_init_args();
+  delete $init->{'id_run'};
 
   my $lims4compisitions = {};
   my @test_attrs = qw/sample_id library_id/;
@@ -908,7 +907,7 @@ sub aggregate_xlanes {
 
   if (!@pools) {
     $can_merge->(\@lanes, @test_attrs); # Test consistency
-    push @aggregated, __PACKAGE__->new(%init, rpt_list => $lanes_rpt_list);
+    push @aggregated, __PACKAGE__->new(%{$init}, rpt_list => $lanes_rpt_list);
   } else {
     my @sizes = uniq (map { $_->num_children } @lanes);
     if (@sizes != 1) { # Test consistency
@@ -925,11 +924,11 @@ sub aggregate_xlanes {
     my $ea = each_arrayref map { [$_->children()] } @lanes;
     while ( my @plexes = $ea->() ) {
       $can_merge->(\@plexes, @test_attrs, 'tag_index');  # Test consistency
-      push @aggregated, __PACKAGE__->new(%init,
+      push @aggregated, __PACKAGE__->new(%{$init},
         rpt_list => npg_tracking::glossary::rpt->deflate_rpts(\@plexes));
     }
     # Add object for tag zero
-    push @aggregated, __PACKAGE__->new(%init,
+    push @aggregated, __PACKAGE__->new(%{$init},
       rpt_list => npg_tracking::glossary::rpt->tag_zero_rpt_list($lanes_rpt_list));
   }
 
