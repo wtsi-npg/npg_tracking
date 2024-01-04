@@ -155,7 +155,6 @@ sub process {
       );
     } else {
       $ss = npg::samplesheet::novaseq_xseries->new(
-        id_run => $id_run,
         run => $r,
         mlwh_schema => $self->mlwh_schema,
         align => 1
@@ -307,6 +306,8 @@ __END__
 
 =item Carp
 
+=item List::MoreUtils
+
 =item npg_tracking::Schema
 
 =item npg::samplesheet
@@ -327,7 +328,7 @@ David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2012,2013,2014,2019,2021,2023 GRL.
+Copyright (C) 2012,2013,2014,2019,2021,2023,2024 GRL.
 
 This file is part of NPG.
 

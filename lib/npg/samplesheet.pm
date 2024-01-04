@@ -60,24 +60,6 @@ Readonly::Scalar my $MIN_COLUMN_NUM => 3;
 ####################### Public attributes ########################
 ##################################################################
 
-=head2 id_run
-
-An optional attribute
-
-=cut
-
-has '+id_run' => (
-  'lazy_build' => 1,
-  'required'   => 0,
-);
-sub _build_id_run {
-  my ($self) = @_;
-  if($self->has_tracking_run()){
-    return $self->run()->id_run();
-  }
-  croak 'id_run or a run is required';
-}
-
 =head2 extend
 
 A boolean attribute, false by default.
@@ -509,7 +491,7 @@ David K. Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2019, 2020, 2023 Genome Research Ltd.
+Copyright (C) 2019,2020,2023,2024 Genome Research Ltd.
 
 This file is part of NPG.
 

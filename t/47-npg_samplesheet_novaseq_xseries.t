@@ -26,7 +26,7 @@ my $schema_wh = $class->new_object({})->create_test_db(
 my $date = DateTime->now()->strftime('%y%m%d');
 
 subtest 'create the generator object, test simple attributes' => sub {
-  plan tests => 17;
+  plan tests => 19;
 
   my $g = npg::samplesheet::novaseq_xseries->new(
     npg_tracking_schema => $schema_tracking,
@@ -107,11 +107,21 @@ subtest 'create the generator object, test simple attributes' => sub {
     id_run              => 47446,
     samplesheet_path    => "$dir/one/"
   );
+  my $expected_file_name = "${date}_47446_NVX1_B_ssbatch99888.csv";
   my $file_name = $g->file_name;
-  is ($file_name, "${date}_47446_NVX1_B_ssbatch99888.csv",
-    'correct file name is generated');
+  is ($file_name, $expected_file_name, 'correct file name is generated');
   is ($g->output, "$dir/one/$file_name", 'correct output path is generated');
 
+  $g = npg::samplesheet::novaseq_xseries->new(
+    npg_tracking_schema => $schema_tracking,
+    mlwh_schema         => $schema_wh,
+    run                 => $run_row,
+    samplesheet_path    => "$dir/one/"
+  );
+  $file_name = $g->file_name;
+  is ($file_name, $expected_file_name, 'correct file name is generated');
+  is ($g->output, "$dir/one/$file_name", 'correct output path is generated');
+  
   $g = npg::samplesheet::novaseq_xseries->new(
     npg_tracking_schema => $schema_tracking,
     mlwh_schema         => $schema_wh,
