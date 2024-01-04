@@ -89,9 +89,9 @@ subtest 'Driver type, methods and driver build' => sub {
 };
 
 subtest 'Setting return value for primary attributes' => sub {
-  plan tests => 23;
+  plan tests => 21;
 
-  my @other = qw/batch_id id_flowcell_lims flowcell_barcode/;
+  my @other = qw/id_flowcell_lims flowcell_barcode/;
   my $ss_path = 't/data/samplesheet/miseq_default.csv';
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $ss_path;
 
