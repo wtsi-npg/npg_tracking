@@ -59,8 +59,8 @@ database. If the mlwh_schema constructor argument is not set, a connection
 to the database defined in a standard NPG configuration file is be used.
 
 Any driver attribute can be passed through to the driver's constructor via
-this objects's constructor. Not all of the attributes passed through to the
-driver are be available as this object's attributes. Example:
+the constructor of the st::api::lims object. Not all of the attributes passed
+through to the driver are be available as this object's attributes. Example:
 
  $lims = st::api::lims->new(
                              id_flowcell_lims => 34567,
