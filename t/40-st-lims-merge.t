@@ -1,20 +1,139 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 11;
 use Test::Exception;
 use List::MoreUtils qw/all none/;
 use File::Slurp;
 use File::Temp qw/tempdir/;
+use Moose::Meta::Class;
 
 use_ok('npg_tracking::glossary::rpt');
 use_ok('st::api::lims');
 
 my $tmp_dir = tempdir( CLEANUP => 1 );
 
-subtest 'Aggregation across lanes for pools' => sub {
-  plan tests => 82;
-  
+my $class = Moose::Meta::Class->create_anon_class(roles=>[qw/npg_testing::db/]);
+my $schema_wh = $class->new_object({})->create_test_db(
+  q[WTSI::DNAP::Warehouse::Schema], q[t/data/fixtures_lims_wh]
+);
+
+subtest 'Create lane object from plex object' => sub {
+  plan tests => 25;
+ 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/test40_lims/samplesheet_novaseq4lanes.csv';
+
+  my $l = st::api::lims->new(rpt_list => '25846:1:1;25846:2:1');
+
+  my $e = qr/id_run and position are expected as arguments/;
+  throws_ok { $l->create_lane_object() } $e, 'no arguments - error';
+  throws_ok { $l->create_lane_object(1) } $e, 'one argument - error';
+  throws_ok { $l->create_lane_object(1, 0) } $e,
+    'one of argument is false - error';
+
+  my $test_lane = sub {
+    my ($lane_l, $id_run, $position) = @_;
+    is ($lane_l->id_run, $id_run, "run id is $id_run");
+    is ($lane_l->position, $position, "position is $position");
+    is ($lane_l->rpt_list, undef, 'rpt_list is undefined');
+    is ($lane_l->tag_index, undef, 'tag index is undefined');
+    ok ($lane_l->is_pool, 'the entity is a pool');
+  };
+
+  for my $p ((1,2)) {
+    my $lane = $l->create_lane_object(25846, $p);
+    $test_lane->($lane, 25846, $p);
+  }
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = q[];
+  
+  my $id_run = 47995;
+  my @objects = ();
+  push @objects,  st::api::lims->new(
+    id_run           => $id_run,
+    position         => 1,
+    tag_index        => 1,
+    id_flowcell_lims => 98292,
+    driver_type      => 'ml_warehouse',
+    mlwh_schema      => $schema_wh,
+  );
+  
+  $l = st::api::lims->new(
+    id_run           => $id_run,
+    id_flowcell_lims => 98292,
+    driver_type      => 'ml_warehouse',
+    mlwh_schema      => $schema_wh,
+  );
+  $l = ($l->children())[0];
+  push @objects, ($l->children())[0];
+  
+  for my $l_obj (@objects) { 
+    my $lane = $l_obj->create_lane_object($id_run, 2);
+    is ($lane->driver->mlwh_schema, $schema_wh,
+      'the original db connection is retained');
+    $test_lane->($lane, $id_run, 2);
+  }
+};
+
+subtest 'Create tag zero object' => sub {
+  plan tests => 10;
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/test40_lims/samplesheet_novaseq4lanes.csv';
+
+  my $l = st::api::lims->new(id_run => 25846);
+  throws_ok { $l->create_tag_zero_object() } qr/Position should be defined/,
+    'method cannot be called on run-level object';
+  $l = st::api::lims->new(rpt_list => '25846:2:1');
+  throws_ok { $l->create_tag_zero_object() } qr/Position should be defined/,
+    'method cannot be called on an object for a composition';
+
+  my $description = 'st::api::lims object, driver - samplesheet, ' .
+    'id_run 25846, ' .
+    'path t/data/test40_lims/samplesheet_novaseq4lanes.csv, ' .
+    'position 3, tag_index 0';
+  $l = st::api::lims->new(id_run => 25846, position => 3);
+  is ($l->create_tag_zero_object()->to_string(), $description,
+    'created tag zero object from lane-level object');
+  $l = st::api::lims->new(id_run => 25846, position => 3, tag_index => 5);
+  is ($l->create_tag_zero_object()->to_string(), $description,
+    'created tag zero object from plex-level object');
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = q[];
+  
+  my $id_run = 47995;
+  my @objects = ();
+  push @objects,  st::api::lims->new(
+    id_run           => $id_run,
+    position         => 1,
+    id_flowcell_lims => 98292,
+    driver_type      => 'ml_warehouse',
+    mlwh_schema      => $schema_wh,
+  );
+  
+  $l = st::api::lims->new(
+    id_run           => $id_run,
+    id_flowcell_lims => 98292,
+    driver_type      => 'ml_warehouse',
+    mlwh_schema      => $schema_wh,
+  );
+  $l = ($l->children())[0];
+  push @objects, ($l->children())[0];
+  
+  for my $l_obj (@objects) { 
+    my $t0 = $l_obj->create_tag_zero_object();
+    is ($t0->driver->mlwh_schema, $schema_wh,
+      'the original db connection is retained');
+    my @names = $t0->sample_names();
+    is (@names, 18, '18 sample names are retrieved');
+    is ($names[0], '6751STDY13219539', 'first sample name is correct');
+  }
+};
+
+subtest 'Aggregation across lanes for pools' => sub {
+  plan tests => 89;
+  
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/test40_lims/samplesheet_novaseq4lanes.csv';
 
   my $l = st::api::lims->new(rpt_list => '25846:1:3');
   throws_ok { $l->aggregate_xlanes() } qr/Not run-level object/,
@@ -117,6 +236,35 @@ subtest 'Aggregation across lanes for pools' => sub {
     'sample names including spiked phix');
   is (join(q[:], $tag_zero->sample_names(1)), join(q[:], @sample_names),
     'sample names including spiked phix');
+
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = q[];
+  
+  my $id_run = 47995;
+  $l = st::api::lims->new(
+    id_run           => $id_run,
+    id_flowcell_lims => 98292,
+    driver_type      => 'ml_warehouse',
+    mlwh_schema      => $schema_wh,
+  );
+  
+  @merged = $l->aggregate_xlanes(qw/1 2/);
+  is (scalar @merged, 19, 'number of aggregates is number of tags plus two');
+  $tag_zero = pop @merged;
+  $tag_spiked = pop @merged;
+  $tag_last = pop @merged;
+  $tag_first = shift @merged;
+  is ($tag_zero->rpt_list, "$id_run:1:0;$id_run:2:0",
+    'rpt list for tag zero object');
+  my @tag_zero_sample_names = $tag_zero->sample_names();
+  is (@tag_zero_sample_names, 18, '18 sample names are retrieved');
+  is ($tag_zero_sample_names[0], '6751STDY13219539',
+    'first sample name is correct');
+  is ($tag_spiked->rpt_list, "$id_run:1:888;$id_run:2:888",
+    'rpt list for spiked in tag object');
+  is ($tag_last->rpt_list, "$id_run:1:17;$id_run:2:17",
+    'rpt list for tag 21 object');
+  is ($tag_first->rpt_list, "$id_run:1:1;$id_run:2:1",
+    'rpt list for tag 1 object');
 };
 
 subtest 'Aggregation across lanes for non-pools' => sub {
@@ -130,29 +278,6 @@ subtest 'Aggregation across lanes for non-pools' => sub {
   ok (!defined $l->id_run, "id_run not defined");
   ok (!$l->is_phix_spike, 'is not phix spike');
   _compare_properties_2($l);
-};
-
-subtest 'Aggregation across lanes for a tag' => sub {
-  plan tests => 13;
- 
-  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/test40_lims/samplesheet_novaseq4lanes.csv';
-
-  my $l = st::api::lims->new(rpt_list => '25846:1:1;25846:2:1');
-
-  my $e = qr/id_run and position are expected as arguments/;
-  throws_ok { $l->create_lane_object() } $e, 'no arguments - error';
-  throws_ok { $l->create_lane_object(1) } $e, 'one argument - error';
-  throws_ok { $l->create_lane_object(1, 0) } $e,
-    'one of argument is false - error';
-
-  for my $p ((1,2)) {
-    my $lane_l = $l->create_lane_object(25846, $p);
-    is ($lane_l->id_run, 25846, 'run id is 25846');
-    is ($lane_l->position, $p, "position is $p");
-    is ($lane_l->rpt_list, undef, 'rpt_list is undefined');
-    is ($lane_l->tag_index, undef, 'tag index is undefined');
-    ok ($lane_l->is_pool, 'the entity is a pool');
-  }
 };
 
 subtest 'Error conditions in aggregation by library' => sub {
@@ -366,6 +491,32 @@ subtest 'Multiple lane sets in aggregation by library' => sub {
   is_deeply (\@rpt_lists, \@expected_rpt_lists,
     'merges list - correct object, correct sort order');
 };
+
+subtest 'mlwarehouse driver in aggregation by library' => sub {
+  plan tests => 5;
+
+  my $class = Moose::Meta::Class->create_anon_class(roles=>[qw/npg_testing::db/]);
+  my $schema_wh = $class->new_object({})->create_test_db(
+    q[WTSI::DNAP::Warehouse::Schema], q[t/data/fixtures_lims_wh]
+  );
+
+  my $id_run = 47995;
+  my @lane_lims = st::api::lims->new(
+    id_run           => $id_run,
+    id_flowcell_lims => 98292,
+    driver_type      => 'ml_warehouse',
+    mlwh_schema      => $schema_wh,
+  )->children();
+  my $lims = st::api::lims->aggregate_libraries(\@lane_lims);
+  # Test that lims objects are viable, ie it is possible to retrieve
+  # their properties.
+  is (@{$lims->{'singles'}}, 8, 'list of singles contains 8 objects');
+  lives_ok { $lims->{'singles'}->[0]->sample_name } 'can retrieve sample name';
+  is (@{$lims->{'merges'}}, 87, 'list of merges contains 87 objects');
+  lives_ok { $lims->{'merges'}->[0]->sample_name } 'can retrieve sample name';
+  lives_ok { $lims->{'merges'}->[86]->sample_name } 'can retrieve sample name';
+};
+
 
 sub _generate_rpt_lists {
   my ($id_run, $positions, $tag_indexes) = @_;
