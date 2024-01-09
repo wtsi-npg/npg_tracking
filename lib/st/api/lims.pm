@@ -21,27 +21,46 @@ st::api::lims
 
 =head1 SYNOPSIS
 
- $lims = st::api::lims->new(id_run => 333);   #run (batch) level object
- $lims = st::api::lims->new(batch_id => 222); # as above
- $lims = st::api::lims->new(batch_id => 222, position => 3); # lane level object
- $lims = st::api::lims->new(id_run => 333, position => 3, tag_index => 44); # plex level object
- $lims = st::api::lims->new(rpt_list => '333:3:44'); # object for a one-component composition
- $lims = st::api::lims->new(rpt_list => '333:3:44;333:4:44;'); # object for a two-component composition
- $lims = st::api::lims->new(driver_type => q(ml_warehouse), flowcell_barcode => q(HTC3HADXX),
-                            position => 2, tag_index => 40); # plex level object from ml_warehouse
- $lims = st::api::lims->new(driver_type => q(ml_warehouse), flowcell_barcode => q(HTC3HADXX),
-                            position => 2, tag_index => 40, mlwh_schema=>$suitable_dbic_schema);
+ # Run level object
+ $lims = st::api::lims->new(id_run => 333);
+ $lims = st::api::lims->new(driver_type => q(ml_warehouse),
+                            flowcell_barcode => q(HTC3HADXX));
+
+ # Lane level object
+ $lims = st::api::lims->new(id_run => 333, position => 3);
+
+ # Plex level object
+ $lims = st::api::lims->new(id_run => 333, position => 3, tag_index => 44);
+ $lims = st::api::lims->new(driver_type => q(ml_warehouse),
+                            id_flowcell_lims => 222,
+                            position => 2,
+                            tag_index => 40,
+                            mlwh_schema=>$suitable_dbic_schema);
+
+ # Objects defined via a list of one or more rpt values
+ $lims = st::api::lims->new(rpt_list => '333:3:44');
+ $lims = st::api::lims->new(rpt_list => '333:3:44;333:4:44;');
 
 =head1 DESCRIPTION
 
-Generic NPG pipeline oriented LIMS wrapper capable of retrieving data from multiple sources
-(drivers). Provides methods performing "business" logic independent of data source.
+Generic NPG LIMS wrapper capable of retrieving data from multiple sources via
+a number of source-specific drivers. Provides methods implementing business
+logic that is independent of data source.
 
-Note the set of valid arguments to the constructor are a function of the driver_type passed.
+A set of valid arguments to the constructor depends on the driver type. The
+drivers are implemented as st::api::lims::<driver_name> classes.
 
-Any driver attribute can be passed through to the driver's constructor via this objects's
-constructor. Not all of the attributes passed through to the driver will be available
-as this object's accessors. Example:
+The default driver type is 'samplesheet'. The path to the samplesheet can be
+set either in the 'path' constructor attribute or by setting the env. variable
+NPG_CACHED_SAMPLESHEET_FILE.
+
+All flavours of the ml_warehouse driver require access to the ml warehouse
+database. If the mlwh_schema constructor argument is not set, a connection
+to the database defined in a standard NPG configuration file is be used.
+
+Any driver attribute can be passed through to the driver's constructor via
+the constructor of the st::api::lims object. Not all of the attributes passed
+through to the driver are be available as this object's attributes. Example:
 
  $lims = st::api::lims->new(
                              id_flowcell_lims => 34567,
@@ -72,7 +91,6 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
                            id_run
                            path
                            id_flowcell_lims
-                           batch_id
                            flowcell_barcode
                            rpt_list
                       /],
