@@ -57,8 +57,16 @@ Run ID, an optional attribute.
 =cut
 
 has '+id_run' => (
+  'lazy_build' => 1,
   'required'   => 0,
 );
+sub _build_id_run {
+  my $self = shift;
+  if ($self->has_tracking_run()) {
+    return $self->run()->id_run();
+  }
+  croak 'id_run or a run is required';
+}
 
 
 =head2 batch_id
@@ -228,7 +236,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2019, 2020, 2023 Genome Research Ltd.
+Copyright (C) 2019,2020,2023,2024 Genome Research Ltd.
 
 This file is part of NPG.
 

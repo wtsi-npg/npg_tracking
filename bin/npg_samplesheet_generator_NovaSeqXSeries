@@ -65,8 +65,8 @@ npg_samplesheet_generator_NovaSeqXSeries
 
 =head1 DESCRIPTION
 
-Generates a samplesheet for the NovaSeq Series X Illumina instrument and
-DRAGEN analysis.
+Generates a single samplesheet for the NovaSeq Series X Illumina instrument
+and DRAGEN analysis.
 
 =head1 EXIT STATUS
 

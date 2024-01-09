@@ -10,13 +10,17 @@ use List::MoreUtils qw(any none uniq);
 use List::Util qw(first max);
 use DateTime;
 use Data::UUID;
+use Try::Tiny;
 
+use npg_tracking::util::types;
 use st::api::lims::samplesheet;
 
 extends 'npg::samplesheet::base';
 with    'MooseX::Getopt';
 
 our $VERSION = '0';
+
+Readonly::Scalar our $NX_INSTRUMENT_FORMAT => 'NovaSeqX';
 
 Readonly::Scalar my $READ1_LENGTH => 151;
 Readonly::Scalar my $READ2_LENGTH => 151;
@@ -98,7 +102,7 @@ has 'dragen_software_version' => (
 sub _build_dragen_software_version {
   my $self = shift;
 
-  if (!$self->has_id_run) {
+  if (!$self->id_run) {
     croak 'DRAGEN software version cannot be retrieved. ' .
       'Either supply it as an argument or supply existing id_run';
   }
@@ -135,7 +139,7 @@ sub _build_file_name {
   my $self = shift;
 
   my $file_name;
-  if ($self->has_id_run) {
+  if ($self->id_run) {
     $file_name = join q[_],
       $self->run_name,
       q[ssbatch] . $self->batch_id;
@@ -185,10 +189,24 @@ sub _build_output {
 
 
 has '+id_run' => (
+  'isa'           => 'Maybe[NpgTrackingRunId]',
   'documentation' => 'NPG run ID, optional; if supplied, the record for this '.
                      'run should exists in the run tracking database',
 );
+around '_build_id_run' => sub {
+  my $orig = shift;
+  my $self = shift;
 
+  # Parent's builder method errors if id_run cannot be inferred from
+  # the database record. Here we allow for this attribute to be undefined.
+  # Depending on how other atributes are defined, it might be possible to
+  # generate the samplesheet.
+  my $id_run;
+  try {
+    $id_run = $self->$orig(@_);
+  };
+  return $id_run;
+};
 
 has '+batch_id' => (
   'documentation' => 'LIMS batch identifier, optional. If not set, will be ' .
@@ -325,7 +343,7 @@ sub _build_run_name {
 
   my $run_name;
   if ($self->id_run()) {
-    if ($self->run->instrument_format()->model() !~ /NovaSeqX/smx) {
+    if ($self->run->instrument_format()->model() !~ /$NX_INSTRUMENT_FORMAT/smx) {
       croak 'Instrument is not registered as NovaSeq X Series ' .
             'in the tracking database';
     }
@@ -865,6 +883,10 @@ __END__
 
 =item Data::UUID
 
+=item Try::Tiny
+ 
+=item npg_tracking::util::types
+
 =back
 
 =head1 BUGS AND LIMITATIONS
@@ -877,7 +899,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2023 Genome Research Ltd.
+Copyright (C) 2023,2024 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
