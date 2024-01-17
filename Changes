@@ -14,6 +14,7 @@ LIST OF CHANGES
  - Extended the code for the samplesheet daemon to generate samplesheets for
    NovaSeqX instruments.
  - Removed remaining unused test data from the era of xml st::api::lims driver.
+ - Updated signature and iRODS documentation link in template for emails
 
 release 98.1.0
  - Added a new method, latest_revision_for_modification, to
