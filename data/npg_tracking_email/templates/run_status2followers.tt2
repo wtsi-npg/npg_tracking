@@ -18,6 +18,5 @@ NPG page for the run:
 [% PROCESS urls.tt2 %][% npg_tracking_url %]/run/[% id_run %]
 
 Analysis and QC information for this run will be/is available:
-[% seqqc_url %]/illumina/runs/[% id_run %]
 [% seqqc_url %]/checks/runs/[% id_run %]
 [% END %]
