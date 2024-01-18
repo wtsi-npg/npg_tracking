@@ -154,9 +154,9 @@ Run 21915 was assigned status "run pending" on 2017-02-08 11:49:39 by joe_events
 
 
 NPG page for this run:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/run/21915
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/run/21915
 
-NPG, DNA Pipelines Informatics
+NPG on behalf of DNA Pipelines and GSLP
 REPORT
   is ($e->report_full(), $report, 'full report text');
 
@@ -171,9 +171,9 @@ Run 21915 was assigned status "run pending" on 2017-02-08 11:49:39 by joe_events
 
 $lims_summary
 NPG page for this run:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/run/21915
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/run/21915
 
-NPG, DNA Pipelines Informatics
+NPG on behalf of DNA Pipelines and GSLP
 REPORT1
   is ($e->report_full($e->lims()), $report, 'full report text with LIMs data');
 
@@ -215,9 +215,9 @@ subtest 'instrument status event' => sub {
 Instrument HS8 status changed to "wash performed" on $date_as_string by joe_approver
 
 NPG page for this instrument:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/instrument/HS8
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/instrument/HS8
 
-NPG, DNA Pipelines Informatics
+NPG on behalf of DNA Pipelines and GSLP
 REPORT2
   is ($e->report_full($e->lims()), $report, 'full report text');
 
@@ -229,9 +229,9 @@ REPORT2
 Instrument HS8 status changed to "wash performed" on $date_as_string by joe_approver. Comment: my comment
 
 NPG page for this instrument:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/instrument/HS8
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/instrument/HS8
 
-NPG, DNA Pipelines Informatics
+NPG on behalf of DNA Pipelines and GSLP
 REPORT3
   is ($e->report_full($e->lims()), $report, 'full report text with a comment');
   is (scalar @{$e->reports}, 1, 'One report generated');
@@ -270,9 +270,9 @@ Run 21915 annotated by joe_loader on $date_as_string - New run annotation
 
 $lims_summary
 NPG page for this run:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/run/21915
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/run/21915
 
-NPG, DNA Pipelines Informatics
+NPG on behalf of DNA Pipelines and GSLP
 REPORT4
   is ($e->report_full($e->lims()), $report, 'full report text with LIMs data');
 };
@@ -323,9 +323,9 @@ Lane 2: Samples
 
 
 NPG page for this run:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/run/21915
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/run/21915
 
-NPG, DNA Pipelines Informatics
+NPG on behalf of DNA Pipelines and GSLP
 REPORT5
   is ($e->report_full($e->lims()), $report, 'full report text with LIMs data');
 };
@@ -360,9 +360,9 @@ subtest 'instrument annotation event' => sub {
 Instrument HS8 annotated by joe_loader on $date_as_string - New instrument annotation
 
 NPG page for this instrument:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/instrument/HS8
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/instrument/HS8
 
-NPG, DNA Pipelines Informatics
+NPG on behalf of DNA Pipelines and GSLP
 REPORT6
   is ($e->report_full($e->lims()), $report, 'full report text');
 };

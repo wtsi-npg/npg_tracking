@@ -14,6 +14,10 @@ LIST OF CHANGES
  - Extended the code for the samplesheet daemon to generate samplesheets for
    NovaSeqX instruments.
  - Removed remaining unused test data from the era of xml st::api::lims driver.
+ - Updated signature and iRODS documentation link in template for emails
+ - Updated NPG tracking url to https protocol and port for links in emails
+ - Removed link to illumina/runs qc page in emails reporting status change event
+   to subscribers
 
 release 98.1.0
  - Added a new method, latest_revision_for_modification, to
