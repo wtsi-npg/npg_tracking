@@ -39,7 +39,7 @@ Lane 7: Samples
 The manual QC review is complete and your data should now be available from iRODS (see https://ssg-confluence.internal.sanger.ac.uk/display/FARM/iRODS ).
 
 NPG page for the run:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/run/21915
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/run/21915
 
 Analysis and QC information for this run will be/is available:
 http://sfweb.internal.sanger.ac.uk:1959/illumina/runs/21915

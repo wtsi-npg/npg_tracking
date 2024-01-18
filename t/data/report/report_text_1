@@ -31,7 +31,7 @@ Lane 3: Samples
 Sequencing and default analysis for this run completed. Run is now pending manual QC review. Meanwhile, we will be loading analysis results into iRODS.
 
 NPG page for the run:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/run/21915
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/run/21915
 
 Analysis and QC information for this run will be/is available:
 http://sfweb.internal.sanger.ac.uk:1959/illumina/runs/21915

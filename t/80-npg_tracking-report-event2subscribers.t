@@ -154,7 +154,7 @@ Run 21915 was assigned status "run pending" on 2017-02-08 11:49:39 by joe_events
 
 
 NPG page for this run:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/run/21915
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/run/21915
 
 NPG on behalf of DNA Pipelines and GSLP
 REPORT
@@ -171,7 +171,7 @@ Run 21915 was assigned status "run pending" on 2017-02-08 11:49:39 by joe_events
 
 $lims_summary
 NPG page for this run:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/run/21915
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/run/21915
 
 NPG on behalf of DNA Pipelines and GSLP
 REPORT1
@@ -215,7 +215,7 @@ subtest 'instrument status event' => sub {
 Instrument HS8 status changed to "wash performed" on $date_as_string by joe_approver
 
 NPG page for this instrument:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/instrument/HS8
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/instrument/HS8
 
 NPG on behalf of DNA Pipelines and GSLP
 REPORT2
@@ -229,7 +229,7 @@ REPORT2
 Instrument HS8 status changed to "wash performed" on $date_as_string by joe_approver. Comment: my comment
 
 NPG page for this instrument:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/instrument/HS8
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/instrument/HS8
 
 NPG on behalf of DNA Pipelines and GSLP
 REPORT3
@@ -270,7 +270,7 @@ Run 21915 annotated by joe_loader on $date_as_string - New run annotation
 
 $lims_summary
 NPG page for this run:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/run/21915
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/run/21915
 
 NPG on behalf of DNA Pipelines and GSLP
 REPORT4
@@ -323,7 +323,7 @@ Lane 2: Samples
 
 
 NPG page for this run:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/run/21915
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/run/21915
 
 NPG on behalf of DNA Pipelines and GSLP
 REPORT5
@@ -360,7 +360,7 @@ subtest 'instrument annotation event' => sub {
 Instrument HS8 annotated by joe_loader on $date_as_string - New instrument annotation
 
 NPG page for this instrument:
-http://sfweb.internal.sanger.ac.uk:9000/perl/npg/instrument/HS8
+https://sfweb.internal.sanger.ac.uk:12443/perl/npg/instrument/HS8
 
 NPG on behalf of DNA Pipelines and GSLP
 REPORT6
