@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 99.0.0
  - st::api::lims
      - Removed batch_id constructor argument. It was used by the xml driver,
        it is no longer required.
