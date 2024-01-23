@@ -11,13 +11,12 @@ Study '[% lanes.0.study_name %]' has samples in the following lanes of this run:
 Sequencing and default analysis for this run completed. Run is now pending manual QC review. Meanwhile, we will be loading analysis results into iRODS.
 [%- END %]
 [%- IF status_description == 'qc complete' -%]
-The manual QC review is complete and your data should now be available from iRODS (see http://scratchy.internal.sanger.ac.uk/wiki/index.php/IRODS_for_Sequencing_Users ). 
+The manual QC review is complete and your data should now be available from iRODS (see https://ssg-confluence.internal.sanger.ac.uk/display/FARM/iRODS ).
 [%- END %]
 
 NPG page for the run:
 [% PROCESS urls.tt2 %][% npg_tracking_url %]/run/[% id_run %]
 
 Analysis and QC information for this run will be/is available:
-[% seqqc_url %]/illumina/runs/[% id_run %]
 [% seqqc_url %]/checks/runs/[% id_run %]
 [% END %]

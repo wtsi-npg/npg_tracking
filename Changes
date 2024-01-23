@@ -1,5 +1,25 @@
 LIST OF CHANGES
 
+release 99.0.0
+ - st::api::lims
+     - Removed batch_id constructor argument. It was used by the xml driver,
+       it is no longer required.
+     - Fix a bug in propagating driver details to children to ensure that
+       (1) a switch of the driver type does not happen;
+       (2) the database handle and the flowcell ID are passed to children
+           consistently.
+ - Removed provisions for the xml st::api::lims driver from the old samplesheet
+   generator npg::samplesheet.
+ - To avoid code repetitions, created a parent class for different samplesheet
+   generators and moved common code there.
+ - Extended the code for the samplesheet daemon to generate samplesheets for
+   NovaSeqX instruments.
+ - Removed remaining unused test data from the era of xml st::api::lims driver.
+ - Updated signature and iRODS documentation link in template for emails
+ - Updated NPG tracking url to https protocol and port for links in emails
+ - Removed link to illumina/runs qc page in emails reporting status change event
+   to subscribers
+
 release 98.1.0
  - Added a new method, latest_revision_for_modification, to
    npg_tracking::Schema::Result::Instrument to retrieve the latest modification

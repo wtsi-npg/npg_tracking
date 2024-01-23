@@ -21,27 +21,46 @@ st::api::lims
 
 =head1 SYNOPSIS
 
- $lims = st::api::lims->new(id_run => 333);   #run (batch) level object
- $lims = st::api::lims->new(batch_id => 222); # as above
- $lims = st::api::lims->new(batch_id => 222, position => 3); # lane level object
- $lims = st::api::lims->new(id_run => 333, position => 3, tag_index => 44); # plex level object
- $lims = st::api::lims->new(rpt_list => '333:3:44'); # object for a one-component composition
- $lims = st::api::lims->new(rpt_list => '333:3:44;333:4:44;'); # object for a two-component composition
- $lims = st::api::lims->new(driver_type => q(ml_warehouse), flowcell_barcode => q(HTC3HADXX),
-                            position => 2, tag_index => 40); # plex level object from ml_warehouse
- $lims = st::api::lims->new(driver_type => q(ml_warehouse), flowcell_barcode => q(HTC3HADXX),
-                            position => 2, tag_index => 40, mlwh_schema=>$suitable_dbic_schema);
+ # Run level object
+ $lims = st::api::lims->new(id_run => 333);
+ $lims = st::api::lims->new(driver_type => q(ml_warehouse),
+                            flowcell_barcode => q(HTC3HADXX));
+
+ # Lane level object
+ $lims = st::api::lims->new(id_run => 333, position => 3);
+
+ # Plex level object
+ $lims = st::api::lims->new(id_run => 333, position => 3, tag_index => 44);
+ $lims = st::api::lims->new(driver_type => q(ml_warehouse),
+                            id_flowcell_lims => 222,
+                            position => 2,
+                            tag_index => 40,
+                            mlwh_schema=>$suitable_dbic_schema);
+
+ # Objects defined via a list of one or more rpt values
+ $lims = st::api::lims->new(rpt_list => '333:3:44');
+ $lims = st::api::lims->new(rpt_list => '333:3:44;333:4:44;');
 
 =head1 DESCRIPTION
 
-Generic NPG pipeline oriented LIMS wrapper capable of retrieving data from multiple sources
-(drivers). Provides methods performing "business" logic independent of data source.
+Generic NPG LIMS wrapper capable of retrieving data from multiple sources via
+a number of source-specific drivers. Provides methods implementing business
+logic that is independent of data source.
 
-Note the set of valid arguments to the constructor are a function of the driver_type passed.
+A set of valid arguments to the constructor depends on the driver type. The
+drivers are implemented as st::api::lims::<driver_name> classes.
 
-Any driver attribute can be passed through to the driver's constructor via this objects's
-constructor. Not all of the attributes passed through to the driver will be available
-as this object's accessors. Example:
+The default driver type is 'samplesheet'. The path to the samplesheet can be
+set either in the 'path' constructor attribute or by setting the env. variable
+NPG_CACHED_SAMPLESHEET_FILE.
+
+All flavours of the ml_warehouse driver require access to the ml warehouse
+database. If the mlwh_schema constructor argument is not set, a connection
+to the database defined in a standard NPG configuration file is be used.
+
+Any driver attribute can be passed through to the driver's constructor via
+the constructor of the st::api::lims object. Not all of the attributes passed
+through to the driver are be available as this object's attributes. Example:
 
  $lims = st::api::lims->new(
                              id_flowcell_lims => 34567,
@@ -72,7 +91,6 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
                            id_run
                            path
                            id_flowcell_lims
-                           batch_id
                            flowcell_barcode
                            rpt_list
                       /],
@@ -167,7 +185,6 @@ sub BUILD {
   my %dargs=();
   my %pargs=();
   my %primary_arg_type = map {$_ => 1} @{$METHODS_PER_CATEGORY{'primary'}};
-
   my $driver_class=$self->_driver_package_name;
 
   foreach my$k (grep {defined && $_ !~ /^_/smx} map{ $_->has_init_arg ? $_->init_arg : $_->name}
@@ -196,6 +213,28 @@ sub BUILD {
   croak 'Unknown attributes: '.join q(, ), keys %args if keys %args;
   $self->_set__primary_arguments(\%pargs);
   return;
+}
+
+=head2 copy_init_args
+
+Returns a hash reference that can be used to initialise st::api::lims
+objects similar to this object. The driver details, if present in this
+object, are returned under the 'driver_type' key and, if relevant,
+'mlwh_schema' key. 
+
+=cut
+sub copy_init_args {
+  my $self = shift;
+
+  my %init = %{$self->_driver_arguments()};
+  if ($self->driver_type()) {
+    $init{'driver_type'} = $self->driver_type();
+    if (!$init{'mlwh_schema'} && $init{'driver_type'} =~ /warehouse/smx) {
+      $init{'mlwh_schema'} =  $self->driver()->mlwh_schema;
+    }
+  }
+
+  return \%init;
 }
 
 # Mapping of LIMS object types to attributes for which methods are to
@@ -724,7 +763,7 @@ sub _build__cached_children {
   my $self = shift;
 
   my @children = ();
-  my @basic_attrs = qw/id_run position tag_index/;
+  my @basic_attrs = @{$METHODS_PER_CATEGORY{'primary'}};
   my $driver_type = $self->driver_type;
 
   if ($self->driver) {
@@ -760,7 +799,9 @@ sub _build__cached_children {
         my %init = %{$self->_driver_arguments()};
         $init{'driver_type'} = $driver_type;
         foreach my $attr (@basic_attrs) {
-          $init{$attr} = $component->$attr;
+          if ($component->can($attr)) {
+            $init{$attr} = $component->$attr;
+          }
         }
         push @children, __PACKAGE__->new(\%init);
       }
@@ -874,9 +915,8 @@ sub aggregate_xlanes {
     return;
   }; # End of test function
 
-  my %init = %{$self->_driver_arguments()};
-  $init{'driver_type'} = $self->driver_type;
-  delete $init{'id_run'};
+  my $init = $self->copy_init_args();
+  delete $init->{'id_run'};
 
   my $lims4compisitions = {};
   my @test_attrs = qw/sample_id library_id/;
@@ -885,7 +925,7 @@ sub aggregate_xlanes {
 
   if (!@pools) {
     $can_merge->(\@lanes, @test_attrs); # Test consistency
-    push @aggregated, __PACKAGE__->new(%init, rpt_list => $lanes_rpt_list);
+    push @aggregated, __PACKAGE__->new(%{$init}, rpt_list => $lanes_rpt_list);
   } else {
     my @sizes = uniq (map { $_->num_children } @lanes);
     if (@sizes != 1) { # Test consistency
@@ -902,11 +942,11 @@ sub aggregate_xlanes {
     my $ea = each_arrayref map { [$_->children()] } @lanes;
     while ( my @plexes = $ea->() ) {
       $can_merge->(\@plexes, @test_attrs, 'tag_index');  # Test consistency
-      push @aggregated, __PACKAGE__->new(%init,
+      push @aggregated, __PACKAGE__->new(%{$init},
         rpt_list => npg_tracking::glossary::rpt->deflate_rpts(\@plexes));
     }
     # Add object for tag zero
-    push @aggregated, __PACKAGE__->new(%init,
+    push @aggregated, __PACKAGE__->new(%{$init},
       rpt_list => npg_tracking::glossary::rpt->tag_zero_rpt_list($lanes_rpt_list));
   }
 
@@ -953,7 +993,7 @@ This method can be used both as instance and as a class method.
 
 =cut
 
-sub aggregate_libraries() {
+sub aggregate_libraries {
   my ($self, $lane_lims_array) = @_;
 
   # This restriction might be lifted in future.
@@ -975,9 +1015,9 @@ sub aggregate_libraries() {
   # to create objects for merged entities.
   # Do not use $self for copying the driver arguments in order to retain
   # ability to use this method as a class method.
-  my %init = %{$lane_lims_array->[0]->_driver_arguments()};
-  delete $init{position};
-  delete $init{id_run};
+  my $init = $lane_lims_array->[0]->copy_init_args();
+  delete $init->{position};
+  delete $init->{id_run};
 
   my $merges = {};
   my $lane_set_delim = q[,];
@@ -1005,7 +1045,7 @@ sub aggregate_libraries() {
         ->new(rpt_list => $rpt_list)->create_composition()
         ->freeze2rpt();
       $merges->{$lane_set}->{$tag_index} = __PACKAGE__->new(
-        %init, rpt_list => $rpt_list
+        %{$init}, rpt_list => $rpt_list
       );
     }
   }
@@ -1045,7 +1085,7 @@ sub aggregate_libraries() {
   return $all_lims_objects;
 }
 
-sub _check_merge_correctness{
+sub _check_merge_correctness {
   my $lib_lims = shift;
   my @lanes = uniq  map {$_->position} @{$lib_lims};
   if (@lanes != @{$lib_lims}) {
@@ -1069,7 +1109,7 @@ sub _check_value_is_unique {
 
 =head2 create_tag_zero_object
  
-Using id_run and position values of this object, creates and returns
+Using run ID and position values of this object, creates and returns
 st::api::lims object for tag zero. The new object has the same driver
 settings as the original object.
 
@@ -1086,10 +1126,9 @@ sub create_tag_zero_object {
   if (!defined $self->position) {
     croak 'Position should be defined';
   }
-  my %init = %{$self->_driver_arguments()};
-  $init{'driver_type'} = $self->driver_type;
-  $init{'tag_index'}   = 0;
-  return __PACKAGE__->new(%init);
+  my $init = $self->copy_init_args();
+  $init->{'tag_index'}   = 0;
+  return __PACKAGE__->new(%{$init});
 }
 
 =head2 create_lane_object
@@ -1106,13 +1145,12 @@ attributes. The new object has the same driver settings as the original object.
 sub create_lane_object {
   my ($self, $id_run, $position) = @_;
   ($id_run and $position) or croak 'id_run and position are expected as arguments';
-  my %init = %{$self->_driver_arguments()};
-  $init{'driver_type'} = $self->driver_type;
-  delete $init{'tag_index'};
-  delete $init{'rpt_list'};
-  $init{'id_run'}   = $id_run;
-  $init{'position'} = $position;
-  return __PACKAGE__->new(%init);
+  my $init = $self->copy_init_args();
+  delete $init->{'tag_index'};
+  delete $init->{'rpt_list'};
+  $init->{'id_run'}   = $id_run;
+  $init->{'position'} = $position;
+  return __PACKAGE__->new(%{$init});
 }
 
 =head2 cached_samplesheet_var_name

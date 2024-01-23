@@ -13,9 +13,9 @@ our $VERSION = '0';
 Log::Log4perl->easy_init($INFO);
 
 my $log = Log::Log4perl->get_logger('main');
-$log->info('Starting npg samplesheet daemon for MiSeq instruments');
+$log->info('Starting npg samplesheet daemon for NovaSeqX instruments');
 
-npg::samplesheet::auto->new()->loop();
+npg::samplesheet::auto->new(instrument_format => 'NovaSeqX')->loop();
 
 0;
 
@@ -23,16 +23,16 @@ __END__
 
 =head1 NAME
 
-npg_samplesheet4MiSeq
+npg_samplesheet4NovaSeqX
 
 =head1 USAGE
 
-  npg_samplesheet4MiSeq
+  npg_samplesheet4NovaSeqX
 
 =head1 DESCRIPTION
 
 The script, once started, runs in perpetuity, generating Illumina-style
-samplesheets for any MiSeq run with status 'run pending'.
+samplesheets for any NovaSeqX run with status 'run pending'.
 
 =head1 REQUIRED ARGUMENTS
 
@@ -43,6 +43,8 @@ None
 =head1 DIAGNOSTICS
 
 =head1 CONFIGURATION
+
+Access to both npg_tracking and ml warehouse database is required.
 
 =head1 DEPENDENCIES
 
@@ -72,11 +74,11 @@ None
 
 =head1 AUTHOR
 
-Jaime Tovar E<lt>jmtc@sanger.ac.ukE<gt>
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2020,2021,2023 GRL.
+Copyright (C) 2023 GRL.
 
 This file is part of NPG.
 

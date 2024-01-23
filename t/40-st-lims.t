@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 16;
+use Test::More tests => 15;
 use Test::Exception;
 use Test::Warn;
 use Moose::Meta::Class;
@@ -89,9 +89,9 @@ subtest 'Driver type, methods and driver build' => sub {
 };
 
 subtest 'Setting return value for primary attributes' => sub {
-  plan tests => 23;
+  plan tests => 21;
 
-  my @other = qw/batch_id id_flowcell_lims flowcell_barcode/;
+  my @other = qw/id_flowcell_lims flowcell_barcode/;
   my $ss_path = 't/data/samplesheet/miseq_default.csv';
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $ss_path;
 
@@ -340,26 +340,6 @@ subtest 'Samplesheet driver for arbitrary compositions' => sub {
   is ($ss->id_run, 28780, 'correct run id');
   is ($ss->position, 2, 'correct position');
   is ($ss->tag_index, 4, 'correct tag_index');
-};
-
-subtest 'Creating tag zero object' => sub {
-  plan tests => 4;
-
-  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = 't/data/test40_lims/samplesheet_novaseq4lanes.csv';
-
-  my $l = st::api::lims->new(id_run => 25846);
-  throws_ok { $l->create_tag_zero_object() } qr/Position should be defined/,
-    'method cannot be called on run-level object';
-  $l = st::api::lims->new(rpt_list => '25846:2:1');
-  throws_ok { $l->create_tag_zero_object() } qr/Position should be defined/,
-    'method cannot be called on an object for a composition';
-
-  my $description = 'st::api::lims object, driver - samplesheet, id_run 25846, ' .
-    'path t/data/test40_lims/samplesheet_novaseq4lanes.csv, position 3, tag_index 0';
-  $l = st::api::lims->new(id_run => 25846, position => 3);
-  is ($l->create_tag_zero_object()->to_string(), $description, 'created from lane-level object');
-  $l = st::api::lims->new(id_run => 25846, position => 3, tag_index => 5);
-  is ($l->create_tag_zero_object()->to_string(), $description, 'created from plex-level object');
 };
 
 subtest 'Dual index' => sub {

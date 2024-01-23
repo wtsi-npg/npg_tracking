@@ -8,20 +8,19 @@ use Carp;
 use Text::CSV;
 use List::MoreUtils qw(any none uniq);
 use List::Util qw(first max);
-use Getopt::Long;
-use Pod::Usage;
 use DateTime;
 use Data::UUID;
+use Try::Tiny;
 
-use st::api::lims;
-use npg_tracking::Schema;
 use npg_tracking::util::types;
-use WTSI::DNAP::Warehouse::Schema;
+use st::api::lims::samplesheet;
 
-with qw / MooseX::Getopt
-          npg_tracking::glossary::run /;
+extends 'npg::samplesheet::base';
+with    'MooseX::Getopt';
 
 our $VERSION = '0';
+
+Readonly::Scalar our $NX_INSTRUMENT_FORMAT => 'NovaSeqX';
 
 Readonly::Scalar my $READ1_LENGTH => 151;
 Readonly::Scalar my $READ2_LENGTH => 151;
@@ -39,9 +38,8 @@ Readonly::Hash my %REFERENCE_MAPING => (
   'Homo_sapiens' => 'hg38-alt_masked.cnv.graph.hla.rna-8-1667497097-2'
 );
 
-# DRAGEN can process a limited number of distinct configurations.
-# For on-board analysis it's 4.
 Readonly::Scalar my $DRAGEN_MAX_NUMBER_OF_CONFIGS => 4;
+Readonly::Scalar my $END_OF_LINE => qq[\n];
 
 =head1 NAME
 
@@ -87,7 +85,7 @@ L<https://support-docs.illumina.com/IN/NovaSeqX/Content/IN/NovaSeqX/ImportResour
 
 =cut
 
-=head2
+=head2 dragen_software_version
 
 DRAGEN software version that is installed on the instrument where the run
 is performed.
@@ -104,7 +102,7 @@ has 'dragen_software_version' => (
 sub _build_dragen_software_version {
   my $self = shift;
 
-  if (!$self->has_id_run) {
+  if (!$self->id_run) {
     croak 'DRAGEN software version cannot be retrieved. ' .
       'Either supply it as an argument or supply existing id_run';
   }
@@ -117,50 +115,157 @@ sub _build_dragen_software_version {
 };
 
 
-=head2 id_run
+has '+samplesheet_path' => (
+  'documentation' => 'A directory where the samplesheet will be created, ' .
+  'optional',
+);
 
-NPG run ID, an optional attribute. If supplied, the record for this run
-should exists in the run tracking database.
+
+=head2 file_name
+
+CSV file name to write the samplesheet data to.
 
 =cut
 
+has 'file_name' => (
+  'isa'        => 'Str',
+  'is'         => 'ro',
+  'lazy_build' => 1,
+  'required'   => 0,
+  'documentation' => 'CSV file name to write the samplesheet data to, ' .
+                     'optional',
+);
+sub _build_file_name {
+  my $self = shift;
+
+  my $file_name;
+  if ($self->id_run) {
+    $file_name = join q[_],
+      $self->run_name,
+      q[ssbatch] . $self->batch_id;
+  } else {
+    $file_name = $self->run_name;
+  }
+
+  my $date = DateTime->now()->strftime('%y%m%d'); # 230602 for 2 June 2023
+  $file_name = sprintf '%s_%s.csv', $date, $file_name;
+
+  return $file_name;
+}
+
+
+=head2 output
+
+A full path of the samplesheet file. If not supplied, is built using the
+values of C<samplesheet_path> and C<file_name> attributes.
+
+If the C<samplesheet_path> attribute is set to an empty string, the current
+working directory is assumed.
+
+Do not remove this attribute or change its name in order to be compliant with
+the samplesheet daemon C<npg::samplesheet::auto>.
+
+=cut
+
+has 'output' => (
+  'isa'        => 'Str',
+  'is'         => 'ro',
+  'lazy_build' => 1,
+  'isa'        => 'Str',
+  'documentation' => 'A path of the samplesheet file, optional',
+);
+sub _build_output {
+  my $self = shift;
+
+  my $dir = $self->samplesheet_path();
+  my $path = $self->file_name;
+  if ($dir) {
+    $dir =~ s{[/]+\Z}{}xms; # Trim trailing slash if present.
+    $path = join q[/], $dir, $path;
+  }
+
+  return $path;
+}
+
+
 has '+id_run' => (
-  'required'  => 0,
+  'isa'           => 'Maybe[NpgTrackingRunId]',
   'documentation' => 'NPG run ID, optional; if supplied, the record for this '.
                      'run should exists in the run tracking database',
 );
+around '_build_id_run' => sub {
+  my $orig = shift;
+  my $self = shift;
 
-=head2 batch_id
+  # Parent's builder method errors if id_run cannot be inferred from
+  # the database record. Here we allow for this attribute to be undefined.
+  # Depending on how other atributes are defined, it might be possible to
+  # generate the samplesheet.
+  my $id_run;
+  try {
+    $id_run = $self->$orig(@_);
+  };
+  return $id_run;
+};
 
-LIMS batch ID, an optional attribute. If not set, the C<id_run> attribute
-should be set.
-
-=cut
-
-has 'batch_id' => (
-  'isa' => 'Str|Int',
-  'is'  => 'ro',
-  'lazy_build' => 1,
-  'required'   => 0,
+has '+batch_id' => (
   'documentation' => 'LIMS batch identifier, optional. If not set, will be ' .
                      'retrieved from the tracking database record for the run',
 );
-sub _build_batch_id {
-  my $self = shift;
-  if (!$self->has_id_run) {
-    croak 'Run ID is not supplied, cannot get LIMS batch ID';
-  }
-  my $batch_id = $self->run()->batch_id();
-  if (!defined $batch_id) {
-    croak 'Batch ID is not set in the database record for run ' . $self->id_run;
-  }
 
-  return $batch_id;
+=head2 index_read_length
+
+An array containing the length of the first and the second (if applicable)
+indexing read.
+
+If not set, is computed as the longest first and second barcode as reported
+by the LIMS system.
+
+=cut
+
+has 'index_read_length' => (
+  'isa'        => 'ArrayRef',
+  'is'         => 'ro',
+  'lazy_build' => 1,
+  'required'   => 0,
+  'documentation' => 'An array containing the length of the first and the ' .
+                     'second (if applicable) indexing read.',
+);
+sub _build_index_read_length {
+  my $self = shift;
+  my $index1_length = max (
+    map { length $_->[$LIST_INDEX_TAG1] } $self->products
+  );
+  my $index2_length = max (
+    map { length $_->[$LIST_INDEX_TAG2] } $self->products
+  );
+  return [$index1_length, $index2_length];
 }
+
+
+=head2 read_length
+
+An array containing the length of the forward and the reverse read.
+If not set, is currently hardcoded as [151, 151].
+
+=cut
+
+has 'read_length' => (
+  'isa'        => 'ArrayRef',
+  'is'         => 'ro',
+  'lazy_build' => 1,
+  'required'   => 0,
+  'documentation' => 'An array containing the length of the forward and ' .
+                     'reverse read',
+);
+sub _build_read_length {
+  return [$READ1_LENGTH, $READ2_LENGTH];
+}
+
 
 =head2 align
 
-A boolean option, false by default; if set, the DRAGEN germline iand/or
+A boolean option, false by default; if set, the DRAGEN germline and/or
 RNA analysis is added to the samplesheet if suitable samples are present.
 
 =cut
@@ -173,6 +278,7 @@ has 'align' => (
                      'germline analysis section is added to the file if ' .
                      'suitable samples are present.',
 );
+
 
 =head2 keep_fastq
 
@@ -187,6 +293,7 @@ has 'keep_fastq' => (
   'documentation' => 'An option to keep FASTQ files for aligned data, false ' .
                      'by default.',
 );
+
 
 =head2 varcall
 
@@ -204,6 +311,7 @@ has 'varcall' => (
                      'options are SmallVariantCaller and AllVariantCallers',
 );
 
+
 =head2 dragen_max_number_of_configs
 
 =cut
@@ -218,98 +326,6 @@ has 'dragen_max_number_of_configs' => (
                      'processing not on-board',
 );
 
-has '_current_number_of_configs' => (
-  'isa'      => 'Int',
-  'is'       => 'rw',
-  'default'  => 0,
-  'required' => 0,
-);
-
-=head2 npg_tracking_schema
-
-DBIx Schema object for the tracking database.
-
-=cut
-
-has 'npg_tracking_schema' => (
-  'isa'        => 'npg_tracking::Schema',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-  'traits'     => [ 'NoGetopt' ],
-);
-sub _build_npg_tracking_schema {
-  return npg_tracking::Schema->connect();
-}
-
-=head2 mlwh_schema
-
-DBIx Schema object for the mlwh database.
-
-=cut
-
-has 'mlwh_schema' => (
-  'isa'        => 'WTSI::DNAP::Warehouse::Schema',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-  'traits'     => [ 'NoGetopt' ],
-);
-sub _build_mlwh_schema {
-  return WTSI::DNAP::Warehouse::Schema->connect();
-}
-
-=head2 run
-
-DBIx object for a row in the run table of the tracking database.
-
-=cut
-
-has 'run' => (
-  'isa'        => 'npg_tracking::Schema::Result::Run',
-  'is'         => 'ro',
-  'predicate'  => 'has_tracking_run',
-  'lazy_build' => 1,
-  'traits'     => [ 'NoGetopt' ],
-);
-sub _build_run {
-  my $self=shift;
-
-  if (!$self->has_id_run) {
-    croak 'Run ID is not supplied, cannot retrieve run database record';
-  }
-  my $run = $self->npg_tracking_schema->resultset(q(Run))->find($self->id_run);
-  if (!$run) {
-    croak 'The database record for run ' . $self->id_run  . ' does not exist';
-  }
-  if ($run->instrument_format()->model() !~ /NovaSeqX/smx) {
-    croak 'Instrument model is not NovaSeq X Series';
-  }
-
-  return $run;
-}
-
-=head2 lims
-
-An attribute, an array of C<st::api::lims> type objects.
-
-If the attribute is not provided, it is built automatically.
-c<ml_warehouse st::api::lims> driver is used to access LIMS data.
-
-=cut
-
-has 'lims' => (
-  'isa'        => 'ArrayRef[st::api::lims]',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-  'traits'     => [ 'NoGetopt' ],
-);
-sub _build_lims {
-  my $self=shift;
-  return [st::api::lims->new(
-            id_flowcell_lims => $self->batch_id,
-            driver_type => q[ml_warehouse],
-            mlwh_schema => $self->mlwh_schema
-          )->children()];
-}
 
 =head2 run_name
 
@@ -326,9 +342,14 @@ sub _build_run_name {
   my $self = shift;
 
   my $run_name;
-  if ($self->has_id_run()) {
+  if ($self->id_run()) {
+    if ($self->run->instrument_format()->model() !~ /$NX_INSTRUMENT_FORMAT/smx) {
+      croak 'Instrument is not registered as NovaSeq X Series ' .
+            'in the tracking database';
+    }
     # Embed instrument's Sanger network name and slot
-    $run_name = sprintf '%s_%s_%s', $self->id_run, $self->run->instrument->name, $self->get_instrument_side;
+    $run_name = sprintf '%s_%s_%s', $self->id_run,
+      $self->run->instrument->name, $self->get_instrument_side;
   } else {
     # Run is not tracked, generate a placeholder ID
     my $ug = Data::UUID->new();
@@ -340,47 +361,12 @@ sub _build_run_name {
   return $run_name;
 }
 
-=head2 file_name
+
+=head2 products
+
+A list of products as given by LIMS, a read-only accessor.
 
 =cut
-
-has 'file_name' => (
-  'isa'        => 'Str',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-  'required'   => 0,
-  'documentation' => 'CSV file name or path to write samplesheet data to',
-);
-sub _build_file_name {
-  my $self = shift;
-
-  my $file_name;
-  if ($self->has_id_run) {
-    $file_name = join q[_],
-      $self->run_name,
-      q[ssbatch] . $self->batch_id;
-  } else {
-    $file_name = $self->run_name;
-  }
-
-  my $date =  DateTime->now()->strftime('%y%m%d'); # 230602 for 2 June 2023
-  $file_name = sprintf '%s_%s.csv', $date, $file_name;
-
-  return $file_name;
-}
-
-has '_all_lines' => (
-  'isa'        => 'ArrayRef',
-  'is'         => 'ro',
-  'default'    => sub { return []; } ,
-  'required'   => 0,
-);
-
-sub _add_line {
-  my ($self, @columns) = @_;
-  push @{$self->_all_lines()}, @columns ? \@columns : [];
-  return;
-}
 
 has '_products' => (
   'isa'        => 'ArrayRef',
@@ -418,26 +404,13 @@ sub _build__products {
   return \@products;
 }
 
-has '_index_reads_length' => (
-  'isa'        => 'ArrayRef',
-  'is'         => 'ro',
-  'lazy_build' => 1,
-  'required'   => 0,
-);
-sub _build__index_reads_length {
-  my $self = shift;
-  my $index1_length = max (
-    map { length $_->[$LIST_INDEX_TAG1] } $self->products
-  );
-  my $index2_length = max (
-    map { length $_->[$LIST_INDEX_TAG2] } $self->products
-  );
-  return [$index1_length, $index2_length];
-}
 
 =head2 process
 
 Generates a samplesheet and saves it to a file.
+
+Do not remove this method or change its name in order to stay compliant
+with samplesheet daemon C<npg::samplesheet::auto>.
 
 =cut
 
@@ -476,33 +449,45 @@ sub process {
     carp 'Too many BCLConvert configurations, cannot run any DRAGEN analysis';
   }
 
-
-  my $csv = Text::CSV->new({
-    eol      => qq[\n],
-    sep_char => q[,],
-  });
-
-  my $max_num_columns = max map { scalar @{$_} } @{$self->_all_lines};
-
-  my $file_name = $self->file_name;
-  ## no critic (InputOutput::RequireBriefOpen)
-  open my $fh, q[>], $file_name
-    or croak "Failed to open $file_name for writing";
-
-  for my $line (@{$self->_all_lines}) {
-    my @columns = @{$line};
-    # Pad the row.
-    while (scalar @columns < $max_num_columns) {
-      push @columns, q[];
-    }
-    $csv->print($fh, \@columns);
-  }
-
-  close $fh or carp "Problems closing $file_name";
-  ## use critic
+  $self->_generate_output();
 
   return;
 }
+
+=head2 add_common_headers
+
+Adds the top-level header section.
+
+=cut
+
+sub add_common_headers {
+  my $self = shift;
+
+  my ($index1_length, $index2_length) = @{$self->index_read_length()};
+  $self->_add_line('[Header]');
+  $self->_add_line(q[FileFormatVersion], 2);
+  $self->_add_line(q[RunName], $self->run_name);
+  $self->_add_line(qw(InstrumentPlatform NovaSeqXSeries));
+  $self->_add_line(qw(InstrumentType NovaSeqXPlus));
+  $self->_add_line();
+
+  # Reads section
+  $self->_add_line('[Reads]');
+  $self->_add_line(q[Read1Cycles], $self->read_length()->[0]);
+  $self->_add_line(q[Read2Cycles], $self->read_length()->[1]);
+  if ($index1_length) {
+    $self->_add_line('Index1Cycles', $index1_length);
+    if ($index2_length) {
+      $self->_add_line('Index2Cycles', $index2_length);
+    }
+  }
+
+  $self->_add_line();
+  $self->_add_line('[Sequencing_Settings]');
+
+  return;
+}
+
 
 =head2 add_bclconvert_section
 
@@ -513,49 +498,33 @@ has not been added. The latter happens if the number of unique configurations
 for BCLConvert exceeds the maximum number of allowed configurations.
 In this case no further analysis sections should be added to the samplesheet.
 
+The OverrideCycles column specifies the sequencing and indexing cycles to be
+used when processing the sequencing data. Must adhere to the following
+requirements:
+
+- Must be same number of fields (delimited by semicolon) as sequencing and
+  indexing reads specified in RunInfo.xml or 'Reads' section.
+
+- Indexing reads are specified with 'I',
+  sequencing reads are specified with 'Y',
+  UMI cycles are specified with 'U',
+  and trimmed reads are specified with 'N'.
+
+- The number of cycles specified for each read must equal the number of cycles
+  specified for that read in the RunInfo.xml file.
+
+- Only one 'Y' or 'I' sequence can be specified per read.
+
 =cut
 
 sub add_bclconvert_section {
   my $self = shift;
 
-  my ($index1_length, $index2_length) = @{$self->_index_reads_length()};
+  my ($index1_length, $index2_length) = @{$self->index_read_length()};
   my @lines = ();
   push @lines, ['[BCLConvert_Settings]'];
   push @lines, [q[SoftwareVersion], $self->dragen_software_version];
-
-  # Not clear what CLI analysis option thie corresponds to.
-  # Looks likely to be a list of lanes to run a tag collision check.
-  # According to @srl, bcl-covert tries to correct one error by default
-  # but it checks the tags allow this, i.e. that they all differ by at least
-  # 3 bases, if they don't it disables the error correction
-  # $add_line->(qw(CombinedIndexCollisionCheck 1;3;4;6));
-
-  # CreateFastqForIndexReads might be an option. Do we need these files?
-  # $add_line->(qw(CreateFastqForIndexReads 1));
-  # When 1 will be appropriate for this trim?
-  # $add_line->(qw(TrimUMI 0));
-  # dragen is the other compression options
   push @lines, [qw(FastqCompressionFormat gzip)];
-
-  # Barcode mismatch tolerances, the default is 1.
-  # These settings can be omitted.
-  #if ($index1_length) {
-  #  $add_line->(qw(BarcodeMismatchesIndex1 1));
-  #  if ($index2_length) {
-  #    $add_line->(qw(BarcodeMismatchesIndex2 1));
-  #  }
-  #}
-
-  # Adapter trimming settings. The sequence of the Read 1 (or 2) adapter
-  # to be masked or trimmed. To trim multiple adapters, separate the sequences
-  # with a plus sign (+) indicating independent adapters that must be
-  # independently assessed for masking or trimming for each read.
-  # Characters must be A, C, G, or T.
-  # It seems that this settign can also be a column in teh data section
-  #
-  # $add_line->(qw(AdapterRead1 SOME));
-  # $add_line->(qw(AdapterRead2 OTHER));
-
   push @lines, [];
   push @lines, ['[BCLConvert_Data]'];
 
@@ -568,17 +537,6 @@ sub add_bclconvert_section {
     push @data_header, q[OverrideCycles];
   }
   push @lines, \@data_header;
-
-  # Override Cycles - Specifies the sequencing and indexing cycles to be used
-  # when processing the sequencing data. Must adhere to the
-  # following requirements:
-  # - Must be same number of fields (delimited by semicolon) as sequencing and
-  #   indexing reads specified in RunInfo.xml or Reads section.
-  # - Indexing reads are specified with I, sequencing reads are specified with
-  #   Y, UMI cycles are specified with U, and trimmed reads are specified with N.
-  # - The number of cycles specified for each read must equal the number of
-  #   cycles specified for that read in the RunInfo.xml file.
-  # - Only one Y or I sequence can be specified per read.
 
   my $index_override = sub {
     my ($max_length, $barcode) = @_;
@@ -604,7 +562,7 @@ sub add_bclconvert_section {
     if ($index1_length) {
       my $i7 = $product->[$LIST_INDEX_TAG1];
       push @product_data, $i7;
-      push @override_cycles, q[Y] . $READ1_LENGTH;
+      push @override_cycles, q[Y] . $self->read_length()->[0];
       push @override_cycles,
         $index_override->($index1_length, $i7);
       if ($index2_length) {
@@ -613,7 +571,7 @@ sub add_bclconvert_section {
         push @override_cycles,
           $index_override->($index2_length, $i5);
       }
-      push @override_cycles, q[Y] . $READ2_LENGTH;
+      push @override_cycles, q[Y] . $self->read_length()->[1];
     }
     my $override_cycles_string = join q[;], @override_cycles;
     # Might be an empty string ...
@@ -637,130 +595,6 @@ sub add_bclconvert_section {
   return scalar @lines;
 }
 
-=head2 add_common_headers
-
-Adds the top-level header section.
-
-=cut
-
-sub add_common_headers {
-  my $self = shift;
-
-  my ($index1_length, $index2_length) = @{$self->_index_reads_length()};
-  $self->_add_line('[Header]');
-  $self->_add_line(q[FileFormatVersion], 2);
-  $self->_add_line(q[RunName], $self->run_name);
-  $self->_add_line(qw(InstrumentPlatform NovaSeqXSeries));
-  # NovaSeqxPlus or NovaSeqX.
-  # If the run id is given, this should come from the tracking database
-  # when we fix the type there.
-  $self->_add_line(qw(InstrumentType NovaSeqXPlus));
-  $self->_add_line();
-
-  # Reads section
-  $self->_add_line('[Reads]');
-  $self->_add_line(q[Read1Cycles], $READ1_LENGTH);
-  $self->_add_line(q[Read2Cycles], $READ2_LENGTH);
-  if ($index1_length) {
-    $self->_add_line('Index1Cycles', $index1_length);
-    if ($index2_length) {
-      $self->_add_line('Index2Cycles', $index2_length);
-    }
-  }
-
-  $self->_add_line();
-  $self->_add_line('[Sequencing_Settings]');
-
-  return;
-}
-
-=head2 can_do_alignment
-
-=cut
-
-sub can_do_alignment {
-  my $r = shift;
-  return $r && !($r =~ /Not suitable/xmsi);
-}
-
-=head2 do_ref_rna_alignment_test
-
-=cut
-
-sub do_ref_rna_alignment_test {
-  my $r = shift;
-  return any { $r =~ /$_/xmsi } @RNA_ANALYSES_REFS;
-}
-
-=head2 do_libtype_rna_alignment_test
-
-=cut
-
-sub do_libtype_rna_alignment_test {
-  my $lt = shift;
-  return any { $lt =~ /$_/xmsi } @RNA_ANALYSES_LIB_TYPES;
-}
-
-=head2 do_libtype_tenx_test
-
-=cut
-
-sub do_libtype_tenx_test {
-  my $lt = shift;
-  return any { $lt =~ /$_/xmsi } @TENX_ANALYSES_LIB_TYPES;
-}
-
-=head2 get_instrument_side
-
-Consult run tags to determine which slot/side of the instrument this run is
-intended to be inserted into. Croaks when no value has been set.
-
-=cut
-
-sub get_instrument_side {
-  my $self = shift;
-  my $side = $self->run->is_tag_set('fc_slotA') ? 'A' :
-            ($self->run->is_tag_set('fc_slotB') ? 'B' : q[]);
-  if (! $side) {
-    croak 'Slot is not set for run ' . $self->id_run;
-  }
-  return $side;
-}
-
-
-sub _add_samples {
-  my ($self, @samples) = @_;
-
-  my $done = {};
-  foreach my $sample (@samples) {
-    if (!$done->{$sample->[0]}) {
-      $self->_add_line(@{$sample});
-      $done->{$sample->[0]} = 1;
-    }
-  }
-
-  return;
-}
-
-sub _can_add_sample {
-  my ($self, $distinct_configs, $config) = @_;
-
-  $config or return;
-
-  # An existing configuration can always be added.
-  if (!$distinct_configs->{$config}) { # This is a new configuration.
-    if ($self->_current_number_of_configs < $self->dragen_max_number_of_configs) {
-      # Add to the dictionary of distinct configs.
-      $distinct_configs->{$config} = 1;
-      # Increment the global count of distinct contigs.
-      $self->_current_number_of_configs($self->_current_number_of_configs + 1);
-    } else {
-      return;
-    }
-  }
-
-  return 1;
-}
 
 =head2 add_germline_section
 
@@ -816,6 +650,7 @@ sub add_germline_section {
   return scalar @to_align;
 }
 
+
 =head2 add_rna_section
 
 Conditionally adds the DragenRNA_Settings and DragenRNA_Data sections.
@@ -834,8 +669,9 @@ sub add_rna_section {
     my $r = $p->[$LIST_INDEX_REF];
     my $lib_type = $p->[$LIST_INDEX_LIBTYPE];
 
-    if ( can_do_alignment($r) &&
-         (do_ref_rna_alignment_test($r) || do_libtype_rna_alignment_test($lib_type)) ) {
+    if ( can_do_alignment($r) && (
+           do_ref_rna_alignment_test($r) ||
+           do_libtype_rna_alignment_test($lib_type)) ) {
 
       my $match = first { $r =~ /$_/xms} @ref_matches;
       if ($self->_can_add_sample($distinct_configs, $match)) {
@@ -858,6 +694,157 @@ sub add_rna_section {
   }
 
   return scalar @to_align;
+}
+
+
+=head2 can_do_alignment
+
+=cut
+
+sub can_do_alignment {
+  my $r = shift;
+  return $r && !($r =~ /Not suitable/xmsi);
+}
+
+
+=head2 do_ref_rna_alignment_test
+
+=cut
+
+sub do_ref_rna_alignment_test {
+  my $r = shift;
+  return any { $r =~ /$_/xmsi } @RNA_ANALYSES_REFS;
+}
+
+
+=head2 do_libtype_rna_alignment_test
+
+=cut
+
+sub do_libtype_rna_alignment_test {
+  my $lt = shift;
+  return any { $lt =~ /$_/xmsi } @RNA_ANALYSES_LIB_TYPES;
+}
+
+
+=head2 do_libtype_tenx_test
+
+=cut
+
+sub do_libtype_tenx_test {
+  my $lt = shift;
+  return any { $lt =~ /$_/xmsi } @TENX_ANALYSES_LIB_TYPES;
+}
+
+
+=head2 get_instrument_side
+
+Consult run tags to determine which slot/side of the instrument this run is
+intended to be inserted into. Croaks when no value has been set.
+
+=cut
+
+sub get_instrument_side {
+  my $self = shift;
+  my $side = $self->run->is_tag_set('fc_slotA') ? 'A' :
+            ($self->run->is_tag_set('fc_slotB') ? 'B' : q[]);
+  if (! $side) {
+    croak 'Slot is not set for run ' . $self->id_run;
+  }
+  return $side;
+}
+
+##################################################################
+#  Private attributes and methods                                #
+##################################################################
+
+# A writable counter.
+has '_current_number_of_configs' => (
+  'isa'      => 'Int',
+  'is'       => 'rw',
+  'default'  => 0,
+  'required' => 0,
+);
+
+
+has '_all_lines' => (
+  'isa'        => 'ArrayRef',
+  'is'         => 'ro',
+  'default'    => sub { return []; } ,
+  'required'   => 0,
+);
+
+
+sub _add_line {
+  my ($self, @columns) = @_;
+  push @{$self->_all_lines()}, @columns ? \@columns : [];
+  return;
+}
+
+sub _add_samples {
+  my ($self, @samples) = @_;
+
+  my $done = {};
+  foreach my $sample (@samples) {
+    if (!$done->{$sample->[0]}) {
+      $self->_add_line(@{$sample});
+      $done->{$sample->[0]} = 1;
+    }
+  }
+
+  return;
+}
+
+
+sub _can_add_sample {
+  my ($self, $distinct_configs, $config) = @_;
+
+  $config or return;
+
+  # An existing configuration can always be added.
+  if (!$distinct_configs->{$config}) { # This is a new configuration.
+    if ($self->_current_number_of_configs < $self->dragen_max_number_of_configs) {
+      # Add to the dictionary of distinct configs.
+      $distinct_configs->{$config} = 1;
+      # Increment the global count of distinct contigs.
+      $self->_current_number_of_configs($self->_current_number_of_configs + 1);
+    } else {
+      return;
+    }
+  }
+
+  return 1;
+}
+
+
+sub _generate_output {
+  my $self = shift;
+
+  my $csv = Text::CSV->new({
+    eol => $END_OF_LINE,
+    sep_char => $st::api::lims::samplesheet::SAMPLESHEET_RECORD_SEPARATOR
+  });
+
+  my $max_num_columns = max map { scalar @{$_} } @{$self->_all_lines};
+
+  my $file_path = $self->output;
+  ## no critic (InputOutput::RequireBriefOpen)
+  open my $fh, q[>], $file_path
+    or croak "Failed to open $file_path for writing";
+
+  for my $line (@{$self->_all_lines}) {
+    my @columns = @{$line};
+    # Pad the row.
+    while (scalar @columns < $max_num_columns) {
+      push @columns, q[];
+    }
+    $csv->print($fh, \@columns);
+  }
+
+  close $fh or carp "Problems closing $file_path";
+  ## use critic
+
+  return;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -892,21 +879,13 @@ __END__
 
 =item List::Util
 
-=item Getopt::Long
-
-=item Pod::Usage
-
 =item DateTime
 
 =item Data::UUID
 
-=item st::api::lims
-
-=item npg_tracking::Schema
-
+=item Try::Tiny
+ 
 =item npg_tracking::util::types
-
-=item WTSI::DNAP::Warehouse::Schema
 
 =back
 
@@ -920,7 +899,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2023 Genome Research Ltd
+Copyright (C) 2023,2024 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
