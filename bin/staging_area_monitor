@@ -55,7 +55,24 @@ sub main {
     while (1) {
 
         _log_noindent($time->());
-
+       
+        #######
+        # find_live finds all run folders in 'incoming and 'analysis'.
+        # It can return two run folders for the same run, one in each
+        # of 'incoming and 'analysis'. In this case the  run folder in
+        # incoming is a 'shadow' run folder, which is sometimes created
+        # by the instrument well after the original run.
+        # 
+        # It is also possible for a 'shadow' folder to exist in 'incoming',
+        # while the run folder with the original data is already in 'outgoing'.
+        #
+        # Depending on how much data is present in a 'shadow' run folder,
+        # the staging monitor might attempt to update the trackign database.
+        # Mostly the values will be the same as for teh main run folder.
+        # However, the actual cycle count might be different. Therefore, it is
+        # important never to upload to the database a cycle count that is
+        # lower than the one already stored in the database.
+        #  
         foreach my $run_path ( $monitor->find_live($staging_area) ) {
             _log_noindent("Considering $run_path");
             my $done;
