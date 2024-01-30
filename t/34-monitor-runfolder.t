@@ -62,7 +62,7 @@ subtest 'test setting run tags' => sub {
     plan tests => 5;
 
     my $basedir = tempdir( CLEANUP => 1 );
-    my $fs_run_folder = qq[$basedir/IL12/incoming/100721_IL12_05222];
+    my $fs_run_folder = qq[$basedir/IL_seq_data/incoming/run_folder_1];
     make_path($fs_run_folder);
     my $fh;
     my $runinfofile = qq[$fs_run_folder/RunInfo.xml];
@@ -85,6 +85,7 @@ ENDXML
     print $fh <<"ENDXML";
 <?xml version="1.0"?>
   <RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ExperimentName>1204</ExperimentName>
   </RunParameters>
 ENDXML
     close $fh;
@@ -97,8 +98,7 @@ ENDXML
     is( $test->tracking_run()->is_tag_set('multiplex'), 0,
         '  \'multiplex\' tag is not set on this run' );
 
-    my $basedir2 = tempdir( CLEANUP => 1 );
-    my $fs_run_folder2 = qq[$basedir2/IL3/incoming/100622_IL3_01234];
+    my $fs_run_folder2 = qq[$basedir/IL_seq_data/incoming/run_folder_2];
     make_path($fs_run_folder2);
     my $fh2;
     my $runinfofile2 = qq[$fs_run_folder2/RunInfo.xml];
@@ -123,6 +123,7 @@ ENDXML
     print $fh2 <<"ENDXML";
 <?xml version="1.0"?>
   <RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ExperimentName>4999</ExperimentName>
   </RunParameters>
 ENDXML
     close $fh2;
@@ -161,40 +162,36 @@ q{<?xml version="1.0"?>
     my $run_parameters = 
 q{<?xml version="1.0"?>
 <RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ExperimentName>1234</ExperimentName>
 </RunParameters>};
-
     
     my $root = tempdir( CLEANUP => 1 );
-    my $rf = join q[/], $root, 'ILorHSany_sf50/incoming/150606_HS31_01234_B_HCYVGADXX';
+    my $rf = join q[/], $root, 'IL_seq_data/incoming/run_folder1';
     make_path $rf;
 
-    my $test = Monitor::RunFolder->new( runfolder_path      => $rf,
-                                        npg_tracking_schema => $schema );
-    foreach my $i ((1 .. 8)) {
-      $schema->resultset('RunLane')->create({
-        id_run => 1234, position => $i, tile_count => 16, tracks => 2});
-      
-    }
-    is ($test->tracking_run()->run_lanes->count, 8, 'run has eight lanes');
-
-    # create RunInfo file
     open my $fh, '>', join(q[/], $rf, 'RunInfo.xml');
     print $fh $run_info;
     close $fh;
 
-    # create runParameters file
     open my $fh2, '>', join(q[/], $rf, 'runParameters.xml');
     print $fh2 $run_parameters;
     close $fh2;
 
+    # Creade 8 lane records in the database
+    foreach my $i ((1 .. 8)) {
+      $schema->resultset('RunLane')->create({
+        id_run => 1234, position => $i, tile_count => 16, tracks => 2});  
+    }
+
+    my $test = Monitor::RunFolder->new( runfolder_path      => $rf,
+                                        npg_tracking_schema => $schema );
+    is ($test->tracking_run()->run_lanes->count, 8, 'run has eight lanes');
     warnings_like { $test->delete_superfluous_lanes() } [
       qr/Deleted lane 3/, qr/Deleted lane 4/, qr/Deleted lane 5/,
       qr/Deleted lane 6/, qr/Deleted lane 7/, qr/Deleted lane 8/],
       'warnings about lane deletion';
-      
     is ($test->lane_count, 2, 'two lanes listed in run info');
     is ($test->tracking_run()->run_lanes->count, 2, 'now run has two lanes');
-
     $test->delete_superfluous_lanes();
     is ($test->tracking_run()->run_lanes->count, 2, 'no change - run has two lanes');
 };
