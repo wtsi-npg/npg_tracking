@@ -418,7 +418,6 @@ t/80-npg_tracking-report-events.t
 t/80-npg_tracking-report-event2followers.t
 t/80-npg_tracking-report-event2subscribers.t
 t/data/schema.txt
-t/data/090414_IL24_2726.tar.bz2
 t/data/dbic_fixtures/000-Designation.yml
 t/data/dbic_fixtures/000-EntityType.yml
 t/data/dbic_fixtures/000-InstrumentModDict.yml

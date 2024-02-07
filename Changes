@@ -1,6 +1,17 @@
 LIST OF CHANGES
 
 
+ - npg_tracking::illumina::run::short_info
+     - Stopped parsing out run details from the run folder name. Deleted
+       attributes, which were populated this way: 'name', 'instrument_string',
+       'slot', 'flowcell_id'.
+     - Deleted 'short_reference' method.
+ - npg_tracking::illumina::run::folder
+     - Removed dependency on 'short_reference' method, which used to be
+       provided by npg_tracking::illumina::run::short_info.
+     - Introduce a check to ensure that the run folder name on staging and
+       in the database, when both are available, are the same.
+
 release 100.0.1
  - For aggregation of lims objects by library in st::api::lims, do not
    consider the same library with different tag index in the same lane

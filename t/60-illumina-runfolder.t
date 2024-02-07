@@ -1,76 +1,84 @@
 use strict;
 use warnings;
-use Test::More tests => 29;
+use Test::More tests => 26;
 use Test::Exception;
-use Archive::Tar;
-use IO::File;
+use Test::Warn;
+use File::Copy;
 use File::Temp qw(tempdir);
-use File::Basename qw(dirname);
-use File::Spec::Functions qw(catfile rel2abs catdir);
-use Cwd;
+use File::Spec::Functions qw(catfile catdir);
 
 use t::dbic_util;
 
 use_ok('npg_tracking::illumina::runfolder');
 
 my $schema = t::dbic_util->new->test_schema();
-
-my $testrundata = catfile(rel2abs(dirname(__FILE__)),q(data),q(090414_IL24_2726.tar.bz2));
-
-my $origdir = getcwd;
-my $testdir = catfile(tempdir( CLEANUP => 1 ), q()); #we need a trailing slash after our directory for the globbing later
-chdir $testdir or die "Cannot change to temporary directory $testdir";
-diag ("Extracting $testrundata to $testdir");
-system('tar','xjf',$testrundata) == 0 or Archive::Tar->extract_archive($testrundata, 1);
-chdir $origdir; #so cleanup of testdir can go ahead
-my $testrundir = catdir($testdir,q(090414_IL24_2726));
+my $rf_name = q(240201_MS8_48385_A_MS3553611-300V2);
+# We need a trailing slash after our directory for the globbing later.
+my $testdir = catfile(tempdir( CLEANUP => 1 ), q());
+my $testrundir = catdir($testdir,$rf_name);
+mkdir $testrundir;
 
 {
-  my $rf;
+  my $rf = npg_tracking::illumina::runfolder->new(
+    runfolder_path => $testrundir,
+    npg_tracking_schema => undef
+  );
+  is ($rf->run_folder, $rf_name, 'run folder name is correct');
+  throws_ok { $rf->id_run } qr/File not found/,
+    'id_run cannot be computed, RunParameters.xml file is not found';
 
-  lives_ok {
-    $rf = npg_tracking::illumina::runfolder->new( runfolder_path => $testrundir);
-  } 'runfolder from valid runfolder_path';
-  { my $id_run;
-    lives_ok { $id_run = $rf->id_run; } 'id_run parsed';
-    is($id_run, 2726, 'id_run correct');
-  }
-  { my $name;
-    lives_ok { $name = $rf->name; } 'name parsed';
-    is($name, q(IL24_2726), 'name correct');
-  }
+  $rf = npg_tracking::illumina::runfolder->new(
+    _folder_path_glob_pattern => $testdir,
+    id_run => 2,
+    npg_tracking_schema => undef
+  );
+  throws_ok { $rf->run_folder } qr/Failed to infer runfolder_path/,
+    'run folder name cannot be built';
 
-  mkdir catdir($testrundir,qw(Data));
-  mkdir catdir($testrundir,qw(Data Intensities));
-  {  my $name;
-    lives_ok {
-      $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, id_run=> 2726, npg_tracking_schema => undef);
-      $name = $rf->name;
-    } 'runfolder from valid id_run';
-    is($name, q(IL24_2726), 'name parsed');
-  }
-  my $rfpath =  catdir($testdir,q(090414_IL99_2726));
-  mkdir $rfpath;
-  throws_ok {
-    $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, id_run=> 2726, npg_tracking_schema => undef);
-    $rf->runfolder_path;
-  } qr/Ambiguous paths/, 'throws when ambiguous run folders found for id_run';
-  rmdir catdir($testdir,q(090414_IL99_2726));
-  symlink $testrundir, catdir($testdir,q(superfoo_r2726));
-  lives_ok {
-    $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, id_run=> 2726, npg_tracking_schema => undef);
-    $rf->runfolder_path;
-  } 'lives when ambiguous run folders found for id_run but they correspond, via links or such, to the same folder';
-  unlink catdir($testdir,q(superfoo_r2726));
-  throws_ok {
-    $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, id_run=> 2, npg_tracking_schema => undef);
-    $rf->run_folder;
-  } qr/No path/, 'throws when no run folders found for id_run';
+  $rf = npg_tracking::illumina::runfolder->new(
+    run_folder => $rf_name,
+    _folder_path_glob_pattern => $testdir,
+    npg_tracking_schema => undef
+  );
+  is ($rf->runfolder_path, $testrundir,
+    'runfolder path by globbing for a run folder directory');
+
+  my $id_run = 1;
+  my $run_row = $schema->resultset('Run')->find($id_run);
+  $run_row->update({folder_name => 'nomatch'});
+
+  $rf = npg_tracking::illumina::runfolder->new(
+    id_run => $id_run,
+    run_folder => $rf_name,
+    _folder_path_glob_pattern => $testdir,
+    npg_tracking_schema => $schema
+  );
+  throws_ok { $rf->runfolder_path }
+    qr/NPG tracking reports run 1 no longer on staging/,
+    'error when the run does not have a staging tag';
+  $run_row->set_tag(1, 'staging');
   my $path;
-  my $expected_cycle_count;
-  my (@read_cycle_counts, @indexing_cycle_range, @read1_cycle_range, @read2_cycle_range);
+  warning_like { $path = $rf->runfolder_path }
+    qr/Inconsistent db and given run folder name: nomatch, $rf_name/,
+    'warning about mismatching run folder names';
+  is ($path, $testrundir,
+    'runfolder path via globbing for a run folder directory');
 
+  $run_row->update({folder_name => $rf_name, folder_path_glob => $testdir});
+ 
+  $rf = npg_tracking::illumina::runfolder->new(
+    id_run => $id_run,
+    run_folder => 'mismatch',
+    npg_tracking_schema => $schema
+  );
+  warning_like { $path = $rf->runfolder_path }
+    qr/Inconsistent db and given run folder name: $rf_name, mismatch/,
+    'warning about mismatching run folder names';
+  is ($path, $testrundir,
+    'runfolder path via using the database record');
+}
 
+{
   my $fh;
   my $runinfofile = qq[$testrundir/RunInfo.xml];
   open($fh, '>', $runinfofile) or die "Could not open file '$runinfofile' $!";
@@ -96,10 +104,14 @@ ENDXML
   <RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  </RunParameters>
 ENDXML
- close $fh;
+  close $fh;
 
+  my $rf = npg_tracking::illumina::runfolder->new(
+    _folder_path_glob_pattern => $testdir,
+    run_folder => $rf_name,
+    npg_tracking_schema => undef
+  );
   my $lane_count;
-  $rf = npg_tracking::illumina::runfolder->new(_folder_path_glob_pattern=>$testdir, name=> q(090414_IL24_2726), npg_tracking_schema => undef);
   lives_ok {
     $lane_count = $rf->lane_count;
   } 'finds and parses recipe file';
@@ -109,16 +121,6 @@ ENDXML
     $tile_count = $rf->tile_count;
   } 'loads tilelayout file';
   is($tile_count,120,'tile_count');
-}
-
-{
-  my $test_runfolder_path;
-  lives_ok {
-    $test_runfolder_path = npg_tracking::illumina::runfolder->new(
-      runfolder_path=> $testrundir, npg_tracking_schema => undef);
-  } 'runfolder from valid runfolder_path';
-  is($test_runfolder_path->run_folder(), '090414_IL24_2726',
-    q{run folder obtained ok when runfolder_path used in construction});
 }
 
 {
@@ -145,14 +147,12 @@ ENDXML
   my $run_row = $schema->resultset('Run')->create($data);
   $run_row->set_tag(1, 'staging');
 
-  my $rf;
-
-  $rf = npg_tracking::illumina::runfolder->new(
+  my $rf = npg_tracking::illumina::runfolder->new(
     id_run              => 33333,
     npg_tracking_schema => undef);
-  throws_ok { $rf->run_folder } qr/No paths to run folder found/,
+  throws_ok { $rf->run_folder } qr/Failed to infer runfolder_path/,
    'error - not able to find a runfolder without db help';
-  throws_ok { $rf->runfolder_path } qr/No paths to run folder found/,
+  throws_ok { $rf->runfolder_path } qr/Failed to infer runfolder_path/,
    'error - not able to find a runfolder without db help';
 
   $rf = npg_tracking::illumina::runfolder->new(
@@ -180,8 +180,6 @@ ENDXML
       npg_tracking_schema => $schema);
   is ($rf->id_run, 33333, 'id_run with db helper');
   is ($rf->run_folder, $new_name, 'runfolder with db helper');
-
-  rename $testrundir_new, $testrundir;
 }
 
 subtest 'getting id_run from experiment name in run parameters' => sub {
@@ -211,16 +209,14 @@ subtest 'getting id_run from experiment name in run parameters' => sub {
     my $param_prefix = $expname_data->{$file_name}->{'rpf'};
     my $run_params_file_path = qq[$rf/$param_prefix.xml];
 
-    use File::Copy;
     copy(join(q[/],$run_param_dir,$file_name), $run_params_file_path) or die 'Failed to copy file';
 
     my $li = new npg_tracking::illumina::runfolder(
       runfolder_path => $rf,
       npg_tracking_schema => $schema
     );
-
     is($li->id_run(), $expected_experiment_name, q[Expected id_run parsed from experiment name in run params]);
-    `rm $run_params_file_path`
+    unlink $run_params_file_path;
   }
 };
 
