@@ -819,140 +819,6 @@ sub is_composition {
   return $self->rpt_list ? 1 : 0;
 }
 
-=head2 aggregate_xlanes
-
-For a run-level st::api::lims object returns a list of st::api::lims
-objects representing aggregated entities. 
-
-Aggregation is performed across all lanes of the lims object, unless
-an explicit list of positions is gived as an argument.
-
-If all lanes are pools, agreggation is performed per tag index (plex)
-and the list contains one or more objects, each one representing a tag
-index (plex). An entry for tag index zero is added as well.
-
-If lanes are libraries, aggregation of these libraries
-is performed and the list contains one object.
-
-It is possible to aggregate one lane, though practically it does not
-make much sense.
-
-List members represent compositions and have rpt_list attribute set.
-
-  my $l = st::api::lims->new(id_run => 44);
-  my $a = $l->aggregate_xlanes();
-  my $a = $l->aggregate_xlanes(qw/2 3/);
-
-Assuming run id 44, for two lanes representing the same pool of four tag
-indexes (1, 2, 3, 4), the list members will have the following values
-of the rpt_list attribute:
-
-  44:1:0;44:2:0
-  44:1:1;44:2:1
-  44:1:2;44:2:2
-  44:1:3;44:2:3
-  44:1:4;44:2:4
-
-The new objects has the same driver settings as the original object.
-
-=cut
-
-sub aggregate_xlanes {
-  my ($self, @positions) = @_;
-
-  if ($self->is_composition || $self->position) {
-    croak 'Not run-level object';
-  }
-
-  my $lanes_ia = $self->children_ia;
-
-  #####
-  # If a list of positions is given, restrict the operation to
-  # this set of positions.
-  #
-  if (@positions) {
-    my $reduced = {};
-    foreach my $p (@positions) {
-      if (!exists $lanes_ia->{$p}) {
-        croak sprintf 'Requested position %i does not exists in %s',
-                      $p,
-                      $self->to_string();
-      }
-      $reduced->{$p} = $lanes_ia->{$p};
-    }
-    $lanes_ia = $reduced;
-  }
-
-  my @lanes = sort { $a->position <=> $b->position } values %{$lanes_ia};
-  @positions = keys %{$lanes_ia};
-
-  #####
-  # We cannot have a mixture of pools and libraries.
-  #
-  my @pools = grep {$_} map { $_->is_pool ? 1 : 0 } @lanes;
-  if (@pools != 0 && @pools != @lanes) {
-    croak sprintf 'Both pools and libraries in lanes %s in %s',
-                  join(q[, ], @positions),
-                  $self->to_string();
-  }
-
-  #####
-  # Test function. Certain attrubutes should be the same
-  # across all objects of the lims array (first arg.).
-  #  
-  my $can_merge = sub {
-    my ($lims, @attrs) = @_;
-    for my $attr_name (@attrs) {
-      my @values = grep { defined $_ } map { $_->$attr_name } @{$lims};
-      if (@values != @{$lims}) {
-        croak qq[$attr_name is not defined for one of lims objects];
-      }
-      @values = uniq @values;
-      if (@values != 1) {
-        croak qq[$attr_name is not the same across lims objects list];
-      }
-    }
-    return;
-  }; # End of test function
-
-  my $init = $self->copy_init_args();
-  delete $init->{'id_run'};
-
-  my $lims4compisitions = {};
-  my @test_attrs = qw/sample_id library_id/;
-  my $lanes_rpt_list = npg_tracking::glossary::rpt->deflate_rpts(\@lanes);
-  my @aggregated = ();
-
-  if (!@pools) {
-    $can_merge->(\@lanes, @test_attrs); # Test consistency
-    push @aggregated, __PACKAGE__->new(%{$init}, rpt_list => $lanes_rpt_list);
-  } else {
-    my @sizes = uniq (map { $_->num_children } @lanes);
-    if (@sizes != 1) { # Test consistency
-      croak 'Different number of plexes in lanes';
-    }
-
-    #####
-    # The each_arrayref function is given a list of arrays of plex-level st::api::lims
-    # objects, each array represent all plexes in a lane. The arrays of plexes are ordered
-    # by tag index. The each_arrayref function returns an iterator, which on each invocation
-    # collates and returns a list of first, second, etc, array members in the first, second,
-    # etc, invocation respectively.
-    #
-    my $ea = each_arrayref map { [$_->children()] } @lanes;
-    while ( my @plexes = $ea->() ) {
-      $can_merge->(\@plexes, @test_attrs, 'tag_index');  # Test consistency
-      push @aggregated, __PACKAGE__->new(%{$init},
-        rpt_list => npg_tracking::glossary::rpt->deflate_rpts(\@plexes));
-    }
-    # Add object for tag zero
-    push @aggregated, __PACKAGE__->new(%{$init},
-      rpt_list => npg_tracking::glossary::rpt->tag_zero_rpt_list($lanes_rpt_list));
-  }
-
-  return @aggregated;
-}
-
 =head2 aggregate_libraries
 
 Given a list of lane-level C<st::api::lims> objects, finds their children,
@@ -1409,7 +1275,8 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2015,2016,2017,2018,2019,2020,2021,2023 Genome Research Ltd.
+Copyright (C) 2013,2014,2015,2016,2017,2018,2019,2020,2021,2023,2024
+   Genome Research Ltd.
 
 This file is part of NPG.
 
