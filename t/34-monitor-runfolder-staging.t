@@ -95,6 +95,8 @@ subtest 'computing glob and updating run data from filesystem' => sub {
       team => 'A',
       expected_cycle_count => 310,
       actual_cycle_count => 0,
+      folder_name => undef,
+      folder_path_glob => undef,
     };
     my $run = $schema->resultset('Run')->find($id_run);
     $run->update($run_data);
@@ -114,7 +116,7 @@ subtest 'computing glob and updating run data from filesystem' => sub {
     for my $dir (qw/incoming analysis outgoing/) {
         my $rfpath = $path;
         $rfpath =~ s/outgoing/$dir/;
-        note $rfpath;
+        note 'Testing ' . $rfpath;
         my $test = Monitor::RunFolder::Staging->new(runfolder_path => $rfpath);
         is($test->_get_folder_path_glob, $glob, "glob for /$dir/");
     }
@@ -155,7 +157,7 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
 
     for my $file_name (qw[CopyComplete Copycomplete
                           copycomplete CopyComplete_old.txt ]) {
-        note $file_name;
+        note 'Testing ' . $file_name;
         my $path_to_wrong_copy_complete = qq[$fs_run_folder/$file_name];
         touch_file($path_to_wrong_copy_complete);
         ok(!$run_folder->is_run_complete(), 'Run is not complete');
@@ -405,7 +407,7 @@ subtest 'monitoring size' => sub {
     ok( $size > 100, 'Find file size sum' );
 };
 
-subtest 'seting file system permissions' => sub {
+subtest 'setting file system permissions' => sub {
     plan tests => 4;
 
     my $tmpdir = tempdir( CLEANUP => 1 );

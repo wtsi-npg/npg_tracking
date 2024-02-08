@@ -177,7 +177,7 @@ q{<?xml version="1.0"?>
     print $fh2 $run_parameters;
     close $fh2;
 
-    # Creade 8 lane records in the database
+    # Create 8 lane records in the database
     foreach my $i ((1 .. 8)) {
       $schema->resultset('RunLane')->create({
         id_run => 1234, position => $i, tile_count => 16, tracks => 2});  
