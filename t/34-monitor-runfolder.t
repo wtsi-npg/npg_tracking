@@ -1,8 +1,7 @@
 use strict;
 use warnings;
-use English qw(-no_match_vars);
 use File::Copy;
-use Test::More tests => 34;
+use Test::More tests => 7;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -14,71 +13,57 @@ use t::dbic_util;
 use_ok('Monitor::RunFolder');
 
 my $schema = t::dbic_util->new->test_schema();
-my $MOCK_STAGING = 't/data/gaii/staging';
 my $dir4rf = tempdir( CLEANUP => 1 );
 
-{
-    my $mock_path = $MOCK_STAGING . '/IL12/incoming/100721_IL12_05222';
-    my $test;
-    lives_ok {
-        $test = Monitor::RunFolder->new( runfolder_path       => $mock_path,
-                                         npg_tracking_schema  => $schema, )
-    } 'Object creation ok';
-    isa_ok( $test, 'Monitor::RunFolder');
+subtest 'test methods for cycle and status update' => sub {
+    plan tests => 15;
 
-    is( $test->run_folder(), '100721_IL12_05222',
-        'Run folder attribute correct' );
-
+    my $rf_name = q[240124_MS8_05222_A_MS3551061-300V2];
+    my $path = q[/export/esa-sv-20201215-02/IL_seq_data/incoming/] . $rf_name;
+    my $test = Monitor::RunFolder->new( runfolder_path      => $path,
+                                        id_run              => 5222,
+                                        npg_tracking_schema => $schema, );
+    isa_ok( $test, 'Monitor::RunFolder' ); 
+    is( $test->run_folder(), $rf_name, 'run_folder value correct' );
     isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
             'Object returned by tracking_run method' );
 
-    is( $test->tracking_run()->current_run_status_description(), 'analysis pending',
-        'Retrieve current run status' );
-}
-
-{
-    my $mock_path = $MOCK_STAGING . '/IL4/incoming/101026_IL4_0095';
-    my $test = Monitor::RunFolder->new( runfolder_path      => $mock_path,
-                                        npg_tracking_schema => $schema, );
-
-    is( $test->tracking_run()->current_run_status_description(), 'run pending',
-        'test is ready' );
+    my $next_run_status = 'run in progress';
+    ok( $test->tracking_run()->current_run_status_description() ne $next_run_status,
+        "current run status is different from '$next_run_status'" );
+    throws_ok { $test->update_run_status() }
+        qr{Description should be provided}ms,
+        'requires run status description argument';
+    lives_ok { $test->update_run_status($next_run_status) }
+        'can update run status run';
+    is( $test->tracking_run()->current_run_status_description(),
+        $next_run_status, "run status updated to '$next_run_status'" );
 
     throws_ok { $test->update_cycle_count() }
         qr{Latest cycle count not supplied}ms, 
         'requires latest cycle count argument';
-    throws_ok { $test->update_run_status() }
-        qr{Description should be provided}ms,
-        'requires run status description argument';
+    my $current_cc = 120;
+    is( $test->tracking_run->actual_cycle_count(), $current_cc,
+        'current actual cycle count');
+    ok( !$test->update_cycle_count(5),
+        'cycle count is not updated to a lower value' );
+    is( $test->tracking_run->actual_cycle_count(), $current_cc,
+        'current actual cycle count has not changed'); 
+    ok( !$test->update_cycle_count($current_cc),
+        'cycle count is not updated to the same value' );
+    is( $test->tracking_run->actual_cycle_count(), $current_cc,
+        'current actual cycle count has not changed');
+    ok( $test->update_cycle_count(125), 'cycle count updated' );
+    is( $test->tracking_run->actual_cycle_count(), 125,
+        'cycle count updated correctly' );
+};
 
-    lives_ok { $test->update_run_status('run in progress') }
-        'move run from \'pending\' to \'in progress\'';
-    is( $test->tracking_run()->current_run_status_description(), 'run in progress',
-        'run status updated' );
+subtest 'test setting run tags' => sub {
+    plan tests => 5;
 
-    is( $test->update_cycle_count(5), 1, 'cycle count updated' );
-    is( $test->tracking_run->actual_cycle_count(), 5, 'cycle count updated correctly' );
-    is( $test->update_cycle_count(5), 0, 'cycle count not updated' );
-    is( $test->tracking_run->actual_cycle_count(), 5, 'cycle count has not changed' );
-
-    lives_ok { $test->update_run_status('run complete') }
-        'move run from \'pending\' to \'in progress\'';
-    is( $test->tracking_run()->current_run_status_description(), 'run complete',
-        'run status updated' );
-
-    is( $test->update_cycle_count(43), 1, 'cycle count updated');
-    is( $test->tracking_run->actual_cycle_count(), 43,
-        'cycle count updated' );
-    is( $test->update_cycle_count(41), 0, 'cycle count not updated');
-    is( $test->tracking_run->actual_cycle_count(), 43,
-        'cycle count has not changed' );
-}
-
-{
     my $basedir = tempdir( CLEANUP => 1 );
-    my $fs_run_folder = qq[$basedir/IL12/incoming/100721_IL12_05222];
+    my $fs_run_folder = qq[$basedir/IL_seq_data/incoming/run_folder_1];
     make_path($fs_run_folder);
-    my $mock_path = $MOCK_STAGING . '/IL12/incoming/100721_IL12_05222';
     my $fh;
     my $runinfofile = qq[$fs_run_folder/RunInfo.xml];
     open($fh, '>', $runinfofile) or die "Could not open file '$runinfofile' $!";
@@ -100,27 +85,21 @@ ENDXML
     print $fh <<"ENDXML";
 <?xml version="1.0"?>
   <RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ExperimentName>1204</ExperimentName>
   </RunParameters>
 ENDXML
     close $fh;
 
     my $test = Monitor::RunFolder->new( runfolder_path      => $fs_run_folder,
-                                        npg_tracking_schema => $schema, );
-
-    move( "$mock_path/Data", "$mock_path/_Data" ) or die "Error $OS_ERROR";
+                                        npg_tracking_schema => $schema );
     lives_ok { $test->set_run_tags() } 'Call set_run_tags method without error';
-    move( "$mock_path/_Data", "$mock_path/Data" ) or die "Error $OS_ERROR";
-
     is( $test->tracking_run()->is_tag_set('single_read'), 1,
         '  \'single_read\' tag is set on this run' );
     is( $test->tracking_run()->is_tag_set('multiplex'), 0,
         '  \'multiplex\' tag is not set on this run' );
 
-    my $basedir2 = tempdir( CLEANUP => 1 );
-    my $fs_run_folder2 = qq[$basedir2/IL3/incoming/100622_IL3_01234];
+    my $fs_run_folder2 = qq[$basedir/IL_seq_data/incoming/run_folder_2];
     make_path($fs_run_folder2);
-    my $mock_path2 = $MOCK_STAGING . '/IL3/incoming/100622_IL3_01234';
-    system('cp',  '-rp', $mock_path2, qq[$basedir2/IL3/incoming]);
     my $fh2;
     my $runinfofile2 = qq[$fs_run_folder2/RunInfo.xml];
     open($fh2, '>', $runinfofile2) or die "Could not open file '$runinfofile2' $!";
@@ -144,6 +123,7 @@ ENDXML
     print $fh2 <<"ENDXML";
 <?xml version="1.0"?>
   <RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ExperimentName>4999</ExperimentName>
   </RunParameters>
 ENDXML
     close $fh2;
@@ -151,14 +131,15 @@ ENDXML
     $test = Monitor::RunFolder->new( runfolder_path      => $fs_run_folder2,
                                      npg_tracking_schema => $schema, );
     $test->set_run_tags();
-
     is( $test->tracking_run()->is_tag_set('paired_read'), 1,
         '  \'paired_read\' tag is set on that run' );
     is( $test->tracking_run()->is_tag_set('multiplex'), 1,
         '  \'multiplex\' tag is set on that run' );
-}
+};
 
-{
+subtest 'test trimming lane count' => sub {
+   plan tests => 5;  
+ 
     my $run_info =
 q{<?xml version="1.0"?>
 <RunInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="2">
@@ -181,43 +162,39 @@ q{<?xml version="1.0"?>
     my $run_parameters = 
 q{<?xml version="1.0"?>
 <RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ExperimentName>1234</ExperimentName>
 </RunParameters>};
-
     
     my $root = tempdir( CLEANUP => 1 );
-    my $rf = join q[/], $root, 'ILorHSany_sf50/incoming/150606_HS31_01234_B_HCYVGADXX';
+    my $rf = join q[/], $root, 'IL_seq_data/incoming/run_folder1';
     make_path $rf;
 
-    my $test = Monitor::RunFolder->new( runfolder_path      => $rf,
-                                        npg_tracking_schema => $schema );
-    foreach my $i ((1 .. 8)) {
-      $schema->resultset('RunLane')->create({
-        id_run => 1234, position => $i, tile_count => 16, tracks => 2});
-      
-    }
-    is ($test->tracking_run()->run_lanes->count, 8, 'run has eight lanes');
-
-    # create RunInfo file
     open my $fh, '>', join(q[/], $rf, 'RunInfo.xml');
     print $fh $run_info;
     close $fh;
 
-    # create runParameters file
     open my $fh2, '>', join(q[/], $rf, 'runParameters.xml');
     print $fh2 $run_parameters;
     close $fh2;
 
+    # Create 8 lane records in the database
+    foreach my $i ((1 .. 8)) {
+      $schema->resultset('RunLane')->create({
+        id_run => 1234, position => $i, tile_count => 16, tracks => 2});  
+    }
+
+    my $test = Monitor::RunFolder->new( runfolder_path      => $rf,
+                                        npg_tracking_schema => $schema );
+    is ($test->tracking_run()->run_lanes->count, 8, 'run has eight lanes');
     warnings_like { $test->delete_superfluous_lanes() } [
       qr/Deleted lane 3/, qr/Deleted lane 4/, qr/Deleted lane 5/,
       qr/Deleted lane 6/, qr/Deleted lane 7/, qr/Deleted lane 8/],
       'warnings about lane deletion';
-      
     is ($test->lane_count, 2, 'two lanes listed in run info');
     is ($test->tracking_run()->run_lanes->count, 2, 'now run has two lanes');
-
     $test->delete_superfluous_lanes();
     is ($test->tracking_run()->run_lanes->count, 2, 'no change - run has two lanes');
-}
+};
 
 subtest 'workflow and instrument side - NovaSeq run' => sub {
     plan tests => 16;
