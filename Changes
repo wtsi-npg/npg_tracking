@@ -1,5 +1,18 @@
 LIST OF CHANGES
 
+release 100.0.0
+ - To help monitor shadow run folders, include the run folder path into the
+   logging messages in the staging monitor classes code.
+ - To explain the discovery and handling of shadow run folders, added an
+   extensive comment in 'bin/staging_area_monitor'.
+ - Updated unit tests to ensure that they do not rely on retrieving the
+   run ID and other run details from the run folder name.
+ - Removed unused test file and run folders.
+ - Deleted 'aggregate_xlanes' method from 'st::api::lims'. A more generic
+   'aggregate_libraries' method in the same class can be used instead. The
+   pipeline has been amended to cope with this breaking change, see
+   https://github.com/wtsi-npg/npg_seq_pipeline/pull/815.
+
 release 99.0.0
  - st::api::lims
      - Removed batch_id constructor argument. It was used by the xml driver,
