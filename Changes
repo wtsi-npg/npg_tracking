@@ -5,6 +5,11 @@ release 100.0.0
    logging messages in the staging monitor classes code.
  - To explain the discovery and handling of shadow run folders, added an
    extensive comment in 'bin/staging_area_monitor'.
+ - Deleted npg_tracking::illumina::run::folder::validation role. Most of
+   the functionality there depended on parsing run information from the run
+   folder name. This parsing will be dropped in the next release.
+   Added a simple check for mismatching run folder names to the find_live
+   method in Monitor::Staging to replace a similar check in the deleted role.
  - Updated unit tests to ensure that they do not rely on retrieving the
    run ID and other run details from the run folder name.
  - Removed unused test file and run folders.
