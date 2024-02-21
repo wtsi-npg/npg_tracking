@@ -6,7 +6,6 @@ use Carp;
 use Try::Tiny;
 use MooseX::StrictConstructor;
 
-use npg_tracking::illumina::run::folder::validation;
 use Monitor::RunFolder;
 
 our $VERSION = '0';
@@ -68,55 +67,56 @@ sub find_live {
                     warn qq[ID Run '$id_run' not found in database, skipping\n];
                 }
             } else {
-                if (! $run_row->folder_name ) {
-                  warn qq[Folder name in db not available, will try to update using '$run_folder'.];
-                  # check the id_run corresponds to a run with a status of "run pending" to reduce the
-                  # chance of incorrect updates if an incorrect id_run is entered by the loaders e.g. missing
-                  # digit so that it matches an old run which is "run canceled" such that the automatic run
-                  # folder deletion process would start removing it...
-                  # If a run is canceled (or run status changed) before this, the runfolder may not be processed
-                  # automatically...
-                  my $run_status = $run_row->current_run_status_description();
-                  if ( $run_status ne qq[run pending] ) {
-                      warn "Skipping $run_dir - the id_run $id_run may be wrong" .
-                           " as this run has a status of $run_status\n";
-                      next;
-                  }
-                  # check the instrument name is what is expected for this run
-                  my $db_external_name = $run_row->instrument->external_name();
-                  if (! $db_external_name ){
-                      warn qq[No instrument external_name for '$id_run' found in database, skipping\n];
-                      next;
-                  }
-                  my $staging_instrument_name;
-                  try {
-                      $staging_instrument_name = $check->instrument_name(); # from RunInfo.xml
-                      warn "Retrieved instrument_name $staging_instrument_name\n";
-                  } catch {
-                      warn "error retrieving instrument_name from RunInfo.xml\n";
-                  };
-                  if ( ! defined $staging_instrument_name ) {
-                      warn "instrument_name is undefined, skipping $run_dir\n";
-                      next;
-                  } else {
-                      if ($db_external_name ne $staging_instrument_name) {
-                          warn "Skipping $run_dir - instrument name mismatch" .
-                             " for run $id_run, '$staging_instrument_name' on staging," .
-                             " '$db_external_name' in the database.\n";
-                          next;
-                      }
-                      $run_row->update({'folder_name' => $run_folder}); # or validation will fail
-                  }
-                }    
-                if ( npg_tracking::illumina::run::folder::validation->new(
-                         run_folder          => $run_folder,
-                         id_run              => $id_run,
-                         npg_tracking_schema => $self->schema )->check() ) {
-                    $path_for{$id_run} = $run_dir;
-                    warn "Cached $run_dir for run $id_run\n";
+                my $db_folder_name = $run_row->folder_name;
+                if ( $db_folder_name ) {
+                    if ($db_folder_name ne $run_folder) {
+                        warn "Skipping $run_dir - run folder name does not " .
+                            "match the database record $db_folder_name\n";
+                        next;
+                    }
                 } else {
-                    warn "Skipping $run_dir - not valid\n";
+                    warn qq[Folder name in db not available, will try to update using '$run_folder'.];
+                    # check the id_run corresponds to a run with a status of "run pending" to reduce the
+                    # chance of incorrect updates if an incorrect id_run is entered by the loaders e.g. missing
+                    # digit so that it matches an old run which is "run canceled" such that the automatic run
+                    # folder deletion process would start removing it...
+                    # If a run is canceled (or run status changed) before this, the runfolder may not be processed
+                    # automatically...
+                    my $run_status = $run_row->current_run_status_description();
+                    if ( $run_status ne qq[run pending] ) {
+                        warn "Skipping $run_dir - the id_run $id_run may be wrong" .
+                             " as this run has a status of $run_status\n";
+                        next;
+                    }
+                    # check the instrument name is what is expected for this run
+                    my $db_external_name = $run_row->instrument->external_name();
+                    if (! $db_external_name ){
+                        warn qq[No instrument external_name for '$id_run' found in database, skipping\n];
+                        next;
+                    }
+                    my $staging_instrument_name;
+                    try {
+                        $staging_instrument_name = $check->instrument_name(); # from RunInfo.xml
+                        warn "Retrieved instrument_name $staging_instrument_name\n";
+                    } catch {
+                        warn "error retrieving instrument_name from RunInfo.xml\n";
+                    };
+                    if ( ! defined $staging_instrument_name ) {
+                        warn "instrument_name is undefined, skipping $run_dir\n";
+                        next;
+                    } else {
+                        if ($db_external_name ne $staging_instrument_name) {
+                            warn "Skipping $run_dir - instrument name mismatch" .
+                                " for run $id_run, '$staging_instrument_name' on staging," .
+                                " '$db_external_name' in the database.\n";
+                            next;
+                        }
+                        $run_row->update({'folder_name' => $run_folder});
+                    }  
                 }
+    
+                $path_for{$id_run} = $run_dir;
+                warn "Cached $run_dir for run $id_run\n";
             }
         } else {
             warn "Skipping $run_dir - is not a directory\n";
