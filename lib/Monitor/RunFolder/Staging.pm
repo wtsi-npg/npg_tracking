@@ -368,7 +368,7 @@ sub update_run_from_path { ##### Method to deal with one run folder
     }
 
     if ($folder->is_in_analysis) {
-        _log('Folder is in /analysis/');
+        _log("Folder $run_path is in /analysis/");
 
         if( $run_status eq 'qc complete') {
             _log('Moving run folder to /outgoing/');
@@ -377,7 +377,7 @@ sub update_run_from_path { ##### Method to deal with one run folder
         return; # Nothing else to do for a folder in /analysis/
     }
 
-    _log('Folder is in /incoming/');
+    _log("Folder $run_path is in /incoming/");
 
     # If we don't remember seeing it before, set the folder name and glob;
     # set staging tag, if appropriate, set/fix instrument side, workflow side.
@@ -411,7 +411,7 @@ sub update_run_from_path { ##### Method to deal with one run folder
         
         my $latest_cycle = $folder->get_latest_cycle();
         if ($folder->update_cycle_count($latest_cycle)) {
-            _log("Cycle count updated to $latest_cycle");
+            _log("Cycle count updated to $latest_cycle for $run_path");
         }
         
         if ( $run_status eq 'run pending' )  {

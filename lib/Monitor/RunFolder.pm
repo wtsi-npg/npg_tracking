@@ -23,7 +23,7 @@ sub update_cycle_count {
   defined $latest_cycle or croak 'Latest cycle count not supplied';
   my $actual_cycle = $self->tracking_run()->actual_cycle_count();
   $actual_cycle ||= 0;
-  if ($latest_cycle > $actual_cycle) {
+  if ($latest_cycle > $actual_cycle) { # A very important condition!
     $self->tracking_run()->update({actual_cycle_count => $latest_cycle});
     return 1;
   }
