@@ -19,18 +19,7 @@ BEGIN {
 {
   package test::run::folder;
   use Moose;
-  use File::Spec::Functions qw(splitdir);
-  use List::Util qw(first);
-
   with qw{npg_tracking::illumina::run::folder};
-
-  sub _build_run_folder {
-    my ($self) = @_;
-    my $path = $self->runfolder_path();
-    return first {$_ ne q()} reverse splitdir($path);
-  }
-
-  no Moose;
 }
 ##################  end of test class ####################
 

@@ -8,6 +8,7 @@ use Cwd qw/getcwd/;
 use Try::Tiny;
 use Readonly;
 use Math::Random::Secure qw/irand/;
+use List::Util qw/first/;
 
 use npg_tracking::util::abs_path qw/abs_path/;
 use npg_tracking::Schema;
@@ -103,6 +104,15 @@ sub _build_npg_tracking_schema {
     carp qq{Unable to connect to NPG tracking DB for faster globs.\n};
   };
   return $schema;
+}
+
+# Build method for the 'run_folder' attribute in
+# npg_tracking::illumina::run::short_info
+sub _build_run_folder {
+  my ($self) = @_;
+  ($self->subpath or $self->has_id_run)
+      or croak 'Need a path or id_run to work out a run_folder';
+  return first {$_ ne q()} reverse File::Spec->splitdir($self->runfolder_path);
 }
 
 sub _build_runfolder_path {
@@ -462,6 +472,8 @@ Might be undefined.
 =item Try::Tiny
 
 =item Math::Random::Secure
+
+=item List::Util
 
 =back
 

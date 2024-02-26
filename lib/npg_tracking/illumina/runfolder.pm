@@ -8,9 +8,6 @@ package npg_tracking::illumina::runfolder;
 use Moose;
 use MooseX::StrictConstructor;
 use namespace::autoclean;
-use Carp;
-use File::Spec;
-use List::Util qw(first);
 
 our $VERSION = '0';
 
@@ -39,13 +36,6 @@ directory heirarchy and from the files within it.
 with 'npg_tracking::illumina::run::folder';
 with 'npg_tracking::illumina::run::long_info';
 
-sub _build_run_folder {
-  my $self = shift;
-  ($self->subpath or $self->has_id_run)
-      or croak 'Need a path or id_run to work out a run_folder';
-  return first {$_ ne q()} reverse File::Spec->splitdir($self->runfolder_path);
-}
-
 __PACKAGE__->meta->make_immutable;
 
 1;
@@ -61,12 +51,6 @@ __PACKAGE__->meta->make_immutable;
 =item Moose
 
 =item MooseX::StrictConstructor
-
-=item Carp
-
-=item File::Spec
-
-=item List::Utils
 
 =item namespace::autoclean
 
