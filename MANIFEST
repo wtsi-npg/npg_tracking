@@ -225,7 +225,6 @@ lib/npg_tracking/glossary/tag.pm
 lib/npg_tracking/illumina/run.pm
 lib/npg_tracking/illumina/runfolder.pm
 lib/npg_tracking/illumina/run/folder.pm
-lib/npg_tracking/illumina/run/folder/location.pm
 lib/npg_tracking/illumina/run/long_info.pm
 lib/npg_tracking/illumina/run/short_info.pm
 lib/npg_tracking/Schema.pm

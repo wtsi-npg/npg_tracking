@@ -2,7 +2,7 @@ package npg_tracking::illumina::run::folder;
 
 use Moose::Role;
 use Moose::Meta::Class;
-use File::Spec::Functions qw(splitdir catfile catdir);
+use File::Spec::Functions qw/splitdir catfile catdir/;
 use Carp;
 use Cwd qw/getcwd/;
 use Try::Tiny;
@@ -12,7 +12,7 @@ use Math::Random::Secure qw/irand/;
 use npg_tracking::util::abs_path qw/abs_path/;
 use npg_tracking::Schema;
 use npg_tracking::glossary::lane;
-use npg_tracking::illumina::run::folder::location;
+use npg_tracking::util::config qw/get_config_staging_areas/;
 
 our $VERSION = '0';
 
@@ -37,6 +37,14 @@ Readonly::Scalar my  $PP_ARCHIVE_DIR    => q{pp_archive};
 Readonly::Scalar our $SUMMARY_LINK      => q{Latest_Summary};
 Readonly::Scalar my  $QC_DIR            => q{qc};
 
+my $config=get_config_staging_areas();
+# The prod. value of prefix is '/export/esa-sv-*' in Feb. 2024
+# Example prod. run folder path
+# /export/esa-sv-20240201-01/IL_seq_data/incoming/20240124_LH00210_0016_B225GWVLT3
+Readonly::Scalar my $STAGING_AREAS_PREFIX => $config->{'prefix'} || q();
+Readonly::Scalar my $FOLDER_PATH_PREFIX_GLOB_PATTERN =>
+                                               "$STAGING_AREAS_PREFIX/IL*/*/";
+
 Readonly::Hash my %NPG_PATH  => (
   q{runfolder_path}    => 'Path to and including the run folder',
   q{dragen_analysis_path} => 'Path to the DRAGEN analysis directory',
@@ -54,6 +62,7 @@ foreach my $path_attr ( keys %NPG_PATH ) {
   has $path_attr => (
     isa           => q{Str},
     is            => q{ro},
+    predicate     => 'has_' . $path_attr,
     lazy_build    => 1,
     documentation => $NPG_PATH{$path_attr},
   );
@@ -81,8 +90,8 @@ sub set_bam_basecall_path {
 }
 
 has q{npg_tracking_schema} => (
-  isa => q{Maybe[npg_tracking::Schema]},
-  is => q{ro},
+  isa        => q{Maybe[npg_tracking::Schema]},
+  is         => q{ro},
   lazy_build => 1,
 );
 sub _build_npg_tracking_schema {
@@ -90,7 +99,7 @@ sub _build_npg_tracking_schema {
   try {
     $schema = npg_tracking::Schema->connect();
   } catch {
-    warn qq{WARNING: Unable to connect to NPG tracking DB for faster globs.\n};
+    carp qq{Unable to connect to NPG tracking DB for faster globs.\n};
   };
   return $schema;
 }
@@ -98,8 +107,11 @@ sub _build_npg_tracking_schema {
 sub _build_runfolder_path {
   my ($self) = @_;
 
-  my $path = $self->_get_path_from_given_path();
-  $path && return $path;
+  my $path;
+  if ($self->subpath()) {
+    $path = _get_path_from_given_path($self->subpath());
+    $path && return $path;
+  }
 
   my $db_runfolder_name;
   my $runfolder_name;
@@ -244,7 +256,7 @@ has q{subpath} => (
 );
 sub _build_subpath {
   my $self = shift;
-  my $path;
+
   foreach my $path_method ( qw/ recalibrated_path
                                 basecall_path
                                 intensity_path
@@ -252,12 +264,11 @@ sub _build_subpath {
                                 runfolder_path / ) {
     my $has_path_method = q{has_} . $path_method;
     if ($self->$has_path_method()) {
-      $path = $self->$path_method();
-      last;
+      return $self->$path_method();
     }
   }
 
-  return $path;
+  return;
 }
 
 #############
@@ -266,13 +277,8 @@ sub _build_subpath {
 has q{_folder_path_glob_pattern}  => (
   isa        => q{Str},
   is         => q{ro},
-  lazy_build => 1,
+  default    => $FOLDER_PATH_PREFIX_GLOB_PATTERN,
 );
-sub _build__folder_path_glob_pattern {
-  my $test_dir = $ENV{TEST_DIR} || q{};
-  return $test_dir .
-  $npg_tracking::illumina::run::folder::location::FOLDER_PATH_PREFIX_GLOB_PATTERN;
-}
 
 sub _infer_analysis_path {
   my ($path, $distance) = @_;
@@ -316,14 +322,12 @@ sub _get_path_from_glob_pattern {
 }
 
 sub _get_path_from_given_path {
-  my ($self) = @_;
+  my ($subpath) = @_;
 
-  $self->subpath or return;
-
-  my @subpath = splitdir( $self->subpath );
-  while (@subpath) {
-    my $path = catdir(@subpath);
-    if ( -d $path # path of all remaining parts of _given_path (subpath)
+  my @dirs = splitdir($subpath);
+  while (@dirs) {
+    my $path = catdir(@dirs);
+    if ( -d $path
             and
          -d catdir($path, $CONFIG_DIR) # does this directory have a Config Directory
             and
@@ -331,10 +335,10 @@ sub _get_path_from_given_path {
         ) {
        return $path;
     }
-    pop @subpath;
+    pop @dirs;
   }
 
-  croak q{Nothing looks like a run_folder in any given subpath};
+  croak qq{Nothing looks like a run folder in any subpath of $subpath};
 }
 
 sub _get_analysis_path_from_glob {
@@ -389,20 +393,23 @@ recalibrated directory, which will be used to construct other paths from.
 
 =head1 SUBROUTINES/METHODS
 
+=head2 npg_tracking_schema
+
+npg_tracking::Schema db handle object, which is allowed to be assigned an
+undefined value. An attempt to build this attribute is made. In case of a
+failure an undefined value is assigned.
+
 =head2 runfolder_path
 
-=head2 bam_basecall
+=head2 bam_basecall_path
 
 =head2 set_bam_basecall_path
-
- Sets and returns bam_basecall_path. Error if this attribute has
- already been set.
-
- $obj->set_bam_basecall_path();
- print $obj->bam_basecall_path(); # BAM_basecalls_SOME-RANDOM-NUMBER
-
- $obj->set_bam_basecall_path(20190122);
- print $obj->bam_basecall_path(); # BAM_basecalls_20190122
+ 
+Sets and returns bam_basecall_path. Error if this attribute has
+already been set.
+ 
+  $obj->set_bam_basecall_path();
+  print $obj->bam_basecall_path(); # BAM_basecalls_SOME-RANDOM-NUMBER
 
 =head2 analysis_path
 
