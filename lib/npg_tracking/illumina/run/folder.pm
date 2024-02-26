@@ -16,7 +16,8 @@ use npg_tracking::util::config qw/get_config_staging_areas/;
 
 our $VERSION = '0';
 
-with q{npg_tracking::illumina::run};
+with qw{ npg_tracking::illumina::run
+         npg_tracking::illumina::run::short_info };
 
 # Top-level directory where instruments create runfolders
 Readonly::Scalar my  $INCOMING_DIR      => q{/incoming/};
@@ -115,12 +116,11 @@ sub _build_runfolder_path {
 
   my $db_runfolder_name;
   my $runfolder_name;
-  if ( $self->can('run_folder') and $self->has_run_folder ) {
+  if ($self->can('run_folder') and $self->has_run_folder) {
     $runfolder_name = $self->run_folder;
   }
 
-  if ( $self->npg_tracking_schema() and
-      $self->can(q(id_run)) and  $self->id_run() ) {
+  if ($self->npg_tracking_schema() and $self->id_run()) {
     if (not $self->tracking_run->is_tag_set(q(staging))) {
       croak sprintf 'NPG tracking reports run %i no longer on staging',
         $self->id_run;

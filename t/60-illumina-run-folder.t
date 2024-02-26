@@ -22,8 +22,7 @@ BEGIN {
   use File::Spec::Functions qw(splitdir);
   use List::Util qw(first);
 
-  with qw{npg_tracking::illumina::run::short_info
-          npg_tracking::illumina::run::folder};
+  with qw{npg_tracking::illumina::run::folder};
 
   sub _build_run_folder {
     my ($self) = @_;

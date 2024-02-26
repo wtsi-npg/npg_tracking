@@ -36,8 +36,7 @@ directory heirarchy and from the files within it.
 
 =cut
 
-with qw/npg_tracking::illumina::run::folder
-        npg_tracking::illumina::run::short_info/;
+with 'npg_tracking::illumina::run::folder';
 with 'npg_tracking::illumina::run::long_info';
 
 sub _build_run_folder {
