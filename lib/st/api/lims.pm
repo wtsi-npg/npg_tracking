@@ -873,7 +873,7 @@ sub aggregate_libraries {
     if ($obj->is_control()) {
       push @singles, $obj;
     } else {
-      push @{$lims_objects_by_library->{$obj->library_id}}, $obj;
+      push @{$lims_objects_by_library->{_hash_key4lib_aggregation($obj)}}, $obj;
     }
   }
 
@@ -885,13 +885,27 @@ sub aggregate_libraries {
   delete $init->{position};
   delete $init->{id_run};
 
+  my @non_control_singles = map { $_->[0] }
+                            grep { scalar @{$_} == 1 }
+                            values %{$lims_objects_by_library};
+  push @singles, @non_control_singles;
+
+  my %lanes_with_singles = map { $_->position => 1 }
+                           @non_control_singles;
+
   my $merges = {};
   my $lane_set_delim = q[,];
-  foreach my $library_id (keys %{$lims_objects_by_library}) {
-    my @lib_lims = @{$lims_objects_by_library->{$library_id}};
-    if (@lib_lims == 1) {
-      push @singles, @lib_lims;
-    } else {
+  foreach my $hashing_key (keys %{$lims_objects_by_library}) {
+    my @lib_lims = @{$lims_objects_by_library->{$hashing_key}};
+    if (@lib_lims > 1) {
+
+      # If some libraries from the lane cannot be merged, other libraries
+      # will not be merged either. This might change in future.
+      if (any { exists $lanes_with_singles{$_->position} } @lib_lims) {
+        push @singles, @lib_lims;
+        next;
+      }
+
       _check_merge_correctness(\@lib_lims);
       my $lane_set = join $lane_set_delim,
         sort { $a <=> $b } map { $_->position } @lib_lims;
@@ -951,14 +965,22 @@ sub aggregate_libraries {
   return $all_lims_objects;
 }
 
+sub _hash_key4lib_aggregation {
+  my $lims_obj = shift;
+  my $key = $lims_obj->library_id;
+  if (defined $lims_obj->tag_index) {
+    $key .= q[:] . $lims_obj->tag_index;
+  }
+  return $key;
+}
+
 sub _check_merge_correctness {
   my $lib_lims = shift;
   my @lanes = uniq  map {$_->position} @{$lib_lims};
-  if (@lanes != @{$lib_lims}) {
+  if (@lanes != @{$lib_lims}) { # An unlikely mistake somewhere upstream.
     croak 'Intra-lane merge is detected';
   }
   _check_value_is_unique('study_id', 'studies', $lib_lims);
-  _check_value_is_unique('tag_index', 'tag indexes', $lib_lims);
   return;
 }
 

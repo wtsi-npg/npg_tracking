@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 9;
+use Test::More tests => 10;
 use Test::Exception;
 use List::MoreUtils qw/all none/;
 use File::Slurp;
@@ -130,7 +130,7 @@ subtest 'Create tag zero object' => sub {
 };
 
 subtest 'Error conditions in aggregation by library' => sub {
-  plan tests => 4;
+  plan tests => 3;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
     't/data/test40_lims/samplesheet_novaseq4lanes.csv';
@@ -160,19 +160,43 @@ subtest 'Error conditions in aggregation by library' => sub {
   throws_ok { st::api::lims->aggregate_libraries(\@lane_lims) }
     qr/Multiple studies in a potential merge by library/,
     'can only merge libraries that belong to the same study';
+};
 
-  $content = read_file($ss_47995_path);
+subtest 'Allow duplicate libraries with different tag indexes' => sub {
+  plan tests => 6;
+
+  # Real life example: Chromium single cell ATAC libraries have 4 copies
+  # of each sample in a lane, each with a different tag.
+  # This should not cause an error.
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
+    't/data/samplesheet/samplesheet_singlecell_48460.csv';
+  my @lane_lims = st::api::lims->new(id_run => 48460)->children;
+  my $lims;
+  lives_ok { $lims = st::api::lims->aggregate_libraries(\@lane_lims) }
+    'no error since grouping by library ID and tag index';
+  is (scalar @{$lims->{merges}}, 28, '28 merged libraries'); 
+  is (scalar @{$lims->{singles}}, 2, '2 single libraries');
+
+  # Testing below that if one library in a potentially meargeable lane
+  # is a singleton, the whole lane is excluded from the merge.
+ 
+  my $content = read_file('t/data/samplesheet/samplesheet_47995.csv');
   # Make library id of tag 1 lane 1 the same as for tag 2 lane 3.
   $content =~ s/1,65934716,/1,69723083,/;
   # Change study id for all tags of lane 3 to be the same as in lane 1.
   $content =~ s/,6050,/,6751,/g;
-  $file_path = join q[/], $tmp_dir, 'samplesheet_multi_tag.csv';
+  my $file_path = join q[/], $tmp_dir, 'samplesheet_multi_tag.csv';
   write_file($file_path, $content);
+
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $file_path;
   @lane_lims = st::api::lims->new(id_run => 47995)->children;
-  throws_ok { st::api::lims->aggregate_libraries(\@lane_lims) }
-    qr/Multiple tag indexes in a potential merge by library/,
-    'can only merge libraries with teh same tag index';
+  lives_ok { $lims = st::api::lims->aggregate_libraries(\@lane_lims) }
+    'no error since grouping by library ID and tag index';
+  my @unexpected = grep { $_ =~ / ^1: / }
+                   map { $_->rpt_list } @{$lims->{merges}};
+  is (scalar @unexpected, 0, 'lane 1 is not in merged entities');
+  # 8 controls + 17 in lanes 1 and 2 each
+  is (scalar @{$lims->{singles}}, 42, '42 single libraries');
 };
 
 subtest 'Aggregation by library for a NovaSeq standard flowcell' => sub {
