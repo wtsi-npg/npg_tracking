@@ -1,34 +1,175 @@
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 6;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw(tempdir);
 use File::Path qw(make_path remove_tree);
 use Cwd;
+use Try::Tiny;
+
+use t::dbic_util;
 
 BEGIN {
   # Test staging area prefix is defined in t/.npg/npg_tracking.
   # This config. file is used by this test.
   # prefix defined as /tmp/esa-sv-*
   local $ENV{'HOME'}=getcwd().'/t';
+  # Force reading 'npg_tracking config file.
   use_ok(q{npg_tracking::illumina::run::folder});
 }
 
-##################  start of test class ####################
+##################  start of test classes ##################
 {
   package test::run::folder;
   use Moose;
   with qw{npg_tracking::illumina::run::folder};
 }
-##################  end of test class ####################
+
+{
+  package test::nvx_short_info;
+  use Moose;
+  with 'npg_tracking::illumina::run::folder';
+
+  has experiment_name => (is => 'rw');
+}
+##################  end of test classes ####################
 
 package main;
 
 my $basedir = tempdir(
   template => 'esa-sv-XXXXXXXXXX', TMPDIR => 1, CLEANUP => 1);
 
-subtest 'standard runfolder' => sub {
+my $schema = t::dbic_util->new->test_schema(
+  fixture_path => q[t/data/dbic_fixtures]);
+
+
+subtest 'set and build id_run and run_folder attributes' => sub {
+  plan tests => 8;
+
+  throws_ok {
+    test::run::folder->new(
+      run_folder => q[export/sv03/my_folder],
+      npg_tracking_schema => undef
+    )
+  } qr{Attribute \(run_folder\) does not pass the type constraint},
+    'error supplying a directory path as the run_folder attribute value';
+
+  throws_ok {
+    test::run::folder->new(run_folder => q[], npg_tracking_schema => undef)
+  } qr{Attribute \(run_folder\) does not pass the type constraint},
+    'error supplying an empty atring as the run_folder attribute value';
+
+  my $obj = test::run::folder->new(
+    run_folder => q[my_folder],
+    id_run => 1234,
+    npg_tracking_schema => undef
+  );
+  is ($obj->run_folder, 'my_folder', 'the run_folder value is as set');
+  is ($obj->id_run, 1234, 'id_run value is as set');
+
+  $obj = test::run::folder->new(
+    run_folder => q[my_folder],
+    npg_tracking_schema => undef
+  );
+  throws_ok { $obj->id_run } qr{Unable to identify id_run with data provided},
+    'error building id_run';
+
+  $obj  = test::run::folder->new(
+    run_folder => 'xxxxxx',
+    npg_tracking_schema => $schema
+  );
+  throws_ok { $obj->id_run } qr{Unable to identify id_run with data provided},
+    'error building id_run when no db record for the run folder exists';
+
+  my $rf = q[20231017_LH00210_0012_B22FCNFLT3];
+
+  {
+    # DB schema handle is not set, an attempt to build it will be made.
+    # Since the user HOME is reset, the file with db credentials does not exist. 
+    local $ENV{'HOME'}=getcwd().'/t';
+    $obj = test::run::folder->new(run_folder => $rf);
+    throws_ok { $obj->id_run } qr{Unable to identify id_run with data provided},
+      'error building id_run';
+  }
+
+  $obj = test::run::folder->new(
+    run_folder => $rf,
+    npg_tracking_schema => $schema
+  );
+  is ($obj->id_run, 47995, 'id_run value retrieved from the database record');
+};
+
+subtest 'test id_run extraction from within experiment_name' => sub {
+  plan tests => 8;
+
+  my $short_info;
+  {
+    # DB schema handle is not set, an attempt to build it will be made.
+    # Since the user HOME is reset, the file with db credentials does not exist. 
+    local $ENV{'HOME'}=getcwd().'/t';
+ 
+    $short_info = test::nvx_short_info->new(
+      experiment_name => '45678_NVX1_A',
+      run_folder => 'not_a_folder'
+    );
+    my $id_run;
+    warning_like { $id_run = $short_info->id_run }
+      qr /Unable to connect to NPG tracking DB for faster globs/,
+      'warning about a failure to connect to the database';
+    is($id_run, '45678', 'id_run parsed from experiment name');
+  }
+
+  $short_info = test::nvx_short_info->new(
+    experiment_name => '  45678_NVX1_A   ',
+    run_folder => 'not_a_folder',
+    npg_tracking_schema => undef
+  );
+  is($short_info->id_run, '45678',
+    'id_run parsed from loosely formatted experiment name');
+
+  $short_info = test::nvx_short_info->new(
+    experiment_name => '45678_NVX1_A   ',
+    run_folder => 'not_a_folder',
+    npg_tracking_schema => undef
+  );
+  is($short_info->id_run, '45678',
+    'id_run parsed from experiment name with postfix spaces');
+
+  $short_info = test::nvx_short_info->new(
+    experiment_name => '  45678_NVX1_A',
+    run_folder => 'not_a_folder',
+    npg_tracking_schema => undef
+  );
+  is($short_info->id_run, '45678',
+    'id_run parsed from experiment name with prefixed spaces');
+
+  $short_info = test::nvx_short_info->new(
+    experiment_name => '45678',
+    run_folder => 'not_a_folder',
+    npg_tracking_schema => undef
+  );
+  is($short_info->id_run, '45678', 'Bare id_run as experiment name is fine');
+
+  $short_info = test::nvx_short_info->new(
+    experiment_name => 'NovaSeqX_WHGS_TruSeqPF_NA12878',
+    run_folder => 'not_a_folder',
+    npg_tracking_schema => undef
+  );
+  throws_ok { $short_info->id_run }
+    qr{Unable to identify id_run with data provided},
+    'Custom run name cannot be parsed';
+
+  $short_info = test::nvx_short_info->new(
+    id_run => '45678',
+    experiment_name => '56789_NVX1_A',
+    run_folder => 'not_a_folder',
+    npg_tracking_schema => undef
+  );
+  is($short_info->id_run, '45678', 'Set id_run wins over experiment_name');
+};
+
+subtest 'standard runfolder, no DB access' => sub {
   plan tests => 20;
 
   my $run_folder = q{20231019_LH00275_0006_B19NJCA4LE};
@@ -120,7 +261,7 @@ subtest 'standard runfolder' => sub {
     'absence of bam_basecall directory is an error';
 };
 
-subtest 'runfolder with an unusual path' => sub {
+subtest 'runfolder with an unusual path, no DB access' => sub {
   plan tests => 12;
 
   my $path = join q[/], $basedir, qw/aa bb cc dd/;

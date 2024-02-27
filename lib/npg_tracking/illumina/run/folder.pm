@@ -1,7 +1,7 @@
 package npg_tracking::illumina::run::folder;
 
 use Moose::Role;
-use Moose::Meta::Class;
+use Moose::Util::TypeConstraints;
 use File::Spec::Functions qw/splitdir catfile catdir/;
 use Carp;
 use Cwd qw/getcwd/;
@@ -10,6 +10,7 @@ use Readonly;
 use Math::Random::Secure qw/irand/;
 use List::Util qw/first/;
 
+use npg_tracking::util::types;
 use npg_tracking::util::abs_path qw/abs_path/;
 use npg_tracking::Schema;
 use npg_tracking::glossary::lane;
@@ -17,8 +18,8 @@ use npg_tracking::util::config qw/get_config_staging_areas/;
 
 our $VERSION = '0';
 
-with qw{ npg_tracking::illumina::run
-         npg_tracking::illumina::run::short_info };
+with 'npg_tracking::illumina::run';
+
 
 # Top-level directory where instruments create runfolders
 Readonly::Scalar my  $INCOMING_DIR      => q{/incoming/};
@@ -60,6 +61,86 @@ Readonly::Hash my %NPG_PATH  => (
   q{qc_path}           => 'Path directory with top level QC data',
 );
 
+has q{id_run}           => (
+  isa           => q{NpgTrackingRunId},
+  is            => q{ro},
+  required      => 0,
+  lazy_build    => 1,
+  documentation => 'Integer identifier for a sequencing run',
+);
+sub _build_id_run {
+  my ($self) = @_;
+
+  my $id_run;
+
+  if ($self->npg_tracking_schema()) {
+    if (!$self->has_run_folder()) {
+      $self->run_folder(); # Force the build
+    }
+    my $rs = $self->npg_tracking_schema()->resultset('Run')
+             ->search({folder_name => $self->run_folder()});
+    if ($rs->count == 1) {
+      $id_run = $rs->next()->id_run();
+    }
+  }
+
+  # When no id_run is set, attempt to parse an id_run from the experiment name
+  # recorded in the Illumina XML file.
+  # We embed additional information in NovaSeqX samplesheets which have no
+  # meaning here. See L<Samplesheet generator|npg::samplesheet::novaseq_xseries>
+  if ( !$id_run && $self->can('experiment_name') && $self->experiment_name() ) {
+    ($id_run, undef) = $self->experiment_name() =~ m{
+      \A
+      [\s]*
+      ([\d]+)     # id_run
+      ([\w\d\s]*) # instrument name or other embedded info
+      \Z
+    }xms;
+  }
+
+  if( !$id_run ) {
+    croak q[Unable to identify id_run with data provided];
+  }
+
+  return $id_run;
+}
+
+
+my $run_folder_subtype_name = __PACKAGE__.q(::folder);
+subtype $run_folder_subtype_name
+  => as 'Str'
+  => where { splitdir($_)==1 };
+
+has q{run_folder}        => (
+  isa           => $run_folder_subtype_name,
+  is            => q{ro},
+  lazy_build    => 1,
+  documentation => 'Directory name of the run folder',
+);
+sub _build_run_folder {
+  my ($self) = @_;
+  ($self->subpath or $self->has_id_run)
+      or croak 'Need a path or id_run to work out a run_folder';
+  return first {$_ ne q()} reverse File::Spec->splitdir($self->runfolder_path);
+}
+
+
+has q{npg_tracking_schema} => (
+  isa        => q{Maybe[npg_tracking::Schema]},
+  is         => q{ro},
+  lazy_build => 1,
+);
+sub _build_npg_tracking_schema {
+  my $schema;
+  try {
+    $schema = npg_tracking::Schema->connect();
+  } catch {
+    carp qq{Unable to connect to NPG tracking DB for faster globs.\n};
+  };
+  return $schema;
+}
+
+
 foreach my $path_attr ( keys %NPG_PATH ) {
   has $path_attr => (
     isa           => q{Str},
@@ -91,52 +172,36 @@ sub set_bam_basecall_path {
   return $self->bam_basecall_path;
 }
 
-has q{npg_tracking_schema} => (
-  isa        => q{Maybe[npg_tracking::Schema]},
-  is         => q{ro},
-  lazy_build => 1,
-);
-sub _build_npg_tracking_schema {
-  my $schema;
-  try {
-    $schema = npg_tracking::Schema->connect();
-  } catch {
-    carp qq{Unable to connect to NPG tracking DB for faster globs.\n};
-  };
-  return $schema;
-}
-
-# Build method for the 'run_folder' attribute in
-# npg_tracking::illumina::run::short_info
-sub _build_run_folder {
-  my ($self) = @_;
-  ($self->subpath or $self->has_id_run)
-      or croak 'Need a path or id_run to work out a run_folder';
-  return first {$_ ne q()} reverse File::Spec->splitdir($self->runfolder_path);
-}
-
 sub _build_runfolder_path {
   my ($self) = @_;
 
   my $path;
+  my $runfolder_name = $self->has_run_folder ? $self->run_folder : undef;
+
+  # Try to use one of paths (if any) supplied via a constructor to figure out
+  # the location of the run folder directory. This method examines the
+  # directory structure looking for subdirectories, which normally exist in
+  # the Illumina run folder.
   if ($self->subpath()) {
     $path = _get_path_from_given_path($self->subpath());
-    $path && return $path;
   }
 
-  my $db_runfolder_name;
-  my $runfolder_name;
-  if ($self->can('run_folder') and $self->has_run_folder) {
-    $runfolder_name = $self->run_folder;
-  }
-
-  if ($self->npg_tracking_schema() and $self->id_run()) {
+  # Try to get the run folder name and glob from the database and then glob
+  # for the run folder directory. Limit this search to run folders that
+  # are known to be on staging.
+  if ((not $path) and $self->npg_tracking_schema()) {
+    # The code below needs run ID, so 'id_run' will be built if not given.
     if (not $self->tracking_run->is_tag_set(q(staging))) {
       croak sprintf 'NPG tracking reports run %i no longer on staging',
         $self->id_run;
     }
-    $db_runfolder_name = $self->tracking_run->folder_name;
+    my $db_runfolder_name = $self->tracking_run->folder_name;
     if ($db_runfolder_name) {
+      if ($runfolder_name and ($db_runfolder_name ne $runfolder_name)) {
+        # Probably this is an error. Warn for now.
+        carp sprintf 'Inconsistent db and given run folder name: %s, %s',
+          $db_runfolder_name, $runfolder_name;
+      }
       if (my $gpath = $self->tracking_run->folder_path_glob) {
         $path = $self->_get_path_from_glob_pattern(
           catfile($gpath, $db_runfolder_name)
@@ -145,21 +210,23 @@ sub _build_runfolder_path {
     }
   }
 
-  if ( (not $path) and $runfolder_name ) {
+  # Try to use the runfolder name, if set via the constructor, and the
+  # staging area prefix from the 'npg_tracking' configuration file to
+  # glob the file system. This is the most expensive file system glob,
+  # so doing this as the last resort. 
+  if ((not $path) and $runfolder_name) {
     $path = $self->_get_path_from_glob_pattern(
       $self->_folder_path_glob_pattern() . $runfolder_name
     );
   }
 
-  if ( $db_runfolder_name and $runfolder_name and
-       ($db_runfolder_name ne $runfolder_name) ) {
-    carp sprintf 'Inconsistent db and given run folder name: %s, %s',
-      $db_runfolder_name, $runfolder_name;
-  }
+  # Most likely, the code execution will not advance this far without $path
+  # being computed. In case of problems an error will be raised by one of
+  # the methods called above. Returning an undefined path will trigger an
+  # error since the 'runfolder_path' attribute is defined as a string.
+  # Raising an error here to help with deciphering error messages.
 
-  if (not $path) {
-    croak 'Failed to infer runfolder_path';
-  }
+  $path or croak 'Failed to infer runfolder_path';
 
   return $path;
 }
@@ -403,6 +470,25 @@ recalibrated directory, which will be used to construct other paths from.
 
 =head1 SUBROUTINES/METHODS
 
+=head2 id_run
+
+An attribute, NPG run identifier. If the value is not supplied, an attempt
+to build it is made. 
+
+If access to a run tracking database is available and the database contains
+the run record and the run folder name is defined in the database record and
+the run_folder attribute is defined or can be built, then its value is used
+to retrieve the id_run value from the database.
+
+If 'experiment_name' accessor is provided by the class that inherits from
+this role, then, in the absence of a database record, an attempt is made to parse
+out run ID from the value returned by the 'experiment_name' accessor. See
+npg_tracking::illumina::run::long_info for the implementation of this accessor.
+
+=head2 run_folder
+
+An attribute, run folder name, can be set in the constructor or lazy-built.
+
 =head2 npg_tracking_schema
 
 npg_tracking::Schema db handle object, which is allowed to be assigned an
@@ -459,7 +545,7 @@ Might be undefined.
 
 =item Moose::Role
 
-=item Moose::Meta::Class
+=item Moose::Util::TypeConstraints
 
 =item Carp
 

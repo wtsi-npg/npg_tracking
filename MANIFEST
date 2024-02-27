@@ -226,7 +226,6 @@ lib/npg_tracking/illumina/run.pm
 lib/npg_tracking/illumina/runfolder.pm
 lib/npg_tracking/illumina/run/folder.pm
 lib/npg_tracking/illumina/run/long_info.pm
-lib/npg_tracking/illumina/run/short_info.pm
 lib/npg_tracking/Schema.pm
 lib/npg_tracking/Schema/Result/Annotation.pm
 lib/npg_tracking/Schema/Result/Designation.pm
@@ -409,7 +408,6 @@ t/50-decorator.t
 t/60-illumina-runfolder.t
 t/60-illumina-run-folder.t
 t/60-illumina-run-long_info.t
-t/60-illumina-run-short_info.t
 t/60-illumina-run.t
 t/60-util-mailer.t
 t/70-bin-npg_status2file.t
