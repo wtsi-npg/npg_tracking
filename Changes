@@ -1,5 +1,12 @@
 LIST OF CHANGES
 
+
+release 100.0.1
+ - For aggregation of lims objects by library in st::api::lims, do not
+   consider the same library with different tag index in the same lane
+   as a error. Chromium single cell ATAC libraries have four copies of
+   each sample, each with a different tag.
+
 release 100.0.0
  - To help monitor shadow run folders, include the run folder path into the
    logging messages in the staging monitor classes code.
