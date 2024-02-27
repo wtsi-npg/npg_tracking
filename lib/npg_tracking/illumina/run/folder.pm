@@ -404,13 +404,9 @@ sub _get_path_from_given_path {
   my @dirs = splitdir($subpath);
   while (@dirs) {
     my $path = catdir(@dirs);
-    if ( -d $path
-            and
-         -d catdir($path, $CONFIG_DIR) # does this directory have a Config Directory
-            and
-         -d catdir($path, $DATA_DIR)   # a runfolder is likely to have a Data directory
-        ) {
-       return $path;
+    # a runfolder has to have a Data directory
+    if (-d $path and -d catdir($path, $DATA_DIR)) {
+      return $path;
     }
     pop @dirs;
   }

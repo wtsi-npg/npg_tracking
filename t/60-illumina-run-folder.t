@@ -188,7 +188,6 @@ subtest 'standard runfolder, no DB access' => sub {
   $paths->{no_archive_subpath} = $paths->{bbcalls_subpath} . q{/no_archive};
   $paths->{pp_archive_subpath} = $paths->{bbcalls_subpath} . q{/pp_archive};
   $paths->{qc_subpath} = $paths->{archive_subpath} . q{/qc};
-  $paths->{config_path} = $runfolder_path . q{/Config};
 
   for my $path (values %{$paths}) {
     make_path($path);
