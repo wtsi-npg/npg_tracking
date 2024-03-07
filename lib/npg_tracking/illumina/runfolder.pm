@@ -6,6 +6,7 @@ package npg_tracking::illumina::runfolder;
 #
 
 use Moose;
+use MooseX::StrictConstructor;
 use namespace::autoclean;
 use Carp;
 use File::Spec;
@@ -24,7 +25,6 @@ npg_tracking::illumina::runfolder
 
   my $oRunfolder = npg_tracking::illumina::runfolder->new(
     runfolder_path => '/staging/IL29/incoming/090721_IL29_3379/');
-  my $name = $oRunfolder->name; # 090721_IL29_3379
   my $id = $oRunfolder->id_run; # 3379
 
 =head1 DESCRIPTION
@@ -42,7 +42,7 @@ with 'npg_tracking::illumina::run::long_info';
 
 sub _build_run_folder {
   my $self = shift;
-  ($self->subpath or $self->has_id_run or $self->has_name)
+  ($self->subpath or $self->has_id_run)
       or croak 'Need a path or id_run to work out a run_folder';
   return first {$_ ne q()} reverse File::Spec->splitdir($self->runfolder_path);
 }
@@ -60,6 +60,8 @@ __PACKAGE__->meta->make_immutable;
 =over
 
 =item Moose
+
+=item MooseX::StrictConstructor
 
 =item Carp
 
@@ -81,7 +83,7 @@ David K. Jackson, E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2018 GRL
+Copyright (C) 2018,2019,2024 Genome Research Ltd.
 
 This file is part of NPG.
 

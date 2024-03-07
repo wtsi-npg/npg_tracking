@@ -101,19 +101,45 @@ sub _build_runfolder_path {
   my $path = $self->_get_path_from_given_path();
   $path && return $path;
 
-  # get info form DB if there - could be better integrated....
-  if ($self->npg_tracking_schema() and
+  my $db_runfolder_name;
+  my $runfolder_name;
+  if ( $self->can('run_folder') and $self->has_run_folder ) {
+    $runfolder_name = $self->run_folder;
+  }
+
+  if ( $self->npg_tracking_schema() and
       $self->can(q(id_run)) and  $self->id_run() ) {
-    if (! $self->tracking_run->is_tag_set(q(staging))) {
-      croak q{NPG tracking reports run }.$self->id_run().q{ no longer on staging}
+    if (not $self->tracking_run->is_tag_set(q(staging))) {
+      croak sprintf 'NPG tracking reports run %i no longer on staging',
+        $self->id_run;
     }
-    if (my $gpath = $self->tracking_run->folder_path_glob and
-        my $fname = $self->tracking_run->folder_name) {
-      return $self->_get_path_from_glob_pattern(catfile($gpath, $fname));
+    $db_runfolder_name = $self->tracking_run->folder_name;
+    if ($db_runfolder_name) {
+      if (my $gpath = $self->tracking_run->folder_path_glob) {
+        $path = $self->_get_path_from_glob_pattern(
+          catfile($gpath, $db_runfolder_name)
+        );
+      }
     }
   }
 
-  return $self->_get_path_from_short_reference();
+  if ( (not $path) and $runfolder_name ) {
+    $path = $self->_get_path_from_glob_pattern(
+      $self->_folder_path_glob_pattern() . $runfolder_name
+    );
+  }
+
+  if ( $db_runfolder_name and $runfolder_name and
+       ($db_runfolder_name ne $runfolder_name) ) {
+    carp sprintf 'Inconsistent db and given run folder name: %s, %s',
+      $db_runfolder_name, $runfolder_name;
+  }
+
+  if (not $path) {
+    croak 'Failed to infer runfolder_path';
+  }
+
+  return $path;
 }
 
 sub _build_analysis_path {
@@ -230,6 +256,7 @@ sub _build_subpath {
       last;
     }
   }
+
   return $path;
 }
 
@@ -259,25 +286,6 @@ sub _infer_analysis_path {
     $distance--;
   }
   return catdir( @path_components );
-}
-
-sub _get_path_from_short_reference {
-  my ($self) = @_;
-
-  if ( !$self->can(q(short_reference)) || !$self->short_reference() ) {
-    croak q{Not enough information to obtain the path};
-  }
-
-  # works out by 'glob'ing the filesystem, the path to the run_folder based on
-  # short_reference string
-
-  my $sr = $self->short_reference();
-  if ($sr =~ /\a(\d+)\z/xms) {
-    $sr = q{_{r,}} . $sr;
-  }
-
-  return $self->_get_path_from_glob_pattern(
-    $self->_folder_path_glob_pattern() . q{*} . $sr . q[{,_*}]);
 }
 
 sub _get_path_from_glob_pattern {
@@ -368,14 +376,13 @@ npg_tracking::illumina::run::folder
 
 =head1 DESCRIPTION
 
-This package might need to have something provide the short_reference method,
+This package might need to have something provide the run_folder accessor
 either declared in your class or via inheritance from
 npg_tracking::illumina::run::short_info, which is the preferred option.
 
-Failure to have provided a short_reference method might cause a run-time error
+Failure to have provided the runfolder accessor  might cause a run-time error
 if your class needs to obtain any paths where a path or subpath was not given
 and access to the tracking database is not available.
-to glob for it).
 
 In addition to this, you can add an analysis_path, which is the path to the
 recalibrated directory, which will be used to construct other paths from.
@@ -469,7 +476,7 @@ Might be undefined.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2015,2018,2019,2020,2023 Genome Research Ltd.
+Copyright (C) 2013,2014,2015,2018,2019,2020,2023,2024 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
