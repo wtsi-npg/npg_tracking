@@ -91,12 +91,9 @@ my $builder = $class->new(
 
           'build_requires' => {
                 'ExtUtils::CBuilder'              => 0,
-                'Archive::Tar'                    => 0,
                 'DateTime::Duration'              => 0,
                 'DateTime::Format::SQLite'        => 0,
                 'HTTP::Headers'                   => 0,
-                'IO::File'                        => 0,
-                'IPC::Open2'                      => 0,
                 'List::Util'                      => 0,
                 'Test::Compile'                   => 0,
                 'Test::Distribution'              => 0,

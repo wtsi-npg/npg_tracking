@@ -1,12 +1,11 @@
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 5;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw(tempdir);
 use File::Path qw(make_path remove_tree);
 use File::Spec::Functions qw(catfile);
-use Test::MockObject::Extends;
 use Moose::Meta::Class;
 use Cwd;
 
@@ -42,12 +41,11 @@ local $ENV{dev} = qw{non_existant_dev_enviroment}; #prevent pickup of user's con
 local $ENV{TEST_DIR} = $basedir; #so when npg_tracking::illumina::run::folder globs the test director
 
 subtest 'standard runfolder' => sub {
-  plan tests => 28;
+  plan tests => 25;
 
   my $instr = 'HS2';
-  my $id_run = q{1234};
-  my $name = $instr . q{_1234};
-  my $run_folder = q{123456_} . $instr . q{_1234} . q{_B_205NNABXX};
+  my $id_run = 1234;
+  my $run_folder = 'test_folder';
   my $runfolder_path = qq{$basedir/nfs/sf44/} . $instr .
                        q{/analysis/} . $run_folder;
   my $data_subpath = $runfolder_path . q{/Data};
@@ -70,27 +68,17 @@ subtest 'standard runfolder' => sub {
     make_path $config_path;
   };
 
-  my $path_info;
-
-  lives_ok  { $path_info = Moose::Meta::Class->create_anon_class(
-                roles => [qw/npg_tracking::illumina::run::folder/]
-              )->new_object({id_run => $id_run}); } 
-    q{no error creating object directly from a role without short reference};
-  throws_ok { $path_info->runfolder_path(); }
-    qr{Not enough information to obtain the path},
-    q{Error getting runfolder_path as no 'short_reference' method in class};
-
   $create_staging->();
 
-  lives_ok  { $path_info = test::run::folder->new(id_run => $id_run) }
-    q{created role_test object ok};
+  my $path_info;
+  lives_ok  { $path_info = test::run::folder->new(
+    id_run => $id_run, run_folder => $run_folder
+  ) } q{created role_test object ok};
   my $p;
   warning_like { $p = $path_info->runfolder_path() }
     qr/Unable to connect to NPG tracking DB for faster globs/,
     'expected warnings';
   is($p, $runfolder_path, q{runfolder_path found});
-  is($path_info->run_folder(), $run_folder,
-    q{run_folder worked out from runfolder_path});
   warning_like { $p = $path_info->recalibrated_path() }
     qr/Latest_Summary does not exist or is not a link/,
     'warning about lt absence';
@@ -110,7 +98,7 @@ subtest 'standard runfolder' => sub {
   is($path_info->runfolder_path(), $runfolder_path, q{runfolder_path found});
   warning_like { $p = $path_info->recalibrated_path() }
     qr/Latest_Summary does not exist or is not a link/,
-    'warning about lt absence';
+    'warning about Latest_Summary absence';
   is($p, $pb_cal_subpath, q{recalibrated_path found});
   is($path_info->analysis_path(), $bbcalls_subpath, 'analysis path');
 
@@ -120,17 +108,19 @@ subtest 'standard runfolder' => sub {
   my $other = qq{$intensities_subpath/BAM_basecalls_2019-10-01};
   make_path $other;
 
-  $path_info = test::run::folder->new(id_run => $id_run);
+  $path_info = test::run::folder->new(
+    id_run => $id_run, run_folder => $run_folder);
   warning_like { $p = $path_info->runfolder_path() }
     qr/Unable to connect to NPG tracking DB for faster globs/,
     'expected warnings';
   is($p, $runfolder_path, q{runfolder_path found});
   is($path_info->basecall_path(), $basecalls_subpath,
-    q{basecalls_subpath found when link present to recalibrated directory});
+    q{basecalls_path found when Latest_Summary link is present});
 
   unlink $ls;
 
-  $path_info = test::run::folder->new(id_run => $id_run);
+  $path_info = test::run::folder->new(
+    id_run => $id_run, run_folder => $run_folder);
   warning_like { $p = $path_info->runfolder_path() }
     qr/Unable to connect to NPG tracking DB for faster globs/,
     'expected warnings';
@@ -265,160 +255,6 @@ subtest 'standard run folder No 2' => sub {
   throws_ok { $o->recalibrated_path; }
     qr/is not a directory, cannot be the recalibrated path/,
     'link points to non-existing directory - error';
-};
-
-{
-  my $tdir = catfile(tempdir( CLEANUP => 1 ), q());
-  my $testrundir = catfile($tdir, q(090414_IL24_2726));
-  mkdir $testrundir;
-  my $pi = test::run::folder->new({_folder_path_glob_pattern=>$tdir, id_run => 2});
-  throws_ok {   $pi->runfolder_path } qr/No paths to run folder found/,
-    'error when no run folders found for id_run';           
-}
-
-local $ENV{TEST_DIR} = q(t/data/long_info);
-my $incoming = join q[/], $ENV{TEST_DIR}, q[nfs/sf20/ILorHSany_sf20/incoming];
-
-subtest 'tests for short_reference method' => sub {
-  plan tests => 10;
-
-  my $test;
-  lives_ok { $test = Moose::Meta::Class->create_anon_class(
-      roles => [qw(npg_tracking::illumina::run::folder)],
-    )->new_object(npg_tracking_schema => undef);
-  } 'anon class with no short_reference method';
-  throws_ok { $test->runfolder_path } qr/Not enough information/,
-   'no short_reference method - error';
-
-  my $testc = Moose::Meta::Class->create_anon_class(
-    roles => [qw(npg_tracking::illumina::run::folder)],
-  );
-  $testc->add_attribute(q[short_reference] => (
-    q[is] => q[ro], q[default] => undef ));
-
-  lives_ok {
-    $test = $testc->new_object(npg_tracking_schema => undef)
-  } 'anon class with short_reference undef';
-  throws_ok { $test->runfolder_path } qr/Not enough information/,
-    'short_reference undef - error';
-
-  # short_reference method, with no suitable folder
-  $testc = Moose::Meta::Class->create_anon_class(
-    roles => [qw(npg_tracking::illumina::run::folder)],
-  );
-  $testc->add_attribute(q[short_reference] => (
-    q[is] => q[ro], q[default] => undef ));
-  lives_ok {
-    $test = $testc->new_object( npg_tracking_schema => undef,
-                                short_reference => q[does_not_exist]);
-  } 'anon class with short_reference for non existant folder';
-  throws_ok { $test->runfolder_path } qr/No paths to run folder found/,
-    'no run folder found';
-
-  # short_reference method, with suitable folder
-  $testc = Moose::Meta::Class->create_anon_class(
-    roles => [qw(npg_tracking::illumina::run::folder)],
-  );
-  $testc->add_attribute(q[short_reference] => (
-    q[is] => q[ro], q[default] => undef ));
-  lives_ok {
-    $test = $testc->new_object( npg_tracking_schema => undef,
-                                short_reference => q[5636]);
-  } 'anon class with short_reference for folder';
-  lives_and { is $test->runfolder_path,
-    qq($incoming/101217_HS11_05636_A_90061ACXX) } 'run folder found';
-
-  # short_reference method, with suitable folder
-  $testc = Moose::Meta::Class->create_anon_class(
-    roles => [qw(npg_tracking::illumina::run::folder)],
-  );
-  $testc->add_attribute(q[short_reference] =>
-    ( q[is] => q[ro], q[default] => undef ));
-  lives_ok {
-    $test = $testc->new_object(npg_tracking_schema => undef,
-                               short_reference => q[100914_HS3_05281_A_205MBABXX]);
-  } 'anon class with short_reference for folder';
-  lives_and { is $test->runfolder_path,
-    qq($incoming/100914_HS3_05281_A_205MBABXX) } 'run folder found';
-};
-
-my $testschema = Test::MockObject::Extends->new( q(npg_tracking::Schema) );
-$testschema->mock(q(resultset), sub{return shift;});
-#diag $testschema->resultset;
-my $testrun = Test::MockObject::Extends->new(q(npg_tracking::Schema::Result::Run));
-$testschema->mock(q(find), sub{
-  my($self,$id_run) = @_;
-  return $id_run ? $testrun : undef;
-});
-$testrun->mock(q(is_tag_set), sub{ return 0; });
-
-subtest 'schema, no id_run, but with short ref and a folder' => sub {
-  plan tests => 2;
-
-  my $testc = Moose::Meta::Class->create_anon_class(
-    roles => [qw(npg_tracking::illumina::run::folder)],
-  );
-  $testc->add_attribute(q[short_reference] => ( q[is] => q[ro], q[default] => undef ));
-  my $test;
-  lives_ok {
-    $test = $testc->new_object( q[short_reference] => q[100914_HS3_05281_A_205MBABXX], q[npg_tracking_schema] => $testschema );
-  } 'anon class, schema, no id_run, with short_reference for folder';
-  lives_and { is $test->runfolder_path, qq($incoming/100914_HS3_05281_A_205MBABXX) } ' run folder found';
-};
-
-subtest 'schema, id_run, no staging tag' => sub {
-  plan tests => 2;
-
-  $testrun->mock(q(is_tag_set), sub{ return 0; });
-  my $testc = Moose::Meta::Class->create_anon_class(
-    roles => [qw(npg_tracking::illumina::run::folder)],
-  );
-  $testc->add_attribute(q[short_reference] => ( q[is] => q[ro], q[default] => undef ));
-  $testc->add_attribute(q[id_run] => ( q[is] => q[ro], q[default] => 0 ));
-  my $test;
-  lives_ok {
-    $test = $testc->new_object( q[id_run] => 5281, q[short_reference] => q[100914_HS3_05281_A_205MBABXX], q[npg_tracking_schema] => $testschema );
-  } 'anon class, schema, id_run, with short_reference for folder - but no staging tag';
-  throws_ok { $test->runfolder_path } qr/NPG tracking reports run \d* no longer on staging/, ' no run folder found';
-};
-
-subtest 'schema, id_run, staging tag, no glob, no folder_name' => sub {
-  plan tests => 2;
-
-  $testrun->mock(q(is_tag_set), sub{ return 1; });
-  $testrun->mock(q(folder_path_glob), sub{ return; });
-  $testrun->mock(q(folder_name), sub{ return; });
-  my $testc = Moose::Meta::Class->create_anon_class(
-    roles => [qw(npg_tracking::illumina::run::folder)],
-  );
-
-  $testc->add_attribute(q[short_reference] => ( q[is] => q[ro], q[default] => undef ));
-  $testc->add_attribute(q[id_run] => ( q[is] => q[ro], q[default] => 0 ));
-  my $test;
-  lives_ok {
-    $test = $testc->new_object( q[id_run] => 5281, q[short_reference] => q[100914_HS3_05281_A_205MBABXX], q[npg_tracking_schema] => $testschema );
-  } 'anon class, schema, id_run, with short_reference for folder - staging tag but no folder name or glob from DB';
-  lives_and { is $test->runfolder_path, qq($incoming/100914_HS3_05281_A_205MBABXX) } ' run folder found';
-};
-
-subtest 'schema, no short ref, id_run, staging tag, glob, folder_name' => sub {
-  plan tests => 3;
-
-  $testrun->mock(q(folder_path_glob), sub{ return q[t/data/long_info/{export,nfs}/sf20/ILorHSany_sf20/*]; });
-  $testrun->mock(q(folder_name), sub{ return q[100914_HS3_05281_A_205MBABXX]; });
-  my $testc = Moose::Meta::Class->create_anon_class(
-    roles => [qw(npg_tracking::illumina::run::folder)],
-  );
-  $testc->add_attribute(q[id_run] => ( q[is] => q[ro], q[default] => 0 ));
-  my $test;
-  lives_ok {
-    $test = $testc->new_object( q[id_run] => 5281, q[short_reference] => q[100914_HS3_05281_A_205MBABXX], q[npg_tracking_schema] => $testschema );
-  } 'anon class, schema, id_run, no short_reference, staging tag and folder name and glob';
-  lives_and { is $test->runfolder_path, qq($incoming/100914_HS3_05281_A_205MBABXX) } ' run folder found';
-
-  $testrun->mock(q(folder_path_glob), sub{ return q[t/data/long_info/{export,nfs}/sf20/ILorHSany_sf20/*/]; });
-  $test = $testc->new_object( q[id_run] => 5281, q[short_reference] => q[100914_HS3_05281_A_205MBABXX], q[npg_tracking_schema] => $testschema );
-  lives_and { is $test->runfolder_path, qq($incoming/100914_HS3_05281_A_205MBABXX) } ' run folder found and does not contain a double slash';
 };
 
 1;
