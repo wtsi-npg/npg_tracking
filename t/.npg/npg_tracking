@@ -1,12 +1,9 @@
 #!/usr/bin/env perl
 my $VAR1 = {
   'staging_areas' => {
-    'indexes' => [18 .. 32, 34 .. 47, 49 .. 55],
-    'prefix' => '/nfs/sf',
+    'prefix' => '/tmp/esa-sv-*'
   },
   'staging_areas2webservers' => {
-    'gs01'    => {'npg_tracking' => 'http://gso1.san.ac.uk:678',
-                  'seqqc'        => 'http://gso1.san.ac.uk:999'},
     'default' => {'npg_tracking' => 'http://some.san.ac.uk:678',
                   'seqqc'        => 'http://some.san.ac.uk:999'},
     'esa-sv' => {'npg_tracking'  => 'http://esa-sv.dnap.san.ac.uk:678',

@@ -28,7 +28,7 @@ is($config->{'root'}, '/lustre/scratch109/srpipe/', 'ref rep root retrieved');
 
 $config = npg_tracking::util::config::get_config_staging_areas;
 isa_ok ($config, 'HASH');
-is($config->{'prefix'}, '/nfs/sf', 'prefix retrieved');
+is($config->{'prefix'}, '/tmp/esa-sv-*', 'prefix retrieved');
 
 $config = npg_tracking::util::config::get_config_users;
 isa_ok ($config, 'HASH');
