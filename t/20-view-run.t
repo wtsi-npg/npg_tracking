@@ -29,19 +29,18 @@ my $util = t::util->new({fixtures  => 1,});
   isa_ok($view, 'npg::view::run', 'isa npg::view::run');
   my $default_urls = {'npg_tracking' => 'http://some.san.ac.uk:678',
                       'seqqc'        => 'http://some.san.ac.uk:999'};
-  my $gs01_urls = {'npg_tracking' => 'http://gso1.san.ac.uk:678',
-                   'seqqc'        => 'http://gso1.san.ac.uk:999'};
+  my $esa_urls = {'npg_tracking'  => 'http://esa-sv.dnap.san.ac.uk:678',
+                  'seqqc'         => 'http://esa-sv.dnap.san.ac.uk:999'};
   is_deeply($view->staging_urls(),  $default_urls,
     'no args, default urls returned');
   is_deeply($view->staging_urls('host'),  $default_urls,
     'no match args, default urls returned');
-  is_deeply($view->staging_urls('gs01'),  $gs01_urls,
+  is_deeply($view->staging_urls('esa-sv'),  $esa_urls,
     'matching host args, correct host-specific urls returned');
 
   my $name = 'esa-sv-20180707';
-  my $esa_urls = {'npg_tracking'  => qq[http://${name}.dnap.san.ac.uk:678],
-                  'seqqc'         => qq[http://${name}.dnap.san.ac.uk:999]};
-
+  $esa_urls = {'npg_tracking'  => qq[http://${name}.dnap.san.ac.uk:678],
+               'seqqc'         => qq[http://${name}.dnap.san.ac.uk:999]};
   is_deeply($view->staging_urls($name), $default_urls,
     'default urls - no run id, so not on staging');
 
@@ -52,8 +51,7 @@ my $util = t::util->new({fixtures  => 1,});
                  id_run => 8,
                 }),
          });
-  is_deeply($view->staging_urls($name), $esa_urls,
-    'run on staging, esa urls');
+  is_deeply($view->staging_urls($name), $esa_urls, 'run on staging, esa urls');
 }
 
 {
