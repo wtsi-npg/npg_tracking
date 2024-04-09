@@ -824,14 +824,15 @@ sub is_composition {
 Given a list of lane-level C<st::api::lims> objects, finds their children,
 which can be merged and analysed together across all or some of the lanes.
 If children are not present, considers lane-level object as a single
-library.
+library. The second optional argument is a list of lanes (positions) that
+should be excluded from the merge.
 
 All argument lane objects should belong to the same run. It is assumed that
 they all use the same C<st::api::lims> driver type.
 
 Returns two lists of objects, one for merged entities and one for singletons,
-which are wrapped into a dictionary. Either of these lists can be empty. Both
-of the lists are guaranteed not to be empty at the same time.
+which are wrapped into a dictionary. Either of these lists can be empty. The
+two lists are guaranteed not to be empty at the same time.
 
 Tag zero objects are neither added nor explicitly removed. Objects for
 spiked-in controls (if present) are always added to the list of singletons.
@@ -841,11 +842,13 @@ set of input lane-level  C<st::api::lims> objects the same lists are always
 returned.
 
 Criteria for entities to be eligible for a merge:
+
   they are not controls,
   they belong to the same library,
   they share the same tag index,
   they belong to different lanes, one per lane,
-  they belong to the same study.
+  they belong to the same study,
+  they do not belong to a list of excluded lanes.
 
 This method can be used both as instance and as a class method.
 
@@ -857,20 +860,31 @@ This method can be used both as instance and as a class method.
     print 'Merged entity ' . $l->to_string;
   }
 
+  # Exclude lanes 2 and 3 from the merge. Entities belonging to this lane
+  # wil appear unther the 'singles' key.
+  $all_lims = st::api::lims->aggregate_libraries($run_lims->children(), [2,3]);
+  for my $l (@{$all_lims->{'singles'}}) {
+    print 'No merge for ' . $l->to_string;
+  }
+
 =cut
 
 sub aggregate_libraries {
-  my ($self, $lane_lims_array) = @_;
+  my ($self, $lane_lims_array, $do_not_merge_lanes) = @_;
 
   # This restriction might be lifted in future.
   _check_value_is_unique('id_run', 'run IDs', $lane_lims_array);
+  $do_not_merge_lanes ||= [];
+  my @lanes_to_exclude_from_merge = @{$do_not_merge_lanes};
+  _validate_lane_numbers(@lanes_to_exclude_from_merge);
 
   my $lims_objects_by_library = {};
   my @singles = ();
   my @all_single_lims_objs = map { $_->is_pool ? $_->children() : $_ }
                              @{$lane_lims_array};
   foreach my $obj (@all_single_lims_objs) {
-    if ($obj->is_control()) {
+    if ($obj->is_control() ||
+        any { $obj->position == $_ } @lanes_to_exclude_from_merge) {
       push @singles, $obj;
     } else {
       push @{$lims_objects_by_library->{_hash_key4lib_aggregation($obj)}}, $obj;
@@ -991,6 +1005,21 @@ sub _check_value_is_unique {
                @{$objects};
   if (@values != 1) {
     croak "Multiple $property_name in a potential merge by library";
+  }
+  return;
+}
+
+sub  _validate_lane_numbers {
+  my @lanes_to_exclude_from_merge = @_;
+
+  if (@lanes_to_exclude_from_merge) {
+    my @temp = grep { $_ > 0 } map { int } @lanes_to_exclude_from_merge;
+    my $exclude_string = join q[, ], @lanes_to_exclude_from_merge;
+    if ( (@temp < @lanes_to_exclude_from_merge) ||
+        ($exclude_string ne join q[, ], @temp) ) {
+      croak "Invalid lane numbers in list of lanes to exclude from the merge:\n" .
+        $exclude_string;
+    }
   }
   return;
 }

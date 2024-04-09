@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::More tests => 10;
 use Test::Exception;
-use List::MoreUtils qw/all none/;
+use List::MoreUtils qw/all none uniq/;
 use File::Slurp;
 use File::Temp qw/tempdir/;
 use Moose::Meta::Class;
@@ -130,7 +130,7 @@ subtest 'Create tag zero object' => sub {
 };
 
 subtest 'Error conditions in aggregation by library' => sub {
-  plan tests => 3;
+  plan tests => 7;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
     't/data/test40_lims/samplesheet_novaseq4lanes.csv';
@@ -160,6 +160,17 @@ subtest 'Error conditions in aggregation by library' => sub {
   throws_ok { st::api::lims->aggregate_libraries(\@lane_lims) }
     qr/Multiple studies in a potential merge by library/,
     'can only merge libraries that belong to the same study';
+
+  my $emassage =
+    "Invalid lane numbers in list of lanes to exclude from the merge:";
+  throws_ok { st::api::lims->aggregate_libraries(\@lane_lims, [qw/foo 3/]) }
+    qr/$emassage\sfoo, 3/, 'lane number cannot be a string';
+  throws_ok { st::api::lims->aggregate_libraries(\@lane_lims, [1.1, 2]) }
+    qr/$emassage\s1.1, 2/, 'lane number cannot be a float';
+  throws_ok { st::api::lims->aggregate_libraries(\@lane_lims, [-3]) }
+    qr/$emassage\s-3/, 'lane number cannot be a negative integer';
+  throws_ok { st::api::lims->aggregate_libraries(\@lane_lims, [0]) }
+    qr/$emassage\s0/, 'lane number cannot be zero';
 };
 
 subtest 'Allow duplicate libraries with different tag indexes' => sub {
@@ -200,7 +211,7 @@ subtest 'Allow duplicate libraries with different tag indexes' => sub {
 };
 
 subtest 'Aggregation by library for a NovaSeq standard flowcell' => sub {
-  plan tests => 101;
+  plan tests => 107;
   
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
     't/data/test40_lims/samplesheet_novaseq4lanes.csv';
@@ -217,7 +228,7 @@ subtest 'Aggregation by library for a NovaSeq standard flowcell' => sub {
   }
   is (keys %{$lims}, 2, 'no unexpected keys');
   is (@{$lims->{'singles'}}, 4, 'list of singles contains 4 objects');
-  is (@{$lims->{'merges'}}, 21, 'list of merges contains 21 objects');
+  is (@{$lims->{'merges'}}, 21, 'list of merges contains 21 object');
 
   ok ( (all { $_->is_control } @{$lims->{'singles'}}),
     'all singles are spiked-in controls');
@@ -244,8 +255,27 @@ subtest 'Aggregation by library for a NovaSeq standard flowcell' => sub {
 
   _compare_properties([$lims->{'merges'}->[0], $lims->{'merges'}->[20]]);
 
+  # Exclude lanes 1 and 3 from the merge
+  $lims = st::api::lims->aggregate_libraries(\@lane_lims, [1,3]);
+  is (@{$lims->{'singles'}}, 46, 'list of singles contains 46 objects');
+  is (@{$lims->{'merges'}}, 21, 'list of merges contains 21 object');
+  my @positions = uniq sort map { $_->position }
+                  grep { ! $_->is_control }
+                  @{$lims->{'singles'}};
+  is (join(q[,], @positions), '1,3', 'lanes 1 and 3 are not merged');
+  @expected_rpt_lists = _generate_rpt_lists($id_run, [2, 4], [(1 .. 21)]);
+  @rpt_lists = map { $_->rpt_list } @{$lims->{'merges'}};
+  is_deeply (\@rpt_lists, \@expected_rpt_lists, 'merges list - correct object'); 
+
+  # Exclude lanes 1 and 5 from the merge
+  lives_ok { $lims = st::api::lims->aggregate_libraries(\@lane_lims, [1,5]) }
+    'asking to exclude a lane for which there is no data is not an error'; 
+  @rpt_lists = map { $_->rpt_list } @{$lims->{'merges'}};
+  @expected_rpt_lists = _generate_rpt_lists($id_run, [2, 3, 4], [(1 .. 21)]);
+  is_deeply (\@rpt_lists, \@expected_rpt_lists, 'merges list - correct object');
+
   # Select two lanes out of four.
-  $lims = st::api::lims->aggregate_libraries([$lane_lims[0], $lane_lims[2]]);
+  $lims = st::api::lims->aggregate_libraries([$lane_lims[0], $lane_lims[2]], []);
   is (@{$lims->{'singles'}}, 2, 'list of singles contains 2 objects');
   is (@{$lims->{'merges'}}, 21, 'list of merges contains 21 objects');
   @rpt_lists = map { $_->rpt_list } @{$lims->{'merges'}};
