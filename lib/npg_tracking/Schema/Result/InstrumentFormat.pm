@@ -147,21 +147,6 @@ __PACKAGE__->set_primary_key("id_instrument_format");
 
 =head1 RELATIONS
 
-=head2 instrument_utilisations
-
-Type: has_many
-
-Related object: L<npg_tracking::Schema::Result::InstrumentUtilisation>
-
-=cut
-
-__PACKAGE__->has_many(
-  "instrument_utilisations",
-  "npg_tracking::Schema::Result::InstrumentUtilisation",
-  { "foreign.id_instrument_format" => "self.id_instrument_format" },
-  { cascade_copy => 0, cascade_delete => 0 },
-);
-
 =head2 instruments
 
 Type: has_many
@@ -208,8 +193,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:esNDL3mLvW19/fKjWfsX/g
+# Created by DBIx::Class::Schema::Loader v0.07052 @ 2024-04-09 10:35:17
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:elkjaVkCGUOAo8WzkpdV/A
 
 # Author:        david.jackson@sanger.ac.uk
 # Created:       2010-04-08
