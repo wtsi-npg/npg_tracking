@@ -241,7 +241,6 @@ lib/npg_tracking/Schema/Result/InstrumentModDict.pm
 lib/npg_tracking/Schema/Result/InstrumentStatus.pm
 lib/npg_tracking/Schema/Result/InstrumentStatusAnnotation.pm
 lib/npg_tracking/Schema/Result/InstrumentStatusDict.pm
-lib/npg_tracking/Schema/Result/InstrumentUtilisation.pm
 lib/npg_tracking/Schema/Result/Manufacturer.pm
 lib/npg_tracking/Schema/Result/Run.pm
 lib/npg_tracking/Schema/Result/RunAnnotation.pm

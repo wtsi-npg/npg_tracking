@@ -126,9 +126,6 @@ subtest 'detecting onboard analysis' => sub {
   );
   my $li = $class->new_object(); 
   ok ($li->onboard_analysis_planned(), 'onboard analysis is planned');
-
-  my $o = $li->onboard_analysis_planned();
-  diag  $o;
 };
 
 subtest 'getting i5opposite for run' => sub {
@@ -366,7 +363,6 @@ subtest 'getting experiment name from runParameters' => sub {
   my $long_info = Moose::Meta::Class->create_anon_class(
     methods => {"runfolder_path" => sub {$rfpath}},
     roles   => [qw/npg_tracking::illumina::run::long_info/])->new_object();
-    q{create test role for SP flowcell};
   cmp_ok ( $long_info->surface_count, '==', 1, 'surface_count');
   is ($long_info->instrument_name, 'A00562', 'instrument name from RunInfo.xml');
 }
