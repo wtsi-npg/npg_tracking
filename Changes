@@ -6,11 +6,11 @@ release 101.1.0
    npg_tracking::illumina::run::folder.
  - Moved a build method for the run_folder attribute from
    npg_tracking::illumina::run_folder to npg_tracking::illumina::run::folder.
- - Preparation for teh deletion of unused instrument_utilisation table from
+ - Preparation for the deletion of unused instrument_utilisation table from
    the tracking db schema:
    - dropped instrument_utilisation table from the db schema, which is used
      for testing the tracking web application,
-   - suppressed generation of teh DBIx ORM class for this table and deleted
+   - suppressed generation of the DBIx ORM class for this table and deleted
      the class.
  - Added an option to exclude lanes from a merge (see st::api::lims
    aggregate_libraries method).
