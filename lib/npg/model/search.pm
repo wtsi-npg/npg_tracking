@@ -1,7 +1,3 @@
-#########
-# Author:        rmp
-# Created:       2008-01
-#
 package npg::model::search;
 use strict;
 use warnings;
@@ -77,7 +73,7 @@ sub results {
                        AND    content LIKE ?), "%$term%"];
 
   #########
-  # search run annotations
+  # search annotations
   #
   push @{$queries}, [q(SELECT 'run'        AS type,
                               ra.id_run    AS primary_key,
@@ -86,6 +82,16 @@ sub results {
                        FROM   annotation     a,
                               run_annotation ra
                        WHERE  ra.id_annotation = a.id_annotation
+                       AND    a.comment LIKE   ?
+                       ORDER BY date DESC
+                       LIMIT 100), "%$term%"];
+  push @{$queries}, [q(SELECT 'run_lane'        AS type,
+                              rla.id_run_lane   AS primary_key,
+                              'annotation' AS location,
+                              a.comment    AS context
+                       FROM   annotation     a,
+                              run_lane_annotation rla
+                       WHERE  rla.id_annotation = a.id_annotation
                        AND    a.comment LIKE   ?
                        ORDER BY date DESC
                        LIMIT 100), "%$term%"];
@@ -492,7 +498,7 @@ Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2007 GRL, by Roger Pettett
+Copyright (C) 2007, 2013, 2014, 2017, 2024 Genome Research Ltd.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.4 or,

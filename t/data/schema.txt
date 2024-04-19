@@ -294,33 +294,6 @@ CREATE TABLE `instrument_status_dict` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `instrument_utilisation`
---
-
-DROP TABLE IF EXISTS `instrument_utilisation`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `instrument_utilisation` (
-  `id_instrument_utilisation` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `date` date NOT NULL,
-  `total_insts` int(4) unsigned NOT NULL DEFAULT '0',
-  `perc_utilisation_total_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
-  `perc_uptime_total_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
-  `official_insts` int(4) unsigned NOT NULL DEFAULT '0',
-  `perc_utilisation_official_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
-  `perc_uptime_official_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
-  `prod_insts` int(4) unsigned NOT NULL DEFAULT '0',
-  `perc_utilisation_prod_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
-  `perc_uptime_prod_insts` float(5,2) unsigned NOT NULL DEFAULT '0.00',
-  `id_instrument_format` bigint(20) unsigned NOT NULL,
-  PRIMARY KEY (`id_instrument_utilisation`),
-  UNIQUE KEY `uidx_date_format` (`date`,`id_instrument_format`),
-  KEY `inst_format` (`id_instrument_format`),
-  CONSTRAINT `inst_format` FOREIGN KEY (`id_instrument_format`) REFERENCES `instrument_format` (`id_instrument_format`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `manufacturer`
 --
 
