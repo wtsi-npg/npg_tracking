@@ -861,7 +861,7 @@ This method can be used both as instance and as a class method.
   }
 
   # Exclude lanes 2 and 3 from the merge. Entities belonging to this lane
-  # wil appear unther the 'singles' key.
+  # will appear under the 'singles' key.
   $all_lims = st::api::lims->aggregate_libraries($run_lims->children(), [2,3]);
   for my $l (@{$all_lims->{'singles'}}) {
     print 'No merge for ' . $l->to_string;
