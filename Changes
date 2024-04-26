@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - update NovaSeqX icon
+
 release 101.1.0
  - Deleted npg_tracking::illumina::run::short_info and
    npg_tracking::illumina::run::locations, their functionality is moved to
