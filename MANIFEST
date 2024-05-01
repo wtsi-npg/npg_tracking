@@ -188,7 +188,6 @@ lib/npg/view/user.pm
 lib/npg/view/user2usergroup.pm
 lib/npg/view/usergroup.pm
 lib/npg_testing/db.pm
-lib/npg_testing/html.pm
 lib/npg_tracking/daemon.pm
 lib/npg_tracking/data/bait.pm
 lib/npg_tracking/data/bait/find.pm
@@ -327,7 +326,6 @@ t/10-model-user_usergroup.t
 t/10-model-usergroup.t
 t/10-model.t
 t/10-npg_testing-db.t
-t/10-npg_testing-html.t
 t/10-npg_tracking-glossary-composition-component-illumina.t
 t/10-npg_tracking-glossary-composition-component.t
 t/10-npg_tracking-glossary-composition-factory-attributes.t
