@@ -158,7 +158,6 @@ my $builder = $class->new(
                 'GD::Text'                        => 0,
                 'Getopt::Long'                    => '2.37',
                 'HTML::PullParser'                => '3.57',
-                'HTML::Tidy'                      => 0,
                 'HTTP::Request'                   => '5.818',
                 'HTTP::Request::Common'           => '5.822',
                 'HTTP::Response'                  => 0,
