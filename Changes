@@ -1,6 +1,7 @@
 LIST OF CHANGES
 
- - remove dep on HTML::Tidy
+release 101.1.1
+ - remove dependency on HTML::Tidy
  - update NovaSeqX icon
 
 release 101.1.0
