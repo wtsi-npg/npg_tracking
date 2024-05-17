@@ -145,7 +145,8 @@ subtest 'run status event' => sub {
   ok ($e->dry_run, 'dry_run mode');
   is ($e->report_author(), $report_author, 'report author');
   is ($e->template_name(), 'run_or_lane2subscribers', 'template name');
-  is_deeply ($e->_subscribers(), [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk)],
+  is_deeply ($e->_subscribers(),
+    [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk dnap-ssr@sanger.ac.uk)],
     'correct ordered list of subscribers');
   is ($e->report_short(), 'Run 21915 was assigned status "run pending"', 'short report text');
 
@@ -205,7 +206,8 @@ subtest 'instrument status event' => sub {
   isa_ok ($e, 'npg_tracking::report::event2subscribers');
   is ($e->report_author(), $report_author, 'report author');
   is ($e->template_name(), 'instrument', 'template name');
-  is_deeply ($e->_subscribers(), [qw(acu4@some.com cu2@sanger.ac.uk cu3@sanger.ac.uk)],
+  is_deeply ($e->_subscribers(),
+    [qw(acu4@some.com cu2@sanger.ac.uk cu3@sanger.ac.uk dnap-ssr@sanger.ac.uk)],
     'correct ordered list of subscribers');
   is ($e->report_short(), 'Instrument HS8 status changed to "wash performed"', 'short report text');
   warning_is {$e->lims} undef, 'no warning about LIMs driver';
@@ -260,7 +262,8 @@ subtest 'run annotation event' => sub {
   ok ($e->dry_run, 'dry_run mode');
   is ($e->report_author(), $report_author, 'report author');
   is ($e->template_name(), 'run_or_lane2subscribers', 'template name');
-  is_deeply ($e->_subscribers(), [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk)],
+  is_deeply ($e->_subscribers(),
+    [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk dnap-ssr@sanger.ac.uk)],
     'correct ordered list of subscribers');
   is ($e->report_short(), 'Run 21915 annotated by joe_loader', 'short report text');
   is (scalar @{$e->lims}, 8, 'Retrieved LIMs object');
@@ -305,7 +308,8 @@ subtest 'runlane annotation event' => sub {
   ok ($e->dry_run, 'dry_run mode');
   is ($e->report_author(), $report_author, 'report author');
   is ($e->template_name(), 'run_or_lane2subscribers', 'template name');
-  is_deeply ($e->_subscribers(), [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk)],
+  is_deeply ($e->_subscribers(),
+    [qw(acu4@some.com cu1@sanger.ac.uk cu2@sanger.ac.uk dnap-ssr@sanger.ac.uk)],
     'correct ordered list of subscribers');
   is ($e->report_short(), 'Run 21915 lane 2 annotated by joe_loader', 'short report text');
   is (scalar @{$e->lims}, 1, 'Retrieved LIMs object');
@@ -350,7 +354,8 @@ subtest 'instrument annotation event' => sub {
   isa_ok ($e, 'npg_tracking::report::event2subscribers');
   is ($e->report_author(), $report_author, 'report author');
   is ($e->template_name(), 'instrument', 'template name');
-  is_deeply ($e->_subscribers(), [qw(acu4@some.com cu2@sanger.ac.uk cu3@sanger.ac.uk)],
+  is_deeply ($e->_subscribers(),
+    [qw(acu4@some.com cu2@sanger.ac.uk cu3@sanger.ac.uk dnap-ssr@sanger.ac.uk)],
     'correct ordered list of subscribers');
   is ($e->report_short(), 'Instrument HS8 annotated by joe_loader', 'short report text');
   warning_is {$e->lims} undef, 'no warning about LIMs driver';

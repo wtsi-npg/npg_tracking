@@ -21,6 +21,7 @@ Readonly::Scalar my $TEMPLATE_EXT           => q[.tt2];
 ## no critic (ValuesAndExpressions::RequireInterpolationOfMetachars)
 Readonly::Scalar my $DEFAULT_RECIPIENT_HOST => q[@sanger.ac.uk];
 ## use critic
+Readonly::Array  my @DEFAULT_RECIPIENTS     => qw[dnap-ssr];
 Readonly::Scalar my $DEFAULT_AUTHOR         => q[srpipe];
 Readonly::Scalar my $MLWH_DRIVER_TYPE       => q[ml_warehouse_fc_cache];
 
@@ -159,7 +160,7 @@ sub username2email_address {
 sub _subscribers {
   my $self = shift;
   my $group = $self->_is_instrument_event ? q[engineers] : q[events];
-  my @subscribers = ();
+  my @subscribers = @DEFAULT_RECIPIENTS;
   my $schema = $self->event_entity->result_source->schema;
   my $group_row = $schema->resultset('Usergroup')->search(
                   {groupname => $group, iscurrent => 1})->next();
