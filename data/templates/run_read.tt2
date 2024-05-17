@@ -191,7 +191,9 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 </div>
 
 <div id="email_link">
-  <a href= "mailto: dnap-ssr@sanger.ac.uk">Contact Sci Ops DNA Pipelines </a>
+  <a href= "mailto:dnap-ssr@sanger.ac.uk?subject=Illumina sequencing run [% id_run %]">
+    Contact Sci Ops DNA Pipelines
+  </a>
 </div>
 
 <script type="text/javascript">
