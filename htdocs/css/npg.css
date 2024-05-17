@@ -75,6 +75,12 @@ div.widgets_group {
  margin-bottom: 10px;
 }
 
+div#email_link {
+ padding: 5px;
+ margin-top: 20px;
+ font-style: italic;
+}
+
 a.npg_menu {
  background-color: #D9D9D9;
  border:2px solid #a1a1a1;
