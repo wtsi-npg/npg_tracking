@@ -192,8 +192,9 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 
 <div id="email_link">
 [%- subject = 'Illumina sequencing run ' _ id_run -%]
-  <a href= "mailto:dnap-ssr@sanger.ac.uk?subject=[% subject %]&body=[% subject %] [% staging_url %]/[% SCRIPT_NAME %]/run/[% id_run %]">
-    Contact Sci Ops DNA Pipelines
+  If you have any questions or need further assistance, please feel free to reach out to a Scientific Service Representative at
+  <a href="mailto:dnap-ssr@sanger.ac.uk?subject=[% subject %]&body=[% subject %] [% staging_url %]/[% SCRIPT_NAME %]/run/[% id_run %]">
+    dnap-ssr@sanger.ac.uk
   </a>
 </div>
 
