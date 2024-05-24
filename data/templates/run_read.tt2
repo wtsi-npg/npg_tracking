@@ -157,6 +157,7 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 </div>
 
 <div class="widgets_group">
+
 <div id="tabs">
   <div id="tag_tab" class="tab noncurrent"><a href="javascript:void(toggle_information('tag_tab'));">Tags</a></div>
   <div id="status_history_tab" class="tab noncurrent"><a href="javascript:void(toggle_information('status_history_tab'));">Status History</a></div>
@@ -186,6 +187,15 @@ IF ( ( current_status == 'qc review pending' ) || (current_status == 'qc in prog
 <div id="annotation" class="info_box">
 [% PROCESS run_annotation_tables.tt2 %]
 </div>
+
+</div>
+
+<div id="email_link">
+[%- subject = 'Illumina sequencing run ' _ id_run -%]
+  If you have any questions or need further assistance, please feel free to reach out to a Scientific Service Representative at
+  <a href="mailto:dnap-ssr@sanger.ac.uk?subject=[% subject %]&body=[% subject %] [% staging_url %]/[% SCRIPT_NAME %]/run/[% id_run %]">
+    dnap-ssr@sanger.ac.uk
+  </a>
 </div>
 
 <script type="text/javascript">

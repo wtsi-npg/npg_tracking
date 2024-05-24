@@ -1,8 +1,9 @@
 LIST OF CHANGES
 
-release 101.1.1
+release 101.2.0 (2024-05-24)
  - remove dependency on HTML::Tidy
  - update NovaSeqX icon
+ - Added a footer to the tracking run web page.
 
 release 101.1.0
  - Deleted npg_tracking::illumina::run::short_info and
