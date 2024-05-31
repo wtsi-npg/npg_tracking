@@ -13,7 +13,7 @@
    <th>Current Status</th>
    <th>Status Comment</th>
    <th>Laboratory</th>
-   <th>Staging Server</th>
+   <th>Staging Volume</th>
   </tr>
  </thead>
  <tbody>
@@ -27,7 +27,7 @@
    <td>[% instrument.current_instrument_status.instrument_status_dict.description %]</td>
    <td>[% instrument.current_instrument_status.comment %]</td>
    <td>[% instrument.lab %]</td>
-   <td>[% instrument.recent_staging_servers.join(', ') %]</td>
+   <td>[% instrument.recent_staging_volumes.join(', ') %]</td>
   </tr>
 [% END %]
  </tbody>

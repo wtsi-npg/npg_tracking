@@ -418,7 +418,7 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
   is (scalar @{$model->instrument_statuses()}, 3, 'number of statuses in total');
 }
 
-subtest 'recent staging servers list' => sub {
+subtest 'recent staging volumes list' => sub {
   plan tests => 14;
 
   my $util4updates = t::util->new(); # need a new db handle
@@ -433,14 +433,14 @@ subtest 'recent staging servers list' => sub {
              util          => $util,
              id_instrument => 3,
             });
-  is (join(q[ ], $model->recent_staging_servers()), q[esa-sv-20201215-03],
-    qq[server name for a single run that is associated with the "$status" status]);
+  is (join(q[ ], $model->recent_staging_volumes()), q[esa-sv-20201215-03],
+    qq[volume name for a single run that is associated with the "$status" status]);
   
   $model = npg::model::instrument->new({
              util          => $util,
              id_instrument => 14,
             });
-  is (scalar $model->recent_staging_servers(), 0,
+  is (scalar $model->recent_staging_volumes(), 0,
     'empty list since no glob is available for a run that is associated with ' .
     qq[the "$status" status]);
   
@@ -448,8 +448,8 @@ subtest 'recent staging servers list' => sub {
              util          => $util,
              id_instrument => 13,
             });
-  is (join(q[,], $model->recent_staging_servers()), 'esa-sv-20201215-02',
-    'a list with one server name');
+  is (join(q[,], $model->recent_staging_volumes()), 'esa-sv-20201215-02',
+    'a list with one volume name');
 
   my $new_glob = q[{export,nfs}/esa-sv-20201215-02/IL_seq_data/*/];
   my $update = qq[update run set folder_path_glob='$new_glob' where id_run=15];
@@ -458,7 +458,7 @@ subtest 'recent staging servers list' => sub {
              util          => $util,
              id_instrument => 13,
             });
-  is (join(q[,], $model->recent_staging_servers()), $new_glob,
+  is (join(q[,], $model->recent_staging_volumes()), $new_glob,
     'a full glob is returned');
 
   $new_glob = q[/{export,nfs}];
@@ -468,7 +468,7 @@ subtest 'recent staging servers list' => sub {
              util          => $util,
              id_instrument => 13,
             });
-  is (join(q[,], $model->recent_staging_servers()), $new_glob,
+  is (join(q[,], $model->recent_staging_volumes()), $new_glob,
     'a full glob is returned');
   
   $update = qq[update run set folder_path_glob='' where id_run=15];
@@ -477,13 +477,13 @@ subtest 'recent staging servers list' => sub {
              util          => $util,
              id_instrument => 13,
             });
-  is (scalar $model->recent_staging_servers(), 0,
+  is (scalar $model->recent_staging_volumes(), 0,
     'an empty list is returned for a zero length glob');
 
   $update = q[update run_status set id_run_status_dict=2 where ] .
     q[id_run in (3,4,5) and id_run_status_dict=4];
   ok($dbh->do($update), 'run statuses are updated');
-  $update = qq[update run set folder_path_glob='server5' where id_run=15];
+  $update = qq[update run set folder_path_glob='volume5' where id_run=15];
   ok($dbh->do($update), 'folder path glob is updated');
   $update = qq[update run set id_instrument=3 where id_run=15];
   ok($dbh->do($update), 'assign one more run to the instrument');
@@ -492,8 +492,8 @@ subtest 'recent staging servers list' => sub {
              util          => $util,
              id_instrument => 3,
             });
-  is (join(q[, ], $model->recent_staging_servers()), q[server5, /{export,nfs}],
-    'latest servers list');
+  is (join(q[, ], $model->recent_staging_volumes()), q[volume5, /{export,nfs}],
+    'latest volumes list');
 
   $dbh->disconnect;
 };

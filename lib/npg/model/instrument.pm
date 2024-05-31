@@ -382,7 +382,7 @@ sub latest_annotation {
   return $self->{latest_annotation};
 }
 
-sub recent_staging_servers {
+sub recent_staging_volumes {
   my $self = shift;
 
   my $run_status = q[run in progress];
@@ -405,21 +405,17 @@ sub recent_staging_servers {
     pop @globs
   }
 
-  my @servers = ();
+  my @volumes = ();
   foreach my $area (@globs) {
     my @dirs = File::Spec->splitdir($area);
     # Current (May 2024) folder path globs look like
     # /{export,nfs}/esa-sv-20201215-03/IL_seq_data/*/
     ##no critic (ValuesAndExpressions::ProhibitMagicNumbers)
-    if (@dirs >= 3 and $dirs[0] eq q[]) {
-      push @servers, $dirs[2];
-    } else {
-      push @servers, $area;
-    }
+    push @volumes, (@dirs >= 3 and $dirs[0] eq q[]) ? $dirs[2] : $area;
     ##use critic
   }
 
-  return @servers;
+  return @volumes;
 }
 
 sub does_sequencing {
@@ -746,8 +742,9 @@ npg::model::instrument
 
 =head2 fc_slots2blocking_runs - a hash reference mapping instrument flowcell slots to blocking runs; tags for slots are used as keys
 
-=head2 recent_staging_servers - returns a list of names of staging servers
-this instrument most recently transferred data to, most recent server first. 
+=head2 recent_staging_volumes - returns a list of names of staging volumes
+this instrument most recently transferred data to, most recently used volume
+first. The list might be empty and cannot have more than two volume names.
 
 =head2 does_sequencing - returns true is the instrument does sequencing, false otherwise
 
