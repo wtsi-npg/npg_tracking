@@ -151,6 +151,24 @@ sub read_config {
   return $config;
 }
 
+=head2 default_study_config
+
+  Example    : $obj->study_config();
+  Description: Returns a default config, which is normally used as a fall-back
+               position when a study-specific config is not available. If the
+               default section of the study configuration file is not present,
+               an empty hash is returned.
+
+  Returntype : Hash
+
+=cut
+
+sub default_study_config {
+  my $self = shift;
+  my $config = $self->_product_config->{$CONFIG_DEFAULT};
+  return defined $config ? $config : {};
+}
+
 =head2 study_config
 
   Arg [1]    : st::api::lims
