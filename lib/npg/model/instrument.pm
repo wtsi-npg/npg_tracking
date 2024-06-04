@@ -8,7 +8,7 @@ use Carp;
 use DateTime;
 use DateTime::Duration;
 use DateTime::Format::MySQL;
-use List::MoreUtils qw(any uniq);
+use List::MoreUtils qw(any);
 use base qw(npg::model);
 
 use npg::model::user;
@@ -386,33 +386,36 @@ sub recent_staging_volumes {
   my $self = shift;
 
   my $run_status = q[run in progress];
-  my $query = q[SELECT folder_path_glob FROM instrument
-                JOIN run USING(id_instrument)
-                JOIN run_status USING(id_run)
-                JOIN run_status_dict USING(id_run_status_dict)
-                WHERE folder_path_glob IS NOT NULL
-                AND LENGTH(folder_path_glob) != 0
-                AND id_instrument=? AND description=?
-                ORDER BY date DESC];
+  my $key_field =  q[folder_path_glob];
+  my $date_field = q[maxdate];
+  # Using some MySQL-specific syntax...
+  my $query = qq[SELECT $key_field, MAX(run_status.date) $date_field
+                 FROM instrument
+                 JOIN run USING(id_instrument)
+                 JOIN run_status USING(id_run)
+                 JOIN run_status_dict USING(id_run_status_dict)
+                 WHERE $key_field IS NOT NULL
+                 AND LENGTH($key_field) != 0
+                 AND id_instrument=? AND description=?
+                 GROUP BY $key_field
+                 ORDER BY $date_field DESC];
   my $dbh = $self->util->dbh();
-  # Four rather than two latest runs since NovaSeq(X) instruments have
-  # two sides, which write to the same staging server.
-  my $rows = $dbh->selectall_arrayref($query, {RaiseError => 1, MaxRows => 4},
+  my $rows = $dbh->selectall_arrayref($query,
+    {RaiseError => 1, MaxRows => 2}, # get two rows only
     $self->id_instrument(), $run_status);
-  my @globs = uniq map { $_->[0] } @{$rows};
-  # We do not need more that two unique globs.
-  while (scalar @globs > 2) {
-    pop @globs
-  }
 
   my @volumes = ();
-  foreach my $area (@globs) {
+  foreach my $row (@{$rows}) {
+    my $area = $row->[0];
     my @dirs = File::Spec->splitdir($area);
-    # Current (May 2024) folder path globs look like
+    # Current (June 2024) folder path globs look like
     # /{export,nfs}/esa-sv-20201215-03/IL_seq_data/*/
     ##no critic (ValuesAndExpressions::ProhibitMagicNumbers)
-    push @volumes, (@dirs >= 3 and $dirs[0] eq q[]) ? $dirs[2] : $area;
+    $area = (@dirs >= 3 and $dirs[0] eq q[]) ? $dirs[2] : $area;
     ##use critic
+    my ($date) = $row->[1] =~ /\A([\d|-]+)[ ]/smx; # Get the date part only.
+    $date or croak 'Failed to parse date ' . $row->[1];
+    push @volumes, {'volume' => $area, $date_field => $date};
   }
 
   return @volumes;
@@ -742,9 +745,12 @@ npg::model::instrument
 
 =head2 fc_slots2blocking_runs - a hash reference mapping instrument flowcell slots to blocking runs; tags for slots are used as keys
 
-=head2 recent_staging_volumes - returns a list of names of staging volumes
-this instrument most recently transferred data to, most recently used volume
-first. The list might be empty and cannot have more than two volume names.
+=head2 recent_staging_volumes - returns a list of hash references containing
+information about the volumes this instrument recently transferred data to.
+The list might be empty. It is guaranteed not to contain more than two members.
+Under the 'volume' key each hash has the name of the volume, under the 'maxdate'
+key - the most recent date this volume was used by this instrument. The first
+list member describes the volume that was used most recently.  
 
 =head2 does_sequencing - returns true is the instrument does sequencing, false otherwise
 
