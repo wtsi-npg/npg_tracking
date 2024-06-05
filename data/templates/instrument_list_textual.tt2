@@ -13,10 +13,17 @@
    <th>Current Status</th>
    <th>Status Comment</th>
    <th>Laboratory</th>
+   <th>Staging Volume (last)</th>
+   <th>Staging Volume (previous)</th>
   </tr>
  </thead>
  <tbody>
-[% FOREACH instrument = model.instruments %]
+[% FOREACH instrument = model.instruments;
+     volumes = [];
+     FOREACH description = instrument.recent_staging_volumes;
+       volumes.push(description.volume _ ' ' _ description.maxdate);
+     END;
+-%]
   <tr>
    <td><span style="display:none">[% USE String(instrument.id_instrument); String.format('%04d') %]</span><a href="[% SCRIPT_NAME %]/instrument/[% instrument.id_instrument %]">[% instrument.name %]</a></td>
    <td>[% instrument.model %]</td>
@@ -26,6 +33,8 @@
    <td>[% instrument.current_instrument_status.instrument_status_dict.description %]</td>
    <td>[% instrument.current_instrument_status.comment %]</td>
    <td>[% instrument.lab %]</td>
+   <td>[% volumes.item(0) IF volumes.defined(0) %]</td>
+   <td>[% volumes.item(1) IF volumes.defined(1) %]</td>
   </tr>
 [% END %]
  </tbody>

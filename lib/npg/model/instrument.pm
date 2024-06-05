@@ -2,9 +2,15 @@ package npg::model::instrument;
 
 use strict;
 use warnings;
-use base qw(npg::model);
 use English qw(-no_match_vars);
+use File::Spec;
 use Carp;
+use DateTime;
+use DateTime::Duration;
+use DateTime::Format::MySQL;
+use List::MoreUtils qw(any);
+use base qw(npg::model);
+
 use npg::model::user;
 use npg::model::run;
 use npg::model::instrument_format;
@@ -15,10 +21,6 @@ use npg::model::instrument_annotation;
 use npg::model::annotation;
 use npg::model::instrument_designation;
 use npg::model::designation;
-use DateTime;
-use DateTime::Duration;
-use DateTime::Format::MySQL;
-use List::MoreUtils qw/any/;
 
 our $VERSION = '0';
 
@@ -380,6 +382,45 @@ sub latest_annotation {
   return $self->{latest_annotation};
 }
 
+sub recent_staging_volumes {
+  my $self = shift;
+
+  my $run_status = q[run in progress];
+  my $key_field =  q[folder_path_glob];
+  my $date_field = q[maxdate];
+  # Using some MySQL-specific syntax...
+  my $query = qq[SELECT $key_field, MAX(run_status.date) $date_field
+                 FROM instrument
+                 JOIN run USING(id_instrument)
+                 JOIN run_status USING(id_run)
+                 JOIN run_status_dict USING(id_run_status_dict)
+                 WHERE $key_field IS NOT NULL
+                 AND LENGTH($key_field) != 0
+                 AND id_instrument=? AND description=?
+                 GROUP BY $key_field
+                 ORDER BY $date_field DESC];
+  my $dbh = $self->util->dbh();
+  my $rows = $dbh->selectall_arrayref($query,
+    {RaiseError => 1, MaxRows => 2}, # get two rows only
+    $self->id_instrument(), $run_status);
+
+  my @volumes = ();
+  foreach my $row (@{$rows}) {
+    my $area = $row->[0];
+    my @dirs = File::Spec->splitdir($area);
+    # Current (June 2024) folder path globs look like
+    # /{export,nfs}/esa-sv-20201215-03/IL_seq_data/*/
+    ##no critic (ValuesAndExpressions::ProhibitMagicNumbers)
+    $area = (@dirs >= 3 and $dirs[0] eq q[]) ? $dirs[2] : $area;
+    ##use critic
+    my ($date) = $row->[1] =~ /\A([\d|-]+)[ ]/smx; # Get the date part only.
+    $date or croak 'Failed to parse date ' . $row->[1];
+    push @volumes, {'volume' => $area, $date_field => $date};
+  }
+
+  return \@volumes;
+}
+
 sub does_sequencing {
   my $self = shift;
   return ($self->instrument_format->model &&
@@ -595,9 +636,9 @@ npg::model::instrument
 
 =head1 DESCRIPTION
   Clearpress model for an instrument.
-  To be replaced by DBIx model. Contains duplicates of functions in
-  npg_tracking::Schema::Result::Instrument. When editing the code
-  of this module consider if any changes are meeded in the other module. 
+  Contains duplicates of functions in npg_tracking::Schema::Result::Instrument.
+  When editing the code of this module consider if any changes are needed in
+  the other module. 
 
 =head1 SUBROUTINES/METHODS
 
@@ -621,11 +662,6 @@ npg::model::instrument
 
   my $arAllInstruments = $oInstrument->instruments();
 
-=head2 instrument_by_ipaddr - npg::model::instrument by its IP address
-
-  my $oInstrument = $oInstrument->instrument_by_ipaddr('127.0.0.1');
-instrument_by_instrument_comp
-
 =head2 instrument_by_instrument_comp - npg::model::instrument by its instrument_comp name
 
 =head2 current_instruments - arrayref of all npg::model::instruments with iscurrent=1
@@ -636,16 +672,6 @@ instrument_by_instrument_comp
 
   my $lab = 'Sulston';
   my $arCurrentSulstonInstruments = $oInstrument->current_instruments_from_lab($lab);
-
-=head2 last_wash_instrument_status - npg::model::instrument_status (or undef) corresponding to the last 'wash performed' state
-
-  my $oInstrumentStatus = $oInstrument->last_wash_instrument_status();
-
-=head2 check_wash_status - boolean whether this instrument needs washing
-
-Has a side-effect of updating an instrument's current instrument_status to 'wash required'
-
- $bNeedAWash = $oInstrument->check_wash_status();
 
 =head2 runs - arrayref of npg::model::runs for this instrument
 
@@ -719,6 +745,13 @@ Has a side-effect of updating an instrument's current instrument_status to 'wash
 
 =head2 fc_slots2blocking_runs - a hash reference mapping instrument flowcell slots to blocking runs; tags for slots are used as keys
 
+=head2 recent_staging_volumes - returns an array of hash references containing
+information about the volumes this instrument recently transferred data to.
+The array might be empty. It is guaranteed not to contain more than two members.
+Under the 'volume' key each hash has the name of the volume, under the 'maxdate'
+key - the most recent date this volume was used by this instrument. The first
+array member describes the volume that was used most recently.  
+
 =head2 does_sequencing - returns true is the instrument does sequencing, false otherwise
 
 =head2 is_two_slot_instrument - returns true if this instrument has two slots, false otherwise
@@ -729,7 +762,7 @@ returns true if the instrument is a MiSeq, false otherwise
 
 =head2 is_cbot_instrument - returns true if this instrument is CBot, false otherwise
 
-=head2 current_run_by_id - returns one of current runs with teh argument id or nothing if a list of current runs does not contain a run with this id
+=head2 current_run_by_id - returns one of current runs with the argument id or nothing if a list of current runs does not contain a run with this id
  
  my $id_run = 22;
  my $run = $oInstrument->current_run_by_id($id_run);
@@ -761,27 +794,21 @@ returns true if the instrument is a MiSeq, false otherwise
 
 =item base
 
-=item npg::model
+=item File::Spec
 
 =item English
 
 =item Carp
 
-=item npg::model::user
-
-=item npg::model::run
-
-=item npg::model::instrument_format
-
-=item npg::model::instrument_status
-
-=item npg::model::instrument_status_dict
-
-=item npg::model::instrument_mod
+=item Readonly
 
 =item DateTime
 
-=item Readonly
+=item DateTime::Duration
+
+=item DateTime::Format::MySQL
+
+=item List::MoreUtils
 
 =back
 
@@ -793,7 +820,7 @@ returns true if the instrument is a MiSeq, false otherwise
 
 =over
 
-=item Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+=item Roger Pettett
 
 =item Marina Gourtovaia
 
@@ -801,7 +828,7 @@ returns true if the instrument is a MiSeq, false otherwise
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2006,2008,2013,2014,2016,2018,2021 Genome Research Ltd.
+Copyright (C) 2006,2008,2013,2014,2016,2018,2021,2024 Genome Research Ltd.
 
 This file is part of NPG.
 
