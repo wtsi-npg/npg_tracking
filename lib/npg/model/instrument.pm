@@ -418,7 +418,7 @@ sub recent_staging_volumes {
     push @volumes, {'volume' => $area, $date_field => $date};
   }
 
-  return @volumes;
+  return \@volumes;
 }
 
 sub does_sequencing {
@@ -745,12 +745,12 @@ npg::model::instrument
 
 =head2 fc_slots2blocking_runs - a hash reference mapping instrument flowcell slots to blocking runs; tags for slots are used as keys
 
-=head2 recent_staging_volumes - returns a list of hash references containing
+=head2 recent_staging_volumes - returns an array of hash references containing
 information about the volumes this instrument recently transferred data to.
-The list might be empty. It is guaranteed not to contain more than two members.
+The array might be empty. It is guaranteed not to contain more than two members.
 Under the 'volume' key each hash has the name of the volume, under the 'maxdate'
 key - the most recent date this volume was used by this instrument. The first
-list member describes the volume that was used most recently.  
+array member describes the volume that was used most recently.  
 
 =head2 does_sequencing - returns true is the instrument does sequencing, false otherwise
 

@@ -433,7 +433,7 @@ subtest 'recent staging volumes list' => sub {
              util          => $util,
              id_instrument => 3,
             });
-  my @volumes = $model->recent_staging_volumes();
+  my @volumes = @{$model->recent_staging_volumes()};
   is (@volumes, 1, 'one record is returned');
   is ($volumes[0]->{'volume'}, q[esa-sv-20201215-03],
     qq[volume name for a single run that is associated with the "$status" status]);
@@ -443,7 +443,7 @@ subtest 'recent staging volumes list' => sub {
              util          => $util,
              id_instrument => 14,
             });
-  is (scalar $model->recent_staging_volumes(), 0,
+  is (scalar @{$model->recent_staging_volumes()}, 0,
     'empty list since no glob is available for a run that is associated with ' .
     qq[the "$status" status]);
   
@@ -451,7 +451,7 @@ subtest 'recent staging volumes list' => sub {
              util          => $util,
              id_instrument => 13,
             });
-  @volumes = $model->recent_staging_volumes();
+  @volumes = @{$model->recent_staging_volumes()};
   is (@volumes, 1, 'one record is returned');
   is ($volumes[0]->{'volume'}, 'esa-sv-20201215-02', 'volume name is correct');
   is ($volumes[0]->{'maxdate'}, '2007-06-05', 'the date is correct');
@@ -463,7 +463,7 @@ subtest 'recent staging volumes list' => sub {
              util          => $util,
              id_instrument => 13,
             });
-  @volumes = $model->recent_staging_volumes();
+  @volumes = @{$model->recent_staging_volumes()};
   is ($volumes[0]->{'volume'}, $new_glob, 'a full glob is returned');
 
   $new_glob = q[/{export,nfs}];
@@ -473,7 +473,7 @@ subtest 'recent staging volumes list' => sub {
              util          => $util,
              id_instrument => 13,
             });
-  @volumes = $model->recent_staging_volumes();
+  @volumes = @{$model->recent_staging_volumes()};
   is ($volumes[0]->{'volume'}, $new_glob, 'a full glob is returned');
   
   $update = q[update run set folder_path_glob='' where id_run=15];
@@ -482,7 +482,7 @@ subtest 'recent staging volumes list' => sub {
              util          => $util,
              id_instrument => 13,
             });
-  @volumes = $model->recent_staging_volumes();
+  @volumes = @{$model->recent_staging_volumes()};
   is (@volumes, 0, 'an empty list is returned for a zero length glob');
 
   $update = q[update run_status set id_run_status_dict=2 where ] .
@@ -501,7 +501,7 @@ subtest 'recent staging volumes list' => sub {
              util          => $util,
              id_instrument => 3,
             });
-  @volumes = $model->recent_staging_volumes();
+  @volumes = @{$model->recent_staging_volumes()};
   is (@volumes, 2, 'data for two volumes');
   is ($volumes[1]->{'volume'}, q[esa-sv-20201215-03], 'previous volume');
   is ($volumes[1]->{'maxdate'}, '2007-06-05', 'the date is correct');
