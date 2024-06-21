@@ -219,8 +219,8 @@ sub study_config {
     }
     $study_config = $study_configs[0];
   } elsif (!$strict) {
-    $study_config = $self->_product_config->{$CONFIG_DEFAULT};
-    (defined $study_config) and $self->_log_message("Using the default configuration for study $study_id", 'debug');
+    $study_config = $self->default_study_config();
+    $self->_log_message("Using the default configuration for study $study_id", 'debug');
   }
 
   return $study_config;
