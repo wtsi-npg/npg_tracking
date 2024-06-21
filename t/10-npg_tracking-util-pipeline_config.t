@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Cwd;
-use Test::More tests => 21;
+use Test::More tests => 23;
 use Test::Exception;
 use Test::Warn;
 
@@ -64,6 +64,10 @@ $expected = {s3 => {enable => '', notify => ''}, irods => {enable => 1, notify =
 is_deeply ($study_hash, $expected, 'correct default data returned');
 $study_hash = $c->study_config($l, 1);
 is_deeply ($study_hash, {}, 'strict mode - an empty hash is returned');
+is_deeply ($c->default_study_config(), $expected, 'default config is returned');
+
+$c = t::pipeline_config->new(conf_path => 't/data/pipeline_config/default_config_absent');
+is_deeply ($c->default_study_config(), {}, 'empty hash is returned');
 
 my $pctfile = 't/data/pipeline_config/study_config_tertiary_present/product_release.yml';
 $c = t::pipeline_config->new(conf_path => 't/data/pipeline_config/study_config_tertiary_present');

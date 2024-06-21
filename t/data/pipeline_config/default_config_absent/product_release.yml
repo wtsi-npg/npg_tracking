@@ -1,0 +1,12 @@
+---
+study:
+  - study_id: "700"
+    irods:
+      enable: false
+    tertiary:
+      Homo_sapiens:
+        GRCh37_53:
+          haplotype_caller:
+            enable: true
+            sample_chunking: hs37primary
+            sample_chunking_number: 24
