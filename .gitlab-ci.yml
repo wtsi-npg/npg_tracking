@@ -24,6 +24,6 @@ mark-job:
         - autoscale
     script: >
         for f in $(find . -name includes -type d -prune -o -name README.md -prune -o -name '*.md' -print0 | xargs -0); do
-          echo 'username = ""' && echo "password = '$CONFLUENCE_PERSONAL_ACCESS_TOKEN'" | 
-            mark -c /dev/stdin -b https://ssg-confluence.internal.sanger.ac.uk -f "$f" --trace
+          sed -i 's/<!--CONFLUENCE_INFO \| CONFLUENCE_INFO-->//g' "$f";
+          echo 'username = ""' && echo "password = '$CONFLUENCE_PERSONAL_ACCESS_TOKEN'" | mark -c /dev/stdin -b https://ssg-confluence.internal.sanger.ac.uk -f "$f" --trace;
         done

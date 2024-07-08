@@ -9,9 +9,9 @@
      Title: ${2}
      Body: ${3} -->
 
-:box:info:Note:This page is automatically generated; any edits will be overwritten:
+<!--CONFLUENCE_INFO :box:info:Note:This page is automatically generated; any edits will be overwritten: CONFLUENCE_INFO-->
 
-###### Repository information
+<!--CONFLUENCE_INFO ###### Repository information CONFLUENCE_INFO-->
 
 <!-- Include: includes/repo-metadata.md -->
 

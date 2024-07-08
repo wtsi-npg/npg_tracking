@@ -1,7 +1,7 @@
 LIST OF CHANGES
 
  - docs
-   - Automatic confluence update for 'docs/api_usage.md', 'docs/instruments.md', 'docs/run_states.md', 'docs/user_management.md'
+   - automated creation/update of confluence pages for docs
 
 release 101.2.0 (2024-05-24)
  - remove dependency on HTML::Tidy
