@@ -1,3 +1,20 @@
+<!-- Space: NPG -->
+<!-- Parent: Tracking -->
+<!-- Title: Run States -->
+
+<!-- Macro: :box:([^:]+):([^:]*):(.+):
+     Template: ac:box
+     Icon: true
+     Name: ${1}
+     Title: ${2}
+     Body: ${3} -->
+
+:box:info:Note:This page is automatically generated; any edits will be overwritten:
+
+###### Repository information
+
+<!-- Include: docs/includes/repo-metadata.md -->
+
 # Run States
 
 The Tracking interface shows a sequence of states for Illumina runs. They have the following meanings in approximate order of execution:

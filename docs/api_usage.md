@@ -1,3 +1,20 @@
+<!-- Space: NPG -->
+<!-- Parent: Tracking -->
+<!-- Title: API usage -->
+
+<!-- Macro: :box:([^:]+):([^:]*):(.+):
+     Template: ac:box
+     Icon: true
+     Name: ${1}
+     Title: ${2}
+     Body: ${3} -->
+
+:box:info:Note:This page is automatically generated; any edits will be overwritten:
+
+###### Repository information
+
+<!-- Include: docs/includes/repo-metadata.md -->
+
 # NPG Tracking API usage
 
 There are two APIs in active use for NPG Tracking: once Clearpress based, the other DBIx::Class based.
