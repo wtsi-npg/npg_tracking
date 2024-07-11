@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use t::util;
-use Test::More tests => 141;
+use Test::More tests => 142;
 use Test::Deep;
 use Test::Exception;
 
@@ -191,7 +191,6 @@ my $util = t::util->new({ fixtures => 1 });
       qq[status changed automatically to "$auto_status"]);
 }
 
-
 {
   my $instr = npg::model::instrument->new({
     util          => $util,
@@ -312,7 +311,6 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
   ok (!$model->autochange_status_if_needed('analysis in progress'), 'no autochange status');
 }
 
-
 {
   my $model = npg::model::instrument->new({util => $util, id_instrument => 36,});
   ok($model->is_two_slot_instrument, 'is two_slot instrument');
@@ -350,7 +348,6 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
   cmp_deeply($fc_slots2current_runs, $expected, 'non-empty mapping of both slots to current runs');
   cmp_deeply($model->fc_slots2blocking_runs, {fc_slotA => [], fc_slotB => [],}, 'empty mapping of both slots to blocking runs');
 }
-
 
 {
   my $run = npg::model::run->new({util => $util, id_run => 9950,});
@@ -420,5 +417,98 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
   is( scalar @{$model->recent_instrument_statuses()}, 1, 'one recent status');
   is (scalar @{$model->instrument_statuses()}, 3, 'number of statuses in total');
 }
+
+subtest 'recent staging volumes list' => sub {
+  plan tests => 23;
+
+  my $util4updates = t::util->new(); # need a new db handle
+  lives_ok {$util4updates->load_fixtures;} 'a fresh set of fixtures is loaded';
+  my $dbh = $util4updates->dbh;
+  $dbh->{AutoCommit} = 1;
+  $dbh->{RaiseError} = 1;
+
+  my $status = 'run in progress';
+  
+  my $model = npg::model::instrument->new({
+             util          => $util,
+             id_instrument => 3,
+            });
+  my @volumes = @{$model->recent_staging_volumes()};
+  is (@volumes, 1, 'one record is returned');
+  is ($volumes[0]->{'volume'}, q[esa-sv-20201215-03],
+    qq[volume name for a single run that is associated with the "$status" status]);
+  is ($volumes[0]->{'maxdate'}, '2007-06-05', 'the date is correct');
+
+  $model = npg::model::instrument->new({
+             util          => $util,
+             id_instrument => 14,
+            });
+  is (scalar @{$model->recent_staging_volumes()}, 0,
+    'empty list since no glob is available for a run that is associated with ' .
+    qq[the "$status" status]);
+  
+  $model = npg::model::instrument->new({
+             util          => $util,
+             id_instrument => 13,
+            });
+  @volumes = @{$model->recent_staging_volumes()};
+  is (@volumes, 1, 'one record is returned');
+  is ($volumes[0]->{'volume'}, 'esa-sv-20201215-02', 'volume name is correct');
+  is ($volumes[0]->{'maxdate'}, '2007-06-05', 'the date is correct');
+
+  my $new_glob = q[{export,nfs}/esa-sv-20201215-02/IL_seq_data/*/];
+  my $update = qq[update run set folder_path_glob='$new_glob' where id_run=15];
+  ok($dbh->do($update), 'folder path glob is updated');
+  $model = npg::model::instrument->new({
+             util          => $util,
+             id_instrument => 13,
+            });
+  @volumes = @{$model->recent_staging_volumes()};
+  is ($volumes[0]->{'volume'}, $new_glob, 'a full glob is returned');
+
+  $new_glob = q[/{export,nfs}];
+  $update = qq[update run set folder_path_glob='$new_glob' where id_run=15];
+  ok($dbh->do($update), 'folder path glob is updated');
+  $model = npg::model::instrument->new({
+             util          => $util,
+             id_instrument => 13,
+            });
+  @volumes = @{$model->recent_staging_volumes()};
+  is ($volumes[0]->{'volume'}, $new_glob, 'a full glob is returned');
+  
+  $update = q[update run set folder_path_glob='' where id_run=15];
+  ok($dbh->do($update), 'folder path glob is updated');
+  $model = npg::model::instrument->new({
+             util          => $util,
+             id_instrument => 13,
+            });
+  @volumes = @{$model->recent_staging_volumes()};
+  is (@volumes, 0, 'an empty list is returned for a zero length glob');
+
+  $update = q[update run_status set id_run_status_dict=2 where ] .
+    q[id_run in (3,4,5) and id_run_status_dict=4];
+  ok($dbh->do($update), 'run statuses are updated');
+  $update = q[update run set folder_path_glob='/{export,nfs}' where id_run=15];
+  ok($dbh->do($update), 'folder path glob is updated');
+  my $new_date = '2024-05-11 11:23:45';
+  $update = qq[update run_status set date='$new_date' where id_run=15 and ] .
+    q[id_run_status_dict=2];
+  ok($dbh->do($update), 'update the date');
+  $update = qq[update run set id_instrument=3 where id_run=15];
+  ok($dbh->do($update), 'assign one more run to the instrument');
+
+  $model = npg::model::instrument->new({
+             util          => $util,
+             id_instrument => 3,
+            });
+  @volumes = @{$model->recent_staging_volumes()};
+  is (@volumes, 2, 'data for two volumes');
+  is ($volumes[1]->{'volume'}, q[esa-sv-20201215-03], 'previous volume');
+  is ($volumes[1]->{'maxdate'}, '2007-06-05', 'the date is correct');
+  is ($volumes[0]->{'volume'}, q[/{export,nfs}], 'latest volume');
+  is ($volumes[0]->{'maxdate'}, '2024-05-11', 'the date is correct');
+
+  $dbh->disconnect;
+};
 
 1;

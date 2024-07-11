@@ -10,6 +10,7 @@
   priority: 1
   flowcell_id: 
   id_instrument_format: 1
+  folder_path_glob: ~
 - actual_cycle_count: 0
   batch_id: 0
   expected_cycle_count: 0
@@ -20,6 +21,7 @@
   is_paired: 0
   priority: 1
   id_instrument_format: 1
+  folder_path_glob: /{export,nfs}/sf44/ILorHSany_sf44/*/
 - actual_cycle_count: 0
   batch_id: 0
   expected_cycle_count: 0
@@ -30,6 +32,7 @@
   is_paired: 0
   priority: 1
   id_instrument_format: 1
+  folder_path_glob: /{export,nfs}/sf44/ILorHSany_sf44/*/
 - actual_cycle_count: 0
   batch_id: 0
   expected_cycle_count: 0
@@ -40,6 +43,7 @@
   is_paired: 0
   priority: 1
   id_instrument_format: 1
+  folder_path_glob: /{export,nfs}/sf55/ILorHSany_sf55/*/
 - actual_cycle_count: 0
   batch_id: 0
   expected_cycle_count: 31
@@ -50,6 +54,7 @@
   is_paired: 0
   priority: 1
   id_instrument_format: 1
+  folder_path_glob: /{export,nfs}
 - actual_cycle_count: 0
   batch_id: 0
   expected_cycle_count: 33
@@ -60,6 +65,7 @@
   is_paired: 0
   priority: 1
   id_instrument_format: 1
+  folder_path_glob: sf58
 - actual_cycle_count: 0
   batch_id: 0
   expected_cycle_count: 33
@@ -70,6 +76,7 @@
   is_paired: 0
   priority: 1
   id_instrument_format: 1
+  folder_path_glob: /{export,nfs}/esa-sv-20201215-02/IL_seq_data/*/
 - actual_cycle_count: 0
   batch_id: 0
   expected_cycle_count: 35
@@ -80,6 +87,7 @@
   is_paired: 0
   priority: 1
   id_instrument_format: 1
+  folder_path_glob: /{export,nfs}/esa-sv-20201215-02/IL_seq_data/*/
 - actual_cycle_count: 0
   batch_id: 0
   expected_cycle_count: 35
@@ -90,6 +98,7 @@
   is_paired: 0
   priority: 1
   id_instrument_format: 1
+  folder_path_glob: /{export,nfs}/esa-sv-20201215-01/IL_seq_data/*/ 
 - actual_cycle_count: 0
   batch_id: 0
   expected_cycle_count: 35
@@ -100,6 +109,7 @@
   is_paired: 0
   priority: 1
   id_instrument_format: 1
+  folder_path_glob: /{export,nfs}/esa-sv-20201215-01/IL_seq_data/*/
 - actual_cycle_count: 0
   batch_id: 0
   expected_cycle_count: 35
@@ -110,6 +120,7 @@
   is_paired: 1
   priority: 1
   id_instrument_format: 1
+  folder_path_glob: /{export,nfs}/esa-sv-20201215-03/IL_seq_data/*/
 - actual_cycle_count: 0
   batch_id: 0
   expected_cycle_count: 35
@@ -150,6 +161,7 @@
   is_paired: 1
   priority: 1
   id_instrument_format: 4
+  folder_path_glob: /{export,nfs}/esa-sv-20201215-02/IL_seq_data/*/
 - actual_cycle_count: 0
   batch_id: 0
   expected_cycle_count: 35
