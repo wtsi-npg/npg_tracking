@@ -13,7 +13,7 @@
 
 ###### Repository information
 
-<!-- Include: docs/includes/repo-metadata.md -->
+<!-- Include: includes/repo-metadata.md -->
 
 # NPG Tracking API usage
 
