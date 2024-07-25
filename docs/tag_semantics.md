@@ -15,7 +15,7 @@
 
 <!-- Include: includes/repo-metadata.md -->
 
-Tags and Their Meaning
+# Tags and Their Meaning
 
 Text tags can be associated with sequencing runs and individual lanes of a run.
 Arbitrary tags are supported. Tags can be assigned both manually by the users
