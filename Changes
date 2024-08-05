@@ -1,5 +1,17 @@
 LIST OF CHANGES
 
+release 101.3.0 (2024-08-05)
+ - Provided a direct access to the default section of the study configuration
+   file.
+ - Enhanced a textual listing of instruments
+   Added a column for recently used staging servers so that the loaders can
+   easily spot instruments, which write to the same server.
+ - Update documentation for tags
+ - docs
+   - Automatic confluence update for 'docs/api_usage.md',
+     'docs/instruments.md', 'docs/run_states.md', 'docs/user_management.md',
+     'docs/tag_semantics.md'
+
 release 101.2.0 (2024-05-24)
  - remove dependency on HTML::Tidy
  - update NovaSeqX icon

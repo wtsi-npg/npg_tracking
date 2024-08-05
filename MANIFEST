@@ -499,6 +499,7 @@ t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming/120110_M00119_0068_AMS0002022-
 t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming/120110_M00119_0068_AMS0002022-00300/SampleSheet.csv
 t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming/160408_HS31_19395_B_H5MMFADXY/Data/Intensities/config.xml
 t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming/160408_HS31_19395_B_H5MMFADXY/RunInfo.xml
+t/data/pipeline_config/default_config_absent/product_release.yml
 t/data/pipeline_config/study_config_present/product_release.yml
 t/data/pipeline_config/study_config_absent/product_release.yml
 t/data/pipeline_config/study_config_tertiary_present/product_release.yml
