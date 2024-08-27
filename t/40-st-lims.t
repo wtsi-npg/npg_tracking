@@ -284,7 +284,7 @@ subtest 'Samplesheet driver for a one-component composition' => sub {
 };
 
 subtest 'Samplesheet driver for arbitrary compositions' => sub {
-  plan tests => 69;
+  plan tests => 75;
 
   my $path = 't/data/samplesheet/novaseq_multirun.csv';
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $path;
@@ -309,6 +309,8 @@ subtest 'Samplesheet driver for arbitrary compositions' => sub {
     is($o->library_name, '22802061', 'library name');
     is($o->reference_genome, 'Homo_sapiens (GRCh38_15_plus_hs38d1) [minimap2]',
       'reference genome');
+    is($o->species_from_reference_genome, 'Homo_sapiens',
+      'species reference genome');
   }
 
   $ss = $children[0];
@@ -422,7 +424,7 @@ subtest 'Insert size' => sub {
 };
 
 subtest 'Study and sample properties' => sub {
-  plan tests => 75;
+  plan tests => 83;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
     't/data/samplesheet/4pool4libs_extended.csv';
@@ -442,6 +444,8 @@ subtest 'Study and sample properties' => sub {
   is( $lims->study_reference_genome, q[ ], 'study reference genome');
   is( $lims->reference_genome, 'Haemonchus_contortus (V1_21June13)',
     'reference genome');
+  is( $lims->species_from_reference_genome, 'Haemonchus_contortus',
+    'species from reference genome');
 
   # Individual plex.
   $lims = st::api::lims->new(id_run => 9999, position => 7, tag_index=> 76);
@@ -461,6 +465,8 @@ subtest 'Study and sample properties' => sub {
   is( $lims->study_reference_genome, 'Mus_musculus (GRCm38)',
     'study reference genome');
   is( $lims->reference_genome, 'Mus_musculus (GRCm38)', 'reference genome');
+  is( $lims->species_from_reference_genome, 'Mus_musculus',
+    'species from reference genome');
 
   # Indexed lane and tag zero for the same lane.
   for my $l (
@@ -475,6 +481,8 @@ subtest 'Study and sample properties' => sub {
     is( $l->study_reference_genome, 'Mus_musculus (GRCm38)',
       'study reference genome');
     is( $l->reference_genome, 'Mus_musculus (GRCm38)', 'reference genome');
+    is( $lims->species_from_reference_genome, 'Mus_musculus',
+      'species from reference genome');
   }
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
@@ -494,6 +502,8 @@ subtest 'Study and sample properties' => sub {
     is( $l->sample_reference_genome, undef, 'sample reference genome undefined');
     is( $l->study_reference_genome, $ref, 'study reference genome');
     is( $l->reference_genome, undef, 'no fallback to study');
+    is( $l->species_from_reference_genome, undef,
+      'species from reference genome is undefined');
   }
 
   my $ref2 = 'Homo_sapiens (GRCh38_full_analysis_set_plus_decoy_hla)';
