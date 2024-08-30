@@ -12,6 +12,7 @@ use Class::Load qw/load_class/;
 use npg_tracking::util::types;
 use npg_tracking::glossary::rpt;
 use npg_tracking::glossary::composition::factory::rpt_list;
+use npg_tracking::data::reference::find;
 
 our $VERSION = '0';
 
@@ -600,6 +601,34 @@ sub _build_reference_genome {
     $rg = $self->_trim_value($self->study_reference_genome);
   }
   return $rg;
+}
+
+=head2 species_from_reference_genome
+
+Extracts the species name from the value of the C<reference_genome> attribute
+and returns it. Returns an undefined value if the value of the C<reference_genome>
+attribute is not defined or if the the C<reference_genome> string does not match
+the expected pattern.
+
+Examples:
+
+ reference_genome: 'Homo_sapiens (GRCh38_full_analysis_set_plus_decoy_hla)'
+ species: 'Homo_sapiens'
+
+ reference_genome: 'Mus_musculus (GRCm38 + ensembl_84_transcriptome)'
+ species: 'Mus_musculus'
+=cut
+sub species_from_reference_genome {
+  my $self = shift;
+
+  if ($self->reference_genome) {
+    my @genome_as_array = npg_tracking::data::reference::find
+      ->parse_reference_genome($self->reference_genome);
+    if (@genome_as_array) {
+      return $genome_as_array[0];
+    }
+  }
+  return;
 }
 
 sub _trim_value {
@@ -1310,6 +1339,8 @@ __END__
 =item npg_tracking::glossary::composition::factory::rpt
 
 =item npg_tracking::glossary::composition::component::illumina
+
+=item npg_tracking::data::reference::find
 
 =back
 

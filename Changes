@@ -1,5 +1,11 @@
 LIST OF CHANGES
 
+release 101.4.0 (2024-08-30)
+ - Added species_from_reference_genome method to st::api::lims. If the
+   reference_genome value is defined, this new method returns the name of the
+   species. parse_reference_genome from npg_tracking::data::reference::find
+   is used for parsing the reference genome string.
+
 release 101.3.0 (2024-08-05)
  - Provided a direct access to the default section of the study configuration
    file.
