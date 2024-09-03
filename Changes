@@ -1,5 +1,16 @@
 LIST OF CHANGES
 
+ - Moved the parser for the LIMS reference genome notation from
+   npg_tracking::data::reference::find to a new package
+   npg_tracking::data::reference::util, thus providing a stand-alone
+   implementation of the parser.
+
+   Removed dependency of st::api::lims on npg_tracking::data::reference::find
+   since the latter brings in the dependency on npg_tracking::data::reference::list,
+   which requires that the reference repository root is defined and exists.
+   Instead used the reference genome notation parser from
+   npg_tracking::data::reference::util.
+
 release 101.4.0 (2024-08-30)
  - Added species_from_reference_genome method to st::api::lims. If the
    reference_genome value is defined, this new method returns the name of the
