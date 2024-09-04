@@ -12,7 +12,7 @@ use Class::Load qw/load_class/;
 use npg_tracking::util::types;
 use npg_tracking::glossary::rpt;
 use npg_tracking::glossary::composition::factory::rpt_list;
-use npg_tracking::data::reference::find;
+use npg_tracking::data::reference::util qw/parse_reference_genome_name/;
 
 our $VERSION = '0';
 
@@ -622,10 +622,9 @@ sub species_from_reference_genome {
   my $self = shift;
 
   if ($self->reference_genome) {
-    my @genome_as_array = npg_tracking::data::reference::find
-      ->parse_reference_genome($self->reference_genome);
-    if (@genome_as_array) {
-      return $genome_as_array[0];
+    my @gname_components = parse_reference_genome_name($self->reference_genome);
+    if (@gname_components) {
+      return $gname_components[0];
     }
   }
   return;
@@ -1340,7 +1339,7 @@ __END__
 
 =item npg_tracking::glossary::composition::component::illumina
 
-=item npg_tracking::data::reference::find
+=item npg_tracking::data::reference::util
 
 =back
 

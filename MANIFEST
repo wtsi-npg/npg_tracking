@@ -202,6 +202,7 @@ lib/npg_tracking/data/reference.pm
 lib/npg_tracking/data/reference/find.pm
 lib/npg_tracking/data/reference/info.pm
 lib/npg_tracking/data/reference/list.pm
+lib/npg_tracking/data/reference/util.pm
 lib/npg_tracking/data/snv.pm
 lib/npg_tracking/data/snv/find.pm
 lib/npg_tracking/data/transcriptome.pm
@@ -344,6 +345,7 @@ t/10-primer_panel.t
 t/10-reference-find.t
 t/10-reference-info.t
 t/10-reference-list.t
+t/10-reference-util.t
 t/10-reference.t
 t/10-snv.t
 t/10-transcriptome.t
