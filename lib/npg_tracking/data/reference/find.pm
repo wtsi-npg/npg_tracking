@@ -7,6 +7,7 @@ use File::Spec::Functions qw(catfile);
 use Readonly;
 
 use npg_tracking::util::abs_path qw(abs_path);
+use npg_tracking::data::reference::util qw(parse_reference_genome_name);
 use npg_tracking::data::reference::info;
 use npg_tracking::util::messages;
 use npg_tracking::glossary::rpt;
@@ -386,25 +387,7 @@ sub parse_reference_genome {
     my ($self, $reference_genome) = @_;
     $reference_genome ||= $self->reference_genome;
     if ($reference_genome) {
-        my ($organism, $strain, $tversion, $analysis, @array);
-        ## allows for transcriptome version and analysis e.g. 'Homo_sapiens (1000Genomes_hs37d5 + ensembl_release_75) [star]'
-        $organism = '(?<organism>\S+)\s+';
-        $strain = '(?<strain>\S+)';
-        $tversion = '(?:\s+\+\s+(?<tversion>\S+))?';
-        $analysis = '(?:\s+[[](?<analysis>\S+)[]])?';
-        $reference_genome  =~ qr{$organism [(] $strain $tversion [)] $analysis}smx;
-        $organism = $LAST_PAREN_MATCH{'organism'};
-        $strain = $LAST_PAREN_MATCH{'strain'};
-        $tversion = $LAST_PAREN_MATCH{'tversion'};
-        $analysis = $LAST_PAREN_MATCH{'analysis'};
-        if ($organism && $strain) {
-            if ($tversion || $analysis) {
-                @array = ($organism, $strain, $tversion, $analysis);
-            } else {
-                @array = ($organism, $strain);
-            }
-            return @array;
-        }
+        return parse_reference_genome_name($reference_genome);
     }
     return;
 }
