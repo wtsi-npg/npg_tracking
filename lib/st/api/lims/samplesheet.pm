@@ -315,7 +315,7 @@ for my $m ( st::api::lims->driver_method_list_short(__PACKAGE__->meta->get_attri
           if (defined $value && $value eq q[]) {
             $value = undef;
           }
-          if ($m =~ /s$/smx) {
+          if ($m =~ /^email_addresses/smx) {
             my @temp = $value ? split $SAMPLESHEET_ARRAY_SEPARATOR, $value : ();
             $value = \@temp;
           } elsif ($m eq 'required_insert_size_range') {

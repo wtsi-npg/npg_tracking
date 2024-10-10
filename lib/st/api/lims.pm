@@ -118,6 +118,8 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
                       /],
 
     'sample'       => [qw/ sample_id
+                           sample_uuid
+                           sample_lims
                            sample_name
                            organism_taxon_id
                            organism
