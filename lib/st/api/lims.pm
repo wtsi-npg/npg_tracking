@@ -44,18 +44,18 @@ st::api::lims
 
 =head1 DESCRIPTION
 
-Generic NPG LIMS wrapper capable of retrieving data from multiple sources via
-a number of source-specific drivers. Provides methods implementing business
-logic that is independent of data source.
+Generic NPG LIMS wrapper capable of retrieving data from multiple sources of
+LIMS data via a number of source-specific drivers. Provides source-independent
+set of methods for retrieving LIMS data for different types of entities.
 
 A set of valid arguments to the constructor depends on the driver type. The
 drivers are implemented as st::api::lims::<driver_name> classes.
 
-The default driver type is 'samplesheet'. The path to the samplesheet can be
-set either in the 'path' constructor attribute or by setting the env. variable
-NPG_CACHED_SAMPLESHEET_FILE.
+The default driver type is C<samplesheet>. The path to the samplesheet can be
+set either in the 'path' constructor attribute or by setting the environment
+variable NPG_CACHED_SAMPLESHEET_FILE.
 
-All flavours of the ml_warehouse driver require access to the ml warehouse
+All flavours of the C<ml_warehouse> driver require access to the ml warehouse
 database. If the mlwh_schema constructor argument is not set, a connection
 to the database defined in a standard NPG configuration file is be used.
 
@@ -73,6 +73,30 @@ through to the driver are be available as this object's attributes. Example:
  print $lims->id_flowcell_lims(); # 34567
  print $lims->driver_type;        # ml_warehouse
  print $lims->iseq_flowcell();    # ERROR
+
+=head2 Handling of Properties that Map to Multiple Values
+
+If a LIMS property C<some_prop> is described by a list of values of similar
+semantics and data type, the return value of the C<some_prop> method is an
+array of distinct values. Emails of followers, managers, etc. are examples of
+this kind of properties.
+
+Complex entities like lanes, tag zero and compositions often represent multiple
+individual libraries. Below the rules for computing the return values of
+properties for complex entities are demonstrated using the C<sample_name>
+property as an example.
+
+If all C<sample_name> values for individual libraries are the same, the return
+value of the C<sample_name> property of the complex entity is this common
+C<sample_name> value.
+
+If any of C<sample_name> values for individual libraries are different, then
+the return value of the C<sample_name> property of the complex entity is C<undef>.
+
+For cases when it is necessary to know all C<sample_name> values of the
+constituent libraries, this class provides C<sample_names> method and a number
+of other similar methods, see comments for C<ATTRIBUTE_LIST_METHODS> variable
+in the code below. 
 
 =head1 SUBROUTINES/METHODS
 

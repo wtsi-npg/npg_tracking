@@ -316,6 +316,8 @@ for my $m ( st::api::lims->driver_method_list_short(__PACKAGE__->meta->get_attri
             $value = undef;
           }
           if ($m =~ /^email_addresses/smx) {
+            # Handle potentially multiple email addressees, return an array of
+            # one, none or multiple values.
             my @temp = $value ? split $SAMPLESHEET_ARRAY_SEPARATOR, $value : ();
             $value = \@temp;
           } elsif ($m eq 'required_insert_size_range') {
