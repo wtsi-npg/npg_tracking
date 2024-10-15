@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 12;
 use Test::Exception;
 use Test::Warn;
 use File::Slurp;
@@ -395,6 +395,28 @@ subtest 'dual index default' => sub {
   $p = $plexes->{9};
   is($p->default_tag_sequence, 'GATCAGCG', 'first index');
   is($p->default_tagtwo_sequence, undef, 'no second index');
+};
+
+subtest 'sample uuid and LIMS id' => sub {
+  plan tests => 10;
+
+  my $path = 't/data/samplesheet/4pool4libs_extended.csv';
+  my $ss = st::api::lims::samplesheet->new(id_run => 6946, position => 1, path => $path);
+  ok (!$ss->is_pool, 'lane 1 is not a pool'); 
+  is ($ss->sample_uuid, 'c46e1810-e8aa-11e2-aafd-68b59976a382', 'sample uuid');
+  is ($ss->sample_lims, 'SQSCP', 'sample lims');
+  $ss = st::api::lims::samplesheet->new(id_run => 6946, position => 6, path => $path);
+  ok ($ss->is_pool, 'lane 6 is a pool');
+  is ($ss->sample_uuid, undef, 'sample uuid is not defined');
+  is ($ss->sample_lims, undef, 'sample lims is not defined');
+  my @plexes = $ss->children();
+  is ($plexes[0]->sample_uuid, '62a06c60-2139-11e3-b2c2-68b59976a382',
+    'sample uuid for a plex');
+  is ($plexes[0]->sample_lims, 'SQSCP', 'sample lims for a plex');
+  $ss = st::api::lims::samplesheet->new(
+    id_run => 6946, position => 6, tag_index => 0, path => $path);
+  is ($ss->sample_uuid, undef, 'sample uuid is not defined');
+  is ($ss->sample_lims, undef, 'sample lims is not defined'); 
 };
 
 1;
