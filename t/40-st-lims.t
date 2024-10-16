@@ -89,7 +89,7 @@ subtest 'Driver type, methods and driver build' => sub {
 };
 
 subtest 'Setting return value for primary attributes' => sub {
-  plan tests => 21;
+  plan tests => 27;
 
   my @other = qw/id_flowcell_lims flowcell_barcode/;
   my $ss_path = 't/data/samplesheet/miseq_default.csv';
@@ -106,8 +106,17 @@ subtest 'Setting return value for primary attributes' => sub {
   is ($lims->position, 1, 'position is set correctly');
   is ($lims->tag_index, 0, 'tag_index is set to zero');
   ok ($lims->is_pool, 'tag zero is a pool');
+  my $json = '{"components":[{"id_run":6551,"position":1,"tag_index":0}]}';
+  is ($lims->composition_object->freeze(), $json,
+    'composition object is generated');
+  ok (!$lims->is_lane, 'tag zero is not a lane');
 
   my $lane_lims =  st::api::lims->new(id_run => 6551, position => 1);
+  $json = '{"components":[{"id_run":6551,"position":1}]}';
+  is ($lane_lims->composition_object->freeze(), $json,
+    'composition object is generated');
+  ok ($lane_lims->is_lane, 'a lane is a lane');
+
   $lims = st::api::lims->new(driver    => $lane_lims->driver(),
                              id_run    => 6551,
                              position  => 1,
@@ -127,21 +136,36 @@ subtest 'Setting return value for primary attributes' => sub {
   push @a, qw/id_run position tag_index/;
   is ($lims->rpt_list, '6551:1', 'rpt_list is set correctly');
   ok ($lims->is_composition, 'is a composition');
+  is ($lims->composition_object->freeze(), $json, 'composition object is generated');
+  ok ($lims->is_lane, 'and it is a lane'); 
   for my $attr (@a) {
     is($lims->$attr, undef, "$attr is undefined");
   }
 };
 
 subtest 'Run-level object via samplesheet driver' => sub {
-  plan tests => 40;
+  plan tests => 50;
 
   my $path = 't/data/samplesheet/miseq_default.csv';
 
-  my $ss = st::api::lims->new(id_run => 10262,  path => $path, driver_type => 'samplesheet');
-  isa_ok ($ss->driver, 'st::api::lims::samplesheet', 'samplesheet driver object instantiated');  
+  my $ss = st::api::lims->new(path => $path, driver_type => 'samplesheet');
+  is ($ss->composition_object, undef, 'composition object is undefined');
+  ok (!$ss->is_lane, 'not a lane');
   my @lanes;
   lives_ok {@lanes = $ss->children}  'can get lane-level objects';
+  my $json = '{"components":[{"id_run":10262,"position":1}]}';
+  is ($lanes[0]->id_run, 10262, 'lane id_run is set');
+  is ($lanes[0]->composition_object->freeze(), $json, 'composition object is generated');
+  ok ($lanes[0]->is_lane, 'a lane is a lane');
+
+  $ss = st::api::lims->new(id_run => 10262,  path => $path, driver_type => 'samplesheet');
+  isa_ok ($ss->driver, 'st::api::lims::samplesheet', 'samplesheet driver object instantiated');
+  is ($ss->composition_object, undef, 'composition object is undefined');
+  ok (!$ss->is_lane, 'not a lane'); 
+  lives_ok {@lanes = $ss->children}  'can get lane-level objects';
+  is ($lanes[0]->composition_object->freeze(), $json, 'composition object is generated');
   is ($lanes[0]->id_run, 10262, 'lane id_run as set');
+  ok ($lanes[0]->is_lane, 'is a lane');
 
   $ss = st::api::lims->new(id_run => 10000,  path => $path, driver_type => 'samplesheet');
   is ($ss->id_run, 10000, 'id_run as set');
@@ -229,7 +253,7 @@ subtest 'Lane-level and tag zero objects via samplesheet driver' => sub {
 };
 
 subtest 'Plex-level objects via samplesheet driver' => sub {
-  plan tests => 12;
+  plan tests => 14;
 
   my $path = 't/data/samplesheet/miseq_default.csv';
   my $l;
@@ -245,6 +269,10 @@ subtest 'Plex-level objects via samplesheet driver' => sub {
   is ($l->position, 1, 'correct position');
   is ($l->tag_index, 3, 'correct tag_index');
   is ($l->is_pool, 0, 'plex is not a pool');
+  is ($l->composition_object->freeze(),
+    '{"components":[{"id_run":10262,"position":1,"tag_index":3}]}',
+    'composition object is generated');
+  ok (!$l->is_lane, 'plex is not a lane');
   is ($l->default_tag_sequence, 'TTAGGCAT', 'correct default tag sequence');
   is ($l->tag_sequence, $l->default_tag_sequence,
     'tag sequence is the same as default tag sequence');
@@ -292,7 +320,7 @@ subtest 'Samplesheet driver for a one-component composition' => sub {
 };
 
 subtest 'Samplesheet driver for arbitrary compositions' => sub {
-  plan tests => 93;
+  plan tests => 95;
 
   my $path = 't/data/samplesheet/novaseq_multirun.csv';
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $path;
@@ -374,6 +402,13 @@ subtest 'Samplesheet driver for arbitrary compositions' => sub {
     'since the values for individual components differ');
   is ($ss->sample_lims, undef, 'sample lims for a composition is undefined ' .
     'since the values for individual components differ');
+
+  $rpt_list = '26480:1;26480:2';
+  $ss=st::api::lims->new(rpt_list => $rpt_list);
+  is ($ss->composition_object->freeze(),
+    '{"components":[{"id_run":26480,"position":1},{"id_run":26480,"position":2}]}',
+    'composition object is generated');
+  ok (!$ss->is_lane, 'merged lanes entity is not a lane');
 };
 
 subtest 'Dual index' => sub {

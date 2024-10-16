@@ -11,6 +11,8 @@ use Class::Load qw/load_class/;
 
 use npg_tracking::util::types;
 use npg_tracking::glossary::rpt;
+use npg_tracking::glossary::composition::component::illumina;
+use npg_tracking::glossary::composition::factory;
 use npg_tracking::glossary::composition::factory::rpt_list;
 use npg_tracking::data::reference::util qw/parse_reference_genome_name/;
 
@@ -96,7 +98,7 @@ the return value of the C<sample_name> property of the complex entity is C<undef
 For cases when it is necessary to know all C<sample_name> values of the
 constituent libraries, this class provides C<sample_names> method and a number
 of other similar methods, see comments for C<ATTRIBUTE_LIST_METHODS> variable
-in the code below. 
+in the code below.
 
 =head1 SUBROUTINES/METHODS
 
@@ -247,7 +249,7 @@ sub BUILD {
 Returns a hash reference that can be used to initialise st::api::lims
 objects similar to this object. The driver details, if present in this
 object, are returned under the 'driver_type' key and, if relevant,
-'mlwh_schema' key. 
+'mlwh_schema' key.
 
 =cut
 sub copy_init_args {
@@ -790,7 +792,7 @@ sub _build_separate_y_chromosome_data {
 
 Method returning a list of st::api::lims objects that are associated with this object
 and belong to the next (one lower) level. An empty list for a non-pool lane and for a plex.
-For a pooled lane contains plex-level objects. On a run level, when the position 
+For a pooled lane contains plex-level objects. On a run level, when the position
 accessor is not set, returns lane level objects. For the st::api::lims type object that
 was instantiated with an rpt_list attribute, returns a list of st::api::lims type objects
 corresponding to individual components of the composition defined by the rpt_list attribute
@@ -873,6 +875,69 @@ sub is_composition {
   return $self->rpt_list ? 1 : 0;
 }
 
+=head2 composition_object
+
+ Returns C<npg_tracking::glossary::composition> object for this LIMS entity.
+ An undefined value is returned for a run-level object. For some drivers
+ the value of C<id_run> attribute might be undefined, in which case the return
+ value of this method is underined.
+
+=cut
+
+sub composition_object {
+  my $self = shift;
+
+  if ($self->is_composition) {
+    return npg_tracking::glossary::composition::factory::rpt_list
+      ->new(rpt_list => $self->rpt_list)->create_composition();
+  } else {
+    if (defined $self->id_run && defined $self->position) {
+      my $component = npg_tracking::glossary::composition::component::illumina
+        ->new(
+          id_run    => $self->id_run,
+          position  => $self->position,
+          tag_index => $self->tag_index
+        );
+
+      my $factory = npg_tracking::glossary::composition::factory->new();
+      $factory->add_component($component);
+      return $factory->create_composition();
+    }
+  }
+
+  return;
+}
+
+=head2 is_lane
+
+ Returns true if this entity corresponds to a lane, false otherwise.
+ Merged lane entities are not considered to be a lane.
+
+ To determine whether the entity is a lane regardless of the way the
+ C<st::api::lims> is constructed, this method inspects the object returned
+ by the C<composition_object> method. When the C<composition_object> method
+ returns an undefined value, this method's return value is false.
+
+  st::api::lims->new(id_run => 3, position => 4)->is_lane() # true
+  st::api::lims->new(rpt_list => '3:4')->is_lane() # true
+  st::api::lims->new(rpt_list => '2:4;3:4')->is_lane() # false
+  st::api::lims->new(id_run => 3, position => 4, tag_index => 2)->is_lane() # false
+  st::api::lims->new(id_run => 3, position => 4, tag_index => 0)->is_lane() # false
+
+=cut
+
+sub is_lane {
+  my $self = shift;
+
+  my $obj = $self->composition_object();
+  if (defined $obj && $obj->num_components() == 1 &&
+      !defined $obj->get_component(0)->tag_index) {
+    return 1;
+  }
+
+  return;
+}
+
 =head2 aggregate_libraries
 
 Given a list of lane-level C<st::api::lims> objects, finds their children,
@@ -908,7 +973,7 @@ This method can be used both as instance and as a class method.
 
   my $all_lims = st::api::lims->aggregate_libraries($run_lims->children());
   for my $l (@{$all_lims->{'singles'}}) {
-    print 'No merge for ' . $l->to_string;    
+    print 'No merge for ' . $l->to_string;
   }
   for my $l (@{$all_lims->{'merges'}}) {
     print 'Merged entity ' . $l->to_string;
@@ -1079,7 +1144,7 @@ sub  _validate_lane_numbers {
 }
 
 =head2 create_tag_zero_object
- 
+
 Using run ID and position values of this object, creates and returns
 st::api::lims object for tag zero. The new object has the same driver
 settings as the original object.
@@ -1159,7 +1224,7 @@ sub descendants {
 Method providing fast (index-based) access to child lims object.
 Returns a hash ref of st::api::lims children objects
 An empty hash for a non-pool lane and for a plex.
-For a pooled lane contains plex-level objects. On a run level, when the position 
+For a pooled lane contains plex-level objects. On a run level, when the position
 accessor is not set, returns lane level objects. The hash keys are lane numbers (positions)
 or tag indices. _ia stands for index access.
 
@@ -1361,7 +1426,9 @@ __END__
 
 =item npg_tracking::glossary::rpt
 
-=item npg_tracking::glossary::composition::factory::rpt
+=item npg_tracking::glossary::composition::factory
+
+=item npg_tracking::glossary::composition::factory::rpt_list
 
 =item npg_tracking::glossary::composition::component::illumina
 
