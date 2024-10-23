@@ -272,7 +272,7 @@ subtest 'Plex-level objects via samplesheet driver' => sub {
   is ($l->composition_object->freeze(),
     '{"components":[{"id_run":10262,"position":1,"tag_index":3}]}',
     'composition object is generated');
-  ok (!$l->is_lane, 'plex is not a lane');
+  is ($l->is_lane, 0, 'plex is not a lane');
   is ($l->default_tag_sequence, 'TTAGGCAT', 'correct default tag sequence');
   is ($l->tag_sequence, $l->default_tag_sequence,
     'tag sequence is the same as default tag sequence');

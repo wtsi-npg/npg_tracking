@@ -877,14 +877,21 @@ sub is_composition {
 
 =head2 composition_object
 
- Returns C<npg_tracking::glossary::composition> object for this LIMS entity.
- An undefined value is returned for a run-level object. For some drivers
- the value of C<id_run> attribute might be undefined, in which case the return
- value of this method is underined.
+A lazy-build attribute, C<npg_tracking::glossary::composition> object for this
+LIMS entity. The value is undefined for a run-level object. For some drivers
+the value of C<id_run> attribute might be undefined, in which case the value
+of this attribute is undefined. This attribute cannot be set via the constructor.
 
 =cut
 
-sub composition_object {
+has 'composition_object' => (
+  isa        => 'Maybe[npg_tracking::glossary::composition]',
+  is         => 'ro',
+  required   => 0,
+  init_arg   => undef,
+  lazy_build => 1,
+);
+sub _build_composition_object {
   my $self = shift;
 
   if ($self->is_composition) {
@@ -910,13 +917,13 @@ sub composition_object {
 
 =head2 is_lane
 
- Returns true if this entity corresponds to a lane, false otherwise.
- Merged lane entities are not considered to be a lane.
+Returns true (1) if this entity corresponds to a lane, false (0) otherwise.
+Merged lane entities are not considered to be a lane.
 
- To determine whether the entity is a lane regardless of the way the
- C<st::api::lims> is constructed, this method inspects the object returned
- by the C<composition_object> method. When the C<composition_object> method
- returns an undefined value, this method's return value is false.
+To determine whether the entity is a lane regardless of the way the
+C<st::api::lims> is constructed, this method inspects the object returned
+by the C<composition_object> method. When the C<composition_object> method
+returns an undefined value, this method's return value is false.
 
   st::api::lims->new(id_run => 3, position => 4)->is_lane() # true
   st::api::lims->new(rpt_list => '3:4')->is_lane() # true
@@ -935,7 +942,7 @@ sub is_lane {
     return 1;
   }
 
-  return;
+  return 0;
 }
 
 =head2 aggregate_libraries
