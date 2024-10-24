@@ -1,6 +1,6 @@
 LIST OF CHANGES
 
-release 101.6 (2024-10-24)
+release 101.6.0 (2024-10-24)
  - Added sample_uuid and sample_lims methods to st::api::lims
  - Patched st::api::lims::samplesheet to allow for scalar attributes
    ending with 's'. Previously the values of attributes with names
