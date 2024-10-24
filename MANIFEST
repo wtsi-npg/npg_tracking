@@ -661,6 +661,7 @@ t/data/run_params/runParameters.hiseqx.xml
 t/data/run_params/runParameters.miseq.xml
 t/data/run_params/RunParameters.novaseq.xp.lite.xml
 t/data/run_params/RunParameters.novaseqx.prod.xml
+t/data/samplesheet/data4merge.csv
 t/data/samplesheet/samplesheet_7753.csv
 t/data/samplesheet/samplesheet_27483.csv
 t/data/samplesheet/samplesheet_33990.csv

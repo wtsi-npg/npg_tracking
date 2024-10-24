@@ -140,7 +140,7 @@ qr/No record retrieved for st::api::lims::ml_warehouse\w* id_flowcell_lims 22043
 };
 
 subtest 'lane-level driver from run-level driver' => sub {
-  plan tests => 108;
+  plan tests => 124;
 
   my $count = 0;
         for my $p ($mlwh_d, $mlwh_auto_d, $mlwh_auto_d, $mlwh_alt_d) {
@@ -169,6 +169,8 @@ subtest 'lane-level driver from run-level driver' => sub {
   ok (!$d->study_name, 'no study name');
   ok (!$d->sample_id, 'no sample_id');
   ok (!$d->sample_supplier_name, 'no supplier name');
+  ok (!$d->sample_uuid, 'no sample uuid');
+  ok (!$d->sample_lims, 'no sample lims');
   ok (!$d->sample_cohort, 'no cohort');
   ok (!$d->sample_donor_id, 'no donor id');
   is ($d->default_tag_sequence, undef, 'first index sequence undefined');
@@ -184,6 +186,8 @@ subtest 'lane-level driver from run-level driver' => sub {
   ok(!$lims1->sample_consent_withdrawn(), 'sample consent not withdrawn');
   is ($lims1->sample_id, 7283, 'sample id');
   is ($lims1->sample_supplier_name, 'sample_33', 'supplier name');
+  is ($lims1->sample_uuid, 'fdb13110-6a55-11e4-8e19-68b59977951c', 'sample uuid');
+  is ($lims1->sample_lims, 'CLARITY', 'sample lims');
   is ($lims1->sample_cohort, 'plan2', 'cohort');
   is ($lims1->sample_donor_id, 'd5678', 'donor id');
   is ($lims1->purpose, 'qc', 'purpose');
@@ -276,7 +280,7 @@ sub _add2query {
 }
 
 subtest 'lane and tag level drivers' => sub {
-  plan tests => 136;
+  plan tests => 152;
 
   my $lims_id = 16249;
   my $id_run  = 45678;
@@ -323,6 +327,8 @@ subtest 'lane and tag level drivers' => sub {
   is (scalar $lims->children, 9, 'tag zero - nine-long children list');
   is ($lims->spiked_phix_tag_index, 168, 'spike index');
   ok (!$lims->sample_supplier_name, 'no supplier name');
+  ok (!$lims->sample_uuid, 'no sample uuid');
+  ok (!$lims->sample_lims, 'no sample lims'); 
   ok (!$lims->sample_cohort, 'no cohort');
   ok (!$lims->sample_donor_id, 'no donor id');
   is ($lims->default_tag_sequence, undef, 'first index sequence undefined');
@@ -340,6 +346,8 @@ subtest 'lane and tag level drivers' => sub {
   ok (!$lims->is_control, 'tag 2 is not control');
   is ($lims->sample_id, 1092803, 'sample id');
   is ($lims->sample_supplier_name, 'sample_33', 'supplier name');
+  is ($lims->sample_uuid, 'f44b2ec0-6f67-11e4-a268-68b59977951c', 'sample uuid');
+  is ($lims->sample_lims, 'SQSCP', 'sample lims');
   is ($lims->sample_cohort, 'plan1', 'cohort');
   is ($lims->sample_donor_id, '5678', 'donor id');
   is ($lims->default_tag_sequence, 'CGATGT', 'first index sequence');

@@ -5,7 +5,7 @@ use Test::Exception;
 use Test::Warn;
 use Moose::Meta::Class;
 
-my $num_delegated_methods = 45;
+my $num_delegated_methods = 47;
 
 use_ok('st::api::lims');
 
@@ -89,7 +89,7 @@ subtest 'Driver type, methods and driver build' => sub {
 };
 
 subtest 'Setting return value for primary attributes' => sub {
-  plan tests => 21;
+  plan tests => 27;
 
   my @other = qw/id_flowcell_lims flowcell_barcode/;
   my $ss_path = 't/data/samplesheet/miseq_default.csv';
@@ -106,8 +106,17 @@ subtest 'Setting return value for primary attributes' => sub {
   is ($lims->position, 1, 'position is set correctly');
   is ($lims->tag_index, 0, 'tag_index is set to zero');
   ok ($lims->is_pool, 'tag zero is a pool');
+  my $json = '{"components":[{"id_run":6551,"position":1,"tag_index":0}]}';
+  is ($lims->composition_object->freeze(), $json,
+    'composition object is generated');
+  ok (!$lims->is_lane, 'tag zero is not a lane');
 
   my $lane_lims =  st::api::lims->new(id_run => 6551, position => 1);
+  $json = '{"components":[{"id_run":6551,"position":1}]}';
+  is ($lane_lims->composition_object->freeze(), $json,
+    'composition object is generated');
+  ok ($lane_lims->is_lane, 'a lane is a lane');
+
   $lims = st::api::lims->new(driver    => $lane_lims->driver(),
                              id_run    => 6551,
                              position  => 1,
@@ -127,21 +136,36 @@ subtest 'Setting return value for primary attributes' => sub {
   push @a, qw/id_run position tag_index/;
   is ($lims->rpt_list, '6551:1', 'rpt_list is set correctly');
   ok ($lims->is_composition, 'is a composition');
+  is ($lims->composition_object->freeze(), $json, 'composition object is generated');
+  ok ($lims->is_lane, 'and it is a lane'); 
   for my $attr (@a) {
     is($lims->$attr, undef, "$attr is undefined");
   }
 };
 
 subtest 'Run-level object via samplesheet driver' => sub {
-  plan tests => 36;
+  plan tests => 50;
 
   my $path = 't/data/samplesheet/miseq_default.csv';
 
-  my $ss = st::api::lims->new(id_run => 10262,  path => $path, driver_type => 'samplesheet');
-  isa_ok ($ss->driver, 'st::api::lims::samplesheet', 'samplesheet driver object instantiated');  
+  my $ss = st::api::lims->new(path => $path, driver_type => 'samplesheet');
+  is ($ss->composition_object, undef, 'composition object is undefined');
+  ok (!$ss->is_lane, 'not a lane');
   my @lanes;
   lives_ok {@lanes = $ss->children}  'can get lane-level objects';
+  my $json = '{"components":[{"id_run":10262,"position":1}]}';
+  is ($lanes[0]->id_run, 10262, 'lane id_run is set');
+  is ($lanes[0]->composition_object->freeze(), $json, 'composition object is generated');
+  ok ($lanes[0]->is_lane, 'a lane is a lane');
+
+  $ss = st::api::lims->new(id_run => 10262,  path => $path, driver_type => 'samplesheet');
+  isa_ok ($ss->driver, 'st::api::lims::samplesheet', 'samplesheet driver object instantiated');
+  is ($ss->composition_object, undef, 'composition object is undefined');
+  ok (!$ss->is_lane, 'not a lane'); 
+  lives_ok {@lanes = $ss->children}  'can get lane-level objects';
+  is ($lanes[0]->composition_object->freeze(), $json, 'composition object is generated');
   is ($lanes[0]->id_run, 10262, 'lane id_run as set');
+  ok ($lanes[0]->is_lane, 'is a lane');
 
   $ss = st::api::lims->new(id_run => 10000,  path => $path, driver_type => 'samplesheet');
   is ($ss->id_run, 10000, 'id_run as set');
@@ -176,6 +200,8 @@ subtest 'Run-level object via samplesheet driver' => sub {
   is ($plexes[0]->id_run, 10262, 'id_run of the first plexe set correctly from Experiment Name');
   is ($plexes[0]->library_id, 7583411, 'library_id of the first plex');
   is ($plexes[0]->sample_name, 'LIA_1', 'sample_name of the first plex');
+  is ($plexes[0]->sample_uuid, undef, 'sample_uuid of the first plex');
+  is ($plexes[0]->sample_lims, undef, 'sample_lims of the first plex');
   is ($plexes[0]->sample_id, undef, 'sample_id of the first plex in undefined');
   is ($plexes[0]->is_pool, 0, 'is_pool false on plex level');
   is ($plexes[0]->is_control, undef, 'is_control false on for a plex');
@@ -187,10 +213,12 @@ subtest 'Run-level object via samplesheet driver' => sub {
   is ($plexes[95]->tag_sequence, 'GTCTTGGC', 'tag sequence of the last plex');
   is ($plexes[95]->library_id, 7583506, 'library_id of the last plex');
   is ($plexes[95]->sample_name, 'LIA_96', 'sample_name of the last plex');
+  is ($plexes[95]->sample_uuid, undef, 'sample_uuid of the last plex');
+  is ($plexes[95]->sample_lims, undef, 'sample_lims of the last plex');
 };
 
 subtest 'Lane-level and tag zero objects via samplesheet driver' => sub {
-  plan tests => 20;
+  plan tests => 24;
 
   my $path = 't/data/samplesheet/miseq_default.csv';
 
@@ -217,13 +245,15 @@ subtest 'Lane-level and tag zero objects via samplesheet driver' => sub {
     is (scalar $ss->children, 96, '96 plexes returned');
     is ($ss->library_id, undef, 'library_id undefined');
     is ($ss->sample_name, undef, 'sample name is undefined');
+    is ($ss->sample_uuid, undef, 'sample uuid is undefined');
+    is ($ss->sample_lims, undef, 'sample lims is undefined');
     is ($ss->default_tag_sequence, undef, 'default tag sequence undefined');
     is ($ss->tag_sequence, undef, 'tag sequence undefined');
   }
 };
 
 subtest 'Plex-level objects via samplesheet driver' => sub {
-  plan tests => 10;
+  plan tests => 14;
 
   my $path = 't/data/samplesheet/miseq_default.csv';
   my $l;
@@ -239,11 +269,17 @@ subtest 'Plex-level objects via samplesheet driver' => sub {
   is ($l->position, 1, 'correct position');
   is ($l->tag_index, 3, 'correct tag_index');
   is ($l->is_pool, 0, 'plex is not a pool');
+  is ($l->composition_object->freeze(),
+    '{"components":[{"id_run":10262,"position":1,"tag_index":3}]}',
+    'composition object is generated');
+  is ($l->is_lane, 0, 'plex is not a lane');
   is ($l->default_tag_sequence, 'TTAGGCAT', 'correct default tag sequence');
   is ($l->tag_sequence, $l->default_tag_sequence,
     'tag sequence is the same as default tag sequence');
   is ($l->library_id, 7583413, 'library id is correct');
   is ($l->sample_name, 'LIA_3', 'sample name is correct');
+  is ($l->sample_uuid, undef, 'sample uuid is undefined');
+  is ($l->sample_lims, undef, 'sample lims is undefined');
   is (scalar $l->children, 0, 'zero children returned'); 
 };
 
@@ -284,7 +320,7 @@ subtest 'Samplesheet driver for a one-component composition' => sub {
 };
 
 subtest 'Samplesheet driver for arbitrary compositions' => sub {
-  plan tests => 75;
+  plan tests => 95;
 
   my $path = 't/data/samplesheet/novaseq_multirun.csv';
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $path;
@@ -305,6 +341,8 @@ subtest 'Samplesheet driver for arbitrary compositions' => sub {
     is($o->default_tagtwo_sequence, 'CCAACAGA', 'tag2 sequence');
     is($o->default_library_type, 'HiSeqX PCR free', 'library type');
     is($o->sample_name, '7592352', 'sample name');
+    is($o->sample_uuid, undef, 'sample uuid');
+    is($o->sample_lims, undef, 'sample lims');
     is($o->study_name, 'UK Study', 'study name');
     is($o->library_name, '22802061', 'library name');
     is($o->reference_genome, 'Homo_sapiens (GRCh38_15_plus_hs38d1) [minimap2]',
@@ -342,6 +380,35 @@ subtest 'Samplesheet driver for arbitrary compositions' => sub {
   is ($ss->id_run, 28780, 'correct run id');
   is ($ss->position, 2, 'correct position');
   is ($ss->tag_index, 4, 'correct tag_index');
+
+  $path = 't/data/samplesheet/data4merge.csv';
+  local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $path;
+
+  $rpt_list = '26480:1:9;26480:2:9';
+  $ss=st::api::lims->new(rpt_list => $rpt_list);
+  is ($ss->sample_uuid, '673165ec-f8c6-11e0-8838-68b59976a382',
+    'sample uuid for a composition');
+  is ($ss->sample_lims, 'CLARITY', 'sample lims for a composition');
+
+  $rpt_list = '26480:3:9;26480:4:9';
+  $ss=st::api::lims->new(rpt_list => $rpt_list);
+  is ($ss->sample_uuid, 'b6ea25f0-f8cc-11e0-8838-68b59976a382',
+    'sample uuid for a composition');
+  is ($ss->sample_lims, 'Traction', 'sample lims for a composition');
+
+  $rpt_list = '26480:1:9;26480:2:9;26480:3:9;26480:4:9';
+  $ss=st::api::lims->new(rpt_list => $rpt_list);
+  is ($ss->sample_uuid, undef, 'sample uuid for a composition is undefined ' .
+    'since the values for individual components differ');
+  is ($ss->sample_lims, undef, 'sample lims for a composition is undefined ' .
+    'since the values for individual components differ');
+
+  $rpt_list = '26480:1;26480:2';
+  $ss=st::api::lims->new(rpt_list => $rpt_list);
+  is ($ss->composition_object->freeze(),
+    '{"components":[{"id_run":26480,"position":1},{"id_run":26480,"position":2}]}',
+    'composition object is generated');
+  ok (!$ss->is_lane, 'merged lanes entity is not a lane');
 };
 
 subtest 'Dual index' => sub {
