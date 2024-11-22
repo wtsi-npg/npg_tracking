@@ -7,7 +7,6 @@ bin/npg_samplesheet4NovaSeqX
 bin/npg_samplesheet_generator_NovaSeqXSeries
 bin/npg_status_save
 bin/staging_area_monitor
-bin/npg_deletable_dr_runs
 Build.PL
 cgi-bin/locate_runfolder
 cgi-bin/npg

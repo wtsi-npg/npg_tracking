@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - Removed 'bin/npg_deletable_dr_runs' since dr storage is decommissioned
+
 release 101.6.0 (2024-10-24)
  - Added sample_uuid and sample_lims methods to st::api::lims
  - Patched st::api::lims::samplesheet to allow for scalar attributes
