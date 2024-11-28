@@ -336,7 +336,7 @@ Similar to sample_names, but for supplier_names.
 
 =head2 sample_uuids
 
-A list of LIMS-specific UUID for samples
+Similar to sample_names, but for LIMS-specific UUIDs
 
 =head2 study_names
 
