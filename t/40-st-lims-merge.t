@@ -75,7 +75,7 @@ subtest 'Create lane object from plex object' => sub {
 };
 
 subtest 'Create tag zero object' => sub {
-  plan tests => 10;
+  plan tests => 14;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
     't/data/test40_lims/samplesheet_novaseq4lanes.csv';
@@ -124,8 +124,11 @@ subtest 'Create tag zero object' => sub {
     is ($t0->driver->mlwh_schema, $schema_wh,
       'the original db connection is retained');
     my @names = $t0->sample_names();
+    my @uuids = $t0->sample_uuids();
     is (@names, 18, '18 sample names are retrieved');
+    is (@uuids, 18, '18 sample uuids are retrieved');
     is ($names[0], '6751STDY13219539', 'first sample name is correct');
+    is ($uuids[0], '5832d018-56a6-11ed-a8fb-fa163eea3084', 'first sample uuid is correct');
   }
 };
 
