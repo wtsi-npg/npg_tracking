@@ -320,7 +320,7 @@ subtest 'Samplesheet driver for a one-component composition' => sub {
 };
 
 subtest 'Samplesheet driver for arbitrary compositions' => sub {
-  plan tests => 95;
+  plan tests => 108;
 
   my $path = 't/data/samplesheet/novaseq_multirun.csv';
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $path;
@@ -333,6 +333,7 @@ subtest 'Samplesheet driver for arbitrary compositions' => sub {
   is ($ss->tag_index, undef, 'tag_index undefined');
   ok (!$ss->is_pool, 'not a pool');
   is ($ss->is_composition, 1, 'this is a composition');
+  is ($ss->sample_uuid, undef, 'sample uuid');
   my @children = $ss->children();
   is (scalar @children, 5, 'five children');
 
@@ -341,7 +342,6 @@ subtest 'Samplesheet driver for arbitrary compositions' => sub {
     is($o->default_tagtwo_sequence, 'CCAACAGA', 'tag2 sequence');
     is($o->default_library_type, 'HiSeqX PCR free', 'library type');
     is($o->sample_name, '7592352', 'sample name');
-    is($o->sample_uuid, undef, 'sample uuid');
     is($o->sample_lims, undef, 'sample lims');
     is($o->study_name, 'UK Study', 'study name');
     is($o->library_name, '22802061', 'library name');
@@ -360,26 +360,54 @@ subtest 'Samplesheet driver for arbitrary compositions' => sub {
   is ($ss->tag_index, 9, 'correct tag_index');
   ok (!$ss->is_pool, 'plex is not a pool');
   is ($ss->is_composition, 0, 'not a composition');
+  is ($ss->sample_uuid, 'a12b3456-a1bb-12a3-1234-12a34567b890', 'child sample uuid');
 
   $ss = $children[1];
   is ($ss->id_run, 26480, 'correct run id');
   is ($ss->position, 2, 'correct position');
   is ($ss->tag_index, 9, 'correct tag_index');
+  is ($ss->sample_uuid, 'a12b3456-a1bb-12a3-1234-12a34567b890', 'child sample uuid');
 
   $ss = $children[2];
   is ($ss->id_run, 26480, 'correct run id');
   is ($ss->position, 3, 'correct position');
   is ($ss->tag_index, 9, 'correct tag_index');
+  is ($ss->sample_uuid, 'a12b3456-a1bb-12a3-1234-12a34567b890', 'child sample uuid');
 
   $ss = $children[3];
   is ($ss->id_run, 26480, 'correct run id');
   is ($ss->position, 4, 'correct position');
   is ($ss->tag_index, 9, 'correct tag_index');
+  is ($ss->sample_uuid, 'a12b3456-a1bb-12a3-1234-12a34567b890', 'child sample uuid');
 
   $ss = $children[4];
   is ($ss->id_run, 28780, 'correct run id');
   is ($ss->position, 2, 'correct position');
   is ($ss->tag_index, 4, 'correct tag_index');
+  is ($ss->sample_uuid, 'a12b3456-a1bb-12a3-1234-12a34567b892', 'child sample uuid');
+
+  $rpt_list = '28780:1:4;28780:3:4;28780:4:4';
+  $ss=st::api::lims->new(rpt_list => $rpt_list);
+  is ($ss->sample_uuid, undef, 'sample uuid');
+  
+  @children = $ss->children();
+  $ss = $children[0];
+  is ($ss->id_run, 28780, 'correct run id');
+  is ($ss->position, 1, 'correct position');
+  is ($ss->tag_index, 4, 'correct tag_index');
+  is ($ss->sample_uuid, 'a12b3456-a1bb-12a3-1234-12a34567b891', 'child sample uuid');
+
+  $ss = $children[1];
+  is ($ss->id_run, 28780, 'correct run id');
+  is ($ss->position, 3, 'correct position');
+  is ($ss->tag_index, 4, 'correct tag_index');
+  is ($ss->sample_uuid, 'a12b3456-a1bb-12a3-1234-12a34567b893', 'child sample uuid');
+
+  $ss = $children[2];
+  is ($ss->id_run, 28780, 'correct run id');
+  is ($ss->position, 4, 'correct position');
+  is ($ss->tag_index, 4, 'correct tag_index');
+  is ($ss->sample_uuid, 'a12b3456-a1bb-12a3-1234-12a34567b894', 'child sample uuid');
 
   $path = 't/data/samplesheet/data4merge.csv';
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} = $path;
