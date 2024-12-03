@@ -519,10 +519,10 @@ subtest 'Insert size' => sub {
 };
 
 subtest 'Study and sample properties' => sub {
-  plan tests => 83;
+  plan tests => 97;
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
-    't/data/samplesheet/4pool4libs_extended.csv';
+    't/data/samplesheet/4pool4libs_extended2.csv';
   
   # A simple non-indexed lane.
   my $lims = st::api::lims->new(id_run => 9999, position => 1);
@@ -541,6 +541,9 @@ subtest 'Study and sample properties' => sub {
     'reference genome');
   is( $lims->species_from_reference_genome, 'Haemonchus_contortus',
     'species from reference genome');
+  my $sample_uuid = $lims->sample_uuid;
+  is_deeply([$lims->sample_uuids], [$sample_uuid],
+    'sample uuids for non-indexed lane');
 
   # Individual plex.
   $lims = st::api::lims->new(id_run => 9999, position => 7, tag_index=> 76);
@@ -562,8 +565,15 @@ subtest 'Study and sample properties' => sub {
   is( $lims->reference_genome, 'Mus_musculus (GRCm38)', 'reference genome');
   is( $lims->species_from_reference_genome, 'Mus_musculus',
     'species from reference genome');
+  $sample_uuid = $lims->sample_uuid;
+  is_deeply([$lims->sample_uuids], [$sample_uuid], 'sample uuids for a plex');
+  is( $lims->sample_lims, 'SQSCP', 'sample lims');
 
-  # Indexed lane and tag zero for the same lane.
+  my $sample_uuid_77 = st::api::lims->new(
+    id_run => 9999, position => 7, tag_index=> 77)->sample_uuid;
+
+  # Indexed lane and tag zero for the same lane, sample_lims and
+  # sample_uuid are undefined for tag 168 (control), one-sample pool.
   for my $l (
     st::api::lims->new(id_run => 9999, position => 7),
     st::api::lims->new(id_run => 9999, position => 7, tag_index => 0)
@@ -576,9 +586,27 @@ subtest 'Study and sample properties' => sub {
     is( $l->study_reference_genome, 'Mus_musculus (GRCm38)',
       'study reference genome');
     is( $l->reference_genome, 'Mus_musculus (GRCm38)', 'reference genome');
-    is( $lims->species_from_reference_genome, 'Mus_musculus',
+    is( $l->species_from_reference_genome, 'Mus_musculus',
       'species from reference genome');
+    is_deeply( [$l->sample_uuids(1)], [$sample_uuid, $sample_uuid_77],
+      'sample uuids for a lane or tag0, counting controls');
+    is_deeply( [$l->sample_uuids(0)], [$sample_uuid, $sample_uuid_77],
+      'sample uuids for a lane or tag0, not counting the control');
+    is( $l->sample_lims, 'SQSCP', 'sample lims');
   }
+
+  # Tag zero, multiple plexes.
+  $lims = st::api::lims->new(id_run => 6946, position => 4, tag_index => 0);
+  is( $lims->sample_uuid, undef, 'sample uuid is undefined for tag0');
+  is( $lims->sample_lims, undef,
+    'sample lims is undefined for tag0 where samples come from different LIMS');
+  my $num_plexes = scalar $lims->children();
+  is( scalar $lims->sample_uuids(1), $num_plexes,
+    'multiple uuids, counting controls');
+  is( scalar $lims->sample_uuids(), $num_plexes,
+    'multiple uuids, defalt invocation - counting controls'); 
+  is( scalar $lims->sample_uuids(0), $num_plexes-1,
+    'multiple uuids, not counting controls'); 
 
   local $ENV{NPG_CACHED_SAMPLESHEET_FILE} =
     't/data/samplesheet/samplesheet_47539.csv';
