@@ -342,7 +342,7 @@ subtest 'Samplesheet driver for arbitrary compositions' => sub {
     is($o->default_tagtwo_sequence, 'CCAACAGA', 'tag2 sequence');
     is($o->default_library_type, 'HiSeqX PCR free', 'library type');
     is($o->sample_name, '7592352', 'sample name');
-    is($o->sample_lims, undef, 'sample lims');
+    is($o->sample_lims, 'SQSCP', 'sample lims');
     is($o->study_name, 'UK Study', 'study name');
     is($o->library_name, '22802061', 'library name');
     is($o->reference_genome, 'Homo_sapiens (GRCh38_15_plus_hs38d1) [minimap2]',
