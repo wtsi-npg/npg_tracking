@@ -285,6 +285,7 @@ Readonly::Hash my %ATTRIBUTE_LIST_METHODS => {
                            public_name
                            reference_genome
                            supplier_name
+                           uuid
                          /],
     'study'        => [qw/ accession_number
                            id
@@ -332,6 +333,10 @@ Similar to sample_names, but for public_names.
 =head2 sample_supplier_names
 
 Similar to sample_names, but for supplier_names.
+
+=head2 sample_uuids
+
+Similar to sample_names, but for LIMS-specific UUIDs
 
 =head2 study_names
 
