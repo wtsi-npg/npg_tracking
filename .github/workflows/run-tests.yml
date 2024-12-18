@@ -48,7 +48,7 @@ jobs:
           sudo apt-get update
           # https://github.com/actions/runner-images/issues/2139
           sudo apt-get remove -y nginx libgd3
-          sudo apt-get install -y libgd-dev uuid-dev libgd-text-perl
+          sudo apt-get install -y libgd-dev uuid-dev libgd-text-perl libdevel-patchperl-perl
 
       - name: "Cache Perl"
         id: cache-perl

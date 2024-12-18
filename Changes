@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - Fixed perlbrew installation by installing libdevel-patchperl-perl in
+   GitHub runner.
+
 release 102.0.0 (2024-11-28)
  - Removed 'bin/npg_deletable_dr_runs' since dr storage is decommissioned
 
