@@ -85,7 +85,7 @@ subtest 'runs on batch' => sub {
 };
 
 subtest 'listing runs' => sub {
-  plan tests => 6;
+  plan tests => 25;
 
   my $model = npg::model::run->new({util => $util});
   my $runs = $model->runs();
@@ -103,6 +103,74 @@ subtest 'listing runs' => sub {
   $got = $run2->id_run;
   is($got, 15, 'correct id_run for the 10th run');
   is($run2->name(), 'IL10_0015', "correct run name for run $got");
+
+  $model = npg::model::run->new({util => $util});
+  my $params = {id_run_status_dict => 9}; # analysis complete
+  $runs = $model->runs($params);
+  is((scalar @{$runs}), 2, 'two runs');
+  is($model->count_runs($params), 2, 'run count is correct');
+
+  $model = npg::model::run->new({util => $util});
+  $params = {id_run_status_dict => 11, len => 2}; # run mirrored
+  my $first_two = $model->runs($params); 
+  is((scalar @{$first_two}),     2, 'first two runs');
+  is($first_two->[0]->id_run(), 12, 'first run id');
+  is($first_two->[1]->id_run(), 11, 'second run id');
+  is($model->count_runs($params), 3, 'correct run count');
+
+  $model = npg::model::run->new({util => $util});
+  $params = {id_run_status_dict => 11, len => 2, start => 1};
+  my $second_two = $model->runs($params);
+  is((scalar @{$second_two}),     2, 'second two runs for id_rsd 11');
+  is($second_two->[0]->id_run(), 11, 'second run id');
+  is($second_two->[1]->id_run(), 5,  'third run id');
+
+  $model = npg::model::run->new({util => $util});
+  $params = {id_run_status_dict => 4, id_instrument_format => 10}; # run complete
+  is($model->count_runs($params), 3, 'run count is correct');
+
+  $model = npg::model::run->new({util => $util});
+  $params = {id_run_status_dict => 4, id_instrument_format => 7};
+  is($model->count_runs($params), 1, 'correct run count');
+
+  $model = npg::model::run->new({util => $util});
+  $params = {id_run_status_dict => 'all', id_instrument_format => 'all'};
+  is($model->count_runs($params), 24, 'correct overall Illumina run count');
+
+  $model = npg::model::run->new({util => $util});
+  $params = {id_run_status_dict => 'all',
+             id_instrument_format => 'all',
+             manufacturer => 'Applied Biosystems'};
+  is($model->count_runs($params), 0, 'correct run count');
+
+  $model = npg::model::run->new({util => $util});
+  $params = {id_run_status_dict => 'all',
+             id_instrument_format => 10,
+             manufacturer => 'Illumina',
+             id_instrument => 4};
+  # id_instrument_format is 4 for this instrument
+  # instrument id takes precedence over instrument format
+  is($model->count_runs($params), 3, 'correct count');
+
+  $model = npg::model::run->new({util => $util});
+  $params = {id_run_status_dict => 'all',
+             id_instrument_format => 4,
+             manufacturer => 'Applied Biosystems',
+             id_instrument => 4};
+  # instrument id takes precedence over manufacturer
+  is($model->count_runs($params), 3, 'correct count');
+
+  $model = npg::model::run->new({util => $util});
+  $params = {id_run_status_dict => 2,
+             id_instrument => 4};
+  is($model->count_runs($params), 1, 'correct count');
+  is($model->runs($params)->[0]->id_run(), 13, 'correct run id');
+
+  $model = npg::model::run->new({util => $util});
+  $params = {id_run_status_dict => 1,
+             id_instrument => 4};
+  is($model->count_runs($params), 0, 'correct count');
+  is(scalar @{$model->runs($params)}, 0, 'an empty list of runs');
 };
 
 {
@@ -612,12 +680,12 @@ subtest 'run creation error due to problems with batch id' => sub {
 };
 {
   my $model = npg::model::run->new({});
-  dies_ok{ $model->get_instruments }, "Accessing undefined instruments ArrayRef fails";
+  dies_ok{ $model->get_instruments } 'Accessing undefined instruments ArrayRef fails';
 
   $model = npg::model::run->new({
     instruments => \(t::instrument->new(name => "NV1")),
   });
-  lives_ok{ $model->get_instruments }, "Accessing defined instruments ArrayRef succeeds";
+  lives_ok{ $model->get_instruments } 'Accessing defined instruments ArrayRef succeeds';
 }
 
 {

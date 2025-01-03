@@ -2,11 +2,12 @@ use strict;
 use warnings;
 use Test::More tests => 20;
 use Test::Exception;
-use t::util;
-use t::request;
 use GD qw(:DEFAULT :cmp);
 use File::Spec;
 use DateTime();
+
+use t::util;
+use t::request;
 
 use_ok('npg::view::instrument');
 
@@ -14,12 +15,11 @@ my $util = t::util->new({
                 fixtures => 1,
                 fixtures_path => q[t/data/fixtures],
       });
-
 my $image_dir = File::Spec->catfile('t', 'data', 'rendered', 'images');
-
 
 is (join(q[ ], npg::view::instrument->lab_names()), 'Ogilvie Sulston',
   'sorted lab names list');
+
 {
   my $str = t::request->new({
            REQUEST_METHOD => 'GET',
@@ -27,25 +27,19 @@ is (join(q[ ], npg::view::instrument->lab_names()), 'Ogilvie Sulston',
            username       => 'public',
            util           => $util,
           });
-
   ok($util->test_rendered($str, 't/data/rendered/instrument.html'),
     'list instruments default');
-}
 
-{
-  my $str = t::request->new({
+  $str = t::request->new({
            REQUEST_METHOD => 'GET',
            PATH_INFO      => '/instrument;list_graphical',
            username       => 'public',
            util           => $util,
           });
-
   ok($util->test_rendered($str, 't/data/rendered/instrument.html'),
     'list instruments graphical');
-}
 
-{
-  my $str = t::request->new({
+  $str = t::request->new({
            REQUEST_METHOD => 'GET',
            PATH_INFO      => '/instrument/',
            username       => 'public',
@@ -54,7 +48,6 @@ is (join(q[ ], npg::view::instrument->lab_names()), 'Ogilvie Sulston',
             id_instrument_format => 21,
                  },
           });
-
   ok($util->test_rendered($str, 't/data/rendered/instrument.html'),
     'list instruments for format 21');
 }
@@ -97,7 +90,7 @@ is (join(q[ ], npg::view::instrument->lab_names()), 'Ogilvie Sulston',
 
   like($str, qr{image/png.*PNG}smx, 'instrument key graphical read');
   my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'key.png'));
-  $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
+  $str =~s/\A(?:^\S[^\n]*\n)+\n(\x89PNG)/$1/smx; #trim http header off
   my $rendered = GD::Image->new($str);
   ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'legend image'); 
 }
@@ -112,7 +105,7 @@ is (join(q[ ], npg::view::instrument->lab_names()), 'Ogilvie Sulston',
 
   like($str, qr{image/png.*PNG}smx, 'HiSeq instrument graphical read');
   my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'HS3.png'));
-  $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
+  $str =~s/\A(?:^\S[^\n]*\n)+\n(\x89PNG)/$1/smx; #trim http header off
   my $rendered = GD::Image->new($str);
   ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle HiSeq image in Sulston'); 
 }
@@ -127,7 +120,7 @@ is (join(q[ ], npg::view::instrument->lab_names()), 'Ogilvie Sulston',
 
   like($str, qr{image/png.*PNG}smx, 'HiSeq instrument graphical read');
   my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'HS2.png'));
-  $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
+  $str =~s/\A(?:^\S[^\n]*\n)+\n(\x89PNG)/$1/smx; #trim http header off
   my $rendered = GD::Image->new($str);
   ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle HiSeq image in no lab'); 
 }
@@ -142,7 +135,7 @@ is (join(q[ ], npg::view::instrument->lab_names()), 'Ogilvie Sulston',
   
   like($str, qr{image/png.*PNG}smx, 'MiSeq instrument graphical read');
   my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'MS1.png'));
-  $str =~s/\A(?:^\S[^\n]*\n)+\n(\o{211}PNG)/$1/smx; #trim http header off
+  $str =~s/\A(?:^\S[^\n]*\n)+\n(\x89PNG)/$1/smx; #trim http header off
   my $rendered = GD::Image->new($str);
   ok (!($rendered->compare($expected) & GD_CMP_IMAGE),
     'idle MiSeq R&D image in Ogilvie'); 

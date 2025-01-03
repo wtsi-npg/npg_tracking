@@ -146,6 +146,7 @@ my $util = t::util->new({fixtures  => 1,});
            username       => 'public',
            util           => $util,
           });
+  diag $str;
   ok($util->test_rendered($str, 't/data/rendered/run.html'), 'html list render');
 }
 
@@ -155,9 +156,10 @@ my $util = t::util->new({fixtures  => 1,});
            REQUEST_METHOD => 'GET',
            username       => 'public',
            util           => $util,
-           cgi_params     => {id_run_status_dict => 'all', id_instrument => 3, },
+           cgi_params     => {id_run_status_dict => 'all', id_instrument => 3,},
           });
-  ok($util->test_rendered($str, 't/data/rendered/run/runs_on_instrument.html'), 'html list render run instrument 3 all statuses');
+  ok($util->test_rendered($str, 't/data/rendered/run/runs_on_instrument.html'),
+    'html list render run instrument 3 all run statuses');
 }
 
 {  

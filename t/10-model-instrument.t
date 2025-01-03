@@ -1,94 +1,14 @@
 use strict;
 use warnings;
-use t::util;
-use Test::More tests => 142;
+use Test::More tests => 125;
 use Test::Deep;
 use Test::Exception;
 
-use_ok('npg::model::instrument');
+use t::util;
 
 my $util = t::util->new({ fixtures => 1 });
 
-{
-  my $inst = npg::model::instrument->new({
-            id_instrument => 3,
-            util          => $util,
-           });
-  my $runs = $inst->runs();
-  is((scalar @{$runs}), 12, 'all runs for instrument');
-}
-
-{
-  my $inst = npg::model::instrument->new({
-            id_instrument => 3,
-            util          => $util,
-           });
-  my $runs = $inst->runs({len => 4});
-  is((scalar @{$runs}), 4, 'limited all runs for instrument');
-  is($runs->[0]->id_run(), 12, 'first run ok');
-}
-
-{
-  my $inst = npg::model::instrument->new({
-            id_instrument => 3,
-            util          => $util,
-           });
-  my $runs = $inst->runs({
-        len   => 4,
-        start => 1,
-       });
-  is((scalar @{$runs}), 4, 'limited, offset all runs for instrument');
-  is($runs->[0]->id_run(), 11, 'first run ok');
-}
-
-{
-  my $inst = npg::model::instrument->new({
-            id_instrument => 3,
-            util          => $util,
-           });
-  my $runs = $inst->runs({
-        id_run_status_dict => 11,
-       });
-  is((scalar @{$runs}), 3, 'id_rsd-restricted runs for instrument');
-}
-
-{
-  my $inst = npg::model::instrument->new({
-            id_instrument => 3,
-            util          => $util,
-           });
-  my $runs = $inst->runs({
-        id_run_status_dict => 11,
-        len => 2,
-       });
-  is((scalar @{$runs}), 2, 'limited, id_rsd-restricted runs for instrument');
-  is($runs->[0]->id_run(), 5, 'first run ok');
-  is($runs->[1]->id_run(), 12, 'second run ok');
-}
-
-{
-  my $inst = npg::model::instrument->new({
-            id_instrument => 3,
-            util          => $util,
-           });
-  my $runs = $inst->runs({
-        id_run_status_dict => 11,
-        len   => 2,
-        start => 1,
-       });
-  is((scalar @{$runs}), 2, 'limited, offset, id_rsd-restricted runs for instrument');
-  is($runs->[0]->id_run(), 12, 'first run ok');
-  is($runs->[1]->id_run(), 11, 'second run ok');
-}
-
-{
-  my $inst = npg::model::instrument->new({
-            id_instrument => 3,
-            util          => $util,
-           });
-  is($inst->count_runs(), 12);
-  is($inst->count_runs({id_run_status_dict=>11}), 3);
-}
+use_ok('npg::model::instrument');
 
 {
   my $model = npg::model::instrument->new({
@@ -105,8 +25,8 @@ my $util = t::util->new({ fixtures => 1 });
 
   my $current_instruments = $model->current_instruments();
   isa_ok($current_instruments, 'ARRAY', '$model->current_instruments()');
-  is((scalar@{$current_instruments} + 1), scalar@{$instruments}, 'scalar@{$model->current_instruments()} is 1 less than scalar@{$model->instruments()}');
-  is($model->current_instruments(), $current_instruments, '$model->current_instruments() cached ok');
+  is((scalar@{$current_instruments} + 1), scalar@{$instruments},
+    'scalar@{$model->current_instruments()} is 1 less than scalar@{$model->instruments()}');
   is($model->manufacturer_name, undef,
     'manufacturer name is undefined for a model used in list context');
 }
@@ -133,10 +53,6 @@ my $util = t::util->new({ fixtures => 1 });
              util          => $util,
              id_instrument => 4,
             });
-  my $runs = $model->runs();
-  isa_ok($runs, 'ARRAY', '$model->runs()');
-  isa_ok($runs->[0], 'npg::model::run', '$model->runs()->[0]');
-
   my $current_run = $model->current_run();
   isa_ok($current_run, 'npg::model::run', '$model->current_run()');
   is($model->current_run(), $current_run, '$model->current_run() cached ok');

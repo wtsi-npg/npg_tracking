@@ -1,9 +1,12 @@
 [% PROCESS instrument_top.tt2 
            top_menu_index=0
+           manufacturer=manufacturer
 -%]
-[% labels    = ['graphical view', 'table view', ] -%]
-[% addresses = ['/graphical', '/textual'] -%]
-[% counts    = [0, 1] -%]
+[% manufacturer = manufacturer ? manufacturer : '';
+   textual_url = '/textual?manufacturer=' _ manufacturer;
+   labels    = ['graphical view', 'table view', ];
+   addresses = ['/graphical', textual_url];
+   counts    = [0, 1] -%]
 <p class="npgmenu2">
 [% FOREACH count IN counts -%]
 [% IF count != 0 %]&nbsp;[% END -%]
