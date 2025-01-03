@@ -1,5 +1,15 @@
 LIST OF CHANGES
 
+ 
+ - Tracking web server:
+   - Added a new optional parameter 'manufacturer' to methods returning lists
+     of runs and run count - the name of the manufacturer. If this name is
+     undefined in the parameters hash, it defaults to 'Illumina'.
+   - To avoid code repetition, consolidated queries for listing and counting
+     runs in npg::model::run. Previously the same code was repeated in six
+     different places in two models.
+   - Simplified the logic of retrieving cached lists and counts of runs.
+
  - Fixed perlbrew installation by installing libdevel-patchperl-perl in
    GitHub runner.
 
