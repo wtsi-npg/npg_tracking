@@ -4,9 +4,9 @@
 <div class="roundborder">
 <div>
 <span class="page_title">Runs</span>
- &middot;&middot;<a [%target %]href="[% SCRIPT_NAME %]/run/?id_run_status_dict=all&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[%id_instrument %]"  [% IF !model.id_run_status_dict || model.id_run_status_dict == 'all' %]class="runs_active_selection"[% END %]>all</a>&middot;&middot;
+ &middot;&middot;<a [%target %]href="[% SCRIPT_NAME %]/run/?id_run_status_dict=all&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[%id_instrument %]&manufacturer=[% model.manufacturer %]"  [% IF !model.id_run_status_dict || model.id_run_status_dict == 'all' %]class="runs_active_selection"[% END %]>all</a>&middot;&middot;
  [% FOREACH rsd = model.current_run_status.run_status_dict.run_status_dicts_sorted -%]
-&middot;&middot;<a [%target %]href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% rsd.id_run_status_dict %]&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[% id_instrument %]"><span class="npg_nbsp [% IF rsd.id_run_status_dict == model.id_run_status_dict %]runs_active_selection[% END %]">[% rsd.description %]</span></a>&middot;&middot;
+&middot;&middot;<a [%target %]href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% rsd.id_run_status_dict %]&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[% id_instrument %]&manufacturer=[% model.manufacturer %]"><span class="npg_nbsp [% IF rsd.id_run_status_dict == model.id_run_status_dict %]runs_active_selection[% END %]">[% rsd.description %]</span></a>&middot;&middot;
  [% END -%]
 </div>
 [% IF !id_instrument %]
@@ -25,7 +25,7 @@
 <span class="medium_header ">Page: </span>
 [% i = 0 %]
 [% WHILE i * model.len < model.count_runs %]
-&middot;<a [% target %][% IF i == model.start / model.len%]class="active" [% END %] href="[% SCRIPT_NAME %]/[% model.table %]?id_run_status_dict=[% model.id_run_status_dict %]&len=[% model.len %]&start=[% i * model.len %]&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[% id_instrument %]" id="pagination_[% i+1 %]">[% i+1 %]</a>&middot;
+&middot;<a [% target %][% IF i == model.start / model.len%]class="active" [% END %] href="[% SCRIPT_NAME %]/[% model.table %]?id_run_status_dict=[% model.id_run_status_dict %]&len=[% model.len %]&start=[% i * model.len %]&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[% id_instrument %]&manufacturer=[% model.manufacturer %]" id="pagination_[% i+1 %]">[% i+1 %]</a>&middot;
 [% i = i + 1 %]
 [% END %]
 </div>
