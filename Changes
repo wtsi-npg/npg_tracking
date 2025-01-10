@@ -1,6 +1,5 @@
 LIST OF CHANGES
 
- 
  - Tracking web server:
    - Added a new optional parameter 'manufacturer' to methods returning lists
      of runs and run count - the name of the manufacturer. If this name is
@@ -9,7 +8,13 @@ LIST OF CHANGES
      runs in npg::model::run. Previously the same code was repeated in six
      different places in two models.
    - Simplified the logic of retrieving cached lists and counts of runs.
-
+   - Dropped a custom 'read' method from npg::view::instrument. The code
+     there, which computed lists of runs and runs count is not used in the
+     template that renders an instrument. Listing of runs is implemented as
+     an iframe and therefore rendering is done by the template for listing runs.
+   - Dropped 'runs' and 'count_run' methods from npg::model::instrument, these
+     methods were only called by the deleted 'read' method from
+     npg::view::instrument
  - Fixed perlbrew installation by installing libdevel-patchperl-perl in
    GitHub runner.
 

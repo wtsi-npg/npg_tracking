@@ -1,18 +1,7 @@
-#########
-# Author:        rmp
-# Created:       2007-03-28
-#
 package npg::view::instrument;
 
 use strict;
 use warnings;
-use base qw(npg::view);
-use npg::model::instrument;
-use npg::model::instrument_format;
-use npg::model::instrument_status;
-use npg::model::instrument_status_dict;
-use npg::model::run_status_dict;
-use npg::model::instrument_status_dict;
 use GD;
 use GD::Text;
 use Carp;
@@ -22,11 +11,16 @@ use List::MoreUtils qw(any);
 use DateTime::Format::MySQL;
 use DateTime;
 
+use npg::model::instrument;
+use npg::model::instrument_format;
+use npg::model::instrument_status;
+use npg::model::instrument_status_dict;
+
+use base qw(npg::view);
+
 our $VERSION = '0';
 ##no critic(ProhibitManyArgs ProhibitMagicNumbers)
 
-Readonly::Scalar our $PAGINATION_LEN   => 40;
-Readonly::Scalar our $PAGINATION_START => 0;
 Readonly::Scalar our $IMAGE_DIMENSIONS            => 110;
 Readonly::Scalar our $FILLED_RECTANGLE_INFO       => 80;
 Readonly::Scalar our $FILLED_RECTANGLE_TWO        => 66;
@@ -151,37 +145,6 @@ sub list_edit_statuses {
   $self->model->{instrument_mod_dicts} = $root_imd->instrument_mod_dicts();
 
   return $self->list(@args);
-}
-
-sub read { ## no critic (ProhibitBuiltinHomonyms)
-  my $self    = shift;
-  my $util    = $self->util();
-  my $cgi     = $util->cgi();
-  my $model   = $self->model();
-  my $aspect  = $self->aspect();
-  my $session = $util->session();
-  my $len     = $cgi->param('len')   || $PAGINATION_LEN;
-  my $start   = $cgi->param('start') || $PAGINATION_START;
-  my $id_rsd  = $cgi->param('id_run_status_dict') || $session->{id_run_status_dict} || 'all';
-  my $all_rsd = npg::model::run_status_dict->new({
-              util => $util,
-             })->run_status_dicts();
-
-  $model->{start}            = $start;
-  $model->{len}              = $len;
-  $model->{run_status_dicts} = $all_rsd;
-
-  $model->{runs} = $model->runs({
-         len                => $len,
-         start              => $start,
-         id_run_status_dict => ($id_rsd ne 'all')?$id_rsd:undef,
-        });
-  $model->{count_runs} = $model->count_runs({id_run_status_dict => ($id_rsd ne 'all')?$id_rsd:undef});
-
-  $model->{id_run_status_dict}   = $id_rsd;
-  $session->{id_run_status_dict} = $id_rsd;
-
-  return 1;
 }
 
 sub read_key_png {
@@ -568,8 +531,6 @@ npg::view::instrument - view handling for instruments
 
 =head2 list_graphical - handling for graphical listings
 
-=head2 read - additional handling for listing runs by status
-
 =head2 read_png - annotated instrument graphic
 
 =head2 read_key_png - special case handling for instrument of id 'key'
@@ -628,11 +589,17 @@ npg::view::instrument - view handling for instruments
 
 =head1 AUTHOR
 
-Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+=over
+
+=item Roger Pettett
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2007-2012,2013,2014,2016,2017,2018,2019,2022,2023,2025 Genome Research Ltd.
 
 This file is part of NPG.
 

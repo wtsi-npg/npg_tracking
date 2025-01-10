@@ -9,7 +9,7 @@ use DateTime;
 use DateTime::Duration;
 use DateTime::Format::MySQL;
 use List::MoreUtils qw(any);
-use base qw(npg::model);
+use Readonly;
 
 use npg::model::user;
 use npg::model::run;
@@ -22,9 +22,9 @@ use npg::model::annotation;
 use npg::model::instrument_designation;
 use npg::model::designation;
 
-our $VERSION = '0';
+use base qw(npg::model);
 
-use Readonly;
+our $VERSION = '0';
 
 Readonly::Scalar our $NOVASEQ_INSTR_MODEL => 'NovaSeq';
 Readonly::Scalar our $HISEQ_INSTR_MODEL   => 'HiSeq';
@@ -201,83 +201,6 @@ sub model {
 sub manufacturer_name {
   my $self = shift;
   return $self->instrument_format->manufacturer_name();
-}
-
-sub runs {
-  my ($self, $params) = @_;
-
-  if($self->{runs}) {
-    return $self->{runs};
-  }
-
-  $params ||= {};
-
-  my $pkg    = 'npg::model::run';
-  my $query  = q[];
-  my @params = ($self->id_instrument());
-
-  if($params->{id_run_status_dict}) {
-    $query = qq[SELECT @{[join q[, ], map { "r.$_" } $pkg->fields()]}
-                FROM   @{[$pkg->table()]} r,
-                       run_status rs
-                WHERE  r.id_instrument = ?
-                AND    rs.id_run       = r.id_run
-                AND    rs.iscurrent    = 1
-                AND    rs.id_run_status_dict = ?
-                ORDER BY rs.date DESC];
-    push @params, $params->{id_run_status_dict};
-
-  } else {
-    $query = qq[SELECT @{[join q[, ], $pkg->fields()]}
-                FROM   @{[$pkg->table()]}
-                WHERE  id_instrument = ?
-                ORDER BY id_run DESC];
-  }
-
-  if($params->{len} || $params->{start}) {
-    $query = $self->util->driver->bounded_select($query,
-                                                $params->{len},
-                                                $params->{start});
-  }
-
-  return $self->gen_getarray($pkg, $query, @params);
-}
-
-sub count_runs {
-  my ($self, $params) = @_;
-
-  if(defined $self->{count_runs}) {
-    return $self->{count_runs};
-  }
-
-  $params  ||= {};
-  my $pkg    = 'npg::model::run';
-  my $query  = q[];
-  my @params = ($self->id_instrument());
-
-  if($params->{id_run_status_dict}) {
-    $query = qq[SELECT COUNT(*)
-                FROM   @{[$pkg->table()]} r,
-                       run_status rs
-                WHERE  r.id_instrument = ?
-                AND    rs.id_run       = r.id_run
-                AND    rs.iscurrent    = 1
-                AND id_run_status_dict = ?];
-    push @params, $params->{id_run_status_dict};
-
-  } else {
-    $query = qq[SELECT COUNT(*)
-                FROM   @{[$pkg->table()]}
-                WHERE  id_instrument = ?];
-  }
-
-  my $ref = $self->util->dbh->selectall_arrayref($query, {}, @params);
-  if(defined $ref->[0] &&
-     defined $ref->[0]->[0]) {
-    return $ref->[0]->[0];
-  }
-
-  return;
 }
 
 sub instrument_statuses {
@@ -673,27 +596,6 @@ npg::model::instrument
   my $lab = 'Sulston';
   my $arCurrentSulstonInstruments = $oInstrument->current_instruments_from_lab($lab);
 
-=head2 runs - arrayref of npg::model::runs for this instrument
-
-  my $arRuns = $oInstrument->runs();
-
-  my $arRunsBounded = $oInstrument->runs({
-    len   => 20,
-    start => 40,
-  });
-
-  my $arRunsForStatus = $oInstrument->runs({
-    id_instrument_status_dict => 11,
-  });
-
-=head2 count_runs - count of runs for this instrument
-
-  my $iRunCount = $oInstrument->count_runs();
-
-  my $iRunCount = $oInstrument->count_runs({
-    id_run_status_dict => 11,
-  });
-
 =head2 current_run - the npg::model::run with the latest current_status for this instrument
 
   my $oRun = $oInstrument->current_run();
@@ -828,7 +730,7 @@ returns true if the instrument is a MiSeq, false otherwise
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2006,2008,2013,2014,2016,2018,2021,2024 Genome Research Ltd.
+Copyright (C) 2006,2008,2013,2014,2016,2018,2021,2024,2025 Genome Research Ltd.
 
 This file is part of NPG.
 
