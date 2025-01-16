@@ -1,5 +1,14 @@
 LIST OF CHANGES
 
+release 102.1.0 (2025-01-16)
+ - Fixed perlbrew installation by installing libdevel-patchperl-perl in
+   GitHub runner.
+ - Fixed CI for ubuntu 24.04 by manually installing libmodule-runtime-perl
+ - Extend the lims api to consider the sample_uuids attribute (in its plural
+   form) while using the ml_warehouse driver mainly for tag0. Also, it
+   extends tests for novaseq multiruns to use sample_uuid (in its single
+   form).
+
 release 102.0.0 (2024-11-28)
  - Removed 'bin/npg_deletable_dr_runs' since dr storage is decommissioned
 
