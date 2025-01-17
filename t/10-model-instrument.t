@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 126;
+use Test::More tests => 125;
 use Test::Deep;
 use Test::Exception;
 
@@ -25,8 +25,8 @@ use_ok('npg::model::instrument');
 
   my $current_instruments = $model->current_instruments();
   isa_ok($current_instruments, 'ARRAY', '$model->current_instruments()');
-  is((scalar@{$current_instruments} + 1), scalar@{$instruments}, 'scalar@{$model->current_instruments()} is 1 less than scalar@{$model->instruments()}');
-  is($model->current_instruments(), $current_instruments, '$model->current_instruments() cached ok');
+  is((scalar@{$current_instruments} + 1), scalar@{$instruments},
+    'scalar@{$model->current_instruments()} is 1 less than scalar@{$model->instruments()}');
   is($model->manufacturer_name, undef,
     'manufacturer name is undefined for a model used in list context');
 }

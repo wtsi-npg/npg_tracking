@@ -1,21 +1,22 @@
 [% id_instrument = model.id_instrument ? model.id_instrument : '';
    target = (model.id_instrument && view.no_main_menu) ? 'target="runs_on_instrument" ' : '';
+   manufacturer = model.manufacturer ? model.manufacturer : '';
 %]
 <div class="roundborder">
 <div>
 <span class="page_title">Runs</span>
- &middot;&middot;<a [%target %]href="[% SCRIPT_NAME %]/run/?id_run_status_dict=all&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[%id_instrument %]&manufacturer=[% model.manufacturer %]"  [% IF !model.id_run_status_dict || model.id_run_status_dict == 'all' %]class="runs_active_selection"[% END %]>all</a>&middot;&middot;
+ &middot;&middot;<a [%target %]href="[% SCRIPT_NAME %]/run/?id_run_status_dict=all&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[%id_instrument %]&manufacturer=[% manufacturer %]"  [% IF !model.id_run_status_dict || model.id_run_status_dict == 'all' %]class="runs_active_selection"[% END %]>all</a>&middot;&middot;
  [% FOREACH rsd = model.current_run_status.run_status_dict.run_status_dicts_sorted -%]
-&middot;&middot;<a [%target %]href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% rsd.id_run_status_dict %]&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[% id_instrument %]&manufacturer=[% model.manufacturer %]"><span class="npg_nbsp [% IF rsd.id_run_status_dict == model.id_run_status_dict %]runs_active_selection[% END %]">[% rsd.description %]</span></a>&middot;&middot;
+&middot;&middot;<a [%target %]href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% rsd.id_run_status_dict %]&id_instrument_format=[% model.id_instrument_format %]&id_instrument=[% id_instrument %]&manufacturer=[% manufacturer %]"><span class="npg_nbsp [% IF rsd.id_run_status_dict == model.id_run_status_dict %]runs_active_selection[% END %]">[% rsd.description %]</span></a>&middot;&middot;
  [% END -%]
 </div>
 [% IF !id_instrument %]
 <div>
 <span class="medium_header">Instrument Types</span>
-&middot;&middot;<a href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% model.id_run_status_dict %]&id_instrument_format=all" [% IF !model.id_instrument_format || model.id_instrument_format == 'all' %]class="runs_active_selection"[% END; target %]>all</a>&middot;&middot;
- [% FOREACH ifs = model.instrument.instrument_format.instrument_formats_sorted;
-      IF ifs.is_recently_used_sequencer_format -%]
-        &middot;&middot;<a href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% model.id_run_status_dict %]&id_instrument_format=[% ifs.id_instrument_format %]&id_instrument=[% id_instrument %]" [% IF ifs.id_instrument_format == model.id_instrument_format %]class="runs_active_selection"[% END %]>[% ifs.model %]</a>&middot;&middot;
+&middot;&middot;<a href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% model.id_run_status_dict %]&id_instrument_format=all&manufacturer=[% manufacturer %]" [% IF !model.id_instrument_format || model.id_instrument_format == 'all' %]class="runs_active_selection"[% END; target %]>all</a>&middot;&middot;
+ [% FOREACH ifs = model.instrument.instrument_format.instrument_formats_sorted(manufacturer);
+      IF ifs.is_recently_used_sequencer_format(manufacturer) -%]
+        &middot;&middot;<a href="[% SCRIPT_NAME %]/run/?id_run_status_dict=[% model.id_run_status_dict %]&id_instrument_format=[% ifs.id_instrument_format %]&id_instrument=[% id_instrument %]&manufacturer=[% manufacturer %]" [% IF ifs.id_instrument_format == model.id_instrument_format %]class="runs_active_selection"[% END %]>[% ifs.model %]</a>&middot;&middot;
       [%- END %]
  [% END -%]
 </div>

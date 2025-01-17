@@ -1,12 +1,12 @@
 use strict;
 use warnings;
 use List::MoreUtils qw/any/;
-use Test::More tests => 31;
+use Test::More tests => 61;
 use Test::Exception;
 
 use t::util;
 
-our $IF = 'npg::model::instrument_format';
+my $IF = 'npg::model::instrument_format';
 
 use_ok('npg::model::instrument');
 use_ok($IF);
@@ -14,16 +14,12 @@ use_ok($IF);
 my $util = t::util->new({fixtures => 1});
 
 {
-  my $if = $IF->new({
-         util => $util,
-        });
+  my $if = $IF->new({util => $util,});
   isa_ok($if, $IF);
 }
 
 {
-  my $if = $IF->new({
-         util => $util,
-        });
+  my $if = $IF->new({util => $util,});
   my $cifs = $if->current_instrument_formats();
   isa_ok($cifs, 'ARRAY');
   is((scalar @{$cifs}), 10, 'unprimed cache cif');
@@ -88,7 +84,8 @@ our $INS = q{npg::model::instrument};
   });
   $if->{current_instrument_formats} = [$if_hk, $if_hs];
   my $cur_inst_by_format = $if->current_instruments_by_format();
-  is( $cur_inst_by_format, $if->current_instruments_by_format(), q{cache current_instruments_by_format} );
+  is( $cur_inst_by_format, $if->current_instruments_by_format(),
+    q{cache current_instruments_by_format} );
 
   my $expected_result = {
     q{GA-II} => [ qw{GA1 GA3 GA38} ],
@@ -159,19 +156,62 @@ our $INS = q{npg::model::instrument};
 }
 
 {
-  my @no_show_formats = qw/HL GAII MiniSeq cBot/;
+  my @no_show_formats = qw/FLX cBot/;
   my @show_formats =
-    ('MiSeq', 'HiSeq', 'HiSeqX', 'HiSeq 4000', 'NovaSeq', 'NovaSeqX'); 
+    ('MiSeq', 'HiSeq', 'HiSeqX', 'NovaSeq', 'NovaSeqX'); 
   for my $format (@no_show_formats, @show_formats) {
     my $format_object = npg::model::instrument_format->new(
-      {util => $util, model => $format});
-    my $flag = $format_object->is_recently_used_sequencer_format();
-    if (any { $_ eq $format } @no_show_formats) {
+      {util => $util, model => $format}
+    );
+    for my $flag (($format_object->is_recently_used_sequencer_format(),
+      $format_object->is_recently_used_sequencer_format('Illumina'))) {;
+      if (any { $_ eq $format } @no_show_formats) {
+        ok (!$flag, "$format is not a recent Illumina sequencer format");
+      } else {
+        ok ($flag, "$format is a recent Illumina sequencer format");
+      }
+    }
+    my $flag = $format_object->is_recently_used_sequencer_format('Applied Biosystems');
+    ok (!$flag, "$format is not a recent Applied Biosystems sequencer format");
+
+    $flag = $format_object->is_recently_used_sequencer_format('Roche/454');
+    if ($format eq 'FLX') {
+      ok ($flag, "$format is a recent Roche/454 sequencer format");
+    } else {
+      ok (!$flag, "$format is not a recent Roche/454 sequencer format");
+    }
+
+    $flag = $format_object->is_recently_used_sequencer_format('all');
+    if ($format eq 'cBot') {
       ok (!$flag, "$format is not a recent sequencer format");
     } else {
       ok ($flag, "$format is a recent sequencer format");
     }
   }
+}
+
+{
+  my $if_object = npg::model::instrument_format->new({util => $util});
+  is (scalar @{$if_object->instrument_formats_sorted('Unregistered')}, 0,
+    'no instruments for an unregistered format');
+  is (scalar @{$if_object->instrument_formats_sorted('Applied Biosystems')}, 0,
+    'no instruments for a registered format with no instruments');
+
+  my @illumina_instr = qw/1G HK HiSeq HiSeqX MiSeq NovaSeq NovaSeqX cBot/;
+  push @illumina_instr, 'cBot 2';
+  is_deeply (
+    [map { $_->model() } @{$if_object->instrument_formats_sorted('Illumina')}],
+    \@illumina_instr, 'sorted Illumina instrument formats');
+  is_deeply (
+    [map { $_->model() } @{$if_object->instrument_formats_sorted()}],
+    \@illumina_instr, 'sorted default (Illumina) instrument formats');
+  
+  my $first = shift @illumina_instr;
+  unshift @illumina_instr, 'GS20';
+  unshift @illumina_instr, $first;
+  is_deeply (
+    [map { $_->model() } @{$if_object->instrument_formats_sorted('all')}],
+    \@illumina_instr, 'sorted formats for all instruments');
 }
 
 1;

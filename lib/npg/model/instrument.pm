@@ -114,17 +114,29 @@ sub instrument_by_instrument_comp {
 }
 
 sub current_instruments {
-  my $self  = shift;
+  my ($self, $manufacturer)  = @_;
 
-  if(!$self->{current_instruments}) {
-    my $pkg   = ref $self;
-    my $query = qq(SELECT @{[join q(, ), $self->fields()]}
-                   FROM   @{[$self->table()]}
-                   WHERE  iscurrent = 1
-                   ORDER BY id_instrument);
-    $self->{current_instruments} = $self->gen_getarray($pkg, $query);
+  $manufacturer ||= $npg::model::instrument_format::DEFAULT_MANUFACTURER_NAME;
+  my $table = $self->table();
+  my $pkg = ref $self;
+
+  my $query = sprintf 'SELECT %s FROM %s AS instr',
+    join(q[, ], map { q[instr.] . $_ } $pkg->fields()) , $table;
+  my @where = ();
+  if ($manufacturer ne $npg::model::instrument_format::SHOW_ALL_PARAM_VALUE) {
+    $query .= q( JOIN instrument_format AS instrf ON) .
+              q( instr.id_instrument_format=instrf.id_instrument_format) .
+              q( JOIN manufacturer AS manuf ON) .
+              q( instrf.id_manufacturer=manuf.id_manufacturer);
+    push @where, qq(manuf.name='$manufacturer');
   }
+  push @where, q(instr.iscurrent = 1);
+  $query .=   q( WHERE ) . join q( AND ), @where;
+  $query .=   q( ORDER BY instr.id_instrument);
+
+  $self->{current_instruments} = $self->gen_getarray($pkg, $query);
   $self->{current_instruments_lab} = 'All';
+
   return $self->{current_instruments};
 }
 

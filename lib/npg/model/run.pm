@@ -34,8 +34,6 @@ Readonly::Scalar our $DEFAULT_SUMMARY_DAYS        => 14;
 Readonly::Scalar my  $FOLDER_GLOB_INDEX           => 2;
 Readonly::Scalar my  $PADDING                     => 4;
 Readonly::Hash   our %TEAMS => ('2' => 'RAD', '1' => 'A',);
-Readonly::Scalar our $DEFAULT_MANUFACTURER_NAME    => q{Illumina};
-Readonly::Scalar our $SHOW_ALL_PARAM_VALUE         => q{all};
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a([qw(instrument instrument_format)]);
@@ -176,10 +174,12 @@ sub get_runs_count {
 sub _create_query {
   my ($self, $select_count, $params) = @_;
 
+  my $show_all = $npg::model::instrument_format::SHOW_ALL_PARAM_VALUE;
+
   my $id_instr_format = $params->{id_instrument_format};
-  $id_instr_format ||= $SHOW_ALL_PARAM_VALUE;
+  $id_instr_format ||= $show_all;
   my $manufacturer_name = $params->{manufacturer};
-  $manufacturer_name ||= $DEFAULT_MANUFACTURER_NAME;
+  $manufacturer_name ||= $npg::model::instrument_format::DEFAULT_MANUFACTURER_NAME;
   my $id_instr = $params->{id_instrument};
   my $id_status_dict = $params->{id_run_status_dict};
 
@@ -201,7 +201,7 @@ sub _create_query {
     }
     # If runs from a particular manufacturer are requested, select
     # on manufacturer name.
-    if ( $manufacturer_name ne $SHOW_ALL_PARAM_VALUE ) {
+    if ( $manufacturer_name ne $show_all ) {
       $query .= ' JOIN instrument_format AS inf' .
                 ' ON r.id_instrument_format=inf.id_instrument_format' .
                 ' JOIN manufacturer AS m' .
@@ -211,7 +211,7 @@ sub _create_query {
   }
 
   # Filter by current run status.
-  if ( $id_status_dict && ($id_status_dict ne $SHOW_ALL_PARAM_VALUE) ) {
+  if ( $id_status_dict && ($id_status_dict ne $show_all) ) {
     $query .= ' JOIN run_status AS rs ON r.id_run=rs.id_run';
     push @where, qq[rs.id_run_status_dict=$id_status_dict AND rs.iscurrent=1];
   }

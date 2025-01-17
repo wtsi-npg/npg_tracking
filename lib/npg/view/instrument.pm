@@ -96,6 +96,9 @@ sub list {
   my $util  = $self->util();
   my $cgi   = $util->cgi();
 
+  my $manufacturer = $cgi->param('manufacturer');
+  $manufacturer ||=
+    $npg::model::instrument_format::DEFAULT_MANUFACTURER_NAME;
   my $filter_lab = $cgi->param('filter_lab');
 
   my $model = $self->model();
@@ -111,12 +114,14 @@ sub list {
   } elsif ($filter_lab) {
     $model->{instruments} = $model->current_instruments_from_lab($filter_lab);
   } else {
-    $model->{instruments} = $model->current_instruments();
+    $model->{instruments} = $model->current_instruments($manufacturer);
   }
 
   $model->{instruments} = [map {$_->[0]} sort {
     ($a->[1] <=> $b->[1]) or ($a->[3]<=>$b->[3]) or ($a->[2] cmp $b->[2])
   } map {[$_, $_->id_instrument_format, $_->name, $_->name=~/(\d+)/smx]} @{$model->{instruments} }];
+
+  $self->{manufacturer} = $manufacturer;
 
   return 1;
 }

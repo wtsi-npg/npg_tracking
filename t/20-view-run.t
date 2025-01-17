@@ -146,6 +146,7 @@ my $util = t::util->new({fixtures  => 1,});
            username       => 'public',
            util           => $util,
           });
+  diag $str;
   ok($util->test_rendered($str, 't/data/rendered/run.html'), 'html list render');
 }
 

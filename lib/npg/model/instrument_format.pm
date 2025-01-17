@@ -2,13 +2,18 @@ package npg::model::instrument_format;
 
 use strict;
 use warnings;
-use base qw(npg::model);
 use Carp;
 use Try::Tiny;
 use List::MoreUtils qw(any);
 use npg::model::instrument;
+use Readonly;
+
+use base qw(npg::model);
 
 our $VERSION = '0';
+
+Readonly::Scalar our $DEFAULT_MANUFACTURER_NAME => q{Illumina};
+Readonly::Scalar our $SHOW_ALL_PARAM_VALUE      => q{all};
 
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_many(q[instrument]);
@@ -71,8 +76,15 @@ sub current_instrument_formats {
 }
 
 sub instrument_formats_sorted {
-  my $self = shift;
-  my @if = sort { $a->model cmp $b->model} @{$self->instrument_formats};
+  my ($self, $manufacturer) = @_;
+
+  $manufacturer ||= $DEFAULT_MANUFACTURER_NAME;
+
+  my @if = @{$self->current_instrument_formats};
+  if ($manufacturer ne $SHOW_ALL_PARAM_VALUE ) {
+    @if = grep { $_->manufacturer_name eq $manufacturer } @if;
+  }
+  @if = sort { $a->model cmp $b->model} @if;
   return \@if;
 }
 
@@ -123,8 +135,20 @@ sub current_instruments_count {
 }
 
 sub is_recently_used_sequencer_format {
-  my ( $self ) = @_;
-  return any { $self->model() =~ /^$_/smx } qw/MiSeq NovaSeq HiSeq/;
+  my ($self, $manufacturer) = @_;
+
+  # This method is called from the run listing template.
+  # Default the manufacturer name to Illumina as for the rest of that view.
+  $manufacturer ||= $DEFAULT_MANUFACTURER_NAME;
+  my $registered_manufacturer = $self->manufacturer_name;
+  my $recent = ($manufacturer eq $SHOW_ALL_PARAM_VALUE ) ||
+    ($registered_manufacturer eq $manufacturer);
+  if ($recent && ($registered_manufacturer eq $DEFAULT_MANUFACTURER_NAME)) {
+    my $format = $self->model();
+    $recent = any { $format =~ /^$_/smx } qw/MiSeq NovaSeq HiSeq/;
+  }
+
+  return $recent;
 }
 
 sub _obtain_numerical_name_part {
@@ -190,7 +214,6 @@ sub manufacturer_name {
       $name = $ref->[0];
     }
   }
-
   return $name;
 }
 
@@ -251,7 +274,9 @@ initialise an object based on model being provided
 =head2 is_recently_used_sequencer_format
 
 Returns true if the instrument format is a recently used sequencing
-instrument, otherwise returns false.
+instrument, otherwise returns false. Takes an optional manufacturer name
+argument, which defaults to Illumina. If the manufacturer name is not 'all',
+the formats not by this manufacturer are not considered recent.
 
   my $is_recent_sequencer = $obj->is_recently_used_sequencer_format();
 
@@ -263,7 +288,16 @@ Returns a hash ref containing keys of current formats (which have current instru
 
 =head2 instrument_formats_sorted
 
-Returns an array of instrument format objects sorted by model name.
+Returns an array of current instrument format objects sorted by model name.
+
+If the name of manufacturer argument is not defined, it defaults to 'Illumina'.
+If the name of the manufacturer is given as 'all', all current instrument
+formats are returned, otherwise the formats by a particular manufacturer are
+returned.
+
+If the manufacturer name is not registered in the tracking database or no
+current formats are registered for the given manufacturer, an empty array is
+returned.
 
 =head1 DIAGNOSTICS
 
@@ -309,7 +343,7 @@ Returns an array of instrument format objects sorted by model name.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2006,2008,2013,2014,2016,2018,2021,2023 Genome Research Ltd.
+Copyright (C) 2006,2008,2013,2014,2016,2018,2021,2023,2025 Genome Research Ltd.
 
 This file is part of NPG.
 

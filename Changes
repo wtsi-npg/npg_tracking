@@ -5,8 +5,8 @@ LIST OF CHANGES
      of runs and run count - the name of the manufacturer. If this name is
      undefined in the parameters hash, it defaults to 'Illumina'.
    - To avoid code repetition, consolidated queries for listing and counting
-     runs in npg::model::run. Previously the same code was repeated in six
-     different places in two models.
+     runs in npg::model::run. Previously the same code was repeated in eight
+     different places in three models.
    - Simplified the logic of retrieving cached lists and counts of runs.
    - Dropped a custom 'read' method from npg::view::instrument. The code
      there, which computed lists of runs and runs count is not used in the
@@ -15,6 +15,11 @@ LIST OF CHANGES
    - Dropped 'runs' and 'count_run' methods from npg::model::instrument, these
      methods were only called by the deleted 'read' method from
      npg::view::instrument
+   - Added a new optional argument 'manufacturer' - the name of the manufacturer -
+     to two methods in npg::model::instrument_format.
+   - Made changes to views and templates for rendefing instruments and instrument
+     formats so that the 'manufacturer' parameter can be added to URLs and
+     propagated to the models.
  - Fixed perlbrew installation by installing libdevel-patchperl-perl in
    GitHub runner.
 

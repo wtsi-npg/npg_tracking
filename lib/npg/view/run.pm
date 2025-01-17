@@ -9,6 +9,7 @@ use Socket;
 
 use npg::model::run_status_dict;
 use npg::model::instrument;
+use npg::model::instrument_format;
 use npg::model::run_lane;
 use npg::model::run;
 
@@ -170,8 +171,8 @@ sub list {
     }
     $params->{len} ||= $PAGINATION_LEN;
     $params->{start} ||= $PAGINATION_START;
-    $params->{id_instrument_format} ||= $npg::model::run::SHOW_ALL_PARAM_VALUE;
-    $params->{manufacturer} ||= $npg::model::run::DEFAULT_MANUFACTURER_NAME;
+    $params->{id_instrument_format} ||= $npg::model::instrument_format::SHOW_ALL_PARAM_VALUE;
+    $params->{manufacturer} ||= $npg::model::instrument_format::DEFAULT_MANUFACTURER_NAME;
 
     if ( !$params->{id_run_status_dict} ) {
       $params->{id_run_status_dict} = npg::model::run_status_dict->new({
@@ -429,6 +430,8 @@ handling for the stuck runs page
 =item npg::model::run_status_dict
 
 =item npg::model::instrument
+
+=item npg::model::instrument_format
 
 =item npg::model::run_lane
 

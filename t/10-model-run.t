@@ -680,12 +680,12 @@ subtest 'run creation error due to problems with batch id' => sub {
 };
 {
   my $model = npg::model::run->new({});
-  dies_ok{ $model->get_instruments }, 'Accessing undefined instruments ArrayRef fails';
+  dies_ok{ $model->get_instruments } 'Accessing undefined instruments ArrayRef fails';
 
   $model = npg::model::run->new({
     instruments => \(t::instrument->new(name => "NV1")),
   });
-  lives_ok{ $model->get_instruments }, 'Accessing defined instruments ArrayRef succeeds';
+  lives_ok{ $model->get_instruments } 'Accessing defined instruments ArrayRef succeeds';
 }
 
 {
