@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+ - Deleted two unused methods from npg::model::instrument_annotation,
+   annotations_by_instrument_over_default_uptime and
+   dates_of_annotations_over_default_uptime
+
 release 102.1.0 (2025-01-16)
  - Fixed perlbrew installation by installing libdevel-patchperl-perl in
    GitHub runner.
