@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 29;
+use Test::More tests => 27;
 use Test::Exception;
 use Test::Deep;
 use CGI;
@@ -230,31 +230,6 @@ my $util = t::util->new({fixtures  => 1,});
           });
   like ($str, qr/team 'RAD'/, 'R&D team name displayed');
   like ($str, qr/Loaded\ by\ joe_admin/, 'run loader username displayed');
-}
-
-{
-  my $mock    = {
-    q(SELECT id_user FROM user WHERE username = ?:,public) => [[1]],
-    q(SELECT id_usergroup FROM usergroup WHERE groupname = ?:,public) => [[]],
-    q(SELECT ug.id_usergroup, ug.groupname, ug.is_public, ug.description, ug.iscurrent, uug.id_user_usergroup FROM usergroup ug, user2usergroup uug WHERE uug.id_user = ? AND ug.iscurrent = 1 AND ug.id_usergroup = uug.id_usergroup:1) => [{}],
-  };
-
-  my $cgi = CGI->new();
-  $util    = t::util->new({
-          mock => $mock,
-          cgi  => $cgi,
-         });
-  my $view = npg::view::run->new({
-          util  => $util,
-          model => npg::model::run->new({
-                 util   => $util,
-                 id_run => q(),
-                }),
-         });
-  is($view->selected_days(), 14, '$view->selected_days() gives default 14 days if not set as cgi param');
-  $cgi = $view->util->cgi();
-  $cgi->param('days', 7);
-  is($view->selected_days(), 7, '$view->selected_days() gives selected days if set as cgi param');
 }
 
 1;

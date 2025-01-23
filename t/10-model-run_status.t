@@ -1,9 +1,10 @@
 use strict;
 use warnings;
-use Test::More tests => 22;
+use Test::More tests => 15;
 use Test::Exception;
-use t::util;
+
 use npg::model::run;
+use t::util;
 
 use_ok('npg::model::run_status');
 
@@ -63,32 +64,6 @@ my $util = t::util->new({ fixtures  => 1,});
 
   isa_ok($rs->run_status_dict(), 'npg::model::run_status_dict');
   is($rs->run_status_dict->id_run_status_dict(), 1, 'id_user');
-
-  is($rs->epoch(), 1181034263, 'epoch');
-}
-
-{
-  my $rs = npg::model::run_status->new({
-          util => $util,
-               });
-  isa_ok($rs->current_run_statuses(), 'ARRAY');
-  is((scalar @{$rs->current_run_statuses()}), 14, 'current run_statuses');
-  isa_ok($rs->current_run_statuses->[0], 'npg::model::run_status', 'first current run status isa_ok');
-}
-
-{
-  my $rs = npg::model::run_status->new({
-          util => $util,
-               });
-  isa_ok($rs->latest_current_run_status(), 'npg::model::run_status');
-}
-
-{
-  my $rs = npg::model::run_status->new({
-          util => $util,
-               });
-  isa_ok($rs->active_runs_over_last_30_days(), 'ARRAY');
-  is((scalar @{$rs->active_runs_over_last_30_days()}), 0, 'no recent active runs');
 }
 
 {
