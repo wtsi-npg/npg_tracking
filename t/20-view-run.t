@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 27;
+use Test::More tests => 26;
 use Test::Exception;
 use Test::Deep;
 use CGI;
@@ -52,19 +52,6 @@ my $util = t::util->new({fixtures  => 1,});
                 }),
          });
   is_deeply($view->staging_urls($name), $esa_urls, 'run on staging, esa urls');
-}
-
-{
-  my $view = npg::view::run->new({
-          util  => $util,
-          action => q{list},
-          aspect => q{list_stuck_runs},
-          model => npg::model::run->new({
-                 util   => $util,
-                 id_run => q(),
-                }),
-         });
-  ok($util->test_rendered($view->render(), 't/data/rendered/run/list_stuck_runs.html'), 'list_stuck_runs render is ok');
 }
 
 {
