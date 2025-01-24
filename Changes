@@ -9,6 +9,8 @@ LIST OF CHANGES
    - npg::model_run_status -
        current_run_statuses, latest_current_run_status,
        active_runs_over_last_30_days, epoch
+ - Replace mark docker image with mark golang executable from github,
+   on ISG's docker image, for documentation publishing
 
 release 102.1.0 (2025-01-16)
  - Fixed perlbrew installation by installing libdevel-patchperl-perl in
