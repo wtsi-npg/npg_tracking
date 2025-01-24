@@ -1,8 +1,14 @@
 LIST OF CHANGES
 
- - Deleted two unused methods from npg::model::instrument_annotation,
-   annotations_by_instrument_over_default_uptime and
-   dates_of_annotations_over_default_uptime
+ - Deleted unused methods from a number of models and views.
+   - npg::model::instrument_annotation -
+      annotations_by_instrument_over_default_uptime,
+      dates_of_annotations_over_default_uptime
+   - npg::view::run -
+      list_summary, selected_days
+   - npg::model_run_status -
+       current_run_statuses, latest_current_run_status,
+       active_runs_over_last_30_days, epoch
 
 release 102.1.0 (2025-01-16)
  - Fixed perlbrew installation by installing libdevel-patchperl-perl in

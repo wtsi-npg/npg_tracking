@@ -20,7 +20,6 @@ our $VERSION = '0';
 
 Readonly::Scalar our $PAGINATION_LEN   => 40;
 Readonly::Scalar our $PAGINATION_START => 0;
-Readonly::Scalar my  $DAYS_IN_WEEK     => 14;
 
 sub new {
   my ($class, @args) = @_;
@@ -216,25 +215,6 @@ sub list {
   return 1;
 }
 
-sub list_summary {
-  my $self       = shift;
-  my $util       = $self->util();
-  my $days       = $self->selected_days();
-  my $model      = $self->model();
-  $model->{days} = $days;
-
-  return 1;
-}
-
-sub selected_days {
-  my $self = shift;
-  my $days;
-  if ($self->util->cgi->param('days')) {
-    ($days) = $self->util->cgi->param('days') =~ /(\d+)/smx;
-  }
-  return $days || $DAYS_IN_WEEK;
-}
-
 sub create {
   my ($self, @args) = @_;
   my $util        = $self->util();
@@ -407,10 +387,6 @@ npg::view::run - view handling for runs
 =head2 list - handling for runs-by-id_run_status_dict
 
 =head2 list_ajax - list handling for AJAX response
-
-=head2 list_summary - handling for recent run display
-
-=head2 selected_days - factored out obtaining the number of days selected, with default to set to 14
 
 =head2 create - handling for run, run_lanes, and run_status
 

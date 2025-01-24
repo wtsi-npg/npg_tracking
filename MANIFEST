@@ -313,7 +313,6 @@ t/10-model-run_lane.t
 t/10-model-run_lane_annotation.t
 t/10-model-run_lane_tags.t
 t/10-model-run_read.t
-t/10-model-run_status-active_runs.t
 t/10-model-run_status.t
 t/10-model-run_status_dict.t
 t/10-model-run_tags.t
