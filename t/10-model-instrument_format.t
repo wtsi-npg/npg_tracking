@@ -118,7 +118,8 @@ our $INS = q{npg::model::instrument};
     'HiSeq' => ['HS1','HS2','HS3'],
     'cBot' => ['cBot1'],
     'cBot 2' => ['cBot20'],
-    'NovaSeqX' => ['NVX1']
+    'NovaSeqX' => ['NVX1'],
+    'GS20' => ['GS201'],
   }; 
   my $model = npg::model::instrument_format->new({util => $util});
   my $instruments_by_format =

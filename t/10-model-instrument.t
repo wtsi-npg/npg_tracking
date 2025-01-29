@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 125;
+use Test::More tests => 131;
 use Test::Deep;
 use Test::Exception;
 
@@ -11,24 +11,38 @@ my $util = t::util->new({ fixtures => 1 });
 use_ok('npg::model::instrument');
 
 {
-  my $model = npg::model::instrument->new({
-             util => $util,
-            });
-
+  my $model = npg::model::instrument->new({util => $util,});
   isa_ok($model, 'npg::model::instrument', '$model');
   my @fields = $model->fields();
   is($fields[0], 'id_instrument', 'first of $model->fields() array is id_instrument');
+  is($model->manufacturer_name, undef,
+    'manufacturer name is undefined for a model used in list context');
+}
 
+{
+  my $model = npg::model::instrument->new({util => $util,});
   my $instruments = $model->instruments();
   isa_ok($instruments, 'ARRAY', '$model->instruments()');
   isa_ok($instruments->[0], 'npg::model::instrument', '$model->instruments()->[0]');
+  my $num_instruments = scalar@{$instruments};
+  is($num_instruments, 25, 'number of all known instruments');
 
   my $current_instruments = $model->current_instruments();
   isa_ok($current_instruments, 'ARRAY', '$model->current_instruments()');
-  is((scalar@{$current_instruments} + 1), scalar@{$instruments},
-    'scalar@{$model->current_instruments()} is 1 less than scalar@{$model->instruments()}');
-  is($model->manufacturer_name, undef,
-    'manufacturer name is undefined for a model used in list context');
+  my $num_current_instruments_illumina = scalar@{$current_instruments};
+  is($num_current_instruments_illumina, 21,
+    'number of Illumina current instruments');
+
+  is(@{ $model->current_instruments('all')}, 22,
+    'number of current instruments by all manufacturers');
+  is(@{ $model->current_instruments('Illumina')}, $num_current_instruments_illumina,
+    'number of Illumina current instruments');
+  is(@{ $model->current_instruments('Applied Biosystems')}, 0,
+    'no current instruments by Applied Biosystems (existing manufacturer)');
+  is(@{ $model->current_instruments('Roche/454')}, 1,
+    'number of Roche/454 current instruments');
+  is(@{ $model->current_instruments('Some or other')}, 0,
+    'no current instruments by an unknown manufacturer'); 
 }
 
 {
