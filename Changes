@@ -33,7 +33,7 @@ LIST OF CHANGES
    - Simplified the logic of retrieving cached lists and counts of runs.
    - Added a new optional argument 'manufacturer' - the name of the manufacturer -
      to two methods in npg::model::instrument_format.
-   - Made changes to views and templates for rendefing instruments and instrument
+   - Made changes to views and templates for rendering instruments and instrument
      formats so that the 'manufacturer' parameter can be added to URLs and
      propagated to the models.
 
