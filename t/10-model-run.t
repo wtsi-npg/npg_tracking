@@ -14,14 +14,12 @@ use_ok ('npg::model::annotation');
 my $util  = t::util->new({fixtures  => 1});
 
 subtest 'model object that is not linked to a run' => sub {
-  plan tests => 7;
+  plan tests => 6;
 
   my $model = npg::model::run->new({util => $util});
   isa_ok($model, 'npg::model::run');
   my @fields = $model->fields();
   is((scalar @fields), 13, '$model->fields() size');
-
-  isa_ok( $model->potentially_stuck_runs(), q{HASH}, q{potentially_stuck_runs} );
 
   is($model->name(), 'UNKNOWN_0000', 'unknown name if no instrument name and no id_run');
 

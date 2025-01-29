@@ -70,9 +70,6 @@
 <ul class="inline">
  <li><a class="npg_menu" href="[% SCRIPT_NAME %]/run/">Runs</a></li>
  <li><a class="npg_menu" href="[% SCRIPT_NAME %]/instrument/">Instruments</a></li>
-[%- IF requestor.is_member_of('loaders') || requestor.is_member_of('annotators') %]
- <li><a class="npg_menu" href="[% SCRIPT_NAME %]/run/stuck_runs">Stuck Runs</a></li>
-[% END -%]
 [%- IF requestor.is_member_of('engineers') || requestor.is_member_of('admin') %]
  <li><a class="npg_menu" href="[% SCRIPT_NAME %]/administration/">Admin</a></li>
 [% END -%]
