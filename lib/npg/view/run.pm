@@ -1,25 +1,25 @@
-#########
-# Author:        rmp
-# Created:       2007-03-28
-#
 package npg::view::run;
-use base qw(npg::view);
+
 use strict;
 use warnings;
 use Carp;
 use English qw(-no_match_vars);
-use npg::model::run_status_dict;
-use npg::model::instrument;
-use npg::model::run_lane;
-use npg::model::run;
 use POSIX qw(strftime);
 use Socket;
-use Readonly;
+
+use npg::model::run_status_dict;
+use npg::model::instrument;
+use npg::model::instrument_format;
+use npg::model::run_lane;
+use npg::model::run;
+
+use base qw(npg::view);
 
 our $VERSION = '0';
 
 Readonly::Scalar our $PAGINATION_LEN   => 40;
 Readonly::Scalar our $PAGINATION_START => 0;
+Readonly::Scalar my  $DEFAULT_RUN_STATUS => 'run pending';
 
 sub new {
   my ($class, @args) = @_;
@@ -45,7 +45,7 @@ sub authorised {
   my $aspect = $self->aspect() || q[];
 
   #########
-  # Allow loaders the ability to create runs
+  # Allow loaders to create runs.
   #
   if ( ( $aspect eq 'add' || $aspect eq 'add_pair_ajax' ) && $requestor->is_member_of('loaders') ) {return 1;}
 
@@ -77,7 +77,7 @@ sub read { ## no critic (ProhibitBuiltinHomonyms)
   }
 
   #########
-  # override id_run_pair (which will be empty for R1) using the id_run of any
+  # Override id_run_pair (which will be empty for R1) using the id_run of any
   # existing second end
   #
   $model->{id_run_pair} = $model->run_pair() ? $model->run_pair->id_run() : 0;
@@ -154,62 +154,44 @@ sub list {
   my $self       = shift;
   my $util       = $self->util();
   my $cgi        = $util->cgi();
-  my $session    = $util->session();
-  my $len        = $cgi->param('len')   || $PAGINATION_LEN;
-  my $start      = $cgi->param('start') || $PAGINATION_START;
-  my $batch_id   = $cgi->param('batch_id');
-  my $id_rsd     = $cgi->param('id_run_status_dict');
-
-  my $id_instrument_format = $cgi->param( q{id_instrument_format} ) || q{all};
-  my $id_instrument = $cgi->param( q{id_instrument} );
 
   my $model      = $self->model();
-  my $aspect     = $self->aspect();
+  my $batch_id = $cgi->param('batch_id');
 
-  $model->{start} = $start;
-  $model->{len}   = $len;
-
-  my $ref = {
-     len   => $len,
-     start => $start,
-     id_instrument_format => $id_instrument_format,
-  };
-  my $rsd_ref = { id_instrument_format => $id_instrument_format,};
-  if ($id_instrument) {
-    $ref->{id_instrument} = $id_instrument;
-    $rsd_ref->{id_instrument} = $id_instrument;
-  };
-
-  if ( $batch_id ) {
-    $model->{runs} = $model->runs_on_batch( $batch_id );
-  } elsif ( $id_rsd ) {
-    if ( $id_rsd eq 'all' ) {
-      $model->{runs} = $model->runs($ref);
-      $model->{count_runs} = $model->count_runs($rsd_ref);
-    } else {
-      my $rsd = npg::model::run_status_dict->new( {
-        util               => $util,
-        id_run_status_dict => $id_rsd,
-      } );
-      $model->{runs} = $rsd->runs($ref);
-      $model->{count_runs} = $rsd->count_runs($rsd_ref);
-    }
+  if ( $batch_id ) { # Most likely this request comes from the search utility.
+    $model->{runs} = $model->runs_on_batch($batch_id);
   } else {
-    my $rsd = npg::model::run_status_dict->new( {
-      util        => $util,
-      description => 'run pending',  # Default to pending runs
-    } );
-    $model->{runs} = $rsd->runs($ref);
-    $model->{count_runs} = $rsd->count_runs($rsd_ref);
-    $id_rsd = $rsd->id_run_status_dict();
-  }
-  if ( $id_rsd ) {
-    $model->{id_run_status_dict} = $id_rsd;
-  }
-  $model->{id_instrument_format} = $id_instrument_format;
-  if ($id_instrument) {
-    $self->{no_main_menu} = 1;
-    $model->{id_instrument} = $id_instrument;
+
+    my $params = {};
+    for my $p (qw/len start
+                  id_instrument_format id_instrument manufacturer
+                  id_run_status_dict/) {
+      $params->{$p} = $cgi->param($p);
+    }
+    $params->{len} ||= $PAGINATION_LEN;
+    $params->{start} ||= $PAGINATION_START;
+    $params->{id_instrument_format} ||= $npg::model::instrument_format::SHOW_ALL_PARAM_VALUE;
+    $params->{manufacturer} ||= $npg::model::instrument_format::DEFAULT_MANUFACTURER_NAME;
+
+    if ( !$params->{id_run_status_dict} ) {
+      $params->{id_run_status_dict} = npg::model::run_status_dict->new({
+        util        => $util,
+        description => $DEFAULT_RUN_STATUS,
+      })->id_run_status_dict();
+    }
+
+    $model->{runs} = $model->runs($params);
+    $model->{count_runs} = $model->count_runs($params);
+
+    $model->{id_run_status_dict} = $params->{id_run_status_dict};
+    $model->{start} = $params->{start};
+    $model->{len}   = $params->{len};
+    $model->{id_instrument_format} = $params->{id_instrument_format};
+    $model->{manufacturer} = $params->{manufacturer};
+    if ($params->{id_instrument}) { # For 'Runs' tab on an instrument page.
+      $self->{no_main_menu} = 1;
+      $model->{id_instrument} = $params->{id_instrument};
+    }
   }
 
   return 1;
@@ -259,7 +241,7 @@ sub create {
          sort { $a <=> $b } keys %{$lanes}];
 
   #########
-  # fake the cgi id_user parameter based on requestor's id_user
+  # Fake the cgi id_user parameter based on requestor's id_user
   # so that model::run->create is able to find it for its new xrun_status
   #
   $model->id_user($util->requestor->id_user());
@@ -425,6 +407,8 @@ handling for the stuck runs page
 
 =item npg::model::instrument
 
+=item npg::model::instrument_format
+
 =item npg::model::run_lane
 
 =item npg::model::run
@@ -439,11 +423,17 @@ handling for the stuck runs page
 
 =head1 AUTHOR
 
-Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+=over
+
+=item Roger Pettett
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017 GRL
+Copyright (C) 2007-2012,2013,2014,2016,2017,2021,2025 Genome Research Ltd.
 
 This file is part of NPG.
 

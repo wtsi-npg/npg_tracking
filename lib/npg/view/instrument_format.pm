@@ -1,13 +1,20 @@
-#########
-# Author:        rmp
-# Created:       2007-03-28
-#
 package npg::view::instrument_format;
-use base qw(npg::view);
+
 use strict;
 use warnings;
+use npg::model::instrument_format;
+
+use base qw(npg::view);
 
 our $VERSION = '0';
+
+sub list {
+  my $self = shift;
+  $self->{'manufacturer'} = $self->util()->cgi()->param('manufacturer');
+  $self->{'manufacturer'} ||=
+    $npg::model::instrument_format::DEFAULT_MANUFACTURER_NAME;
+  return 1;
+}
 
 1;
 
@@ -15,7 +22,7 @@ __END__
 
 =head1 NAME
 
-npg::view::instrument_format - view handling for instrument_formats
+npg::view::instrument_format - view handling for instrument formats
 
 =head1 VERSION
 
@@ -24,6 +31,8 @@ npg::view::instrument_format - view handling for instrument_formats
 =head1 DESCRIPTION
 
 =head1 SUBROUTINES/METHODS
+
+=head2 list
 
 =head1 DIAGNOSTICS
 
@@ -49,11 +58,17 @@ npg::view::instrument_format - view handling for instrument_formats
 
 =head1 AUTHOR
 
-Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+=over
+
+=item Roger Pettett
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2007-2012,2013,2014,2016,2018,2021,2022,2023,2025 Genome Research Ltd.
 
 This file is part of NPG.
 

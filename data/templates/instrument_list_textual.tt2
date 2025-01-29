@@ -1,5 +1,6 @@
 [% PROCESS instrument_status_menu.tt2 
            index=1
+           manufacturer=view.manufacturer
 -%]
 
 <table id="instruments" class="sortable zebra">

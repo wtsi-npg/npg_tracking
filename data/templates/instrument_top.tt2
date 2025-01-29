@@ -1,6 +1,8 @@
-[% labels    = ['current status', 'current formats'] -%]
-[% addresses = ['instrument/graphical', 'instrument_format'] -%]
-[% counts    = [0, 2] -%]
+[% manufacturer = manufacturer ? manufacturer : '';
+   instrument_format_url = 'instrument_format?manufacturer=' _ manufacturer;
+   labels    = ['current status', 'current formats'];
+   addresses = ['instrument/graphical', instrument_format_url];
+   counts    = [0, 2] -%]
 <p class="npgmenu1">
 <font class="npgmenu1-highlighted">Instruments:</font>
 [% FOREACH count IN counts -%]

@@ -133,83 +133,94 @@ sub end {
 
 sub runs {
   my ( $self, $params ) = @_;
+  # The run view might have cached the data.
+  return $self->{runs} ? $self->{runs} : $self->list_runs($params);
+}
 
-  $params->{id_instrument_format} ||= q{all};
+sub list_runs {
+  my ( $self, $params ) = @_;
 
-  # once we have determined this, we will set the runs to be what has been requested for the templates benefit
-  if ( $self->{runs} && ref $self->{runs} eq q{ARRAY} ) {
-    return $self->{runs};
-  }
-
-  if ( ! $self->{runs} || ref $self->{runs} ne q{HASH} ) {
-    $self->{runs} = {};
-  }
-
-  if ( $self->{runs}->{ $params->{id_instrument_format} } ) {
-    return $self->{runs}->{ $params->{id_instrument_format} };
-  }
-
-  my $pkg   = ref $self;
-  my $query = qq[SELECT @{[join q[, ], $pkg->fields()]}
-                 FROM   @{[$pkg->table()]}];
-
-  if ( $params->{id_instrument} && $params->{id_instrument} =~ /\d+/xms ) {
-    $query .= qq[ WHERE id_instrument = $params->{id_instrument}];
-  } else {
-    if ( $params->{id_instrument_format} ne q{all} && $params->{id_instrument_format} =~ /\A\d+\z/xms ) {
-      $query .= qq[ WHERE id_instrument_format = $params->{id_instrument_format}];
-    }
-  }
-  $query .= q[ ORDER BY id_run DESC];
-
-  if ( $params ) {
-    $query = $self->util->driver->bounded_select( $query,
+  my $select_count = 0;
+  my $query = $self->_create_query($select_count, $params);
+  $query .= q[ ORDER BY r.id_run DESC];
+  $query = $self->util->driver->bounded_select( $query,
                                                 $params->{len},
                                                 $params->{start});
-  }
-
-  $self->{runs}->{ $params->{id_instrument_format} } = $self->gen_getarray( $pkg, $query );
-  return $self->{runs}->{ $params->{id_instrument_format} };
+  my $pkg   = ref $self;
+  return $self->gen_getarray($pkg, $query);
 }
 
 sub count_runs {
   my ( $self, $params ) = @_;
+  # The run view might have cached the data.
+  return defined $self->{count_runs} ? $self->{count_runs} :
+    $self->get_runs_count($params);
+}
+
+sub get_runs_count {
+  my ( $self, $params ) = @_;
+
   $params ||= {};
-  $params->{id_instrument_format} ||= q{all};
-
-  # once we have determined this, we will set the runs to be what has been requested for the templates benefit
-  if ( defined $self->{count_runs} && ! ref $self->{count_runs} ) {
-    return $self->{count_runs};
-  }
-
-  if ( ! $self->{count_runs} || ref $self->{count_runs} ne q{HASH} ) {
-    $self->{count_runs} = {};
-  }
-
-  if ( defined $self->{count_runs}->{ $params->{id_instrument_format} } ) {
-    return $self->{count_runs}->{ $params->{id_instrument_format} };
-  }
-
-  my $pkg   = ref $self;
-  my $query = qq[SELECT COUNT(*)
-                 FROM   @{[$pkg->table()]}];
-
-  if ( $params->{id_instrument} && $params->{id_instrument} =~ /\d+/xms ) {
-    $query .= qq[ WHERE id_instrument = $params->{id_instrument}];
-  } else {
-    if ( $params->{id_instrument_format} ne q{all} && $params->{id_instrument_format} =~ /\A\d+\z/xms ) {
-      $query .= qq[ WHERE id_instrument_format = $params->{id_instrument_format}];
-    }
-  }
-
+  my $select_count = 1;
+  my $query = $self->_create_query($select_count, $params);
   my $ref = $self->util->dbh->selectall_arrayref( $query );
-  if( defined $ref->[0] &&
-      defined $ref->[0]->[0] ) {
-    $self->{count_runs}->{ $params->{id_instrument_format} } = $ref->[0]->[0];
+  if ( defined $ref->[0] && defined $ref->[0]->[0] ) {
     return $ref->[0]->[0];
   }
 
   return;
+}
+
+sub _create_query {
+  my ($self, $select_count, $params) = @_;
+
+  my $show_all = $npg::model::instrument_format::SHOW_ALL_PARAM_VALUE;
+
+  my $id_instr_format = $params->{id_instrument_format};
+  $id_instr_format ||= $show_all;
+  my $manufacturer_name = $params->{manufacturer};
+  $manufacturer_name ||= $npg::model::instrument_format::DEFAULT_MANUFACTURER_NAME;
+  my $id_instr = $params->{id_instrument};
+  my $id_status_dict = $params->{id_run_status_dict};
+
+  my $pkg = ref $self;
+  my $query = sprintf 'SELECT %s FROM %s AS r',
+    $select_count ? q[COUNT(*)] : join(q[, ], map { q[r.] . $_ } $pkg->fields()),
+    $pkg->table();
+
+  my @where = ();
+  # If run info for a particular instrument is requested, disregard the
+  # instrument format and the manufacturer.
+  if ( $id_instr && $id_instr =~ /\d+/xms ) {
+    push @where, qq[r.id_instrument = $id_instr];
+  } else {
+    # If run info for a particular instrument format is requested, disregard
+    # the manufacturer.
+    if ( $id_instr_format =~ /\A\d+\z/xms ) {
+      push @where, qq[r.id_instrument_format = $id_instr_format];
+    }
+    # If runs from a particular manufacturer are requested, select
+    # on manufacturer name.
+    if ( $manufacturer_name ne $show_all ) {
+      $query .= ' JOIN instrument_format AS inf' .
+                ' ON r.id_instrument_format=inf.id_instrument_format' .
+                ' JOIN manufacturer AS m' .
+                ' ON inf.id_manufacturer=m.id_manufacturer';
+      push @where, qq[m.name = '$manufacturer_name'];
+    }
+  }
+
+  # Filter by current run status.
+  if ( $id_status_dict && ($id_status_dict ne $show_all) ) {
+    $query .= ' JOIN run_status AS rs ON r.id_run=rs.id_run';
+    push @where, qq[rs.id_run_status_dict=$id_status_dict AND rs.iscurrent=1];
+  }
+
+  if (@where) {
+    $query .= ' WHERE ' . join ' AND ', @where;
+  }
+
+  return $query;
 }
 
 sub current_run_status {
@@ -1053,16 +1064,31 @@ npg::model::run
 
 =head2 runs - arrayref of all npg::model::runs
 
-  my $arAllRuns = $oRun->runs();
+  my $arRuns = $oRun->runs($params);
 
-  my $arRunsBounded = $oRun->runs({
-    len   => 10,
-    start => 20,
-  };
+  Returns a list of cached run models or retrieves a new list in accordance with
+  the parameters of the query, see C<get_runs>. Bounds the retrieved list
+  according to C<start> and C<len> parameters.
 
-=head2 count_runs - count of runs for this instrument
+=head2 list_runs - arrayref of all npg::model::runs
 
-  my $iRunCount = $oRun->count_runs();
+  my $arRuns = $oRun->list_runs($params);
+
+  Retrieves and returns a list or run models in accordance with the parameters
+  of the query.
+
+=head2 count_runs
+
+  my $iRunCount = $oRun->count_runs($params);
+
+  Returns a cached value or retrieves a new one in accordance with
+  the parameters of the query, see C<get_runs_count>.
+
+=head2 get_runs_count
+
+  my $iRunCount = $oRun->count_runs($params);
+
+  Returns the cout of runs according to the parameters of the query.
 
 =head2 runs_on_batch
 
@@ -1251,7 +1277,7 @@ $instruments is undefined
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2006-2012,2013,2014,2015,2016,2017,2020, 2021 Genome Research Ltd.
+Copyright (C) 2006-2012, 2013,2014,2015,2016,2017,2020,2021,2022,2025 Genome Research Ltd.
 
 This file is part of NPG.
 

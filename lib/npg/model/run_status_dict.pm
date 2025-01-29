@@ -1,8 +1,5 @@
-#########
-# Author:        rmp
-# Created:       2006-10-31
-#
 package npg::model::run_status_dict;
+
 use strict;
 use warnings;
 use base qw(npg::model);
@@ -41,70 +38,6 @@ sub init {
     }
   }
   return 1;
-}
-
-sub runs {
-  my ($self, $params ) = @_;
-  $params ||= {};
-  $params->{id_instrument_format} ||= q{all};
-
-  my $pkg   = 'npg::model::run';
-  my $query = qq(SELECT @{[join q(, ), map { "r.$_" } $pkg->fields()]}
-                 FROM   @{[$pkg->table()]} r,
-                        run_status         rs
-                 WHERE  rs.id_run             = r.id_run
-                 AND    rs.iscurrent          = 1
-                 AND    rs.id_run_status_dict = ?);
-
-  if ( $params->{id_instrument} && $params->{id_instrument} =~ /\d+/xms ) {
-    $query .= qq[ AND id_instrument = $params->{id_instrument}];
-  } else {
-    if ( $params->{id_instrument_format} ne q{all} && $params->{id_instrument_format} =~ /\A\d+\z/xms ) {
-      $query .= qq[ AND r.id_instrument_format = $params->{id_instrument_format}];
-    }
-  }
-  $query .= q( ORDER BY r.id_run DESC);
-
-  $query    = $self->util->driver->bounded_select($query,
-                                                 $params->{len},
-                                                 $params->{start});
-
-  return $self->gen_getarray($pkg, $query, $self->id_run_status_dict());
-}
-
-sub count_runs {
-  my ( $self, $params ) = @_;
-  $params ||= {};
-  $params->{id_instrument_format} ||= q{all};
-  $self->{count_runs} ||= {};
-
-  if ( ! defined $self->{count_runs}->{id_instrument_format} ) {
-
-    my $pkg   = 'npg::model::run';
-    my $query = qq(SELECT COUNT(*)
-                   FROM   @{[$pkg->table()]} r,
-                          run_status         rs
-                   WHERE  rs.id_run             = r.id_run
-                   AND    rs.iscurrent          = 1
-                   AND    rs.id_run_status_dict = ?);
-
-    if ( $params->{id_instrument} && $params->{id_instrument} =~ /\d+/xms ) {
-      $query .= qq[ AND id_instrument = $params->{id_instrument}];
-    } else {
-      if ( $params->{id_instrument_format} ne q{all} && $params->{id_instrument_format} =~ /\A\d+\z/xms ) {
-        $query .= qq[ AND r.id_instrument_format = $params->{id_instrument_format}];
-      }
-    }
-
-    my $ref = $self->util->dbh->selectall_arrayref($query, {}, $self->id_run_status_dict());
-
-    if ( defined $ref->[0] &&
-         defined $ref->[0]->[0] ) {
-      $self->{count_runs}->{ $params->{id_instrument_format} } = $ref->[0]->[0];
-    }
-  }
-
-  return $self->{count_runs}->{ $params->{id_instrument_format} } || 0;
 }
 
 sub run_status_dicts_sorted {
@@ -155,20 +88,6 @@ npg::model::run_status_dict
 
   my $arRunStatusDicts = $oRunStatusDict->run_status_dicts();
 
-=head2 runs - arrayref of npg::model::runs with a current status having this id_run_status_dict
-
-  my $arRuns = $oRunStatusDict->runs();
-
-Takes an optional hash of params, id_instrument_format => (all,1,2,3..) (defaults to all)
-If this is given, the runs returned will only be for instruments of that format
-
-=head2 count_runs - Count the runs with this rsd as their current status
-
-  my $iCountRuns = $oRunStatusDict->count_runs();
-
-Takes an optional hash of params, id_instrument_format => (all,1,2,3..) (defaults to all)
-If this is given, the count of runs returned will only be for instruments of that format
-
 =head2 run_status_dicts_sorted
 
 Use instead of generated run_status_dicts to get a temporal ordered, current list
@@ -185,11 +104,17 @@ Use instead of generated run_status_dicts to get a temporal ordered, current lis
 
 =head1 AUTHOR
 
-Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
+=over
+
+=item Roger Pettett
+
+=item Marina Gourtovaia
+
+=back
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2006-2012,2013,2014,2025 Genome Research Ltd.
 
 This file is part of NPG.
 
