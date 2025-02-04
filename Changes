@@ -9,6 +9,11 @@ LIST OF CHANGES
    - npg::model_run_status -
        current_run_statuses, latest_current_run_status,
        active_runs_over_last_30_days, epoch
+ - Deleted instrument_utilisation table from the tracking database. All
+   code that was using this table was removed long time ago. Tha last
+   record in this table is from 2016-11-12. The reports about instrument
+   utilisation are now generated dynamically by C<bin/illumina_instruments_uptime> -
+   a script in this package.
  - Replace mark docker image with mark golang executable from github,
    on ISG's docker image, for documentation publishing
 
