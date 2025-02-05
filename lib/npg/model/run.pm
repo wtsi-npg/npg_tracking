@@ -896,14 +896,6 @@ sub has_analysis_in_progress {
   return 0;
 }
 
-sub potentially_stuck_runs {
-  my ( $self ) = @_;
-  if ( ! $self->{potentially_stuck_runs} ) {
-    $self->{potentially_stuck_runs} = $self->runs()->[0]->current_run_status()->potentially_stuck_runs();
-  }
-  return $self->{potentially_stuck_runs};
-}
-
 sub teams {
   my $self = shift;
   return map {$TEAMS{$_}} (sort {$a <=> $b} keys %TEAMS);
@@ -1148,10 +1140,6 @@ npg::model::run
 =head2 calculate_expected_cycle_count_by_read_cycle - calculate expected cycle count for this run based on the cycle_count numbers for each read. If any of read cycle number not available, return 0
 
 =head2 num_reads - calculate number of reads of this run based on multplex_run and paired read or not
-
-=head2 potentially_stuck_runs
-
-return runs which are potentially stuck due to the length of time at their current run status - see method in model::run_status
 
 =head2 run_status_dict
 

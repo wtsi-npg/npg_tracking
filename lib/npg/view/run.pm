@@ -62,10 +62,6 @@ sub authorised {
     return 1;
   }
 
-  if (  $aspect eq q{list_stuck_runs} && ( $requestor->is_member_of( q{loaders} ) || $requestor->is_member_of( q{annotators} ) || $requestor->is_member_of( q{manual_qc} ) ) ) {
-    return 1;
-  }
-
   return $self->SUPER::authorised();
 }
 
@@ -355,11 +351,6 @@ sub update {
   return $self->SUPER::update(@args);
 }
 
-sub list_stuck_runs {
-  my ( $self ) = @_;
-  return 1;
-}
-
 1;
 
 __END__
@@ -396,10 +387,6 @@ npg::view::run - view handling for runs
        transaction so that all tags are done, or none at all
 
 =head2 update - handling for tile-layout updates
-
-=head2 list_stuck_runs
-
-handling for the stuck runs page
 
 =head1 DIAGNOSTICS
 
