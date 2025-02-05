@@ -1,1 +1,5 @@
 DROP TABLE instrument_utilisation;
+
+
+INSERT INTO run_lane_status_dict(`description`) VALUES('archival in progress');
+INSERT INTO run_lane_status_dict(`description`) VALUES('lane released');

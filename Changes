@@ -18,6 +18,9 @@ LIST OF CHANGES
    record in this table is from 2016-11-12. The reports about instrument
    utilisation are now generated dynamically by C<bin/illumina_instruments_uptime> -
    a script in this package.
+ - Added two new statuses to run_lane_status_dict database table,
+   'archival in progress' and 'lane released'. This new statuses will drive
+   lane-level archival and user notification system.
  - Replace mark docker image with mark golang executable from github,
    on ISG's docker image, for documentation publishing
 

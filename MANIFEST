@@ -438,6 +438,7 @@ t/data/fixtures/000-entity_type.yml
 t/data/fixtures/000-instrument_mod_dict.yml
 t/data/fixtures/000-instrument_status_dict.yml
 t/data/fixtures/000-manufacturer.yml
+t/data/fixtures/000-run_lane_status_dict.yml
 t/data/fixtures/000-run_status_dict.yml
 t/data/fixtures/000-tag.yml
 t/data/fixtures/000-user.yml
