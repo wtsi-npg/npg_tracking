@@ -15,16 +15,13 @@ my $util = t::util->new({fixtures => 1,});
           });
   ok($util->test_rendered($str,  't/data/rendered/menus/instruments_formats.html'),
     'menu instruments>formats');
-}
 
-{
-  my $str = t::request->new({
+  $str = t::request->new({
            REQUEST_METHOD => 'GET',
            PATH_INFO      => '/instrument;list_graphical',
            username       => 'public',
            util           => $util,
           });
-
   ok($util->test_rendered($str, 't/data/rendered/menus/instruments_status_graphical.html'),
     'menu instruments>status>graphical');
 

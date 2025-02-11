@@ -1,6 +1,7 @@
 
 [% PROCESS instrument_status_menu.tt2 
            index=0
+           manufacturer=view.manufacturer
 %]
 
 [% labs = view.lab_names;

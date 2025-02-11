@@ -1,4 +1,5 @@
 [% PROCESS instrument_formats_menu.tt2
+     manufacturer=view.manufacturer
 %]
 
 <table id="instrument_formats" class="sortable zebra">
@@ -10,14 +11,15 @@
     </tr>
   </thead>
   <tbody>
-[% FOREACH instrument_format = model.instrument_formats_sorted %]
-  [% IF instrument_format.iscurrent %]
+[% FOREACH instrument_format = model.instrument_formats_sorted(view.manufacturer);
+     count = instrument_format.current_instruments_count;
+     IF count; %]
     <tr>
       <td>[% instrument_format.manufacturer_name %]</td>
       <td><a href="[% SCRIPT_NAME %]/instrument_format/[% instrument_format.id_instrument_format %]">[% instrument_format.model %]</a></td>
-      <td>[% instrument_format.current_instruments_count %]</td>
+      <td>[% count %]</td>
     </tr>
-  [% END %]
-[% END %]
+     [% END %]
+   [% END %]
   </tbody>
 </table>
