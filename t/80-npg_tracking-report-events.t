@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 9;
 use Test::Exception;
 use Log::Log4perl qw(:levels);
 use File::Temp qw(tempdir);
@@ -363,6 +363,22 @@ subtest 'tests with mlwarehouse driver' => sub {
     lives_ok {@counts = $e->process()} 'no error processing four new events';
     ok (($counts[0] == 3) && ($counts[1] == 1),
       'three successes, one failure with wh LIMs data available');
+};
+
+subtest 'test non-Illumina run' => sub {
+  plan tests => 2;
+
+  # Reassign instrument format to a non-Illumina manufacturer.
+  $schema->resultset('InstrumentFormat')->find(10)
+    ->update({'id_manufacturer' => 20});
+  # no access to LIMS data
+  delete $ENV{'NPG_CACHED_SAMPLESHEET_FILE'};
+  my $e = npg_tracking::report::events->new(dry_run     => 1,
+                                            schema_npg  => $schema,
+                                            schema_mlwh => undef);
+  my @counts;
+  lives_ok {@counts = $e->process()} 'no error processing four new events';
+  ok (($counts[0] == 4) && ($counts[1] == 0), 'no error');
 };
 
 1;
