@@ -1,5 +1,55 @@
 LIST OF CHANGES
 
+release 103.0.0 (2025-02-20)
+ - Replace mark docker image with mark golang executable from github,
+   on ISG's docker image, for documentation publishing
+ - Deleted unused methods from a number of models and views.
+   - npg::model::instrument_annotation -
+      annotations_by_instrument_over_default_uptime,
+      dates_of_annotations_over_default_uptime
+   - npg::view::run -
+      list_summary, selected_days
+   - npg::model_run_status -
+       current_run_statuses, latest_current_run_status,
+       active_runs_over_last_30_days, epoch
+ - Deleted 'Stuck Runs' button from the admin top-level menu,
+   the associated template and the view and model methods.
+ - Deleted instrument_utilisation table from the tracking database. All
+   code that was using this table was removed long time ago. Tha last
+   record in this table is from 2016-11-12. The reports about instrument
+   utilisation are now generated dynamically by C<bin/illumina_instruments_uptime> -
+   a script in this package.
+ - Added two new statuses to run_lane_status_dict database table,
+   'archival in progress' and 'lane released'. This new statuses will drive
+   lane-level archival and user notification system.
+ - Replace mark docker image with mark golang executable from github,
+   on ISG's docker image, for documentation publishing
+ - Deleted two unused methods from npg::model::instrument_annotation,
+   annotations_by_instrument_over_default_uptime and
+   dates_of_annotations_over_default_uptime
+ - Tracking web server:
+   - Added a new optional parameter 'manufacturer' to methods returning lists
+     of runs and run count - the name of the manufacturer. If this name is
+     undefined in the parameters hash, it defaults to 'Illumina'.
+   - To avoid code repetition, consolidated queries for listing and counting
+     runs in npg::model::run. Previously the same code was repeated in eight
+     different places in three models. In one of the models the code was never
+     called, so was simply deleted.
+   - Simplified the logic of retrieving cached lists and counts of runs.
+   - Dropped a custom 'read' method from npg::view::instrument. The code
+     there, which computed lists of runs and runs count is not used in the
+     template that renders an instrument. Listing of runs is implemented as
+     an iframe and therefore rendering is done by the template for listing runs.
+   - Dropped 'runs' and 'count_run' methods from npg::model::instrument, these
+     methods were only called by the deleted 'read' method from
+     npg::view::instrument
+   - Simplified the logic of retrieving cached lists and counts of runs.
+   - Added a new optional argument 'manufacturer' - the name of the manufacturer -
+     to two methods in npg::model::instrument_format.
+   - Made changes to views and templates for rendering instruments and instrument
+     formats so that the 'manufacturer' parameter can be added to URLs and
+     propagated to the models.
+
 release 102.1.0 (2025-01-16)
  - Fixed perlbrew installation by installing libdevel-patchperl-perl in
    GitHub runner.

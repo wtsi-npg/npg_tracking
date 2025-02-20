@@ -236,5 +236,46 @@
   latest_contact:
   percent_complete:
   lab: Ogilvie
+- external_name: ''
+  id_instrument: 95
+  id_instrument_format: 2
+  serial: ''
+  name: GS201
+  iscurrent: 1
+  ipaddr: ''
+  instrument_comp: ''
+  mirroring_host:
+  staging_dir:
+  latest_contact:
+  percent_complete:
+  lab:
+- external_name: ''
+  id_instrument: 96
+  id_instrument_format: 3
+  serial: ''
+  name: FLX1
+  iscurrent: 0
+  ipaddr: ''
+  instrument_comp: ''
+  mirroring_host:
+  staging_dir:
+  latest_contact:
+  percent_complete:
+  lab:
+- external_name: ''
+  id_instrument: 97
+  id_instrument_format: 2
+  serial: ''
+  name: GS202
+  iscurrent: 0
+  ipaddr: ''
+  instrument_comp: ''
+  mirroring_host:
+  staging_dir:
+  latest_contact:
+  percent_complete:
+  lab:
+
+
 
 

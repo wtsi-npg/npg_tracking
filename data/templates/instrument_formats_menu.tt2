@@ -1,5 +1,6 @@
 [% PROCESS instrument_top.tt2
            top_menu_index=2
+           manufacturer=manufacturer
 -%]
 <p class="npgmenu2">
 &nbsp;
