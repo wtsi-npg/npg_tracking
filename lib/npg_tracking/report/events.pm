@@ -81,17 +81,33 @@ sub process {
     if (!$entity) {
       next;
     }
+
+    my $rs_name = ref $entity;
     if (!$entity->can('information')) {
-      $self->info('Do not know how to report ' .
-        $entity->resultsource()->name());
+      $self->info("Do not know how to report $rs_name events");
       next;
     }
 
+    my $send_email = 1;
+    if ( ($rs_name =~ /Result::Run/xms) && $entity->can('id_run') ) {
+      my $id_run = $entity->id_run();
+      my $run = $self->schema_npg->resultset('Run')->find($id_run);
+      my $manufacturer = $run->instrument_format()->manufacturer->name();
+      if ($manufacturer ne 'Illumina') {
+        # Processing run or run-lane related events requires access to LIMS
+        # data. The latter is available only for Illumina runs.
+        $self->info("Not processing event for non-Illumina run $id_run");
+        $send_email = 0;
+      }
+    }
+
     try {
-      foreach my $report_type ($self->_report_types($entity)) {
-        my $report = $self->_get_report_obj($report_type, $entity);
-        $report->reports();
-        $report->emit(); # should have provisions for dry_run
+      if ($send_email) {
+        foreach my $report_type ($self->_report_types($entity)) {
+          my $report = $self->_get_report_obj($report_type, $entity);
+          $report->reports();
+          $report->emit(); # should have provisions for dry_run
+        }
       }
       if (!$self->dry_run) {
         $event->mark_as_reported();
@@ -228,7 +244,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017,2021,2023 Genome Research Ltd.
+Copyright (C) 2017,2021,2023,2025 Genome Research Ltd.
 
 This file is part of NPG.
 

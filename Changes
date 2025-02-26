@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - Do not send emails to followers if the event relates to a run or a lane
+   that was sequenced on a non-Illumina instrument.
+
 release 103.0.0 (2025-02-20)
  - Replace mark docker image with mark golang executable from github,
    on ISG's docker image, for documentation publishing
