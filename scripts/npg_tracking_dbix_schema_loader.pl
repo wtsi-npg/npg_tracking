@@ -29,7 +29,6 @@ make_schema_at(
         use_moose           => 1,
         preserve_case       => 1,
         use_namespaces      => 1,
-        exclude             => qr/instrument_utilisation/,
 
         rel_name_map        => sub {
           # Rename the id relationship so we can access flat versions of
