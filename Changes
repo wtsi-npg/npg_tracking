@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 104.0.0 (2025-03-10)
  - Do not send emails to followers if the event relates to a run or a lane
    that was sequenced on a non-Illumina instrument.
  - Following deletion of the instrument_utilisation table from the tracking
