@@ -5,6 +5,7 @@ use Carp;
 use Readonly;
 use JSON;
 use Perl6::Slurp;
+use File::Spec::Functions 'catfile';
 use DateTime
 use DateTime::Format::Strptime
 use npg_tracking::Schema
