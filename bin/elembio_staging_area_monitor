@@ -1,0 +1,98 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use English qw(-no_match_vars);
+use POSIX qw(strftime);
+use Readonly;
+use Try::Tiny;
+use List::MoreUtils qw(any);
+
+use npg_tracking::Schema;
+use Monitor::Elembio::Staging;
+use Monitor::Elembio::RunFolder;
+
+our $VERSION = '0';
+
+Readonly::Scalar my $SLEEP_INTERVAL => 60 * 15;
+Readonly::Scalar my $DRY_RUN => $ENV{'dev'} && ($ENV{'dev'} ne 'live');
+
+local $OUTPUT_AUTOFLUSH = 1;
+
+main();
+
+###########################################################
+###############   Main daemon loop.  ######################
+###########################################################
+
+sub main {
+    my $schema  = npg_tracking::Schema->connect();
+    my $monitor = Monitor::Elembio::Staging->new(schema => $schema);
+    while (1) {
+        foreach my $run_folder ( $monitor->find_run_folders($staging_area) ) {
+            # try {
+            #     Call $monitor->monitor_run_status($run_folder, $DRY_RUN)
+            # } catch {
+            # }
+        }
+        sleep $SLEEP_INTERVAL;
+    }
+}
+
+1;
+
+__END__
+
+=head1 NAME
+
+elembio_staging_area_monitor
+
+=head1 VERSION
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+
+=head1 SUBROUTINES/METHODS
+
+None
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+If dev environment variable is set to any value that is not 'live', the script
+has full functionality, but changes to the file system are not performed.
+Development tracking database is used in this case.
+
+=head1 INCOMPATIBILITIES
+
+None known.
+
+=head1 BUGS AND LIMITATIONS
+
+None known.
+
+=head1 AUTHOR
+
+Marco M. Mosca
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (C) 2025 Genome Research Ltd.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut
