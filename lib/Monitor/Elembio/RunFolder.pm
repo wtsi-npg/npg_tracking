@@ -153,8 +153,11 @@ sub update_remote_run_parameters {
 sub _load_run_parameters {
     my ($self, $file_path) = @_;
     my $json_text = do {
-        open(my $json_fh, "<:encoding(UTF-8)", $file_path)
-            or $self->logcroak("Can't open \"$file_path\": $!\n");
+        open(my $json_fh, "<:encoding(UTF-8)", $file_path);
+        if (! $json_fh) {
+            $self->logcarp("Can't open \"$file_path\": $!\n");
+            return 0;
+        }
         local $/;
         <$json_fh>
     };
@@ -164,7 +167,12 @@ sub _load_run_parameters {
 
     foreach my $main_attr ($FLOWCELL_ID, $FOLDER_NAME, $INSTRUMENT_NAME, $SIDE) {
         if (! exists $run_params{$main_attr}) {
-            $self->logcroak("Run parameter $main_attr: No value in RunParameters.json");
+            $self->logcarp("Run parameter $main_attr: No key in RunParameters.json");
+            return 0;
+        }
+        if (! $run_params->{$main_attr}) {
+            $self->logcarp("Run parameter $main_attr: Empty value in RunParameters.json");
+            return 0;
         }
     }
     $self->{flowcell_id} = $run_params->{$FLOWCELL_ID};
@@ -172,7 +180,8 @@ sub _load_run_parameters {
     $self->{instrument_name} = $run_params->{$INSTRUMENT_NAME};
     my ($side) = $run_params->{$SIDE} =~ /Side(A|B)/smx;
     if (!$side) {
-        $self->logcroak("Run parameter $SIDE: Failed to get it from RunParameters.json");
+        $self->logcarp("Run parameter $SIDE: wrong format in RunParameters.json");
+        return 0;
     }
     $self->{side} = $run_params->{$SIDE};
 
@@ -199,4 +208,5 @@ sub _load_run_parameters {
             $self->logcarp("Run parameter $DATE: failed to parse $date");
         };
     }
+    return 1;
 }
