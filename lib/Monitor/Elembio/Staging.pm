@@ -5,7 +5,7 @@ use Carp;
 use MooseX::StrictConstructor;
 use Cwd 'abs_path';
 use File::Spec::Functions 'catfile';
-use Monitor::Elembio:RunFolder;
+use Monitor::Elembio:RunFolder qw ( get_run_parameter );
 use npg_tracking::Schema;
 
 with qw[
@@ -33,11 +33,7 @@ sub find_run_folders {
         if (! -d $run_dir) next;
         $self->debug("Found run folder: $run_dir");
 
-        my $run_parameters_file = catfile($run_dir, 'RunParameters.json')
-        if (! -e $run_parameters_file) {
-            $self->debug("No RunParameters.json file in $run_dir")   
-            next;
-        }
+        next if (! get_run_parameter_file($run_dir));
         push @run_folders, $run_dir
         # Check run folder is valid for elembio #
         # which contain real data #
@@ -48,11 +44,15 @@ sub find_run_folders {
 
 sub monitor_run_status {
     my ($run_folder, $dry_run) = @_;
-    my $run_row = get_run_from_tracking($folder) # creates a run if doesn't exist
+    my $run_row = get_run_from_tracking($run_folder) # creates a run if doesn't exist
 
     my $monitored_runfolder = Monitor::Elembio::RunFolder->new(runfolder_path      => $run_folder,
                                                                 npg_tracking_schema => $self->schema,
                                                                 dry_run => $dry_run);
+    if (! $monitored_runfolder) {
+        $self->logcarp("RunFolder creation failed")  
+        return 0;
+    }
     $monitored_runfolder->update_remote_run_parameters();
     # Get run row from schema (through new run Identification object composition)
     # Check monitored_runfolder
@@ -65,7 +65,7 @@ sub monitor_run_status {
     #       - flowcell_id
     #   If do not match -> skip
     #   Otherwise, add the run folder to array
-    
+    return 1;
 }
 
 __PACKAGE__->meta->make_immutable();

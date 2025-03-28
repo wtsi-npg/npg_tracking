@@ -96,6 +96,15 @@ has q{date_created} => (
   documentation     => 'Date of creation for a run',
 );
 
+sub get_run_parameter_file {
+    ($runfolder) = @_;
+    my $run_parameters_file = catfile($runfolder, 'RunParameters.json')
+    if (! -e $run_parameters_file) {
+        $self->logcarp("No RunParameters.json file in $run_dir") 
+        return;
+    }
+    return $run_parameters_file;
+}
 
 sub new  
 { 
@@ -106,9 +115,14 @@ sub new
         dry_run => $args->{dry_run},
     };
     bless $self, $class;
-    $self->_load_run_parameters($self->{runfolder_path});
+    $run_parameters_file = get_run_parameter_file($self->{runfolder_path})
+    if (! $run_parameters_file) {
+        return;
+    }
+    $self->_load_run_parameters($run_parameters_file);
     return $self; 
 } 
+
 
 sub _set_instrument_side {
     my ($self) = shift;
