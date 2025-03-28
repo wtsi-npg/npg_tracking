@@ -35,11 +35,27 @@ has q{runfolder_path} => (
         documentation => 'Path to the run folder',
 );
 
-has q{schema}  => (
+has q{npg_tracking_schema}  => (
     isa        => 'npg_tracking::Schema',
     is         => q{ro},
     required   => 1,
 );
+
+has q{tracking_run} => (
+    isa => q{npg_tracking::Schema::Result::Run},
+    is => q{ro},
+    lazy => 1,
+    builder => q{_build_tracking_run},
+    documentation => 'NPG tracking DBIC object for a run',
+);
+sub _build_tracking_run {
+    my ( $self ) = @_;
+    if ( ! $self->npg_tracking_schema ) {
+        $self->logcroak('Need NPG tracking schema to get a run object from it');
+        return;
+    }
+    return $self->npg_tracking_schema->resultset(q(Run))->find("Further properties to get a run");
+}
 
 has q{dry_run}  => (
   isa           => q{Int},
@@ -120,7 +136,9 @@ sub new
     if (! $run_parameters_file) {
         return;
     }
-    $self->_load_run_parameters($run_parameters_file);
+    if (! $self->_load_run_parameters($run_parameters_file)) {
+        return;
+    }
     return $self; 
 } 
 

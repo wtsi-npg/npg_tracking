@@ -14,7 +14,7 @@ with qw[
 
 our $VERSION = '0';
 
-has schema => (
+has q{npg_tracking_schema} => (
     is         => 'ro',
     required   => 1,
     isa        => 'npg_tracking::Schema',
@@ -47,7 +47,7 @@ sub monitor_run_status {
     my $run_row = get_run_from_tracking($run_folder) # creates a run if doesn't exist
 
     my $monitored_runfolder = Monitor::Elembio::RunFolder->new(runfolder_path      => $run_folder,
-                                                                npg_tracking_schema => $self->schema,
+                                                                npg_tracking_schema => $self->npg_tracking_schema,
                                                                 dry_run => $dry_run);
     if (! $monitored_runfolder) {
         $self->logcarp("RunFolder creation failed")  
