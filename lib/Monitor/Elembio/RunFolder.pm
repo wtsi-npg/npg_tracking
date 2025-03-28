@@ -16,6 +16,7 @@ with qw[
 
 our $VERSION = '0';
 
+Readonly::Scalar my $TABLE = 'ESeqRun';
 Readonly::Scalar my $FLOWCELL_ID = 'FlowcellID';
 Readonly::Scalar my $FOLDER_NAME = 'RunFolderName';
 Readonly::Scalar my $INSTRUMENT_NAME = 'InstrumentName';
@@ -53,9 +54,20 @@ sub _build_tracking_run {
     if ( ! $self->npg_tracking_schema ) {
         $self->logcroak('Need NPG tracking schema to get a run object from it');
     }
-    # Need other properties in input to find().
-    # Flowcell, foldername, side and instrument_id
-    return $self->npg_tracking_schema->resultset(q(Run))->find("Further properties to get a run");
+    @run_rows = $self->npg_tracking_schema->resultset($TABLE)->search(
+        {
+            flowcell_id => $self->{flowcell_id},
+            folder_name => $self->{folder_name},
+        })->all();
+    my $run_count = scalar @run_rows
+    if ($run_count > 1) {
+        $self->logcarp('Multiple runs retrieved from NPG tracking DB');
+        return;
+    } elsif ($run_count == 0) {
+        $self->logcarp('No run found in NPG tracking DB');
+        return;
+    }
+    return $run_rows[0]
 }
 
 has q{dry_run}  => (
@@ -152,13 +164,17 @@ sub _set_instrument_side {
         $self->debug("Run parameter $SIDE not set by the run");
         return;
     }
-    my $db_side = $self->tracking_run()->instrument_side || q[];
+    my $tracking_run = $self->tracking_run();
+    if (! $tracking_run) {
+        return;
+    }
+    my $db_side = $tracking_run->instrument_side || q[];
     if ($db_side eq $side) {
         $self->debug("Run parameter $SIDE: Nothing to update");
         return;
     }
     if (! $self->{dry_run}) {
-        my $updated = $self->tracking_run()->set_instrument_side($side, $USERNAME);
+        my $updated = $tracking_run->set_instrument_side($side, $USERNAME);
         if (! $updated) {
             $self->logcarp("Set run parameter $SIDE: Tracking fail");
             return;
@@ -177,11 +193,15 @@ sub _set_cycle_count {
         $self->logcarp("Run parameter $CYCLES: latest cycle count not supplied");
         return 0;
     }
-    my $actual_cycle = $self->tracking_run()->actual_cycle_count();
+    my $tracking_run = $self->tracking_run();
+    if (! $tracking_run) {
+        return;
+    }
+    my $actual_cycle = $tracking_run->actual_cycle_count();
     $actual_cycle ||= 0;
     if ($self->cycle_count > $actual_cycle) {
         if (! $self->{dry_run}) {
-            $self->tracking_run()->update({actual_cycle_count => $self->cycle_count});
+            $tracking_run->update({actual_cycle_count => $self->cycle_count});
         }
         my $mess_prefix = 'DryRun - ' if $self->{dry_run} else '';
         $self->info($mess_prefix . "Run parameter $CYCLES: latest cycle count updated");
