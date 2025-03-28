@@ -7,6 +7,7 @@ use JSON;
 use Perl6::Slurp;
 use DateTime
 use DateTime::Format::Strptime
+use npg_tracking::Schema
 
 with qw[
         WTSI::DNAP::Utilities::Loggable
@@ -26,76 +27,88 @@ Readonly::Scalar my $USERNAME => 'pipeline';
 
 Readonly::Scalar my $TIME_PATTERN => '%Y-%m-%dT%H:%M:%S.%fZ'; # 2023-12-19T13:31:17.461926614Z
 
-has q{id_run}           => (
-  isa           => q{NpgTrackingRunId},
-  is            => q{ro},
-  required      => 1,
-  lazy_build    => 1,
-  documentation => 'String identifier for a sequencing run',
+has q{runfolder_path} => (
+        isa           => q{Str},
+        is            => q{ro},
+        required      => 1,
+        documentation => 'Path to the run folder',
 );
 
-has q{flowcell_id}      => (
-  isa           => q{Str},
-  is            => q{ro},
-  required      => 1,
-  lazy_build    => 1,
-  documentation => 'Flowcell ID of a run',
+has q{schema}  => (
+    isa        => 'npg_tracking::Schema',
+    is         => q{ro},
+    required   => 1,
 );
 
-has q{folder_name}      => (
-  isa           => q{Str},
-  is            => q{ro},
-  required      => 1,
-  lazy_build    => 1,
-  documentation => 'Run folder name',
-);
-
-has q{instrument_id}      => (
+has q{dry_run}  => (
   isa           => q{Int},
   is            => q{ro},
   required      => 1,
-  lazy_build    => 1,
-  documentation => 'ID of the instrument where a run is performed',
-);
-
-has q{side}      => (
-  isa           => q{Str},
-  is            => q{ro},
-  required      => 1,
-  lazy_build    => 1,
-  documentation => 'Instrument side on which a run is performed',
-);
-
-has q{cycle_count}      => (
-  isa           => q{Int},
-  is            => q{ro},
-  required      => 1,
-  lazy_build    => 1,
-  documentation => 'Current cycle count detected in the run folder',
-);
-
-has q{date_created}     => (
-  isa           => q{Str},
-  is            => q{ro},
-  required      => 1,
-  lazy_build    => 1,
-  documentation => 'Date of creation for a run',
-);
-
-has q{dry_run}     => (
-  isa           => q{Int},
-  is            => q{ro},
-  required      => 0,
-  lazy_build    => 0,
   documentation => 'If true, no change is made to the Tracking DB',
 );
 
-sub _build_id_run {
-    my ($self) = shift;
+has q{id_run}   => (
+  isa           => q{NpgTrackingRunId},
+  is            => q{ro},
+  required      => 0,
+  documentation => 'String identifier for a sequencing run',
+);
 
-    my $id_run = join "_", $self->folder_name, $self->flowcell_id, $self->instrument_id;
-    self->$id_run = $id_run;
-}
+has q{flowcell_id}  => (
+    isa             => q{Str},
+    is              => q{ro},
+    required        => 0,
+    documentation   => 'Flowcell ID of a run',
+);
+
+has q{folder_name}  => (
+  isa               => q{Str},
+  is                => q{ro},
+  required          => 0,
+  documentation     => 'Run folder name',
+);
+
+has q{instrument_id}    => (
+  isa                   => q{Int},
+  is                    => q{ro},
+  required              => 0,
+  documentation         => 'ID of the instrument where a run is performed',
+);
+
+has q{side}     => (
+  isa           => q{Str},
+  is            => q{ro},
+  required      => 0,
+  documentation => 'Instrument side on which a run is performed',
+);
+
+has q{cycle_count}  => (
+  isa               => q{Int},
+  is                => q{ro},
+  required          => 0,
+  documentation     => 'Current cycle count detected in the run folder',
+);
+
+has q{date_created} => (
+  isa               => q{Str},
+  is                => q{ro},
+  required          => 0,
+  documentation     => 'Date of creation for a run',
+);
+
+
+sub new  
+{ 
+    my ($class, $args) = @_;
+    my $self = { 
+        runfolder_path => $args->{runfolder_path},
+        schema => $args->{schema},
+        dry_run => $args->{sry_run},
+    };
+    bless $self, $class;
+    $self->_load_run_parameters($self->{runfolder_path});
+    return $self; 
+} 
 
 sub _set_instrument_side {
     my ($self) = shift;

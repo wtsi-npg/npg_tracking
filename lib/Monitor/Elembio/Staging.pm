@@ -53,7 +53,7 @@ sub monitor_run_status {
     my $monitored_runfolder = Monitor::Elembio::RunFolder->new(runfolder_path      => $run_folder,
                                                                 npg_tracking_schema => $self->schema,
                                                                 dry_run => $dry_run);
-                                                            
+    $monitored_runfolder->update_remote_run_parameters();
     # Get run row from schema (through new run Identification object composition)
     # Check monitored_runfolder
     # Check Run Identification Object Composition

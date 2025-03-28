@@ -32,10 +32,10 @@ sub main {
     my $monitor = Monitor::Elembio::Staging->new(schema => $schema);
     while (1) {
         foreach my $run_folder ( $monitor->find_run_folders($staging_area) ) {
-            # try {
-            #     Call $monitor->monitor_run_status($run_folder, $DRY_RUN)
-            # } catch {
-            # }
+            try {
+                $monitor->monitor_run_status($run_folder, $DRY_RUN)
+            } catch {
+            }
         }
         sleep $SLEEP_INTERVAL;
     }
