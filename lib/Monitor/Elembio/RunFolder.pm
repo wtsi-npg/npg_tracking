@@ -52,8 +52,9 @@ sub _build_tracking_run {
     my ( $self ) = @_;
     if ( ! $self->npg_tracking_schema ) {
         $self->logcroak('Need NPG tracking schema to get a run object from it');
-        return;
     }
+    # Need other properties in input to find().
+    # Flowcell, foldername, side and instrument_id
     return $self->npg_tracking_schema->resultset(q(Run))->find("Further properties to get a run");
 }
 
