@@ -5,7 +5,7 @@ use Carp;
 use MooseX::StrictConstructor;
 use Cwd 'abs_path';
 use File::Spec::Functions 'catfile';
-use Monitor::Elembio:RunFolder qw ( get_run_parameter );
+use Monitor::Elembio:RunFolder qw ( new get_run_parameter_file );
 use npg_tracking::Schema;
 
 with qw[

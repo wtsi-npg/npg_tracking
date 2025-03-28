@@ -12,7 +12,6 @@ use List::MoreUtils qw(any);
 
 use npg_tracking::Schema;
 use Monitor::Elembio::Staging;
-use Monitor::Elembio::RunFolder;
 
 our $VERSION = '0';
 
