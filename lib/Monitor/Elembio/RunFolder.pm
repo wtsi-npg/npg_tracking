@@ -103,7 +103,7 @@ sub new
     my $self = { 
         runfolder_path => $args->{runfolder_path},
         schema => $args->{schema},
-        dry_run => $args->{sry_run},
+        dry_run => $args->{dry_run},
     };
     bless $self, $class;
     $self->_load_run_parameters($self->{runfolder_path});
