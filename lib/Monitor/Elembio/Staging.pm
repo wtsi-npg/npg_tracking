@@ -51,7 +51,10 @@ sub monitor_run_status {
         $self->logcarp("RunFolder creation failed")  
         return 0;
     }
-    $monitored_runfolder->update_remote_run_parameters();
+    if (! $monitored_runfolder->update_remote_run_parameters()) {
+        $self->logcarp("Run update failed")  
+        return 0;
+    }
     return 1;
 }
 

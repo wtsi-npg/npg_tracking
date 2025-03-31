@@ -171,7 +171,7 @@ sub _set_instrument_side {
     my $db_side = $tracking_run->instrument_side || q[];
     if ($db_side eq $side) {
         $self->debug("Run parameter $SIDE: Nothing to update");
-        return;
+        return $side;
     }
     if (! $self->{dry_run}) {
         my $updated = $tracking_run->set_instrument_side($side, $USERNAME);
@@ -195,7 +195,7 @@ sub _set_cycle_count {
     }
     my $tracking_run = $self->tracking_run();
     if (! $tracking_run) {
-        return;
+        return 0;
     }
     my $actual_cycle = $tracking_run->actual_cycle_count();
     $actual_cycle ||= 0;
@@ -213,8 +213,10 @@ sub _set_cycle_count {
 
 sub update_remote_run_parameters {
     $self = shift;
-    $self->_set_instrument_side();
-    $self->_set_cycle_count();
+    if ( ! $self->_set_instrument_side() or ! $self->_set_cycle_count()) {
+        return 0;
+    }
+    return 1;
 }
 
 sub _load_run_parameters {
