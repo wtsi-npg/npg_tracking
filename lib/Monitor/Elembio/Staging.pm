@@ -5,7 +5,7 @@ use Carp;
 use MooseX::StrictConstructor;
 use Cwd 'abs_path';
 use File::Spec::Functions 'catfile';
-use Monitor::Elembio:RunFolder qw ( new get_run_parameter_file );
+use Monitor::Elembio:RunFolder qw ( get_run_parameter_file );
 use npg_tracking::Schema;
 
 with qw[
@@ -43,7 +43,7 @@ sub find_run_folders {
 
 
 sub monitor_run_status {
-    my ($run_folder, $dry_run) = @_;
+    my ($self, $run_folder, $dry_run) = @_;
     my $run_row = get_run_from_tracking($run_folder) # creates a run if doesn't exist
 
     my $monitored_runfolder = Monitor::Elembio::RunFolder->new(runfolder_path      => $run_folder,

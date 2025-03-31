@@ -9,6 +9,7 @@ use POSIX qw(strftime);
 use Readonly;
 use Try::Tiny;
 use List::MoreUtils qw(any);
+use Log::Log4perl qw(get_logger);
 
 use npg_tracking::Schema;
 use Monitor::Elembio::Staging;
@@ -29,10 +30,11 @@ main();
 sub main {
     my $schema  = npg_tracking::Schema->connect();
     my $monitor = Monitor::Elembio::Staging->new(npg_tracking_schema => $schema);
+    my $logger = get_logger("main");
     while (1) {
         foreach my $run_folder ( $monitor->find_run_folders($staging_area) ) {
             if (! $monitor->monitor_run_status($run_folder, $DRY_RUN)) {
-                $self->logcarp("Staging Area Monitor failed for $run_folder")  
+                $logger->carp("Staging Area Monitor failed for $run_folder")
             }
         }
         sleep $SLEEP_INTERVAL;
