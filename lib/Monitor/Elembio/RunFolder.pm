@@ -212,7 +212,7 @@ sub _set_cycle_count {
 }
 
 sub update_remote_run_parameters {
-    ($self, $dryrun) = @_;
+    $self = shift;
     $self->_set_instrument_side();
     $self->_set_cycle_count();
 }

@@ -35,8 +35,6 @@ sub find_run_folders {
 
         next if (! get_run_parameter_file($run_dir));
         push @run_folders, $run_dir
-        # Check run folder is valid for elembio #
-        # which contain real data #
     }
     return @run_folders;
 }
@@ -54,17 +52,6 @@ sub monitor_run_status {
         return 0;
     }
     $monitored_runfolder->update_remote_run_parameters();
-    # Get run row from schema (through new run Identification object composition)
-    # Check monitored_runfolder
-    # Check Run Identification Object Composition
-    # if does not exist -> skip
-    # otherwise...
-    #   Check in DB and staging folder:
-    #       - instrument_name
-    #       - folder_name
-    #       - flowcell_id
-    #   If do not match -> skip
-    #   Otherwise, add the run folder to array
     return 1;
 }
 
