@@ -50,11 +50,11 @@ has q{tracking_run} => (
     documentation => 'NPG tracking DBIC object for a run',
 );
 sub _build_tracking_run {
-    my ( $self ) = @_;
+    my $self = shift;
     if ( ! $self->npg_tracking_schema ) {
         $self->logcroak('Need NPG tracking schema to get a run object from it');
     }
-    @run_rows = $self->npg_tracking_schema->resultset($TABLE)->search(
+    my @run_rows = $self->npg_tracking_schema->resultset($TABLE)->search(
         {
             flowcell_id => $self->{flowcell_id},
             folder_name => $self->{folder_name},
