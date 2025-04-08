@@ -59,9 +59,9 @@ ENDJSON
 
     my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                   npg_tracking_schema => $schema, );
-    isa_ok( $test, 'Monitor::Elembio::RunFolder' ); 
+    isa_ok( $test, 'Monitor::Elembio::RunFolder' );
     is( $test->folder_name(), $rf_name, 'run_folder value correct' );
-    is( $test->flowcell_id(), '2437471043', 'flowcell_id value correct' );
+    is( $test->flowcell_id(), $flowcell_id, 'flowcell_id value correct' );
     #is( $test->instrument_id(), '', 'instrument_id value correct' );
     is( $test->side(), 'A', 'side value correct' );
     is( $test->cycle_count(), 318, 'actual cycle value correct' );
