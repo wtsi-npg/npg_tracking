@@ -42,19 +42,19 @@ subtest 'test run parameters loader' => sub {
     "R1": 151,
     "R2": 151,
     "I1": 8,
-    "I2": 8,
+    "I2": 8
   },
   "ReadOrder": "I1,I2,R1,R2",
   "PlatformVersion": "3.2.0",
   "AnalysisLanes": "1+2",
   "LibraryType": "Linear",
-  "Tags": null,
+  "Tags": null
 }
 ENDJSON
     close $fh;
 
     my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
-                                                  npg_tracking_schema => $schema, );
+                                                  npg_tracking_schema => $schema);
     isa_ok( $test, 'Monitor::Elembio::RunFolder' );
     is( $test->folder_name(), $rf_name, 'run_folder value correct' );
     is( $test->flowcell_id(), $flowcell_id, 'flowcell_id value correct' );
@@ -63,7 +63,7 @@ ENDJSON
     is( $test->cycle_count(), 318, 'actual cycle value correct' );
     is( $test->date_created(), '2025-03-25T11:43:59.792171889Z', 'date_created value correct' );
     #isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
-    #        'Object returned by tracking_run method' );  
+    #        'Object returned by tracking_run method' );
 };
 
 subtest 'test run parameters update' => sub {

@@ -8,6 +8,8 @@ use File::Spec::Functions 'catfile';
 use DateTime;
 use List::Util 'sum';
 use DateTime::Format::Strptime;
+use Perl6::Slurp;
+
 use npg_tracking::Schema;
 
 with qw[
@@ -51,52 +53,78 @@ has q{tracking_run} => (
 );
 sub _build_tracking_run {
     my $self = shift;
-    if ( ! $self->npg_tracking_schema ) {
-        $self->logcroak('Need NPG tracking schema to get a run object from it');
-    }
-    my @run_rows = $self->npg_tracking_schema->resultset($TABLE)->search(
-        {
-            flowcell_id => $self->{flowcell_id},
-            folder_name => $self->{folder_name},
-        })->all();
+    #if ( ! $self->npg_tracking_schema ) {
+    #    $self->logcroak('Need NPG tracking schema to get a run object from it');
+    #}
+    # get instrument id
+    my $rs = $self->npg_tracking_schema->resultset($TABLE);
+    my $params = {
+        flowcell_id => $self->flowcell_id,
+        folder_name => $self->folder_name,
+    };
+    my @run_rows = $rs->search($params)->all();
+
     my $run_count = scalar @run_rows;
     if ($run_count > 1) {
-        $self->logcarp('Multiple runs retrieved from NPG tracking DB');
-        return;
-    } elsif ($run_count == 0) {
-        $self->logcarp('No run found in NPG tracking DB');
-        return;
+        $self->logcroak('Multiple runs retrieved from NPG tracking DB');
     }
-    return $run_rows[0]
+    my $run_row;
+    if ($run_count == 1) {
+        $run_row = $run_rows[0];
+        $self->logcarp("Found run $run_row->id_run");
+    } else {
+        $self->logcarp('No run found in NPG tracking DB');
+        # suppliment params
+        $run_row = $rs->create($params);
+        # assign side in Run
+        # assign status
+    }
+    return $run_row;
 }
 
 has q{dry_run}  => (
   isa           => q{Int},
   is            => q{ro},
-  required      => 1,
-  documentation => 'If true, no change is made to the Tracking DB',
-);
-
-has q{id_run}   => (
-  isa           => q{NpgTrackingRunId},
-  is            => q{ro},
   required      => 0,
-  documentation => 'String identifier for a sequencing run',
+  init_arg      => 0,
+  documentation => 'If true, no change is made to the Tracking DB',
 );
 
 has q{flowcell_id}  => (
     isa             => q{Str},
     is              => q{ro},
     required        => 0,
+    lazy_build      => 1,
     documentation   => 'Flowcell ID of a run',
 );
+sub _build_flowcell_id {
+    my $self = shift;
+    return $self->_run_params_data()->{$FLOWCELL_ID};
+}
 
-has q{folder_name}  => (
-  isa               => q{Str},
-  is                => q{ro},
-  required          => 0,
-  documentation     => 'Run folder name',
+has q{folder_name}    => (
+    isa               => q{Str},
+    is                => q{ro},
+    required          => 0,
+    lazy_build        => 1,
+    documentation     => 'Run folder name',
 );
+sub _build_folder_name {
+    my $self = shift;
+    return $self->_run_params_data()->{$FOLDER_NAME};
+}
+
+has q{instrument_name}  => (
+    isa               => q{Str},
+    is                => q{ro},
+    required          => 0,
+    lazy_build        => 1,
+    documentation     => 'Run folder name',
+);
+sub _build_instrument_name {
+    my $self = shift;
+    return $self->_run_params_data()->{$INSTRUMENT_NAME};
+}
 
 has q{instrument_id}    => (
   isa                   => q{Int},
@@ -109,47 +137,82 @@ has q{side}     => (
   isa           => q{Str},
   is            => q{ro},
   required      => 0,
+  lazy_build    => 1,
   documentation => 'Instrument side on which a run is performed',
 );
+sub _build_side {
+    my $self = shift;
+    my ($side) = $self->_run_params_data()->{$SIDE} =~ /Side(A|B)/smx;
+    if (!$side) {
+        $self->logcarp("Run parameter $SIDE: wrong format in RunParameters.json");
+        return;
+    }
+    return $side;
+}
 
 has q{cycle_count}  => (
   isa               => q{Int},
   is                => q{ro},
   required          => 0,
+  lazy_build        => 1,
   documentation     => 'Current cycle count detected in the run folder',
 );
+sub _build_cycle_count {
+    my $self = shift;
+    return sum values %{$self->_run_params_data()->{$CYCLES}};
+}
 
 has q{date_created} => (
   isa               => q{Str},
   is                => q{ro},
   required          => 0,
+  lazy_build        => 1,
   documentation     => 'Date of creation for a run',
 );
+sub _build_date_created {
+    my $self = shift;
+    if (! exists $self->_run_params_data()->{$DATE}) {
+        $self->logcarp("Run parameter $DATE: No value in RunParameters.json");
+        my $file_path = get_run_parameter_file($self->runfolder_path);
+        return DateTime->from_epoch(epoch => (stat  $file_path)[9])->strftime($TIME_PATTERN);
+    } else {
+        my $date = $self->_run_params_data()->{$DATE};
+        try {
+            DateTime::Format::Strptime->new(
+                pattern=>$TIME_PATTERN,
+                strict=>1,
+                on_error=>q[croak]
+            )->parse_datetime($date);
+            return $date;
+        } catch {
+            $self->logcarp("Run parameter $DATE: failed to parse $date");
+            return;
+        };
+    }
+}
+
+has q{_run_params_data} => (
+  isa               => q{HashRef},
+  is                => q{ro},
+  required          => 0,
+  init_arg          => undef,
+  lazy_build        => 1,
+);
+sub _build__run_params_data{
+    my $self = shift;
+    my $file_path = get_run_parameter_file($self->runfolder_path);
+    return decode_json(slurp $file_path);
+}
 
 sub get_run_parameter_file {
     my $runfolder = shift;
     my $run_parameters_file = catfile($runfolder, 'RunParameters.json');
     if (! -e $run_parameters_file) {
-        carp "No RunParameters.json file in $runfolder";
+        croak "No RunParameters.json file in $runfolder";
         return;
     }
     return $run_parameters_file;
 }
-
-sub new { 
-    my ($class, %args) = @_;
-    my $self = \%args;
-    bless $self, $class;
-    my $run_parameters_file = get_run_parameter_file($self->{runfolder_path});
-    if (! $run_parameters_file) {
-        return;
-    }
-    if (! $self->_load_run_parameters($run_parameters_file)) {
-        return;
-    }
-    return $self; 
-} 
-
 
 sub _set_instrument_side {
     my ($self) = shift;
@@ -212,67 +275,6 @@ sub update_remote_run_parameters {
     my $self = shift;
     if ( ! $self->_set_instrument_side() or ! $self->_set_cycle_count()) {
         return 0;
-    }
-    return 1;
-}
-
-sub _load_run_parameters {
-    my ($self, $file_path) = @_;
-    my $json_text = do {
-        open(my $json_fh, "<:encoding(UTF-8)", $file_path);
-        if (! $json_fh) {
-            $self->logcarp("Can't open \"$file_path\": $!\n");
-            return 0;
-        }
-        local $/;
-        <$json_fh>
-    };
-
-    my $run_params = decode_json($json_text);
-    $self->debug('Parsed RunParameters.json');
-
-    foreach my $main_attr ($FLOWCELL_ID, $FOLDER_NAME, $INSTRUMENT_NAME, $SIDE) {
-        if (! exists $run_params->{$main_attr}) {
-            $self->logcarp("Run parameter $main_attr: No key in RunParameters.json");
-            return 0;
-        }
-        if (! $run_params->{$main_attr}) {
-            $self->logcarp("Run parameter $main_attr: Empty value in RunParameters.json");
-            return 0;
-        }
-    }
-    $self->{flowcell_id} = $run_params->{$FLOWCELL_ID};
-    $self->{folder_name} = $run_params->{$FOLDER_NAME};
-    $self->{instrument_name} = $run_params->{$INSTRUMENT_NAME};
-    my ($side) = $run_params->{$SIDE} =~ /Side(A|B)/smx;
-    if (!$side) {
-        $self->logcarp("Run parameter $SIDE: wrong format in RunParameters.json");
-        return 0;
-    }
-    $self->{side} = $run_params->{$SIDE};
-
-    if (! exists $run_params->{$CYCLES}) {
-        $self->logcarp("Run parameter $CYCLES: Failed to get it from RunParameters.json");
-    } else {
-        $self->{cycle_count} = sum values %{$run_params->{$CYCLES}};
-    }
-
-    if (! exists $run_params->{$DATE}) {
-        $self->logcarp("Run parameter $DATE: No value in RunParameters.json");
-        $self->{data_created} = DateTime->from_epoch(epoch => (stat  $file_path)[9])
-                                        ->strftime($TIME_PATTERN);
-    } else {
-        my $date = $run_params->{$DATE};
-        try {
-            DateTime::Format::Strptime->new(
-                pattern=>$TIME_PATTERN,
-                strict=>1,
-                on_error=>q[croak]
-            )->parse_datetime($date);
-            $self->{data_created} = $date;
-        } catch {
-            $self->logcarp("Run parameter $DATE: failed to parse $date");
-        };
     }
     return 1;
 }

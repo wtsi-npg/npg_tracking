@@ -29,12 +29,11 @@ sub find_run_folders {
     my @run_folders;
     my $manifest_pattern = catfile($staging_area, 'AV*/**/RunManifest.json')
     foreach my $run_manifest_file ( glob $manifest_pattern ) {
-        my $run_dir = dirname(abs_path($run_manifest_file))
+        my $run_dir = dirname(abs_path($run_manifest_file));
         if (! -d $run_dir) next;
         $self->debug("Found run folder: $run_dir");
-
         next if (! get_run_parameter_file($run_dir));
-        push @run_folders, $run_dir
+        push @run_folders, $run_dir;
     }
     return @run_folders;
 }
