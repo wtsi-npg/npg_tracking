@@ -26,7 +26,7 @@ subtest 'test run parameters loader' => sub {
     my $runfolder_path = catdir($testdir, $instrument_folder, $rf_name);
     make_path($runfolder_path);
     my $runparameters_file = catfile($runfolder_path, q[RunParameters.json]);
-    open($fh, '>', $runparameters_file) or die "Could not open file '$runparameters_file' $!";
+    open(my $fh, '>', $runparameters_file) or die "Could not open file '$runparameters_file' $!";
     print $fh <<"ENDJSON";
 {
   "FileVersion": "5.0.0",
@@ -38,15 +38,11 @@ subtest 'test run parameters loader' => sub {
   "Date": "2025-03-25T11:43:59.792171889Z",
   "InstrumentName": "$instrument_folder",
   "RunFolderName": "$rf_name",
-  "Tiles": [
-    "L1R09C01S1",
-    "L1R09C01S2",
-  ],
   "Cycles": {
     "R1": 151,
     "R2": 151,
     "I1": 8,
-    "I2": 8
+    "I2": 8,
   },
   "ReadOrder": "I1,I2,R1,R2",
   "PlatformVersion": "3.2.0",

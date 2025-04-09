@@ -4,11 +4,11 @@ use Moose;
 use Carp;
 use Readonly;
 use JSON;
-use Perl6::Slurp;
 use File::Spec::Functions 'catfile';
-use DateTime
-use DateTime::Format::Strptime
-use npg_tracking::Schema
+use DateTime;
+use List::Util 'sum';
+use DateTime::Format::Strptime;
+use npg_tracking::Schema;
 
 with qw[
         WTSI::DNAP::Utilities::Loggable
@@ -16,14 +16,14 @@ with qw[
 
 our $VERSION = '0';
 
-Readonly::Scalar my $TABLE = 'ESeqRun';
-Readonly::Scalar my $FLOWCELL_ID = 'FlowcellID';
-Readonly::Scalar my $FOLDER_NAME = 'RunFolderName';
-Readonly::Scalar my $INSTRUMENT_NAME = 'InstrumentName';
-Readonly::Scalar my $SIDE = 'Side';
+Readonly::Scalar my $TABLE => 'ESeqRun';
+Readonly::Scalar my $FLOWCELL_ID => 'FlowcellID';
+Readonly::Scalar my $FOLDER_NAME => 'RunFolderName';
+Readonly::Scalar my $INSTRUMENT_NAME => 'InstrumentName';
+Readonly::Scalar my $SIDE => 'Side';
 
-Readonly::Scalar my $CYCLES = 'Cycles';
-Readonly::Scalar my $DATE = 'Date';
+Readonly::Scalar my $CYCLES => 'Cycles';
+Readonly::Scalar my $DATE => 'Date';
 
 Readonly::Scalar my $USERNAME => 'pipeline';
 
@@ -59,7 +59,7 @@ sub _build_tracking_run {
             flowcell_id => $self->{flowcell_id},
             folder_name => $self->{folder_name},
         })->all();
-    my $run_count = scalar @run_rows
+    my $run_count = scalar @run_rows;
     if ($run_count > 1) {
         $self->logcarp('Multiple runs retrieved from NPG tracking DB');
         return;
@@ -127,25 +127,20 @@ has q{date_created} => (
 );
 
 sub get_run_parameter_file {
-    ($runfolder) = @_;
-    my $run_parameters_file = catfile($runfolder, 'RunParameters.json')
+    my $runfolder = shift;
+    my $run_parameters_file = catfile($runfolder, 'RunParameters.json');
     if (! -e $run_parameters_file) {
-        $self->logcarp("No RunParameters.json file in $run_dir") 
+        carp "No RunParameters.json file in $runfolder";
         return;
     }
     return $run_parameters_file;
 }
 
-sub new  
-{ 
-    my ($class, $args) = @_;
-    my $self = { 
-        runfolder_path => $args->{runfolder_path},
-        schema => $args->{schema},
-        dry_run => $args->{dry_run},
-    };
+sub new { 
+    my ($class, %args) = @_;
+    my $self = \%args;
     bless $self, $class;
-    $run_parameters_file = get_run_parameter_file($self->{runfolder_path})
+    my $run_parameters_file = get_run_parameter_file($self->{runfolder_path});
     if (! $run_parameters_file) {
         return;
     }
@@ -173,7 +168,7 @@ sub _set_instrument_side {
         $self->debug("Run parameter $SIDE: Nothing to update");
         return $side;
     }
-    if (! $self->{dry_run}) {
+    if (! $self->dry_run) {
         my $updated = $tracking_run->set_instrument_side($side, $USERNAME);
         if (! $updated) {
             $self->logcarp("Set run parameter $SIDE: Tracking fail");
@@ -181,7 +176,8 @@ sub _set_instrument_side {
         }
     }
 
-    my $mess_prefix = 'DryRun - ' if $self->{dry_run} else '';
+    my $mess_prefix = '';
+    if ($self->dry_run) {$mess_prefix = 'DryRun - '};
     $self->debug($mess_prefix . "Run parameter $SIDE updated");
     return $side;
 }
@@ -200,10 +196,11 @@ sub _set_cycle_count {
     my $actual_cycle = $tracking_run->actual_cycle_count();
     $actual_cycle ||= 0;
     if ($self->cycle_count > $actual_cycle) {
-        if (! $self->{dry_run}) {
+        if (! $self->dry_run) {
             $tracking_run->update({actual_cycle_count => $self->cycle_count});
         }
-        my $mess_prefix = 'DryRun - ' if $self->{dry_run} else '';
+        my $mess_prefix = '';
+        if ($self->dry_run) {$mess_prefix = 'DryRun - '};
         $self->info($mess_prefix . "Run parameter $CYCLES: latest cycle count updated");
         return 1;
     }
@@ -212,7 +209,7 @@ sub _set_cycle_count {
 }
 
 sub update_remote_run_parameters {
-    $self = shift;
+    my $self = shift;
     if ( ! $self->_set_instrument_side() or ! $self->_set_cycle_count()) {
         return 0;
     }
@@ -235,7 +232,7 @@ sub _load_run_parameters {
     $self->debug('Parsed RunParameters.json');
 
     foreach my $main_attr ($FLOWCELL_ID, $FOLDER_NAME, $INSTRUMENT_NAME, $SIDE) {
-        if (! exists $run_params{$main_attr}) {
+        if (! exists $run_params->{$main_attr}) {
             $self->logcarp("Run parameter $main_attr: No key in RunParameters.json");
             return 0;
         }
@@ -254,28 +251,47 @@ sub _load_run_parameters {
     }
     $self->{side} = $run_params->{$SIDE};
 
-    if (! exists $run_params{$CYCLES}) {
+    if (! exists $run_params->{$CYCLES}) {
         $self->logcarp("Run parameter $CYCLES: Failed to get it from RunParameters.json");
     } else {
-        $self->{cycle_count} = sum values %{$cycles_info};
+        $self->{cycle_count} = sum values %{$run_params->{$CYCLES}};
     }
 
-    if (! exists $run_params{$DATE}) {
+    if (! exists $run_params->{$DATE}) {
         $self->logcarp("Run parameter $DATE: No value in RunParameters.json");
         $self->{data_created} = DateTime->from_epoch(epoch => (stat  $file_path)[9])
                                         ->strftime($TIME_PATTERN);
     } else {
-        my $date = $run_params->{$DATE}
+        my $date = $run_params->{$DATE};
         try {
-            $date_obj = DateTime::Format::Strptime->new(
+            DateTime::Format::Strptime->new(
                 pattern=>$TIME_PATTERN,
                 strict=>1,
                 on_error=>q[croak]
             )->parse_datetime($date);
-            $self->{data_created} = $date
+            $self->{data_created} = $date;
         } catch {
             $self->logcarp("Run parameter $DATE: failed to parse $date");
         };
     }
     return 1;
 }
+
+1;
+
+__END__
+
+=head1 NAME
+
+Monitor::Elembio::RunFolder
+
+=head1 VERSION
+
+=head1 SYNOPSIS
+
+    C<<use Monitor::Elembio::RunFolder;
+       my $run_folder = Monitor::Elembio::runfolder->new();>>
+
+=head1 DESCRIPTION
+
+Properties loader for an Elembio run folder.
