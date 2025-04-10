@@ -4,8 +4,9 @@ use Moose;
 use Carp;
 use MooseX::StrictConstructor;
 use Cwd 'abs_path';
+use File::Basename;
 use File::Spec::Functions 'catfile';
-use Monitor::Elembio::RunFolder qw( get_run_parameter_file );
+use Monitor::Elembio::RunFolder;
 use npg_tracking::Schema;
 
 with qw[
@@ -29,11 +30,15 @@ sub find_run_folders {
   my @run_folders;
   my $manifest_pattern = catfile($staging_area, 'AV*/**/RunManifest.json');
   foreach my $run_manifest_file ( glob $manifest_pattern ) {
-    my $run_dir = dirname(abs_path($run_manifest_file));
-    if (! -d $run_dir) {next;}
-    $self->debug("Found run folder: $run_dir");
-    next if (! get_run_parameter_file($run_dir));
-    push @run_folders, $run_dir;
+    my $runfolder_path = dirname(abs_path($run_manifest_file));
+    if (! -d $runfolder_path) {next;}
+    $self->debug("Found run folder: $runfolder_path");
+    my $run_parameters_file = catfile($runfolder_path, 'RunParameters.json');
+    if (! -e $run_parameters_file) {
+      $self->logcarp("No RunParameters.json file in $runfolder_path");
+      next;
+    }
+    push @run_folders, $runfolder_path;
   }
   return @run_folders;
 }

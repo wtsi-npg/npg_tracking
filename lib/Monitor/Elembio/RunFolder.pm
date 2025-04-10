@@ -57,7 +57,7 @@ sub _build_tracking_run {
   my $params = {
     flowcell_id   => $self->flowcell_id,
     folder_name   => $self->folder_name,
-    id_instrument => $self->tracking_instrument()->id_instrument(),
+    id_instrument => $self->id_instrument,
   };
   my @run_rows = $rs->search($params)->all();
 
@@ -141,6 +141,18 @@ sub _build_folder_name {
   return $self->_run_params_data()->{$FOLDER_NAME};
 }
 
+has q{id_instrument}    => (
+  isa               => q{Int},
+  is                => q{ro},
+  required          => 0,
+  lazy_build        => 1,
+  documentation     => 'Instrument ID',
+);
+sub _build_id_instrument {
+  my $self = shift;
+  return $self->tracking_instrument()->id_instrument;
+}
+
 has q{instrument_name}  => (
   isa               => q{Str},
   is                => q{ro},
@@ -220,18 +232,8 @@ has q{_run_params_data} => (
 );
 sub _build__run_params_data {
   my $self = shift;
-  my $file_path = get_run_parameter_file($self->runfolder_path);
-  return decode_json(slurp $file_path);
-}
-
-sub get_run_parameter_file {
-  my $runfolder = shift;
-  my $run_parameters_file = catfile($runfolder, 'RunParameters.json');
-  if (! -e $run_parameters_file) {
-    croak "No RunParameters.json file in $runfolder";
-    return;
-  }
-  return $run_parameters_file;
+  my $run_parameters_file = catfile($self->runfolder_path, 'RunParameters.json');
+  return decode_json(slurp $run_parameters_file);
 }
 
 sub _set_instrument_side {
