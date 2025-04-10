@@ -29,27 +29,29 @@ main();
 ###########################################################
 
 sub main {
-    my $logger = get_logger("main");
-    GetOptions (
-        'help'             => \$help,
-        'staging_area|staging-area=s' => \$staging_area,
-    );
-    if ($help) { pod2usage(0); exit 0;}
+  my $logger = get_logger("main");
+  my $help;
+  my $staging_area;
+  GetOptions (
+    'help'             => \$help,
+    'staging_area|staging-area=s' => \$staging_area,
+  );
+  if ($help) { pod2usage(0); exit 0;}
 
-    if (!defined $staging_area || $staging_area eq q[]) {
-        $logger->logcroak("ERROR: --staging_area/--staging-area argument is required\n")
-    }
+  if (!defined $staging_area || $staging_area eq q[]) {
+    $logger->logcroak("ERROR: --staging_area/--staging-area argument is required\n")
+  }
 
-    my $schema  = npg_tracking::Schema->connect();
-    my $monitor = Monitor::Elembio::Staging->new(npg_tracking_schema => $schema);
-    while (1) {
-        foreach my $run_folder ( $monitor->find_run_folders($staging_area) ) {
-            if (! $monitor->monitor_run_status($run_folder, $DRY_RUN)) {
-                $logger->logcarp("Staging Area Monitor failed for $run_folder")
-            }
-        }
-        sleep $SLEEP_INTERVAL;
+  my $schema  = npg_tracking::Schema->connect();
+  my $monitor = Monitor::Elembio::Staging->new(npg_tracking_schema => $schema);
+  while (1) {
+    foreach my $run_folder ( $monitor->find_run_folders($staging_area) ) {
+      if (! $monitor->monitor_run_status($run_folder, $DRY_RUN)) {
+        $logger->logcarp("Staging Area Monitor failed for $run_folder")
+      }
     }
+    sleep $SLEEP_INTERVAL;
+  }
 }
 
 1;
