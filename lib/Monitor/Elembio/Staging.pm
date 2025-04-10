@@ -5,56 +5,56 @@ use Carp;
 use MooseX::StrictConstructor;
 use Cwd 'abs_path';
 use File::Spec::Functions 'catfile';
-use Monitor::Elembio:RunFolder qw ( get_run_parameter_file );
+use Monitor::Elembio::RunFolder qw( get_run_parameter_file );
 use npg_tracking::Schema;
 
 with qw[
-        WTSI::DNAP::Utilities::Loggable
-    ];
+  WTSI::DNAP::Utilities::Loggable
+];
 
 our $VERSION = '0';
 
 has q{npg_tracking_schema} => (
-    is         => 'ro',
-    required   => 1,
-    isa        => 'npg_tracking::Schema',
+  is         => 'ro',
+  required   => 1,
+  isa        => 'npg_tracking::Schema',
 );
 
 sub find_run_folders {
-    my ( $self, $staging_area ) = @_;
+  my ( $self, $staging_area ) = @_;
 
-    $self->logcroak('Top level staging path required') if !$staging_area;
-    $self->logcroak("$staging_area not a directory") if !-d $staging_area;
+  $self->logcroak('Top level staging path required') if !$staging_area;
+  $self->logcroak("$staging_area not a directory") if !-d $staging_area;
 
-    my @run_folders;
-    my $manifest_pattern = catfile($staging_area, 'AV*/**/RunManifest.json')
-    foreach my $run_manifest_file ( glob $manifest_pattern ) {
-        my $run_dir = dirname(abs_path($run_manifest_file));
-        if (! -d $run_dir) next;
-        $self->debug("Found run folder: $run_dir");
-        next if (! get_run_parameter_file($run_dir));
-        push @run_folders, $run_dir;
-    }
-    return @run_folders;
+  my @run_folders;
+  my $manifest_pattern = catfile($staging_area, 'AV*/**/RunManifest.json');
+  foreach my $run_manifest_file ( glob $manifest_pattern ) {
+    my $run_dir = dirname(abs_path($run_manifest_file));
+    if (! -d $run_dir) {next;}
+    $self->debug("Found run folder: $run_dir");
+    next if (! get_run_parameter_file($run_dir));
+    push @run_folders, $run_dir;
+  }
+  return @run_folders;
 }
 
 
 sub monitor_run_status {
-    my ($self, $run_folder, $dry_run) = @_;
-    my $run_row = get_run_from_tracking($run_folder) # creates a run if doesn't exist
+  my ($self, $run_folder, $dry_run) = @_;
+  my $run_row = get_run_from_tracking($run_folder); # creates a run if doesn't exist
 
-    my $monitored_runfolder = Monitor::Elembio::RunFolder->new(runfolder_path      => $run_folder,
-                                                                npg_tracking_schema => $self->npg_tracking_schema,
-                                                                dry_run => $dry_run);
-    if (! $monitored_runfolder) {
-        $self->logcarp("RunFolder creation failed")  
-        return 0;
-    }
-    if (! $monitored_runfolder->update_remote_run_parameters()) {
-        $self->logcarp("Run update failed")  
-        return 0;
-    }
-    return 1;
+  my $monitored_runfolder = Monitor::Elembio::RunFolder->new(runfolder_path      => $run_folder,
+                                                              npg_tracking_schema => $self->npg_tracking_schema,
+                                                              dry_run => $dry_run);
+  if (! $monitored_runfolder) {
+    $self->logcarp("RunFolder creation failed");
+    return 0;
+  }
+  if (! $monitored_runfolder->update_remote_run_parameters()) {
+    $self->logcarp("Run update failed");
+    return 0;
+  }
+  return 1;
 }
 
 __PACKAGE__->meta->make_immutable();
