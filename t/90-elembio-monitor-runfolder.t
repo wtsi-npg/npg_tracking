@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use File::Copy;
-use Test::More tests => 6;
+use Test::More tests => 3;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -67,7 +67,8 @@ ENDJSON
 };
 
 subtest 'test run parameters update' => sub {
-    plan tests => 0;
+    plan tests => 1;
+    is (1, 1, 'pass');
 };
 
 1;

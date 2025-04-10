@@ -18,18 +18,18 @@ with qw[
 
 our $VERSION = '0';
 
-Readonly::Scalar my $TABLE => 'ESeqRun';
+Readonly::Scalar my $RUN_TABLE => 'Run';
+Readonly::Scalar my $INSTRUMENT_TABLE => 'Instrument';
 Readonly::Scalar my $FLOWCELL_ID => 'FlowcellID';
 Readonly::Scalar my $FOLDER_NAME => 'RunFolderName';
 Readonly::Scalar my $INSTRUMENT_NAME => 'InstrumentName';
 Readonly::Scalar my $SIDE => 'Side';
-
 Readonly::Scalar my $CYCLES => 'Cycles';
 Readonly::Scalar my $DATE => 'Date';
 
 Readonly::Scalar my $USERNAME => 'pipeline';
 
-Readonly::Scalar my $TIME_PATTERN => '%Y-%m-%dT%H:%M:%S.%fZ'; # 2023-12-19T13:31:17.461926614Z
+Readonly::Scalar my $TIME_PATTERN => '%Y-%m-%dT%H:%M:%S.%NZ'; # 2023-12-19T13:31:17.461926614Z
 
 has q{runfolder_path} => (
   isa           => q{Str},
@@ -45,19 +45,19 @@ has q{npg_tracking_schema}  => (
 );
 
 has q{tracking_run} => (
-  isa => q{npg_tracking::Schema::Result::Run},
-  is => q{ro},
-  lazy => 1,
-  builder => q{_build_tracking_run},
+  isa           => q{npg_tracking::Schema::Result::Run},
+  is            => q{ro},
+  lazy          => 1,
+  builder       => q{_build_tracking_run},
   documentation => 'NPG tracking DBIC object for a run',
 );
 sub _build_tracking_run {
   my $self = shift;
-  # get instrument id
-  my $rs = $self->npg_tracking_schema->resultset($TABLE);
+  my $rs = $self->npg_tracking_schema->resultset($RUN_TABLE);
   my $params = {
-    flowcell_id => $self->flowcell_id,
-    folder_name => $self->folder_name,
+    flowcell_id   => $self->flowcell_id,
+    folder_name   => $self->folder_name,
+    id_instrument => $self->tracking_instrument()->id_instrument(),
   };
   my @run_rows = $rs->search($params)->all();
 
@@ -68,7 +68,7 @@ sub _build_tracking_run {
   my $run_row;
   if ($run_count == 1) {
     $run_row = $run_rows[0];
-    $self->logcarp('Found run ' . $run_row->id_run);
+    $self->info('Found run ' . $run_row->folder_name);
   } else {
     $self->logcarp('No run found in NPG tracking DB');
     # suppliment params
@@ -77,6 +77,36 @@ sub _build_tracking_run {
     # assign status
   }
   return $run_row;
+}
+
+has q{tracking_instrument} => (
+  isa           => q{npg_tracking::Schema::Result::Instrument},
+  is            => q{ro},
+  lazy          => 1,
+  builder       => q{_build_tracking_instrument},
+  documentation => 'NPG tracking DBIC object for an instrument',
+);
+sub _build_tracking_instrument {
+  my $self = shift;
+  my $rs = $self->npg_tracking_schema->resultset($INSTRUMENT_TABLE);
+  my $params = {
+    name => $self->instrument_name(),
+    iscurrent => 1,
+  };
+  my @instrument_rows = $rs->search($params)->all();
+
+  my $instrument_count = scalar @instrument_rows;
+  if ($instrument_count > 1) {
+    $self->logcroak('Multiple instruments found in NPG tracking DB with name' . $self->instrument_name());
+  } 
+  my $instrument_row;
+  if ($instrument_count == 1) {
+    $instrument_row = $instrument_rows[0];
+    $self->info('Found instrument ' . $instrument_row->name());
+  } else {
+    $self->logcroak('No instrument found in NPG tracking DB');
+  }
+  return $instrument_row;
 }
 
 has q{dry_run}  => (
@@ -122,13 +152,6 @@ sub _build_instrument_name {
   my $self = shift;
   return $self->_run_params_data()->{$INSTRUMENT_NAME};
 }
-
-has q{instrument_id}    => (
-  isa                   => q{Int},
-  is                    => q{ro},
-  required              => 0,
-  documentation         => 'ID of the instrument where a run is performed',
-);
 
 has q{side}     => (
   isa           => q{Str},
