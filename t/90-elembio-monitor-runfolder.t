@@ -51,7 +51,7 @@ ENDJSON
 }
 
 subtest 'test run parameters loader' => sub {
-  plan tests => 6;
+  plan tests => 9;
 
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_name = q[AV244103];
@@ -76,12 +76,14 @@ subtest 'test run parameters loader' => sub {
   isa_ok( $test, 'Monitor::Elembio::RunFolder' );
   is( $test->folder_name, $runfolder_name, 'run_folder value correct' );
   is( $test->flowcell_id, $flowcell_id, 'flowcell_id value correct' );
-  #is( $test->instrument_id(), '', 'instrument_id value correct' );
+  isa_ok( $test->tracking_instrument(), 'npg_tracking::Schema::Result::Instrument',
+          'Object returned by tracking_instrument method' );
+  is( $test->id_instrument, '100', 'instrument_id value correct' );
   is( $test->side, $side, 'side value correct' );
   is( $test->cycle_count, 318, 'actual cycle value correct' );
   is( $test->date_created, $date, 'date_created value correct' );
-  #isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
-  #        'Object returned by tracking_run method' );
+  isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
+          'Object returned by tracking_run method' );
 };
 
 subtest 'test run parameters loader exceptions' => sub {

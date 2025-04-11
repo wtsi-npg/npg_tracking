@@ -91,21 +91,21 @@ sub _build_tracking_instrument {
   my $self = shift;
   my $rs = $self->npg_tracking_schema->resultset($INSTRUMENT_TABLE);
   my $params = {
-    name => $self->instrument_name(),
+    name => $self->instrument_name,
     iscurrent => 1,
   };
   my @instrument_rows = $rs->search($params)->all();
 
   my $instrument_count = scalar @instrument_rows;
   if ($instrument_count > 1) {
-    $self->logcroak('Multiple instruments found in NPG tracking DB with name' . $self->instrument_name());
+    $self->logcroak('Multiple instruments found in NPG tracking DB with name ' . $self->instrument_name);
   } 
   my $instrument_row;
   if ($instrument_count == 1) {
     $instrument_row = $instrument_rows[0];
     $self->info('Found instrument ' . $instrument_row->name());
   } else {
-    $self->logcroak('No instrument found in NPG tracking DB');
+    $self->logcroak('No instrument found in NPG tracking DB with name ' . $self->instrument_name);
   }
   return $instrument_row;
 }
