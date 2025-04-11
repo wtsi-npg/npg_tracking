@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use File::Copy;
-use Test::More tests => 4;
+use Test::More tests => 5;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -133,6 +133,35 @@ subtest 'test run parameters loader exceptions' => sub {
   my $test2 = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path2,
                                                 npg_tracking_schema => $schema);
   ok( $test2->date_created ne '', 'wrong date format gives current date of RunParameters file' );
+};
+
+subtest 'test tracking run does not exist' => sub {
+  plan tests => 3;
+
+  my $testdir = tempdir( CLEANUP => 1 );
+  my $instrument_name = q[AV244103];
+  my $flowcell_id = q[2345678901];
+  my $experiment_name = q[NT1234567C];
+  my $side = 'A';
+  my $date = '2025-01-01T12:00:59.792171889Z';
+  my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
+  my $runfolder_path = catdir($testdir, $runfolder_name);
+  make_run_folder(
+    $testdir,
+    $runfolder_name,
+    $instrument_name,
+    $experiment_name,
+    $flowcell_id,
+    $side,
+    $date,
+  );
+
+  my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
+                                                npg_tracking_schema => $schema);
+  isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
+          'Object returned by tracking_run method' );                                        
+  is( $test->tracking_run()->folder_name, $runfolder_name, 'folder_name of new tracking run' );
+  is( $test->tracking_run()->flowcell_id, $flowcell_id, 'flowcell_id of new tracking run' );
 };
 
 subtest 'test run parameters update' => sub {

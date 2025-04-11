@@ -72,8 +72,15 @@ sub _build_tracking_run {
     $self->info('Found run ' . $run_row->folder_name);
   } else {
     $self->logcarp('No run found in NPG tracking DB');
-    # suppliment params
-    $run_row = $rs->create($params);
+    my $data = {
+      flowcell_id          => $self->flowcell_id,
+      folder_name          => $self->folder_name,
+      id_instrument        => $self->id_instrument,
+      actual_cycle_count   => $self->cycle_count,
+      team                 => 'RAD',
+      id_instrument_format => 19,
+    };
+    $run_row = $rs->create($data);
     # assign side in Run
     # assign status
   }
