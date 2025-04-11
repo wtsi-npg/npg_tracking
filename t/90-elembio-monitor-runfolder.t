@@ -116,7 +116,7 @@ subtest 'test run parameters loader exceptions' => sub {
     qr/Empty[ ]value[ ]in[ ]flowcell_id/msx,
     'Flowcell ID empty';
   is ($test->side, '', 'side value missing' );
-  ok( $test->date_created ne '', 'missing date gives current date of RunParameters file' );
+  ok( $test->date_created, 'missing date gives current date of RunParameters file' );
 
   my $testdir2 = tempdir( CLEANUP => 1 );
   my $date2 = '2025-01-01T12:00:59';
@@ -132,7 +132,7 @@ subtest 'test run parameters loader exceptions' => sub {
   );
   my $test2 = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path2,
                                                 npg_tracking_schema => $schema);
-  ok( $test2->date_created ne '', 'wrong date format gives current date of RunParameters file' );
+  ok( $test2->date_created, 'wrong date format gives current date of RunParameters file' );
 };
 
 subtest 'test tracking run does not exist' => sub {
