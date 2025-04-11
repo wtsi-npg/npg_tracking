@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use File::Copy;
-use Test::More tests => 3;
+use Test::More tests => 4;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -15,21 +15,24 @@ use_ok('Monitor::Elembio::RunFolder');
 
 my $schema = t::dbic_util->new->test_schema();
 
-sub make_run_parameters {
-  my ($instrument_folder, $experiment_name, $flowcell_id, $runfolder_path, $runfolder_name) = @_;
+sub make_run_folder {
+  my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date) = @_;
+  my $runfolder_path = catdir($topdir_path, $runfolder_name);
   make_path($runfolder_path);
+  my $runmanifest_file = catfile($runfolder_path, q[RunManifest.json]);
   my $runparameters_file = catfile($runfolder_path, q[RunParameters.json]);
-  open(my $fh, '>', $runparameters_file) or die "Could not open file '$runparameters_file' $!";
-  print $fh <<"ENDJSON";
+  open(my $fh_man, '>', $runmanifest_file) or die "Could not open file '$runmanifest_file' $!";
+  open(my $fh_param, '>', $runparameters_file) or die "Could not open file '$runparameters_file' $!";
+  print $fh_param <<"ENDJSON";
 {
   "FileVersion": "5.0.0",
   "RunName": "$experiment_name",
   "RunType": "Sequencing",
   "RunDescription": "",
-  "Side": "SideA",
+  "Side": "Side${side}",
   "FlowcellID": "$flowcell_id",
-  "Date": "2025-03-25T11:43:59.792171889Z",
-  "InstrumentName": "$instrument_folder",
+  "Date": "$date",
+  "InstrumentName": "$instrument_name",
   "RunFolderName": "$runfolder_name",
   "Cycles": {
     "R1": 151,
@@ -44,24 +47,28 @@ sub make_run_parameters {
   "Tags": null
 }
 ENDJSON
-  close $fh;
+  close $fh_param;
 }
 
 subtest 'test run parameters loader' => sub {
   plan tests => 6;
 
   my $testdir = tempdir( CLEANUP => 1 );
-  my $instrument_folder = q[AV244103];
+  my $instrument_name = q[AV244103];
   my $flowcell_id = q[1234567890];
   my $experiment_name = q[NT1234567B];
-  my $runfolder_name = qq[20250325_${instrument_folder}_${experiment_name}];
-  my $runfolder_path = catdir($testdir, $instrument_folder, $runfolder_name);
-  make_run_parameters(
-    $instrument_folder,
+  my $side = 'A';
+  my $date = '2025-04-11T11:43:59.792171889Z';
+  my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
+  my $runfolder_path = catdir($testdir, $runfolder_name);
+  make_run_folder(
+    $testdir,
+    $runfolder_name,
+    $instrument_name,
     $experiment_name,
     $flowcell_id,
-    $runfolder_path,
-    $runfolder_name
+    $side,
+    $date,
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -70,11 +77,44 @@ subtest 'test run parameters loader' => sub {
   is( $test->folder_name, $runfolder_name, 'run_folder value correct' );
   is( $test->flowcell_id, $flowcell_id, 'flowcell_id value correct' );
   #is( $test->instrument_id(), '', 'instrument_id value correct' );
-  is( $test->side, 'A', 'side value correct' );
+  is( $test->side, $side, 'side value correct' );
   is( $test->cycle_count, 318, 'actual cycle value correct' );
-  is( $test->date_created, '2025-03-25T11:43:59.792171889Z', 'date_created value correct' );
+  is( $test->date_created, $date, 'date_created value correct' );
   #isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
   #        'Object returned by tracking_run method' );
+};
+
+subtest 'test run parameters loader exceptions' => sub {
+  plan tests => 4;
+
+  my $testdir = tempdir( CLEANUP => 1 );
+  my $instrument_name = q[AV244103];
+  my $flowcell_id = '';
+  my $experiment_name = q[NT1234567B];
+  my $side = '';
+  my $date = '';
+  my $runfolder_name = '';
+  my $runfolder_path = catdir($testdir, $runfolder_name);
+  make_run_folder(
+    $testdir,
+    $runfolder_name,
+    $instrument_name,
+    $experiment_name,
+    $flowcell_id,
+    $side,
+    $date,
+  );
+
+  my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
+                                                npg_tracking_schema => $schema);
+  throws_ok{ $test->folder_name }
+    qr/Empty[ ]value[ ]in[ ]folder_name/msx,
+    'Folder name empty';
+  throws_ok{ $test->flowcell_id }
+    qr/Empty[ ]value[ ]in[ ]flowcell_id/msx,
+    'Flowcell ID empty';
+  is ($test->side, '', 'side value missing' );
+  ok( $test->date_created ne '', 'missing date_created' );
 };
 
 subtest 'test run parameters update' => sub {

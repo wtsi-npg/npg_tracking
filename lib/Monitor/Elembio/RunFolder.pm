@@ -126,7 +126,11 @@ has q{flowcell_id}  => (
 );
 sub _build_flowcell_id {
   my $self = shift;
-  return $self->_run_params_data()->{$FLOWCELL_ID};
+  my $flowcell_id = $self->_run_params_data()->{$FLOWCELL_ID};
+  if (! $flowcell_id) {
+    $self->logcroak('Empty value in flowcell_id');
+  }
+  return $flowcell_id;
 }
 
 has q{folder_name}    => (
@@ -138,7 +142,11 @@ has q{folder_name}    => (
 );
 sub _build_folder_name {
   my $self = shift;
-  return $self->_run_params_data()->{$FOLDER_NAME};
+  my $folder_name = $self->_run_params_data()->{$FOLDER_NAME};
+  if (! $folder_name) {
+    $self->logcroak('Empty value in folder_name');
+  }
+  return $folder_name;
 }
 
 has q{id_instrument}    => (
@@ -177,7 +185,7 @@ sub _build_side {
   my ($side) = $self->_run_params_data()->{$SIDE} =~ /Side(A|B)/smx;
   if (!$side) {
     $self->logcarp("Run parameter $SIDE: wrong format in RunParameters.json");
-    return;
+    return '';
   }
   return $side;
 }
@@ -203,9 +211,9 @@ has q{date_created} => (
 );
 sub _build_date_created {
   my $self = shift;
-  if (! exists $self->_run_params_data()->{$DATE}) {
+  if (! exists $self->_run_params_data()->{$DATE} or ! $self->_run_params_data()->{$DATE}) {
     $self->logcarp("Run parameter $DATE: No value in RunParameters.json");
-    my $file_path = get_run_parameter_file($self->runfolder_path);
+    my $file_path = catfile($self->runfolder_path, 'RunParameters.json');;
     return DateTime->from_epoch(epoch => (stat  $file_path)[9])->strftime($TIME_PATTERN);
   } else {
     my $date = $self->_run_params_data()->{$DATE};
