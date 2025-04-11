@@ -58,7 +58,7 @@ subtest 'test run parameters loader' => sub {
   my $flowcell_id = q[1234567890];
   my $experiment_name = q[NT1234567B];
   my $side = 'A';
-  my $date = '2025-04-11T11:43:59.792171889Z';
+  my $date = '2025-01-01T12:00:59.792171889Z';
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
   my $runfolder_path = catdir($testdir, $runfolder_name);
   make_run_folder(
@@ -117,7 +117,7 @@ subtest 'test run parameters loader exceptions' => sub {
   ok( $test->date_created ne '', 'missing date gives current date of RunParameters file' );
 
   my $testdir2 = tempdir( CLEANUP => 1 );
-  my $date2 = '2025-04-11T11:43:59';
+  my $date2 = '2025-01-01T12:00:59';
   my $runfolder_path2 = catdir($testdir2, $runfolder_name);
   make_run_folder(
     $testdir2,
