@@ -9,6 +9,7 @@ use DateTime;
 use List::Util 'sum';
 use DateTime::Format::Strptime;
 use Perl6::Slurp;
+use Try::Tiny;
 
 use npg_tracking::Schema;
 
@@ -211,24 +212,21 @@ has q{date_created} => (
 );
 sub _build_date_created {
   my $self = shift;
-  if (! exists $self->_run_params_data()->{$DATE} or ! $self->_run_params_data()->{$DATE}) {
-    $self->logcarp("Run parameter $DATE: No value in RunParameters.json");
-    my $file_path = catfile($self->runfolder_path, 'RunParameters.json');;
-    return DateTime->from_epoch(epoch => (stat  $file_path)[9])->strftime($TIME_PATTERN);
-  } else {
+  if (exists $self->_run_params_data()->{$DATE} and $self->_run_params_data()->{$DATE}) {
     my $date = $self->_run_params_data()->{$DATE};
     try {
       DateTime::Format::Strptime->new(
-        pattern=>$TIME_PATTERN,
-        strict=>1,
-        on_error=>q[croak]
+        pattern => $TIME_PATTERN,
+        strict => 1,
+        on_error => q[croak]
       )->parse_datetime($date);
       return $date;
     } catch {
       $self->logcarp("Run parameter $DATE: failed to parse $date");
-      return;
-    };
+    }
   }
+  my $file_path = catfile($self->runfolder_path, 'RunParameters.json');
+  return DateTime->from_epoch(epoch => (stat  $file_path)[9])->strftime($TIME_PATTERN);
 }
 
 has q{_run_params_data} => (
