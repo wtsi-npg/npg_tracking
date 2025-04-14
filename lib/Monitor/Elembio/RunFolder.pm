@@ -81,7 +81,7 @@ sub _build_tracking_run {
       id_instrument_format => 19,
     };
     $run_row = $rs->create($data);
-    # assign side in Run
+    $run_row->set_instrument_side($self->instrument_side, $USERNAME);
     # assign status
   }
   return $run_row;
@@ -177,19 +177,18 @@ sub _build_instrument_name {
   return $self->_run_params_data()->{$INSTRUMENT_NAME};
 }
 
-has q{side}     => (
+has q{instrument_side}     => (
   isa           => q{Str},
   is            => q{ro},
   required      => 0,
   lazy_build    => 1,
   documentation => 'Instrument side on which a run is performed',
 );
-sub _build_side {
+sub _build_instrument_side {
   my $self = shift;
   my ($side) = $self->_run_params_data()->{$SIDE} =~ /Side(A|B)/smx;
   if (!$side) {
-    $self->logcarp("Run parameter $SIDE: wrong format in RunParameters.json");
-    return '';
+    $self->logcroak("Run parameter $SIDE: wrong format in RunParameters.json");
   }
   return $side;
 }
@@ -251,26 +250,14 @@ sub _build__run_params_data {
 sub _set_instrument_side {
   my ($self) = shift;
   my $side = $self->instrument_side;
-
-  if (! $side) {
-    $self->debug("Run parameter $SIDE not set by the run");
-    return;
-  }
   my $tracking_run = $self->tracking_run();
-  if (! $tracking_run) {
-    return;
-  }
   my $db_side = $tracking_run->instrument_side || q[];
   if ($db_side eq $side) {
     $self->debug("Run parameter $SIDE: Nothing to update");
     return $side;
   }
   if (! $self->dry_run) {
-    my $updated = $tracking_run->set_instrument_side($side, $USERNAME);
-    if (! $updated) {
-      $self->logcarp("Set run parameter $SIDE: Tracking fail");
-      return;
-    }
+    $tracking_run->set_instrument_side($side, $USERNAME);
   }
 
   my $mess_prefix = '';
@@ -283,34 +270,29 @@ sub _set_cycle_count {
   my ($self) = shift;
 
   if (! defined $self->cycle_count) {
-    $self->logcarp("Run parameter $CYCLES: latest cycle count not supplied");
-    return 0;
+    $self->logcroak("Run parameter $CYCLES: latest cycle count not supplied");
   }
   my $tracking_run = $self->tracking_run();
-  if (! $tracking_run) {
-    return 0;
+  my $remote_cycle_count = $tracking_run->actual_cycle_count();
+  $remote_cycle_count ||= 0;
+  if ($self->cycle_count < $remote_cycle_count) {
+    $self->logcroak("Run parameter $CYCLES: cycle count inconsistency on file system");
+  } elsif ($self->cycle_count == $remote_cycle_count) {
+    $self->debug("Run parameter $CYCLES: Nothing to update");
+    return;
   }
-  my $actual_cycle = $tracking_run->actual_cycle_count();
-  $actual_cycle ||= 0;
-  if ($self->cycle_count > $actual_cycle) {
-    if (! $self->dry_run) {
-      $tracking_run->update({actual_cycle_count => $self->cycle_count});
-    }
-    my $mess_prefix = '';
-    if ($self->dry_run) {$mess_prefix = 'DryRun - '};
-    $self->info($mess_prefix . "Run parameter $CYCLES: latest cycle count updated");
-    return 1;
+
+  if (! $self->dry_run) {
+    $tracking_run->update({actual_cycle_count => $self->cycle_count});
   }
-  $self->debug("Run parameter $CYCLES: Nothing to update");
-  return 0;
+  my $mess_prefix = '';
+  if ($self->dry_run) {$mess_prefix = 'DryRun - '};
+  $self->info($mess_prefix . "Run parameter $CYCLES: latest cycle count updated");
 }
 
 sub update_remote_run_parameters {
   my $self = shift;
-  if ( ! $self->_set_instrument_side() or ! $self->_set_cycle_count()) {
-    return 0;
-  }
-  return 1;
+  $self->_set_cycle_count();
 }
 
 1;

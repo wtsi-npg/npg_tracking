@@ -44,7 +44,7 @@ subtest 'test run parameters loader' => sub {
   isa_ok( $test->tracking_instrument(), 'npg_tracking::Schema::Result::Instrument',
           'Object returned by tracking_instrument method' );
   is( $test->id_instrument, '100', 'instrument_id value correct' );
-  is( $test->side, $side, 'side value correct' );
+  is( $test->instrument_side, $side, 'side value correct' );
   is( $test->cycle_count, 318, 'actual cycle value correct' );
   is( $test->date_created, $date, 'date_created value correct' );
   isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
@@ -76,11 +76,13 @@ subtest 'test run parameters loader exceptions' => sub {
                                                 npg_tracking_schema => $schema);
   throws_ok{ $test->folder_name }
     qr/Empty[ ]value[ ]in[ ]folder_name/msx,
-    'Folder name empty';
+    'folder name empty';
   throws_ok{ $test->flowcell_id }
     qr/Empty[ ]value[ ]in[ ]flowcell_id/msx,
-    'Flowcell ID empty';
-  is ($test->side, '', 'side value missing' );
+    'flowcell ID empty';
+  throws_ok { $test->instrument_side }
+    qr/Run[ ]parameter[ ]Side:[ ]wrong[ ]format[ ]in[ ]RunParameters[.]json/msx,
+    'wrong side value';
   ok( $test->date_created, 'missing date gives current date of RunParameters file' );
 
   my $testdir2 = tempdir( CLEANUP => 1 );
@@ -101,7 +103,7 @@ subtest 'test run parameters loader exceptions' => sub {
 };
 
 subtest 'test tracking run does not exist' => sub {
-  plan tests => 3;
+  plan tests => 7;
 
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_name = q[AV244103];
@@ -123,10 +125,13 @@ subtest 'test tracking run does not exist' => sub {
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
-  isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
-          'Object returned by tracking_run method' );                                        
   is( $test->tracking_run()->folder_name, $runfolder_name, 'folder_name of new tracking run' );
   is( $test->tracking_run()->flowcell_id, $flowcell_id, 'flowcell_id of new tracking run' );
+  is( $test->tracking_run()->id_instrument, '100', 'id_instrument of new tracking run' );
+  is( $test->tracking_run()->id_instrument_format, 19, 'id_instrument_format of new tracking run' );
+  is( $test->tracking_run()->instrument_side, $side, 'instrument_side of new tracking run' );
+  is( $test->tracking_run()->actual_cycle_count, 318, 'actual_cycle_count of new tracking run' );
+  is( $test->tracking_run()->team, 'RAD', 'team of new tracking run' );
 };
 
 subtest 'test run parameters update' => sub {
