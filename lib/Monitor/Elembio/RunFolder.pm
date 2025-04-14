@@ -104,16 +104,12 @@ sub _build_tracking_instrument {
   my @instrument_rows = $rs->search($params)->all();
 
   my $instrument_count = scalar @instrument_rows;
-  if ($instrument_count > 1) {
-    $self->logcroak('Multiple instruments found in NPG tracking DB with name ' . $self->instrument_name);
-  } 
-  my $instrument_row;
-  if ($instrument_count == 1) {
-    $instrument_row = $instrument_rows[0];
-    $self->info('Found instrument ' . $instrument_row->name());
-  } else {
+  if ($instrument_count == 0) {
     $self->logcroak('No instrument found in NPG tracking DB with name ' . $self->instrument_name);
   }
+
+  my $instrument_row = $instrument_rows[0];
+  $self->debug('Found instrument ' . $instrument_row->name());  
   return $instrument_row;
 }
 
