@@ -5,50 +5,15 @@ use Test::More tests => 5;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
-use File::Path qw/ make_path /;
+use File::Spec::Functions qw( catdir );
 use File::Slurp;
-use File::Spec::Functions qw( catfile catdir );
 
 use t::dbic_util;
+use t::elembio_run_util qw( make_run_folder );
 
 use_ok('Monitor::Elembio::RunFolder');
 
 my $schema = t::dbic_util->new->test_schema();
-
-sub make_run_folder {
-  my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date) = @_;
-  my $runfolder_path = catdir($topdir_path, $runfolder_name);
-  make_path($runfolder_path);
-  my $runmanifest_file = catfile($runfolder_path, q[RunManifest.json]);
-  my $runparameters_file = catfile($runfolder_path, q[RunParameters.json]);
-  open(my $fh_man, '>', $runmanifest_file) or die "Could not open file '$runmanifest_file' $!";
-  open(my $fh_param, '>', $runparameters_file) or die "Could not open file '$runparameters_file' $!";
-  print $fh_param <<"ENDJSON";
-{
-  "FileVersion": "5.0.0",
-  "RunName": "$experiment_name",
-  "RunType": "Sequencing",
-  "RunDescription": "",
-  "Side": "Side${side}",
-  "FlowcellID": "$flowcell_id",
-  "Date": "$date",
-  "InstrumentName": "$instrument_name",
-  "RunFolderName": "$runfolder_name",
-  "Cycles": {
-    "R1": 151,
-    "R2": 151,
-    "I1": 8,
-    "I2": 8
-  },
-  "ReadOrder": "I1,I2,R1,R2",
-  "PlatformVersion": "3.2.0",
-  "AnalysisLanes": "1+2",
-  "LibraryType": "Linear",
-  "Tags": null
-}
-ENDJSON
-  close $fh_param;
-}
 
 subtest 'test run parameters loader' => sub {
   plan tests => 9;
