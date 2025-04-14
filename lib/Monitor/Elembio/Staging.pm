@@ -46,20 +46,13 @@ sub find_run_folders {
 
 sub monitor_run_status {
   my ($self, $run_folder, $dry_run) = @_;
-  my $run_row = get_run_from_tracking($run_folder); # creates a run if doesn't exist
-
   my $monitored_runfolder = Monitor::Elembio::RunFolder->new(runfolder_path      => $run_folder,
                                                               npg_tracking_schema => $self->npg_tracking_schema,
                                                               dry_run => $dry_run);
   if (! $monitored_runfolder) {
-    $self->logcarp("RunFolder creation failed");
-    return 0;
+    $self->logcroak('RunFolder creation failed for ' . $run_folder);
   }
-  if (! $monitored_runfolder->update_remote_run_parameters()) {
-    $self->logcarp("Run update failed");
-    return 0;
-  }
-  return 1;
+  $monitored_runfolder->update_remote_run_parameters();
 }
 
 __PACKAGE__->meta->make_immutable();

@@ -46,8 +46,10 @@ sub main {
   my $monitor = Monitor::Elembio::Staging->new(npg_tracking_schema => $schema);
   while (1) {
     foreach my $run_folder ( $monitor->find_run_folders($staging_area) ) {
-      if (! $monitor->monitor_run_status($run_folder, $DRY_RUN)) {
-        $logger->logcarp("Staging Area Monitor failed for $run_folder")
+      try {
+        $monitor->monitor_run_status($run_folder, $DRY_RUN);
+      } catch {
+        $logger->logcarp("Staging Area Monitor failed for $run_folder");
       }
     }
     sleep $SLEEP_INTERVAL;
