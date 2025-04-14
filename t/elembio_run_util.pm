@@ -13,9 +13,8 @@ our @ISA= qw( Exporter );
 our @EXPORT = qw( write_elembio_run_manifest write_elembio_run_params make_run_folder );
 
 sub write_elembio_run_manifest {
-  my ($topdir_path, $runfolder_name) = @_;
-  my $runfolder_path = catdir($topdir_path, $runfolder_name);
-  make_path($runfolder_path);
+  my ($topdir_path, $runfolder_name, $instrument_name) = @_;
+  my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
   my $runmanifest_file = catfile($runfolder_path, q[RunManifest.json]);
   open(my $fh_man, '>', $runmanifest_file) or die "Could not open file '$runmanifest_file' $!";
   close $fh_man;
@@ -23,8 +22,7 @@ sub write_elembio_run_manifest {
 
 sub write_elembio_run_params {
   my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date) = @_;
-  my $runfolder_path = catdir($topdir_path, $runfolder_name);
-  make_path($runfolder_path);
+  my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
   my $runparameters_file = catfile($runfolder_path, q[RunParameters.json]);
   open(my $fh_param, '>', $runparameters_file) or die "Could not open file '$runparameters_file' $!";
   print $fh_param <<"ENDJSON";
@@ -56,6 +54,8 @@ ENDJSON
 
 sub make_run_folder {
   my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date) = @_;
+  my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
+  make_path($runfolder_path);
   write_elembio_run_params(
     $topdir_path,
     $runfolder_name,
@@ -66,7 +66,8 @@ sub make_run_folder {
     $date);
   write_elembio_run_manifest(
     $topdir_path,
-    $runfolder_name);
+    $runfolder_name,
+    $instrument_name);
 }
 
 1;

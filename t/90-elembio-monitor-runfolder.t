@@ -25,7 +25,7 @@ subtest 'test run parameters loader' => sub {
   my $side = 'A';
   my $date = '2025-01-01T12:00:59.792171889Z';
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
-  my $runfolder_path = catdir($testdir, $runfolder_name);
+  my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
     $testdir,
     $runfolder_name,
@@ -61,7 +61,7 @@ subtest 'test run parameters loader exceptions' => sub {
   my $side = '';
   my $date = '';
   my $runfolder_name = '';
-  my $runfolder_path = catdir($testdir, $runfolder_name);
+  my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
     $testdir,
     $runfolder_name,
@@ -87,7 +87,7 @@ subtest 'test run parameters loader exceptions' => sub {
 
   my $testdir2 = tempdir( CLEANUP => 1 );
   my $date2 = '2025-01-01T12:00:59';
-  my $runfolder_path2 = catdir($testdir2, $runfolder_name);
+  my $runfolder_path2 = catdir($testdir2, $instrument_name, $runfolder_name);
   make_run_folder(
     $testdir2,
     $runfolder_name,
@@ -112,7 +112,7 @@ subtest 'test tracking run does not exist' => sub {
   my $side = 'A';
   my $date = '2025-01-01T12:00:59.792171889Z';
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
-  my $runfolder_path = catdir($testdir, $runfolder_name);
+  my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
     $testdir,
     $runfolder_name,
