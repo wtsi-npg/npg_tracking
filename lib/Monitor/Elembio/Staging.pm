@@ -28,31 +28,26 @@ sub find_run_folders {
   $self->logcroak("$staging_area not a directory") if !-d $staging_area;
 
   my @run_folders;
+  # RunManifest will be present in real runs
   my $manifest_pattern = catfile($staging_area, 'AV*/**/RunManifest.json');
   foreach my $run_manifest_file ( glob $manifest_pattern ) {
     my $runfolder_path = dirname(abs_path($run_manifest_file));
-    if (! -d $runfolder_path) {next;}
-    $self->debug("Found run folder: $runfolder_path");
+    $self->info("Found run folder: $runfolder_path");
     my $run_parameters_file = catfile($runfolder_path, 'RunParameters.json');
     if (! -e $run_parameters_file) {
-      $self->logcarp("No RunParameters.json file in $runfolder_path");
-      next;
+      $self->logcroak("No RunParameters.json file in $runfolder_path");
     }
     push @run_folders, $runfolder_path;
   }
   return @run_folders;
 }
 
-
-sub monitor_run_status {
-  my ($self, $run_folder, $dry_run) = @_;
+# probably better to move to RunFolder
+sub process_run {
+  my ($self, $run_folder) = @_;
   my $monitored_runfolder = Monitor::Elembio::RunFolder->new(runfolder_path      => $run_folder,
-                                                              npg_tracking_schema => $self->npg_tracking_schema,
-                                                              dry_run => $dry_run);
-  if (! $monitored_runfolder) {
-    $self->logcroak('RunFolder creation failed for ' . $run_folder);
-  }
-  $monitored_runfolder->update_remote_run_parameters();
+                                                              npg_tracking_schema => $self->npg_tracking_schema);
+  $monitored_runfolder->process_run_parameters();
 }
 
 __PACKAGE__->meta->make_immutable();
