@@ -62,7 +62,7 @@ subtest 'test staging monitor run status' => sub {
     $date,
   );
   my $test = Monitor::Elembio::Staging->new( npg_tracking_schema => $schema );
-  lives_ok { $test->monitor_run_status($runfolder_path, 0); } 'run folder monitor returns correctly';
+  lives_ok { $test->process_run($runfolder_path); } 'process_run returns correctly';
 
 };
 
