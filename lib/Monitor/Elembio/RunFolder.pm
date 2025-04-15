@@ -4,6 +4,7 @@ use Moose;
 use Carp;
 use Readonly;
 use JSON;
+use File::Basename;
 use File::Spec::Functions 'catfile';
 use DateTime;
 use List::Util 'sum';
@@ -58,7 +59,7 @@ sub _build_tracking_run {
   my $params = {
     flowcell_id   => $self->flowcell_id,
     folder_name   => $self->folder_name,
-    id_instrument => $self->id_instrument,
+    id_instrument => $self->tracking_instrument()->id_instrument,
   };
   my @run_rows = $rs->search($params)->all();
 
@@ -69,20 +70,25 @@ sub _build_tracking_run {
   my $run_row;
   if ($run_count == 1) {
     $run_row = $run_rows[0];
-    $self->info('Found run ' . $run_row->folder_name);
+    $self->info('Found run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
   } else {
-    $self->logcarp('No run found in NPG tracking DB');
+    $self->info('will create a new run for ' . $self->runfolder_path);
+    # We expect run name to start with batch_id (\A(\d+))
+    # later we will assign the group to batch id
     my $data = {
       flowcell_id          => $self->flowcell_id,
       folder_name          => $self->folder_name,
-      id_instrument        => $self->id_instrument,
-      actual_cycle_count   => $self->cycle_count,
-      team                 => 'RAD',
-      id_instrument_format => 19,
+      id_instrument        => $self->tracking_instrument()->id_instrument,
+      folder_path_glob     => dirname($self->runfolder_path),
+      actual_cycle_count   => $self->expected_cycle_count,
+      team                 => 'SR',
+      id_instrument_format => $self->tracking_instrument()->id_instrument_format,
+      priority             => 1,
+      is_paired            => 1,
     };
     $run_row = $rs->create($data);
-    $run_row->set_instrument_side($self->instrument_side, $USERNAME);
-    # assign status
+    # create lanes!!!!!
+    $self->info('Created run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
   }
   return $run_row;
 }
@@ -105,21 +111,13 @@ sub _build_tracking_instrument {
 
   my $instrument_count = scalar @instrument_rows;
   if ($instrument_count == 0) {
-    $self->logcroak('No instrument found in NPG tracking DB with name ' . $self->instrument_name);
+    $self->logcroak('No current instrument found in NPG tracking DB with name ' . $self->instrument_name);
   }
 
   my $instrument_row = $instrument_rows[0];
   $self->debug('Found instrument ' . $instrument_row->name());  
   return $instrument_row;
 }
-
-has q{dry_run}  => (
-  isa           => q{Int},
-  is            => q{ro},
-  required      => 0,
-  init_arg      => 0,
-  documentation => 'If true, no change is made to the Tracking DB',
-);
 
 has q{flowcell_id}  => (
   isa             => q{Str},
@@ -153,18 +151,6 @@ sub _build_folder_name {
   return $folder_name;
 }
 
-has q{id_instrument}    => (
-  isa               => q{Int},
-  is                => q{ro},
-  required          => 0,
-  lazy_build        => 1,
-  documentation     => 'Instrument ID',
-);
-sub _build_id_instrument {
-  my $self = shift;
-  return $self->tracking_instrument()->id_instrument;
-}
-
 has q{instrument_name}  => (
   isa               => q{Str},
   is                => q{ro},
@@ -193,14 +179,14 @@ sub _build_instrument_side {
   return $side;
 }
 
-has q{cycle_count}  => (
+has q{expected_cycle_count}  => (
   isa               => q{Int},
   is                => q{ro},
   required          => 0,
   lazy_build        => 1,
-  documentation     => 'Current cycle count detected in the run folder',
+  documentation     => 'Expected cycle count detected in the run folder',
 );
-sub _build_cycle_count {
+sub _build_expected_cycle_count {
   my $self = shift;
   return sum values %{$self->_run_params_data()->{$CYCLES}};
 }
@@ -246,7 +232,6 @@ sub _build__run_params_data {
   my $run_parameters_file = catfile($self->runfolder_path, 'RunParameters.json');
   return decode_json(slurp $run_parameters_file);
 }
-
 sub _set_instrument_side {
   my ($self) = shift;
   my $side = $self->instrument_side;
@@ -256,43 +241,43 @@ sub _set_instrument_side {
     $self->debug("Run parameter $SIDE: Nothing to update");
     return $side;
   }
-  if (! $self->dry_run) {
-    $tracking_run->set_instrument_side($side, $USERNAME);
-  }
-
-  my $mess_prefix = '';
-  if ($self->dry_run) {$mess_prefix = 'DryRun - '};
-  $self->debug($mess_prefix . "Run parameter $SIDE updated");
+  $tracking_run->set_instrument_side($side, $USERNAME);
+  $self->info("Run parameter $SIDE updated with $side");
   return $side;
 }
 
-sub _set_cycle_count {
+sub _set_expected_cycle_count {
   my ($self) = shift;
 
-  if (! defined $self->cycle_count) {
-    $self->logcroak("Run parameter $CYCLES: latest cycle count not supplied");
+  if (! defined $self->expected_cycle_count) {
+    $self->logcroak("Run parameter $CYCLES: no cycle count");
   }
   my $tracking_run = $self->tracking_run();
-  my $remote_cycle_count = $tracking_run->actual_cycle_count();
+  my $remote_cycle_count = $tracking_run->expected_cycle_count();
   $remote_cycle_count ||= 0;
-  if ($self->cycle_count < $remote_cycle_count) {
+  if ($self->expected_cycle_count < $remote_cycle_count) {
     $self->logcroak("Run parameter $CYCLES: cycle count inconsistency on file system");
-  } elsif ($self->cycle_count == $remote_cycle_count) {
-    $self->debug("Run parameter $CYCLES: Nothing to update");
+  } elsif ($self->expected_cycle_count == $remote_cycle_count) {
+    $self->debug("Run parameter $CYCLES: nothing to update");
     return;
   }
 
-  if (! $self->dry_run) {
-    $tracking_run->update({actual_cycle_count => $self->cycle_count});
-  }
-  my $mess_prefix = '';
-  if ($self->dry_run) {$mess_prefix = 'DryRun - '};
-  $self->info($mess_prefix . "Run parameter $CYCLES: latest cycle count updated");
+  $tracking_run->update({expected_cycle_count => $self->expected_cycle_count});
+  $self->info("Run parameter $CYCLES: latest cycle count updated");
 }
 
-sub update_remote_run_parameters {
+sub process_run_parameters { 
   my $self = shift;
-  $self->_set_cycle_count();
+  my $run_row = $self->tracking_run(); # finds or creates a db record
+  my $is_new_run = $run_row->current_run_status ? 0 : 1;
+  my $is_run_complete = ( -e catfile($self->runfolder_path, 'RunUploaded.json') );
+  if ($is_new_run) {
+    $run_row->set_instrument_side($self->instrument_side, $USERNAME);
+    $run_row->update_run_status('run in progress', $USERNAME);
+    $self->_set_expected_cycle_count();
+  } elsif ($is_run_complete) {
+    $run_row->update_run_status('run complete', $USERNAME);
+  }
 }
 
 1;
