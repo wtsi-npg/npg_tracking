@@ -32,6 +32,7 @@ sub main {
   my $logger = get_logger("main");
   my $help;
   my $staging_area;
+  # Possible other option: list of staging areas
   GetOptions (
     'help'             => \$help,
     'staging_area|staging-area=s' => \$staging_area,
@@ -47,9 +48,10 @@ sub main {
   while (1) {
     foreach my $run_folder ( $monitor->find_run_folders($staging_area) ) {
       try {
-        $monitor->monitor_run_status($run_folder, $DRY_RUN);
+        $monitor->process_run($run_folder);
       } catch {
-        $logger->logcarp("Staging Area Monitor failed for $run_folder");
+        my $error = $_;
+        $logger->logcarp("Staging Area Monitor failed for $run_folder: $error");
       }
     }
     sleep $SLEEP_INTERVAL;
@@ -70,6 +72,8 @@ elembio_staging_area_monitor
 
 =head1 DESCRIPTION
 
+Document:
+Expected staging path structure
 
 =head1 SUBROUTINES/METHODS
 
