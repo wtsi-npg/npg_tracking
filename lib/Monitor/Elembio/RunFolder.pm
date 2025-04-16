@@ -80,7 +80,7 @@ sub _build_tracking_run {
       folder_name          => $self->folder_name,
       id_instrument        => $self->tracking_instrument()->id_instrument,
       folder_path_glob     => dirname($self->runfolder_path),
-      actual_cycle_count   => $self->expected_cycle_count,
+      expected_cycle_count => $self->expected_cycle_count,
       team                 => 'SR',
       id_instrument_format => $self->tracking_instrument()->id_instrument_format,
       priority             => 1,
@@ -246,26 +246,6 @@ sub _set_instrument_side {
   return $side;
 }
 
-sub _set_expected_cycle_count {
-  my ($self) = shift;
-
-  if (! defined $self->expected_cycle_count) {
-    $self->logcroak("Run parameter $CYCLES: no cycle count");
-  }
-  my $tracking_run = $self->tracking_run();
-  my $remote_cycle_count = $tracking_run->expected_cycle_count();
-  $remote_cycle_count ||= 0;
-  if ($self->expected_cycle_count < $remote_cycle_count) {
-    $self->logcroak("Run parameter $CYCLES: cycle count inconsistency on file system");
-  } elsif ($self->expected_cycle_count == $remote_cycle_count) {
-    $self->debug("Run parameter $CYCLES: nothing to update");
-    return;
-  }
-
-  $tracking_run->update({expected_cycle_count => $self->expected_cycle_count});
-  $self->info("Run parameter $CYCLES: expected cycle count updated");
-}
-
 sub process_run_parameters {
   my $self = shift;
   my $run_row = $self->tracking_run();
@@ -274,9 +254,11 @@ sub process_run_parameters {
   if ($is_new_run) {
     $run_row->set_instrument_side($self->instrument_side, $USERNAME);
     $run_row->update_run_status('run in progress', $USERNAME);
-    $self->_set_expected_cycle_count();
-  } elsif ($is_run_complete) {
+    $self->info('New run ' . $self->runfolder_path . ' updated');
+  }
+  if ($is_run_complete) {
     $run_row->update_run_status('run complete', $USERNAME);
+    $self->info('Run ' . $self->runfolder_path . ' completed');
   }
 }
 

@@ -23,7 +23,7 @@ subtest 'test run parameters loader' => sub {
   my $flowcell_id = q[1234567890];
   my $experiment_name = q[NT1234567B];
   my $side = 'A';
-  my $date = '2025-01-01T12:00:59.792171889Z';
+  my $date = '2025-04-16T12:00:59.792171889Z';
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
   my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
@@ -86,7 +86,7 @@ subtest 'test run parameters loader exceptions' => sub {
   ok( $test->date_created, 'missing date gives current date of RunParameters file' );
 
   my $testdir2 = tempdir( CLEANUP => 1 );
-  my $date2 = '2025-01-01T12:00:59';
+  my $date2 = '2025-04-16T12:00:59';
   my $runfolder_path2 = catdir($testdir2, $instrument_name, $runfolder_name);
   make_run_folder(
     $testdir2,
@@ -102,15 +102,15 @@ subtest 'test run parameters loader exceptions' => sub {
   ok( $test2->date_created, 'wrong date format gives current date of RunParameters file' );
 };
 
-subtest 'test tracking run does not exist' => sub {
-  plan tests => 11;
+subtest 'test run parameters update on new run' => sub {
+  plan tests => 15;
 
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_name = q[AV244103];
   my $flowcell_id = q[2345678901];
   my $experiment_name = q[NT1234567C];
   my $side = 'A';
-  my $date = '2025-01-01T12:00:59.792171889Z';
+  my $date = '2025-04-16T12:00:59.792171889Z';
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
   my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
@@ -125,6 +125,8 @@ subtest 'test tracking run does not exist' => sub {
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
+  ok( ! $test->tracking_run()->current_run_status, 'current_run_status not set');
+  ok( ! $test->tracking_run()->current_run_status_description, 'current_run_status_description undef');
   lives_ok {$test->process_run_parameters();} 'process_run_parameters succeeds';
   is( $test->tracking_run()->folder_name, $runfolder_name, 'folder_name of new tracking run' );
   is( $test->tracking_run()->flowcell_id, $flowcell_id, 'flowcell_id of new tracking run' );
@@ -136,11 +138,38 @@ subtest 'test tracking run does not exist' => sub {
   is( $test->tracking_run()->priority, 1, 'priority of new tracking run' );
   is( $test->tracking_run()->is_paired, 1, 'team of new tracking run' );
   is( $test->tracking_run()->folder_path_glob, catdir($testdir, $instrument_name), 'folder_path_glob of new tracking run' );
+  ok( $test->tracking_run()->current_run_status, 'current_run_status set in new run');
+  is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status in progress of new run');
 };
 
-subtest 'test run parameters update' => sub {
-  plan tests => 1;
-  is (1, 1, 'pass');
+subtest 'test update on existing run in progress' => sub {
+  plan tests => 6;
+  my $testdir = tempdir( CLEANUP => 1 );
+  my $instrument_name = q[AV244103];
+  my $flowcell_id = q[1234567890];
+  my $experiment_name = q[NT1234567B];
+  my $side = 'A';
+  my $date = '2025-04-16T12:00:59.792171889Z';
+  my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
+  my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
+  make_run_folder(
+    $testdir,
+    $runfolder_name,
+    $instrument_name,
+    $experiment_name,
+    $flowcell_id,
+    $side,
+    $date,
+  );
+
+  my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
+                                                npg_tracking_schema => $schema);
+  is( $test->tracking_run()->instrument_side, $side, 'instrument_side of existing tracking run' );
+  ok( $test->tracking_run()->current_run_status, 'current_run_status set');
+  is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status in progress of existing run');
+  lives_ok {$test->process_run_parameters();} 'process_run_parameters no change';
+  is( $test->tracking_run()->actual_cycle_count, 200, 'actual_cycle_count no change' );
+  is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status no change');
 };
 
 1;
