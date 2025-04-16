@@ -263,12 +263,12 @@ sub _set_expected_cycle_count {
   }
 
   $tracking_run->update({expected_cycle_count => $self->expected_cycle_count});
-  $self->info("Run parameter $CYCLES: latest cycle count updated");
+  $self->info("Run parameter $CYCLES: expected cycle count updated");
 }
 
-sub process_run_parameters { 
+sub process_run_parameters {
   my $self = shift;
-  my $run_row = $self->tracking_run(); # finds or creates a db record
+  my $run_row = $self->tracking_run();
   my $is_new_run = $run_row->current_run_status ? 0 : 1;
   my $is_run_complete = ( -e catfile($self->runfolder_path, 'RunUploaded.json') );
   if ($is_new_run) {

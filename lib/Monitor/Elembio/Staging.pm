@@ -1,56 +1,35 @@
 package Monitor::Elembio::Staging;
 
-use Moose;
 use Carp;
-use MooseX::StrictConstructor;
 use Cwd 'abs_path';
 use File::Basename;
 use File::Spec::Functions 'catfile';
-use Monitor::Elembio::RunFolder;
-use npg_tracking::Schema;
+use Exporter;
 
-with qw[
-  WTSI::DNAP::Utilities::Loggable
-];
+our @ISA= qw( Exporter );
+our @EXPORT = qw( find_run_folders );
 
 our $VERSION = '0';
 
-has q{npg_tracking_schema} => (
-  is         => 'ro',
-  required   => 1,
-  isa        => 'npg_tracking::Schema',
-);
-
 sub find_run_folders {
-  my ( $self, $staging_area ) = @_;
+  my $staging_area = shift;
 
-  $self->logcroak('Top level staging path required') if !$staging_area;
-  $self->logcroak("$staging_area not a directory") if !-d $staging_area;
+  croak('Top level staging path required') if !$staging_area;
+  croak("$staging_area not a directory") if !-d $staging_area;
 
   my @run_folders;
   # RunManifest will be present in real runs
   my $manifest_pattern = catfile($staging_area, 'AV*/**/RunManifest.json');
   foreach my $run_manifest_file ( glob $manifest_pattern ) {
     my $runfolder_path = dirname(abs_path($run_manifest_file));
-    $self->info("Found run folder: $runfolder_path");
     my $run_parameters_file = catfile($runfolder_path, 'RunParameters.json');
     if (! -e $run_parameters_file) {
-      $self->logcroak("No RunParameters.json file in $runfolder_path");
+      croak("No RunParameters.json file in $runfolder_path");
     }
     push @run_folders, $runfolder_path;
   }
   return @run_folders;
 }
-
-# probably better to move to RunFolder
-sub process_run {
-  my ($self, $run_folder) = @_;
-  my $monitored_runfolder = Monitor::Elembio::RunFolder->new(runfolder_path      => $run_folder,
-                                                              npg_tracking_schema => $self->npg_tracking_schema);
-  $monitored_runfolder->process_run_parameters();
-}
-
-__PACKAGE__->meta->make_immutable();
 
 1;
 
@@ -64,21 +43,15 @@ Monitor::Elembio::Staging
 
 =head1 SYNOPSIS
 
-    C<<use Monitor::Elembio::Staging;
-       my $stage_poll = Monitor::Elembio::Staging->new();>>
+  use Monitor::Elembio::Staging qw( find_run_folders );
 
 =head1 DESCRIPTION
 
-Interrogate the staging area designated to an Elembio instrument.
+Utilities to interrogate the staging area designated to an Elembio instrument.
 
 =head1 SUBROUTINES/METHODS
 
-=head2 validate_areas
-
-Check if the argument passed to the method is a valid staging area.
-Error if no argument or multiple arguments are given.
-
-=head2 find_live
+=head2 find_run_folders
 
 Take a staging area path as a required argument and return a list of all run
 directories found in it.

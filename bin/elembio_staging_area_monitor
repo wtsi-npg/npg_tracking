@@ -13,7 +13,8 @@ use Log::Log4perl qw(get_logger);
 use Pod::Usage;
 
 use npg_tracking::Schema;
-use Monitor::Elembio::Staging;
+use Monitor::Elembio::Staging qw ( find_run_folders );
+use Monitor::Elembio::RunFolder;
 
 our $VERSION = '0';
 
@@ -44,14 +45,15 @@ sub main {
   }
 
   my $schema  = npg_tracking::Schema->connect();
-  my $monitor = Monitor::Elembio::Staging->new(npg_tracking_schema => $schema);
   while (1) {
-    foreach my $run_folder ( $monitor->find_run_folders($staging_area) ) {
+    foreach my $run_folder ( find_run_folders($staging_area) ) {
+      my $monitor = Monitor::Elembio::RunFolder->new( runfolder_path      => $run_folder,
+                                                      npg_tracking_schema => $schema);
       try {
-        $monitor->process_run($run_folder);
+        $monitor->process_run_parameters();
       } catch {
         my $error = $_;
-        $logger->logcarp("Staging Area Monitor failed for $run_folder: $error");
+        $logger->logcarp("RunFolder Monitor failed for $run_folder: $error");
       }
     }
     sleep $SLEEP_INTERVAL;
