@@ -5,7 +5,7 @@ use Carp;
 use Readonly;
 use JSON;
 use File::Basename;
-use File::Spec::Functions 'catfile';
+use File::Spec::Functions qw( catfile catdir );
 use DateTime;
 use List::Util 'sum';
 use DateTime::Format::Strptime;
@@ -28,6 +28,9 @@ Readonly::Scalar my $INSTRUMENT_NAME => 'InstrumentName';
 Readonly::Scalar my $SIDE => 'Side';
 Readonly::Scalar my $CYCLES => 'Cycles';
 Readonly::Scalar my $DATE => 'Date';
+
+Readonly::Scalar my $BASECALL_FOLDER => 'BaseCalls';
+Readonly::Scalar my $CYCLE_FILE_PATTERN => '[I1|I2|R1|R2]_C\d{3}';
 
 Readonly::Scalar my $USERNAME => 'pipeline';
 
@@ -191,6 +194,40 @@ sub _build_expected_cycle_count {
   return sum values %{$self->_run_params_data()->{$CYCLES}};
 }
 
+has q{actual_cycle_count}  => (
+  isa               => q{Int},
+  is                => q{ro},
+  required          => 0,
+  lazy_build        => 1,
+  documentation     => 'Actual cycle count detected in the run folder',
+);
+sub _build_actual_cycle_count {
+  my $self = shift;
+  my $basecalls = catdir($self->runfolder_path, $BASECALL_FOLDER);
+  my @cycle_files = ();
+  if ( -e $basecalls ) {
+    @cycle_files = grep { /$CYCLE_FILE_PATTERN/msx } ( glob catfile($basecalls, '*.zip') );
+  }
+  return scalar @cycle_files;
+}
+
+sub _set_actual_cycle_count {
+  my ($self) = shift;
+
+  my $tracking_run = $self->tracking_run();
+  my $remote_cycle_count = $tracking_run->actual_cycle_count();
+  my $actual_cycle_count = $self->actual_cycle_count;
+  $remote_cycle_count ||= 0;
+  if ($actual_cycle_count < $remote_cycle_count) {
+    $self->logcroak("Run parameter $CYCLES: cycle count inconsistency on file system");
+  } elsif ($actual_cycle_count == $remote_cycle_count) {
+    $self->info("Run parameter $CYCLES: nothing to update");
+  } else {
+    $tracking_run->update({actual_cycle_count => $actual_cycle_count});
+    $self->info("Run parameter $CYCLES: actual cycle count updated");
+  }
+}
+
 has q{date_created} => (
   isa               => q{Str},
   is                => q{ro},
@@ -232,19 +269,6 @@ sub _build__run_params_data {
   my $run_parameters_file = catfile($self->runfolder_path, 'RunParameters.json');
   return decode_json(slurp $run_parameters_file);
 }
-sub _set_instrument_side {
-  my ($self) = shift;
-  my $side = $self->instrument_side;
-  my $tracking_run = $self->tracking_run();
-  my $db_side = $tracking_run->instrument_side || q[];
-  if ($db_side eq $side) {
-    $self->debug("Run parameter $SIDE: Nothing to update");
-    return $side;
-  }
-  $tracking_run->set_instrument_side($side, $USERNAME);
-  $self->info("Run parameter $SIDE updated with $side");
-  return $side;
-}
 
 sub process_run_parameters {
   my $self = shift;
@@ -260,6 +284,7 @@ sub process_run_parameters {
     $run_row->update_run_status('run complete', $USERNAME);
     $self->info('Run ' . $self->runfolder_path . ' completed');
   }
+  $self->_set_actual_cycle_count();
 }
 
 1;

@@ -12,6 +12,18 @@ use Exporter;
 our @ISA= qw( Exporter );
 our @EXPORT = qw( write_elembio_run_manifest write_elembio_run_params make_run_folder );
 
+sub write_cycle_files {
+  my ($ir_counts, $basecalls_path) = @_;
+  foreach my $read_type ( keys %{$ir_counts}) {
+    foreach my $cycle (1 .. $ir_counts->{$read_type}) {
+      my $cycle_file_name = $read_type . sprintf("_C%03d", $cycle) . '.zip';
+      open(my $fh_cycle, '>', catfile($basecalls_path, $cycle_file_name))
+        or die "Could not create file '$cycle_file_name' $!";
+      close $fh_cycle;
+    }
+  }
+}
+
 sub write_elembio_run_manifest {
   my ($topdir_path, $runfolder_name, $instrument_name) = @_;
   my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
@@ -53,8 +65,9 @@ ENDJSON
 }
 
 sub make_run_folder {
-  my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date) = @_;
+  my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date, $cycles) = @_;
   my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
+  my $basecalls_path = catdir($runfolder_path, 'BaseCalls');
   make_path($runfolder_path);
   write_elembio_run_params(
     $topdir_path,
@@ -68,6 +81,8 @@ sub make_run_folder {
     $topdir_path,
     $runfolder_name,
     $instrument_name);
+  make_path($basecalls_path);
+  write_cycle_files($cycles, $basecalls_path);
 }
 
 1;

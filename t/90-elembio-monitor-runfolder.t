@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use File::Copy;
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -24,6 +24,7 @@ subtest 'test run parameters loader' => sub {
   my $experiment_name = q[NT1234567B];
   my $side = 'A';
   my $date = '2025-04-16T12:00:59.792171889Z';
+  my %cycles = map {$_ => 0} ('I1','I2','R1','R2');
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
   my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
@@ -34,6 +35,7 @@ subtest 'test run parameters loader' => sub {
     $flowcell_id,
     $side,
     $date,
+    \%cycles,
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -61,6 +63,7 @@ subtest 'test run parameters loader exceptions' => sub {
   my $side = '';
   my $date = '';
   my $runfolder_name = '';
+  my %cycles = map {$_ => 0} ('I1','I2','R1','R2');
   my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
     $testdir,
@@ -70,6 +73,7 @@ subtest 'test run parameters loader exceptions' => sub {
     $flowcell_id,
     $side,
     $date,
+    \%cycles,
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -96,6 +100,7 @@ subtest 'test run parameters loader exceptions' => sub {
     $flowcell_id,
     $side,
     $date2,
+    \%cycles,
   );
   my $test2 = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path2,
                                                 npg_tracking_schema => $schema);
@@ -111,6 +116,7 @@ subtest 'test run parameters update on new run' => sub {
   my $experiment_name = q[NT1234567C];
   my $side = 'A';
   my $date = '2025-04-16T12:00:59.792171889Z';
+  my %cycles = map {$_ => 0} ('I1','I2','R1','R2');
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
   my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
@@ -121,6 +127,7 @@ subtest 'test run parameters update on new run' => sub {
     $flowcell_id,
     $side,
     $date,
+    \%cycles,
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -150,6 +157,12 @@ subtest 'test update on existing run in progress' => sub {
   my $experiment_name = q[NT1234567B];
   my $side = 'A';
   my $date = '2025-04-16T12:00:59.792171889Z';
+  my $cycles = {
+    I1 => 100,
+    I2 => 100,
+    R1 => 0,
+    R2 => 0,
+  };
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
   my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
@@ -160,6 +173,7 @@ subtest 'test update on existing run in progress' => sub {
     $flowcell_id,
     $side,
     $date,
+    $cycles,
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -170,6 +184,40 @@ subtest 'test update on existing run in progress' => sub {
   lives_ok {$test->process_run_parameters();} 'process_run_parameters no change';
   is( $test->tracking_run()->actual_cycle_count, 200, 'actual_cycle_count no change' );
   is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status no change');
+};
+
+subtest 'test update on existing run actual cycle counter' => sub {
+  plan tests => 3;
+  my $testdir = tempdir( CLEANUP => 1 );
+  my $instrument_name = q[AV244103];
+  my $flowcell_id = q[1234567890];
+  my $experiment_name = q[NT1234567B];
+  my $side = 'A';
+  my $date = '2025-04-16T12:00:59.792171889Z';
+  my $cycles = {
+    I1 => 100,
+    I2 => 100,
+    R1 => 8,
+    R2 => 0,
+  };
+  my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
+  my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
+  make_run_folder(
+    $testdir,
+    $runfolder_name,
+    $instrument_name,
+    $experiment_name,
+    $flowcell_id,
+    $side,
+    $date,
+    $cycles,
+  );
+
+  my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
+                                                npg_tracking_schema => $schema);
+  is( $test->tracking_run()->actual_cycle_count, 200, 'actual_cycle_count init' );
+  lives_ok {$test->process_run_parameters();} 'process_run_parameters success';
+  is( $test->tracking_run()->actual_cycle_count, 208, 'actual_cycle_count progressed forward' );
 };
 
 1;
