@@ -199,6 +199,7 @@ subtest 'test update on existing run actual cycle counter' => sub {
     I2 => 100,
     R1 => 8,
     R2 => 0,
+    P1 => 1,
   };
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
   my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);

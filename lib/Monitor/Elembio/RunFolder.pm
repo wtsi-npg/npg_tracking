@@ -30,7 +30,7 @@ Readonly::Scalar my $CYCLES => 'Cycles';
 Readonly::Scalar my $DATE => 'Date';
 
 Readonly::Scalar my $BASECALL_FOLDER => 'BaseCalls';
-Readonly::Scalar my $CYCLE_FILE_PATTERN => '[I1|I2|R1|R2]_C\d{3}';
+Readonly::Scalar my $CYCLE_FILE_PATTERN => qr/^[IR][12]_C\d{3}/;
 
 Readonly::Scalar my $USERNAME => 'pipeline';
 
@@ -206,7 +206,12 @@ sub _build_actual_cycle_count {
   my $basecalls = catdir($self->runfolder_path, $BASECALL_FOLDER);
   my @cycle_files = ();
   if ( -e $basecalls ) {
-    @cycle_files = grep { /$CYCLE_FILE_PATTERN/msx } ( glob catfile($basecalls, '*.zip') );
+    my @files = glob catfile($basecalls, '*.zip');
+    foreach my $f ( @files ) {
+      if (basename($f) =~ qr/${CYCLE_FILE_PATTERN}/) {
+        push @cycle_files, $f;
+      }
+    }
   }
   return scalar @cycle_files;
 }
