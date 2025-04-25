@@ -27,7 +27,7 @@ subtest 'test staging monitor find runs' => sub {
       $runfolder_name,
       $instrument_name,
       $experiment_name,
-      q[], q[], q[],
+      q[], q[], q[], {}
     );
   }
   throws_ok { find_run_folders() }
