@@ -16,7 +16,7 @@ use_ok('Monitor::Elembio::RunFolder');
 my $schema = t::dbic_util->new->test_schema();
 
 subtest 'test run parameters loader' => sub {
-  plan tests => 9;
+  plan tests => 10;
 
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_name = q[AV244103];
@@ -25,6 +25,7 @@ subtest 'test run parameters loader' => sub {
   my $side = 'A';
   my $date = '2025-04-16T12:00:59.792171889Z';
   my %cycles = map {$_ => 0} ('I1','I2','R1','R2');
+  my $lanes = [1,2];
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
   my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
@@ -36,6 +37,7 @@ subtest 'test run parameters loader' => sub {
     $side,
     $date,
     \%cycles,
+    $lanes,
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -48,6 +50,7 @@ subtest 'test run parameters loader' => sub {
   is( $test->tracking_instrument()->id_instrument, '100', 'instrument_id value correct' );
   is( $test->instrument_side, $side, 'side value correct' );
   is( $test->expected_cycle_count, 318, 'actual cycle value correct' );
+  is( $test->lane_count, 2, 'lanes number value correct' );
   is( $test->date_created, $date, 'date_created value correct' );
   isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
           'Object returned by tracking_run method' );
@@ -74,6 +77,7 @@ subtest 'test run parameters loader exceptions' => sub {
     $side,
     $date,
     \%cycles,
+    [],
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -101,6 +105,7 @@ subtest 'test run parameters loader exceptions' => sub {
     $side,
     $date2,
     \%cycles,
+    [],
   );
   my $test2 = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path2,
                                                 npg_tracking_schema => $schema);
@@ -108,7 +113,7 @@ subtest 'test run parameters loader exceptions' => sub {
 };
 
 subtest 'test run parameters update on new run' => sub {
-  plan tests => 15;
+  plan tests => 16;
 
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_name = q[AV244103];
@@ -117,6 +122,7 @@ subtest 'test run parameters update on new run' => sub {
   my $side = 'A';
   my $date = '2025-04-16T12:00:59.792171889Z';
   my %cycles = map {$_ => 0} ('I1','I2','R1','R2');
+  my $lanes = [1,2];
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
   my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
@@ -128,6 +134,7 @@ subtest 'test run parameters update on new run' => sub {
     $side,
     $date,
     \%cycles,
+    $lanes,
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -147,6 +154,7 @@ subtest 'test run parameters update on new run' => sub {
   is( $test->tracking_run()->folder_path_glob, catdir($testdir, $instrument_name), 'folder_path_glob of new tracking run' );
   ok( $test->tracking_run()->current_run_status, 'current_run_status set in new run');
   is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status in progress of new run');
+  is( $test->tracking_run()->run_lanes->count(), 2, 'correct lanes number of new tracking run');
 };
 
 subtest 'test update on existing run in progress' => sub {
@@ -163,6 +171,7 @@ subtest 'test update on existing run in progress' => sub {
     R1 => 0,
     R2 => 0,
   };
+  my $lanes = [1,2];
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
   my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
@@ -174,6 +183,7 @@ subtest 'test update on existing run in progress' => sub {
     $side,
     $date,
     $cycles,
+    $lanes,
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -201,6 +211,7 @@ subtest 'test update on existing run actual cycle counter' => sub {
     R2 => 0,
     P1 => 1,
   };
+  my $lanes = [1,2];
   my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
   my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
   make_run_folder(
@@ -212,6 +223,7 @@ subtest 'test update on existing run actual cycle counter' => sub {
     $side,
     $date,
     $cycles,
+    $lanes,
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,

@@ -33,10 +33,12 @@ sub write_elembio_run_manifest {
 }
 
 sub write_elembio_run_params {
-  my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date) = @_;
+  my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date, $lanes) = @_;
   my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
   my $runparameters_file = catfile($runfolder_path, q[RunParameters.json]);
   open(my $fh_param, '>', $runparameters_file) or die "Could not open file '$runparameters_file' $!";
+  my $lanes_val = join q[+], @{$lanes};
+  
   print $fh_param <<"ENDJSON";
 {
   "FileVersion": "5.0.0",
@@ -56,7 +58,7 @@ sub write_elembio_run_params {
   },
   "ReadOrder": "I1,I2,R1,R2",
   "PlatformVersion": "3.2.0",
-  "AnalysisLanes": "1+2",
+  "AnalysisLanes": "$lanes_val",
   "LibraryType": "Linear",
   "Tags": null
 }
@@ -65,7 +67,7 @@ ENDJSON
 }
 
 sub make_run_folder {
-  my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date, $cycles) = @_;
+  my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date, $cycles, $lanes) = @_;
   my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
   my $basecalls_path = catdir($runfolder_path, 'BaseCalls');
   make_path($runfolder_path);
@@ -76,7 +78,8 @@ sub make_run_folder {
     $experiment_name,
     $flowcell_id,
     $side,
-    $date);
+    $date,
+    $lanes);
   write_elembio_run_manifest(
     $topdir_path,
     $runfolder_name,

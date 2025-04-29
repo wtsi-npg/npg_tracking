@@ -21,6 +21,7 @@ with qw[
 our $VERSION = '0';
 
 Readonly::Scalar my $RUN_TABLE => 'Run';
+Readonly::Scalar my $RUNLANE_TABLE => 'RunLane';
 Readonly::Scalar my $INSTRUMENT_TABLE => 'Instrument';
 Readonly::Scalar my $FLOWCELL_ID => 'FlowcellID';
 Readonly::Scalar my $FOLDER_NAME => 'RunFolderName';
@@ -28,6 +29,7 @@ Readonly::Scalar my $INSTRUMENT_NAME => 'InstrumentName';
 Readonly::Scalar my $SIDE => 'Side';
 Readonly::Scalar my $CYCLES => 'Cycles';
 Readonly::Scalar my $DATE => 'Date';
+Readonly::Scalar my $LANES => 'AnalysisLanes';
 
 Readonly::Scalar my $BASECALL_FOLDER => 'BaseCalls';
 Readonly::Scalar my $CYCLE_FILE_PATTERN => qr/^[IR][12]_C\d{3}/;
@@ -90,8 +92,13 @@ sub _build_tracking_run {
       is_paired            => 1,
     };
     $run_row = $rs->create($data);
-    # create lanes!!!!!
     $self->info('Created run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
+
+    my $runlane_rs = $run_row->result_source()->schema()->resultset($RUNLANE_TABLE);
+    for my $lane (1 .. $self->lane_count) {
+      $runlane_rs->create({id_run => $run_row->id_run, position => $lane});
+      $self->info("Created record for lane $lane of run_id " . $run_row->id_run);
+    }
   }
   return $run_row;
 }
@@ -231,6 +238,19 @@ sub _set_actual_cycle_count {
     $tracking_run->update({actual_cycle_count => $actual_cycle_count});
     $self->info("Run parameter $CYCLES: actual cycle count updated");
   }
+}
+
+has q{lane_count}  => (
+  isa               => q{Int},
+  is                => q{ro},
+  required          => 0,
+  lazy_build        => 1,
+  documentation     => 'Number of lanes',
+);
+sub _build_lane_count {
+  my $self = shift;
+  my @lanes = split /\+/, $self->_run_params_data()->{$LANES};
+  return scalar @lanes;
 }
 
 has q{date_created} => (
