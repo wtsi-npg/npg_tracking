@@ -65,15 +65,15 @@ The path pattern should match [staging_area]/AV*/[run_folder]
 
 =over
 
-=item Moose
-
-=item namespace::autoclean
-
 =item Carp
 
-=item Try::Tiny
+=item Cwd 'abs_path'
 
-=item MooseX::StrictConstructor
+=item File::Basename
+
+=item File::Spec::Functions 'catfile'
+
+=item Exporter
 
 =back
 
