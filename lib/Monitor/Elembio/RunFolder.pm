@@ -11,6 +11,7 @@ use List::Util 'sum';
 use DateTime::Format::Strptime;
 use Perl6::Slurp;
 use Try::Tiny;
+use File::Find;
 
 use npg_tracking::Schema;
 
@@ -210,10 +211,14 @@ has q{actual_cycle_count}  => (
 );
 sub _build_actual_cycle_count {
   my $self = shift;
-  my $basecalls = catdir($self->runfolder_path, $BASECALL_FOLDER);
+  my @objfound = $self->_find_in_runfolder(qr/$BASECALL_FOLDER/);
+  my $num_items = scalar @objfound;
+  if ($num_items > 1) {
+    $self->logcroak('too many items of ' . $BASECALL_FOLDER . ' found in ' . $self->runfolder_path);
+  }
   my @cycle_files = ();
-  if ( -e $basecalls ) {
-    my @files = glob catfile($basecalls, '*.zip');
+  if ($num_items == 1) {
+    my @files = glob catfile($objfound[0], '*.zip');
     foreach my $f ( @files ) {
       if (basename($f) =~ qr/${CYCLE_FILE_PATTERN}/) {
         push @cycle_files, $f;
@@ -312,6 +317,25 @@ sub process_run_parameters {
   $self->_set_actual_cycle_count();
 }
 
+sub _find_in_runfolder() {
+  my ($self, $objname) = @_;
+  my @objfound = ();
+
+  my $wanted = sub {
+    if ( $_ =~ qr/${objname}$/) {
+      push @objfound, $File::Find::name;
+    }
+  };
+  my $find_args = {
+    wanted => $wanted,
+    follow => 0,
+    no_chdir => 0
+  };
+  find($find_args, ( $self->runfolder_path ));
+
+  return @objfound;
+}
+
 1;
 
 __END__
@@ -335,7 +359,7 @@ Properties loader for an Elembio run folder.
 
 =head2 process_run_parameters
 
-Inspect the file system or the progress of a run 
+Inspect the file system or the progress of the run 
 and update properties in the tracking database
 
 =head1 CONFIGURATION AND ENVIRONMENT
