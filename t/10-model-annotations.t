@@ -46,7 +46,7 @@ my $util = t::util->new({fixtures => 1});
                                minute    => int substr( $create_time, 14, 2),
                                second    => int substr( $create_time, 17, 2),
   );
-  my $dt_now  = DateTime->now( time_zone => 'local' );
+  my $dt_now  = DateTime->now();
 
   my $interval = DateTime::Duration->new( seconds => 10 );
   diag "Annotation creation time ----------> $create_time";
