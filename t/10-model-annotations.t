@@ -50,6 +50,7 @@ my $util = t::util->new({fixtures => 1});
 
   my $interval = DateTime::Duration->new( seconds => 10 );
   diag "----------> $create_time";
+  diag "----------> $dt_now";
   ok( $dt_then <= $dt_now, 'create time is not in the future' );
 
   ok( $dt_now - $interval < $dt_then, 'create time is recent' );
