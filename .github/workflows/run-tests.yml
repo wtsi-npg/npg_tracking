@@ -41,7 +41,9 @@ jobs:
 
       - name: set timezone
         run: |
+            date
             sudo timedatectl set-timezone Europe/London 
+            date
 
       - name: "Install OS dependencies"
         run: |
