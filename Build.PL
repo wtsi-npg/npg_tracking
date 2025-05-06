@@ -129,6 +129,7 @@ my $builder = $class->new(
                 'Date::Parse'                     => '2.27',
                 'DateTime'                        => '0.5',
                 'DateTime::TimeZone'              => 0,
+                'DateTime::TimeZone::Local::Unix' => 0,
                 'DateTime::Format::MySQL'         => 0,
                 'DateTime::Format::Strptime'      => '1.0702',
                 'DBD::mysql'                      => '== 4.050',
