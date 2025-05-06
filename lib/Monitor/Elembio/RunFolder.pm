@@ -24,7 +24,10 @@ our $VERSION = '0';
 Readonly::Scalar my $RUN_TABLE => 'Run';
 Readonly::Scalar my $RUNLANE_TABLE => 'RunLane';
 Readonly::Scalar my $INSTRUMENT_TABLE => 'Instrument';
-Readonly::Scalar my $FLOWCELL_ID => 'FlowcellID';
+
+Readonly::Scalar my $CONSUMABLES => 'Consumables';
+Readonly::Scalar my $FLOWCELL => 'Flowcell';
+Readonly::Scalar my $SERIAL_NUMBER => 'SerialNumber';
 Readonly::Scalar my $FOLDER_NAME => 'RunFolderName';
 Readonly::Scalar my $INSTRUMENT_NAME => 'InstrumentName';
 Readonly::Scalar my $SIDE => 'Side';
@@ -139,7 +142,7 @@ has q{flowcell_id}  => (
 );
 sub _build_flowcell_id {
   my $self = shift;
-  my $flowcell_id = $self->_run_params_data()->{$FLOWCELL_ID};
+  my $flowcell_id = $self->_run_params_data()->{$CONSUMABLES}->{$FLOWCELL}->{$SERIAL_NUMBER};
   if (! $flowcell_id) {
     $self->logcroak('Empty value in flowcell_id');
   }

@@ -46,7 +46,6 @@ sub write_elembio_run_params {
   "RunType": "Sequencing",
   "RunDescription": "",
   "Side": "Side${side}",
-  "FlowcellID": "$flowcell_id",
   "Date": "$date",
   "InstrumentName": "$instrument_name",
   "RunFolderName": "$runfolder_name",
@@ -60,7 +59,12 @@ sub write_elembio_run_params {
   "PlatformVersion": "3.2.0",
   "AnalysisLanes": "$lanes_val",
   "LibraryType": "Linear",
-  "Tags": null
+  "Tags": null,
+  "Consumables": {
+    "Flowcell": {
+      "SerialNumber": "$flowcell_id"
+    }
+  }
 }
 ENDJSON
   close $fh_param;
