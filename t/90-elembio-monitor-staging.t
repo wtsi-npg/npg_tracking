@@ -28,7 +28,7 @@ subtest 'test staging monitor find runs' => sub {
       $instrument_name,
       $experiment_name,
       q[], q[], q[],
-      {}, []
+      {}, [], $ENUM_STANDARD
     );
   }
   throws_ok { find_run_folders() }

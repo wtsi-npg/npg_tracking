@@ -12,6 +12,9 @@ use Exporter;
 our @ISA= qw( Exporter );
 our @EXPORT = qw( write_elembio_run_manifest write_elembio_run_params make_run_folder );
 
+Readonly::Scalar our $ENUM_CYTOPROFILE => 'Cytoprofiling';
+Readonly::Scalar our $ENUM_STANDARD => 'Standard';
+
 sub write_cycle_files {
   my ($ir_counts, $basecalls_path) = @_;
   foreach my $read_type ( keys %{$ir_counts}) {
@@ -71,9 +74,14 @@ ENDJSON
 }
 
 sub make_run_folder {
-  my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date, $cycles, $lanes) = @_;
+  my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date, $cycles, $lanes, $type) = @_;
   my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
-  my $basecalls_path = catdir($runfolder_path, 'BaseCalls');
+  my $basecalls_path;
+  if ($type eq $ENUM_CYTOPROFILE) {
+    $basecalls_path = catdir($runfolder_path, 'BaseCalling', 'BaseCalls');
+  } elsif ($type eq $ENUM_STANDARD) {
+    $basecalls_path = catdir($runfolder_path, 'BaseCalls');
+  }
   make_path($runfolder_path);
   write_elembio_run_params(
     $topdir_path,

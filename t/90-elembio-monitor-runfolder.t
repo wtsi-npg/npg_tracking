@@ -38,6 +38,7 @@ subtest 'test run parameters loader' => sub {
     $date,
     \%cycles,
     $lanes,
+    $ENUM_STANDARD
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -78,6 +79,7 @@ subtest 'test run parameters loader exceptions' => sub {
     $date,
     \%cycles,
     [],
+    $ENUM_STANDARD
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -106,6 +108,7 @@ subtest 'test run parameters loader exceptions' => sub {
     $date2,
     \%cycles,
     [],
+    $ENUM_STANDARD
   );
   my $test2 = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path2,
                                                 npg_tracking_schema => $schema);
@@ -135,6 +138,7 @@ subtest 'test run parameters update on new run' => sub {
     $date,
     \%cycles,
     $lanes,
+    $ENUM_STANDARD
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -184,6 +188,7 @@ subtest 'test update on existing run in progress' => sub {
     $date,
     $cycles,
     $lanes,
+    $ENUM_STANDARD
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -224,6 +229,7 @@ subtest 'test update on existing run actual cycle counter' => sub {
     $date,
     $cycles,
     $lanes,
+    $ENUM_STANDARD
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
