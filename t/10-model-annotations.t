@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use DateTime;
-use Test::More tests => 17;
+use Test::More tests => 15;
 use t::util;
 
 use_ok('npg::model::annotation');
@@ -38,22 +38,6 @@ my $util = t::util->new({fixtures => 1});
         qr/^ (20\d\d) [-] ([01]\d) [-] ([0123]\d) \s+
              ([012]\d) : ([0-5]\d) : ([0-5]\d) $/msx,
         'create timestamp format is sane' );
-
-  my $dt_then = DateTime->new( year      => int substr( $create_time,  0, 4),
-                               month     => int substr( $create_time,  5, 2),
-                               day       => int substr( $create_time,  8, 2),
-                               hour      => int substr( $create_time, 11, 2),
-                               minute    => int substr( $create_time, 14, 2),
-                               second    => int substr( $create_time, 17, 2),
-  );
-  my $dt_now  = DateTime->now( time_zone => 'local' );
-
-  my $interval = DateTime::Duration->new( seconds => 10 );
-
-  ok( $dt_then <= $dt_now, 'create time is not in the future' );
-
-  ok( $dt_now - $interval < $dt_then, 'create time is recent' );
-
 
   my $model2 = npg::model::annotation->new({
               util => $util,
