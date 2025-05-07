@@ -32,28 +32,34 @@ main();
 sub main {
   my $logger = get_logger("main");
   my $help;
-  my $staging_area;
-  # Possible other option: list of staging areas
+  my @staging_areas;
   GetOptions (
     'help'             => \$help,
-    'staging_area|staging-area=s' => \$staging_area,
+    'staging_area|staging-area=s' => \@staging_areas,
   );
   if ($help) { pod2usage(0); exit 0;}
 
-  if (!defined $staging_area || $staging_area eq q[]) {
-    $logger->logcroak("ERROR: --staging_area/--staging-area argument is required\n")
+  if (! @staging_areas) {
+    $logger->logcroak("ERROR: --staging_area/--staging-area argument is required")
+  }
+  foreach my $staging_area ( @staging_areas ) {
+    if ($staging_area eq q[]) {
+      $logger->logcroak("ERROR: --staging_area/--staging-area empty values")
+    }
   }
 
   my $schema  = npg_tracking::Schema->connect();
   while (1) {
-    foreach my $run_folder ( find_run_folders($staging_area) ) {
-      my $monitor = Monitor::Elembio::RunFolder->new( runfolder_path      => $run_folder,
-                                                      npg_tracking_schema => $schema);
-      try {
-        $monitor->process_run_parameters();
-      } catch {
-        my $error = $_;
-        $logger->logcarp("RunFolder Monitor failed for $run_folder: $error");
+    foreach my $staging_area ( @staging_areas ) {
+      foreach my $run_folder ( find_run_folders($staging_area) ) {
+        my $monitor = Monitor::Elembio::RunFolder->new( runfolder_path      => $run_folder,
+                                                        npg_tracking_schema => $schema);
+        try {
+          $monitor->process_run_parameters();
+        } catch {
+          my $error = $_;
+          $logger->logcarp("RunFolder Monitor failed for $run_folder: $error");
+        }
       }
     }
     sleep $SLEEP_INTERVAL;
