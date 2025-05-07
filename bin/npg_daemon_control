@@ -1,10 +1,5 @@
 #!/usr/bin/env perl
 
-#########
-# copied from: svn+ssh://svn.internal.sanger.ac.uk/repos/svn/new-pipeline-dev/instrument_handling/trunk/bin/remote_process_monitor
-#
-
-use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use Moose;
 use Class::Load;
@@ -13,7 +8,6 @@ use English qw(-no_match_vars);
 use Getopt::Long;
 use Module::Pluggable::Object;
 use File::Basename;
-use Sys::Hostname;
 use Readonly;
 
 our $VERSION = '0';
@@ -30,9 +24,9 @@ my @classes = Module::Pluggable::Object->new(
 my @options = qw(help dry-run);
 my @actions = qw(ping stop start);
 foreach my $class (sort @classes) {
+  (my $name) = $class =~ /(\w+)\Z/smx;
   foreach my $action (@actions) {
-    my @temp = split m/:/msx, $class;
-    push @options, (join q[_], $action, (pop @temp));
+    push @options, (join q[_], $action, $name);
   }
 }
 
@@ -40,10 +34,10 @@ if (scalar @options == 2) {
   croak q[Error: No plugins found. Probably, unable to find npg_tracking::daemon namespace.];
 }
 
-GetOptions($opts, @options, 'host=s@');
+GetOptions($opts, @options);
 
 if($opts->{help} || !scalar keys %{$opts}) {
-  help(@options, 'host');
+  help(@options);
   exit 0;
 }
 
@@ -54,47 +48,29 @@ if (defined $request && $request) {
   my $action = shift @temp;
   my $runner_package = $DAEMON_NAMESPACE . q[::] . join q[_], @temp;
   Class::Load::load_class($runner_package);
-  
-  my $h = {};
-  my $local_host = 0;
-  if (exists $opts->{'host'}) {
-    my $hosts = $opts->{'host'};
-    if (scalar @{$hosts} == 1 && $hosts->[0] eq 'local') {
-      $local_host = 1;
-      $hosts->[0] = hostname;
-    }
-    $h = {'hosts' => $hosts,};
-  }
-  my $runner = $runner_package->new($h);
+  my $runner = $runner_package->new();
+
   if ( !$runner->is_prod_user($ENV{'USER'}) ) {
     warn "\n************************************\n";
     warn   "*** YOU ARE NOT PRODUCTION USER  ***\n";
     warn   "************************************\n";
   }
-
   print "\n" or carp $OS_ERROR;
-  foreach my $host (@{$runner->hosts}) {
-    my $cmd = $runner->$action($host);
-    my $human_readable_cmd = $cmd;
-    if ($local_host) {
-      $cmd = qq[/bin/bash -c \"$cmd\" 2>&1];
-    } else {
-      $cmd =~ s/'/'"'"'/smxg;
-      $cmd = qq[ssh -x $host '/bin/bash -l -c \"$cmd\" ' 2>&1];
+  
+  my $cmd = $runner->$action();
+  my $human_readable_cmd = $cmd;
+  $cmd = qq[/bin/bash -c \"$cmd\" 2>&1];
+  if (!$opts->{'dry-run'}) {
+    open my $fh, q(-|), $cmd or croak $OS_ERROR;
+    while (<$fh>) {
+      print or croak $OS_ERROR;
     }
-    print "$host " or carp $OS_ERROR;
-    if (!$opts->{'dry-run'}) {
-      open my $fh, q(-|), $cmd or croak $OS_ERROR;
-      while (<$fh>) {
-        print or croak $OS_ERROR;
-      }
-      close $fh or croak $OS_ERROR;
-    } else {
-      print "\nDRY RUN" or croak $OS_ERROR;
-      print "\ncommand to be executed: $cmd" or carp $OS_ERROR;
-    }
-    print "\ncommand: $human_readable_cmd\n\n" or carp $OS_ERROR;
+    close $fh or croak $OS_ERROR;
+  } else {
+    print "\nDRY RUN" or croak $OS_ERROR;
+    print "\ncommand to be executed: $cmd" or carp $OS_ERROR;
   }
+  print "\ncommand: $human_readable_cmd\n\n" or carp $OS_ERROR;
 }
 
 exit 0;
@@ -111,3 +87,68 @@ sub help {
 }
 
 1;
+
+__END__
+
+
+=head1 NAME
+
+npg_daemon_control
+
+=head1 VERSION
+
+=head1 SYNOPSIS
+
+  npg_daemon_control --stop_daemon_name
+  npg_daemon_control --ping_daemon_name --dry_run
+
+=head1 DESCRIPTION
+
+A wrapper around Linux C<daemon> utility. Starts, stops or pings daemons on a
+local host. New daemons are created by adding a class to C<npg_tracking::daemon>
+namespace, for example C<npg_tracking::daemon::libmerge>. A new class should
+inherit from C<npg_tracking::daemon> class and should overwrite the C<command>
+method of the parent.
+
+=head1 REQUIRED ARGUMENTS
+
+=head1 OPTIONS
+
+  C<help> - displays help message and exists
+
+  C<dry_run> - if true, prints the command withotu executing it; false by default
+  
+  C<start_name|stop_name|ping_name> - an action to be performed for a daemon
+  called C<name>
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+If the run status update is performed, write access to the tracking
+database is required.
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Marina Gourtovaia, E<lt>mg8@sanger.ac.ukE<gt>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (C) 2013,2014,2015,2018,2022,2025 Genome Research Ltd.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

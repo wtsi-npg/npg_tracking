@@ -1,5 +1,10 @@
 LIST OF CHANGES
 
+ - npg_daemon_control:
+     - removed ability to stop/start/ping daemons on remote hosts
+     - removed the '--hosts' script option
+     - updated docs
+
 release 104.0.0 (2025-03-10)
  - Do not send emails to followers if the event relates to a run or a lane
    that was sequenced on a non-Illumina instrument.
