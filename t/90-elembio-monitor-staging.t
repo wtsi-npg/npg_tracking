@@ -6,7 +6,7 @@ use File::Temp qw/ tempdir /;
 use File::Spec::Functions qw( catdir );
 
 use t::dbic_util;
-use t::elembio_run_util qw( make_run_folder );
+use t::elembio_util qw( make_run_folder $RUN_CYTOPROFILE $RUN_STANDARD);
 
 BEGIN {
   local $ENV{'HOME'} = 't';
@@ -28,7 +28,7 @@ subtest 'test staging monitor find runs' => sub {
       $instrument_name,
       $experiment_name,
       q[], q[], q[],
-      {}, [], $ENUM_STANDARD
+      {}, [], $RUN_STANDARD
     );
   }
   throws_ok { find_run_folders() }

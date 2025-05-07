@@ -1,4 +1,4 @@
-package t::elembio_run_util;
+package t::elembio_util;
 
 use strict;
 use warnings;
@@ -10,10 +10,13 @@ use File::Spec::Functions qw( catfile catdir );
 use Exporter;
 
 our @ISA= qw( Exporter );
-our @EXPORT = qw( write_elembio_run_manifest write_elembio_run_params make_run_folder );
+our @EXPORT = qw( 
+  make_run_folder
+  $RUN_CYTOPROFILE
+  $RUN_STANDARD);
 
-Readonly::Scalar our $ENUM_CYTOPROFILE => 'Cytoprofiling';
-Readonly::Scalar our $ENUM_STANDARD => 'Standard';
+Readonly::Scalar our $RUN_CYTOPROFILE => 'Cytoprofiling';
+Readonly::Scalar our $RUN_STANDARD => 'Standard';
 
 sub write_cycle_files {
   my ($ir_counts, $basecalls_path) = @_;
@@ -77,9 +80,9 @@ sub make_run_folder {
   my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date, $cycles, $lanes, $type) = @_;
   my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
   my $basecalls_path;
-  if ($type eq $ENUM_CYTOPROFILE) {
+  if ($type eq $RUN_CYTOPROFILE) {
     $basecalls_path = catdir($runfolder_path, 'BaseCalling', 'BaseCalls');
-  } elsif ($type eq $ENUM_STANDARD) {
+  } elsif ($type eq $RUN_STANDARD) {
     $basecalls_path = catdir($runfolder_path, 'BaseCalls');
   }
   make_path($runfolder_path);

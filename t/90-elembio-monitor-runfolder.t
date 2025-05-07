@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use File::Copy;
-use Test::More tests => 6;
+use Test::More tests => 7;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -9,7 +9,7 @@ use File::Spec::Functions qw( catdir );
 use File::Slurp;
 
 use t::dbic_util;
-use t::elembio_run_util qw( make_run_folder );
+use t::elembio_util qw( make_run_folder $RUN_CYTOPROFILE $RUN_STANDARD );
 
 use_ok('Monitor::Elembio::RunFolder');
 
@@ -38,7 +38,7 @@ subtest 'test run parameters loader' => sub {
     $date,
     \%cycles,
     $lanes,
-    $ENUM_STANDARD
+    $RUN_STANDARD
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -79,7 +79,7 @@ subtest 'test run parameters loader exceptions' => sub {
     $date,
     \%cycles,
     [],
-    $ENUM_STANDARD
+    $RUN_STANDARD
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -108,7 +108,7 @@ subtest 'test run parameters loader exceptions' => sub {
     $date2,
     \%cycles,
     [],
-    $ENUM_STANDARD
+    $RUN_STANDARD
   );
   my $test2 = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path2,
                                                 npg_tracking_schema => $schema);
@@ -138,7 +138,7 @@ subtest 'test run parameters update on new run' => sub {
     $date,
     \%cycles,
     $lanes,
-    $ENUM_STANDARD
+    $RUN_STANDARD
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -188,7 +188,7 @@ subtest 'test update on existing run in progress' => sub {
     $date,
     $cycles,
     $lanes,
-    $ENUM_STANDARD
+    $RUN_STANDARD
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -229,7 +229,7 @@ subtest 'test update on existing run actual cycle counter' => sub {
     $date,
     $cycles,
     $lanes,
-    $ENUM_STANDARD
+    $RUN_STANDARD
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -237,6 +237,45 @@ subtest 'test update on existing run actual cycle counter' => sub {
   is( $test->tracking_run()->actual_cycle_count, 200, 'actual_cycle_count init' );
   lives_ok {$test->process_run_parameters();} 'process_run_parameters success';
   is( $test->tracking_run()->actual_cycle_count, 208, 'actual_cycle_count progressed forward' );
+};
+
+subtest 'test cytoprofiling run and parameters' => sub {
+  plan tests => 4;
+  my $testdir = tempdir( CLEANUP => 1 );
+  my $instrument_name = q[AV244103];
+  my $flowcell_id = q[2345678901];
+  my $experiment_name = q[NT1234567C];
+  my $side = 'A';
+  my $date = '2025-05-07T12:00:59.792171889Z';
+  my $cycles = {
+    I1 => 100,
+    I2 => 100,
+    R1 => 8,
+    R2 => 0,
+    P1 => 1,
+  };
+  my $lanes = [1,2];
+  my $runfolder_name = qq[20250507_${instrument_name}_${experiment_name}];
+  my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
+  make_run_folder(
+    $testdir,
+    $runfolder_name,
+    $instrument_name,
+    $experiment_name,
+    $flowcell_id,
+    $side,
+    $date,
+    $cycles,
+    $lanes,
+    $RUN_CYTOPROFILE
+  );
+
+  my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
+                                                npg_tracking_schema => $schema);
+  is( $test->flowcell_id, $flowcell_id, 'cytoprofiling flowcell_id correct');
+  is( $test->tracking_run()->actual_cycle_count, 200, 'cytoprofiling actual_cycle_count init' );
+  lives_ok {$test->process_run_parameters();} 'cytoprofiling process_run_parameters success';
+  is( $test->tracking_run()->actual_cycle_count, 208, 'cytoprofiling actual_cycle_count progressed forward' );
 };
 
 1;
