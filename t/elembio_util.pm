@@ -8,18 +8,18 @@ use Readonly;
 use File::Path qw/ make_path /;
 use File::Spec::Functions qw( catfile catdir );
 use Monitor::Elembio::Enum qw( 
-	$BASECALL_FOLDER
-	$CYCLES
-	$DATE
-	$FLOWCELL
-	$FOLDER_NAME
-	$INSTRUMENT_NAME
-	$LANES
+  $BASECALL_FOLDER
+  $CYCLES
+  $DATE
+  $FLOWCELL
+  $FOLDER_NAME
+  $INSTRUMENT_NAME
+  $LANES
   $RUN_CYTOPROFILE
   $RUN_NAME
   $RUN_STANDARD
   $RUN_TYPE
-	$SIDE
+  $SIDE
 );
 use Exporter;
 

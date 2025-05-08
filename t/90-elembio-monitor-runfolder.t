@@ -11,17 +11,17 @@ use File::Slurp;
 use t::dbic_util;
 use t::elembio_util qw( make_run_folder );
 use Monitor::Elembio::Enum qw( 
-	$CYCLES
-	$DATE
-	$FLOWCELL
-	$FOLDER_NAME
-	$INSTRUMENT_NAME
-	$LANES
+  $CYCLES
+  $DATE
+  $FLOWCELL
+  $FOLDER_NAME
+  $INSTRUMENT_NAME
+  $LANES
   $RUN_NAME
   $RUN_CYTOPROFILE
   $RUN_TYPE
   $RUN_STANDARD
-	$SIDE
+  $SIDE
 );
 use_ok('Monitor::Elembio::RunFolder');
 

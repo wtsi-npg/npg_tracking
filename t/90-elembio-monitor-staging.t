@@ -8,16 +8,16 @@ use File::Spec::Functions qw( catdir );
 use t::dbic_util;
 use t::elembio_util qw( make_run_folder );
 use Monitor::Elembio::Enum qw( 
-	$CYCLES
-	$DATE
-	$FLOWCELL
-	$FOLDER_NAME
-	$INSTRUMENT_NAME
-	$LANES
+  $CYCLES
+  $DATE
+  $FLOWCELL
+  $FOLDER_NAME
+  $INSTRUMENT_NAME
+  $LANES
   $RUN_NAME
   $RUN_STANDARD
   $RUN_TYPE
-	$SIDE
+  $SIDE
 );
 
 BEGIN {
