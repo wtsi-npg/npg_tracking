@@ -64,3 +64,57 @@ Readonly::Scalar our $RUN_TYPE => 'RunType';
 
 __END__
 
+=head1 NAME
+
+Monitor::Elembio::Enum
+
+=head1 VERSION
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+Package containing a set of Enum variables used in Elembio modules
+
+=head1 SUBROUTINES/METHODS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 DEPENDENCIES
+
+=over
+
+=item Readonly
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+=over
+
+=item Marco M. Mosca
+
+=back
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2025 Genome Research Ltd.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut
