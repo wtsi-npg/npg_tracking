@@ -14,33 +14,30 @@ use Try::Tiny;
 use File::Find;
 
 use npg_tracking::Schema;
+use Monitor::Elembio::Enum qw( 
+	$BASECALL_FOLDER
+	$CONSUMABLES
+	$CYCLE_FILE_PATTERN
+	$CYCLES
+	$DATE
+	$FLOWCELL
+	$FOLDER_NAME
+	$INSTRUMENT_NAME
+	$INSTRUMENT_TABLE
+	$LANES
+	$RUN_TABLE
+	$RUNLANE_TABLE
+	$SERIAL_NUMBER
+	$SIDE
+	$TIME_PATTERN
+  $USERNAME
+);
 
 with qw[
   WTSI::DNAP::Utilities::Loggable
 ];
 
 our $VERSION = '0';
-
-Readonly::Scalar my $RUN_TABLE => 'Run';
-Readonly::Scalar my $RUNLANE_TABLE => 'RunLane';
-Readonly::Scalar my $INSTRUMENT_TABLE => 'Instrument';
-
-Readonly::Scalar my $CONSUMABLES => 'Consumables';
-Readonly::Scalar my $FLOWCELL => 'Flowcell';
-Readonly::Scalar my $SERIAL_NUMBER => 'SerialNumber';
-Readonly::Scalar my $FOLDER_NAME => 'RunFolderName';
-Readonly::Scalar my $INSTRUMENT_NAME => 'InstrumentName';
-Readonly::Scalar my $SIDE => 'Side';
-Readonly::Scalar my $CYCLES => 'Cycles';
-Readonly::Scalar my $DATE => 'Date';
-Readonly::Scalar my $LANES => 'AnalysisLanes';
-
-Readonly::Scalar my $BASECALL_FOLDER => 'BaseCalls';
-Readonly::Scalar my $CYCLE_FILE_PATTERN => qr/^[IR][12]_C\d{3}/;
-
-Readonly::Scalar my $USERNAME => 'pipeline';
-
-Readonly::Scalar my $TIME_PATTERN => '%Y-%m-%dT%H:%M:%S.%NZ'; # 2023-12-19T13:31:17.461926614Z
 
 has q{runfolder_path} => (
   isa           => q{Str},

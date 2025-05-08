@@ -7,16 +7,24 @@ use DateTime;
 use Readonly;
 use File::Path qw/ make_path /;
 use File::Spec::Functions qw( catfile catdir );
+use Monitor::Elembio::Enum qw( 
+	$BASECALL_FOLDER
+	$CYCLES
+	$DATE
+	$FLOWCELL
+	$FOLDER_NAME
+	$INSTRUMENT_NAME
+	$LANES
+  $RUN_CYTOPROFILE
+  $RUN_NAME
+  $RUN_STANDARD
+  $RUN_TYPE
+	$SIDE
+);
 use Exporter;
 
 our @ISA= qw( Exporter );
-our @EXPORT = qw( 
-  make_run_folder
-  $RUN_CYTOPROFILE
-  $RUN_STANDARD);
-
-Readonly::Scalar our $RUN_CYTOPROFILE => 'Cytoprofiling';
-Readonly::Scalar our $RUN_STANDARD => 'Standard';
+our @EXPORT = qw( make_run_folder );
 
 sub write_cycle_files {
   my ($ir_counts, $basecalls_path) = @_;
@@ -77,30 +85,32 @@ ENDJSON
 }
 
 sub make_run_folder {
-  my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date, $cycles, $lanes, $type) = @_;
-  my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
+  my ($topdir_path, $test_params) = @_;
+  my $runfolder_path = catdir($topdir_path, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   my $basecalls_path;
-  if ($type eq $RUN_CYTOPROFILE) {
-    $basecalls_path = catdir($runfolder_path, 'BaseCalling', 'BaseCalls');
-  } elsif ($type eq $RUN_STANDARD) {
-    $basecalls_path = catdir($runfolder_path, 'BaseCalls');
+  if ($test_params->{$RUN_TYPE} eq $RUN_CYTOPROFILE) {
+    $basecalls_path = catdir($runfolder_path, 'BaseCalling', $BASECALL_FOLDER);
+  } elsif ($test_params->{$RUN_TYPE} eq $RUN_STANDARD) {
+    $basecalls_path = catdir($runfolder_path, $BASECALL_FOLDER);
   }
   make_path($runfolder_path);
   write_elembio_run_params(
     $topdir_path,
-    $runfolder_name,
-    $instrument_name,
-    $experiment_name,
-    $flowcell_id,
-    $side,
-    $date,
-    $lanes);
+    $test_params->{$FOLDER_NAME},
+    $test_params->{$INSTRUMENT_NAME},
+    $test_params->{$RUN_NAME},
+    $test_params->{$FLOWCELL},
+    $test_params->{$SIDE},
+    $test_params->{$DATE},
+    $test_params->{$LANES}
+  );
   write_elembio_run_manifest(
     $topdir_path,
-    $runfolder_name,
-    $instrument_name);
+    $test_params->{$FOLDER_NAME},
+    $test_params->{$INSTRUMENT_NAME}
+  );
   make_path($basecalls_path);
-  write_cycle_files($cycles, $basecalls_path);
+  write_cycle_files($test_params->{$CYCLES}, $basecalls_path);
 }
 
 1;

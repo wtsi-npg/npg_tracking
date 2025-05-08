@@ -6,7 +6,19 @@ use File::Temp qw/ tempdir /;
 use File::Spec::Functions qw( catdir );
 
 use t::dbic_util;
-use t::elembio_util qw( make_run_folder $RUN_CYTOPROFILE $RUN_STANDARD);
+use t::elembio_util qw( make_run_folder );
+use Monitor::Elembio::Enum qw( 
+	$CYCLES
+	$DATE
+	$FLOWCELL
+	$FOLDER_NAME
+	$INSTRUMENT_NAME
+	$LANES
+  $RUN_NAME
+  $RUN_STANDARD
+  $RUN_TYPE
+	$SIDE
+);
 
 BEGIN {
   local $ENV{'HOME'} = 't';
@@ -19,16 +31,21 @@ subtest 'test staging monitor find runs' => sub {
   plan tests => 3;
 
   my $testdir = tempdir( CLEANUP => 1 );
-  my $instrument_name = q[AV244103];
-  foreach my $experiment_name (qw(NT1234567B NT1234567C NT1234567D)) {
-    my $runfolder_name = qq[20250325_${instrument_name}_${experiment_name}];
+  foreach my $run_name (qw(NT1234567B NT1234567C NT1234567D)) {
+    my $test_params = {
+      $INSTRUMENT_NAME => q[AV244103],
+      $FLOWCELL => q[],
+      $RUN_NAME => $run_name,
+      $SIDE => q[],
+      $DATE => q[],
+      $CYCLES => {},
+      $LANES => [],
+      $FOLDER_NAME => qq[20250411_AV244103_$run_name],
+      $RUN_TYPE => $RUN_STANDARD
+    };
     make_run_folder(
       $testdir,
-      $runfolder_name,
-      $instrument_name,
-      $experiment_name,
-      q[], q[], q[],
-      {}, [], $RUN_STANDARD
+      $test_params
     );
   }
   throws_ok { find_run_folders() }

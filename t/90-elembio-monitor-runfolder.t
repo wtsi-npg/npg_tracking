@@ -9,8 +9,20 @@ use File::Spec::Functions qw( catdir );
 use File::Slurp;
 
 use t::dbic_util;
-use t::elembio_util qw( make_run_folder $RUN_CYTOPROFILE $RUN_STANDARD );
-
+use t::elembio_util qw( make_run_folder );
+use Monitor::Elembio::Enum qw( 
+	$CYCLES
+	$DATE
+	$FLOWCELL
+	$FOLDER_NAME
+	$INSTRUMENT_NAME
+	$LANES
+  $RUN_NAME
+  $RUN_CYTOPROFILE
+  $RUN_TYPE
+  $RUN_STANDARD
+	$SIDE
+);
 use_ok('Monitor::Elembio::RunFolder');
 
 my $schema = t::dbic_util->new->test_schema();
@@ -19,40 +31,35 @@ subtest 'test run parameters loader' => sub {
   plan tests => 10;
 
   my $testdir = tempdir( CLEANUP => 1 );
-  my $instrument_name = q[AV244103];
-  my $flowcell_id = q[1234567890];
-  my $experiment_name = q[NT1234567B];
-  my $side = 'A';
-  my $date = '2025-04-16T12:00:59.792171889Z';
-  my %cycles = map {$_ => 0} ('I1','I2','R1','R2');
-  my $lanes = [1,2];
-  my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
-  my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
+  my $test_params = {
+    $INSTRUMENT_NAME => q[AV244103],
+    $FLOWCELL => q[1234567890],
+    $RUN_NAME => q[NT1234567B],
+    $SIDE => q[A],
+    $DATE => q[2025-04-11T12:00:59.792171889Z],
+    $CYCLES => { map {$_ => 0} ('I1','I2','R1','R2') },
+    $LANES => [1,2],
+    $FOLDER_NAME => q[20250411_AV244103_NT1234567B],
+    $RUN_TYPE => $RUN_STANDARD
+  };
+  my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
     $testdir,
-    $runfolder_name,
-    $instrument_name,
-    $experiment_name,
-    $flowcell_id,
-    $side,
-    $date,
-    \%cycles,
-    $lanes,
-    $RUN_STANDARD
+    $test_params
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
   isa_ok( $test, 'Monitor::Elembio::RunFolder' );
-  is( $test->folder_name, $runfolder_name, 'run_folder value correct' );
-  is( $test->flowcell_id, $flowcell_id, 'flowcell_id value correct' );
+  is( $test->folder_name, $test_params->{$FOLDER_NAME}, 'run_folder value correct' );
+  is( $test->flowcell_id, $test_params->{$FLOWCELL}, 'flowcell_id value correct' );
   isa_ok( $test->tracking_instrument(), 'npg_tracking::Schema::Result::Instrument',
           'Object returned by tracking_instrument method' );
   is( $test->tracking_instrument()->id_instrument, '100', 'instrument_id value correct' );
-  is( $test->instrument_side, $side, 'side value correct' );
+  is( $test->instrument_side, $test_params->{$SIDE}, 'side value correct' );
   is( $test->expected_cycle_count, 318, 'actual cycle value correct' );
   is( $test->lane_count, 2, 'lanes number value correct' );
-  is( $test->date_created, $date, 'date_created value correct' );
+  is( $test->date_created, $test_params->{$DATE}, 'date_created value correct' );
   isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
           'Object returned by tracking_run method' );
 };
@@ -61,25 +68,21 @@ subtest 'test run parameters loader exceptions' => sub {
   plan tests => 5;
 
   my $testdir = tempdir( CLEANUP => 1 );
-  my $instrument_name = q[AV244103];
-  my $flowcell_id = '';
-  my $experiment_name = q[NT1234567B];
-  my $side = '';
-  my $date = '';
-  my $runfolder_name = '';
-  my %cycles = map {$_ => 0} ('I1','I2','R1','R2');
-  my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
+  my $test_params = {
+    $INSTRUMENT_NAME => q[AV244103],
+    $FLOWCELL => q[],
+    $RUN_NAME => q[NT1234567B],
+    $SIDE => q[],
+    $DATE => q[],
+    $CYCLES => { map {$_ => 0} ('I1','I2','R1','R2') },
+    $LANES => [],
+    $FOLDER_NAME => q[],
+    $RUN_TYPE => $RUN_STANDARD
+  };
+  my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
     $testdir,
-    $runfolder_name,
-    $instrument_name,
-    $experiment_name,
-    $flowcell_id,
-    $side,
-    $date,
-    \%cycles,
-    [],
-    $RUN_STANDARD
+    $test_params
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -96,19 +99,11 @@ subtest 'test run parameters loader exceptions' => sub {
   ok( $test->date_created, 'missing date gives current date of RunParameters file' );
 
   my $testdir2 = tempdir( CLEANUP => 1 );
-  my $date2 = '2025-04-16T12:00:59';
-  my $runfolder_path2 = catdir($testdir2, $instrument_name, $runfolder_name);
+  $test_params->{$DATE} = '2025-04-16T12:00:59';
+  my $runfolder_path2 = catdir($testdir2, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
     $testdir2,
-    $runfolder_name,
-    $instrument_name,
-    $experiment_name,
-    $flowcell_id,
-    $side,
-    $date2,
-    \%cycles,
-    [],
-    $RUN_STANDARD
+    $test_params
   );
   my $test2 = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path2,
                                                 npg_tracking_schema => $schema);
@@ -119,26 +114,21 @@ subtest 'test run parameters update on new run' => sub {
   plan tests => 16;
 
   my $testdir = tempdir( CLEANUP => 1 );
-  my $instrument_name = q[AV244103];
-  my $flowcell_id = q[2345678901];
-  my $experiment_name = q[NT1234567C];
-  my $side = 'A';
-  my $date = '2025-04-16T12:00:59.792171889Z';
-  my %cycles = map {$_ => 0} ('I1','I2','R1','R2');
-  my $lanes = [1,2];
-  my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
-  my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
+  my $test_params = {
+    $INSTRUMENT_NAME => q[AV244103],
+    $FLOWCELL => q[2345678901],
+    $RUN_NAME => q[NT1234567C],
+    $SIDE => q[A],
+    $DATE => q[2025-04-11T12:00:59.792171889Z],
+    $CYCLES => { map {$_ => 0} ('I1','I2','R1','R2') },
+    $LANES => [1,2],
+    $FOLDER_NAME => q[20250411_AV244103_NT1234567C],
+    $RUN_TYPE => $RUN_STANDARD
+  };
+  my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
     $testdir,
-    $runfolder_name,
-    $instrument_name,
-    $experiment_name,
-    $flowcell_id,
-    $side,
-    $date,
-    \%cycles,
-    $lanes,
-    $RUN_STANDARD
+    $test_params
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -146,16 +136,16 @@ subtest 'test run parameters update on new run' => sub {
   ok( ! $test->tracking_run()->current_run_status, 'current_run_status not set');
   ok( ! $test->tracking_run()->current_run_status_description, 'current_run_status_description undef');
   lives_ok {$test->process_run_parameters();} 'process_run_parameters succeeds';
-  is( $test->tracking_run()->folder_name, $runfolder_name, 'folder_name of new tracking run' );
-  is( $test->tracking_run()->flowcell_id, $flowcell_id, 'flowcell_id of new tracking run' );
+  is( $test->tracking_run()->folder_name, $test_params->{$FOLDER_NAME}, 'folder_name of new tracking run' );
+  is( $test->tracking_run()->flowcell_id, $test_params->{$FLOWCELL}, 'flowcell_id of new tracking run' );
   is( $test->tracking_run()->id_instrument, '100', 'id_instrument of new tracking run' );
   is( $test->tracking_run()->id_instrument_format, 19, 'id_instrument_format of new tracking run' );
-  is( $test->tracking_run()->instrument_side, $side, 'instrument_side of new tracking run' );
+  is( $test->tracking_run()->instrument_side, $test_params->{$SIDE}, 'instrument_side of new tracking run' );
   is( $test->tracking_run()->expected_cycle_count, 318, 'expected_cycle_count of new tracking run' );
   is( $test->tracking_run()->team, 'SR', 'team of new tracking run' );
   is( $test->tracking_run()->priority, 1, 'priority of new tracking run' );
   is( $test->tracking_run()->is_paired, 1, 'team of new tracking run' );
-  is( $test->tracking_run()->folder_path_glob, catdir($testdir, $instrument_name), 'folder_path_glob of new tracking run' );
+  is( $test->tracking_run()->folder_path_glob, catdir($testdir, $test_params->{$INSTRUMENT_NAME}), 'folder_path_glob of new tracking run' );
   ok( $test->tracking_run()->current_run_status, 'current_run_status set in new run');
   is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status in progress of new run');
   is( $test->tracking_run()->run_lanes->count(), 2, 'correct lanes number of new tracking run');
@@ -164,36 +154,31 @@ subtest 'test run parameters update on new run' => sub {
 subtest 'test update on existing run in progress' => sub {
   plan tests => 6;
   my $testdir = tempdir( CLEANUP => 1 );
-  my $instrument_name = q[AV244103];
-  my $flowcell_id = q[1234567890];
-  my $experiment_name = q[NT1234567B];
-  my $side = 'A';
-  my $date = '2025-04-16T12:00:59.792171889Z';
-  my $cycles = {
-    I1 => 100,
-    I2 => 100,
-    R1 => 0,
-    R2 => 0,
+  my $test_params = {
+    $INSTRUMENT_NAME => q[AV244103],
+    $FLOWCELL => q[1234567890],
+    $RUN_NAME => q[NT1234567B],
+    $SIDE => q[A],
+    $DATE => q[2025-04-11T12:00:59.792171889Z],
+    $CYCLES => {
+      I1 => 100,
+      I2 => 100,
+      R1 => 0,
+      R2 => 0,
+    },
+    $LANES => [1,2],
+    $FOLDER_NAME => q[20250411_AV244103_NT1234567B],
+    $RUN_TYPE => $RUN_STANDARD
   };
-  my $lanes = [1,2];
-  my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
-  my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
+  my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
     $testdir,
-    $runfolder_name,
-    $instrument_name,
-    $experiment_name,
-    $flowcell_id,
-    $side,
-    $date,
-    $cycles,
-    $lanes,
-    $RUN_STANDARD
+    $test_params
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
-  is( $test->tracking_run()->instrument_side, $side, 'instrument_side of existing tracking run' );
+  is( $test->tracking_run()->instrument_side, $test_params->{$SIDE}, 'instrument_side of existing tracking run' );
   ok( $test->tracking_run()->current_run_status, 'current_run_status set');
   is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status in progress of existing run');
   lives_ok {$test->process_run_parameters();} 'process_run_parameters no change';
@@ -204,32 +189,27 @@ subtest 'test update on existing run in progress' => sub {
 subtest 'test update on existing run actual cycle counter' => sub {
   plan tests => 3;
   my $testdir = tempdir( CLEANUP => 1 );
-  my $instrument_name = q[AV244103];
-  my $flowcell_id = q[1234567890];
-  my $experiment_name = q[NT1234567B];
-  my $side = 'A';
-  my $date = '2025-04-16T12:00:59.792171889Z';
-  my $cycles = {
-    I1 => 100,
-    I2 => 100,
-    R1 => 8,
-    R2 => 0,
-    P1 => 1,
+  my $test_params = {
+    $INSTRUMENT_NAME => q[AV244103],
+    $FLOWCELL => q[1234567890],
+    $RUN_NAME => q[NT1234567B],
+    $SIDE => q[A],
+    $DATE => q[2025-04-11T12:00:59.792171889Z],
+    $CYCLES => {
+      I1 => 100,
+      I2 => 100,
+      R1 => 8,
+      R2 => 0,
+      P1 => 1,
+    },
+    $LANES => [1,2],
+    $FOLDER_NAME => q[20250411_AV244103_NT1234567B],
+    $RUN_TYPE => $RUN_STANDARD
   };
-  my $lanes = [1,2];
-  my $runfolder_name = qq[20250411_${instrument_name}_${experiment_name}];
-  my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
+  my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
     $testdir,
-    $runfolder_name,
-    $instrument_name,
-    $experiment_name,
-    $flowcell_id,
-    $side,
-    $date,
-    $cycles,
-    $lanes,
-    $RUN_STANDARD
+    $test_params
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -242,37 +222,32 @@ subtest 'test update on existing run actual cycle counter' => sub {
 subtest 'test cytoprofiling run and parameters' => sub {
   plan tests => 4;
   my $testdir = tempdir( CLEANUP => 1 );
-  my $instrument_name = q[AV244103];
-  my $flowcell_id = q[2345678901];
-  my $experiment_name = q[NT1234567C];
-  my $side = 'A';
-  my $date = '2025-05-07T12:00:59.792171889Z';
-  my $cycles = {
-    I1 => 100,
-    I2 => 100,
-    R1 => 8,
-    R2 => 0,
-    P1 => 1,
+  my $test_params = {
+    $INSTRUMENT_NAME => q[AV244103],
+    $FLOWCELL => q[2345678901],
+    $RUN_NAME => q[NT1234567C],
+    $SIDE => q[A],
+    $DATE => q[2025-05-07T12:00:59.792171889Z],
+    $CYCLES => {
+      I1 => 100,
+      I2 => 100,
+      R1 => 8,
+      R2 => 0,
+      P1 => 1,
+    },
+    $LANES => [1,2],
+    $FOLDER_NAME => q[20250507_AV244103_NT1234567C],
+    $RUN_TYPE => $RUN_CYTOPROFILE
   };
-  my $lanes = [1,2];
-  my $runfolder_name = qq[20250507_${instrument_name}_${experiment_name}];
-  my $runfolder_path = catdir($testdir, $instrument_name, $runfolder_name);
+  my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
     $testdir,
-    $runfolder_name,
-    $instrument_name,
-    $experiment_name,
-    $flowcell_id,
-    $side,
-    $date,
-    $cycles,
-    $lanes,
-    $RUN_CYTOPROFILE
+    $test_params
   );
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
-  is( $test->flowcell_id, $flowcell_id, 'cytoprofiling flowcell_id correct');
+  is( $test->flowcell_id, $test_params->{$FLOWCELL}, 'cytoprofiling flowcell_id correct');
   is( $test->tracking_run()->actual_cycle_count, 200, 'cytoprofiling actual_cycle_count init' );
   lives_ok {$test->process_run_parameters();} 'cytoprofiling process_run_parameters success';
   is( $test->tracking_run()->actual_cycle_count, 208, 'cytoprofiling actual_cycle_count progressed forward' );
