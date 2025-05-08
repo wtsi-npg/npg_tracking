@@ -30,6 +30,8 @@ our @EXPORT = qw(
   $RUN_TYPE
 );
 
+our $VERSION = '0';
+
 # Pipeline Enums
 Readonly::Scalar our $USERNAME => 'pipeline';
 
