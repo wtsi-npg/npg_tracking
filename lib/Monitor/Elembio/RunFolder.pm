@@ -43,7 +43,6 @@ has q{runfolder_path} => (
   isa           => q{Str},
   is            => q{ro},
   required      => 1,
-  documentation => 'Path to the run folder',
 );
 
 has q{npg_tracking_schema}  => (
@@ -57,7 +56,6 @@ has q{tracking_run} => (
   is            => q{ro},
   lazy          => 1,
   builder       => q{_build_tracking_run},
-  documentation => 'NPG tracking DBIC object for a run',
 );
 sub _build_tracking_run {
   my $self = shift;
@@ -109,7 +107,6 @@ has q{tracking_instrument} => (
   is            => q{ro},
   lazy          => 1,
   builder       => q{_build_tracking_instrument},
-  documentation => 'NPG tracking DBIC object for an instrument',
 );
 sub _build_tracking_instrument {
   my $self = shift;
@@ -135,7 +132,6 @@ has q{flowcell_id}  => (
   is              => q{ro},
   required        => 0,
   lazy_build      => 1,
-  documentation   => 'Flowcell ID of a run',
 );
 sub _build_flowcell_id {
   my $self = shift;
@@ -151,7 +147,6 @@ has q{folder_name}    => (
   is                => q{ro},
   required          => 0,
   lazy_build        => 1,
-  documentation     => 'Run folder name',
 );
 sub _build_folder_name {
   my $self = shift;
@@ -167,7 +162,6 @@ has q{instrument_name}  => (
   is                => q{ro},
   required          => 0,
   lazy_build        => 1,
-  documentation     => 'Run folder name',
 );
 sub _build_instrument_name {
   my $self = shift;
@@ -179,7 +173,6 @@ has q{instrument_side}     => (
   is            => q{ro},
   required      => 0,
   lazy_build    => 1,
-  documentation => 'Instrument side on which a run is performed',
 );
 sub _build_instrument_side {
   my $self = shift;
@@ -195,7 +188,6 @@ has q{expected_cycle_count}  => (
   is                => q{ro},
   required          => 0,
   lazy_build        => 1,
-  documentation     => 'Expected cycle count detected in the run folder',
 );
 sub _build_expected_cycle_count {
   my $self = shift;
@@ -207,7 +199,6 @@ has q{actual_cycle_count}  => (
   is                => q{ro},
   required          => 0,
   lazy_build        => 1,
-  documentation     => 'Actual cycle count detected in the run folder',
 );
 sub _build_actual_cycle_count {
   my $self = shift;
@@ -250,7 +241,6 @@ has q{lane_count}  => (
   is                => q{ro},
   required          => 0,
   lazy_build        => 1,
-  documentation     => 'Number of lanes',
 );
 sub _build_lane_count {
   my $self = shift;
@@ -263,7 +253,6 @@ has q{date_created} => (
   is                => q{ro},
   required          => 0,
   lazy_build        => 1,
-  documentation     => 'Date of creation for a run',
 );
 sub _build_date_created {
   my $self = shift;
