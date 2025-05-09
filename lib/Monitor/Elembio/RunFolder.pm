@@ -299,11 +299,11 @@ sub process_run_parameters {
     $run_row->update_run_status('run in progress', $USERNAME);
     $self->info('New run ' . $self->runfolder_path . ' updated');
   }
+  $self->_set_actual_cycle_count();
   if ($is_run_complete) {
     $run_row->update_run_status('run complete', $USERNAME);
     $self->info('Run ' . $self->runfolder_path . ' completed');
   }
-  $self->_set_actual_cycle_count();
 }
 
 sub _find_in_runfolder() {
