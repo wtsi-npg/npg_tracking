@@ -3,11 +3,14 @@ package Monitor::Elembio::Staging;
 use Carp;
 use Cwd 'abs_path';
 use File::Basename;
+use Readonly;
 use File::Spec::Functions 'catfile';
 use Exporter;
 
 our @ISA= qw( Exporter );
 our @EXPORT = qw( find_run_folders );
+
+Readonly::Scalar my $STAGING_GLOB => 'AV*/**/RunManifest.json';
 
 our $VERSION = '0';
 
@@ -19,7 +22,7 @@ sub find_run_folders {
 
   my @run_folders;
   # RunManifest will be present in real runs
-  my $manifest_pattern = catfile($staging_area, 'AV*/**/RunManifest.json');
+  my $manifest_pattern = catfile($staging_area, $STAGING_GLOB);
   foreach my $run_manifest_file ( glob $manifest_pattern ) {
     my $runfolder_path = dirname(abs_path($run_manifest_file));
     my $run_parameters_file = catfile($runfolder_path, 'RunParameters.json');
