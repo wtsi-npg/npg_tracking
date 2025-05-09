@@ -9,14 +9,29 @@ use POSIX qw(strftime);
 use Readonly;
 use Try::Tiny;
 use List::MoreUtils qw(any);
-use Log::Log4perl qw(get_logger);
+use Log::Log4perl qw[:levels];
 use Pod::Usage;
-
+use Getopt::Long;
 use npg_tracking::Schema;
 use Monitor::Elembio::Staging qw ( find_run_folders );
 use Monitor::Elembio::RunFolder;
 
 our $VERSION = '0';
+
+my $log_config = << 'LOGCONF'
+log4perl.logger = INFO, A1
+
+log4perl.logger.Monitor.Elembio.RunFolder = INFO, A1
+
+log4perl.appender.A1 = Log::Log4perl::Appender::Screen
+log4perl.appender.A1.layout = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.A1.layout.ConversionPattern = %d %-5p %c - %m%n
+log4perl.appender.A1.utf8 = 1
+
+# Prevent duplicate messages with a non-Log4j-compliant Log4perl option
+log4perl.oneMessagePerAppender = 1
+LOGCONF
+;
 
 Readonly::Scalar my $SLEEP_INTERVAL => 60 * 15;
 Readonly::Scalar my $DRY_RUN => $ENV{'dev'} && ($ENV{'dev'} ne 'live');
@@ -30,36 +45,62 @@ main();
 ###########################################################
 
 sub main {
-  my $logger = get_logger("main");
   my $help;
   my @staging_areas;
+  my $log4perl_config;
+  my $debug;
+  my $verbose;
   GetOptions (
-    'help'             => \$help,
+    'help'                        => \$help,
     'staging_area|staging-area=s' => \@staging_areas,
+    'logconf=s'                   => \$log4perl_config,
+    'debug'                       => \$debug,
+    'verbose'                     => \$verbose,
   );
   if ($help) { pod2usage(0); exit 0;}
 
+  if ($log4perl_config) {
+    Log::Log4perl::init($log4perl_config);
+  }
+  else {
+    if ($verbose and not $debug) {
+      Log::Log4perl::init(\$log_config);
+    }
+    else {
+      my $level = $debug ? $DEBUG : $WARN;
+      Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
+                                level  => $level,
+                                utf8   => 1});
+    }
+  }
+  my $log = Log::Log4perl->get_logger('main');
+  $log->level($ALL);
+
   if (! @staging_areas) {
-    $logger->logcroak("ERROR: --staging_area/--staging-area argument is required")
+    $log->fatal("ERROR: --staging_area/--staging-area argument is required");
+    exit 1;
   }
   foreach my $staging_area ( @staging_areas ) {
     if ($staging_area eq q[]) {
-      $logger->logcroak("ERROR: --staging_area/--staging-area empty values")
+      $log->fatal("ERROR: --staging_area/--staging-area empty values");
+      exit 1;
     }
   }
 
   my $schema  = npg_tracking::Schema->connect();
   while (1) {
     foreach my $staging_area ( @staging_areas ) {
-      foreach my $run_folder ( find_run_folders($staging_area) ) {
+      my @folders = find_run_folders($staging_area);
+      foreach my $run_folder (@folders) {
+	      $log->info("Considering runfolder $run_folder");
         my $monitor = Monitor::Elembio::RunFolder->new( runfolder_path      => $run_folder,
                                                         npg_tracking_schema => $schema);
         try {
           $monitor->process_run_parameters();
         } catch {
           my $error = $_;
-          $logger->logcarp("RunFolder Monitor failed for $run_folder: $error");
-        }
+	        $log->error("RunFolder Monitor failed for $run_folder: $error");
+        };
       }
     }
     sleep $SLEEP_INTERVAL;
