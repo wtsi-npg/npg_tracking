@@ -92,14 +92,14 @@ sub main {
     foreach my $staging_area ( @staging_areas ) {
       my @folders = find_run_folders($staging_area);
       foreach my $run_folder (@folders) {
-	      $log->info("Considering runfolder $run_folder");
+        $log->info("Considering runfolder $run_folder");
         my $monitor = Monitor::Elembio::RunFolder->new( runfolder_path      => $run_folder,
                                                         npg_tracking_schema => $schema);
         try {
           $monitor->process_run_parameters();
         } catch {
           my $error = $_;
-	        $log->error("RunFolder Monitor failed for $run_folder: $error");
+          $log->error("RunFolder Monitor failed for $run_folder: $error");
         };
       }
     }
