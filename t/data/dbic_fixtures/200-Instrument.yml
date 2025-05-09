@@ -148,11 +148,11 @@
   latest_contact: 
   percent_complete:
   lab: Ogilvie
-- external_name: ''
+- external_name: AV244103
   id_instrument: 100
   id_instrument_format: 19
   serial: ''
-  name: AV244103
+  name: AV2
   iscurrent: 1
   ipaddr: ''
   instrument_comp: ''
