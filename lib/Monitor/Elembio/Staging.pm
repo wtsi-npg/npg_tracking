@@ -28,6 +28,9 @@ sub find_run_folders {
     }
     push @run_folders, $runfolder_path;
   }
+  if (! @run_folders) {
+    carp "No valid run folders found with pattern $manifest_pattern";
+  }
   return @run_folders;
 }
 
