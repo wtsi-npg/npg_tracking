@@ -93,6 +93,10 @@ sub _build_tracking_run {
     $run_row = $rs->create($data);
     $self->info('Created run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
 
+    my $tag = 'staging';
+    $run_row->set_tag($USERNAME, $tag);
+    $self->info("$tag tag is set");
+
     my $runlane_rs = $run_row->result_source()->schema()->resultset($RUNLANE_TABLE);
     for my $lane (1 .. $self->lane_count) {
       $runlane_rs->create({id_run => $run_row->id_run, position => $lane});
