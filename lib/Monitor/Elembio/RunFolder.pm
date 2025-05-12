@@ -25,7 +25,9 @@ use Monitor::Elembio::Enum qw(
   $INSTRUMENT_NAME
   $INSTRUMENT_TABLE
   $LANES
+  $RUN_PARAM_FILE
   $RUN_TABLE
+  $RUN_UPLOAD_FILE
   $RUNLANE_TABLE
   $SERIAL_NUMBER
   $SIDE
@@ -182,7 +184,7 @@ sub _build_instrument_side {
   my $self = shift;
   my ($side) = $self->_run_params_data()->{$SIDE} =~ /Side(A|B)/smx;
   if (!$side) {
-    $self->logcroak("Run parameter $SIDE: wrong format in RunParameters.json");
+    $self->logcroak("Run parameter $SIDE: wrong format in $RUN_PARAM_FILE");
   }
   return $side;
 }
@@ -263,9 +265,9 @@ has q{date_created} => (
 );
 sub _build_date_created {
   my $self = shift;
-  my $file_path = catfile($self->runfolder_path, 'RunParameters.json');
+  my $file_path = catfile($self->runfolder_path, $RUN_PARAM_FILE);
   if (! exists $self->_run_params_data()->{$DATE} or ! $self->_run_params_data()->{$DATE}) {
-    $self->logcarp("Run parameter $DATE: No value in RunParameters.json");
+    $self->logcarp("Run parameter $DATE: No value in $RUN_PARAM_FILE");
     return DateTime->from_epoch(epoch => (stat  $file_path)[9])->strftime($TIME_PATTERN);
   } else {
     my $date = $self->_run_params_data()->{$DATE};
@@ -292,7 +294,7 @@ has q{_run_params_data} => (
 );
 sub _build__run_params_data {
   my $self = shift;
-  my $run_parameters_file = catfile($self->runfolder_path, 'RunParameters.json');
+  my $run_parameters_file = catfile($self->runfolder_path, $RUN_PARAM_FILE);
   return decode_json(slurp $run_parameters_file);
 }
 
@@ -300,7 +302,8 @@ sub process_run_parameters {
   my $self = shift;
   my $run_row = $self->tracking_run();
   my $is_new_run = $run_row->current_run_status ? 0 : 1;
-  my $is_run_complete = ( -e catfile($self->runfolder_path, 'RunUploaded.json') );
+  my $run_uploaded_path = catfile($self->runfolder_path, $RUN_UPLOAD_FILE);
+  my $is_run_complete = ( -e $run_uploaded_path );
   if ($is_new_run) {
     $run_row->set_instrument_side($self->instrument_side, $USERNAME);
     $run_row->update_run_status('run in progress', $USERNAME);
@@ -308,7 +311,8 @@ sub process_run_parameters {
   }
   $self->_set_actual_cycle_count();
   if ($is_run_complete) {
-    $run_row->update_run_status('run complete', $USERNAME);
+    my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9])->strftime($TIME_PATTERN);
+    $run_row->update_run_status('run complete', $USERNAME, $date);
     $self->info('Run ' . $self->runfolder_path . ' completed');
   }
 }
