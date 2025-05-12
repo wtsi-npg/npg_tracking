@@ -110,6 +110,7 @@ sub main {
         };
       }
     }
+    $log->info("Going to sleep");
     sleep $SLEEP_INTERVAL;
   }
 }
