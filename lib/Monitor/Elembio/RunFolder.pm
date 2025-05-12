@@ -225,8 +225,11 @@ sub _set_actual_cycle_count {
   my $tracking_run = $self->tracking_run();
   my $remote_cycle_count = $tracking_run->actual_cycle_count();
   my $actual_cycle_count = $self->actual_cycle_count;
-  $remote_cycle_count ||= 0;
-  if ($actual_cycle_count < $remote_cycle_count) {
+
+  if (! defined $remote_cycle_count) {
+    $tracking_run->update({actual_cycle_count => $actual_cycle_count});
+    $self->info("Run parameter $CYCLES: actual cycle count initiated");
+  } elsif ($actual_cycle_count < $remote_cycle_count) {
     $self->logcroak("Run parameter $CYCLES: cycle count inconsistency on file system");
   } elsif ($actual_cycle_count == $remote_cycle_count) {
     $self->info("Run parameter $CYCLES: nothing to update");

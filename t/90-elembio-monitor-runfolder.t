@@ -28,7 +28,7 @@ use_ok('Monitor::Elembio::RunFolder');
 my $schema = t::dbic_util->new->test_schema();
 
 subtest 'test run parameters loader' => sub {
-  plan tests => 10;
+  plan tests => 11;
 
   my $testdir = tempdir( CLEANUP => 1 );
   my $test_params = {
@@ -57,7 +57,8 @@ subtest 'test run parameters loader' => sub {
           'Object returned by tracking_instrument method' );
   is( $test->tracking_instrument()->id_instrument, '100', 'instrument_id value correct' );
   is( $test->instrument_side, $test_params->{$SIDE}, 'side value correct' );
-  is( $test->expected_cycle_count, 318, 'actual cycle value correct' );
+  is( $test->expected_cycle_count, 318, 'expected cycle value correct' );
+  is( $test->actual_cycle_count, 0, 'actual cycle value correct' );
   is( $test->lane_count, 2, 'lanes number value correct' );
   is( $test->date_created, $test_params->{$DATE}, 'date_created value correct' );
   isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
@@ -111,7 +112,7 @@ subtest 'test run parameters loader exceptions' => sub {
 };
 
 subtest 'test run parameters update on new run' => sub {
-  plan tests => 16;
+  plan tests => 17;
 
   my $testdir = tempdir( CLEANUP => 1 );
   my $test_params = {
@@ -142,6 +143,7 @@ subtest 'test run parameters update on new run' => sub {
   is( $test->tracking_run()->id_instrument_format, 19, 'id_instrument_format of new tracking run' );
   is( $test->tracking_run()->instrument_side, $test_params->{$SIDE}, 'instrument_side of new tracking run' );
   is( $test->tracking_run()->expected_cycle_count, 318, 'expected_cycle_count of new tracking run' );
+  is( $test->tracking_run()->actual_cycle_count, 0, 'actual_cycle_count of new tracking run' );
   is( $test->tracking_run()->team, 'SR', 'team of new tracking run' );
   is( $test->tracking_run()->priority, 1, 'priority of new tracking run' );
   is( $test->tracking_run()->is_paired, 1, 'team of new tracking run' );
