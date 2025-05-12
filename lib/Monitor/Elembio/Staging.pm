@@ -20,7 +20,7 @@ sub find_run_folders {
   croak('Top level staging path required') if !$staging_area;
   croak("$staging_area not a directory") if !-d $staging_area;
 
-  my @run_folders;
+  my @run_folders = ();
   # RunManifest will be present in real runs
   my $manifest_pattern = catfile($staging_area, $STAGING_GLOB);
   foreach my $run_manifest_file ( glob $manifest_pattern ) {
@@ -30,9 +30,6 @@ sub find_run_folders {
       croak("No RunParameters.json file in $runfolder_path");
     }
     push @run_folders, $runfolder_path;
-  }
-  if (! @run_folders) {
-    carp "No valid run folders found with pattern $manifest_pattern";
   }
   return @run_folders;
 }

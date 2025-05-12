@@ -93,10 +93,13 @@ sub main {
       my @folders;
       try {
         @folders = find_run_folders($staging_area);
+        if (! @folders) {
+          $log->warn("No valid run folders found in $staging_area");
+        }
       } catch {
         my $error = $_;
-        $log->error("Run folder search failed in $staging_area: $error");
-        next;
+        $log->fatal("Run folder search failed in $staging_area: $error");
+        exit 1;
       };
       foreach my $run_folder (@folders) {
         $log->info("Considering runfolder $run_folder");
