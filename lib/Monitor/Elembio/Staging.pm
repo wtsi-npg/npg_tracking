@@ -10,10 +10,20 @@ use Exporter;
 our @ISA= qw( Exporter );
 our @EXPORT = qw( find_run_folders );
 
-Readonly::Scalar my $STAGING_GLOB => 'AV*/**/RunManifest.json';
+use Monitor::Elembio::Enum qw( 
+  $RUN_MANIFEST_FILE
+  $RUN_PARAM_FILE
+);
+Readonly::Scalar my $STAGING_GLOB => 'AV*/**/' . $RUN_MANIFEST_FILE;
 
 our $VERSION = '0';
 
+=head2 find_run_folders
+
+Find valid run folders for Elembio runs in a top folder (or staging area).
+A valid run folder has RunManifest.json and RunParameters.json files.
+
+=cut
 sub find_run_folders {
   my $staging_area = shift;
 
@@ -25,7 +35,7 @@ sub find_run_folders {
   my $manifest_pattern = catfile($staging_area, $STAGING_GLOB);
   foreach my $run_manifest_file ( glob $manifest_pattern ) {
     my $runfolder_path = dirname(abs_path($run_manifest_file));
-    my $run_parameters_file = catfile($runfolder_path, 'RunParameters.json');
+    my $run_parameters_file = catfile($runfolder_path, $RUN_PARAM_FILE);
     if (! -e $run_parameters_file) {
       croak("No RunParameters.json file in $runfolder_path");
     }
@@ -56,8 +66,8 @@ Utilities to interrogate the staging area designated to an Elembio instrument.
 
 =head2 find_run_folders
 
-Take a staging area path as a required argument and return a list of all run
-directories found in it.
+Take a staging area path as a required argument and return a list of
+all valid run directories found in it.
 
 The path pattern should match [staging_area]/AV*/[run_folder]
 
@@ -77,6 +87,8 @@ The path pattern should match [staging_area]/AV*/[run_folder]
 =item File::Spec::Functions 'catfile'
 
 =item Exporter
+
+=item Monitor::Elembio::Enum
 
 =back
 

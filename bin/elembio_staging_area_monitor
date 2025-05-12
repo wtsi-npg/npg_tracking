@@ -5,7 +5,6 @@ use warnings;
 use FindBin qw($Bin);
 use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use English qw(-no_match_vars);
-use POSIX qw(strftime);
 use Readonly;
 use Try::Tiny;
 use List::MoreUtils qw(any);

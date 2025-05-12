@@ -17,8 +17,11 @@ use Monitor::Elembio::Enum qw(
   $LANES
   $RUN_CYTOPROFILE
   $RUN_NAME
+  $RUN_PARAM_FILE
+  $RUN_MANIFEST_FILE
   $RUN_STANDARD
   $RUN_TYPE
+  $RUN_UPLOAD_FILE
   $SIDE
 );
 use Exporter;
@@ -41,7 +44,7 @@ sub write_cycle_files {
 sub write_elembio_run_manifest {
   my ($topdir_path, $runfolder_name, $instrument_name) = @_;
   my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
-  my $runmanifest_file = catfile($runfolder_path, q[RunManifest.json]);
+  my $runmanifest_file = catfile($runfolder_path, $RUN_MANIFEST_FILE);
   open(my $fh_man, '>', $runmanifest_file) or die "Could not open file '$runmanifest_file' $!";
   close $fh_man;
 }
@@ -49,7 +52,7 @@ sub write_elembio_run_manifest {
 sub write_elembio_run_params {
   my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date, $lanes) = @_;
   my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
-  my $runparameters_file = catfile($runfolder_path, q[RunParameters.json]);
+  my $runparameters_file = catfile($runfolder_path, $RUN_PARAM_FILE);
   open(my $fh_param, '>', $runparameters_file) or die "Could not open file '$runparameters_file' $!";
   my $lanes_val = join q[+], @{$lanes};
   
@@ -82,6 +85,14 @@ sub write_elembio_run_params {
 }
 ENDJSON
   close $fh_param;
+}
+
+sub write_elembio_run_uploaded {
+  my ($topdir_path, $runfolder_name, $instrument_name) = @_;
+  my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
+  my $runupload_file = catfile($runfolder_path, $RUN_UPLOAD_FILE);
+  open(my $fh_upl, '>', $runupload_file) or die "Could not open file '$runupload_file' $!";
+  close $fh_upl;
 }
 
 sub make_run_folder {

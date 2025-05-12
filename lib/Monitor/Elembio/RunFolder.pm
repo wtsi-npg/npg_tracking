@@ -41,18 +41,56 @@ with qw[
 
 our $VERSION = '0';
 
+=head2 runfolder_path
+
+Path string to a run folder.
+
+=cut
 has q{runfolder_path} => (
   isa           => q{Str},
   is            => q{ro},
   required      => 1,
 );
 
+=head2 npg_tracking_schema
+
+Schema object for the tracking database connection.
+
+=cut
 has q{npg_tracking_schema}  => (
   isa        => 'npg_tracking::Schema',
   is         => q{ro},
   required   => 1,
 );
 
+=head2 tracking_run
+
+Record representation of a run in the tracking database.
+
+An Elembio run is defined by the tuple flowcell_id, folder_name,
+id_instrument.
+The run related to the current run folder is retrieved from the
+tracking database with this tuple attributes.
+The retrieved record must be unique in the DB, otherwise it exits
+with error.
+When there is no record in the DB, a new run record is created
+by assigning the main tuple's attributes from the RunParameters.json
+file plus the following:
+  folder_path_glob      
+  expected_cycle_count  Expected number of cycles from the RunParameters.json
+  team                  Team name defined by the Elembio users
+  id_instrument_format  Integer format of the instrument from the 
+                          Instrument table
+  priority              
+  is_paired             A boolean attribute, is set to a true value 
+                          if the run is a paired read
+During the run creation, lanes are created in 'RunLane' table and their
+number is retrieved from the RunParameters.json.
+
+Returns a Result::Run instance from which run properties can be retrieved
+in the DB.
+
+=cut
 has q{tracking_run} => (
   isa           => q{npg_tracking::Schema::Result::Run},
   is            => q{ro},
@@ -79,8 +117,6 @@ sub _build_tracking_run {
     $self->info('Found run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
   } else {
     $self->info('will create a new run for ' . $self->runfolder_path);
-    # We expect run name to start with batch_id (\A(\d+))
-    # later we will assign the group to batch id
     my $data = {
       flowcell_id          => $self->flowcell_id,
       folder_name          => $self->folder_name,
@@ -108,6 +144,17 @@ sub _build_tracking_run {
   return $run_row;
 }
 
+=head2 tracking_instrument
+
+Record representation of an instrument in the tracking database.
+
+The instrument record is retrieved uniquely (by DB definition).
+If no instrument is found, it exits with error.
+
+Returns a Result::Instrument instance from which instrument properties
+can be retrieved in the DB.
+
+=cut
 has q{tracking_instrument} => (
   isa           => q{npg_tracking::Schema::Result::Instrument},
   is            => q{ro},
@@ -133,6 +180,12 @@ sub _build_tracking_instrument {
   return $instrument_row;
 }
 
+=head2 flowcell_id
+
+A string containing the flowcell ID used for the sequencing.
+It is retrieved from RunParameters.json file.
+
+=cut
 has q{flowcell_id}  => (
   isa             => q{Str},
   is              => q{ro},
@@ -148,6 +201,12 @@ sub _build_flowcell_id {
   return $flowcell_id;
 }
 
+=head2 folder_name
+
+A string containing a time stamp, flowcell_id and run name
+that define a run. It is retrieved from RunParameters.json file.
+
+=cut
 has q{folder_name}    => (
   isa               => q{Str},
   is                => q{ro},
@@ -163,6 +222,12 @@ sub _build_folder_name {
   return $folder_name;
 }
 
+=head2 instrument_name
+
+A unique (external) name assigned to the instrument
+and retrieved from RunParameters.json file.
+
+=cut
 has q{instrument_name}  => (
   isa               => q{Str},
   is                => q{ro},
@@ -174,6 +239,12 @@ sub _build_instrument_name {
   return $self->_run_params_data()->{$INSTRUMENT_NAME};
 }
 
+=head2 instrument_side
+
+The instrument side where the sequencing is performed.
+It is retrieved from RunParameters.json file.
+
+=cut
 has q{instrument_side}     => (
   isa           => q{Str},
   is            => q{ro},
@@ -189,6 +260,13 @@ sub _build_instrument_side {
   return $side;
 }
 
+=head2 expected_cycle_count
+
+The number of sequencing cycles that the instrument
+is expected to complete. It is retrieved from
+RunParameters.json file.
+
+=cut
 has q{expected_cycle_count}  => (
   isa               => q{Int},
   is                => q{ro},
@@ -200,6 +278,12 @@ sub _build_expected_cycle_count {
   return sum values %{$self->_run_params_data()->{$CYCLES}};
 }
 
+=head2 actual_cycle_count
+
+The number of sequencing cycles that the instrument
+has currently completed.
+
+=cut
 has q{actual_cycle_count}  => (
   isa               => q{Int},
   is                => q{ro},
@@ -225,6 +309,13 @@ sub _build_actual_cycle_count {
   return scalar @cycle_files;
 }
 
+=head2 _set_actual_cycle_count
+
+Inspect the file system to retrieve the number of cycles
+that have been completed so far and update the DB if
+it is not up-to-date.
+
+=cut
 sub _set_actual_cycle_count {
   my ($self) = shift;
 
@@ -245,6 +336,12 @@ sub _set_actual_cycle_count {
   }
 }
 
+=head2 lane_count
+
+The number of lanes that are used on one side.
+It is retrieved from RunParameters.json file.
+
+=cut
 has q{lane_count}  => (
   isa               => q{Int},
   is                => q{ro},
@@ -257,6 +354,13 @@ sub _build_lane_count {
   return scalar @lanes;
 }
 
+=head2 date_created
+
+The date when the run was created.
+By default, it is retrieved from the RunParameters.json.
+If not present in the file, the time stamp of the file is choosen.
+
+=cut
 has q{date_created} => (
   isa               => q{Str},
   is                => q{ro},
@@ -285,6 +389,12 @@ sub _build_date_created {
   }
 }
 
+=head2 _run_params_data
+
+Reference to hash object that represents the JSON file
+content of RunParameters.json.
+
+=cut
 has q{_run_params_data} => (
   isa               => q{HashRef},
   is                => q{ro},
@@ -298,6 +408,14 @@ sub _build__run_params_data {
   return decode_json(slurp $run_parameters_file);
 }
 
+=head2 process_run_parameters
+
+Core function of the class that is called on the run folder
+periodically to update dynamic properties of a run in the DB.
+Created and completed runs are updated accordingly with a status
+and a time stamp of the event in the DB.
+
+=cut
 sub process_run_parameters {
   my $self = shift;
   my $run_row = $self->tracking_run();
@@ -317,6 +435,12 @@ sub process_run_parameters {
   }
 }
 
+=head2 _find_in_runfolder
+
+Find recursively all items (directories or files)
+under the current run folder that follow an input pattern.
+
+=cut
 sub _find_in_runfolder() {
   my ($self, $objname) = @_;
   my @objfound = ();
@@ -349,18 +473,14 @@ Monitor::Elembio::RunFolder
 =head1 SYNOPSIS
 
     C<<use Monitor::Elembio::RunFolder;
-       my $run_folder = Monitor::Elembio::runfolder->new();>>
+       my $run_folder = Monitor::Elembio::runfolder->nnew( runfolder_path      => $run_folder,
+                                                           npg_tracking_schema => $schema);>>
 
 =head1 DESCRIPTION
 
 Properties loader for an Elembio run folder.
 
 =head1 SUBROUTINES/METHODS
-
-=head2 process_run_parameters
-
-Inspect the file system or the progress of the run 
-and update properties in the tracking database
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
@@ -391,6 +511,8 @@ and update properties in the tracking database
 =item Try::Tiny
 
 =item npg_tracking::Schema
+
+=item Monitor::Elembio::Enum
 
 =back
 

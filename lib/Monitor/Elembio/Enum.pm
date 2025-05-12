@@ -27,6 +27,7 @@ our @EXPORT = qw(
   $TIME_PATTERN
   $RUN_CYTOPROFILE
   $RUN_PARAM_FILE
+  $RUN_MANIFEST_FILE
   $RUN_STANDARD
   $RUN_TYPE
   $RUN_UPLOAD_FILE
@@ -60,6 +61,7 @@ Readonly::Scalar our $TIME_PATTERN => '%Y-%m-%dT%H:%M:%S.%NZ'; # 2023-12-19T13:3
 # Run Enums
 Readonly::Scalar our $RUN_CYTOPROFILE => 'Cytoprofiling';
 Readonly::Scalar our $RUN_PARAM_FILE => 'RunParameters.json';
+Readonly::Scalar our $RUN_MANIFEST_FILE => 'RunManifest.json';
 Readonly::Scalar our $RUN_STANDARD => 'Standard';
 Readonly::Scalar our $RUN_TYPE => 'RunType';
 Readonly::Scalar our $RUN_UPLOAD_FILE => 'RunUploaded.json';
