@@ -90,7 +90,14 @@ sub main {
   my $schema  = npg_tracking::Schema->connect();
   while (1) {
     foreach my $staging_area ( @staging_areas ) {
-      my @folders = find_run_folders($staging_area);
+      my @folders;
+      try {
+        @folders = find_run_folders($staging_area);
+      } catch {
+        my $error = $_;
+        $log->error("Run folder search failed in $staging_area: $error");
+        next;
+      };
       foreach my $run_folder (@folders) {
         $log->info("Considering runfolder $run_folder");
         my $monitor = Monitor::Elembio::RunFolder->new( runfolder_path      => $run_folder,
