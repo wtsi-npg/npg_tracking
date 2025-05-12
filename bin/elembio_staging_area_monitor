@@ -51,13 +51,14 @@ sub main {
   my $debug;
   my $verbose;
   GetOptions (
-    'help'                        => \$help,
+    'help'                        => sub {
+      pod2usage(-verbose => 2, -exitval => 0);
+    },
     'staging_area|staging-area=s' => \@staging_areas,
     'logconf=s'                   => \$log4perl_config,
     'debug'                       => \$debug,
     'verbose'                     => \$verbose,
   );
-  if ($help) { pod2usage(0); exit 0;}
 
   if ($log4perl_config) {
     Log::Log4perl::init($log4perl_config);
@@ -130,20 +131,31 @@ elembio_staging_area_monitor
 
 =head1 SYNOPSIS
 
+elembio_staging_area_monitor --staging-area <path>
+  [--debug] [--verbose]
+
+ Options:
+   --staging-area     The staging area folder. The following pattern will
+                      be used to search run folders:
+                        staging-area . 'AV*/**/RunManifest.json'
+                      May be used multiple times to set more areas.
+
+   --debug            Enable debug level logging. Optional, defaults to
+                      false.
+
+   --verbose          Print messages while processing. Optional.
+
 =head1 DESCRIPTION
 
-Document:
-Expected staging path structure
+Search the staging area(s) for run folders and update
+their properties in the Tracking Server DB or create 
+new run records if they do not exist.
 
 =head1 SUBROUTINES/METHODS
 
 None
 
 =head1 CONFIGURATION AND ENVIRONMENT
-
-If dev environment variable is set to any value that is not 'live', the script
-has full functionality, but changes to the file system are not performed.
-Development tracking database is used in this case.
 
 =head1 INCOMPATIBILITIES
 
