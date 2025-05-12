@@ -62,16 +62,14 @@ sub main {
 
   if ($log4perl_config) {
     Log::Log4perl::init($log4perl_config);
-  }
-  else {
-    if ($verbose and not $debug) {
-      Log::Log4perl::init(\$log_config);
+  } else {
+    if ($debug and not $verbose) {
+      Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
+                                level  => $DEBUG,
+                                utf8   => 1});
     }
     else {
-      my $level = $debug ? $DEBUG : $WARN;
-      Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
-                                level  => $level,
-                                utf8   => 1});
+      Log::Log4perl::init(\$log_config);
     }
   }
   my $log = Log::Log4perl->get_logger('main');
@@ -108,6 +106,7 @@ sub main {
                                                         npg_tracking_schema => $schema);
         try {
           $monitor->process_run_parameters();
+          $log->info("Successfully processed $run_folder");
         } catch {
           my $error = $_;
           $log->error("RunFolder Monitor failed for $run_folder: $error");
@@ -134,16 +133,21 @@ elembio_staging_area_monitor
 elembio_staging_area_monitor --staging-area <path>
   [--debug] [--verbose]
 
- Options:
-   --staging-area     The staging area folder. The following pattern will
+  Options:
+    --staging-area  The staging area folder. The following pattern will
                       be used to search run folders:
                         staging-area . 'AV*/**/RunManifest.json'
                       May be used multiple times to set more areas.
 
-   --debug            Enable debug level logging. Optional, defaults to
-                      false.
+    --logconf       A file containing log4perl configuration with log
+                      dispatchers. It may include one or more dispatchers
+                      to log messages to different resources.
+                      Highest priority among debug and verbose.
 
-   --verbose          Print messages while processing. Optional.
+    --debug         Enable debug level logging. Optional.
+
+    --verbose       Print messages from the script and used modules 
+                      while processing. Optional. Higher priority than debug.
 
 =head1 DESCRIPTION
 
