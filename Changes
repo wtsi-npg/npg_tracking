@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - npg_daemon_control: added a daemon for Elembio staging monitor
+
 release 105.1.0 (2025-05-15)
  - Create db records for AVITI instruments
 
