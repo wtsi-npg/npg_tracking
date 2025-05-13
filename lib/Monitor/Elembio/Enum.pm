@@ -29,6 +29,9 @@ our @EXPORT = qw(
   $RUN_PARAM_FILE
   $RUN_MANIFEST_FILE
   $RUN_STANDARD
+  $RUN_STATUS_COMPLETE
+  $RUN_STATUS_INPROGRESS
+  $RUN_STATUS_TYPE
   $RUN_TYPE
   $RUN_UPLOAD_FILE
 );
@@ -65,6 +68,9 @@ Readonly::Scalar our $RUN_MANIFEST_FILE => 'RunManifest.json';
 Readonly::Scalar our $RUN_STANDARD => 'Standard';
 Readonly::Scalar our $RUN_TYPE => 'RunType';
 Readonly::Scalar our $RUN_UPLOAD_FILE => 'RunUploaded.json';
+Readonly::Scalar our $RUN_STATUS_COMPLETE => 'run complete';
+Readonly::Scalar our $RUN_STATUS_INPROGRESS => 'run in progress';
+Readonly::Scalar our $RUN_STATUS_TYPE => 'StatusType';
 
 1;
 

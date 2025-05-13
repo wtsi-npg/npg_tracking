@@ -26,6 +26,8 @@ use Monitor::Elembio::Enum qw(
   $INSTRUMENT_TABLE
   $LANES
   $RUN_PARAM_FILE
+  $RUN_STATUS_COMPLETE
+  $RUN_STATUS_INPROGRESS 
   $RUN_TABLE
   $RUN_UPLOAD_FILE
   $RUNLANE_TABLE
@@ -424,13 +426,13 @@ sub process_run_parameters {
   my $is_run_complete = ( -e $run_uploaded_path );
   if ($is_new_run) {
     $run_row->set_instrument_side($self->instrument_side, $USERNAME);
-    $run_row->update_run_status('run in progress', $USERNAME);
+    $run_row->update_run_status($RUN_STATUS_INPROGRESS, $USERNAME);
     $self->info('New run ' . $self->runfolder_path . ' updated');
   }
   $self->_set_actual_cycle_count();
   if ($is_run_complete) {
-    my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9])->strftime($TIME_PATTERN);
-    $run_row->update_run_status('run complete', $USERNAME, $date);
+    my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9]);
+    $run_row->update_run_status($RUN_STATUS_COMPLETE, $USERNAME, $date);
     $self->info('Run ' . $self->runfolder_path . ' completed');
   }
 }

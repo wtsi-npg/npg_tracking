@@ -20,6 +20,9 @@ use Monitor::Elembio::Enum qw(
   $RUN_PARAM_FILE
   $RUN_MANIFEST_FILE
   $RUN_STANDARD
+  $RUN_STATUS_COMPLETE
+  $RUN_STATUS_INPROGRESS
+  $RUN_STATUS_TYPE
   $RUN_TYPE
   $RUN_UPLOAD_FILE
   $SIDE
@@ -122,6 +125,13 @@ sub make_run_folder {
   );
   make_path($basecalls_path);
   write_cycle_files($test_params->{$CYCLES}, $basecalls_path);
+  if ($test_params->{$RUN_STATUS_TYPE} eq $RUN_STATUS_COMPLETE) {
+    write_elembio_run_uploaded(
+      $topdir_path,
+      $test_params->{$FOLDER_NAME},
+      $test_params->{$INSTRUMENT_NAME}
+    );
+  }
 }
 
 1;

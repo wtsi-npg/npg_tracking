@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use File::Copy;
-use Test::More tests => 7;
+use Test::More tests => 9;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -21,6 +21,9 @@ use Monitor::Elembio::Enum qw(
   $RUN_CYTOPROFILE
   $RUN_TYPE
   $RUN_STANDARD
+  $RUN_STATUS_COMPLETE
+  $RUN_STATUS_INPROGRESS
+  $RUN_STATUS_TYPE
   $SIDE
 );
 use_ok('Monitor::Elembio::RunFolder');
@@ -40,7 +43,8 @@ subtest 'test run parameters loader' => sub {
     $CYCLES => { map {$_ => 0} ('I1','I2','R1','R2') },
     $LANES => [1,2],
     $FOLDER_NAME => q[20250411_AV244103_NT1234567B],
-    $RUN_TYPE => $RUN_STANDARD
+    $RUN_TYPE => $RUN_STANDARD,
+    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
   };
   my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
@@ -78,7 +82,8 @@ subtest 'test run parameters loader exceptions' => sub {
     $CYCLES => { map {$_ => 0} ('I1','I2','R1','R2') },
     $LANES => [],
     $FOLDER_NAME => q[],
-    $RUN_TYPE => $RUN_STANDARD
+    $RUN_TYPE => $RUN_STANDARD,
+    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
   };
   my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
@@ -124,7 +129,8 @@ subtest 'test run parameters update on new run' => sub {
     $CYCLES => { map {$_ => 0} ('I1','I2','R1','R2') },
     $LANES => [1,2],
     $FOLDER_NAME => q[20250411_AV244103_NT1234567C],
-    $RUN_TYPE => $RUN_STANDARD
+    $RUN_TYPE => $RUN_STANDARD,
+    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
   };
   my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
@@ -170,7 +176,8 @@ subtest 'test update on existing run in progress' => sub {
     },
     $LANES => [1,2],
     $FOLDER_NAME => q[20250411_AV244103_NT1234567B],
-    $RUN_TYPE => $RUN_STANDARD
+    $RUN_TYPE => $RUN_STANDARD,
+    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
   };
   my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
@@ -206,7 +213,8 @@ subtest 'test update on existing run actual cycle counter' => sub {
     },
     $LANES => [1,2],
     $FOLDER_NAME => q[20250411_AV244103_NT1234567B],
-    $RUN_TYPE => $RUN_STANDARD
+    $RUN_TYPE => $RUN_STANDARD,
+    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
   };
   my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
@@ -239,7 +247,8 @@ subtest 'test cytoprofiling run and parameters' => sub {
     },
     $LANES => [1,2],
     $FOLDER_NAME => q[20250507_AV244103_NT1234567C],
-    $RUN_TYPE => $RUN_CYTOPROFILE
+    $RUN_TYPE => $RUN_CYTOPROFILE,
+    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
   };
   my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   make_run_folder(
@@ -253,6 +262,82 @@ subtest 'test cytoprofiling run and parameters' => sub {
   is( $test->tracking_run()->actual_cycle_count, 200, 'cytoprofiling actual_cycle_count init' );
   lives_ok {$test->process_run_parameters();} 'cytoprofiling process_run_parameters success';
   is( $test->tracking_run()->actual_cycle_count, 208, 'cytoprofiling actual_cycle_count progressed forward' );
+};
+
+subtest 'test on existing run in progress and completed on disk' => sub {
+  plan tests => 7;
+  my $testdir = tempdir( CLEANUP => 1 );
+  my $test_params = {
+    $INSTRUMENT_NAME => q[AV244103],
+    $FLOWCELL => q[3456789012],
+    $RUN_NAME => q[NT1234567A],
+    $SIDE => q[A],
+    $DATE => q[2025-05-13T12:00:59.792171889Z],
+    $CYCLES => {
+      I1 => 151,
+      I2 => 151,
+      R1 => 8,
+      R2 => 8,
+      P1 => 1,
+    },
+    $LANES => [1,2],
+    $FOLDER_NAME => q[20250513_AV244103_NT1234567A],
+    $RUN_TYPE => $RUN_STANDARD,
+    $RUN_STATUS_TYPE => $RUN_STATUS_COMPLETE
+  };
+  my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
+  make_run_folder(
+    $testdir,
+    $test_params
+  );
+
+  my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
+                                                npg_tracking_schema => $schema);
+  is( $test->actual_cycle_count, 318, 'actual_cycle_count on max' );
+  is( $test->tracking_run()->actual_cycle_count, 200, 'actual_cycle_count start in the middle' );
+  ok( $test->tracking_run()->current_run_status, 'current_run_status set');
+  is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_INPROGRESS, 'current_run_status in progress');
+  lives_ok {$test->process_run_parameters();} 'process_run_parameters success';
+  is( $test->tracking_run()->actual_cycle_count, 318, 'actual_cycle_count set on max in db' );
+  is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_COMPLETE, 'current_run_status on complete');
+};
+
+subtest 'test on not existing run but already completed on disk' => sub {
+  plan tests => 7;
+  my $testdir = tempdir( CLEANUP => 1 );
+  my $test_params = {
+    $INSTRUMENT_NAME => q[AV244103],
+    $FLOWCELL => q[4567890123],
+    $RUN_NAME => q[NT1234567D],
+    $SIDE => q[A],
+    $DATE => q[2025-05-13T12:00:59.792171889Z],
+    $CYCLES => {
+      I1 => 151,
+      I2 => 151,
+      R1 => 8,
+      R2 => 8,
+      P1 => 1,
+    },
+    $LANES => [1,2],
+    $FOLDER_NAME => q[20250513_AV244103_NT1234567D],
+    $RUN_TYPE => $RUN_STANDARD,
+    $RUN_STATUS_TYPE => $RUN_STATUS_COMPLETE
+  };
+  my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
+  make_run_folder(
+    $testdir,
+    $test_params
+  );
+
+  my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
+                                                npg_tracking_schema => $schema);
+  is( $test->actual_cycle_count, 318, 'actual_cycle_count on max' );
+  is( $test->tracking_run()->actual_cycle_count, undef, 'actual_cycle_count undef on db' );
+  ok( ! $test->tracking_run()->current_run_status, 'no current_run_status set');
+  lives_ok {$test->process_run_parameters();} 'process_run_parameters success';
+  is( $test->tracking_run()->actual_cycle_count, 318, 'actual_cycle_count set on max in db' );
+  ok( $test->tracking_run()->current_run_status, 'current_run_status set after update');
+  is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_COMPLETE, 'current_run_status on complete');
 };
 
 1;
