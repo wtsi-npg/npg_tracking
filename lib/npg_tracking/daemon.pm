@@ -1,21 +1,21 @@
 package npg_tracking::daemon;
 
-
 use Moose;
 use namespace::autoclean;
 use Sys::Hostname;
 use POSIX   qw(strftime);
 use FindBin qw($Bin);
 use List::MoreUtils qw(any);
+use Cwd qw(abs_path);
 use Readonly;
 
-use npg_tracking::util::abs_path qw(abs_path);
-use npg_tracking::util::config   qw(get_config_users);
+use npg_tracking::util::config qw(get_config_users);
 
 our $VERSION = '0';
 
 ## no critic (RequireInterpolationOfMetachars)
-Readonly::Scalar my $DEFAULT_COMMAND => q{perl -e '$|=1;while(1){print "daemon running\n";sleep5;}'};
+Readonly::Scalar my $DEFAULT_COMMAND =>
+    q{perl -e '$|=1;while(1){print "daemon running\n";sleep5;}'};
 ## use critic
 
 =head1 NAME
@@ -27,7 +27,7 @@ npg_tracking::daemon
 =head1 DESCRIPTION
 
 A base class for wrappers that keep metadata about running
-an arbitrary script as a daemon on a remote server.
+an arbitrary script as a daemon on a local host.
 
 =head1 SUBROUTINES/METHODS
 
@@ -58,23 +58,9 @@ sub _build_env_vars {
     return;
 }
 
-=head2 hosts
-
-A reference to a list of hosts.
-
-=cut
-has 'hosts' =>        (isa             => 'ArrayRef',
-                       is              => 'ro',
-                       required        => 0,
-                       lazy_build      => 1,
-                      );
-sub _build_hosts {
-  return [hostname];
-}
-
 =head2 timestamp
 
-timestamp, is used in the name of the log file
+Timestamp, is used in the name of the log file.
 
 =cut
 has 'timestamp' =>    (isa             => 'Str',
@@ -84,11 +70,12 @@ has 'timestamp' =>    (isa             => 'Str',
 
 =head2 log_dir
 
-Directory where the log file is created, defaults to 'logs' parallel to the current bin
+Directory where the log file is created, defaults to 'logs' parallel to the
+current bin.
 
 =cut
 sub log_dir {
-    my ($self, $host) = @_;
+    my $self = shift;
     return abs_path "$Bin/../logs";
 }
 
@@ -104,16 +91,16 @@ Command to start a script, as a string.
 
 =cut
 sub start {
-    my ($self, $host) = @_;
-    $host ||= hostname;
+    my $self = shift;
+
     my $perl5lib = q[];
     if (defined $self->libs) {
         $perl5lib = join q[:], @{$self->libs};
     }
 
-    my $log_dir = $self->log_dir($host);
+    my $log_dir = $self->log_dir();
     my $test = q{[[ -d } . $log_dir . q{ && -w } . $log_dir . q{ ]] && };
-    my $error = q{ || echo Log directory } .  $log_dir . q{ for staging host } . $host . q{ cannot be written to};
+    my $error = q{ || echo Log directory } .  $log_dir . q{ for staging host } . hostname . q{ cannot be written to};
     my $action = $test . q[daemon -i -r -a 10 -n ] . $self->daemon_name;
     if ($perl5lib) {
         $action .= qq[ --env=\"PERL5LIB=$perl5lib\"];
@@ -124,8 +111,9 @@ sub start {
         }
     }
 
-    my $script_call = $self->command($host);
+    my $script_call = $self->command();
     my $log_path_prefix = join q[/], $log_dir, $self->daemon_name;
+    my $host = hostname;
     return $action . q[ --umask 002 -A 10 -L 10 -M 10 -o ] . $log_path_prefix . qq[-$host] . q[-]. $self->timestamp() . q[.log ] . qq[-- $script_call] . $error;
 }
 
@@ -153,8 +141,8 @@ sub stop {
 
 =head2 command
 
-Command to run. By default a perl one-liner printing a string to standard out every 5 sec.
-To be overwritten by inheriting class.
+Command to run. By default a perl one-liner printing a string to standard out
+every 5 sec. To be overwritten by child class.
 
 =cut
 sub command {
@@ -183,16 +171,16 @@ and instance method.
 
 =cut
 sub is_prod_user {
-  my ($self, $user) = @_;
+    my ($self, $user) = @_;
 
-  my $result = 0;
-  if ($user) {
-    my $h = get_config_users();
-    if( $h->{'production'} ) {
-      $result = any { $_ eq $user} @{$h->{'production'}};
+    my $result = 0;
+    if ($user) {
+        my $h = get_config_users();
+        if( $h->{'production'} ) {
+            $result = any { $_ eq $user} @{$h->{'production'}};
+        }
     }
-  }
-  return $result;
+    return $result;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -222,6 +210,8 @@ __END__
 
 =item List::MoreUtils
 
+=item Cwd
+
 =back
 
 =head1 INCOMPATIBILITIES
@@ -234,7 +224,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2015 GRL, by Marina Gourtovaia
+Copyright (C) 2013,2014,2015,2018, 2025 Genome Research Ltd.
 
 This file is part of NPG.
 
@@ -252,7 +242,3 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut
-
-
-
-
