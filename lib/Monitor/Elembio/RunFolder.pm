@@ -424,16 +424,28 @@ sub process_run_parameters {
   my $is_new_run = $run_row->current_run_status ? 0 : 1;
   my $run_uploaded_path = catfile($self->runfolder_path, $RUN_UPLOAD_FILE);
   my $is_run_complete = ( -e $run_uploaded_path );
+  
   if ($is_new_run) {
     $run_row->set_instrument_side($self->instrument_side, $USERNAME);
     $run_row->update_run_status($RUN_STATUS_INPROGRESS, $USERNAME);
     $self->info('New run ' . $self->runfolder_path . ' updated');
   }
+
   $self->_set_actual_cycle_count();
+  
+  my @run_status_dicts = reverse sort { 
+      $a->temporal_index <=> $b->temporal_index 
+    } map { $_->run_status_dict } $run_row->run_statuses()->all();
+  my $last_run_status = $run_status_dicts[0];
+
   if ($is_run_complete) {
-    my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9]);
-    $run_row->update_run_status($RUN_STATUS_COMPLETE, $USERNAME, $date);
-    $self->info('Run ' . $self->runfolder_path . ' completed');
+    if ( $last_run_status->compare_to_status_description($RUN_STATUS_COMPLETE) == -1) {
+      my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9]);
+      $run_row->update_run_status($RUN_STATUS_COMPLETE, $USERNAME, $date);
+      $self->info('Run ' . $self->runfolder_path . ' is now completed');
+    } else {
+      $self->info('Run ' . $self->runfolder_path . ' was completed');
+    }
   }
 }
 

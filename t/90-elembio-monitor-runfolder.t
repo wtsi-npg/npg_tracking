@@ -265,7 +265,7 @@ subtest 'test cytoprofiling run and parameters' => sub {
 };
 
 subtest 'test on existing run in progress and completed on disk' => sub {
-  plan tests => 7;
+  plan tests => 9;
   my $testdir = tempdir( CLEANUP => 1 );
   my $test_params = {
     $INSTRUMENT_NAME => q[AV244103],
@@ -300,6 +300,8 @@ subtest 'test on existing run in progress and completed on disk' => sub {
   lives_ok {$test->process_run_parameters();} 'process_run_parameters success';
   is( $test->tracking_run()->actual_cycle_count, 318, 'actual_cycle_count set on max in db' );
   is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_COMPLETE, 'current_run_status on complete');
+  lives_ok {$test->process_run_parameters();} 'process_run_parameters second attempt';
+  is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_COMPLETE, 'current_run_status on complete second attempt');
 };
 
 subtest 'test on not existing run but already completed on disk' => sub {
