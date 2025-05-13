@@ -114,9 +114,9 @@ method of the parent.
 
 =head1 OPTIONS
 
-  C<help> - displays help message and exists
+  C<help> - displays help message and exits
 
-  C<dry_run> - if true, prints the command withotu executing it; false by default
+  C<dry_run> - if true, prints the command without executing it; false by default
   
   C<start_name|stop_name|ping_name> - an action to be performed for a daemon
   called C<name>
