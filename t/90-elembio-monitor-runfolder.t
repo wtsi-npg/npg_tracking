@@ -25,6 +25,7 @@ use Monitor::Elembio::Enum qw(
   $RUN_STATUS_INPROGRESS
   $RUN_STATUS_TYPE
   $SIDE
+  $TIME_PATTERN
 );
 use_ok('Monitor::Elembio::RunFolder');
 
@@ -64,7 +65,7 @@ subtest 'test run parameters loader' => sub {
   is( $test->expected_cycle_count, 318, 'expected cycle value correct' );
   is( $test->actual_cycle_count, 0, 'actual cycle value correct' );
   is( $test->lane_count, 2, 'lanes number value correct' );
-  is( $test->date_created, $test_params->{$DATE}, 'date_created value correct' );
+  is( $test->date_created->strftime($TIME_PATTERN), $test_params->{$DATE}, 'date_created value correct' );
   isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
           'Object returned by tracking_run method' );
 };

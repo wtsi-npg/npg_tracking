@@ -364,7 +364,7 @@ If not present in the file, the time stamp of the file is choosen.
 
 =cut
 has q{date_created} => (
-  isa               => q{Str},
+  isa               => q{DateTime},
   is                => q{ro},
   required          => 0,
   lazy_build        => 1,
@@ -374,19 +374,18 @@ sub _build_date_created {
   my $file_path = catfile($self->runfolder_path, $RUN_PARAM_FILE);
   if (! exists $self->_run_params_data()->{$DATE} or ! $self->_run_params_data()->{$DATE}) {
     $self->logcarp("Run parameter $DATE: No value in $RUN_PARAM_FILE");
-    return DateTime->from_epoch(epoch => (stat  $file_path)[9])->strftime($TIME_PATTERN);
+    return DateTime->from_epoch(epoch => (stat  $file_path)[9]);
   } else {
     my $date = $self->_run_params_data()->{$DATE};
     try {
-      DateTime::Format::Strptime->new(
+      return DateTime::Format::Strptime->new(
         pattern=>$TIME_PATTERN,
         strict=>1,
         on_error=>q[croak]
       )->parse_datetime($date);
-      return $date;
     } catch {
       $self->logcarp("Run parameter $DATE: failed to parse $date");
-      return DateTime->from_epoch(epoch => (stat  $file_path)[9])->strftime($TIME_PATTERN);;
+      return DateTime->from_epoch(epoch => (stat  $file_path)[9]);
     };
   }
 }
@@ -427,7 +426,7 @@ sub process_run_parameters {
   
   if ( ! $current_run_status_obj ) {
     $run_row->set_instrument_side($self->instrument_side, $USERNAME);
-    $current_run_status_obj = $run_row->update_run_status($RUN_STATUS_INPROGRESS, $USERNAME);
+    $current_run_status_obj = $run_row->update_run_status($RUN_STATUS_INPROGRESS, $USERNAME, $self->date_created);
     $self->info('New run ' . $self->runfolder_path . ' created');
   }
 
