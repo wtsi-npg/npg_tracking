@@ -439,7 +439,7 @@ sub process_run_parameters {
       $run_row->update_run_status($RUN_STATUS_COMPLETE, $USERNAME, $date);
       $self->info('Run ' . $self->runfolder_path . ' is now completed');
     } else {
-      $self->info('Run ' . $self->runfolder_path . ' was completed');
+      $self->info('Run ' . $self->runfolder_path . ' was completed, current status ' . $current_run_status_obj->description);
     }
   }
 }
