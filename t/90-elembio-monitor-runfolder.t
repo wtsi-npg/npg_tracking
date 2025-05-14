@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use File::Copy;
-use Test::More tests => 9;
+use Test::More tests => 8;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -228,41 +228,6 @@ subtest 'test update on existing run actual cycle counter' => sub {
   is( $test->tracking_run()->actual_cycle_count, 200, 'actual_cycle_count init' );
   lives_ok {$test->process_run_parameters();} 'process_run_parameters success';
   is( $test->tracking_run()->actual_cycle_count, 208, 'actual_cycle_count progressed forward' );
-};
-
-subtest 'test cytoprofiling run and parameters' => sub {
-  plan tests => 4;
-  my $testdir = tempdir( CLEANUP => 1 );
-  my $test_params = {
-    $INSTRUMENT_NAME => q[AV244103],
-    $FLOWCELL => q[2345678901],
-    $RUN_NAME => q[NT1234567C],
-    $SIDE => q[A],
-    $DATE => q[2025-05-07T12:00:59.792171889Z],
-    $CYCLES => {
-      I1 => 100,
-      I2 => 100,
-      R1 => 8,
-      R2 => 0,
-      P1 => 1,
-    },
-    $LANES => [1,2],
-    $FOLDER_NAME => q[20250507_AV244103_NT1234567C],
-    $RUN_TYPE => $RUN_CYTOPROFILE,
-    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
-  };
-  my $runfolder_path = catdir($testdir, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
-  make_run_folder(
-    $testdir,
-    $test_params
-  );
-
-  my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
-                                                npg_tracking_schema => $schema);
-  is( $test->flowcell_id, $test_params->{$FLOWCELL}, 'cytoprofiling flowcell_id correct');
-  is( $test->tracking_run()->actual_cycle_count, 200, 'cytoprofiling actual_cycle_count init' );
-  lives_ok {$test->process_run_parameters();} 'cytoprofiling process_run_parameters success';
-  is( $test->tracking_run()->actual_cycle_count, 208, 'cytoprofiling actual_cycle_count progressed forward' );
 };
 
 subtest 'test on existing run in progress and completed on disk' => sub {

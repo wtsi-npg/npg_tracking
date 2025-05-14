@@ -52,18 +52,60 @@ sub write_elembio_run_manifest {
   close $fh_man;
 }
 
-sub write_elembio_run_params {
-  my ($topdir_path, $runfolder_name, $instrument_name, $experiment_name, $flowcell_id, $side, $date, $lanes) = @_;
+sub write_elembio_cyto_run_params {
+  my ($topdir_path, $test_params) = @_;
+  my $runfolder_name = $test_params->{$FOLDER_NAME};
+  my $instrument_name = $test_params->{$INSTRUMENT_NAME};
+  my $experiment_name = $test_params->{$RUN_NAME};
+  my $flowcell_id = $test_params->{$FLOWCELL};
+  my $side = $test_params->{$SIDE};
+  my $date = $test_params->{$DATE};
+  my $run_type = $test_params->{$RUN_TYPE};
   my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
   my $runparameters_file = catfile($runfolder_path, $RUN_PARAM_FILE);
   open(my $fh_param, '>', $runparameters_file) or die "Could not open file '$runparameters_file' $!";
-  my $lanes_val = join q[+], @{$lanes};
+  my $lanes_val = join q[+], @{$test_params->{$LANES}};
   
   print $fh_param <<"ENDJSON";
 {
-  "FileVersion": "5.0.0",
   "RunName": "$experiment_name",
-  "RunType": "Sequencing",
+  "RunType": "$run_type",
+  "RunDescription": "",
+  "Side": "Side${side}",
+  "Date": "$date",
+  "InstrumentName": "$instrument_name",
+  "RunFolderName": "$runfolder_name",
+  "ReadOrder": "I1,I2,R1,R2",
+  "AnalysisLanes": "$lanes_val",
+  "Tags": null,
+  "Consumables": {
+    "Flowcell": {
+      "SerialNumber": "$flowcell_id"
+    }
+  }
+}
+ENDJSON
+  close $fh_param;
+}
+
+sub write_elembio_run_params {
+  my ($topdir_path, $test_params) = @_;
+  my $runfolder_name = $test_params->{$FOLDER_NAME};
+  my $instrument_name = $test_params->{$INSTRUMENT_NAME};
+  my $experiment_name = $test_params->{$RUN_NAME};
+  my $flowcell_id = $test_params->{$FLOWCELL};
+  my $side = $test_params->{$SIDE};
+  my $date = $test_params->{$DATE};
+  my $run_type = $test_params->{$RUN_TYPE};
+  my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
+  my $runparameters_file = catfile($runfolder_path, $RUN_PARAM_FILE);
+  open(my $fh_param, '>', $runparameters_file) or die "Could not open file '$runparameters_file' $!";
+  my $lanes_val = join q[+], @{$test_params->{$LANES}};
+  
+  print $fh_param <<"ENDJSON";
+{
+  "RunName": "$experiment_name",
+  "RunType": "$run_type",
   "RunDescription": "",
   "Side": "Side${side}",
   "Date": "$date",
@@ -76,9 +118,7 @@ sub write_elembio_run_params {
     "I2": 8
   },
   "ReadOrder": "I1,I2,R1,R2",
-  "PlatformVersion": "3.2.0",
   "AnalysisLanes": "$lanes_val",
-  "LibraryType": "Linear",
   "Tags": null,
   "Consumables": {
     "Flowcell": {
@@ -102,22 +142,20 @@ sub make_run_folder {
   my ($topdir_path, $test_params) = @_;
   my $runfolder_path = catdir($topdir_path, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
   my $basecalls_path;
+  make_path($runfolder_path);
   if ($test_params->{$RUN_TYPE} eq $RUN_CYTOPROFILE) {
     $basecalls_path = catdir($runfolder_path, 'BaseCalling', $BASECALL_FOLDER);
+    write_elembio_cyto_run_params(
+      $topdir_path,
+      $test_params
+    );
   } elsif ($test_params->{$RUN_TYPE} eq $RUN_STANDARD) {
     $basecalls_path = catdir($runfolder_path, $BASECALL_FOLDER);
-  }
-  make_path($runfolder_path);
-  write_elembio_run_params(
-    $topdir_path,
-    $test_params->{$FOLDER_NAME},
-    $test_params->{$INSTRUMENT_NAME},
-    $test_params->{$RUN_NAME},
-    $test_params->{$FLOWCELL},
-    $test_params->{$SIDE},
-    $test_params->{$DATE},
-    $test_params->{$LANES}
-  );
+    write_elembio_run_params(
+      $topdir_path,
+      $test_params
+    );
+  }  
   write_elembio_run_manifest(
     $topdir_path,
     $test_params->{$FOLDER_NAME},

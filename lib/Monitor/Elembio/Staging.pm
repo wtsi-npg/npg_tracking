@@ -6,6 +6,8 @@ use File::Basename;
 use Readonly;
 use File::Spec::Functions 'catfile';
 use Exporter;
+use Perl6::Slurp;
+use JSON;
 
 our @ISA= qw( Exporter );
 our @EXPORT = qw( find_run_folders );
@@ -13,6 +15,8 @@ our @EXPORT = qw( find_run_folders );
 use Monitor::Elembio::Enum qw( 
   $RUN_MANIFEST_FILE
   $RUN_PARAM_FILE
+  $RUN_STANDARD
+  $RUN_TYPE
 );
 Readonly::Scalar my $STAGING_GLOB => 'AV*/**/' . $RUN_MANIFEST_FILE;
 
@@ -39,7 +43,10 @@ sub find_run_folders {
     if (! -e $run_parameters_file) {
       croak("No RunParameters.json file in $runfolder_path");
     }
-    push @run_folders, $runfolder_path;
+    my $json_params_data = decode_json(slurp $run_parameters_file);
+    if ($json_params_data->{$RUN_TYPE} eq $RUN_STANDARD) {
+      push @run_folders, $runfolder_path;
+    }
   }
   return @run_folders;
 }
