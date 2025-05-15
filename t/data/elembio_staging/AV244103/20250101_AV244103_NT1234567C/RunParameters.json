@@ -1,0 +1,16 @@
+{
+  "RunName": "NT1234567C",
+  "RunType": "Cytoprofiling",
+  "Side": "A",
+  "Date": "2025-04-11T12:00:59.792171889Z",
+  "InstrumentName": "AV244103",
+  "RunFolderName": "20250101_AV244103_NT1234567C",
+  "ReadOrder": "I1,I2,R1,R2",
+  "AnalysisLanes": "1+2",
+  "Consumables": {
+    "Flowcell": {
+    "SerialNumber": "1234567891"
+    }
+  }
+}
+  
