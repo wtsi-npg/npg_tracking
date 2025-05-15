@@ -78,12 +78,12 @@ with error.
 When there is no record in the DB, a new run record is created
 by assigning the main tuple's attributes from the RunParameters.json
 file plus the following:
-  folder_path_glob      
+  folder_path_glob      Parent directory of the run folder
   expected_cycle_count  Expected number of cycles from the RunParameters.json
   team                  Team name defined by the Elembio users
   id_instrument_format  Integer format of the instrument from the 
                           Instrument table
-  priority              
+  priority              Lowest priority for a newly created run
   is_paired             A boolean attribute, is set to a true value 
                           if the run is a paired read
 During the run creation, lanes are created in 'RunLane' table and their
