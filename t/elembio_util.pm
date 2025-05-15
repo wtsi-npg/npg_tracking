@@ -10,27 +10,17 @@ use File::Spec::Functions qw( catfile catdir );
 use Monitor::Elembio::Enum qw( 
   $BASECALL_FOLDER
   $CYCLES
-  $DATE
-  $FLOWCELL
-  $FOLDER_NAME
-  $INSTRUMENT_NAME
-  $LANES
   $RUN_CYTOPROFILE
-  $RUN_NAME
-  $RUN_PARAM_FILE
-  $RUN_MANIFEST_FILE
   $RUN_STANDARD
-  $RUN_STATUS_COMPLETE
   $RUN_STATUS_INPROGRESS
   $RUN_STATUS_TYPE
   $RUN_TYPE
   $RUN_UPLOAD_FILE
-  $SIDE
 );
 use Exporter;
 
 our @ISA= qw( Exporter );
-our @EXPORT = qw( make_run_folder );
+our @EXPORT = qw( make_run_folder update_run_folder );
 
 sub write_cycle_files {
   my ($ir_counts, $basecalls_path) = @_;
@@ -44,131 +34,20 @@ sub write_cycle_files {
   }
 }
 
-sub write_elembio_run_manifest {
-  my ($topdir_path, $runfolder_name, $instrument_name) = @_;
-  my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
-  my $runmanifest_file = catfile($runfolder_path, $RUN_MANIFEST_FILE);
-  open(my $fh_man, '>', $runmanifest_file) or die "Could not open file '$runmanifest_file' $!";
-  close $fh_man;
-}
-
-sub write_elembio_cyto_run_params {
-  my ($topdir_path, $test_params) = @_;
-  my $runfolder_name = $test_params->{$FOLDER_NAME};
-  my $instrument_name = $test_params->{$INSTRUMENT_NAME};
-  my $experiment_name = $test_params->{$RUN_NAME};
-  my $flowcell_id = $test_params->{$FLOWCELL};
-  my $side = $test_params->{$SIDE};
-  my $date = $test_params->{$DATE};
-  my $run_type = $test_params->{$RUN_TYPE};
-  my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
-  my $runparameters_file = catfile($runfolder_path, $RUN_PARAM_FILE);
-  open(my $fh_param, '>', $runparameters_file) or die "Could not open file '$runparameters_file' $!";
-  my $lanes_val = join q[+], @{$test_params->{$LANES}};
-  
-  print $fh_param <<"ENDJSON";
-{
-  "RunName": "$experiment_name",
-  "RunType": "$run_type",
-  "RunDescription": "",
-  "Side": "Side${side}",
-  "Date": "$date",
-  "InstrumentName": "$instrument_name",
-  "RunFolderName": "$runfolder_name",
-  "ReadOrder": "I1,I2,R1,R2",
-  "AnalysisLanes": "$lanes_val",
-  "Tags": null,
-  "Consumables": {
-    "Flowcell": {
-      "SerialNumber": "$flowcell_id"
-    }
-  }
-}
-ENDJSON
-  close $fh_param;
-}
-
-sub write_elembio_run_params {
-  my ($topdir_path, $test_params) = @_;
-  my $runfolder_name = $test_params->{$FOLDER_NAME};
-  my $instrument_name = $test_params->{$INSTRUMENT_NAME};
-  my $experiment_name = $test_params->{$RUN_NAME};
-  my $flowcell_id = $test_params->{$FLOWCELL};
-  my $side = $test_params->{$SIDE};
-  my $date = $test_params->{$DATE};
-  my $run_type = $test_params->{$RUN_TYPE};
-  my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
-  my $runparameters_file = catfile($runfolder_path, $RUN_PARAM_FILE);
-  open(my $fh_param, '>', $runparameters_file) or die "Could not open file '$runparameters_file' $!";
-  my $lanes_val = join q[+], @{$test_params->{$LANES}};
-  
-  print $fh_param <<"ENDJSON";
-{
-  "RunName": "$experiment_name",
-  "RunType": "$run_type",
-  "RunDescription": "",
-  "Side": "Side${side}",
-  "Date": "$date",
-  "InstrumentName": "$instrument_name",
-  "RunFolderName": "$runfolder_name",
-  "Cycles": {
-    "R1": 151,
-    "R2": 151,
-    "I1": 8,
-    "I2": 8
-  },
-  "ReadOrder": "I1,I2,R1,R2",
-  "AnalysisLanes": "$lanes_val",
-  "Tags": null,
-  "Consumables": {
-    "Flowcell": {
-      "SerialNumber": "$flowcell_id"
-    }
-  }
-}
-ENDJSON
-  close $fh_param;
-}
-
-sub write_elembio_run_uploaded {
-  my ($topdir_path, $runfolder_name, $instrument_name) = @_;
-  my $runfolder_path = catdir($topdir_path, $instrument_name, $runfolder_name);
-  my $runupload_file = catfile($runfolder_path, $RUN_UPLOAD_FILE);
-  open(my $fh_upl, '>', $runupload_file) or die "Could not open file '$runupload_file' $!";
-  close $fh_upl;
-}
-
-sub make_run_folder {
-  my ($topdir_path, $test_params) = @_;
-  my $runfolder_path = catdir($topdir_path, $test_params->{$INSTRUMENT_NAME}, $test_params->{$FOLDER_NAME});
+sub update_run_folder {
+  my ($runfolder_path, $test_params) = @_;
   my $basecalls_path;
-  make_path($runfolder_path);
   if ($test_params->{$RUN_TYPE} eq $RUN_CYTOPROFILE) {
     $basecalls_path = catdir($runfolder_path, 'BaseCalling', $BASECALL_FOLDER);
-    write_elembio_cyto_run_params(
-      $topdir_path,
-      $test_params
-    );
   } elsif ($test_params->{$RUN_TYPE} eq $RUN_STANDARD) {
     $basecalls_path = catdir($runfolder_path, $BASECALL_FOLDER);
-    write_elembio_run_params(
-      $topdir_path,
-      $test_params
-    );
-  }  
-  write_elembio_run_manifest(
-    $topdir_path,
-    $test_params->{$FOLDER_NAME},
-    $test_params->{$INSTRUMENT_NAME}
-  );
+  }
   make_path($basecalls_path);
-  write_cycle_files($test_params->{$CYCLES}, $basecalls_path);
-  if ($test_params->{$RUN_STATUS_TYPE} eq $RUN_STATUS_COMPLETE) {
-    write_elembio_run_uploaded(
-      $topdir_path,
-      $test_params->{$FOLDER_NAME},
-      $test_params->{$INSTRUMENT_NAME}
-    );
+  if (exists $test_params->{$CYCLES}) {
+    write_cycle_files($test_params->{$CYCLES}, $basecalls_path);
+  }
+  if ($test_params->{$RUN_STATUS_TYPE} eq $RUN_STATUS_INPROGRESS) {
+    unlink(catfile($runfolder_path, $RUN_UPLOAD_FILE));
   }
 }
 

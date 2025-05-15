@@ -29,7 +29,7 @@ subtest 'test staging monitor find runs' => sub {
             'Require path argument';
   throws_ok { find_run_folders('/no/such/path') }
             qr/[ ]not[ ]a[ ]directory/msx, 'Require real path';
-  is (scalar find_run_folders($testdir), 1, 'sequencing run folder found, cytoprofiling skipped');
+  is (scalar find_run_folders($testdir), 3, 'sequencing run folder found, cytoprofiling skipped');
 };
 
 1;

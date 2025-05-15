@@ -330,38 +330,12 @@
 - actual_cycle_count: 200
   batch_id:
   expected_cycle_count: 318
-  flowcell_id: 1234567890
-  folder_name: 20250411_AV244103_NT1234567B
+  flowcell_id: 1234567891
+  folder_name: 20250101_AV244103_NT1234568S
   folder_path_glob: ''
   id_instrument: 100
   id_instrument_format: 19
   id_run: 50000
-  id_run_pair: ~
-  is_paired: 1
-  priority: 1
-  team: 'SR'
-- actual_cycle_count: 200
-  batch_id:
-  expected_cycle_count: 318
-  flowcell_id: 2345678901
-  folder_name: 20250507_AV244103_NT1234567C
-  folder_path_glob: ''
-  id_instrument: 100
-  id_instrument_format: 19
-  id_run: 50001
-  id_run_pair: ~
-  is_paired: 1
-  priority: 1
-  team: 'SR'
-- actual_cycle_count: 200
-  batch_id:
-  expected_cycle_count: 318
-  flowcell_id: 3456789012
-  folder_name: 20250513_AV244103_NT1234567A
-  folder_path_glob: ''
-  id_instrument: 100
-  id_instrument_format: 19
-  id_run: 50002
   id_run_pair: ~
   is_paired: 1
   priority: 1

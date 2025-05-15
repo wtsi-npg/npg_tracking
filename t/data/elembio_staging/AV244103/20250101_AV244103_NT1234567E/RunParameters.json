@@ -1,10 +1,10 @@
 {
-  "RunName": "NT1234567S",
+  "RunName": "NT1234567E",
   "RunType": "Sequencing",
-  "Side": "SideA",
-  "Date": "2025-01-01T12:00:59.792171889Z",
+  "Side": "",
+  "Date": "",
   "InstrumentName": "AV244103",
-  "RunFolderName": "20250101_AV244103_NT1234567S",
+  "RunFolderName": "",
   "Cycles": {
     "R1": 151,
     "R2": 151,
@@ -12,10 +12,10 @@
     "I2": 8
   },
   "ReadOrder": "I1,I2,R1,R2",
-  "AnalysisLanes": "1+2",
+  "AnalysisLanes": "",
   "Consumables": {
     "Flowcell": {
-    "SerialNumber": "1234567890"
+    "SerialNumber": ""
     }
   }
 }
