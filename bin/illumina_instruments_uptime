@@ -181,10 +181,12 @@ print qq[# ILLUMINA SEQUENCING INSTRUMENTS UPTIME FROM $start_time TO $now\n\n];
 my $statement = qq{
   select ifr.model, i.id_instrument, i.name, i.iscurrent, isd.description,
          ist.date, ist.id_instrument_status
-  from instrument_format ifr, instrument i, instrument_status ist, instrument_status_dict isd
-  where ist.id_instrument=i.id_instrument and
-        ist.id_instrument_status_dict=isd.id_instrument_status_dict and
-        i.id_instrument_format=ifr.id_instrument_format and 
+  from  instrument i
+        join instrument_format ifr using(id_instrument_format)
+        join manufacturer m using (id_manufacturer)
+        join instrument_status ist using(id_instrument)
+        join instrument_status_dict isd using(id_instrument_status_dict)
+  where m.name = 'Illumina' and
         ifr.model not in ('Cluster Station', 'cBot', 'cBot 2') and
         isd.description in ('down for repair', 'down for service', 'wash required') and
         (ist.date > '$start_time' and ist.date < '$now')
@@ -385,7 +387,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017, 2022 Genome Research Ltd.
+Copyright (C) 2017, 2022, 2025 Genome Research Ltd.
 
 This file is part of NPG.
 
