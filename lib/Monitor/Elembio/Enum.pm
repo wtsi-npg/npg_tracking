@@ -31,6 +31,7 @@ our @EXPORT = qw(
   $RUN_STANDARD
   $RUN_STATUS_COMPLETE
   $RUN_STATUS_INPROGRESS
+  $RUN_STATUS_TIME_PATTERN
   $RUN_STATUS_TYPE
   $RUN_TYPE
   $RUN_UPLOAD_FILE
@@ -60,6 +61,7 @@ Readonly::Scalar our $RUN_NAME => 'RunName';
 Readonly::Scalar our $SERIAL_NUMBER => 'SerialNumber';
 Readonly::Scalar our $SIDE => 'Side';
 Readonly::Scalar our $TIME_PATTERN => '%Y-%m-%dT%H:%M:%S.%NZ'; # 2023-12-19T13:31:17.461926614Z
+Readonly::Scalar our $RUN_STATUS_TIME_PATTERN => '%Y-%m-%dT%H:%M:%S';
 
 # Run Enums
 Readonly::Scalar our $RUN_CYTOPROFILE => 'Cytoprofiling';

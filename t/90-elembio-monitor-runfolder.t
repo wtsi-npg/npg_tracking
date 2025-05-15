@@ -23,6 +23,7 @@ use Monitor::Elembio::Enum qw(
   $RUN_STANDARD
   $RUN_STATUS_COMPLETE
   $RUN_STATUS_INPROGRESS
+  $RUN_STATUS_TIME_PATTERN
   $RUN_STATUS_TYPE
   $SIDE
   $TIME_PATTERN
@@ -118,7 +119,7 @@ subtest 'test run parameters loader exceptions' => sub {
 };
 
 subtest 'test run parameters update on new run' => sub {
-  plan tests => 17;
+  plan tests => 18;
 
   my $testdir = tempdir( CLEANUP => 1 );
   my $test_params = {
@@ -156,7 +157,11 @@ subtest 'test run parameters update on new run' => sub {
   is( $test->tracking_run()->is_paired, 1, 'team of new tracking run' );
   is( $test->tracking_run()->folder_path_glob, catdir($testdir, $test_params->{$INSTRUMENT_NAME}), 'folder_path_glob of new tracking run' );
   ok( $test->tracking_run()->current_run_status, 'current_run_status set in new run');
-  is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status in progress of new run');
+  is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_INPROGRESS, 'current_run_status in progress of new run');
+  is( 
+    $test->tracking_run()->current_run_status->date->strftime($RUN_STATUS_TIME_PATTERN), 
+    $test->date_created->strftime($RUN_STATUS_TIME_PATTERN),
+    'current_run_status date set on run creation in new run');
   is( $test->tracking_run()->run_lanes->count(), 2, 'correct lanes number of new tracking run');
 };
 
@@ -190,10 +195,10 @@ subtest 'test update on existing run in progress' => sub {
                                                 npg_tracking_schema => $schema);
   is( $test->tracking_run()->instrument_side, $test_params->{$SIDE}, 'instrument_side of existing tracking run' );
   ok( $test->tracking_run()->current_run_status, 'current_run_status set');
-  is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status in progress of existing run');
+  is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_INPROGRESS, 'current_run_status in progress of existing run');
   lives_ok {$test->process_run_parameters();} 'process_run_parameters no change';
   is( $test->tracking_run()->actual_cycle_count, 200, 'actual_cycle_count no change' );
-  is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status no change');
+  is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_INPROGRESS, 'current_run_status no change');
 };
 
 subtest 'test update on existing run actual cycle counter' => sub {
@@ -231,7 +236,7 @@ subtest 'test update on existing run actual cycle counter' => sub {
 };
 
 subtest 'test on existing run in progress and completed on disk' => sub {
-  plan tests => 9;
+  plan tests => 10;
   my $testdir = tempdir( CLEANUP => 1 );
   my $test_params = {
     $INSTRUMENT_NAME => q[AV244103],
@@ -263,15 +268,21 @@ subtest 'test on existing run in progress and completed on disk' => sub {
   is( $test->tracking_run()->actual_cycle_count, 200, 'actual_cycle_count start in the middle' );
   ok( $test->tracking_run()->current_run_status, 'current_run_status set');
   is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_INPROGRESS, 'current_run_status in progress');
+  is( 
+    $test->tracking_run()->current_run_status->date->strftime($RUN_STATUS_TIME_PATTERN), 
+    $test->date_created->strftime($RUN_STATUS_TIME_PATTERN),
+    'current_run_status date set on run creation');
   lives_ok {$test->process_run_parameters();} 'process_run_parameters success';
+  is( $test->tracking_run()->run_statuses()->count, 2, 'correct number of statuses');
   is( $test->tracking_run()->actual_cycle_count, 318, 'actual_cycle_count set on max in db' );
   is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_COMPLETE, 'current_run_status on complete');
-  lives_ok {$test->process_run_parameters();} 'process_run_parameters second attempt';
-  is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_COMPLETE, 'current_run_status on complete second attempt');
+  ok(
+    DateTime->compare($test->date_created, $test->tracking_run()->current_run_status->date) == -1,
+    'run complete date more recent than run in progress');
 };
 
 subtest 'test on not existing run but already completed on disk' => sub {
-  plan tests => 7;
+  plan tests => 11;
   my $testdir = tempdir( CLEANUP => 1 );
   my $test_params = {
     $INSTRUMENT_NAME => q[AV244103],
@@ -303,9 +314,18 @@ subtest 'test on not existing run but already completed on disk' => sub {
   is( $test->tracking_run()->actual_cycle_count, undef, 'actual_cycle_count undef on db' );
   ok( ! $test->tracking_run()->current_run_status, 'no current_run_status set');
   lives_ok {$test->process_run_parameters();} 'process_run_parameters success';
+  is( $test->tracking_run()->run_statuses()->count, 2, 'correct number of statuses');
   is( $test->tracking_run()->actual_cycle_count, 318, 'actual_cycle_count set on max in db' );
   ok( $test->tracking_run()->current_run_status, 'current_run_status set after update');
   is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_COMPLETE, 'current_run_status on complete');
+  my @run_statuses = sort {
+    DateTime->compare($a->date, $b->date)
+  } $test->tracking_run()->run_statuses()->all();
+  is( $run_statuses[0]->description, $RUN_STATUS_INPROGRESS, 'first run status is run in progress'); 
+  is( $run_statuses[1]->description, $RUN_STATUS_COMPLETE, 'second run status is run complete'); 
+  ok(
+    DateTime->compare($test->date_created, $test->tracking_run()->current_run_status->date) == -1,
+    'run complete date more recent than run in progress');
 };
 
 1;
