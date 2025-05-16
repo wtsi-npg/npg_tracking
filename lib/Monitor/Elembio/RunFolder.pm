@@ -43,6 +43,24 @@ with qw[
 
 our $VERSION = '0';
 
+=head1 NAME
+
+Monitor::Elembio::RunFolder
+
+=head1 VERSION
+
+=head1 SYNOPSIS
+
+    C<<use Monitor::Elembio::RunFolder;
+       my $run_folder = Monitor::Elembio::runfolder->new( runfolder_path      => $run_folder,
+                                                           npg_tracking_schema => $schema);>>
+
+=head1 DESCRIPTION
+
+Properties loader for an Elembio run folder.
+
+=head1 SUBROUTINES/METHODS
+
 =head2 runfolder_path
 
 Path string to a run folder.
@@ -472,23 +490,7 @@ sub _find_in_runfolder() {
 
 __END__
 
-=head1 NAME
-
-Monitor::Elembio::RunFolder
-
-=head1 VERSION
-
-=head1 SYNOPSIS
-
-    C<<use Monitor::Elembio::RunFolder;
-       my $run_folder = Monitor::Elembio::runfolder->nnew( runfolder_path      => $run_folder,
-                                                           npg_tracking_schema => $schema);>>
-
-=head1 DESCRIPTION
-
-Properties loader for an Elembio run folder.
-
-=head1 SUBROUTINES/METHODS
+=head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
 

@@ -20,7 +20,7 @@ use Monitor::Elembio::Enum qw(
 use Exporter;
 
 our @ISA= qw( Exporter );
-our @EXPORT = qw( make_run_folder update_run_folder );
+our @EXPORT = qw( update_run_folder );
 
 sub write_cycle_files {
   my ($ir_counts, $basecalls_path) = @_;

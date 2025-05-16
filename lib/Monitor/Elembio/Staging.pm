@@ -22,10 +22,28 @@ Readonly::Scalar my $STAGING_GLOB => 'AV*/**/' . $RUN_MANIFEST_FILE;
 
 our $VERSION = '0';
 
+=head1 NAME
+
+Monitor::Elembio::Staging
+
+=head1 VERSION
+
+=head1 SYNOPSIS
+
+  use Monitor::Elembio::Staging qw( find_run_folders );
+
+=head1 DESCRIPTION
+
+Utilities to interrogate the staging area designated to an Elembio instrument.
+
+=head1 SUBROUTINES/METHODS
+
 =head2 find_run_folders
 
 Find valid run folders for Elembio runs in a top folder (or staging area).
 A valid run folder has RunManifest.json and RunParameters.json files.
+
+The path pattern should match [staging_area]/AV*/[run_folder]
 
 =cut
 sub find_run_folders {
@@ -55,29 +73,7 @@ sub find_run_folders {
 
 __END__
 
-=head1 NAME
-
-Monitor::Elembio::Staging
-
-=head1 VERSION
-
-=head1 SYNOPSIS
-
-  use Monitor::Elembio::Staging qw( find_run_folders );
-
-=head1 DESCRIPTION
-
-Utilities to interrogate the staging area designated to an Elembio instrument.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 find_run_folders
-
-Take a staging area path as a required argument and return a list of
-all valid run directories found in it.
-
-The path pattern should match [staging_area]/AV*/[run_folder]
-
+=head1 DIAGNOSTICS
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
