@@ -7,7 +7,6 @@ use File::Temp qw/ tempdir /;
 use File::Spec::Functions qw( catdir );
 
 use t::dbic_util;
-use t::elembio_util qw( make_run_folder );
 
 BEGIN {
   local $ENV{'HOME'} = 't';

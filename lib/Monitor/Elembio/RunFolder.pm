@@ -63,7 +63,7 @@ Properties loader for an Elembio run folder.
 
 =head2 runfolder_path
 
-Path string to a run folder.
+Path of the run folder.
 
 =cut
 has q{runfolder_path} => (
@@ -87,23 +87,21 @@ has q{npg_tracking_schema}  => (
 
 Record representation of a run in the tracking database.
 
-An Elembio run is defined by the tuple flowcell_id, folder_name,
+An Elembio run is defined by the attributes flowcell_id, folder_name,
 id_instrument.
 The run related to the current run folder is retrieved from the
-tracking database with this tuple attributes.
+tracking database with these three values.
 The retrieved record must be unique in the DB, otherwise it exits
 with error.
 When there is no record in the DB, a new run record is created
-by assigning the main tuple's attributes from the RunParameters.json
+using the run attributes from RunParameters.json
 file plus the following:
   folder_path_glob      Parent directory of the run folder
   expected_cycle_count  Expected number of cycles from the RunParameters.json
-  team                  Team name defined by the Elembio users
-  id_instrument_format  Integer format of the instrument from the 
-                          Instrument table
+  team                  Team name. Defaults to 'SR'.
   priority              Lowest priority for a newly created run
   is_paired             A boolean attribute, is set to a true value 
-                          if the run is a paired read
+                          if the run is a paired read.
 During the run creation, lanes are created in 'RunLane' table and their
 number is retrieved from the RunParameters.json.
 
@@ -120,10 +118,11 @@ has q{tracking_run} => (
 sub _build_tracking_run {
   my $self = shift;
   my $rs = $self->npg_tracking_schema->resultset($RUN_TABLE);
+  my $instrument_id = $self->tracking_instrument()->id_instrument;
   my $params = {
     flowcell_id   => $self->flowcell_id,
     folder_name   => $self->folder_name,
-    id_instrument => $self->tracking_instrument()->id_instrument,
+    id_instrument => $instrument_id,
   };
   my @run_rows = $rs->search($params)->all();
 
@@ -140,12 +139,13 @@ sub _build_tracking_run {
     my $data = {
       flowcell_id          => $self->flowcell_id,
       folder_name          => $self->folder_name,
-      id_instrument        => $self->tracking_instrument()->id_instrument,
+      id_instrument        => $instrument_id,
       folder_path_glob     => dirname($self->runfolder_path),
       expected_cycle_count => $self->expected_cycle_count,
       team                 => 'SR',
       id_instrument_format => $self->tracking_instrument()->id_instrument_format,
       priority             => 1,
+      # TO DO: It is hardcoded as paired for now.
       is_paired            => 1,
     };
     $run_row = $rs->create($data);
@@ -508,11 +508,11 @@ __END__
 
 =item File::Basename
 
-=item File::Spec::Functions qw( catfile catdir )
+=item File::Spec::Functions
 
 =item DateTime
 
-=item List::Util 'sum'
+=item List::Util
 
 =item DateTime::Format::Strptime
 

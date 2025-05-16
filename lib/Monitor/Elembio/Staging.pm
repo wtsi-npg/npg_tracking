@@ -8,17 +8,17 @@ use File::Spec::Functions 'catfile';
 use Exporter;
 use Perl6::Slurp;
 use JSON;
-
-our @ISA= qw( Exporter );
-our @EXPORT = qw( find_run_folders );
-
 use Monitor::Elembio::Enum qw( 
   $RUN_MANIFEST_FILE
   $RUN_PARAM_FILE
   $RUN_STANDARD
   $RUN_TYPE
 );
-Readonly::Scalar my $STAGING_GLOB => 'AV*/**/' . $RUN_MANIFEST_FILE;
+
+our @ISA= qw( Exporter );
+our @EXPORT = qw( find_run_folders );
+
+Readonly::Scalar my $RUN_MANIFEST_GLOB => 'AV*/**/' . $RUN_MANIFEST_FILE;
 
 our $VERSION = '0';
 
@@ -41,10 +41,12 @@ Utilities to interrogate the staging area designated to an Elembio instrument.
 =head2 find_run_folders
 
 Find valid run folders for Elembio runs in a top folder (or staging area).
+Folders for non-sequencing runs are excluded.
 A valid run folder has RunManifest.json and RunParameters.json files.
 
-The path pattern should match [staging_area]/AV*/[run_folder]
+The path pattern matches [staging_area]/AV*/[run_folder]
 
+A list of run folder paths is returned.
 =cut
 sub find_run_folders {
   my $staging_area = shift;
@@ -54,7 +56,7 @@ sub find_run_folders {
 
   my @run_folders = ();
   # RunManifest will be present in real runs
-  my $manifest_pattern = catfile($staging_area, $STAGING_GLOB);
+  my $manifest_pattern = catfile($staging_area, $RUN_MANIFEST_GLOB);
   foreach my $run_manifest_file ( glob $manifest_pattern ) {
     my $runfolder_path = dirname(abs_path($run_manifest_file));
     my $run_parameters_file = catfile($runfolder_path, $RUN_PARAM_FILE);
@@ -83,11 +85,11 @@ __END__
 
 =item Carp
 
-=item Cwd 'abs_path'
+=item Cwd
 
 =item File::Basename
 
-=item File::Spec::Functions 'catfile'
+=item File::Spec::Functions
 
 =item Exporter
 
