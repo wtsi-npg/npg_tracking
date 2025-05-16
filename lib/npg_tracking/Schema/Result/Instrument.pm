@@ -293,9 +293,6 @@ __PACKAGE__->has_many(
 # Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:EZWWx8ih32aSy82wpKEPLQ
 
-# Author:        david.jackson@sanger.ac.uk
-# Created:       2010-04-08
-
 use DateTime;
 use DateTime::TimeZone;
 use Try::Tiny;
@@ -349,17 +346,14 @@ Related object: L<npg_tracking::Schema::Result::SensorData>
 
 __PACKAGE__->many_to_many('sensor_data' => 'sensor_data_instruments', 'sensor_data');
 
-
-=head2 _user_rs
-
-Create a dbic User result set as shorthand and to access the row validation
-methods in that class.
+=head1 SUBROUTINES/METHODS
 
 =cut
 
 sub _user_rs {
     my ($self) = @_;
-
+    # Create a dbic User result set as shorthand and to access the row validation
+    # methods in that class.
     return $self->result_source->schema->resultset('User')->new( {} );
 }
 
@@ -395,7 +389,6 @@ sub current_instrument_status {
     }
     return;
 }
-
 
 =head2 update_instrument_status
 
@@ -683,13 +676,104 @@ sub latest_revision_for_modification() {
   return;
 }
 
-=head1 DESCRIPTION
-  DBIx model for an instrument.
-  Contains duplicates of functions in npg::model::instrument.
-  When editing the code of this module consider if any changes
-  are meeded in the other module.
+=head2 manufacturer_name
+
+Returns the name of this instrument's manufacturer.
 
 =cut
 
+sub manufacturer_name() {
+  my $self = shift;
+  return $self->instrument_format()->manufacturer()->name();
+}
+
+=head2 manufacturer_is_Illumina
+
+Returns a true value if this instrument's manufacturer is Illumina,
+a false value otherwise.
+
+=cut
+
+sub manufacturer_is_Illumina() {
+  my $self = shift;
+  return $self->manufacturer_name() eq 'Illumina';
+}
+
+
+=head2 manufacturer_is_ElementBiosciences
+
+Returns a true value if this instrument's manufacturer is Element Biosciences,
+a false value otherwise.
+
+=cut
+
+sub manufacturer_is_ElementBiosciences() {
+  my $self = shift;
+  return $self->manufacturer_name() eq 'Element Biosciences';
+}
+
 __PACKAGE__->meta->make_immutable;
+
 1;
+
+=head1 DESCRIPTION
+
+DBIx model for an instrument.
+Contains duplicates of functions in npg::model::instrument.
+When editing the code of this module consider if any changes
+are needed in the other module.
+
+=head1 DEPENDENCIES
+
+=over
+
+=item Moose
+
+=item MooseX::NonMoose
+
+=item MooseX::MarkAsMethods
+
+=item DBIx::Class::Core
+
+=item Carp
+
+=item Readonly
+
+=item DateTime
+
+=item DateTime::TimeZone
+
+=item Try::Tiny
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+David Jackson E<lt>dj3@sanger.ac.ukE<gt>
+
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2010,2013,2014,2016,2017,2018,2019,2021,2022,2023,2025 Genome Research Ltd.
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

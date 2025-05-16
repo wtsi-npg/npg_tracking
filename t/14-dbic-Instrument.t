@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 use Test::Deep;
 use Test::Exception;
 use DateTime;
@@ -263,6 +263,23 @@ subtest 'retrieve latest instrument modification revision' => sub {
     'correct Dragen modification revision');
   is( $instr->latest_revision_for_modification('NXCS'), 'v1.2.0',
     'correct NXCS modification revision');
+};
+
+subtest 'instrument manufacturer' => sub {
+  plan tests => 6;
+
+  my $rs = $schema->resultset('Instrument');
+  my $instr = $rs->search({name => 'NV2'})->next();
+  is ($instr->manufacturer_name(), 'Illumina', 'correct manufacturer name');
+  ok ($instr->manufacturer_is_Illumina(), 'manufacturer is Illumina');
+  ok (!$instr->manufacturer_is_ElementBiosciences(),
+    'manufacturer is not Element Biosciences');
+
+  $instr = $rs->search({name => 'AV2'})->next();
+  is ($instr->manufacturer_name(), 'Element Biosciences', 'correct manufacturer name');
+  ok (!$instr->manufacturer_is_Illumina(), 'manufacturer is not Illumina');
+  ok ($instr->manufacturer_is_ElementBiosciences(),
+    'manufacturer is Element Biosciences');
 };
 
 1;
