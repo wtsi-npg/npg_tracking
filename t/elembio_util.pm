@@ -8,7 +8,6 @@ use Readonly;
 use File::Path qw/ make_path /;
 use File::Spec::Functions qw( catfile catdir );
 use Monitor::Elembio::Enum qw( 
-  $BASECALL_FOLDER
   $CYCLES
   $RUN_CYTOPROFILE
   $RUN_STANDARD
@@ -38,9 +37,9 @@ sub update_run_folder {
   my ($runfolder_path, $test_params) = @_;
   my $basecalls_path;
   if ($test_params->{$RUN_TYPE} eq $RUN_CYTOPROFILE) {
-    $basecalls_path = catdir($runfolder_path, 'BaseCalling', $BASECALL_FOLDER);
+    $basecalls_path = catdir($runfolder_path, 'BaseCalling', 'BaseCalls');
   } elsif ($test_params->{$RUN_TYPE} eq $RUN_STANDARD) {
-    $basecalls_path = catdir($runfolder_path, $BASECALL_FOLDER);
+    $basecalls_path = catdir($runfolder_path, 'BaseCalls');
   }
   make_path($basecalls_path);
   if (exists $test_params->{$CYCLES}) {
