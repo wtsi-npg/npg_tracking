@@ -327,4 +327,16 @@
   is_paired: 0
   priority: 1
   team: A
-
+- actual_cycle_count: 200
+  batch_id:
+  expected_cycle_count: 318
+  flowcell_id: 2427452508
+  folder_name: 20250127_AV244103_NT1850075L
+  folder_path_glob: ''
+  id_instrument: 100
+  id_instrument_format: 19
+  id_run: 50000
+  id_run_pair: ~
+  is_paired: 1
+  priority: 1
+  team: 'SR'
