@@ -193,6 +193,7 @@ lib/npg/view/user2usergroup.pm
 lib/npg/view/usergroup.pm
 lib/npg_testing/db.pm
 lib/npg_tracking/daemon.pm
+lib/npg_tracking/daemon/elembiostaging.pm
 lib/npg_tracking/data/bait.pm
 lib/npg_tracking/data/bait/find.pm
 lib/npg_tracking/data/common.pm
@@ -372,6 +373,7 @@ t/14-dbic-RunStatusDict.t
 t/14-dbic-Tag.t
 t/14-dbic-User.t
 t/16-npg_tracking-daemon.t
+t/16-npg_tracking-daemon-elembiostaging.t
 t/20-model-run_and_instrument_status.t
 t/20-view-administration.t
 t/20-view-instrument.t
