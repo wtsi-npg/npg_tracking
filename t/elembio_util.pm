@@ -9,12 +9,8 @@ use File::Path qw/ make_path /;
 use File::Spec::Functions qw( catfile catdir );
 use Monitor::Elembio::Enum qw( 
   $CYCLES
-  $RUN_CYTOPROFILE
-  $RUN_STANDARD
-  $RUN_STATUS_INPROGRESS
   $RUN_STATUS_TYPE
   $RUN_TYPE
-  $RUN_UPLOAD_FILE
 );
 use Exporter;
 
@@ -36,17 +32,17 @@ sub write_cycle_files {
 sub update_run_folder {
   my ($runfolder_path, $test_params) = @_;
   my $basecalls_path;
-  if ($test_params->{$RUN_TYPE} eq $RUN_CYTOPROFILE) {
+  if ($test_params->{$RUN_TYPE} eq 'Cytoprofiling') {
     $basecalls_path = catdir($runfolder_path, 'BaseCalling', 'BaseCalls');
-  } elsif ($test_params->{$RUN_TYPE} eq $RUN_STANDARD) {
+  } elsif ($test_params->{$RUN_TYPE} eq 'Sequencing') {
     $basecalls_path = catdir($runfolder_path, 'BaseCalls');
   }
   make_path($basecalls_path);
   if (exists $test_params->{$CYCLES}) {
     write_cycle_files($test_params->{$CYCLES}, $basecalls_path);
   }
-  if ($test_params->{$RUN_STATUS_TYPE} eq $RUN_STATUS_INPROGRESS) {
-    unlink(catfile($runfolder_path, $RUN_UPLOAD_FILE));
+  if ($test_params->{$RUN_STATUS_TYPE} eq 'run in progress') {
+    unlink(catfile($runfolder_path, 'RunUploaded.json'));
   }
 }
 
