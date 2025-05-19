@@ -3,7 +3,7 @@ use warnings;
 use File::Basename;
 use File::Copy;
 use File::Copy::Recursive qw( dircopy );
-use Test::More tests => 8;
+use Test::More tests => 9;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -25,7 +25,7 @@ use Monitor::Elembio::Enum qw(
 use_ok('Monitor::Elembio::RunFolder');
 
 subtest 'test run parameters loader' => sub {
-  plan tests => 11;
+  plan tests => 13;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -58,6 +58,8 @@ subtest 'test run parameters loader' => sub {
   is( $test->expected_cycle_count, 210, 'expected cycle value correct' );
   is( $test->actual_cycle_count, 0, 'actual cycle value correct' );
   is( $test->lane_count, 2, 'lanes number value correct' );
+  is( $test->is_paired, 1, 'is_paired value correct' );
+  is( $test->is_indexed, 1, 'is_indexed value correct' );
   is( $test->date_created->strftime($TIME_PATTERN), $date, 'date_created value correct' );
   isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
           'Object returned by tracking_run method' );
@@ -98,7 +100,7 @@ subtest 'test run parameters loader exceptions' => sub {
 };
 
 subtest 'test run parameters update on new run' => sub {
-  plan tests => 18;
+  plan tests => 21;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -133,7 +135,7 @@ subtest 'test run parameters update on new run' => sub {
   is( $test->tracking_run()->actual_cycle_count, 0, 'actual_cycle_count of new tracking run' );
   is( $test->tracking_run()->team, 'SR', 'team of new tracking run' );
   is( $test->tracking_run()->priority, 1, 'priority of new tracking run' );
-  is( $test->tracking_run()->is_paired, 1, 'team of new tracking run' );
+  is( $test->tracking_run()->is_paired, 1, 'is_paired of new tracking run' );
   is( $test->tracking_run()->folder_path_glob, dirname($runfolder_path), 'folder_path_glob of new tracking run' );
   ok( $test->tracking_run()->current_run_status, 'current_run_status set in new run');
   is( $test->tracking_run()->current_run_status_description, $RUN_STATUS_INPROGRESS, 'current_run_status in progress of new run');
@@ -142,6 +144,9 @@ subtest 'test run parameters update on new run' => sub {
     $test->date_created->strftime($RUN_STATUS_TIME_PATTERN),
     'current_run_status date set on run creation in new run');
   is( $test->tracking_run()->run_lanes->count(), 2, 'correct lanes number of new tracking run');
+  ok( $test->tracking_run()->is_tag_set('staging'), 'staging tag of new run is set');
+  ok( $test->tracking_run()->is_tag_set('paired_read'), 'paired_read tag of new run is set');
+  ok( $test->tracking_run()->is_tag_set('multiplex'), 'multiplex tag of new run is set');
 };
 
 subtest 'test update progress on existing run' => sub {
@@ -306,6 +311,44 @@ subtest 'test on not existing run but already completed on disk' => sub {
   ok(
     DateTime->compare($test->date_created, $test->tracking_run()->current_run_status->date) == -1,
     'run complete date more recent than run in progress');
+};
+
+subtest 'test run parameters update on non-plexed new run' => sub {
+  plan tests => 7;
+
+  my $schema = t::dbic_util->new->test_schema();
+  my $testdir = tempdir( CLEANUP => 1 );
+  my $instrument_folder = 'AV244103';
+  my $flowcell_id = '2422551729';
+  my $run_folder_name = '20250129_AV244103_NT1850074';
+  my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
+  my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
+  dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
+
+  my $test_params = {
+    $CYCLES => {
+      R1 => 151,
+      R2 => 101,
+      I1 => 0,
+      I2 => 0,
+    },
+    $RUN_TYPE => $RUN_STANDARD,
+    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
+  };
+  update_run_folder(
+    $runfolder_path,
+    $test_params
+  );
+
+  my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
+                                                npg_tracking_schema => $schema);
+  is( $test->is_paired, 1, 'is_paired is correct');
+  is( $test->is_indexed, 0, 'is_indexed is correct');
+  lives_ok {$test->process_run_parameters();} 'process_run_parameters succeeds';
+  is( $test->tracking_run()->is_paired, 1, 'is_paired of new tracking run' );
+  ok( $test->tracking_run()->is_tag_set('staging'), 'staging tag of new run is set');
+  ok( $test->tracking_run()->is_tag_set('paired_read'), 'paired_read tag of new run is set');
+  ok( ! $test->tracking_run()->is_tag_set('multiplex'), 'multiplex tag of new run is not set');
 };
 
 1;

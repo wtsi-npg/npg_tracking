@@ -19,6 +19,8 @@ use Monitor::Elembio::Enum qw(
   $CONSUMABLES
   $CYCLE_FILE_PATTERN
   $CYCLES
+  $CYCLES_I1
+  $CYCLES_R2
   $DATE
   $FLOWCELL
   $FOLDER_NAME
@@ -146,17 +148,12 @@ sub _build_tracking_run {
       team                 => 'SR',
       id_instrument_format => $self->tracking_instrument()->id_instrument_format,
       priority             => 1,
-      # TO DO: It is hardcoded as paired for now.
-      is_paired            => 1,
+      is_paired            => $self->is_paired,
     };
 
     my $transaction = sub {
       $run_row = $rs->create($data);
       $self->info('Created run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
-
-      my $tag = 'staging';
-      $run_row->set_tag($USERNAME, $tag);
-      $self->info("$tag tag is set");
 
       my $runlane_rs = $run_row->result_source()->schema()->resultset($RUNLANE_TABLE);
       for my $lane (1 .. $self->lane_count) {
@@ -413,6 +410,69 @@ sub _build_date_created {
   }
 }
 
+=head2 is_paired
+
+If paired run (the run has a reverse read) return 1, otherwise 0.
+
+=cut
+has q{is_paired} => (
+  isa         => q{Bool},
+  is          => q{ro},
+  required    => 0,
+  lazy_build  => 1,
+);
+sub _build_is_paired {
+  my $self = shift;
+  my $cycles = $self->_run_params_data()->{$CYCLES};
+  if ( exists $cycles->{$CYCLES_R2} and int($cycles->{$CYCLES_R2}) > 0 ) {
+    return 1;
+  }
+  return 0;
+}
+
+=head2 is_indexed
+
+If the run has at least one index read return 1, otherwise 0.
+
+=cut
+has q{is_indexed} => (
+  isa         => q{Bool},
+  is          => q{ro},
+  required    => 0,
+  lazy_build  => 1,
+);
+sub _build_is_indexed {
+  my $self = shift;
+  my $cycles = $self->_run_params_data()->{$CYCLES};
+  if ( exists $cycles->{$CYCLES_I1} and int($cycles->{$CYCLES_I1}) > 0 ) {
+    return 1;
+  }
+  return 0;
+}
+
+=head2 _set_tags
+
+Set all necessary tags when the function is called.
+
+=cut
+sub _set_tags {
+  my ($self) = shift;
+  my @tags = (
+    'staging'
+  );
+  if ($self->is_paired) {
+    push @tags, 'paired_read';
+  }
+  if ($self->is_indexed) {
+    push @tags, 'multiplex';
+  }
+
+  foreach my $tag ( @tags ) {
+    $self->tracking_run()->set_tag($USERNAME, $tag);
+    $self->info("$tag tag is set");
+  }
+}
+
 =head2 _run_params_data
 
 Reference to hash object that represents the JSON file
@@ -451,7 +511,7 @@ sub process_run_parameters {
     $run_row->set_instrument_side($self->instrument_side, $USERNAME);
     $current_run_status_obj = $run_row->update_run_status($RUN_STATUS_INPROGRESS, $USERNAME, $self->date_created);
     $self->info('New run ' . $self->runfolder_path . ' created');
-    # Add all tags here
+    $self->_set_tags();
   }
 
   $self->_set_actual_cycle_count();
