@@ -291,7 +291,7 @@ subtest 'test on not existing run but already completed on disk' => sub {
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
   is( $test->actual_cycle_count, 210, 'actual_cycle_count on max' );
-  is( $test->tracking_run()->actual_cycle_count, undef, 'actual_cycle_count undef on db' );
+  is( $test->tracking_run()->actual_cycle_count, 0, 'actual_cycle_count is zero on db' );
   ok( ! $test->tracking_run()->current_run_status, 'no current_run_status set');
   lives_ok {$test->process_run_parameters();} 'process_run_parameters success';
   is( $test->tracking_run()->run_statuses()->count, 2, 'correct number of statuses');

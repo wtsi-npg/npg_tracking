@@ -142,24 +142,29 @@ sub _build_tracking_run {
       id_instrument        => $instrument_id,
       folder_path_glob     => dirname($self->runfolder_path),
       expected_cycle_count => $self->expected_cycle_count,
+      actual_cycle_count   => 0,
       team                 => 'SR',
       id_instrument_format => $self->tracking_instrument()->id_instrument_format,
       priority             => 1,
       # TO DO: It is hardcoded as paired for now.
       is_paired            => 1,
     };
-    $run_row = $rs->create($data);
-    $self->info('Created run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
 
-    my $tag = 'staging';
-    $run_row->set_tag($USERNAME, $tag);
-    $self->info("$tag tag is set");
+    my $transaction = sub {
+      $run_row = $rs->create($data);
+      $self->info('Created run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
 
-    my $runlane_rs = $run_row->result_source()->schema()->resultset($RUNLANE_TABLE);
-    for my $lane (1 .. $self->lane_count) {
-      $runlane_rs->create({id_run => $run_row->id_run, position => $lane});
-      $self->info("Created record for lane $lane of run_id " . $run_row->id_run);
-    }
+      my $tag = 'staging';
+      $run_row->set_tag($USERNAME, $tag);
+      $self->info("$tag tag is set");
+
+      my $runlane_rs = $run_row->result_source()->schema()->resultset($RUNLANE_TABLE);
+      for my $lane (1 .. $self->lane_count) {
+        $runlane_rs->create({id_run => $run_row->id_run, position => $lane});
+        $self->info("Created record for lane $lane of run_id " . $run_row->id_run);
+      }
+    };
+    $rs->result_source()->schema()->txn_do($transaction);
   }
   return $run_row;
 }
@@ -446,6 +451,7 @@ sub process_run_parameters {
     $run_row->set_instrument_side($self->instrument_side, $USERNAME);
     $current_run_status_obj = $run_row->update_run_status($RUN_STATUS_INPROGRESS, $USERNAME, $self->date_created);
     $self->info('New run ' . $self->runfolder_path . ' created');
+    # Add all tags here
   }
 
   $self->_set_actual_cycle_count();
