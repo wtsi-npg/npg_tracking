@@ -7,7 +7,8 @@ use JSON;
 use File::Basename;
 use File::Spec::Functions qw( catfile catdir );
 use DateTime;
-use List::Util 'sum';
+use List::Util qw( sum );
+use List::MoreUtils qw( any );
 use DateTime::Format::Strptime;
 use Perl6::Slurp;
 use Try::Tiny;
@@ -27,9 +28,14 @@ use Monitor::Elembio::Enum qw(
   $INSTRUMENT_NAME
   $INSTRUMENT_TABLE
   $LANES
+  $OUTCOME
+  $OUTCOME_COMPLETE
+  $OUTCOME_FAILED
   $RUN_PARAM_FILE
+  $RUN_STATUS_CANCELLED
   $RUN_STATUS_COMPLETE
   $RUN_STATUS_INPROGRESS 
+  $RUN_STATUS_STOPPED
   $RUN_TABLE
   $RUN_UPLOAD_FILE
   $RUNLANE_TABLE
@@ -492,12 +498,90 @@ sub _build__run_params_data {
   return decode_json(slurp $run_parameters_file);
 }
 
+=head2 is_failed
+
+When the run finishes with failed outcome and it has not
+completed the expected cycle number return 1, otherwise 0.
+
+=cut
+has q{is_failed}  => (
+  isa               => q{Bool},
+  is                => q{ro},
+  required          => 0,
+  lazy_build        => 1,
+);
+sub _build_is_failed {
+  my $self = shift;
+  my $upload_data = $self->_run_uploaded_data();
+  my $data_ok = defined $upload_data and exists $upload_data->{$OUTCOME};
+  if ( $data_ok
+        and $upload_data->{$OUTCOME} eq $OUTCOME_FAILED
+        and $self->actual_cycle_count < $self->expected_cycle_count ) {
+    return 1;
+  }
+  return 0;
+}
+
+=head2 is_completed
+
+When the run has been successfully completed with the full
+expected cycle number return 1, otherwise 0.
+
+=cut
+has q{is_completed}  => (
+  isa               => q{Bool},
+  is                => q{ro},
+  required          => 0,
+  lazy_build        => 1,
+);
+sub _build_is_completed {
+  my $self = shift;
+  if ( $self->actual_cycle_count == $self->expected_cycle_count ) {
+    return 1;
+  }
+  return 0;
+}
+
+=head2 _run_uploaded_data
+
+Reference to hash object that represents the JSON file
+content of RunUploaded.json.
+
+=cut
+has q{_run_uploaded_data} => (
+  isa               => q{Maybe[HashRef]},
+  is                => q{ro},
+  required          => 0,
+  init_arg          => undef,
+  lazy_build        => 1,
+);
+sub _build__run_uploaded_data {
+  my $self = shift;
+  my $run_uploaded_file = catfile($self->runfolder_path, $RUN_UPLOAD_FILE);
+  my $json_data;
+  if ( -e $run_uploaded_file ) {
+    $json_data = decode_json(slurp $run_uploaded_file);
+  }
+  return $json_data;
+}
+
 =head2 process_run_parameters
 
 Core function of the class that is called on the run folder
 periodically to update dynamic properties of a run in the DB.
-Created and completed runs are updated accordingly with a status
-and a time stamp of the event in the DB.
+If a run record does not exist, it is created.
+The cycle count, tags and the following statuses are
+checked/assigned accordingly:
+- 'run in progress'   run basecalling is in progress
+- 'run stopped early' run finished with failed outcome
+- 'run complete'      run completed successfully
+Each of the above events saves a time stamp in the DB.
+
+When the run status is one of the following, the function
+will return early:
+- 'run cancelled' (set by the user via web interface)
+- 'run stopped early'
+- 'run complete' (or later)
 
 =cut
 sub process_run_parameters {
@@ -505,7 +589,6 @@ sub process_run_parameters {
   my $run_row = $self->tracking_run();
   my $current_run_status_obj = $run_row->current_run_status;
   my $run_uploaded_path = catfile($self->runfolder_path, $RUN_UPLOAD_FILE);
-  my $is_run_complete = -e $run_uploaded_path;
   
   if ( ! $current_run_status_obj ) {
     $run_row->set_instrument_side($self->instrument_side, $USERNAME);
@@ -514,15 +597,34 @@ sub process_run_parameters {
     $self->_set_tags();
   }
 
+  my $current_status_description = $run_row->current_run_status_description;
+  my $current_run_status_dict = $current_run_status_obj->run_status_dict;
+  if ( (any { $_ eq $current_status_description} ($RUN_STATUS_STOPPED, $RUN_STATUS_CANCELLED))
+      || ($current_run_status_dict->compare_to_status_description($RUN_STATUS_COMPLETE) >= 0) ) {
+    return;
+  }
+
   $self->_set_actual_cycle_count();
   
-  if ($is_run_complete) {
-    if ( $current_run_status_obj->run_status_dict->compare_to_status_description($RUN_STATUS_COMPLETE) == -1 ) {
-      my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9]);
-      $run_row->update_run_status($RUN_STATUS_COMPLETE, $USERNAME, $date);
-      $self->info('Run ' . $self->runfolder_path . ' is now completed');
+  if (defined $self->_run_uploaded_data()) {
+    if ($self->is_failed) {
+      if ( $current_run_status_dict->compare_to_status_description($RUN_STATUS_STOPPED) == -1 ) {
+        my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9]);
+        $run_row->update_run_status($RUN_STATUS_STOPPED, $USERNAME, $date);
+        $self->info('Run ' . $self->runfolder_path . ' is failed');
+      } else {
+        $self->info('Run ' . $self->runfolder_path . ' was failed, current status ' . $current_run_status_obj->description);
+      }
     } else {
-      $self->info('Run ' . $self->runfolder_path . ' was completed, current status ' . $current_run_status_obj->description);
+      if ($self->is_completed) {
+        if ( $current_run_status_dict->compare_to_status_description($RUN_STATUS_COMPLETE) == -1 ) {
+          my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9]);
+          $run_row->update_run_status($RUN_STATUS_COMPLETE, $USERNAME, $date);
+          $self->info('Run ' . $self->runfolder_path . ' is now completed');
+        } else {
+          $self->info('Run ' . $self->runfolder_path . ' was completed, current status ' . $current_run_status_obj->description);
+        }
+      }
     }
   }
 }

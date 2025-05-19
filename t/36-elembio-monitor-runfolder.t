@@ -219,7 +219,7 @@ subtest 'test update on existing run actual cycle counter' => sub {
 };
 
 subtest 'test on existing run in progress and completed on disk' => sub {
-  plan tests => 10;
+  plan tests => 14;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -255,6 +255,8 @@ subtest 'test on existing run in progress and completed on disk' => sub {
     $test->tracking_run()->current_run_status->date->strftime($RUN_STATUS_TIME_PATTERN), 
     $test->date_created->strftime($RUN_STATUS_TIME_PATTERN),
     'current_run_status date set on run creation');
+  ok( $test->is_completed, 'successfully completed' );
+  ok( ! $test->is_failed, 'not finished with failed outcome' );
   lives_ok {$test->process_run_parameters();} 'process_run_parameters success';
   is( $test->tracking_run()->run_statuses()->count, 2, 'correct number of statuses');
   is( $test->tracking_run()->actual_cycle_count, 310, 'actual_cycle_count set on max in db' );
@@ -262,10 +264,12 @@ subtest 'test on existing run in progress and completed on disk' => sub {
   ok(
     DateTime->compare($test->date_created, $test->tracking_run()->current_run_status->date) == -1,
     'run complete date more recent than run in progress');
+  lives_ok {$test->process_run_parameters();} 'process_run_parameters success on early return';
+  is( $test->tracking_run()->current_run_status_description, 'run complete', 'current_run_status on complete after early return');
 };
 
 subtest 'test on not existing run but already completed on disk' => sub {
-  plan tests => 11;
+  plan tests => 13;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -296,6 +300,8 @@ subtest 'test on not existing run but already completed on disk' => sub {
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
   is( $test->actual_cycle_count, 210, 'actual_cycle_count on max' );
+  ok( $test->is_completed, 'successfully completed');
+  ok( ! $test->is_failed, 'not finished with failed outcome');
   is( $test->tracking_run()->actual_cycle_count, 0, 'actual_cycle_count is zero on db' );
   ok( ! $test->tracking_run()->current_run_status, 'no current_run_status set');
   lives_ok {$test->process_run_parameters();} 'process_run_parameters success';
@@ -313,8 +319,8 @@ subtest 'test on not existing run but already completed on disk' => sub {
     'run complete date more recent than run in progress');
 };
 
-subtest 'test run parameters update on non-plexed new run' => sub {
-  plan tests => 7;
+subtest 'test run parameters update on non-plexed and failed new run' => sub {
+  plan tests => 21;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -333,7 +339,7 @@ subtest 'test run parameters update on non-plexed new run' => sub {
       I2 => 0,
     },
     $RUN_TYPE => $RUN_STANDARD,
-    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
+    $RUN_STATUS_TYPE => $RUN_STATUS_COMPLETE
   };
   update_run_folder(
     $runfolder_path,
@@ -344,11 +350,30 @@ subtest 'test run parameters update on non-plexed new run' => sub {
                                                 npg_tracking_schema => $schema);
   is( $test->is_paired, 1, 'is_paired is correct');
   is( $test->is_indexed, 0, 'is_indexed is correct');
+  is( $test->actual_cycle_count, 252, 'last actual_cycle_count correct' );
+  is( $test->expected_cycle_count, 302, 'expected_cycle_count correct' );
+  ok( ! $test->is_completed, 'not completed successfully');
+  ok( $test->is_failed, 'finished with failed outcome');
+  is( $test->tracking_run()->actual_cycle_count, 0, 'actual_cycle_count init on zero in db' );
+  ok( ! $test->tracking_run()->current_run_status, 'no current_run_status set');
   lives_ok {$test->process_run_parameters();} 'process_run_parameters succeeds';
   is( $test->tracking_run()->is_paired, 1, 'is_paired of new tracking run' );
   ok( $test->tracking_run()->is_tag_set('staging'), 'staging tag of new run is set');
   ok( $test->tracking_run()->is_tag_set('paired_read'), 'paired_read tag of new run is set');
   ok( ! $test->tracking_run()->is_tag_set('multiplex'), 'multiplex tag of new run is not set');
+  is( $test->tracking_run()->actual_cycle_count, 252, 'last actual_cycle_count in tracking correct' );
+  ok( $test->tracking_run()->current_run_status, 'current_run_status set after update');
+  is( $test->tracking_run()->current_run_status_description, 'run stopped early', 'current_run_status on stopped early');
+  my @run_statuses = sort {
+    DateTime->compare($a->date, $b->date)
+  } $test->tracking_run()->run_statuses()->all();
+  is( $run_statuses[0]->description, 'run in progress', 'first run status is run in progress'); 
+  is( $run_statuses[1]->description, 'run stopped early', 'second run status is run stopped early'); 
+  ok(
+    DateTime->compare($test->date_created, $test->tracking_run()->current_run_status->date) == -1,
+    'run stopped early date more recent than run in progress');
+  lives_ok {$test->process_run_parameters();} 'process_run_parameters succeeds on early return';
+  is( $test->tracking_run()->current_run_status_description, 'run stopped early', 'current_run_status on stopped after early return');
 };
 
 1;
