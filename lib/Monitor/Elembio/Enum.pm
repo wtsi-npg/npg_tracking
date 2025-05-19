@@ -23,6 +23,9 @@ our @EXPORT = qw(
   $FOLDER_NAME
   $INSTRUMENT_NAME
   $LANES
+  $OUTCOME
+  $OUTCOME_COMPLETE
+  $OUTCOME_FAILED
   $RUN_NAME
   $SERIAL_NUMBER
   $SIDE
@@ -31,8 +34,10 @@ our @EXPORT = qw(
   $RUN_PARAM_FILE
   $RUN_MANIFEST_FILE
   $RUN_STANDARD
+  $RUN_STATUS_CANCELLED
   $RUN_STATUS_COMPLETE
   $RUN_STATUS_INPROGRESS
+  $RUN_STATUS_STOPPED
   $RUN_STATUS_TIME_PATTERN
   $RUN_STATUS_TYPE
   $RUN_TYPE
@@ -67,6 +72,11 @@ Readonly::Scalar our $SIDE => 'Side';
 Readonly::Scalar our $TIME_PATTERN => '%Y-%m-%dT%H:%M:%S.%NZ'; # 2023-12-19T13:31:17.461926614Z
 Readonly::Scalar our $RUN_STATUS_TIME_PATTERN => '%Y-%m-%dT%H:%M:%S';
 
+# Run Uploaded Enums
+Readonly::Scalar our $OUTCOME => 'outcome';
+Readonly::Scalar our $OUTCOME_COMPLETE => 'OutcomeCompleted';
+Readonly::Scalar our $OUTCOME_FAILED => 'OutcomeFailed';
+
 # Run Enums
 Readonly::Scalar our $RUN_CYTOPROFILE => 'Cytoprofiling';
 Readonly::Scalar our $RUN_PARAM_FILE => 'RunParameters.json';
@@ -74,8 +84,10 @@ Readonly::Scalar our $RUN_MANIFEST_FILE => 'RunManifest.json';
 Readonly::Scalar our $RUN_STANDARD => 'Sequencing';
 Readonly::Scalar our $RUN_TYPE => 'RunType';
 Readonly::Scalar our $RUN_UPLOAD_FILE => 'RunUploaded.json';
+Readonly::Scalar our $RUN_STATUS_CANCELLED => 'run cancelled';
 Readonly::Scalar our $RUN_STATUS_COMPLETE => 'run complete';
 Readonly::Scalar our $RUN_STATUS_INPROGRESS => 'run in progress';
+Readonly::Scalar our $RUN_STATUS_STOPPED => 'run stopped early';
 Readonly::Scalar our $RUN_STATUS_TYPE => 'StatusType';
 
 1;
