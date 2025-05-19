@@ -15,6 +15,8 @@ our @EXPORT = qw(
   $BASECALL_FOLDER
   $CONSUMABLES
   $CYCLES
+  $CYCLES_I1
+  $CYCLES_R2
   $CYCLE_FILE_PATTERN
   $DATE
   $FLOWCELL
@@ -51,6 +53,8 @@ Readonly::Scalar our $RUNLANE_TABLE => 'RunLane';
 Readonly::Scalar our $BASECALL_FOLDER => 'BaseCalls';
 Readonly::Scalar our $CONSUMABLES => 'Consumables';
 Readonly::Scalar our $CYCLES => 'Cycles';
+Readonly::Scalar our $CYCLES_I1 => 'I1';
+Readonly::Scalar our $CYCLES_R2 => 'R2';
 Readonly::Scalar our $CYCLE_FILE_PATTERN => qr/^[IR][12]_C\d{3}/;
 Readonly::Scalar our $DATE => 'Date';
 Readonly::Scalar our $FLOWCELL => 'Flowcell';
