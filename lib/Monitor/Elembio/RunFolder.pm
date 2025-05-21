@@ -405,6 +405,9 @@ has q{lane_count}  => (
 sub _build_lane_count {
   my $self = shift;
   my @lanes = split /\+/, $self->_run_params_data()->{$LANES};
+  if (! @lanes) {
+    $self->logcroak("Run parameter $LANES: No lane found");
+  }
   return scalar @lanes;
 }
 

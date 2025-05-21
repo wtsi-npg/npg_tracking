@@ -68,7 +68,7 @@ subtest 'test run parameters loader' => sub {
 };
 
 subtest 'test run parameters loader exceptions' => sub {
-  plan tests => 5;
+  plan tests => 6;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -98,6 +98,9 @@ subtest 'test run parameters loader exceptions' => sub {
   throws_ok { $test->instrument_side }
     qr/Run[ ]parameter[ ]Side:[ ]wrong[ ]format[ ]in[ ]RunParameters[.]json/msx,
     'wrong side value';
+  throws_ok { $test->lane_count }
+    qr/Run[ ]parameter[ ]AnalysisLanes:[ ]No[ ]lane[ ]found/msx,
+    'wrong lane count';
   ok( $test->date_created, 'missing date gives current date of RunParameters file' );
   is( $test->batch_id, undef, 'batch_id is undef');
 };
