@@ -1,11 +1,11 @@
 {
-  "RunName": "NT1854129B",
+  "RunName": "1234-NT1854129B",
   "RunType": "Sequencing",
   "Side": "SideA",
   "FlowcellID": "2441447657",
   "Date": "2025-04-17T13:57:00.861333784Z",
   "InstrumentName": "AV244103",
-  "RunFolderName": "20250417_AV244103_NT1854129B",
+  "RunFolderName": "20250417_AV244103_1234-NT1854129B",
   "Cycles": {
     "R1": 101,
     "R2": 101,

@@ -15,6 +15,7 @@ use Try::Tiny;
 use File::Find;
 
 use npg_tracking::Schema;
+use npg_tracking::util::types;
 use Monitor::Elembio::Enum qw( 
   $BASECALL_FOLDER
   $CONSUMABLES
@@ -31,6 +32,7 @@ use Monitor::Elembio::Enum qw(
   $OUTCOME
   $OUTCOME_COMPLETE
   $OUTCOME_FAILED
+  $RUN_NAME
   $RUN_PARAM_FILE
   $RUN_STATUS_CANCELLED
   $RUN_STATUS_COMPLETE
@@ -155,6 +157,7 @@ sub _build_tracking_run {
       id_instrument_format => $self->tracking_instrument()->id_instrument_format,
       priority             => 1,
       is_paired            => $self->is_paired,
+      batch_id             => $self->batch_id,
     };
 
     my $transaction = sub {
@@ -286,6 +289,30 @@ sub _build_instrument_side {
     $self->logcroak("Run parameter $SIDE: wrong format in $RUN_PARAM_FILE");
   }
   return $side;
+}
+
+=head2 batch_id
+
+The sequencing batch ID. It is retrieved from the run name
+of the RunParameters.json file.
+
+Not being able to extract batch ID from the run name is not 
+an error. Walk-up runs are not tracked through LIMS.
+
+=cut
+has q{batch_id}     => (
+  isa           => q{Maybe[NpgTrackingPositiveInt]},
+  is            => q{ro},
+  required      => 0,
+  lazy_build    => 1,
+);
+sub _build_batch_id {
+  my $self = shift;
+  my ($batch_id) = $self->_run_params_data()->{$RUN_NAME} =~ /\A(\d+)[_-]/smx;
+  if (!$batch_id) {
+    $self->logcarp("Run parameter batch_id: wrong format in $RUN_PARAM_FILE");
+  }
+  return $batch_id;
 }
 
 =head2 expected_cycle_count

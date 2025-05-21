@@ -25,14 +25,15 @@ use Monitor::Elembio::Enum qw(
 use_ok('Monitor::Elembio::RunFolder');
 
 subtest 'test run parameters loader' => sub {
-  plan tests => 13;
+  plan tests => 14;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
+  my $run_name = '1234-NT1854129B';
+  my $run_folder_name = "20250417_${instrument_folder}_${run_name}";
   my $flowcell_id = '2441447657';
   my $date = '2025-04-17T13:57:00.861333784Z';
-  my $run_folder_name = '20250417_AV244103_NT1854129B';
   my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
   my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
@@ -51,6 +52,7 @@ subtest 'test run parameters loader' => sub {
   isa_ok( $test, 'Monitor::Elembio::RunFolder' );
   is( $test->folder_name, $run_folder_name, 'run_folder value correct' );
   is( $test->flowcell_id, $flowcell_id, 'flowcell_id value correct' );
+  is( $test->batch_id, 1234, 'batch_id value with dash correct' );
   isa_ok( $test->tracking_instrument(), 'npg_tracking::Schema::Result::Instrument',
           'Object returned by tracking_instrument method' );
   is( $test->tracking_instrument()->id_instrument, '100', 'instrument_id value correct' );
@@ -66,7 +68,7 @@ subtest 'test run parameters loader' => sub {
 };
 
 subtest 'test run parameters loader exceptions' => sub {
-  plan tests => 4;
+  plan tests => 5;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -97,17 +99,19 @@ subtest 'test run parameters loader exceptions' => sub {
     qr/Run[ ]parameter[ ]Side:[ ]wrong[ ]format[ ]in[ ]RunParameters[.]json/msx,
     'wrong side value';
   ok( $test->date_created, 'missing date gives current date of RunParameters file' );
+  is( $test->batch_id, undef, 'batch_id is undef');
 };
 
 subtest 'test run parameters update on new run' => sub {
-  plan tests => 21;
+  plan tests => 22;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
+  my $run_name = '1234-NT1854129B';
+  my $run_folder_name = "20250417_${instrument_folder}_${run_name}";
   my $flowcell_id = '2441447657';
   my $date = '2025-04-17T13:57:00.861333784Z';
-  my $run_folder_name = '20250417_AV244103_NT1854129B';
   my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
   my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
@@ -128,6 +132,7 @@ subtest 'test run parameters update on new run' => sub {
   lives_ok {$test->process_run_parameters();} 'process_run_parameters succeeds';
   is( $test->tracking_run()->folder_name, $run_folder_name, 'folder_name of new tracking run' );
   is( $test->tracking_run()->flowcell_id, $flowcell_id, 'flowcell_id of new tracking run' );
+  is( $test->tracking_run()->batch_id, 1234, 'batch_id of new tracking run' );
   is( $test->tracking_run()->id_instrument, '100', 'id_instrument of new tracking run' );
   is( $test->tracking_run()->id_instrument_format, 19, 'id_instrument_format of new tracking run' );
   is( $test->tracking_run()->instrument_side, 'A', 'instrument_side of new tracking run' );
@@ -155,7 +160,8 @@ subtest 'test update progress on existing run' => sub {
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
-  my $run_folder_name = '20250127_AV244103_NT1850075L';
+  my $run_name = '1234_NT1850075L';
+  my $run_folder_name = "20250127_${instrument_folder}_${run_name}";
   my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
   my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
@@ -190,7 +196,8 @@ subtest 'test update on existing run actual cycle counter' => sub {
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
-  my $run_folder_name = '20250127_AV244103_NT1850075L';
+  my $run_name = '1234_NT1850075L';
+  my $run_folder_name = "20250127_${instrument_folder}_${run_name}";
   my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
   my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
@@ -219,12 +226,13 @@ subtest 'test update on existing run actual cycle counter' => sub {
 };
 
 subtest 'test on existing run in progress and completed on disk' => sub {
-  plan tests => 14;
+  plan tests => 15;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
-  my $run_folder_name = '20250127_AV244103_NT1850075L';
+  my $run_name = '1234_NT1850075L';
+  my $run_folder_name = "20250127_${instrument_folder}_${run_name}";
   my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
   my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
@@ -247,6 +255,7 @@ subtest 'test on existing run in progress and completed on disk' => sub {
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
+  is( $test->batch_id, 1234, 'batch_id value with underscore correct' );
   is( $test->actual_cycle_count, 310, 'actual_cycle_count on max' );
   is( $test->tracking_run()->actual_cycle_count, 200, 'actual_cycle_count start in the middle' );
   ok( $test->tracking_run()->current_run_status, 'current_run_status set');
@@ -274,9 +283,10 @@ subtest 'test on not existing run but already completed on disk' => sub {
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
+  my $run_name = '1234-NT1854129B';
+  my $run_folder_name = "20250417_${instrument_folder}_${run_name}";
   my $flowcell_id = '2441447657';
   my $date = '2025-04-17T13:57:00.861333784Z';
-  my $run_folder_name = '20250417_AV244103_NT1854129B';
   my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
   my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
@@ -326,7 +336,8 @@ subtest 'test run parameters update on non-plexed and failed new run' => sub {
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
   my $flowcell_id = '2422551729';
-  my $run_folder_name = '20250129_AV244103_NT1850074';
+  my $run_name = '1234_NT1850074';
+  my $run_folder_name = "20250129_${instrument_folder}_${run_name}";
   my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
   my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
