@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 105.2.0 (2025-05-22)
  - npg_daemon_control: added a daemon for Elembio staging monitor 
  - npg_tracking::Schema::Result::Instrument
    - improved documentation,
