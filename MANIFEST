@@ -1,3 +1,4 @@
+bin/elembio_staging_area_monitor
 bin/event_notifications
 bin/illumina_instruments_uptime
 bin/npg_daemon_control
@@ -121,6 +122,9 @@ htdocs/js/wtsi/prototype-1.6.0.3.js
 htdocs/js/wtsi/sorttable.js
 htdocs/js/wtsi/zebra.js
 INSTALL
+lib/Monitor/Elembio/Enum.pm
+lib/Monitor/Elembio/RunFolder.pm
+lib/Monitor/Elembio/Staging.pm
 lib/Monitor/RunFolder.pm
 lib/Monitor/RunFolder/Staging.pm
 lib/Monitor/Staging.pm
@@ -189,6 +193,7 @@ lib/npg/view/user2usergroup.pm
 lib/npg/view/usergroup.pm
 lib/npg_testing/db.pm
 lib/npg_tracking/daemon.pm
+lib/npg_tracking/daemon/elembiostaging.pm
 lib/npg_tracking/data/bait.pm
 lib/npg_tracking/data/bait/find.pm
 lib/npg_tracking/data/common.pm
@@ -368,6 +373,7 @@ t/14-dbic-RunStatusDict.t
 t/14-dbic-Tag.t
 t/14-dbic-User.t
 t/16-npg_tracking-daemon.t
+t/16-npg_tracking-daemon-elembiostaging.t
 t/20-model-run_and_instrument_status.t
 t/20-view-administration.t
 t/20-view-instrument.t
@@ -393,6 +399,8 @@ t/34-monitor-runfolder-staging.t
 t/34-monitor-runfolder.t
 t/34-monitor-staging.t
 t/35-monitor_one_runfolder.t
+t/36-elembio-monitor-runfolder.t
+t/36-elembio-monitor-staging.t
 t/40-st-lims-merge.t
 t/40-st-lims-mlwarehouse.t
 t/40-st-lims-ml_warehouse-drivers.t
@@ -435,6 +443,18 @@ t/data/dbic_fixtures/400-RunLaneStatus.yml
 t/data/dbic_fixtures/400-RunRead.yml
 t/data/dbic_fixtures/400-RunStatus.yml
 t/data/dbic_fixtures/400-TagRun.yml
+t/data/elembio_staging/AV244103/20250101_AV244103_NT1234567E/RunManifest.json
+t/data/elembio_staging/AV244103/20250101_AV244103_NT1234567E/RunParameters.json
+t/data/elembio_staging/AV244103/20250101_AV244103_NT1234567E/RunUploaded.json
+t/data/elembio_staging/AV244103/20250127_AV244103_NT1850075L/RunManifest.json
+t/data/elembio_staging/AV244103/20250127_AV244103_NT1850075L/RunParameters.json
+t/data/elembio_staging/AV244103/20250127_AV244103_NT1850075L/RunUploaded.json
+t/data/elembio_staging/AV244103/20250415_AV244103_25_04_15_iMGL_mapk/RunManifest.json
+t/data/elembio_staging/AV244103/20250415_AV244103_25_04_15_iMGL_mapk/RunParameters.json
+t/data/elembio_staging/AV244103/20250415_AV244103_25_04_15_iMGL_mapk/RunUploaded.json
+t/data/elembio_staging/AV244103/20250417_AV244103_NT1854129B/RunManifest.json
+t/data/elembio_staging/AV244103/20250417_AV244103_NT1854129B/RunParameters.json
+t/data/elembio_staging/AV244103/20250417_AV244103_NT1854129B/RunUploaded.json
 t/data/fixtures/000-designation.yml
 t/data/fixtures/000-entity_type.yml
 t/data/fixtures/000-instrument_mod_dict.yml
@@ -696,6 +716,7 @@ t/data/repos2/references2/PhiX/Illumina/.gitignore
 t/data/repos2/references2/PhiX/Sanger/.gitignore
 t/dbh.pm
 t/dbic_util.pm
+t/elembio_util.pm
 t/instrument.pm
 t/perlcriticrc
 t/request.pm
