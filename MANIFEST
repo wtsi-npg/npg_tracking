@@ -232,6 +232,7 @@ lib/npg_tracking/illumina/runfolder.pm
 lib/npg_tracking/illumina/run/folder.pm
 lib/npg_tracking/illumina/run/long_info.pm
 lib/npg_tracking/Schema.pm
+lib/npg_tracking/Schema/ResultSet/Run.pm
 lib/npg_tracking/Schema/Result/Annotation.pm
 lib/npg_tracking/Schema/Result/Designation.pm
 lib/npg_tracking/Schema/Result/EntityType.pm
@@ -355,6 +356,7 @@ t/10-snv.t
 t/10-transcriptome.t
 t/10-util.t
 t/11-npg_tracking-Schema.t
+t/12-dbic-ResultSet-Run.t
 t/14-dbic-EntityType.t
 t/14-dbic-Event.t
 t/14-dbic-EventType.t
