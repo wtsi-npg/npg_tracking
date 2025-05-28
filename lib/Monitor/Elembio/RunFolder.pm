@@ -196,8 +196,7 @@ sub _build_tracking_instrument {
   my $self = shift;
   my $rs = $self->npg_tracking_schema->resultset($INSTRUMENT_TABLE);
   my $params = {
-    external_name => $self->instrument_name,
-    iscurrent => 1,
+    external_name => $self->instrument_name
   };
   my @instrument_rows = $rs->search($params)->all();
 
