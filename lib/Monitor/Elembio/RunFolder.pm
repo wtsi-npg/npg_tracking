@@ -7,27 +7,37 @@ use JSON;
 use File::Basename;
 use File::Spec::Functions qw( catfile catdir );
 use DateTime;
-use List::Util 'sum';
+use List::Util qw( sum );
+use List::MoreUtils qw( any );
 use DateTime::Format::Strptime;
 use Perl6::Slurp;
 use Try::Tiny;
 use File::Find;
 
 use npg_tracking::Schema;
+use npg_tracking::util::types;
 use Monitor::Elembio::Enum qw( 
   $BASECALL_FOLDER
   $CONSUMABLES
   $CYCLE_FILE_PATTERN
   $CYCLES
+  $CYCLES_I1
+  $CYCLES_R2
   $DATE
   $FLOWCELL
   $FOLDER_NAME
   $INSTRUMENT_NAME
   $INSTRUMENT_TABLE
   $LANES
+  $OUTCOME
+  $OUTCOME_COMPLETE
+  $OUTCOME_FAILED
+  $RUN_NAME
   $RUN_PARAM_FILE
+  $RUN_STATUS_CANCELLED
   $RUN_STATUS_COMPLETE
   $RUN_STATUS_INPROGRESS 
+  $RUN_STATUS_STOPPED
   $RUN_TABLE
   $RUN_UPLOAD_FILE
   $RUNLANE_TABLE
@@ -142,24 +152,25 @@ sub _build_tracking_run {
       id_instrument        => $instrument_id,
       folder_path_glob     => dirname($self->runfolder_path),
       expected_cycle_count => $self->expected_cycle_count,
+      actual_cycle_count   => 0,
       team                 => 'SR',
       id_instrument_format => $self->tracking_instrument()->id_instrument_format,
       priority             => 1,
-      # TO DO: It is hardcoded as paired for now.
-      is_paired            => 1,
+      is_paired            => $self->is_paired,
+      batch_id             => $self->batch_id,
     };
-    $run_row = $rs->create($data);
-    $self->info('Created run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
 
-    my $tag = 'staging';
-    $run_row->set_tag($USERNAME, $tag);
-    $self->info("$tag tag is set");
+    my $transaction = sub {
+      $run_row = $rs->create($data);
+      $self->info('Created run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
 
-    my $runlane_rs = $run_row->result_source()->schema()->resultset($RUNLANE_TABLE);
-    for my $lane (1 .. $self->lane_count) {
-      $runlane_rs->create({id_run => $run_row->id_run, position => $lane});
-      $self->info("Created record for lane $lane of run_id " . $run_row->id_run);
-    }
+      my $runlane_rs = $run_row->result_source()->schema()->resultset($RUNLANE_TABLE);
+      for my $lane (1 .. $self->lane_count) {
+        $runlane_rs->create({id_run => $run_row->id_run, position => $lane});
+        $self->info("Created record for lane $lane of run_id " . $run_row->id_run);
+      }
+    };
+    $rs->result_source()->schema()->txn_do($transaction);
   }
   return $run_row;
 }
@@ -185,8 +196,7 @@ sub _build_tracking_instrument {
   my $self = shift;
   my $rs = $self->npg_tracking_schema->resultset($INSTRUMENT_TABLE);
   my $params = {
-    external_name => $self->instrument_name,
-    iscurrent => 1,
+    external_name => $self->instrument_name
   };
   my @instrument_rows = $rs->search($params)->all();
 
@@ -280,6 +290,30 @@ sub _build_instrument_side {
   return $side;
 }
 
+=head2 batch_id
+
+The sequencing batch ID. It is retrieved from the run name
+of the RunParameters.json file.
+
+Not being able to extract batch ID from the run name is not 
+an error. Walk-up runs are not tracked through LIMS.
+
+=cut
+has q{batch_id}     => (
+  isa           => q{Maybe[NpgTrackingPositiveInt]},
+  is            => q{ro},
+  required      => 0,
+  lazy_build    => 1,
+);
+sub _build_batch_id {
+  my $self = shift;
+  my ($batch_id) = $self->_run_params_data()->{$RUN_NAME} =~ /\A(\d+)[_-]/smx;
+  if (!$batch_id) {
+    $self->logcarp("Run parameter batch_id: wrong format in $RUN_PARAM_FILE");
+  }
+  return $batch_id;
+}
+
 =head2 expected_cycle_count
 
 The number of sequencing cycles that the instrument
@@ -371,6 +405,9 @@ has q{lane_count}  => (
 sub _build_lane_count {
   my $self = shift;
   my @lanes = split /\+/, $self->_run_params_data()->{$LANES};
+  if (! @lanes) {
+    $self->logcroak("Run parameter $LANES: No lane found");
+  }
   return scalar @lanes;
 }
 
@@ -408,6 +445,69 @@ sub _build_date_created {
   }
 }
 
+=head2 is_paired
+
+If paired run (the run has a reverse read) return 1, otherwise 0.
+
+=cut
+has q{is_paired} => (
+  isa         => q{Bool},
+  is          => q{ro},
+  required    => 0,
+  lazy_build  => 1,
+);
+sub _build_is_paired {
+  my $self = shift;
+  my $cycles = $self->_run_params_data()->{$CYCLES};
+  if ( exists $cycles->{$CYCLES_R2} and int($cycles->{$CYCLES_R2}) > 0 ) {
+    return 1;
+  }
+  return 0;
+}
+
+=head2 is_indexed
+
+If the run has at least one index read return 1, otherwise 0.
+
+=cut
+has q{is_indexed} => (
+  isa         => q{Bool},
+  is          => q{ro},
+  required    => 0,
+  lazy_build  => 1,
+);
+sub _build_is_indexed {
+  my $self = shift;
+  my $cycles = $self->_run_params_data()->{$CYCLES};
+  if ( exists $cycles->{$CYCLES_I1} and int($cycles->{$CYCLES_I1}) > 0 ) {
+    return 1;
+  }
+  return 0;
+}
+
+=head2 _set_tags
+
+Set all necessary tags when the function is called.
+
+=cut
+sub _set_tags {
+  my ($self) = shift;
+  my @tags = (
+    'staging'
+  );
+  if ($self->is_paired) {
+    push @tags, 'paired_read';
+  }
+  if ($self->is_indexed) {
+    push @tags, 'multiplex';
+  }
+
+  foreach my $tag ( @tags ) {
+    $self->tracking_run()->set_tag($USERNAME, $tag);
+    $self->info("$tag tag is set");
+  }
+}
+
 =head2 _run_params_data
 
 Reference to hash object that represents the JSON file
@@ -427,12 +527,90 @@ sub _build__run_params_data {
   return decode_json(slurp $run_parameters_file);
 }
 
+=head2 is_failed
+
+When the run finishes with failed outcome and it has not
+completed the expected cycle number return 1, otherwise 0.
+
+=cut
+has q{is_failed}  => (
+  isa               => q{Bool},
+  is                => q{ro},
+  required          => 0,
+  lazy_build        => 1,
+);
+sub _build_is_failed {
+  my $self = shift;
+  my $upload_data = $self->_run_uploaded_data();
+  my $data_ok = defined $upload_data and exists $upload_data->{$OUTCOME};
+  if ( $data_ok
+        and $upload_data->{$OUTCOME} eq $OUTCOME_FAILED
+        and $self->actual_cycle_count < $self->expected_cycle_count ) {
+    return 1;
+  }
+  return 0;
+}
+
+=head2 is_completed
+
+When the run has been successfully completed with the full
+expected cycle number return 1, otherwise 0.
+
+=cut
+has q{is_completed}  => (
+  isa               => q{Bool},
+  is                => q{ro},
+  required          => 0,
+  lazy_build        => 1,
+);
+sub _build_is_completed {
+  my $self = shift;
+  if ( $self->actual_cycle_count == $self->expected_cycle_count ) {
+    return 1;
+  }
+  return 0;
+}
+
+=head2 _run_uploaded_data
+
+Reference to hash object that represents the JSON file
+content of RunUploaded.json.
+
+=cut
+has q{_run_uploaded_data} => (
+  isa               => q{Maybe[HashRef]},
+  is                => q{ro},
+  required          => 0,
+  init_arg          => undef,
+  lazy_build        => 1,
+);
+sub _build__run_uploaded_data {
+  my $self = shift;
+  my $run_uploaded_file = catfile($self->runfolder_path, $RUN_UPLOAD_FILE);
+  my $json_data;
+  if ( -e $run_uploaded_file ) {
+    $json_data = decode_json(slurp $run_uploaded_file);
+  }
+  return $json_data;
+}
+
 =head2 process_run_parameters
 
 Core function of the class that is called on the run folder
 periodically to update dynamic properties of a run in the DB.
-Created and completed runs are updated accordingly with a status
-and a time stamp of the event in the DB.
+If a run record does not exist, it is created.
+The cycle count, tags and the following statuses are
+checked/assigned accordingly:
+- 'run in progress'   run basecalling is in progress
+- 'run stopped early' run finished with failed outcome
+- 'run complete'      run completed successfully
+Each of the above events saves a time stamp in the DB.
+
+When the run status is one of the following, the function
+will return early:
+- 'run cancelled' (set by the user via web interface)
+- 'run stopped early'
+- 'run complete' (or later)
 
 =cut
 sub process_run_parameters {
@@ -440,23 +618,42 @@ sub process_run_parameters {
   my $run_row = $self->tracking_run();
   my $current_run_status_obj = $run_row->current_run_status;
   my $run_uploaded_path = catfile($self->runfolder_path, $RUN_UPLOAD_FILE);
-  my $is_run_complete = -e $run_uploaded_path;
   
   if ( ! $current_run_status_obj ) {
     $run_row->set_instrument_side($self->instrument_side, $USERNAME);
     $current_run_status_obj = $run_row->update_run_status($RUN_STATUS_INPROGRESS, $USERNAME, $self->date_created);
     $self->info('New run ' . $self->runfolder_path . ' created');
+    $self->_set_tags();
+  }
+
+  my $current_status_description = $run_row->current_run_status_description;
+  my $current_run_status_dict = $current_run_status_obj->run_status_dict;
+  if ( (any { $_ eq $current_status_description} ($RUN_STATUS_STOPPED, $RUN_STATUS_CANCELLED))
+      || ($current_run_status_dict->compare_to_status_description($RUN_STATUS_COMPLETE) >= 0) ) {
+    return;
   }
 
   $self->_set_actual_cycle_count();
   
-  if ($is_run_complete) {
-    if ( $current_run_status_obj->run_status_dict->compare_to_status_description($RUN_STATUS_COMPLETE) == -1 ) {
-      my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9]);
-      $run_row->update_run_status($RUN_STATUS_COMPLETE, $USERNAME, $date);
-      $self->info('Run ' . $self->runfolder_path . ' is now completed');
+  if (defined $self->_run_uploaded_data()) {
+    if ($self->is_failed) {
+      if ( $current_run_status_dict->compare_to_status_description($RUN_STATUS_STOPPED) == -1 ) {
+        my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9]);
+        $run_row->update_run_status($RUN_STATUS_STOPPED, $USERNAME, $date);
+        $self->info('Run ' . $self->runfolder_path . ' is failed');
+      } else {
+        $self->info('Run ' . $self->runfolder_path . ' was failed, current status ' . $current_run_status_obj->description);
+      }
     } else {
-      $self->info('Run ' . $self->runfolder_path . ' was completed, current status ' . $current_run_status_obj->description);
+      if ($self->is_completed) {
+        if ( $current_run_status_dict->compare_to_status_description($RUN_STATUS_COMPLETE) == -1 ) {
+          my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9]);
+          $run_row->update_run_status($RUN_STATUS_COMPLETE, $USERNAME, $date);
+          $self->info('Run ' . $self->runfolder_path . ' is now completed');
+        } else {
+          $self->info('Run ' . $self->runfolder_path . ' was completed, current status ' . $current_run_status_obj->description);
+        }
+      }
     }
   }
 }

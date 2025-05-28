@@ -15,12 +15,17 @@ our @EXPORT = qw(
   $BASECALL_FOLDER
   $CONSUMABLES
   $CYCLES
+  $CYCLES_I1
+  $CYCLES_R2
   $CYCLE_FILE_PATTERN
   $DATE
   $FLOWCELL
   $FOLDER_NAME
   $INSTRUMENT_NAME
   $LANES
+  $OUTCOME
+  $OUTCOME_COMPLETE
+  $OUTCOME_FAILED
   $RUN_NAME
   $SERIAL_NUMBER
   $SIDE
@@ -29,8 +34,10 @@ our @EXPORT = qw(
   $RUN_PARAM_FILE
   $RUN_MANIFEST_FILE
   $RUN_STANDARD
+  $RUN_STATUS_CANCELLED
   $RUN_STATUS_COMPLETE
   $RUN_STATUS_INPROGRESS
+  $RUN_STATUS_STOPPED
   $RUN_STATUS_TIME_PATTERN
   $RUN_STATUS_TYPE
   $RUN_TYPE
@@ -51,6 +58,8 @@ Readonly::Scalar our $RUNLANE_TABLE => 'RunLane';
 Readonly::Scalar our $BASECALL_FOLDER => 'BaseCalls';
 Readonly::Scalar our $CONSUMABLES => 'Consumables';
 Readonly::Scalar our $CYCLES => 'Cycles';
+Readonly::Scalar our $CYCLES_I1 => 'I1';
+Readonly::Scalar our $CYCLES_R2 => 'R2';
 Readonly::Scalar our $CYCLE_FILE_PATTERN => qr/^[IR][12]_C\d{3}/;
 Readonly::Scalar our $DATE => 'Date';
 Readonly::Scalar our $FLOWCELL => 'Flowcell';
@@ -63,6 +72,11 @@ Readonly::Scalar our $SIDE => 'Side';
 Readonly::Scalar our $TIME_PATTERN => '%Y-%m-%dT%H:%M:%S.%NZ'; # 2023-12-19T13:31:17.461926614Z
 Readonly::Scalar our $RUN_STATUS_TIME_PATTERN => '%Y-%m-%dT%H:%M:%S';
 
+# Run Uploaded Enums
+Readonly::Scalar our $OUTCOME => 'outcome';
+Readonly::Scalar our $OUTCOME_COMPLETE => 'OutcomeCompleted';
+Readonly::Scalar our $OUTCOME_FAILED => 'OutcomeFailed';
+
 # Run Enums
 Readonly::Scalar our $RUN_CYTOPROFILE => 'Cytoprofiling';
 Readonly::Scalar our $RUN_PARAM_FILE => 'RunParameters.json';
@@ -70,8 +84,10 @@ Readonly::Scalar our $RUN_MANIFEST_FILE => 'RunManifest.json';
 Readonly::Scalar our $RUN_STANDARD => 'Sequencing';
 Readonly::Scalar our $RUN_TYPE => 'RunType';
 Readonly::Scalar our $RUN_UPLOAD_FILE => 'RunUploaded.json';
+Readonly::Scalar our $RUN_STATUS_CANCELLED => 'run cancelled';
 Readonly::Scalar our $RUN_STATUS_COMPLETE => 'run complete';
 Readonly::Scalar our $RUN_STATUS_INPROGRESS => 'run in progress';
+Readonly::Scalar our $RUN_STATUS_STOPPED => 'run stopped early';
 Readonly::Scalar our $RUN_STATUS_TYPE => 'StatusType';
 
 1;
