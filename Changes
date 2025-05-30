@@ -1,5 +1,17 @@
 LIST OF CHANGES
 
+release 105.3.0 (2025-05-30)
+ - Functionality of the Elembio staging monitor is extended. Most important changes:
+   - LIMS batch ID is extracted from Elembio run name and saved to tracking database;
+   - pairedness and indexing are determined from instrument data rather than hardcoded;
+   - definition of failed runs is clarified to exclude runs which are marked by the
+     instrument as failed, but produced data for all planned cycles.
+ - A daemon for the Elembio staging monitor is implemented.
+ - Added a method for retrieving a run record from the tracking database using run
+   folder name, instrument name and flowcell ID as query parameters. The method,
+   find_with_attributes, is added to the Run ResultSet class
+ - Added a method for finding db run records
+
 release 105.2.0 (2025-05-22)
  - npg_daemon_control: added a daemon for Elembio staging monitor 
  - npg_tracking::Schema::Result::Instrument
