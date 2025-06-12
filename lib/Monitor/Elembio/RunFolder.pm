@@ -34,6 +34,8 @@ use Monitor::Elembio::Enum qw(
   $OUTCOME_FAILED
   $RUN_NAME
   $RUN_PARAM_FILE
+  $RUN_STATUS_ARCHIVAL_PENDING
+  $RUN_STATUS_ARCHIVED
   $RUN_STATUS_CANCELLED
   $RUN_STATUS_COMPLETE
   $RUN_STATUS_INPROGRESS 
@@ -611,6 +613,8 @@ will return early:
 - 'run cancelled' (set by the user via web interface)
 - 'run stopped early'
 - 'run complete' (or later)
+In addition, 'run archived' is assigned when the current
+status is on 'archival pending'.
 
 =cut
 sub process_run_parameters {
@@ -627,9 +631,16 @@ sub process_run_parameters {
   }
 
   my $current_status_description = $run_row->current_run_status_description;
+  $self->info("Current run status is '$current_status_description'");
   my $current_run_status_dict = $current_run_status_obj->run_status_dict;
-  if ( (any { $_ eq $current_status_description} ($RUN_STATUS_STOPPED, $RUN_STATUS_CANCELLED))
-      || ($current_run_status_dict->compare_to_status_description($RUN_STATUS_COMPLETE) >= 0) ) {
+  if ( any { $_ eq $current_status_description} ($RUN_STATUS_STOPPED, $RUN_STATUS_CANCELLED, $RUN_STATUS_COMPLETE) ) {
+    return;
+  }
+  if ( $current_run_status_dict->compare_to_status_description($RUN_STATUS_COMPLETE) > 0 ) {
+    if ( $current_status_description eq $RUN_STATUS_ARCHIVAL_PENDING ) {
+      $run_row->update_run_status($RUN_STATUS_ARCHIVED, $USERNAME);
+      $self->info("Run moved to status '$RUN_STATUS_ARCHIVED'");
+    }
     return;
   }
 
