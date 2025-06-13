@@ -23,7 +23,7 @@ use Monitor::Elembio::Enum qw(
 use_ok('Monitor::Elembio::RunFolder');
 
 subtest 'test run parameters loader' => sub {
-  plan tests => 14;
+  plan tests => 16;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -61,8 +61,10 @@ subtest 'test run parameters loader' => sub {
   is( $test->is_paired, 1, 'is_paired value correct' );
   is( $test->is_indexed, 1, 'is_indexed value correct' );
   is( $test->date_created->strftime('%Y-%m-%dT%H:%M:%S.%NZ'), $date, 'date_created value correct' );
+  ok ( ! $test->find_run_db_record(), 'no run record in db' );
   isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
           'Object returned by tracking_run method' );
+  isa_ok( $test->find_run_db_record(), 'npg_tracking::Schema::Result::Run', 'run record exists in db' );
 };
 
 subtest 'test run parameters loader exceptions' => sub {
