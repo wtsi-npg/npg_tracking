@@ -129,29 +129,17 @@ has q{tracking_run} => (
 );
 sub _build_tracking_run {
   my $self = shift;
-  my $rs = $self->npg_tracking_schema->resultset($RUN_TABLE);
-  my $instrument_id = $self->tracking_instrument()->id_instrument;
-  my $params = {
-    flowcell_id   => $self->flowcell_id,
-    folder_name   => $self->folder_name,
-    id_instrument => $instrument_id,
-  };
-  my @run_rows = $rs->search($params)->all();
 
-  my $run_count = scalar @run_rows;
-  if ($run_count > 1) {
-    $self->logcroak('Multiple runs retrieved from NPG tracking DB');
-  }
-  my $run_row;
-  if ($run_count == 1) {
-    $run_row = $run_rows[0];
+  my $run_row = $self->find_run_db_record();
+  if ($run_row) {
     $self->info('Found run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
   } else {
+    my $rs = $self->npg_tracking_schema->resultset($RUN_TABLE);
     $self->info('will create a new run for ' . $self->runfolder_path);
     my $data = {
       flowcell_id          => $self->flowcell_id,
       folder_name          => $self->folder_name,
-      id_instrument        => $instrument_id,
+      id_instrument        => $self->tracking_instrument()->id_instrument,
       folder_path_glob     => dirname($self->runfolder_path),
       expected_cycle_count => $self->expected_cycle_count,
       actual_cycle_count   => 0,
@@ -667,6 +655,24 @@ sub process_run_parameters {
       }
     }
   }
+}
+
+=head2 find_run_db_record
+
+Find a run record in the tracking DB.
+Return npg_tracking::Schema::Result::Run for the found
+record or an undefind value if the record is not found.
+
+=cut
+sub find_run_db_record() {
+  my $self = shift;
+  my $rs = $self->npg_tracking_schema->resultset($RUN_TABLE);
+  my $run_row = $rs->find_with_attributes(
+    $self->folder_name,
+    $self->flowcell_id,
+    $self->instrument_name,
+  );
+  return $run_row;
 }
 
 =head2 _find_in_runfolder
