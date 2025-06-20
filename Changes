@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 105.4.0 (2025-06-20)
  - Functionality of the Elembio staging monitor is extended. Runs with status
    'archival pending' are moved to 'run archived'.
  - elembio_find_id_run script is added. Given Elembio run folder path where
