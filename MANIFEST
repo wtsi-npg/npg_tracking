@@ -1,3 +1,4 @@
+bin/elembio_find_id_run
 bin/elembio_staging_area_monitor
 bin/event_notifications
 bin/illumina_instruments_uptime

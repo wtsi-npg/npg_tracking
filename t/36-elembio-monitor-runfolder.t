@@ -23,7 +23,7 @@ use Monitor::Elembio::Enum qw(
 use_ok('Monitor::Elembio::RunFolder');
 
 subtest 'test run parameters loader' => sub {
-  plan tests => 14;
+  plan tests => 16;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -61,8 +61,10 @@ subtest 'test run parameters loader' => sub {
   is( $test->is_paired, 1, 'is_paired value correct' );
   is( $test->is_indexed, 1, 'is_indexed value correct' );
   is( $test->date_created->strftime('%Y-%m-%dT%H:%M:%S.%NZ'), $date, 'date_created value correct' );
+  ok ( ! $test->find_run_db_record(), 'no run record in db' );
   isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
           'Object returned by tracking_run method' );
+  isa_ok( $test->find_run_db_record(), 'npg_tracking::Schema::Result::Run', 'run record exists in db' );
 };
 
 subtest 'test run parameters loader exceptions' => sub {
@@ -227,7 +229,7 @@ subtest 'test update on existing run actual cycle counter' => sub {
 };
 
 subtest 'test on existing run in progress and completed on disk' => sub {
-  plan tests => 15;
+  plan tests => 17;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -276,6 +278,10 @@ subtest 'test on existing run in progress and completed on disk' => sub {
     'run complete date more recent than run in progress');
   lives_ok {$test->process_run_parameters();} 'process_run_parameters success on early return';
   is( $test->tracking_run()->current_run_status_description, 'run complete', 'current_run_status on complete after early return');
+
+  $test->tracking_run()->update_run_status('archival pending', 'pipeline');
+  lives_ok {$test->process_run_parameters();} 'process_run_parameters success when archival pending';
+  is( $test->tracking_run()->current_run_status_description, 'run archived', 'current_run_status on run archived after archival pending');
 };
 
 subtest 'test on not existing run but already completed on disk' => sub {

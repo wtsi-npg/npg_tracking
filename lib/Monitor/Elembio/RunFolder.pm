@@ -34,6 +34,8 @@ use Monitor::Elembio::Enum qw(
   $OUTCOME_FAILED
   $RUN_NAME
   $RUN_PARAM_FILE
+  $RUN_STATUS_ARCHIVAL_PENDING
+  $RUN_STATUS_ARCHIVED
   $RUN_STATUS_CANCELLED
   $RUN_STATUS_COMPLETE
   $RUN_STATUS_INPROGRESS 
@@ -127,29 +129,17 @@ has q{tracking_run} => (
 );
 sub _build_tracking_run {
   my $self = shift;
-  my $rs = $self->npg_tracking_schema->resultset($RUN_TABLE);
-  my $instrument_id = $self->tracking_instrument()->id_instrument;
-  my $params = {
-    flowcell_id   => $self->flowcell_id,
-    folder_name   => $self->folder_name,
-    id_instrument => $instrument_id,
-  };
-  my @run_rows = $rs->search($params)->all();
 
-  my $run_count = scalar @run_rows;
-  if ($run_count > 1) {
-    $self->logcroak('Multiple runs retrieved from NPG tracking DB');
-  }
-  my $run_row;
-  if ($run_count == 1) {
-    $run_row = $run_rows[0];
+  my $run_row = $self->find_run_db_record();
+  if ($run_row) {
     $self->info('Found run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
   } else {
+    my $rs = $self->npg_tracking_schema->resultset($RUN_TABLE);
     $self->info('will create a new run for ' . $self->runfolder_path);
     my $data = {
       flowcell_id          => $self->flowcell_id,
       folder_name          => $self->folder_name,
-      id_instrument        => $instrument_id,
+      id_instrument        => $self->tracking_instrument()->id_instrument,
       folder_path_glob     => dirname($self->runfolder_path),
       expected_cycle_count => $self->expected_cycle_count,
       actual_cycle_count   => 0,
@@ -611,6 +601,8 @@ will return early:
 - 'run cancelled' (set by the user via web interface)
 - 'run stopped early'
 - 'run complete' (or later)
+In addition, 'run archived' is assigned when the current
+status is on 'archival pending'.
 
 =cut
 sub process_run_parameters {
@@ -627,9 +619,16 @@ sub process_run_parameters {
   }
 
   my $current_status_description = $run_row->current_run_status_description;
+  $self->info("Current run status is '$current_status_description'");
   my $current_run_status_dict = $current_run_status_obj->run_status_dict;
-  if ( (any { $_ eq $current_status_description} ($RUN_STATUS_STOPPED, $RUN_STATUS_CANCELLED))
-      || ($current_run_status_dict->compare_to_status_description($RUN_STATUS_COMPLETE) >= 0) ) {
+  if ( any { $_ eq $current_status_description} ($RUN_STATUS_STOPPED, $RUN_STATUS_CANCELLED, $RUN_STATUS_COMPLETE) ) {
+    return;
+  }
+  if ( $current_run_status_dict->compare_to_status_description($RUN_STATUS_COMPLETE) > 0 ) {
+    if ( $current_status_description eq $RUN_STATUS_ARCHIVAL_PENDING ) {
+      $run_row->update_run_status($RUN_STATUS_ARCHIVED, $USERNAME);
+      $self->info("Run moved to status '$RUN_STATUS_ARCHIVED'");
+    }
     return;
   }
 
@@ -656,6 +655,24 @@ sub process_run_parameters {
       }
     }
   }
+}
+
+=head2 find_run_db_record
+
+Find a run record in the tracking DB.
+Return npg_tracking::Schema::Result::Run for the found
+record or an undefind value if the record is not found.
+
+=cut
+sub find_run_db_record() {
+  my $self = shift;
+  my $rs = $self->npg_tracking_schema->resultset($RUN_TABLE);
+  my $run_row = $rs->find_with_attributes(
+    $self->folder_name,
+    $self->flowcell_id,
+    $self->instrument_name,
+  );
+  return $run_row;
 }
 
 =head2 _find_in_runfolder

@@ -1,5 +1,12 @@
 LIST OF CHANGES
 
+release 105.4.0 (2025-06-20)
+ - Functionality of the Elembio staging monitor is extended. Runs with status
+   'archival pending' are moved to 'run archived'.
+ - elembio_find_id_run script is added. Given Elembio run folder path where
+   RunParameters.json file is, accesses the tracking database to find a run
+   record for this run folder and writes this ID to STDOUT.
+
 release 105.3.0 (2025-05-30)
  - Functionality of the Elembio staging monitor is extended. Most important changes:
    - LIMS batch ID is extracted from Elembio run name and saved to tracking database;
