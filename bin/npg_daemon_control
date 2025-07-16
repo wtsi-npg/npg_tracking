@@ -21,7 +21,7 @@ my @classes = Module::Pluggable::Object->new(
                              search_path => $DAEMON_NAMESPACE,
                                             )->plugins;
 
-my @options = qw(help dry-run);
+my @options = qw(help dry-run dry_run);
 my @actions = qw(ping stop start);
 foreach my $class (sort @classes) {
   (my $name) = $class =~ /(\w+)\Z/smx;
@@ -60,7 +60,7 @@ if (defined $request && $request) {
   my $cmd = $runner->$action();
   my $human_readable_cmd = $cmd;
   $cmd = qq[/bin/bash -c \"$cmd\" 2>&1];
-  if (!$opts->{'dry-run'}) {
+  if (!$opts->{'dry-run'} and !$opts->{'dry_run'}) {
     open my $fh, q(-|), $cmd or croak $OS_ERROR;
     while (<$fh>) {
       print or croak $OS_ERROR;

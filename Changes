@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+release 105.5.0 (2025-07-16)
+ - Add dry_run option format
+
 release 105.4.0 (2025-06-20)
  - Functionality of the Elembio staging monitor is extended. Runs with status
    'archival pending' are moved to 'run archived'.
