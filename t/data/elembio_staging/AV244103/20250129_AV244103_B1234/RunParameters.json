@@ -1,10 +1,10 @@
 {
-  "RunName": "1234_NT1850074",
+  "RunName": "B1234",
   "RunType": "Sequencing",
   "Side": "SideA",
   "Date": "2025-01-29T14:33:13.409033205Z",
   "InstrumentName": "AV244103",
-  "RunFolderName": "20250129_AV244103_1234_NT1850074",
+  "RunFolderName": "20250129_AV244103_B1234",
   "Cycles": {
     "R1": 151,
     "R2": 151,

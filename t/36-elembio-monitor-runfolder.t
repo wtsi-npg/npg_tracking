@@ -28,7 +28,7 @@ subtest 'test run parameters loader' => sub {
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
-  my $run_name = '1234-NT1854129B';
+  my $run_name = '1234';
   my $run_folder_name = "20250417_${instrument_folder}_${run_name}";
   my $flowcell_id = '2441447657';
   my $date = '2025-04-17T13:57:00.861333784Z';
@@ -50,7 +50,7 @@ subtest 'test run parameters loader' => sub {
   isa_ok( $test, 'Monitor::Elembio::RunFolder' );
   is( $test->folder_name, $run_folder_name, 'run_folder value correct' );
   is( $test->flowcell_id, $flowcell_id, 'flowcell_id value correct' );
-  is( $test->batch_id, 1234, 'batch_id value with dash correct' );
+  is( $test->batch_id, 1234, 'batch_id value correct' );
   isa_ok( $test->tracking_instrument(), 'npg_tracking::Schema::Result::Instrument',
           'Object returned by tracking_instrument method' );
   is( $test->tracking_instrument()->id_instrument, '100', 'instrument_id value correct' );
@@ -111,7 +111,7 @@ subtest 'test run parameters update on new run' => sub {
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
-  my $run_name = '1234-NT1854129B';
+  my $run_name = '1234';
   my $run_folder_name = "20250417_${instrument_folder}_${run_name}";
   my $flowcell_id = '2441447657';
   my $date = '2025-04-17T13:57:00.861333784Z';
@@ -290,7 +290,7 @@ subtest 'test on not existing run but already completed on disk' => sub {
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
-  my $run_name = '1234-NT1854129B';
+  my $run_name = '1234';
   my $run_folder_name = "20250417_${instrument_folder}_${run_name}";
   my $flowcell_id = '2441447657';
   my $date = '2025-04-17T13:57:00.861333784Z';
@@ -337,13 +337,13 @@ subtest 'test on not existing run but already completed on disk' => sub {
 };
 
 subtest 'test run parameters update on non-plexed and failed new run' => sub {
-  plan tests => 21;
+  plan tests => 22;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
   my $flowcell_id = '2422551729';
-  my $run_name = '1234_NT1850074';
+  my $run_name = 'B1234';
   my $run_folder_name = "20250129_${instrument_folder}_${run_name}";
   my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
   my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
@@ -368,6 +368,7 @@ subtest 'test run parameters update on non-plexed and failed new run' => sub {
                                                 npg_tracking_schema => $schema);
   is( $test->is_paired, 1, 'is_paired is correct');
   is( $test->is_indexed, 0, 'is_indexed is correct');
+  is( $test->batch_id, 1234, 'batch_id in run name with B correct' );
   is( $test->actual_cycle_count, 252, 'last actual_cycle_count correct' );
   is( $test->expected_cycle_count, 302, 'expected_cycle_count correct' );
   ok( ! $test->is_completed, 'not completed successfully');
