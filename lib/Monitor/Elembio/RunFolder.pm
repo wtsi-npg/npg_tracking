@@ -297,7 +297,7 @@ has q{batch_id}     => (
 );
 sub _build_batch_id {
   my $self = shift;
-  my ($batch_id) = $self->_run_params_data()->{$RUN_NAME} =~ /\A(\d+)[_-]/smx;
+  my ($batch_id) = $self->_run_params_data()->{$RUN_NAME} =~ /\AB?(\d+)/smx;
   if (!$batch_id) {
     $self->logcarp("Run parameter batch_id: wrong format in $RUN_PARAM_FILE");
   }
