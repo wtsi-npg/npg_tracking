@@ -1,0 +1,79 @@
+{
+  "RunName": "2345",
+  "RunType": "Cytoprofiling",
+  "Side": "SideA",
+  "Date": "2025-04-15T13:55:36.568752629Z",
+  "InstrumentName": "AV244103",
+  "RunFolderName": "20250415_AV244103_2345",
+  "AnalysisLanes": "1+2",
+  "Consumables": {
+    "Flowcell": {
+      "SerialNumber": "0124205183"
+    }
+  },
+  "Batches": [
+    {
+      "Cycles": 2,
+      "Name": "CP01",
+      "PMGMask": "",
+      "RunOrder": 1,
+      "Type": "PreAmpImagingBatch"
+    },
+    {
+      "Cycles": 6,
+      "Name": "CP02",
+      "PMGMask": "",
+      "RunOrder": 2,
+      "Type": "PostAmpImagingBatch"
+    },
+    {
+      "Cycles": 11,
+      "Name": "B01",
+      "PMGMask": "Y4N*",
+      "RunOrder": 3,
+      "Type": "BarcodingBatch"
+    },
+    {
+      "Cycles": 11,
+      "Name": "B02",
+      "PMGMask": "Y4N*",
+      "RunOrder": 4,
+      "Type": "BarcodingBatch"
+    },
+    {
+      "Cycles": 11,
+      "Name": "B03",
+      "PMGMask": "Y4N*",
+      "RunOrder": 5,
+      "Type": "BarcodingBatch"
+    },
+    {
+      "Cycles": 11,
+      "Name": "B04",
+      "PMGMask": "Y4N*",
+      "RunOrder": 6,
+      "Type": "BarcodingBatch"
+    },
+    {
+      "Cycles": 11,
+      "Name": "B05",
+      "PMGMask": "Y4N*",
+      "RunOrder": 7,
+      "Type": "BarcodingBatch"
+    },
+    {
+      "Cycles": 11,
+      "Name": "B06",
+      "PMGMask": "Y4N*",
+      "RunOrder": 8,
+      "Type": "BarcodingBatch"
+    },
+    {
+      "Cycles": 11,
+      "Name": "B07",
+      "PMGMask": "Y4N*",
+      "RunOrder": 9,
+      "Type": "BarcodingBatch"
+    }
+  ]
+}

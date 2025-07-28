@@ -18,6 +18,7 @@ our @EXPORT = qw(
   $CYCLES_I1
   $CYCLES_R2
   $CYCLE_FILE_PATTERN
+  $CYCLE_FILE_PATTERN_CYTO
   $DATE
   $FLOWCELL
   $FOLDER_NAME
@@ -63,6 +64,7 @@ Readonly::Scalar our $CYCLES => 'Cycles';
 Readonly::Scalar our $CYCLES_I1 => 'I1';
 Readonly::Scalar our $CYCLES_R2 => 'R2';
 Readonly::Scalar our $CYCLE_FILE_PATTERN => qr/^[IR][12]_C\d{3}/;
+Readonly::Scalar our $CYCLE_FILE_PATTERN_CYTO => qr/^[B]\d{2}_C\d{3}/;
 Readonly::Scalar our $DATE => 'Date';
 Readonly::Scalar our $FLOWCELL => 'Flowcell';
 Readonly::Scalar our $FOLDER_NAME => 'RunFolderName';

@@ -8,7 +8,9 @@ use File::Spec::Functions 'catfile';
 use Exporter;
 use Perl6::Slurp;
 use JSON;
-use Monitor::Elembio::Enum qw( 
+use List::MoreUtils qw( any );
+use Monitor::Elembio::Enum qw(
+  $RUN_CYTOPROFILE
   $RUN_MANIFEST_FILE
   $RUN_PARAM_FILE
   $RUN_STANDARD
@@ -63,10 +65,7 @@ sub find_run_folders {
     if (! -e $run_parameters_file) {
       croak("No RunParameters.json file in $runfolder_path");
     }
-    my $json_params_data = decode_json(slurp $run_parameters_file);
-    if ($json_params_data->{$RUN_TYPE} eq $RUN_STANDARD) {
-      push @run_folders, $runfolder_path;
-    }
+    push @run_folders, $runfolder_path;
   }
   return @run_folders;
 }

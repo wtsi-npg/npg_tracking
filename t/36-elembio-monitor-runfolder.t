@@ -3,23 +3,54 @@ use warnings;
 use File::Basename;
 use File::Copy;
 use File::Copy::Recursive qw( dircopy );
-use Test::More tests => 9;
+use Test::More tests => 10;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
-use File::Spec::Functions qw( catdir );
+use File::Path qw/ make_path /;
+use File::Spec::Functions qw( catfile catdir );
 use File::Slurp;
 
 use t::dbic_util;
-use t::elembio_util qw( update_run_folder );
 use Monitor::Elembio::Enum qw(
   $CYCLES
+  $RUN_CYTOPROFILE
   $RUN_TYPE
   $RUN_STANDARD
   $RUN_STATUS_COMPLETE
   $RUN_STATUS_INPROGRESS
   $RUN_STATUS_TYPE
 );
+
+sub write_cycle_files {
+  my ($ir_counts, $basecalls_path) = @_;
+  foreach my $read_type ( keys %{$ir_counts}) {
+    foreach my $cycle (1 .. $ir_counts->{$read_type}) {
+      my $cycle_file_name = $read_type . sprintf("_C%03d", $cycle) . '.zip';
+      open(my $fh_cycle, '>', catfile($basecalls_path, $cycle_file_name))
+        or die "Could not create file '$cycle_file_name' $!";
+      close $fh_cycle;
+    }
+  }
+}
+
+sub update_run_folder {
+  my ($runfolder_path, $test_params) = @_;
+  my $basecalls_path;
+  if ($test_params->{$RUN_TYPE} eq 'Cytoprofiling') {
+    $basecalls_path = catdir($runfolder_path, 'BaseCalling', 'BaseCalls');
+  } elsif ($test_params->{$RUN_TYPE} eq 'Sequencing') {
+    $basecalls_path = catdir($runfolder_path, 'BaseCalls');
+  }
+  make_path($basecalls_path);
+  if (exists $test_params->{$CYCLES}) {
+    write_cycle_files($test_params->{$CYCLES}, $basecalls_path);
+  }
+  if ($test_params->{$RUN_STATUS_TYPE} eq 'run in progress') {
+    unlink(catfile($runfolder_path, 'RunUploaded.json'));
+  }
+}
+
 use_ok('Monitor::Elembio::RunFolder');
 
 subtest 'test run parameters loader' => sub {
@@ -65,6 +96,52 @@ subtest 'test run parameters loader' => sub {
   isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
           'Object returned by tracking_run method' );
   isa_ok( $test->find_run_db_record(), 'npg_tracking::Schema::Result::Run', 'run record exists in db' );
+};
+
+subtest 'test on cytoprofiling run' => sub {
+  plan tests => 12;
+
+  my $schema = t::dbic_util->new->test_schema();
+  my $testdir = tempdir( CLEANUP => 1 );
+  my $instrument_folder = 'AV244103';
+  my $run_name = '2345';
+  my $run_folder_name = "20250415_${instrument_folder}_${run_name}";
+  my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
+  my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
+  dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
+
+  my $test_params = {
+    $RUN_TYPE => $RUN_CYTOPROFILE,
+    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS,
+    $CYCLES => {
+      B01 => 11,
+      B02 => 11,
+      B03 => 11,
+      B04 => 11,
+      B05 => 11,
+      B06 => 11,
+      B07 => 0
+    },
+  };
+  update_run_folder(
+    $runfolder_path,
+    $test_params
+  );
+
+  my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
+                                                npg_tracking_schema => $schema);
+  isa_ok( $test, 'Monitor::Elembio::RunFolder' );
+  is( $test->batch_id, undef, 'batch_id value undef' );
+  is( $test->expected_cycle_count, 77, 'expected cycle value correct' );
+  is( $test->actual_cycle_count, 66, 'actual cycle value correct' );
+  is( $test->is_paired, 0, 'is_paired value correct' );
+  is( $test->is_indexed, 0, 'is_indexed value correct' );
+  ok( ! $test->tracking_run()->current_run_status, 'current_run_status not set');
+  ok( ! $test->tracking_run()->current_run_status_description, 'current_run_status_description undef');
+  lives_ok {$test->process_run_parameters();} 'process_run_parameters succeeds';
+  ok( $test->tracking_run()->current_run_status, 'current_run_status set');
+  is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status_description correct');
+  ok( $test->tracking_run()->is_tag_set('cytoprofiling'), 'cytoprofiling tag is set');
 };
 
 subtest 'test run parameters loader exceptions' => sub {
