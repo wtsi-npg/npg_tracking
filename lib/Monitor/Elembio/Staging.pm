@@ -1,14 +1,13 @@
 package Monitor::Elembio::Staging;
 
+use strict;
+use warnings;
 use Carp;
 use Cwd 'abs_path';
 use File::Basename;
 use Readonly;
 use File::Spec::Functions 'catfile';
 use Exporter;
-use Perl6::Slurp;
-use JSON;
-use List::MoreUtils qw( any );
 use Monitor::Elembio::Enum qw(
   $RUN_CYTOPROFILE
   $RUN_MANIFEST_FILE
