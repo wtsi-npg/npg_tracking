@@ -12,7 +12,6 @@ use List::MoreUtils qw( any );
 use DateTime::Format::Strptime;
 use Perl6::Slurp;
 use Try::Tiny;
-use File::Find;
 
 use npg_tracking::Schema;
 use npg_tracking::util::types;
@@ -351,21 +350,27 @@ has q{actual_cycle_count}  => (
 );
 sub _build_actual_cycle_count {
   my $self = shift;
-  my @objfound = $self->_find_in_runfolder(qr/$BASECALL_FOLDER/);
-  my $num_items = scalar @objfound;
-  if ($num_items > 1) {
-    $self->logcroak('too many items of ' . $BASECALL_FOLDER . ' found in ' . $self->runfolder_path);
+ 
+  my $dir_name = 'BaseCalls';
+  my $basecalls_dir = catdir $self->runfolder_path, $dir_name;
+  if (!-d $basecalls_dir) {
+    $basecalls_dir = catdir $self->runfolder_path, 'BaseCalling', $dir_name;
   }
+ 
   my @cycle_files = ();
-  my $cycle_pattern = ($self->run_type eq $RUN_CYTOPROFILE) ? $CYCLE_FILE_PATTERN_CYTO : $CYCLE_FILE_PATTERN;
-  if ($num_items == 1) {
-    my @files = glob catfile($objfound[0], '*.zip');
+  if (-d $basecalls_dir) {
+    my $cycle_pattern = ($self->run_type eq $RUN_CYTOPROFILE) ?
+      $CYCLE_FILE_PATTERN_CYTO : $CYCLE_FILE_PATTERN;
+    my @files = glob catfile($basecalls_dir, '*.zip');
     foreach my $f ( @files ) {
       if (basename($f) =~ qr/$cycle_pattern/) {
         push @cycle_files, $f;
       }
     }
+  } else {
+    $self->warn("$dir_name not found");
   }
+
   return scalar @cycle_files;
 }
 
@@ -708,31 +713,6 @@ sub find_run_db_record() {
     $self->instrument_name,
   );
   return $run_row;
-}
-
-=head2 _find_in_runfolder
-
-Find recursively all items (directories or files)
-under the current run folder that follow an input pattern.
-
-=cut
-sub _find_in_runfolder() {
-  my ($self, $objname) = @_;
-  my @objfound = ();
-
-  my $wanted = sub {
-    if ( $_ =~ qr/${objname}$/) {
-      push @objfound, $File::Find::name;
-    }
-  };
-  my $find_args = {
-    wanted => $wanted,
-    follow => 0,
-    no_chdir => 0
-  };
-  find($find_args, ( $self->runfolder_path ));
-
-  return @objfound;
 }
 
 1;
