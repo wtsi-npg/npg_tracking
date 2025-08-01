@@ -20,6 +20,7 @@ use Monitor::Elembio::Enum qw(
   $BASECALL_FOLDER
   $CONSUMABLES
   $CYCLE_FILE_PATTERN
+  $CYCLE_FILE_PATTERN_CYTO
   $CYCLES
   $CYCLES_I1
   $CYCLES_R2
@@ -32,6 +33,7 @@ use Monitor::Elembio::Enum qw(
   $OUTCOME
   $OUTCOME_COMPLETE
   $OUTCOME_FAILED
+  $RUN_CYTOPROFILE
   $RUN_NAME
   $RUN_PARAM_FILE
   $RUN_STATUS_ARCHIVAL_PENDING
@@ -41,6 +43,7 @@ use Monitor::Elembio::Enum qw(
   $RUN_STATUS_INPROGRESS 
   $RUN_STATUS_STOPPED
   $RUN_TABLE
+  $RUN_TYPE
   $RUN_UPLOAD_FILE
   $RUNLANE_TABLE
   $SERIAL_NUMBER
@@ -297,9 +300,13 @@ has q{batch_id}     => (
 );
 sub _build_batch_id {
   my $self = shift;
-  my ($batch_id) = $self->_run_params_data()->{$RUN_NAME} =~ /\AB?(\d+)/smx;
-  if (!$batch_id) {
-    $self->logcarp("Run parameter batch_id: wrong format in $RUN_PARAM_FILE");
+  my $batch_id;
+  # Cytoprofiling are not in production, so no batch_id for them
+  if ( $self->run_type ne $RUN_CYTOPROFILE ) {
+    ($batch_id) = $self->_run_params_data()->{$RUN_NAME} =~ /\AB?(\d+)/smx;
+    if (!$batch_id) {
+      $self->logcarp("Run parameter batch_id: wrong format in $RUN_PARAM_FILE");
+    }
   }
   return $batch_id;
 }
@@ -319,7 +326,15 @@ has q{expected_cycle_count}  => (
 );
 sub _build_expected_cycle_count {
   my $self = shift;
-  return sum values %{$self->_run_params_data()->{$CYCLES}};
+  my @exp_cycles;
+  if ( $self->run_type eq $RUN_CYTOPROFILE ) {
+    @exp_cycles =  map { $_->{$CYCLES} }
+                    grep { $_->{'Type'} eq 'BarcodingBatch' }
+                    @{$self->_run_params_data()->{'Batches'}};
+  } else {
+    @exp_cycles = values %{$self->_run_params_data()->{$CYCLES}};
+  }
+  return sum @exp_cycles;
 }
 
 =head2 actual_cycle_count
@@ -342,10 +357,11 @@ sub _build_actual_cycle_count {
     $self->logcroak('too many items of ' . $BASECALL_FOLDER . ' found in ' . $self->runfolder_path);
   }
   my @cycle_files = ();
+  my $cycle_pattern = ($self->run_type eq $RUN_CYTOPROFILE) ? $CYCLE_FILE_PATTERN_CYTO : $CYCLE_FILE_PATTERN;
   if ($num_items == 1) {
     my @files = glob catfile($objfound[0], '*.zip');
     foreach my $f ( @files ) {
-      if (basename($f) =~ qr/${CYCLE_FILE_PATTERN}/) {
+      if (basename($f) =~ qr/$cycle_pattern/) {
         push @cycle_files, $f;
       }
     }
@@ -491,6 +507,9 @@ sub _set_tags {
   if ($self->is_indexed) {
     push @tags, 'multiplex';
   }
+  if ($self->run_type eq $RUN_CYTOPROFILE) {
+    push @tags, lc($self->run_type);
+  }
 
   foreach my $tag ( @tags ) {
     $self->tracking_run()->set_tag($USERNAME, $tag);
@@ -582,6 +601,22 @@ sub _build__run_uploaded_data {
     $json_data = decode_json(slurp $run_uploaded_file);
   }
   return $json_data;
+}
+
+=head2 run_type
+
+Type of the run.
+
+=cut
+has q{run_type}     => (
+  isa           => q{Str},
+  is            => q{ro},
+  required      => 0,
+  lazy_build    => 1,
+);
+sub _build_run_type {
+  my $self = shift;
+  return $self->_run_params_data()->{$RUN_TYPE};
 }
 
 =head2 process_run_parameters

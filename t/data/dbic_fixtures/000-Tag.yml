@@ -57,3 +57,5 @@
 - id_tag: 25
   tag: workflow_NovaSeqXp
   incompatible_tag: workflow_NovaSeqStandard
+- id_tag: 26
+  tag: cytoprofiling
