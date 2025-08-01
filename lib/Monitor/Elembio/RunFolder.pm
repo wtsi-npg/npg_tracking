@@ -15,47 +15,51 @@ use Try::Tiny;
 
 use npg_tracking::Schema;
 use npg_tracking::util::types;
-use Monitor::Elembio::Enum qw( 
-  $BASECALL_FOLDER
-  $CONSUMABLES
-  $CYCLE_FILE_PATTERN
-  $CYCLE_FILE_PATTERN_CYTO
-  $CYCLES
-  $CYCLES_I1
-  $CYCLES_R2
-  $DATE
-  $FLOWCELL
-  $FOLDER_NAME
-  $INSTRUMENT_NAME
-  $INSTRUMENT_TABLE
-  $LANES
-  $OUTCOME
-  $OUTCOME_COMPLETE
-  $OUTCOME_FAILED
-  $RUN_CYTOPROFILE
-  $RUN_NAME
-  $RUN_PARAM_FILE
-  $RUN_STATUS_ARCHIVAL_PENDING
-  $RUN_STATUS_ARCHIVED
-  $RUN_STATUS_CANCELLED
-  $RUN_STATUS_COMPLETE
-  $RUN_STATUS_INPROGRESS 
-  $RUN_STATUS_STOPPED
-  $RUN_TABLE
-  $RUN_TYPE
-  $RUN_UPLOAD_FILE
-  $RUNLANE_TABLE
-  $SERIAL_NUMBER
-  $SIDE
-  $TIME_PATTERN
-  $USERNAME
-);
 
 with qw[
   WTSI::DNAP::Utilities::Loggable
 ];
 
 our $VERSION = '0';
+
+# Pipeline Enums
+Readonly::Scalar my $USERNAME => 'pipeline';
+
+# Property Enums
+Readonly::Scalar my $CONSUMABLES => 'Consumables';
+Readonly::Scalar my $CYCLES => 'Cycles';
+Readonly::Scalar my $CYCLES_I1 => 'I1';
+Readonly::Scalar my $CYCLES_R2 => 'R2';
+Readonly::Scalar my $CYCLE_FILE_PATTERN => qr/^[IR][12]_C\d{3}/;
+Readonly::Scalar my $CYCLE_FILE_PATTERN_CYTO => qr/^[B]\d{2}_C\d{3}/;
+Readonly::Scalar my $DATE => 'Date';
+Readonly::Scalar my $FLOWCELL => 'Flowcell';
+Readonly::Scalar my $FOLDER_NAME => 'RunFolderName';
+Readonly::Scalar my $INSTRUMENT_NAME => 'InstrumentName';
+Readonly::Scalar my $LANES => 'AnalysisLanes';
+Readonly::Scalar my $RUN_NAME => 'RunName';
+Readonly::Scalar my $SERIAL_NUMBER => 'SerialNumber';
+Readonly::Scalar my $SIDE => 'Side';
+Readonly::Scalar my $TIME_PATTERN => '%Y-%m-%dT%H:%M:%S.%NZ'; # 2023-12-19T13:31:17.461926614Z
+Readonly::Scalar my $RUN_STATUS_TIME_PATTERN => '%Y-%m-%dT%H:%M:%S';
+
+# Run Uploaded Enums
+Readonly::Scalar my $OUTCOME => 'outcome';
+Readonly::Scalar my $OUTCOME_COMPLETE => 'OutcomeCompleted';
+Readonly::Scalar my $OUTCOME_FAILED => 'OutcomeFailed';
+
+# Run Enums
+Readonly::Scalar my $RUN_CYTOPROFILE => 'Cytoprofiling';
+Readonly::Scalar my $RUN_PARAM_FILE => 'RunParameters.json';
+Readonly::Scalar my $RUN_TYPE => 'RunType';
+Readonly::Scalar my $RUN_UPLOAD_FILE => 'RunUploaded.json';
+Readonly::Scalar my $RUN_STATUS_ARCHIVAL_PENDING => 'archival pending';
+Readonly::Scalar my $RUN_STATUS_ARCHIVED => 'run archived';
+Readonly::Scalar my $RUN_STATUS_CANCELLED => 'run cancelled';
+Readonly::Scalar my $RUN_STATUS_COMPLETE => 'run complete';
+Readonly::Scalar my $RUN_STATUS_INPROGRESS => 'run in progress';
+Readonly::Scalar my $RUN_STATUS_STOPPED => 'run stopped early';
+Readonly::Scalar my $RUN_STATUS_TYPE => 'StatusType';
 
 =head1 NAME
 
@@ -138,7 +142,7 @@ sub _build_tracking_run {
   if ($run_row) {
     $self->info('Found run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
   } else {
-    my $rs = $self->npg_tracking_schema->resultset($RUN_TABLE);
+    my $rs = $self->npg_tracking_schema->resultset('Run');
     $self->info('will create a new run for ' . $self->runfolder_path);
     my $data = {
       flowcell_id          => $self->flowcell_id,
@@ -158,7 +162,7 @@ sub _build_tracking_run {
       $run_row = $rs->create($data);
       $self->info('Created run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
 
-      my $runlane_rs = $run_row->result_source()->schema()->resultset($RUNLANE_TABLE);
+      my $runlane_rs = $run_row->result_source()->schema()->resultset('RunLane');
       for my $lane (1 .. $self->lane_count) {
         $runlane_rs->create({id_run => $run_row->id_run, position => $lane});
         $self->info("Created record for lane $lane of run_id " . $run_row->id_run);
@@ -188,7 +192,7 @@ has q{tracking_instrument} => (
 );
 sub _build_tracking_instrument {
   my $self = shift;
-  my $rs = $self->npg_tracking_schema->resultset($INSTRUMENT_TABLE);
+  my $rs = $self->npg_tracking_schema->resultset('Instrument');
   my $params = {
     external_name => $self->instrument_name
   };
@@ -692,7 +696,7 @@ record or an undefind value if the record is not found.
 =cut
 sub find_run_db_record() {
   my $self = shift;
-  my $rs = $self->npg_tracking_schema->resultset($RUN_TABLE);
+  my $rs = $self->npg_tracking_schema->resultset('Run');
   my $run_row = $rs->find_with_attributes(
     $self->folder_name,
     $self->flowcell_id,
@@ -736,8 +740,6 @@ __END__
 =item Try::Tiny
 
 =item npg_tracking::Schema
-
-=item Monitor::Elembio::Enum
 
 =back
 

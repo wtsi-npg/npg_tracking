@@ -8,18 +8,11 @@ use File::Basename;
 use Readonly;
 use File::Spec::Functions 'catfile';
 use Exporter;
-use Monitor::Elembio::Enum qw(
-  $RUN_CYTOPROFILE
-  $RUN_MANIFEST_FILE
-  $RUN_PARAM_FILE
-  $RUN_STANDARD
-  $RUN_TYPE
-);
 
 our @ISA= qw( Exporter );
 our @EXPORT = qw( find_run_folders );
 
-Readonly::Scalar my $RUN_MANIFEST_GLOB => 'AV*/**/' . $RUN_MANIFEST_FILE;
+Readonly::Scalar my $RUN_MANIFEST_GLOB => 'AV*/**/RunManifest.json';
 
 our $VERSION = '0';
 
@@ -32,7 +25,8 @@ Monitor::Elembio::Staging
 =head1 SYNOPSIS
 
   use Monitor::Elembio::Staging qw( find_run_folders );
-
+  my @folders = find_run_folders($staging_area);
+ 
 =head1 DESCRIPTION
 
 Utilities to interrogate the staging area designated to an Elembio instrument.
@@ -60,7 +54,7 @@ sub find_run_folders {
   my $manifest_pattern = catfile($staging_area, $RUN_MANIFEST_GLOB);
   foreach my $run_manifest_file ( glob $manifest_pattern ) {
     my $runfolder_path = dirname(abs_path($run_manifest_file));
-    my $run_parameters_file = catfile($runfolder_path, $RUN_PARAM_FILE);
+    my $run_parameters_file = catfile($runfolder_path, 'RunParameters.json');
     if (! -e $run_parameters_file) {
       croak("No RunParameters.json file in $runfolder_path");
     }
@@ -90,8 +84,6 @@ __END__
 =item File::Spec::Functions
 
 =item Exporter
-
-=item Monitor::Elembio::Enum
 
 =back
 
