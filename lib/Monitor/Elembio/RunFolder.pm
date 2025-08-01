@@ -65,9 +65,11 @@ Monitor::Elembio::RunFolder
 
 =head1 SYNOPSIS
 
-    C<<use Monitor::Elembio::RunFolder;
-       my $run_folder = Monitor::Elembio::runfolder->new( runfolder_path      => $run_folder,
-                                                           npg_tracking_schema => $schema);>>
+C<<use Monitor::Elembio::RunFolder;
+   my $run_folder = Monitor::Elembio::runfolder->new(
+     runfolder_path      => $run_folder,
+     npg_tracking_schema => $schema
+   );>>
 
 =head1 DESCRIPTION
 
@@ -328,8 +330,8 @@ sub _build_expected_cycle_count {
   my @exp_cycles;
   if ( $self->run_type eq $RUN_CYTOPROFILE ) {
     @exp_cycles =  map { $_->{$CYCLES} }
-                    grep { $_->{'Type'} eq 'BarcodingBatch' }
-                    @{$self->_run_params_data()->{'Batches'}};
+                   grep { $_->{'Type'} eq 'BarcodingBatch' }
+                   @{$self->_run_params_data()->{'Batches'}};
   } else {
     @exp_cycles = values %{$self->_run_params_data()->{$CYCLES}};
   }
@@ -374,13 +376,10 @@ sub _build_actual_cycle_count {
   return scalar @cycle_files;
 }
 
-=head2 _set_actual_cycle_count
-
-Inspect the file system to retrieve the number of cycles
-that have been completed so far and update the DB if
-it is not up-to-date.
-
-=cut
+#####
+# Inspect the file system to retrieve the number of cycles
+# that have been completed so far and update the DB if
+# it is not up-to-date.
 sub _set_actual_cycle_count {
   my ($self) = shift;
 
@@ -496,11 +495,6 @@ sub _build_is_indexed {
   return 0;
 }
 
-=head2 _set_tags
-
-Set all necessary tags when the function is called.
-
-=cut
 sub _set_tags {
   my ($self) = shift;
   my @tags = (
@@ -522,12 +516,8 @@ sub _set_tags {
   }
 }
 
-=head2 _run_params_data
-
-Reference to hash object that represents the JSON file
-content of RunParameters.json.
-
-=cut
+#####
+# Hash reference that represents the JSON file content of RunParameters.json.
 has q{_run_params_data} => (
   isa               => q{HashRef},
   is                => q{ro},
@@ -585,12 +575,8 @@ sub _build_is_completed {
   return 0;
 }
 
-=head2 _run_uploaded_data
-
-Reference to hash object that represents the JSON file
-content of RunUploaded.json.
-
-=cut
+#####
+# Hash reference that represents the JSON file content of RunUploaded.json.
 has q{_run_uploaded_data} => (
   isa               => q{Maybe[HashRef]},
   is                => q{ro},
