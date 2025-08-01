@@ -200,7 +200,8 @@ sub _build_tracking_instrument {
 
   my $instrument_count = scalar @instrument_rows;
   if ($instrument_count == 0) {
-    $self->logcroak('No current instrument found in NPG tracking DB with name ' . $self->instrument_name);
+    $self->logcroak('No current instrument found in NPG tracking DB with name '
+      . $self->instrument_name);
   }
 
   my $instrument_row = $instrument_rows[0];
@@ -222,7 +223,8 @@ has q{flowcell_id}  => (
 );
 sub _build_flowcell_id {
   my $self = shift;
-  my $flowcell_id = $self->_run_params_data()->{$CONSUMABLES}->{$FLOWCELL}->{$SERIAL_NUMBER};
+  my $flowcell_id = $self->_run_params_data()
+    ->{$CONSUMABLES}->{$FLOWCELL}->{$SERIAL_NUMBER};
   if (! $flowcell_id) {
     $self->logcroak('Empty value in flowcell_id');
   }
@@ -395,7 +397,8 @@ sub _set_actual_cycle_count {
     $tracking_run->update({actual_cycle_count => $actual_cycle_count});
     $self->info("Run parameter $CYCLES: actual cycle count initiated");
   } elsif ($actual_cycle_count < $remote_cycle_count) {
-    $self->logcroak("Run parameter $CYCLES: cycle count inconsistency on file system");
+    $self->logcroak(
+      "Run parameter $CYCLES: cycle count inconsistency on file system");
   } elsif ($actual_cycle_count == $remote_cycle_count) {
     $self->info("Run parameter $CYCLES: nothing to update");
   } else {
@@ -643,7 +646,8 @@ sub process_run_parameters {
   
   if ( ! $current_run_status_obj ) {
     $run_row->set_instrument_side($self->instrument_side, $USERNAME);
-    $current_run_status_obj = $run_row->update_run_status($RUN_STATUS_INPROGRESS, $USERNAME, $self->date_created);
+    $current_run_status_obj = $run_row->update_run_status(
+      $RUN_STATUS_INPROGRESS, $USERNAME, $self->date_created);
     $self->info('New run ' . $self->runfolder_path . ' created');
     $self->_set_tags();
   }
@@ -651,10 +655,12 @@ sub process_run_parameters {
   my $current_status_description = $run_row->current_run_status_description;
   $self->info("Current run status is '$current_status_description'");
   my $current_run_status_dict = $current_run_status_obj->run_status_dict;
-  if ( any { $_ eq $current_status_description} ($RUN_STATUS_STOPPED, $RUN_STATUS_CANCELLED, $RUN_STATUS_COMPLETE) ) {
+  if ( any { $_ eq $current_status_description}
+      ($RUN_STATUS_STOPPED, $RUN_STATUS_CANCELLED, $RUN_STATUS_COMPLETE) ) {
     return;
   }
-  if ( $current_run_status_dict->compare_to_status_description($RUN_STATUS_COMPLETE) > 0 ) {
+  if ( $current_run_status_dict
+         ->compare_to_status_description($RUN_STATUS_COMPLETE) > 0 ) {
     if ( $current_status_description eq $RUN_STATUS_ARCHIVAL_PENDING ) {
       $run_row->update_run_status($RUN_STATUS_ARCHIVED, $USERNAME);
       $self->info("Run moved to status '$RUN_STATUS_ARCHIVED'");
@@ -666,21 +672,25 @@ sub process_run_parameters {
   
   if (defined $self->_run_uploaded_data()) {
     if ($self->is_failed) {
-      if ( $current_run_status_dict->compare_to_status_description($RUN_STATUS_STOPPED) == -1 ) {
+      if ( $current_run_status_dict
+          ->compare_to_status_description($RUN_STATUS_STOPPED) == -1 ) {
         my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9]);
         $run_row->update_run_status($RUN_STATUS_STOPPED, $USERNAME, $date);
         $self->info('Run ' . $self->runfolder_path . ' is failed');
       } else {
-        $self->info('Run ' . $self->runfolder_path . ' was failed, current status ' . $current_run_status_obj->description);
+        $self->info('Run ' . $self->runfolder_path .
+          ' was failed, current status ' . $current_run_status_obj->description);
       }
     } else {
       if ($self->is_completed) {
-        if ( $current_run_status_dict->compare_to_status_description($RUN_STATUS_COMPLETE) == -1 ) {
+        if ( $current_run_status_dict
+            ->compare_to_status_description($RUN_STATUS_COMPLETE) == -1 ) {
           my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9]);
           $run_row->update_run_status($RUN_STATUS_COMPLETE, $USERNAME, $date);
           $self->info('Run ' . $self->runfolder_path . ' is now completed');
         } else {
-          $self->info('Run ' . $self->runfolder_path . ' was completed, current status ' . $current_run_status_obj->description);
+          $self->info('Run ' . $self->runfolder_path .
+            ' was completed, current status ' . $current_run_status_obj->description);
         }
       }
     }
