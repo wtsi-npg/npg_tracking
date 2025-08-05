@@ -12,15 +12,6 @@ use File::Spec::Functions qw( catfile catdir );
 use File::Slurp;
 
 use t::dbic_util;
-use Monitor::Elembio::Enum qw(
-  $CYCLES
-  $RUN_CYTOPROFILE
-  $RUN_TYPE
-  $RUN_STANDARD
-  $RUN_STATUS_COMPLETE
-  $RUN_STATUS_INPROGRESS
-  $RUN_STATUS_TYPE
-);
 
 sub write_cycle_files {
   my ($ir_counts, $basecalls_path) = @_;
@@ -36,17 +27,20 @@ sub write_cycle_files {
 
 sub update_run_folder {
   my ($runfolder_path, $test_params) = @_;
+
+  $test_params ||= {};
   my $basecalls_path;
-  if ($test_params->{$RUN_TYPE} eq 'Cytoprofiling') {
+  if ($test_params->{'RunType'} && $test_params->{'RunType'} eq 'Cytoprofiling') {
     $basecalls_path = catdir($runfolder_path, 'BaseCalling', 'BaseCalls');
-  } elsif ($test_params->{$RUN_TYPE} eq 'Sequencing') {
+  } else {
     $basecalls_path = catdir($runfolder_path, 'BaseCalls');
   }
   make_path($basecalls_path);
-  if (exists $test_params->{$CYCLES}) {
-    write_cycle_files($test_params->{$CYCLES}, $basecalls_path);
+  if (exists $test_params->{'Cycles'}) {
+    write_cycle_files($test_params->{'Cycles'}, $basecalls_path);
   }
-  if ($test_params->{$RUN_STATUS_TYPE} eq 'run in progress') {
+  if (!$test_params->{'StatusType'} ||
+      ($test_params->{'StatusType'} eq 'run in progress')) {
     unlink(catfile($runfolder_path, 'RunUploaded.json'));
   }
 }
@@ -67,14 +61,7 @@ subtest 'test run parameters loader' => sub {
   my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
-  my $test_params = {
-    $RUN_TYPE => $RUN_STANDARD,
-    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
-  };
-  update_run_folder(
-    $runfolder_path,
-    $test_params
-  );
+  update_run_folder($runfolder_path);
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
@@ -111,9 +98,8 @@ subtest 'test on cytoprofiling run' => sub {
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
   my $test_params = {
-    $RUN_TYPE => $RUN_CYTOPROFILE,
-    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS,
-    $CYCLES => {
+    'RunType' => 'Cytoprofiling',
+    'Cycles' => {
       B01 => 11,
       B02 => 11,
       B03 => 11,
@@ -155,14 +141,7 @@ subtest 'test run parameters loader exceptions' => sub {
   my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
-  my $test_params = {
-    $RUN_TYPE => $RUN_STANDARD,
-    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
-  };
-  update_run_folder(
-    $runfolder_path,
-    $test_params
-  );
+  update_run_folder($runfolder_path);
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
@@ -196,14 +175,7 @@ subtest 'test run parameters update on new run' => sub {
   my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
-  my $test_params = {
-    $RUN_TYPE => $RUN_STANDARD,
-    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
-  };
-  update_run_folder(
-    $runfolder_path,
-    $test_params
-  );
+  update_run_folder($runfolder_path);
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
@@ -247,19 +219,14 @@ subtest 'test update progress on existing run' => sub {
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
   my $test_params = {
-    $CYCLES => {
+    'Cycles' => {
       R1 => 100,
       R2 => 100,
       I1 => 0,
       I2 => 0,
     },
-    $RUN_TYPE => $RUN_STANDARD,
-    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
   };
-  update_run_folder(
-    $runfolder_path,
-    $test_params
-  );
+  update_run_folder($runfolder_path, $test_params);
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
@@ -283,20 +250,15 @@ subtest 'test update on existing run actual cycle counter' => sub {
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
   my $test_params = {
-    $CYCLES => {
+    'Cycles' => {
       R1 => 100,
       R2 => 100,
       I1 => 8,
       I2 => 0,
       P1 => 1,
     },
-    $RUN_TYPE => $RUN_STANDARD,
-    $RUN_STATUS_TYPE => $RUN_STATUS_INPROGRESS
   };
-  update_run_folder(
-    $runfolder_path,
-    $test_params
-  );
+  update_run_folder($runfolder_path, $test_params);
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
@@ -318,20 +280,16 @@ subtest 'test on existing run in progress and completed on disk' => sub {
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
   my $test_params = {
-    $CYCLES => {
+    'Cycles' => {
       R1 => 151,
       R2 => 151,
       I1 => 8,
       I2 => 0,
       P1 => 1,
     },
-    $RUN_TYPE => $RUN_STANDARD,
-    $RUN_STATUS_TYPE => $RUN_STATUS_COMPLETE
+    'StatusType' => 'run complete'
   };
-  update_run_folder(
-    $runfolder_path,
-    $test_params
-  );
+  update_run_folder($runfolder_path, $test_params);
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
@@ -376,20 +334,16 @@ subtest 'test on not existing run but already completed on disk' => sub {
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
   my $test_params = {
-    $CYCLES => {
+    'Cycles' => {
       R1 => 101,
       R2 => 101,
       I1 => 8,
       I2 => 0,
       P1 => 1,
     },
-    $RUN_TYPE => $RUN_STANDARD,
-    $RUN_STATUS_TYPE => $RUN_STATUS_COMPLETE
+    'StatusType' => 'run complete'
   };
-  update_run_folder(
-    $runfolder_path,
-    $test_params
-  );
+  update_run_folder($runfolder_path,$test_params);
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
@@ -427,19 +381,15 @@ subtest 'test run parameters update on non-plexed and failed new run' => sub {
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
   my $test_params = {
-    $CYCLES => {
+    'Cycles' => {
       R1 => 151,
       R2 => 101,
       I1 => 0,
       I2 => 0,
     },
-    $RUN_TYPE => $RUN_STANDARD,
-    $RUN_STATUS_TYPE => $RUN_STATUS_COMPLETE
+    'StatusType' => 'run complete'
   };
-  update_run_folder(
-    $runfolder_path,
-    $test_params
-  );
+  update_run_folder($runfolder_path, $test_params);
 
   my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);

@@ -123,7 +123,6 @@ htdocs/js/wtsi/prototype-1.6.0.3.js
 htdocs/js/wtsi/sorttable.js
 htdocs/js/wtsi/zebra.js
 INSTALL
-lib/Monitor/Elembio/Enum.pm
 lib/Monitor/Elembio/RunFolder.pm
 lib/Monitor/Elembio/Staging.pm
 lib/Monitor/RunFolder.pm
