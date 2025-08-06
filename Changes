@@ -1,6 +1,6 @@
 LIST OF CHANGES
 
-unreleased
+release 105.6.0 (2025-08-06)
  - Registration of 'cytoprofiling' runs in tracking DB
  - Simplification of Elembio parser: simplified compute of actual cycle count,
    dropped POD for private methods and attributes, removed superfluous imports,
