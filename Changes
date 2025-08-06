@@ -1,5 +1,12 @@
 LIST OF CHANGES
 
+unreleased
+ - Registration of 'cytoprofiling' runs in tracking DB
+ - Simplification of Elembio parser: simplified compute of actual cycle count,
+   dropped POD for private methods and attributes, removed superfluous imports,
+   dropped a separate package with constants, split long lines to fit 80 chars
+   and dropped import of constants into a test.
+
 release 105.5.1 (2025-07-22)
  - Bug fix in extraction of batch ID from the Elembio run name:
    allow for the run name being a number and a number prepended by 'B'.
