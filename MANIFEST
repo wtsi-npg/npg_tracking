@@ -123,7 +123,6 @@ htdocs/js/wtsi/prototype-1.6.0.3.js
 htdocs/js/wtsi/sorttable.js
 htdocs/js/wtsi/zebra.js
 INSTALL
-lib/Monitor/Elembio/Enum.pm
 lib/Monitor/Elembio/RunFolder.pm
 lib/Monitor/Elembio/Staging.pm
 lib/Monitor/RunFolder.pm
@@ -446,9 +445,9 @@ t/data/dbic_fixtures/400-RunLaneStatus.yml
 t/data/dbic_fixtures/400-RunRead.yml
 t/data/dbic_fixtures/400-RunStatus.yml
 t/data/dbic_fixtures/400-TagRun.yml
-t/data/elembio_staging/AV244103/20250415_AV244103_25_04_15_iMGL_mapk/RunManifest.json
-t/data/elembio_staging/AV244103/20250415_AV244103_25_04_15_iMGL_mapk/RunParameters.json
-t/data/elembio_staging/AV244103/20250415_AV244103_25_04_15_iMGL_mapk/RunUploaded.json
+t/data/elembio_staging/AV244103/20250415_AV244103_2345/RunManifest.json
+t/data/elembio_staging/AV244103/20250415_AV244103_2345/RunParameters.json
+t/data/elembio_staging/AV244103/20250415_AV244103_2345/RunUploaded.json
 t/data/elembio_staging/AV244103/20250129_AV244103_B1234/RunManifest.json
 t/data/elembio_staging/AV244103/20250129_AV244103_B1234/RunParameters.json
 t/data/elembio_staging/AV244103/20250129_AV244103_B1234/RunUploaded.json
@@ -722,7 +721,6 @@ t/data/repos2/references2/PhiX/Illumina/.gitignore
 t/data/repos2/references2/PhiX/Sanger/.gitignore
 t/dbh.pm
 t/dbic_util.pm
-t/elembio_util.pm
 t/instrument.pm
 t/perlcriticrc
 t/request.pm
