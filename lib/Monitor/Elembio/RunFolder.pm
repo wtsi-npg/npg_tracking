@@ -309,7 +309,7 @@ sub _build_batch_id {
   my $self = shift;
   my $batch_id;
   # Cytoprofiling are not in production, so no batch_id for them
-  if ( $self->run_type ne $RUN_CYTOPROFILE ) {
+  if ( $self->run_type && ($self->run_type ne $RUN_CYTOPROFILE) ) {
     ($batch_id) = $self->_run_params_data()->{$RUN_NAME} =~ /\AB?(\d+)/smx;
     if (!$batch_id) {
       $self->logcarp("Run parameter batch_id: wrong format in $RUN_PARAM_FILE");
@@ -334,7 +334,7 @@ has q{expected_cycle_count}  => (
 sub _build_expected_cycle_count {
   my $self = shift;
   my @exp_cycles;
-  if ( $self->run_type eq $RUN_CYTOPROFILE ) {
+  if ( $self->run_type && ($self->run_type eq $RUN_CYTOPROFILE) ) {
     @exp_cycles =  map { $_->{$CYCLES} }
                    grep { $_->{'Type'} eq 'BarcodingBatch' }
                    @{$self->_run_params_data()->{'Batches'}};
@@ -367,8 +367,9 @@ sub _build_actual_cycle_count {
  
   my @cycle_files = ();
   if (-d $basecalls_dir) {
-    my $cycle_pattern = ($self->run_type eq $RUN_CYTOPROFILE) ?
-      $CYCLE_FILE_PATTERN_CYTO : $CYCLE_FILE_PATTERN;
+    my $cycle_pattern = ($self->run_type
+      && ($self->run_type eq $RUN_CYTOPROFILE)) ?
+        $CYCLE_FILE_PATTERN_CYTO : $CYCLE_FILE_PATTERN;
     my @files = glob catfile($basecalls_dir, '*.zip');
     foreach my $f ( @files ) {
       if (basename($f) =~ qr/$cycle_pattern/) {
@@ -513,7 +514,7 @@ sub _set_tags {
   if ($self->is_indexed) {
     push @tags, 'multiplex';
   }
-  if ($self->run_type eq $RUN_CYTOPROFILE) {
+  if ($self->run_type && ($self->run_type eq $RUN_CYTOPROFILE)) {
     push @tags, lc($self->run_type);
   }
 
@@ -607,7 +608,7 @@ Type of the run.
 
 =cut
 has q{run_type}     => (
-  isa           => q{Str},
+  isa           => q{Maybe[Str]},
   is            => q{ro},
   required      => 0,
   lazy_build    => 1,
