@@ -17,6 +17,8 @@ use Monitor::Elembio::RunFolder;
 
 our $VERSION = '0';
 
+# We rely on the daemon definition which redirects STDOUT to file
+# and so the logger below will print messages to STDOUT by default.
 my $log_config = << 'LOGCONF'
 log4perl.logger = INFO, A1
 

@@ -124,6 +124,7 @@ htdocs/js/wtsi/sorttable.js
 htdocs/js/wtsi/zebra.js
 INSTALL
 lib/Monitor/Elembio/RunFolder.pm
+lib/Monitor/Elembio/RunParametersParser.pm
 lib/Monitor/Elembio/Staging.pm
 lib/Monitor/RunFolder.pm
 lib/Monitor/RunFolder/Staging.pm
@@ -402,6 +403,7 @@ t/34-monitor-runfolder.t
 t/34-monitor-staging.t
 t/35-monitor_one_runfolder.t
 t/36-elembio-monitor-runfolder.t
+t/36-elembio-monitor-runparametersparser.t
 t/36-elembio-monitor-staging.t
 t/40-st-lims-merge.t
 t/40-st-lims-mlwarehouse.t
