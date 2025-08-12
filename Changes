@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+release 105.6.1 (2025-08-12)
+ - Bug fix - allow for registering old Elembio runs with no run type defined in RunParameters.json
+
 release 105.6.0 (2025-08-06)
  - Registration of 'cytoprofiling' runs in tracking DB
  - Simplification of Elembio parser: simplified compute of actual cycle count,
