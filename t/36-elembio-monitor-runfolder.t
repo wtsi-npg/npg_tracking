@@ -48,7 +48,7 @@ sub update_run_folder {
 use_ok('Monitor::Elembio::RunFolder');
 
 subtest 'test run parameters loader' => sub {
-  plan tests => 16;
+  plan tests => 17;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -79,6 +79,7 @@ subtest 'test run parameters loader' => sub {
   is( $test->is_paired, 1, 'is_paired value correct' );
   is( $test->is_indexed, 1, 'is_indexed value correct' );
   is( $test->date_created->strftime('%Y-%m-%dT%H:%M:%S.%NZ'), $date, 'date_created value correct' );
+  is( $test->run_type, 'Sequencing', 'run_type value correct' );
   ok ( ! $test->find_run_db_record(), 'no run record in db' );
   isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
           'Object returned by tracking_run method' );
@@ -86,7 +87,7 @@ subtest 'test run parameters loader' => sub {
 };
 
 subtest 'test on cytoprofiling run' => sub {
-  plan tests => 12;
+  plan tests => 13;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -122,6 +123,7 @@ subtest 'test on cytoprofiling run' => sub {
   is( $test->actual_cycle_count, 66, 'actual cycle value correct' );
   is( $test->is_paired, 0, 'is_paired value correct' );
   is( $test->is_indexed, 0, 'is_indexed value correct' );
+  is( $test->run_type, 'Cytoprofiling', 'run_type value correct' );
   ok( ! $test->tracking_run()->current_run_status, 'current_run_status not set');
   ok( ! $test->tracking_run()->current_run_status_description, 'current_run_status_description undef');
   lives_ok {$test->process_run_parameters();} 'process_run_parameters succeeds';
@@ -131,7 +133,7 @@ subtest 'test on cytoprofiling run' => sub {
 };
 
 subtest 'test run parameters loader exceptions' => sub {
-  plan tests => 6;
+  plan tests => 7;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -159,6 +161,7 @@ subtest 'test run parameters loader exceptions' => sub {
     'wrong lane count';
   ok( $test->date_created, 'missing date gives current date of RunParameters file' );
   is( $test->batch_id, undef, 'batch_id is undef');
+  is( $test->run_type, undef, 'run_type is undef' );
 };
 
 subtest 'test run parameters update on new run' => sub {
