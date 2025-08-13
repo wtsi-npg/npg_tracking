@@ -25,7 +25,7 @@ use_ok('npg::model::instrument');
   isa_ok($instruments, 'ARRAY', '$model->instruments()');
   isa_ok($instruments->[0], 'npg::model::instrument', '$model->instruments()->[0]');
   my $num_instruments = scalar@{$instruments};
-  is($num_instruments, 25, 'number of all known instruments');
+  is($num_instruments, 26, 'number of all known instruments');
 
   my $current_instruments = $model->current_instruments();
   isa_ok($current_instruments, 'ARRAY', '$model->current_instruments()');
@@ -33,7 +33,7 @@ use_ok('npg::model::instrument');
   is($num_current_instruments_illumina, 21,
     'number of Illumina current instruments');
 
-  is(@{ $model->current_instruments('all')}, 22,
+  is(@{ $model->current_instruments('all')}, 23,
     'number of current instruments by all manufacturers');
   is(@{ $model->current_instruments('Illumina')}, $num_current_instruments_illumina,
     'number of Illumina current instruments');

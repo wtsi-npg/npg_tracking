@@ -5,3 +5,5 @@
   name: Illumina
 - id_manufacturer: 16
   name: Roche/454
+- id_manufacturer: 21
+  name: Element Biosciences
