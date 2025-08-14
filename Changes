@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - Updated instrument image generation so that the rendered image for Elembio
+   instruments is correct.
+
 release 105.6.1 (2025-08-12)
  - Bug fix - allow for registering old Elembio runs with no run type defined in RunParameters.json
 
