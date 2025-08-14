@@ -365,7 +365,8 @@ sub does_sequencing {
 sub is_two_slot_instrument {
   my $self = shift;
   return ($self->instrument_format->model &&
-         ($self->instrument_format->model =~ /$HISEQ_INSTR_MODEL|$NOVASEQ_INSTR_MODEL/smx));
+    ($self->instrument_format->model =~
+      /(?:$HISEQ_INSTR_MODEL)|(?:$NOVASEQ_INSTR_MODEL)|(?:AVITI)/smx));
 }
 
 sub is_cbot_instrument {

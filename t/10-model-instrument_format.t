@@ -22,8 +22,8 @@ my $util = t::util->new({fixtures => 1});
   my $if = $IF->new({util => $util,});
   my $cifs = $if->current_instrument_formats();
   isa_ok($cifs, 'ARRAY');
-  is((scalar @{$cifs}), 10, 'unprimed cache cif');
-  is((scalar @{$if->current_instrument_formats()}), 10, 'primed cache cif');
+  is((scalar @{$cifs}), 11, 'unprimed cache cif');
+  is((scalar @{$if->current_instrument_formats()}), 11, 'primed cache cif');
   my $name;
   lives_ok { $name = $if->manufacturer_name }
     'no error calling manufacturer_name on an object used in list context';
@@ -120,6 +120,7 @@ our $INS = q{npg::model::instrument};
     'cBot 2' => ['cBot20'],
     'NovaSeqX' => ['NVX1'],
     'GS20' => ['GS201'],
+    'AVITI24' => ['AV1'],
   }; 
   my $model = npg::model::instrument_format->new({util => $util});
   my $instruments_by_format =
@@ -209,6 +210,7 @@ our $INS = q{npg::model::instrument};
   
   my $first = shift @illumina_instr;
   unshift @illumina_instr, 'GS20';
+  unshift @illumina_instr, 'AVITI24';
   unshift @illumina_instr, $first;
   is_deeply (
     [map { $_->model() } @{$if_object->instrument_formats_sorted('all')}],
