@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 131;
+use Test::More tests => 132;
 use Test::Deep;
 use Test::Exception;
 
@@ -202,6 +202,9 @@ lives_ok {$util->fixtures_path(q[t/data/fixtures]); $util->load_fixtures;} 'a fr
     is($model->fc_slots2current_runs, undef, 'does not have mapping of slots to current runs');
     is($model->fc_slots2blocking_runs, undef, 'does not have mapping of slots to blocking runs')
   }
+
+  my $aviti_instr = npg::model::instrument->new({util => $util, id_instrument => 98,});
+  ok($aviti_instr->is_two_slot_instrument, 'AVITI24 is a two slot instrument');   
 }
 
 {

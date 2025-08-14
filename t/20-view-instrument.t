@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 22;
 use Test::Exception;
 use GD qw(:DEFAULT :cmp);
 use File::Spec;
@@ -151,6 +151,22 @@ is (join(q[ ], npg::view::instrument->lab_names()), 'Ogilvie Sulston',
 
   t::util::is_colour($png, $npg::view::instrument::COLOUR_YELLOW, 'no runs = status yellow');
 }
+
+{
+  my $str = t::request->new({
+           REQUEST_METHOD => 'GET',
+           PATH_INFO      => '/instrument/AV1.png',
+           username       => 'public',
+           util           => $util,
+          });
+
+  like($str, qr{image/png.*PNG}smx, 'Aviti instrument graphical read');
+  my $expected = GD::Image->new( File::Spec->catfile($image_dir, 'AVITI24.png'));
+  $str =~s/\A(?:^\S[^\n]*\n)+\n(\x89PNG)/$1/smx; #trim http header off 
+  my $rendered = GD::Image->new($str);
+  ok (!($rendered->compare($expected) & GD_CMP_IMAGE), 'idle AVITI image');
+}
+
 
 $util->requestor('joe_loader');
 my $inst = npg::model::instrument->new({
