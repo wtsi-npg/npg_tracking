@@ -13,10 +13,6 @@ use Try::Tiny;
 
 use npg_tracking::util::types;
 
-with qw[
-  WTSI::DNAP::Utilities::Loggable
-];
-
 our $VERSION = '0';
 
 # Property Enums
@@ -60,14 +56,14 @@ Elembio parser for RunParameters.json file
 =head2 BUILD
 
 An extension for the constructor method. Checks that either
-runfolder_path or runparams_path are specified.
+runfolder_path or runparams_path options are specified.
 
 =cut
 
 sub BUILD {
   my $self = shift;
   $self->has_runfolder_path || $self->has_runparams_path
-    || $self->logcroak();
+    || croak 'runfolder_path or runparams_path must be specified';
 }
 
 =head2 runfolder_path
@@ -111,7 +107,7 @@ sub _build_flowcell_id {
   my $flowcell_id = $self->_run_params_data()
     ->{$CONSUMABLES}->{$FLOWCELL}->{$SERIAL_NUMBER};
   if (! $flowcell_id) {
-    $self->logcroak('Empty value in flowcell_id');
+    croak 'Empty value in flowcell_id';
   }
   return $flowcell_id;
 }
@@ -132,7 +128,7 @@ sub _build_folder_name {
   my $self = shift;
   my $folder_name = $self->_run_params_data()->{$FOLDER_NAME};
   if (! $folder_name) {
-    $self->logcroak('Empty value in folder_name');
+    croak 'Empty value in folder_name';
   }
   return $folder_name;
 }
@@ -170,7 +166,7 @@ sub _build_instrument_side {
   my $self = shift;
   my ($side) = $self->_run_params_data()->{$SIDE} =~ /Side(A|B)/smx;
   if (!$side) {
-    $self->logcroak("Run parameter $SIDE: wrong format in $RUN_PARAM_FILE");
+    croak "Run parameter $SIDE: wrong format in $RUN_PARAM_FILE";
   }
   return $side;
 }
@@ -197,7 +193,7 @@ sub _build_batch_id {
   if ( $self->run_type && ($self->run_type ne $RUN_CYTOPROFILE) ) {
     ($batch_id) = $self->_run_params_data()->{$RUN_NAME} =~ /\AB?(\d+)/smx;
     if (!$batch_id) {
-      $self->logcarp("Run parameter batch_id: wrong format in $RUN_PARAM_FILE");
+      carp "Run parameter batch_id: wrong format in $RUN_PARAM_FILE";
     }
   }
   return $batch_id;
@@ -245,7 +241,7 @@ sub _build_lane_count {
   my $self = shift;
   my @lanes = split /\+/, $self->_run_params_data()->{$LANES};
   if (! @lanes) {
-    $self->logcroak("Run parameter $LANES: No lane found");
+    croak "Run parameter $LANES: No lane found";
   }
   return scalar @lanes;
 }
@@ -267,7 +263,7 @@ sub _build_date_created {
   my $self = shift;
   my $file_path = catfile($self->runfolder_path, $RUN_PARAM_FILE);
   if (! exists $self->_run_params_data()->{$DATE} or ! $self->_run_params_data()->{$DATE}) {
-    $self->logcarp("Run parameter $DATE: No value in $RUN_PARAM_FILE");
+    carp "Run parameter $DATE: No value in $RUN_PARAM_FILE";
     return DateTime->from_epoch(epoch => (stat  $file_path)[9]);
   } else {
     my $date = $self->_run_params_data()->{$DATE};
@@ -278,7 +274,7 @@ sub _build_date_created {
         on_error=>q[croak]
       )->parse_datetime($date);
     } catch {
-      $self->logcarp("Run parameter $DATE: failed to parse $date");
+      carp "Run parameter $DATE: failed to parse $date";
       return DateTime->from_epoch(epoch => (stat  $file_path)[9]);
     };
   }
