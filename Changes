@@ -1,5 +1,12 @@
 LIST OF CHANGES
 
+unreleased
+ - Isolate the RunParameters.json parser from the Monitor::Elembio::RunFolder
+   into Monitor::Elembio::RunParametersParser
+ - Refactor the elembio staging monitor to catch warnings from carp
+ - Remove verbose option and List::MoreUtils unused import from
+   the elembio staging monitor
+
 release 105.6.1 (2025-08-12)
  - Bug fix - allow for registering old Elembio runs with no run type defined in RunParameters.json
 

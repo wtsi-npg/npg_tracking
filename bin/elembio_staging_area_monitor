@@ -7,7 +7,6 @@ use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
 use English qw(-no_match_vars);
 use Readonly;
 use Try::Tiny;
-use List::MoreUtils qw(any);
 use Log::Log4perl qw[:levels];
 use Pod::Usage;
 use Getopt::Long;
@@ -17,6 +16,9 @@ use Monitor::Elembio::RunFolder;
 
 our $VERSION = '0';
 
+# We rely on the daemon definition which redirects both STDOUT and STDERR
+# to file with -o option. The following configuration prints logs
+# to STDERR by default.
 my $log_config = << 'LOGCONF'
 log4perl.logger = INFO, A1
 
@@ -37,6 +39,38 @@ Readonly::Scalar my $DRY_RUN => $ENV{'dev'} && ($ENV{'dev'} ne 'live');
 
 local $OUTPUT_AUTOFLUSH = 1;
 
+my $help;
+my @staging_areas;
+my $log4perl_config;
+my $debug;
+GetOptions (
+  'help'                        => sub {
+    pod2usage(-verbose => 2, -exitval => 0);
+  },
+  'staging_area|staging-area=s' => \@staging_areas,
+  'logconf=s'                   => \$log4perl_config,
+  'debug'                       => \$debug,
+);
+
+if ($log4perl_config) {
+  Log::Log4perl::init($log4perl_config);
+} else {
+  if ($debug) {
+    Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
+                              level  => $DEBUG,
+                              utf8   => 1});
+  }
+  else {
+    Log::Log4perl::init(\$log_config);
+  }
+}
+my $log = Log::Log4perl->get_logger('main');
+
+local $SIG{__WARN__} = sub {
+  my $message = shift;
+  $log->warn($message);
+};
+
 main();
 
 ###########################################################
@@ -44,36 +78,6 @@ main();
 ###########################################################
 
 sub main {
-  my $help;
-  my @staging_areas;
-  my $log4perl_config;
-  my $debug;
-  my $verbose;
-  GetOptions (
-    'help'                        => sub {
-      pod2usage(-verbose => 2, -exitval => 0);
-    },
-    'staging_area|staging-area=s' => \@staging_areas,
-    'logconf=s'                   => \$log4perl_config,
-    'debug'                       => \$debug,
-    'verbose'                     => \$verbose,
-  );
-
-  if ($log4perl_config) {
-    Log::Log4perl::init($log4perl_config);
-  } else {
-    if ($debug and not $verbose) {
-      Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
-                                level  => $DEBUG,
-                                utf8   => 1});
-    }
-    else {
-      Log::Log4perl::init(\$log_config);
-    }
-  }
-  my $log = Log::Log4perl->get_logger('main');
-  $log->level($ALL);
-
   if (! @staging_areas) {
     $log->fatal("ERROR: --staging_area/--staging-area argument is required");
     exit 1;
@@ -130,7 +134,7 @@ elembio_staging_area_monitor
 =head1 SYNOPSIS
 
 elembio_staging_area_monitor --staging-area <path>
-  [--debug] [--verbose]
+  [--debug] [--logconf]
 
   Options:
     --staging-area  The staging area folder. The following pattern will
@@ -140,13 +144,10 @@ elembio_staging_area_monitor --staging-area <path>
 
     --logconf       A file containing log4perl configuration with log
                       dispatchers. It may include one or more dispatchers
-                      to log messages to different resources.
-                      Highest priority among debug and verbose.
+                      to log messages to different resources. Optional.
+                      Higher priority than debug.
 
     --debug         Enable debug level logging. Optional.
-
-    --verbose       Print messages from the script and used modules 
-                      while processing. Optional. Higher priority than debug.
 
 =head1 DESCRIPTION
 
