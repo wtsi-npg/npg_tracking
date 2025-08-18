@@ -1,6 +1,6 @@
 LIST OF CHANGES
 
-unreleased
+release 105.7.0 (2025-08-18)
  - Isolate the RunParameters.json parser from the Monitor::Elembio::RunFolder
    into Monitor::Elembio::RunParametersParser
  - Refactor the elembio staging monitor to catch warnings from carp
