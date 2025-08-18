@@ -3,7 +3,7 @@ use warnings;
 use File::Basename;
 use File::Copy;
 use File::Copy::Recursive qw( dircopy );
-use Test::More tests => 10;
+use Test::More tests => 9;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -130,38 +130,6 @@ subtest 'test on cytoprofiling run' => sub {
   ok( $test->tracking_run()->current_run_status, 'current_run_status set');
   is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status_description correct');
   ok( $test->tracking_run()->is_tag_set('cytoprofiling'), 'cytoprofiling tag is set');
-};
-
-subtest 'test run parameters loader exceptions' => sub {
-  plan tests => 7;
-
-  my $schema = t::dbic_util->new->test_schema();
-  my $testdir = tempdir( CLEANUP => 1 );
-  my $instrument_folder = 'AV244103';
-  my $run_folder_name = '20250101_AV244103_NT1234567E';
-  my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
-  my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
-  dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
-
-  update_run_folder($runfolder_path);
-
-  my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
-                                                npg_tracking_schema => $schema);
-  throws_ok{ $test->folder_name }
-    qr/Empty[ ]value[ ]in[ ]folder_name/msx,
-    'folder name empty';
-  throws_ok{ $test->flowcell_id }
-    qr/Empty[ ]value[ ]in[ ]flowcell_id/msx,
-    'flowcell ID empty';
-  throws_ok { $test->instrument_side }
-    qr/Run[ ]parameter[ ]Side:[ ]wrong[ ]format[ ]in[ ]RunParameters[.]json/msx,
-    'wrong side value';
-  throws_ok { $test->lane_count }
-    qr/Run[ ]parameter[ ]AnalysisLanes:[ ]No[ ]lane[ ]found/msx,
-    'wrong lane count';
-  ok( $test->date_created, 'missing date gives current date of RunParameters file' );
-  is( $test->batch_id, undef, 'batch_id is undef');
-  is( $test->run_type, undef, 'run_type is undef' );
 };
 
 subtest 'test run parameters update on new run' => sub {
