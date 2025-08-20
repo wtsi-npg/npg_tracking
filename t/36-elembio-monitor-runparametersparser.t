@@ -1,21 +1,16 @@
 use strict;
 use warnings;
-use File::Copy;
 use File::Copy::Recursive qw( dircopy );
+use File::Spec::Functions qw( catdir );
+use File::Temp qw( tempdir );
 use Test::More tests => 4;
 use Test::Exception;
-use Test::Warn;
-use File::Temp qw/ tempdir /;
-use File::Spec::Functions qw( catdir );
-
-use t::dbic_util;
 
 use_ok('Monitor::Elembio::RunParametersParser');
 
 subtest 'test run parameters loader' => sub {
-  plan tests => 11;
+  plan tests => 12;
 
-  my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
   my $run_name = '1234';
@@ -31,6 +26,7 @@ subtest 'test run parameters loader' => sub {
   isa_ok( $test, 'Monitor::Elembio::RunParametersParser' );
   is( $test->folder_name, $run_folder_name, 'run_folder value correct' );
   is( $test->flowcell_id, $flowcell_id, 'flowcell_id value correct' );
+  is( $test->run_name, '1234', 'run name is correct');
   is( $test->batch_id, 1234, 'batch_id value correct' );
   is( $test->instrument_side, 'A', 'side value correct' );
   is( $test->expected_cycle_count, 210, 'expected cycle value correct' );
@@ -42,9 +38,8 @@ subtest 'test run parameters loader' => sub {
 };
 
 subtest 'test on cytoprofiling run' => sub {
-  plan tests => 6;
+  plan tests => 7;
 
-  my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
   my $run_name = '2345';
@@ -56,6 +51,7 @@ subtest 'test on cytoprofiling run' => sub {
   my $test = Monitor::Elembio::RunParametersParser->new(
     runfolder_path => $runfolder_path);
   isa_ok( $test, 'Monitor::Elembio::RunParametersParser' );
+  is( $test->run_name, '2345', 'run name is correct');
   is( $test->batch_id, undef, 'batch_id value undef' );
   is( $test->expected_cycle_count, 77, 'expected cycle value correct' );
   is( $test->is_paired, 0, 'is_paired value correct' );
@@ -66,7 +62,6 @@ subtest 'test on cytoprofiling run' => sub {
 subtest 'test run parameters loader exceptions' => sub {
   plan tests => 7;
 
-  my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
   my $instrument_folder = 'AV244103';
   my $run_folder_name = '20250101_AV244103_NT1234567E';

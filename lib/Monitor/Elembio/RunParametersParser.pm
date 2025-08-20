@@ -133,6 +133,25 @@ sub _build_folder_name {
   return $folder_name;
 }
 
+=head2 run_name
+
+A run name string as retrieved from RunParameters.json file.
+
+=cut
+has q{run_name}    => (
+  isa               => q{Str},
+  is                => q{ro},
+  required          => 0,
+  lazy_build        => 1,
+);
+sub _build_run_name {
+  my $self = shift;
+  my $run_name = $self->_run_params_data()->{$RUN_NAME};
+  if (! $run_name) {
+    croak 'Empty value in run_name';
+  }
+  return $run_name;
+}
 =head2 instrument_name
 
 A unique (external) name assigned to the instrument
@@ -191,7 +210,7 @@ sub _build_batch_id {
   my $batch_id;
   # Cytoprofiling are not in production, so no batch_id for them
   if ( $self->run_type && ($self->run_type ne $RUN_CYTOPROFILE) ) {
-    ($batch_id) = $self->_run_params_data()->{$RUN_NAME} =~ /\AB?(\d+)/smx;
+    ($batch_id) = $self->run_name =~ /\AB?(\d+)/smx;
     if (!$batch_id) {
       carp "Run parameter batch_id: wrong format in $RUN_PARAM_FILE";
     }

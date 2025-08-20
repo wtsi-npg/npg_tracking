@@ -2,6 +2,7 @@ LIST OF CHANGES
 
  - Updated instrument image generation so that the rendered image for Elembio
    instruments is correct.
+ - Added run_name attribute to Monitor::Elembio::RunParametersParser
 
 release 105.7.0 (2025-08-18)
  - Isolate the RunParameters.json parser from the Monitor::Elembio::RunFolder
