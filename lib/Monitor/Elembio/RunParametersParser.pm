@@ -5,6 +5,7 @@ use Carp;
 use Readonly;
 use JSON;
 use File::Spec::Functions qw( catfile );
+use File::Basename;
 use DateTime;
 use List::Util qw( sum );
 use DateTime::Format::Strptime;
@@ -30,7 +31,6 @@ Readonly::Scalar my $SERIAL_NUMBER => 'SerialNumber';
 Readonly::Scalar my $SIDE => 'Side';
 Readonly::Scalar my $TIME_PATTERN => '%Y-%m-%dT%H:%M:%S.%NZ'; # 2023-12-19T13:31:17.461926614Z
 
-# Run Enums
 Readonly::Scalar my $RUN_CYTOPROFILE => 'Cytoprofiling';
 Readonly::Scalar my $RUN_PARAM_FILE => 'RunParameters.json';
 Readonly::Scalar my $RUN_TYPE => 'RunType';
@@ -45,11 +45,18 @@ Monitor::Elembio::RunParametersParser
 
 C<<use Monitor::Elembio::RunParametersParser;
    my $run_folder = Monitor::Elembio::RunParametersParser->new(
-     runfolder_path      => $run_folder);>>
+     runfolder_path      => $run_folder);
+   $run_folder = Monitor::Elembio::RunParametersParser->new(
+     runparams_path      => "$run_folder/RunParameters.json");
+  >>
 
 =head1 DESCRIPTION
 
-Elembio parser for RunParameters.json file
+A parser for Aviti Biosciences (Elembio) RunParameters.json file.
+
+Either C<runfolder_path> or C<runparams_path> attributes should be set
+via the constructor. When both attributes are set no consistency check is
+performed. The value of runparams_path takes precedence. 
 
 =head1 SUBROUTINES/METHODS
 
@@ -68,27 +75,42 @@ sub BUILD {
 
 =head2 runfolder_path
 
-Path of the run folder.
+Directory path of the run folder. If this attribute is not set via the
+constructor, it is built as the directory where the file given as
+C<runparams_path> is located.
 
 =cut
 has q{runfolder_path} => (
-  isa           => q{Str},
+  isa           => q{NpgTrackingDirectory},
   is            => q{ro},
   predicate     => q{has_runfolder_path},
   required      => 0,
+  lazy_build    => 1,
 );
+sub _build_runfolder_path {
+  my $self = shift;
+  return dirname $self->runparams_path();
+}
 
 =head2 runparams_path
 
-Path of the RunParameters.json file.
+Path of the RunParameters.json file. If this attribute is not set via the
+constructor, it is built. The expected file name is C<RunParameters.json>,
+it should be located in the directory given as the C<runfolder_path>
+attribute.
 
 =cut
 has q{runparams_path} => (
-  isa           => q{Str},
+  isa           => q{NpgTrackingReadableFile},
   is            => q{ro},
   predicate     => q{has_runparams_path},
   required      => 0,
+  lazy_build => 1,
 );
+sub _build_runparams_path {
+  my $self = shift;
+  return catfile($self->runfolder_path, $RUN_PARAM_FILE);
+}
 
 =head2 flowcell_id
 
@@ -280,23 +302,26 @@ has q{date_created} => (
 );
 sub _build_date_created {
   my $self = shift;
-  my $file_path = catfile($self->runfolder_path, $RUN_PARAM_FILE);
-  if (! exists $self->_run_params_data()->{$DATE} or ! $self->_run_params_data()->{$DATE}) {
-    carp "Run parameter $DATE: No value in $RUN_PARAM_FILE";
-    return DateTime->from_epoch(epoch => (stat  $file_path)[9]);
-  } else {
-    my $date = $self->_run_params_data()->{$DATE};
+
+  my $date_string = $self->_run_params_data()->{$DATE};
+  my $date;
+  if ($date_string) {
     try {
-      return DateTime::Format::Strptime->new(
+      $date = DateTime::Format::Strptime->new(
         pattern=>$TIME_PATTERN,
         strict=>1,
         on_error=>q[croak]
-      )->parse_datetime($date);
+      )->parse_datetime($date_string);
     } catch {
-      carp "Run parameter $DATE: failed to parse $date";
-      return DateTime->from_epoch(epoch => (stat  $file_path)[9]);
+      carp "Run parameter $DATE: failed to parse $date_string";
     };
+  } else {
+    carp "Run parameter $DATE: No value in $RUN_PARAM_FILE";
   }
+  
+  $date ||= DateTime->from_epoch(epoch => (stat  $self->runparams_path)[9]);
+
+  return $date;
 }
 
 =head2 is_paired
@@ -350,8 +375,7 @@ has q{_run_params_data} => (
 );
 sub _build__run_params_data {
   my $self = shift;
-  my $run_parameters_file = catfile($self->runfolder_path, $RUN_PARAM_FILE);
-  return decode_json(slurp $run_parameters_file);
+  return decode_json(slurp $self->runparams_path);
 }
 
 =head2 run_type
@@ -391,6 +415,8 @@ __END__
 =item JSON
 
 =item File::Spec::Functions
+
+=item File::Basename
 
 =item DateTime
 
