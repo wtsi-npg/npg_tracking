@@ -275,7 +275,19 @@
   latest_contact:
   percent_complete:
   lab:
-
+- external_name: AV244103
+  id_instrument: 98
+  id_instrument_format: 16
+  serial: ''
+  name: AV1
+  iscurrent: 1
+  ipaddr: ''
+  instrument_comp: ''
+  mirroring_host:
+  staging_dir:
+  latest_contact:
+  percent_complete:
+  lab:
 
 
 

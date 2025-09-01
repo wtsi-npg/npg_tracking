@@ -298,8 +298,9 @@ sub _batch2image {
     $batch_x_start += -15;
     $batch_y_start += 25;
   }
-  $im->string($font, $batch_x_start, $batch_y_start, (sprintf q(B%d), $current_run->batch_id()), $black);
-
+  if ($current_run->batch_id()) {
+    $im->string($font, $batch_x_start, $batch_y_start, (sprintf q(B%d), $current_run->batch_id()), $black);
+  }
   if($current_run->is_paired()) {
     $im->string($font, $batch_x_start, $END_TWO, (sprintf q(Run %d), $current_run->end()), $black);
   } else {
