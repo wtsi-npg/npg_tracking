@@ -1,0 +1,194 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use English qw(-no_match_vars);
+use Readonly;
+use Try::Tiny;
+use Log::Log4perl qw[:levels];
+use Pod::Usage;
+use Getopt::Long;
+use npg_tracking::Schema;
+use Monitor::Ultimagen::Staging qw ( find_run_folders );
+use Monitor::Ultimagen::RunFolder;
+
+our $VERSION = '0';
+
+# We rely on the daemon definition which redirects both STDOUT and STDERR
+# to file with -o option. The following configuration prints logs
+# to STDERR by default.
+my $log_config = << 'LOGCONF'
+log4perl.logger = INFO, A1
+
+log4perl.logger.Monitor.Ultimagen.RunFolder = INFO, A1
+
+log4perl.appender.A1 = Log::Log4perl::Appender::Screen
+log4perl.appender.A1.layout = Log::Log4perl::Layout::PatternLayout
+log4perl.appender.A1.layout.ConversionPattern = %d %-5p %c - %m%n
+log4perl.appender.A1.utf8 = 1
+
+# Prevent duplicate messages with a non-Log4j-compliant Log4perl option
+log4perl.oneMessagePerAppender = 1
+LOGCONF
+;
+
+Readonly::Scalar my $SLEEP_INTERVAL => 60 * 15;
+Readonly::Scalar my $DRY_RUN => $ENV{'dev'} && ($ENV{'dev'} ne 'live');
+
+local $OUTPUT_AUTOFLUSH = 1;
+
+my $help;
+my @staging_areas;
+my $log4perl_config;
+my $debug;
+GetOptions (
+  'help'                        => sub {
+    pod2usage(-verbose => 2, -exitval => 0);
+  },
+  'staging_area|staging-area=s' => \@staging_areas,
+  'logconf=s'                   => \$log4perl_config,
+  'debug'                       => \$debug,
+);
+
+if ($log4perl_config) {
+  Log::Log4perl::init($log4perl_config);
+} else {
+  if ($debug) {
+    Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
+                              level  => $DEBUG,
+                              utf8   => 1});
+  }
+  else {
+    Log::Log4perl::init(\$log_config);
+  }
+}
+my $log = Log::Log4perl->get_logger('main');
+
+local $SIG{__WARN__} = sub {
+  my $message = shift;
+  $log->warn($message);
+};
+
+main();
+
+###########################################################
+###############   Main daemon loop.  ######################
+###########################################################
+
+sub main {
+  if (! @staging_areas) {
+    $log->fatal("ERROR: --staging_area/--staging-area argument is required");
+    exit 1;
+  }
+  foreach my $staging_area ( @staging_areas ) {
+    if ($staging_area eq q[]) {
+      $log->fatal("ERROR: --staging_area/--staging-area empty values");
+      exit 1;
+    }
+  }
+
+  my $schema  = npg_tracking::Schema->connect();
+  while (1) {
+    foreach my $staging_area ( @staging_areas ) {
+      my @folders;
+      try {
+        @folders = find_run_folders($staging_area);
+        if (! @folders) {
+          $log->warn("No valid run folders found in $staging_area");
+        }
+      } catch {
+        my $error = $_;
+        $log->fatal("Run folder search failed in $staging_area: $error");
+        exit 1;
+      };
+      foreach my $run_folder (@folders) {
+        $log->info("Considering runfolder $run_folder");
+        my $monitor = Monitor::Ultimagen::RunFolder->new(
+          runfolder_path      => $run_folder,
+          npg_tracking_schema => $schema);
+        try {
+          $monitor->process_run();
+          $log->info("Successfully processed $run_folder");
+        } catch {
+          my $error = $_;
+          $log->error("RunFolder Monitor failed for $run_folder: $error");
+        };
+      }
+    }
+    $log->info("Going to sleep");
+    sleep $SLEEP_INTERVAL;
+  }
+}
+
+1;
+
+__END__
+
+=head1 NAME
+
+ultimagen_staging_area_monitor
+
+=head1 VERSION
+
+=head1 SYNOPSIS
+
+ultimagen_staging_area_monitor --staging-area <path>
+  [--debug] [--logconf]
+
+  Options:
+    --staging-area  The staging area folder. The following pattern will
+                      be used to search run folders:
+                        staging-area . 'Runs/**/*_LibraryInfo.xml'
+                      May be used multiple times to set more areas.
+
+    --logconf       A file containing log4perl configuration with log
+                      dispatchers. It may include one or more dispatchers
+                      to log messages to different resources. Optional.
+                      Higher priority than debug.
+
+    --debug         Enable debug level logging. Optional.
+
+=head1 DESCRIPTION
+
+Search the staging area(s) for run folders and update
+their properties in the Tracking Server DB or create 
+new run records if they do not exist.
+
+=head1 SUBROUTINES/METHODS
+
+None
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 INCOMPATIBILITIES
+
+None known.
+
+=head1 BUGS AND LIMITATIONS
+
+None known.
+
+=head1 AUTHOR
+
+Marco M. Mosca
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (C) 2025 Genome Research Ltd.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

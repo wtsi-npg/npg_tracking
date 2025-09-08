@@ -1,0 +1,25 @@
+<SampleInfo RunId="" Library_Pool="O01_PRJ_pool_4">
+  <Attributes>
+    <Attribute Name="Application" Value="WGS native gDNA" />
+    <Attribute Name="sequencing_recipe" Value="UG_116cycles_Baseline_1.8.3.0" />
+    <Attribute Name="analysis_recipe" Value="wgs1" />
+  </Attributes>
+  <Samples>
+    <Sample Id="s1@1111STDY15064672" Index_Label="Z0001" Index_Sequence="CAGCTCGAATGCGAT">
+      <Attribute Name="Barcode_Plate_Num" Value="1" />
+      <Attribute Name="Barcode_Plate_Well" Value="A1" />
+      <Attribute Name="application_type" Value="native" />
+    </Sample>
+    <Sample Id="s2@1111STDY15064673" Index_Label="Z0002" Index_Sequence="CATGTGCAGCCATCGAT">
+      <Attribute Name="Barcode_Plate_Num" Value="1" />
+      <Attribute Name="Barcode_Plate_Well" Value="B1" />
+      <Attribute Name="application_type" Value="native" />
+    </Sample>
+    <Sample Id="s3@1111STDY15064674" Index_Label="Z0003" Index_Sequence="CATCACACATGAATGAT">
+      <Attribute Name="Barcode_Plate_Num" Value="1" />
+      <Attribute Name="Barcode_Plate_Well" Value="C1" />
+      <Attribute Name="application_type" Value="native" />
+    </Sample>
+  </Samples>
+  <Sequencing />
+  <Analysis_Recipe Name="WGS1" />O01_PRJ_pool_4</SampleInfo>
