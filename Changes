@@ -6,6 +6,7 @@ LIST OF CHANGES
    cases when the run folder name has been changed and thus helps to prevent
    creating duplicate run records. The change is driven by the uncertainty
    around rules for UltimaGen platform on-instrument reanalysis.
+ - Added Ultimagen staging monitor and its daemon definition.
 
 release 105.8.1 (2025-10-09)
  - CI updates
