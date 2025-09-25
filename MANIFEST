@@ -9,6 +9,7 @@ bin/npg_samplesheet4NovaSeqX
 bin/npg_samplesheet_generator_NovaSeqXSeries
 bin/npg_status_save
 bin/staging_area_monitor
+bin/ultimagen_staging_area_monitor
 Build.PL
 cgi-bin/locate_runfolder
 cgi-bin/npg
@@ -129,6 +130,9 @@ lib/Monitor/Elembio/Staging.pm
 lib/Monitor/RunFolder.pm
 lib/Monitor/RunFolder/Staging.pm
 lib/Monitor/Staging.pm
+lib/Monitor/Ultimagen/RunFolder.pm
+lib/Monitor/Ultimagen/RunParser.pm
+lib/Monitor/Ultimagen/Staging.pm
 lib/npg/authentication/sanger_ldap.pm
 lib/npg/authentication/sanger_sso.pm
 lib/npg/controller.pm
@@ -195,6 +199,7 @@ lib/npg/view/usergroup.pm
 lib/npg_testing/db.pm
 lib/npg_tracking/daemon.pm
 lib/npg_tracking/daemon/elembiostaging.pm
+lib/npg_tracking/daemon/ultimagenstaging.pm
 lib/npg_tracking/data/bait.pm
 lib/npg_tracking/data/bait/find.pm
 lib/npg_tracking/data/common.pm
@@ -405,6 +410,9 @@ t/35-monitor_one_runfolder.t
 t/36-elembio-monitor-runfolder.t
 t/36-elembio-monitor-runparametersparser.t
 t/36-elembio-monitor-staging.t
+t/37-ultimagen-monitor-runfolder.t
+t/37-ultimagen-monitor-runparser.t
+t/37-ultimagen-monitor-staging.t
 t/40-st-lims-merge.t
 t/40-st-lims-mlwarehouse.t
 t/40-st-lims-ml_warehouse-drivers.t
@@ -722,6 +730,8 @@ t/data/repos2/references2/NPD_Chimera/010203/.gitignore
 t/data/repos2/references2/NPD_Chimera/010302/.gitignore
 t/data/repos2/references2/PhiX/Illumina/.gitignore
 t/data/repos2/references2/PhiX/Sanger/.gitignore
+t/data/ultimagen_staging/Runs/222222-20250911_1212/222222_LibraryInfo.xml
+t/data/ultimagen_staging/Runs/424090-20250822_0117/424090_LibraryInfo.xml
 t/dbh.pm
 t/dbic_util.pm
 t/instrument.pm
