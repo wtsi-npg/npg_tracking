@@ -1,5 +1,12 @@
 LIST OF CHANGES
 
+ - Updated find_with_attributes method of the Run ResultSet object to make
+   run folder name optional. Changed the order of the attributes of the
+   method. This change allows to identify existing run database records in
+   cases when the run folder name has been changed and thus helps to prevent
+   creating duplicate run records. The change is driven by the uncertainty
+   around rules for UltimaGen platform on-instrument reanalysis.
+
 release 105.8.1 (2025-10-09)
  - CI updates
 

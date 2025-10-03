@@ -421,9 +421,9 @@ sub find_run_db_record() {
   my $self = shift;
   my $rs = $self->npg_tracking_schema->resultset('Run');
   my $run_row = $rs->find_with_attributes(
-    $self->folder_name,
     $self->flowcell_id,
     $self->instrument_name,
+    $self->folder_name
   );
   return $run_row;
 }
