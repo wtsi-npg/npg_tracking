@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - Okta implementation with OIDC setup
  - Events are created for all run statuses. The customers are interested only
    in some of them. Prior to release 106.2.0 all events were ticked off as
    processed regardless of whether they triggered a notification. This was
