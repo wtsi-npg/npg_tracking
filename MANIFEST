@@ -16,6 +16,9 @@ bin/ultimagen_staging_area_monitor
 Build.PL
 cgi-bin/locate_runfolder
 cgi-bin/npg
+cgi-bin/oidc-login-logout.cgi
+cgi-bin/oidc-post-login-actions.cgi
+cgi-bin/oidc-post-logout-redirect.cgi
 Changes
 data/config.ini
 data/gfx/1G.png
@@ -145,7 +148,7 @@ lib/Monitor/Staging.pm
 lib/Monitor/Ultimagen/RunFolder.pm
 lib/Monitor/Ultimagen/Staging.pm
 lib/npg/authentication/sanger_ldap.pm
-lib/npg/authentication/sanger_sso.pm
+lib/npg/authentication/sanger_oidc.pm
 lib/npg/controller.pm
 lib/npg/decorator.pm
 lib/npg/model.pm
@@ -379,7 +382,7 @@ t/00-pod.t
 t/00-podcoverage.t
 t/00-scripts_compile.t
 t/10-authentication-sanger_ldap.t
-t/10-authentication-sanger_sso.t
+t/10-authentication-sanger_oidc.t
 t/10-bait.t
 t/10-gbs_plex.t
 t/10-geno_refset.t
@@ -829,3 +832,4 @@ t/request.pm
 t/util.pm
 wtsi_local/httpd.conf
 wtsi_local/httpd_sfweb.conf
+wtsi_local/tracking_oidc_auth.conf
