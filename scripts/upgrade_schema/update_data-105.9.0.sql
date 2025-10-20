@@ -1,0 +1,1 @@
+INSERT INTO run_status_dict(`description`, temporal_index) VALUES('off-tool automation in progress', 255);
