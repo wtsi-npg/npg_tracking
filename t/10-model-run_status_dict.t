@@ -31,7 +31,7 @@ my $util = t::util->new({fixtures=>1});
   my $rsds = $rsd->run_status_dicts();
 
   isa_ok($rsds, 'ARRAY');
-  is((scalar @{$rsds}), 24, 'all run status dicts');
+  is((scalar @{$rsds}), 25, 'all run status dicts');
 }
 
 {
@@ -43,7 +43,7 @@ my $util = t::util->new({fixtures=>1});
   my $rsds_length = scalar @{$rsds};
 
   isa_ok($rsds, 'ARRAY');
-  is(($rsds_length), 21, 'all sorted run status dicts');
+  is(($rsds_length), 22, 'all sorted run status dicts');
 
   my @sorted_run_status_dicts = sort {
     $a->{temporal_index} <=> $b->{temporal_index}
