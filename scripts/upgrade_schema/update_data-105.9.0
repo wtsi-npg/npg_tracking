@@ -1,0 +1,51 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use npg_tracking::Schema;
+
+my $schema = npg_tracking::Schema->connect();
+my $manufacturer = 'Ultima Genomics';
+
+my $transaction = sub {
+
+  my $ug_manufacturer = $schema->resultset('Manufacturer')
+                               ->create({name => $manufacturer});
+  print "Created manufacturer record for '$manufacturer'\n";
+
+  my $rs_if =  $schema->resultset('InstrumentFormat');
+  my $formats = {};
+  my @models = ('UG 100');
+  for my $model (@models) {
+    my $format = $rs_if->create({
+      'model' => $model,
+      'iscurrent' => 1,
+      'id_manufacturer' => $ug_manufacturer->id_manufacturer
+    });
+    print "Created instrument format '$model'\n";
+    $formats->{$model} = $format->id_instrument_format;
+  }
+
+  my $designations = {};
+  map { $designations->{$_->description} = $_->id_designation }
+    $schema->resultset('Designation')->all();
+
+  my $rs_id = $schema->resultset('InstrumentDesignation');
+  my $rs_in =  $schema->resultset('Instrument');
+
+  my $instrument = $rs_in->create({
+    'name' => 'UG1',
+    'id_instrument_format' => $formats->{'UG 100'},
+    'external_name' => 'V125',
+    'iscurrent' => 1
+  });
+  $rs_id->create({
+    id_instrument => $instrument->id_instrument,
+    id_designation => $designations->{'Accepted'}
+  });
+  print "Created instrument record for 'UG 100'\n";
+};
+
+$schema->txn_do($transaction);
+
+1;
