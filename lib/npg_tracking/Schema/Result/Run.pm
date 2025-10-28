@@ -87,8 +87,7 @@ __PACKAGE__->table("run");
 
 =head2 batch_id
 
-  data_type: 'bigint'
-  extra: {unsigned => 1}
+  data_type: 'varchar'
   is_nullable: 1
 
 =head2 id_instrument_format
@@ -161,7 +160,7 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
   "batch_id",
-  { data_type => "bigint", extra => { unsigned => 1 }, is_nullable => 1 },
+  { data_type => "varchar", size => 255, is_nullable => 1 },
   "id_instrument_format",
   {
     data_type => "bigint",

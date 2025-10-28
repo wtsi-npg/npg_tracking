@@ -323,7 +323,7 @@ CREATE TABLE `run` (
   `expected_cycle_count` bigint(20) unsigned DEFAULT NULL,
   `id_run_pair` bigint(20) unsigned DEFAULT NULL,
   `is_paired` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `batch_id` bigint(20) unsigned DEFAULT NULL,
+  `batch_id` varchar(255)  DEFAULT NULL,
   `id_instrument_format` bigint(20) unsigned NOT NULL,
   `flowcell_id` varchar(64) DEFAULT NULL,
   `folder_name` varchar(64) DEFAULT NULL,

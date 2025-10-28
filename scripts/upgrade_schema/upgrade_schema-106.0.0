@@ -1,0 +1,16 @@
+--
+-- Change the type of batch_id column from int to a more flexible varchar.
+--
+ALTER TABLE `run`
+  MODIFY COLUMN `batch_id` VARCHAR(255) DEFAULT NULL \
+    COMMENT 'LIMS-specific or user-defined identifier for run data',
+  ADD KEY `batch_id` (`batch_id`);
+
+--
+-- Revert the above change in case of emergency.
+--
+ALTER TABLE `run` MODIFY COLUMN `batch_id` BIGINT UNSIGNED DEFAULT NULL
+  DROP KEY `batch_id`;
+
+
+
