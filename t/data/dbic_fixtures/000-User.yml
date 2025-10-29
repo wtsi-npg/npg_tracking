@@ -39,5 +39,8 @@
    username: nh4
  - id_user: 13
    rfid: ~
-   username: gen_pipeline
+   username: eseq_pipeline
+ - id_user: 14
+   rfid: ~
+   username: useq_pipeline
 
