@@ -24,7 +24,7 @@ with qw[
 our $VERSION = '0';
 
 # Pipeline Enums
-Readonly::Scalar my $USERNAME => 'pipeline';
+Readonly::Scalar my $USERNAME => 'eseq_pipeline';
 
 # Property Enums
 Readonly::Scalar my $CYCLES => 'Cycles';

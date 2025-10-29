@@ -40,7 +40,7 @@ subtest 'test run parameters loader' => sub {
 };
 
 subtest 'test tracking update on new run' => sub {
-  plan tests => 17;
+  plan tests => 18;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -66,7 +66,9 @@ subtest 'test tracking update on new run' => sub {
   is( $test->tracking_run()->priority, 1, 'priority of new tracking run' );
   is( $test->tracking_run()->is_paired, 0, 'is_paired of new tracking run' );
   is( $test->tracking_run()->folder_path_glob, dirname($runfolder_path), 'folder_path_glob of new tracking run' );
-  ok( $test->tracking_run()->current_run_status, 'current_run_status set in new run');
+  my $rs = $test->tracking_run()->current_run_status;
+  ok( $rs, 'current_run_status set in new run');
+  is( $rs->user->username, 'useq_pipeline', 'status is set by useq_pipeline user');
   is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status in progress of new run');
   is( 
     $test->tracking_run()->current_run_status->date->strftime('%Y%m%d_%H%M'), 
