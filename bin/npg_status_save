@@ -104,7 +104,8 @@ the status record is created in the tracking database.
 
 If --lanes is set then one lane status JSON file is created to cover all lanes.
 
-If --username is set, it will be used when creating a database record.
+If --username is set, it will be used when creating a database record for the
+new status, otherwise a default username will apply.
 
 =head1 EXIT STATUS
 
