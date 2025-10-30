@@ -87,7 +87,7 @@ subtest 'test run parameters loader' => sub {
 };
 
 subtest 'test on cytoprofiling run' => sub {
-  plan tests => 13;
+  plan tests => 14;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -127,8 +127,12 @@ subtest 'test on cytoprofiling run' => sub {
   ok( ! $test->tracking_run()->current_run_status, 'current_run_status not set');
   ok( ! $test->tracking_run()->current_run_status_description, 'current_run_status_description undef');
   lives_ok {$test->process_run_parameters();} 'process_run_parameters succeeds';
-  ok( $test->tracking_run()->current_run_status, 'current_run_status set');
-  is( $test->tracking_run()->current_run_status_description, 'run in progress', 'current_run_status_description correct');
+  my $rs = $test->tracking_run()->current_run_status;
+  ok( $rs, 'current run status is set');
+  is( $rs->user->username, 'eseq_pipeline',
+   'current run status is set is set by eseq_pipeline');
+  is( $test->tracking_run()->current_run_status_description, 'run in progress',
+    'current_run_status_description correct');
   ok( $test->tracking_run()->is_tag_set('cytoprofiling'), 'cytoprofiling tag is set');
 };
 
@@ -339,7 +343,7 @@ subtest 'test on not existing run but already completed on disk' => sub {
 };
 
 subtest 'test run parameters update on non-plexed and failed new run' => sub {
-  plan tests => 22;
+  plan tests => 23;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -379,7 +383,9 @@ subtest 'test run parameters update on non-plexed and failed new run' => sub {
   ok( $test->tracking_run()->is_tag_set('paired_read'), 'paired_read tag of new run is set');
   ok( ! $test->tracking_run()->is_tag_set('multiplex'), 'multiplex tag of new run is not set');
   is( $test->tracking_run()->actual_cycle_count, 252, 'last actual_cycle_count in tracking correct' );
-  ok( $test->tracking_run()->current_run_status, 'current_run_status set after update');
+  my $rs = $test->tracking_run()->current_run_status;
+  ok( $rs, 'current run status is set after update');
+  is( $rs->user->username, 'eseq_pipeline', 'status updated bu eseq_pipeline');
   is( $test->tracking_run()->current_run_status_description, 'run stopped early', 'current_run_status on stopped early');
   my @run_statuses = sort {
     DateTime->compare($a->date, $b->date)

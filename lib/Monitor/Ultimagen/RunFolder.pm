@@ -19,7 +19,7 @@ with qw[
 our $VERSION = '0';
 
 # Pipeline Enums
-Readonly::Scalar my $USERNAME => 'pipeline';
+Readonly::Scalar my $USERNAME => 'useq_pipeline';
 
 # Run Enums
 Readonly::Scalar my $RUN_UPLOADED_FILE => 'UploadCompleted.json';

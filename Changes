@@ -13,6 +13,9 @@ LIST OF CHANGES
    the run status is updated by staging monitors or porch pipelines for the
    Elembio and Ultimagen platforms respectively.
  - Added Ultimagen staging monitor and its daemon definition.
+ - Updated Ultimagen and Elembio staging monitors so that these monitors use
+   'useq_pipeline' and 'eseq_pipeline' users respectively when setting run
+   statuses and tags.
  - Add a new run status for UltimaGen platform "off-tool automation in
    progress". This represents processing that is not following the
    npg_seq_pipeline sequence of events and is not handled by manufacturer-
