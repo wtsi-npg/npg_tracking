@@ -47,5 +47,5 @@
    username: old_user
    iscurrent: 0
  - id_user: 14
-   username: gen_pipeline
+   username: eseq_pipeline
    iscurrent: 1

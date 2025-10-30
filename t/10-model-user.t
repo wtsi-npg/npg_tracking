@@ -17,7 +17,7 @@ my $util  = t::util->new({fixtures => 1});
   is($model->username(), 'joe_admin', 'user by id');
   is($model->is_member_of('admin'), 1, 'admin user is_member_of admin');
   is($model->is_member_of('engineers'), 1, 'admin user is_member_of engineers');
-  is(join(q[ ], map {$_->username} @{$model->users}), 'gen_pipeline ' .
+  is(join(q[ ], map {$_->username} @{$model->users}), 'eseq_pipeline ' .
     'joe_admin joe_analyst joe_annotator joe_approver joe_engineer joe_events joe_loader ' .
     'joe_r_n_d joe_results pipeline public rt_error',
     'list of current users');  
