@@ -6,6 +6,12 @@ LIST OF CHANGES
    cases when the run folder name has been changed and thus helps to prevent
    creating duplicate run records. The change is driven by the uncertainty
    around rules for UltimaGen platform on-instrument reanalysis.
+ - Updated npg_status_save script to accept the username to be associated with
+   the status this script creates. 
+ - Added two new pipeline user records, 'eseq_pipeline' and 'useq_pipeline', to
+   the 'user' table of the tracking database. These users should be used whenever
+   the run status is updated by staging monitors or porch pipelines for the
+   Elembio and Ultimagen platforms respectively.
  - Added Ultimagen staging monitor and its daemon definition.
  - Add a new run status for UltimaGen platform "off-tool automation in
    progress". This represents processing that is not following the

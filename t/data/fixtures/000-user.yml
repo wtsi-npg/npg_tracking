@@ -46,3 +46,6 @@
  - id_user: 13
    username: old_user
    iscurrent: 0
+ - id_user: 14
+   username: eseq_pipeline
+   iscurrent: 1

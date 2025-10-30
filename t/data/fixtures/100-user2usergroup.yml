@@ -35,3 +35,7 @@
 - id_user: 12
   id_user_usergroup: 12
   id_usergroup: 11
+- id_user: 14
+  id_user_usergroup: 13
+  id_usergroup: 2
+
