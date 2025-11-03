@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 105.9.0 (2025-11-03)
  - Updated find_with_attributes method of the Run ResultSet object to make
    run folder name optional. Changed the order of the attributes of the
    method. This change allows to identify existing run database records in
