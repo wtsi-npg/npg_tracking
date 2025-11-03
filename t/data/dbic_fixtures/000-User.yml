@@ -37,3 +37,10 @@
  - id_user: 76
    rfid: ~
    username: nh4
+ - id_user: 13
+   rfid: ~
+   username: eseq_pipeline
+ - id_user: 14
+   rfid: ~
+   username: useq_pipeline
+

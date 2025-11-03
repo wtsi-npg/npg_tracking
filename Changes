@@ -1,5 +1,27 @@
 LIST OF CHANGES
 
+release 105.9.0 (2025-11-03)
+ - Updated find_with_attributes method of the Run ResultSet object to make
+   run folder name optional. Changed the order of the attributes of the
+   method. This change allows to identify existing run database records in
+   cases when the run folder name has been changed and thus helps to prevent
+   creating duplicate run records. The change is driven by the uncertainty
+   around rules for UltimaGen platform on-instrument reanalysis.
+ - Updated npg_status_save script to accept the username to be associated with
+   the status this script creates. 
+ - Added two new pipeline user records, 'eseq_pipeline' and 'useq_pipeline', to
+   the 'user' table of the tracking database. These users should be used whenever
+   the run status is updated by staging monitors or porch pipelines for the
+   Elembio and Ultimagen platforms respectively.
+ - Added Ultimagen staging monitor and its daemon definition.
+ - Updated Ultimagen and Elembio staging monitors so that these monitors use
+   'useq_pipeline' and 'eseq_pipeline' users respectively when setting run
+   statuses and tags.
+ - Add a new run status for UltimaGen platform "off-tool automation in
+   progress". This represents processing that is not following the
+   npg_seq_pipeline sequence of events and is not handled by manufacturer-
+   supplied hardware.
+
 release 105.8.1 (2025-10-09)
  - CI updates
 
@@ -34,7 +56,7 @@ release 105.6.0 (2025-08-06)
 release 105.5.1 (2025-07-22)
  - Bug fix in extraction of batch ID from the Elembio run name:
    allow for the run name being a number and a number prepended by 'B'.
- 
+
 release 105.5.0 (2025-07-16)
  - Add dry_run option format
 
@@ -58,7 +80,7 @@ release 105.3.0 (2025-05-30)
  - Added a method for finding db run records
 
 release 105.2.0 (2025-05-22)
- - npg_daemon_control: added a daemon for Elembio staging monitor 
+ - npg_daemon_control: added a daemon for Elembio staging monitor
  - npg_tracking::Schema::Result::Instrument
    - improved documentation,
    - added shortcut methods to inform about instrument's manufacturer.
@@ -389,7 +411,7 @@ release 94.0.0
 
 release 93.0.0
  - Introduced a new instrument format database record for NovaSeqX,
-   updated test data and one of the tests. 
+   updated test data and one of the tests.
  - Fixed visual representation for 'cBot 2' model:
      the instrument now appears in the visual listing,
      the instrument does not appear in the list of sequencing instruments
@@ -462,7 +484,7 @@ release 92.3.0
  - Removed unused daemon runners for staging daemons and the Jenkins server.
  - Made NovaSeq instruments skip wash statuses after completing a run, this
    does not affect statuses set manually through the UI.
- - Added lab location to instrument pages. Instruments are also now 
+ - Added lab location to instrument pages. Instruments are also now
    colour-coded on the graphical instrument list page.
 
 release 92.2.0
@@ -491,12 +513,12 @@ release 92.0.0
    are amended either to use samplesheets is a source of LIMS data or, where
    they are still using XML LIMS driver for st::api::lims, batch id is used
    explicitly.
-   st::api::lims::xml previously had dependency on npg::api::run to allow          
-   for retrieval of batch_id from run XML API in cases where it was not            
-   supplied explicitly. This dependency is removed without changing the            
-   public interface of the class. Formally speaking, the batch_id                  
-   attribute remains optional for creating an instance of the class.               
-   However, failure to supply it will result in an error when trying to            
+   st::api::lims::xml previously had dependency on npg::api::run to allow
+   for retrieval of batch_id from run XML API in cases where it was not
+   supplied explicitly. This dependency is removed without changing the
+   public interface of the class. Formally speaking, the batch_id
+   attribute remains optional for creating an instance of the class.
+   However, failure to supply it will result in an error when trying to
    access batch XML API of the LIMS system.
  - Remove code for sending run status events to LIMS, this functionality is
    no longer required.
@@ -507,7 +529,7 @@ release 92.0.0
 
 release 91.15.0
  - Remove status daemon. This daemon is no longer run since the pipeline
-   updates run and lane statuses by writing directly to the database. 
+   updates run and lane statuses by writing directly to the database.
    Remove the script, npg_status_watcher, for detecting run status JSON
    files in run folders and updating database run and lane statuses,
    which was run by the status daemon.
@@ -517,11 +539,11 @@ release 91.15.0
 release 91.14.0
  - Remove live tests for st::api::lims XML driver and other XML-based APIs.
    The CI tests are mostly run on hosts with no access to either production
-   or development hosts. 
+   or development hosts.
  - NPG_TEST_TRACKING_CONFIGPATH environment variable can be used to set a
    custom location of the Clearpress configuration file for unit tests.
    The default location of the file, data/config.ini, is used if the
-   variable is unset. 
+   variable is unset.
  - Move README file to README.md, improve Markdown format. Add sections
    describing environment variables and tags.
  - Move db schema dump, which is only used for tests, from the data to t/data
@@ -545,16 +567,16 @@ release 91.12.0
 
 release 91.11.0
  - a partial reimplementation of the serialization framework for components
-   and compositions in order to speed-up frequently used methods 
+   and compositions in order to speed-up frequently used methods
  - add geno files to disabled access list in http_sfweb.conf
  - cookie decryption - use an up-to-date Crypt::CBC API and algorithm
  - reduce the sleep type of the status daemon from 60 to 1 sec in order to
-   reduce the time it takes to loop over the run folders on lustre 
+   reduce the time it takes to loop over the run folders on lustre
 
 release 91.10.0
  - script npg_samplesheet4MiSeq is removed this utility has been moved
    to a different git package; the samplesheet daemon stays in this
-   package till all MiSeq instruments are redirected off old staging servers 
+   package till all MiSeq instruments are redirected off old staging servers
 
 release 91.9.0
  - Change label 'New Instrument Mod' to 'New Instrument Upgrade' on the Admin page
@@ -601,7 +623,7 @@ release 91.1.0
  - method for creating a lane-level st::api::lims object from
    any other st::api::lims object where the resulting object has
    the same driver as the original one
- - add support for finding primer_panel bed files 
+ - add support for finding primer_panel bed files
 
 release 91.0.0
  - modified is_i5opposite when there is no reverse read
@@ -652,7 +674,7 @@ release 90.3.0
 
 release 90.2.1
  - staging area daemon to save the flowcell barcode to the
-   database if it does not have this value already available 
+   database if it does not have this value already available
 
 release 90.2.0
  - reference finder for compositions not to return
@@ -691,7 +713,7 @@ release 89.0.0
    timestamps defined in WTSI::DNAP::Utilities::Timestamp
  - pipeline configuration module is moved to this package from
    npg_seq_pipeline package in order for the product configuration
-   be accessible from other packages 
+   be accessible from other packages
  - staging area daemon modified so processing for each folder is wrapped as
    try/catch block
 
@@ -756,7 +778,7 @@ release 87.4
        its own staging area;
      avoid repeatedly saving the same statuses
  - when searching snv_path use bait_name=Exome for (cD|R)NA library types
- - tracking database: 
+ - tracking database:
      add a unique db constraint for all types of status descriptions;
      make temporal_index column in run_status_dict table non-nullable and
      add a unique constraint on it;

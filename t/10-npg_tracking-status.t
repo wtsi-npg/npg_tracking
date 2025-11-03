@@ -63,7 +63,7 @@ subtest 'multiple lanes status - JSON serialization' => sub {
 };
 
 subtest 'single lanes status - JSON serialization' => sub {
-  plan tests => 7;
+  plan tests => 16;
 
   my @lanes = (1);
 
@@ -85,6 +85,38 @@ subtest 'single lanes status - JSON serialization' => sub {
   is ($o->status, $status, 'status correct');
   is ($o->id_run, $id_run, 'run id correct');
   is_deeply($o->lanes, \@lanes, 'lanes array correct');
+  is ($o->username, undef, 'username is not set');
+
+
+  $rls = npg_tracking::status->new(
+    id_run => $id_run,
+    lanes => \@lanes,
+    status => $status,
+    username => 'mypipeline',
+    timestamp => q{2014-07-10T13:42:10+0000},
+  );
+  lives_ok{ $s = $rls->freeze() } q{object serialized};
+  lives_ok{ $o = npg_tracking::status->thaw($s) } q{object deserialized};
+  is ($o->username, 'mypipeline', 'username is propagated correctly');
+  is ($o->to_string,
+    'Object npg_tracking::status status:"analysis in progress", ' .
+    'username:"mypipeline", id_run:"1234", lanes:"1", date:"2014-07-10T13:42:10+0000"',
+    'string representation of the object');
+
+  $rls = npg_tracking::status->new(
+    id_run => $id_run,
+    lanes => \@lanes,
+    status => $status,
+    username => undef,
+    timestamp => q{2014-07-10T13:42:10+0000},
+  );
+  lives_ok{ $s = $rls->freeze() } q{object serialized};
+  lives_ok{ $o = npg_tracking::status->thaw($s) } q{object deserialized};
+  is ($o->username, undef, 'username is propagated as undef');
+  is ($o->to_string,
+    'Object npg_tracking::status status:"analysis in progress", ' .
+    'username:"none", id_run:"1234", lanes:"1", date:"2014-07-10T13:42:10+0000"',
+    'string representation of the object');
 };
 
 subtest 'single lanes status - JSON serialization' => sub {
@@ -142,7 +174,7 @@ subtest 'saving status to a database - errors' => sub {
 };
 
 subtest 'saving status to a database' => sub {
-  plan tests => 14;
+  plan tests => 17;
 
   Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
                             level  => $DEBUG,
@@ -167,19 +199,38 @@ subtest 'saving status to a database' => sub {
   $schema->resultset('RunLaneStatus')->search({})->delete();
 
   $status_objs[0]->to_database($schema);
-  my $rs = $srs->search({iscurrent => 1})->next()->run_status_dict;
+  my $rs = $srs->search({iscurrent => 1})->next();
+  is ($rs->user->username, 'pipeline', 'default username is set'); 
+  my $rsd = $rs->run_status_dict;
   is ($rs->description(), 'analysis in progress', 'run status reset');
 
   $status_objs[1]->to_database($schema, $logger);
-  $rs = $srs->search({iscurrent => 1})->next()->run_status_dict;
-  is ($rs->description(), 'secondary analysis in progress', 'run status reset');
+  $rsd = $srs->search({iscurrent => 1})->next()->run_status_dict;
+  is ($rsd->description(), 'secondary analysis in progress', 'run status reset');
   $status_objs[1]->to_database($schema, $logger);
-  $rs = $srs->search({iscurrent => 1})->next()->run_status_dict;
-  is ($rs->description(), 'secondary analysis in progress',
+  $rsd = $srs->search({iscurrent => 1})->next()->run_status_dict;
+  is ($rsd->description(), 'secondary analysis in progress',
     'run status not reset');
 
   is ($schema->resultset('RunLaneStatus')->search({})->count(), 0,
     'no lane status records are created');
+
+  $schema->resultset('RunStatus')->search({})->delete();
+
+  my $o = npg_tracking::status->new(id_run => $id_run,
+                                    status => 'run complete',
+                                    username => 'eseq_pipeline' 
+                                   );
+  $o->to_database($schema);
+  $rs = $srs->search({})->next();
+  is ($rs->user->username, 'eseq_pipeline', 'preset username is set');
+  $o = npg_tracking::status->new(id_run => $id_run,
+                                 status => 'analysis pending',
+                                 username => undef 
+                                );
+  $o->to_database($schema);
+  $rs = $srs->search({iscurrent => 1})->next();
+  is ($rs->user->username, 'pipeline', 'default username is set');
 
   $schema->resultset('RunStatus')->search({})->delete();
 

@@ -15,3 +15,8 @@
   id_user: 4
   id_usergroup: 6
   level:
+- id_user_usergroup: 6
+  id_user: 13
+  id_usergroup: 2
+  level:
+

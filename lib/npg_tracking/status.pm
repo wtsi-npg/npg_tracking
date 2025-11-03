@@ -35,6 +35,13 @@ has q{status} => (
                    documentation => q{status for run or lane, may contain white spaces},
 );
 
+has q{username} => (
+                   isa      => q{Str|Undef},
+                   is       => 'ro',
+                   required => 0,
+                   documentation => q{username for the database record},
+);
+
 has q{timestamp} => (
                    isa       => q{Str},
                    is        => 'ro',
@@ -59,9 +66,11 @@ sub filename {
 
 sub to_string {
   my $self = shift;
-  return sprintf 'Object %s status:"%s", id_run:"%i", lanes:"%s", date:"%s"',
+  return sprintf
+    'Object %s status:"%s", username:"%s", id_run:"%i", lanes:"%s", date:"%s"',
               __PACKAGE__,
               $self->status,
+              $self->username ? $self->username : q[none],
               $self->id_run,
               @{$self->lanes} ? join(q[ ], @{$self->lanes}) : q[none],
               $self->has_timestamp ? $self->timestamp : q[none];
@@ -90,10 +99,9 @@ sub to_database {
   }
 
   my $date = parse_timestamp($self->timestamp);
-  my $user = undef;
 
   if ( !@{$self->lanes} ) {
-    my $saved = $run_row->update_run_status($self->status, $user, $date);
+    my $saved = $run_row->update_run_status($self->status, $self->username, $date);
     $logger and $logger->info(sprintf
       'Run status %ssaved to the database', $saved ? q[] : q[not ]);
   } else {
@@ -104,7 +112,8 @@ sub to_database {
       }
     }
     foreach my $pos (sort { $a <=> $b} @{$self->lanes}) {
-      my $saved = $run_lanes{$pos}->update_status($self->status, $user, $date);
+      my $saved = $run_lanes{$pos}->update_status(
+        $self->status, $self->username, $date);
       $logger and $logger->info(sprintf
         'Lane %i status %ssaved to the database', $pos, $saved ? q[] : q[not ]);
     }
@@ -150,6 +159,11 @@ npg_tracking::status
 =head2 status
 
  String representing the status to save, an attribute, required.
+
+=head2 username
+
+ Username for saving the status to the database. Can be explicitly set to an
+ undefined value.
 
 =head2 filename
 
@@ -246,7 +260,7 @@ status dictionaries.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014,2016,2019,2021 Genome Research Ltd.
+Copyright (C) 2014,2016,2019,2021,2025 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
