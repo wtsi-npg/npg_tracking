@@ -131,7 +131,6 @@ lib/Monitor/RunFolder.pm
 lib/Monitor/RunFolder/Staging.pm
 lib/Monitor/Staging.pm
 lib/Monitor/Ultimagen/RunFolder.pm
-lib/Monitor/Ultimagen/RunParser.pm
 lib/Monitor/Ultimagen/Staging.pm
 lib/npg/authentication/sanger_ldap.pm
 lib/npg/authentication/sanger_sso.pm
@@ -411,7 +410,6 @@ t/36-elembio-monitor-runfolder.t
 t/36-elembio-monitor-runparametersparser.t
 t/36-elembio-monitor-staging.t
 t/37-ultimagen-monitor-runfolder.t
-t/37-ultimagen-monitor-runparser.t
 t/37-ultimagen-monitor-staging.t
 t/40-st-lims-merge.t
 t/40-st-lims-mlwarehouse.t

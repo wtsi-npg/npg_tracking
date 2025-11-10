@@ -7,10 +7,13 @@ use File::Basename;
 use File::Spec::Functions qw( catfile );
 use DateTime;
 use DateTime::Format::Strptime;
+use Cwd qw( abs_path );
+use Try::Tiny;
+use XML::LibXML;
+
+use npg_tracking::util::types;
 
 use npg_tracking::Schema;
-
-extends 'Monitor::Ultimagen::RunParser';
 
 with qw[
   WTSI::DNAP::Utilities::Loggable
@@ -39,17 +42,41 @@ C<<use Monitor::Ultimagen::RunFolder;
    my $run_folder = Monitor::Ultimagen::RunFolder->new(
      runfolder_path      => $run_folder,
      npg_tracking_schema => $schema
-   );>>
+   )->process_run();>>
 
 =head1 DESCRIPTION
 
-Run properties loader for an Ultimagen run folder. 
-When a run folder is to be inspected, an instance of this class 
-has to call the main function 'process_run' on it that will 
-retrieve or create a run record in tracking DB.
-Eventually, all run statuses will be updated accordingly.
-
+Run monitor for an Ultimagen run folder.
+ 
 =head1 SUBROUTINES/METHODS
+
+=head2 runfolder_path
+
+Directory path of the run folder.
+
+=cut
+
+has q{runfolder_path} => (
+  isa           => q{NpgTrackingDirectory},
+  is            => q{ro},
+  required      => 1,
+);
+
+=head2 runfolder_glob
+
+Parent directory of this run folder in the staging area.
+
+=cut
+has q{runfolder_glob}  => (
+  isa             => q{Str},
+  is              => q{ro},
+  required        => 0,
+  lazy_build      => 1,
+);
+sub _build_runfolder_glob {
+  my $self = shift;
+  return dirname(abs_path $self->runfolder_path);
+}
 
 =head2 npg_tracking_schema
 
@@ -64,25 +91,14 @@ has q{npg_tracking_schema}  => (
 
 =head2 tracking_run
 
-Record representation of a run in the tracking database.
+<npg_tracking::Schema::Result::Run> object
+
+The runs might have been registered already, in which case an existing record
+is assigned to this attribute. Alternatively, a new run record is created and
+assigned to this attribute.
 
 An Ultimagen run is defined by the attributes ultimagen_runid,
 id_instrument.
-The run related to the current run folder is retrieved from the
-tracking database with these three values.
-The retrieved record must be unique in the DB, otherwise it exits
-with error.
-When there is no record in the DB, a new run record is created
-using the run attributes from runID_LibraryInfo.xml
-file plus the following:
-  folder_path_glob      Parent directory of the run folder
-  team                  Team name. Defaults to 'SR'.
-  priority              Lowest priority for a newly created run
-  is_paired             A boolean attribute, is set to a false value 
-                          as all runs are single ended.
-
-Returns a Result::Run instance from which run properties can be retrieved
-in the DB.
 
 =cut
 has q{tracking_run} => (
@@ -140,13 +156,10 @@ sub _build_tracking_run {
 
 =head2 tracking_instrument
 
-Record representation of an instrument in the tracking database.
+C<npg_tracking::Schema::Result::Instrument> object representing an instrument
+that performed the sequencing.
 
-The instrument record is retrieved uniquely (by DB definition).
-If no instrument is found, it exits with error.
-
-Returns a Result::Instrument instance from which instrument properties
-can be retrieved in the DB.
+Error if the relevant database record does not exist.
 
 =cut
 has q{tracking_instrument} => (
@@ -174,6 +187,94 @@ sub _build_tracking_instrument {
   return $instrument_row;
 }
 
+=head2 ultimagen_runid
+
+Ultimagen run identifies as defined in [RUN_ID]_LibraryInfo.xml file.
+
+=cut
+has q{ultimagen_runid}  => (
+  isa             => q{Str},
+  is              => q{ro},
+  required        => 0,
+  lazy_build      => 1,
+);
+sub _build_ultimagen_runid {
+  my $self = shift;
+  my $ultimagen_runid = $self->_library_info_data()
+    ->getDocumentElement()->getAttribute("RunId");
+  if (! $ultimagen_runid) {
+    croak 'Empty value in RunId';
+  }
+  return $ultimagen_runid;
+}
+
+=head2 folder_name
+
+Name of the runfolder directory.
+
+=cut
+has q{folder_name}    => (
+  isa               => q{Str},
+  is                => q{ro},
+  required          => 0,
+  lazy_build        => 1,
+);
+sub _build_folder_name {
+  my $self = shift;
+  return basename $self->runfolder_path;
+}
+
+=head2 date_created
+
+The date when the run was created. Parsed out from the folder_name attribute.
+
+=cut
+has q{date_created} => (
+  isa               => q{DateTime},
+  is                => q{ro},
+  required          => 0,
+  lazy_build        => 1,
+);
+sub _build_date_created {
+  my $self = shift;
+
+  my ($date_string) = $self->folder_name =~ m/\d+-(\d+_\d+)\Z/ms;
+  my $date;
+  if ($date_string) {
+    try {
+      $date = DateTime::Format::Strptime->new(
+        pattern=>'%Y%m%d_%H%M',
+        strict=>1,
+        on_error=>q[croak]
+      )->parse_datetime($date_string);
+    } catch {
+      croak "date_created: failed to parse $date_string";
+    };
+  } else {
+    croak 'Cannot extract run date from run folder name ' . $self->folder_name;
+  }
+  
+  return $date;
+}
+
+has q{_library_info_data} => (
+  isa               => q{XML::LibXML::Document},
+  is                => q{ro},
+  required          => 0,
+  init_arg          => undef,
+  lazy_build        => 1,
+);
+sub _build__library_info_data {
+  my $self = shift;
+  my @library_info = grep { /\d+_LibraryInfo/ } 
+    ( glob catfile($self->runfolder_path, '*.xml') );
+  if ( @library_info != 1 ) {
+    croak '*_LibraryInfo.xml file is not found in run folder '
+      . $self->runfolder_name . ' or multiple files found';
+  }
+  return XML::LibXML->load_xml(location => $library_info[0]);
+}
+
 sub _set_tags {
   my ($self) = shift;
   my @tags = (
@@ -189,15 +290,12 @@ sub _set_tags {
 
 =head2 process_run
 
-Core function of the class that is called on the run folder
-periodically to update dynamic properties of a run in the DB.
-If a run record does not exist, it is created.
-The tags and the following statuses are
-checked/assigned accordingly:
-- 'run in progress'   run is in progress on the instrument
-- 'run mirrored'      all run data is copied from the instrument
+Inspects the run folder. Creates a new  run record if does not exist.
+
+The following run statuses are assigned:
+- 'run in progress'   assigned when the run is created
+- 'run mirrored'      assigned all run data is copied from the instrument
                       to the staging run folder
-Each of the above events saves a time stamp in the DB.
 
 =cut
 sub process_run {
@@ -210,14 +308,14 @@ sub process_run {
   $self->info("Current run status is '$current_status_description'");
   my $current_run_status_dict = $current_run_status_obj->run_status_dict;
   
-	if ( $current_run_status_dict->compare_to_status_description($RUN_STATUS_MIRRORED) == -1 ) {			
-		if ( -e $run_uploaded_path ) {
+  if ( $current_run_status_dict->compare_to_status_description($RUN_STATUS_MIRRORED) == -1 ) {			
+    if ( -e $run_uploaded_path ) {
       my $date = DateTime->from_epoch(epoch => (stat  $run_uploaded_path)[9]);
       $run_row->update_run_status($RUN_STATUS_MIRRORED, $USERNAME, $date);
       $self->info("Assigned '$RUN_STATUS_MIRRORED' status. "
         . 'Run ' . $self->runfolder_path . ' is now completed');
     }
-	}
+  }
 }
 
 1;
