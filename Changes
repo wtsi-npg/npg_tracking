@@ -3,6 +3,11 @@ LIST OF CHANGES
  - Consolidated functionality of the Ultimagen staging monitor in one class.
    Monitor::Ultimagen::RunParser class is deleted, the code from this class is
    moved to Monitor::Ultimagen::RunFolder.
+ - In order to capture a variety of ways LIMS identifies are defined, changed
+   the type of the `batch_id` column in the `run` table from BIGINT to
+   VARCHAR(255). Updated the callback for creating a new run via UI.
+ - Changed the type of batch_id attribute in Monitor::Elembio::RunParametersParser
+   from int to string.
 
 release 105.9.0 (2025-11-03)
  - Updated find_with_attributes method of the Run ResultSet object to make

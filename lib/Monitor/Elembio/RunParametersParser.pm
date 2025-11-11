@@ -222,7 +222,7 @@ an error. Walk-up runs are not tracked through LIMS.
 
 =cut
 has q{batch_id}     => (
-  isa           => q{Maybe[NpgTrackingPositiveInt]},
+  isa           => q{Maybe[Str]},
   is            => q{ro},
   required      => 0,
   lazy_build    => 1,
