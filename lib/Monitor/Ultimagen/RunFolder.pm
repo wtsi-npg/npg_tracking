@@ -110,11 +110,10 @@ has q{tracking_run} => (
 sub _build_tracking_run {
   my $self = shift;
 
+  my $ultimagen_runid = $self->_get_ultimagen_run_attr('RunId');
+
   my $rs = $self->npg_tracking_schema->resultset('Run');
-  my $run_row = $rs->find_with_attributes(
-    $self->ultimagen_runid,
-    $INSTRUMENT_NAME,
-  );
+  my $run_row = $rs->find_with_attributes($ultimagen_runid, $INSTRUMENT_NAME);
   if ($run_row) {
     $self->info('Found run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
     if ($run_row->folder_name ne $self->folder_name) {
@@ -126,7 +125,7 @@ sub _build_tracking_run {
   } else {
     $self->info('Will create a new run for ' . $self->runfolder_path);
     my $data = {
-      flowcell_id          => $self->ultimagen_runid,
+      flowcell_id          => $ultimagen_runid,
       folder_name          => $self->folder_name,
       id_instrument        => $self->tracking_instrument()->id_instrument,
       folder_path_glob     => $self->runfolder_glob,
@@ -134,7 +133,7 @@ sub _build_tracking_run {
       id_instrument_format => $self->tracking_instrument()->id_instrument_format,
       priority             => 1,
       is_paired            => 0,
-      batch_id             => undef,
+      batch_id             => $self->_get_ultimagen_run_attr('Library_Pool')
     };
 
     my $transaction = sub {
@@ -187,27 +186,6 @@ sub _build_tracking_instrument {
   return $instrument_row;
 }
 
-=head2 ultimagen_runid
-
-Ultimagen run identifies as defined in [RUN_ID]_LibraryInfo.xml file.
-
-=cut
-has q{ultimagen_runid}  => (
-  isa             => q{Str},
-  is              => q{ro},
-  required        => 0,
-  lazy_build      => 1,
-);
-sub _build_ultimagen_runid {
-  my $self = shift;
-  my $ultimagen_runid = $self->_library_info_data()
-    ->getDocumentElement()->getAttribute("RunId");
-  if (! $ultimagen_runid) {
-    croak 'Empty value in RunId';
-  }
-  return $ultimagen_runid;
-}
-
 =head2 folder_name
 
 Name of the runfolder directory.
@@ -257,14 +235,14 @@ sub _build_date_created {
   return $date;
 }
 
-has q{_library_info_data} => (
-  isa               => q{XML::LibXML::Document},
+has q{_library_info_root} => (
+  isa               => q{XML::LibXML::Element},
   is                => q{ro},
   required          => 0,
   init_arg          => undef,
   lazy_build        => 1,
 );
-sub _build__library_info_data {
+sub _build__library_info_root {
   my $self = shift;
   my @library_info = grep { /\d+_LibraryInfo/ } 
     ( glob catfile($self->runfolder_path, '*.xml') );
@@ -272,7 +250,17 @@ sub _build__library_info_data {
     croak '*_LibraryInfo.xml file is not found in run folder '
       . $self->runfolder_name . ' or multiple files found';
   }
-  return XML::LibXML->load_xml(location => $library_info[0]);
+  return XML::LibXML->load_xml(location => $library_info[0])->documentElement();
+}
+
+sub _get_ultimagen_run_attr {
+  my ($self, $attr_name) = @_;
+  
+  $attr_name or croak 'Attribute name should be supplied';
+  my $value = $self->_library_info_root()->getAttribute($attr_name);
+  $value or croak "Empty value in $attr_name";
+
+  return $value;
 }
 
 sub _set_tags {

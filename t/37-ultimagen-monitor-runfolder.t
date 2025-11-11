@@ -32,8 +32,8 @@ subtest 'test error conditions' => sub {
     runfolder_path => $runfolder_path,
     npg_tracking_schema => $schema
   );
-  throws_ok{ $test->ultimagen_runid } qr/Empty[ ]value[ ]in[ ]RunId/msx,
-    'error when flowcell ID empty';
+  throws_ok{ $test->_get_ultimagen_run_attr('RunId') }
+    qr/Empty[ ]value[ ]in[ ]RunId/msx, 'error when flowcell ID empty';
   throws_ok { $test->date_created }
     qr/Cannot[ ]extract[ ]run[ ]date[ ]from[ ]run[ ]folder[ ]name[ ]222222_1212/,
     'error when run creation date is missing in the folder name';
@@ -80,7 +80,8 @@ subtest 'test tracking update on new run' => sub {
   lives_ok {$test->process_run();} 'process_run succeeds';
   is( $test->tracking_run()->folder_name, $run_folder_name, 'folder_name of new tracking run' );
   is( $test->tracking_run()->flowcell_id, $ultimagen_runid, 'ultimagen_runid of new tracking run' );
-  is( $test->tracking_run()->batch_id, undef, 'undef batch_id of new tracking run' );
+  is( $test->tracking_run()->batch_id, 'O01_PRJ_batch_12345_pool_4',
+    'batch_id of new tracking run' );
   is( $test->tracking_run()->id_instrument, 130, 'id_instrument of new tracking run' );
   is( $test->tracking_run()->id_instrument_format, 25, 'id_instrument_format of new tracking run' );
   isa_ok( $test->tracking_instrument(), 'npg_tracking::Schema::Result::Instrument',

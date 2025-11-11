@@ -8,6 +8,8 @@ LIST OF CHANGES
    VARCHAR(255). Updated the callback for creating a new run via UI.
  - Changed the type of batch_id attribute in Monitor::Elembio::RunParametersParser
    from int to string.
+ - Captured the library pool identifier from Ultimagen data and saved it as
+   a `batch_id` value for the run tracking database record.
 
 release 105.9.0 (2025-11-03)
  - Updated find_with_attributes method of the Run ResultSet object to make
