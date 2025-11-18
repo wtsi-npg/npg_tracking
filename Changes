@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 106.0.0 (2025-11-18)
  - Consolidated functionality of the Ultimagen staging monitor in one class.
    Monitor::Ultimagen::RunParser class is deleted, the code from this class is
    moved to Monitor::Ultimagen::RunFolder.
