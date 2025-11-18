@@ -29,18 +29,9 @@ subtest 'model object that is not linked to a run' => sub {
 };
 
 subtest 'runs on batch' => sub {
-  plan tests => 23;
+  plan tests => 19;
 
   my $model = npg::model::run->new({util => $util});
-
-  throws_ok { $model->runs_on_batch('batch') } qr/Invalid batch id \'batch\'/,
-    'error if batch id argument is a string';
-  throws_ok { $model->runs_on_batch(3.5) } qr/Invalid batch id \'3.5\'/,
-    'error if batch id argument is a float';
-  throws_ok { $model->runs_on_batch(-5) } qr/Invalid negative or zero batch id \'-5\'/,
-    'error if batch id argument is a negative integer';
-  throws_ok { $model->runs_on_batch(0) } qr/Invalid negative or zero batch id \'0\'/,
-    'error if batch id argument is zero';
 
   my $runs_on_batch = $model->runs_on_batch();
   isa_ok($runs_on_batch, 'ARRAY', 'runs_on_batch returns an array');
@@ -577,7 +568,7 @@ subtest 'check for batch duplication' => sub {
 };
 
 subtest 'run creation error due to problems with batch id' => sub {
-   plan tests => 12;
+   plan tests => 11;
 
    my $h = {
      util                 => $util,
@@ -592,7 +583,7 @@ subtest 'run creation error due to problems with batch id' => sub {
    my %ref = %{$h};
    lives_ok { npg::model::run->new(\%ref)->create() }
      'run with no batch id can always be created';
-   
+
    %ref = %{$h};
    $ref{batch_id} = q[];
    lives_ok { npg::model::run->new(\%ref)->create() }
@@ -602,12 +593,6 @@ subtest 'run creation error due to problems with batch id' => sub {
    $ref{batch_id} = 0;
    lives_ok { npg::model::run->new(\%ref)->create() }
      'run with zero batch id can always be created';
-
-   %ref = %{$h};
-   $ref{batch_id} = 'some';
-   throws_ok { npg::model::run->new(\%ref)->create() }
-     qr/Invalid batch id \'some\'/,
-     'run with non-empty string batch id cannot be created';
 
    my $batch_id = 9999902;
    %ref = %{$h};
@@ -662,6 +647,7 @@ subtest 'run creation error due to problems with batch id' => sub {
    ok ($id_run_next_next != $id_run, 'a different run is created');
    ok ($id_run_next_next != $id_run_next, 'a different run is created');
 };
+
 {
   my $model = npg::model::run->new({});
   dies_ok{ $model->get_instruments } 'Accessing undefined instruments ArrayRef fails';

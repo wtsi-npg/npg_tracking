@@ -3,11 +3,10 @@ use warnings;
 use File::Basename;
 use File::Copy;
 use File::Copy::Recursive qw( dircopy );
-use Test::More tests => 5;
+use Test::More tests => 4;
 use Test::Exception;
-use Test::Warn;
-use File::Temp qw/ tempdir /;
-use File::Path qw/ make_path /;
+use File::Temp qw( tempdir );
+use File::Path qw( make_path );
 use File::Spec::Functions qw( catfile catdir );
 use File::Slurp;
 
@@ -15,32 +14,56 @@ use t::dbic_util;
 
 use_ok('Monitor::Ultimagen::RunFolder');
 
-subtest 'test run parameters loader' => sub {
+my $schema = t::dbic_util->new->test_schema();
+
+subtest 'test error conditions' => sub {
   plan tests => 5;
 
-  my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
-  my $date = '20250822_0117';
-  my $ultimagen_runid = '424090';
+  my $date = '20250911_1212';
+  my $ultimagen_runid = '222222';
   my $run_folder_name = "${ultimagen_runid}-${date}";
+  my $nodate_folder_name = "${ultimagen_runid}_1212";
   my $data_folder = catdir('t/data/ultimagen_staging/Runs', $run_folder_name);
-  my $runfolder_path = catdir($testdir, 'Runs', $run_folder_name);
+  my $runfolder_path = catdir($testdir, 'Runs', $nodate_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
   my $test = Monitor::Ultimagen::RunFolder->new(
-    runfolder_path      => $runfolder_path,
+    runfolder_path => $runfolder_path,
+    npg_tracking_schema => $schema
+  );
+  throws_ok{ $test->_get_ultimagen_run_attr('RunId') }
+    qr/Empty[ ]value[ ]in[ ]RunId/msx, 'error when flowcell ID empty';
+  throws_ok { $test->date_created }
+    qr/Cannot[ ]extract[ ]run[ ]date[ ]from[ ]run[ ]folder[ ]name[ ]222222_1212/,
+    'error when run creation date is missing in the folder name';
+  
+  $date = '20250822_0117';
+  $ultimagen_runid = '424090';
+  my $run_folder_name1 = "${ultimagen_runid}-${date}";
+  my $run_folder_name2 = "RE-${ultimagen_runid}-${date}";
+  $data_folder = catdir('t/data/ultimagen_staging/Runs', $run_folder_name1);
+  my $runfolder_path1 = catdir($testdir, 'Runs', $run_folder_name1);
+  my $runfolder_path2 = catdir($testdir, 'Runs', $run_folder_name2);
+  dircopy($data_folder, $runfolder_path1) or die "cannot copy test directory $!";
+  dircopy($data_folder, $runfolder_path2) or die "cannot copy test directory $!";
+
+  $test = Monitor::Ultimagen::RunFolder->new(
+    runfolder_path      => $runfolder_path1,
     npg_tracking_schema => $schema);
-  isa_ok( $test, 'Monitor::Ultimagen::RunFolder' );
-  is( $test->folder_name, $run_folder_name, 'run_folder value correct' );
-  is( $test->ultimagen_runid, $ultimagen_runid, 'ultimagen_runid value correct' );
-  is( $test->date_created->strftime('%Y%m%d_%H%M'), $date,
-    'date_created value correct' );
-  isa_ok( $test->tracking_run(), 'npg_tracking::Schema::Result::Run',
-          'Object returned by tracking_run method' );
+  is( $test->tracking_run()->flowcell_id, $ultimagen_runid, 'ultimagen_runid of new tracking run' );
+  is( $test->folder_name, $run_folder_name1, 'run_folder value correct' );
+
+  $test = Monitor::Ultimagen::RunFolder->new(
+    runfolder_path      => $runfolder_path2,
+    npg_tracking_schema => $schema);
+  throws_ok { $test->tracking_run() }
+    qr/Tracking[ ]run[ ]'424090 - 424090-20250822_0117'[ ]has[ ]a[ ]different[ ]folder[ ]name[ ]from[ ]local[ ]folder[ ]'RE-424090-20250822_0117'/,
+    'doubled run check correct';
 };
 
 subtest 'test tracking update on new run' => sub {
-  plan tests => 18;
+  plan tests => 19;
 
   my $schema = t::dbic_util->new->test_schema();
   my $testdir = tempdir( CLEANUP => 1 );
@@ -53,10 +76,12 @@ subtest 'test tracking update on new run' => sub {
 
   my $test = Monitor::Ultimagen::RunFolder->new( runfolder_path      => $runfolder_path,
                                                 npg_tracking_schema => $schema);
+  isa_ok( $test, 'Monitor::Ultimagen::RunFolder' );
   lives_ok {$test->process_run();} 'process_run succeeds';
   is( $test->tracking_run()->folder_name, $run_folder_name, 'folder_name of new tracking run' );
   is( $test->tracking_run()->flowcell_id, $ultimagen_runid, 'ultimagen_runid of new tracking run' );
-  is( $test->tracking_run()->batch_id, undef, 'undef batch_id of new tracking run' );
+  is( $test->tracking_run()->batch_id, 'O01_PRJ_batch_12345_pool_4',
+    'batch_id of new tracking run' );
   is( $test->tracking_run()->id_instrument, 130, 'id_instrument of new tracking run' );
   is( $test->tracking_run()->id_instrument_format, 25, 'id_instrument_format of new tracking run' );
   isa_ok( $test->tracking_instrument(), 'npg_tracking::Schema::Result::Instrument',
@@ -114,35 +139,6 @@ subtest 'test on status progress' =>  sub {
 
   lives_ok {$test->process_run();} 'process_run succeeds on early return';
   is( $test->tracking_run()->current_run_status_description, 'run mirrored', 'status on run mirrored after early return');
-};
-
-subtest 'test exceptions' => sub {
-  plan tests => 3;
-
-  my $schema = t::dbic_util->new->test_schema();
-  my $testdir = tempdir( CLEANUP => 1 );
-  my $date = '20250822_0117';
-  my $ultimagen_runid = '424090';
-  my $run_folder_name1 = "${ultimagen_runid}-${date}";
-  my $run_folder_name2 = "RE-${ultimagen_runid}-${date}";
-  my $data_folder = catdir('t/data/ultimagen_staging/Runs', $run_folder_name1);
-  my $runfolder_path1 = catdir($testdir, 'Runs', $run_folder_name1);
-  my $runfolder_path2 = catdir($testdir, 'Runs', $run_folder_name2);
-  dircopy($data_folder, $runfolder_path1) or die "cannot copy test directory $!";
-  dircopy($data_folder, $runfolder_path2) or die "cannot copy test directory $!";
-
-  my $test1 = Monitor::Ultimagen::RunFolder->new(
-    runfolder_path      => $runfolder_path1,
-    npg_tracking_schema => $schema);
-  is( $test1->tracking_run()->flowcell_id, $ultimagen_runid, 'ultimagen_runid of new tracking run' );
-  is( $test1->folder_name, $run_folder_name1, 'run_folder value correct' );
-
-  $test1 = Monitor::Ultimagen::RunFolder->new(
-    runfolder_path      => $runfolder_path2,
-    npg_tracking_schema => $schema);
-  throws_ok { $test1->tracking_run() }
-    qr/Tracking[ ]run[ ]'424090 - 424090-20250822_0117'[ ]has[ ]a[ ]different[ ]folder[ ]name[ ]from[ ]local[ ]folder[ ]'RE-424090-20250822_0117'/,
-    'doubled run check correct';
 };
 
 1;

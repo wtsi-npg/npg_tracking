@@ -35,6 +35,8 @@ Readonly::Scalar my  $FOLDER_GLOB_INDEX           => 2;
 Readonly::Scalar my  $PADDING                     => 4;
 Readonly::Hash   our %TEAMS => ('2' => 'RAD', '1' => 'A',);
 
+Readonly::Scalar my $DEFAULT_BATCH_ID => '0';
+
 __PACKAGE__->mk_accessors(fields());
 __PACKAGE__->has_a([qw(instrument instrument_format)]);
 __PACKAGE__->has_many([qw(run_annotation)]);
@@ -372,22 +374,17 @@ sub run_lanes {
 sub runs_on_batch {
   my ($self, $batch_id) = @_;
 
-  if (defined $batch_id) {
-    my $temp = int $batch_id; # strings will be converted to zeros
-    ($temp eq $batch_id) or croak "Invalid batch id '$batch_id'";
-    ($batch_id > 0) or croak "Invalid negative or zero batch id '$batch_id'";
-  } else {
-    $batch_id = $self->batch_id();
-  }
-
+  $batch_id ||= $self->batch_id();
   my $ids = [];
-  if ($batch_id) { # default batch id for a run is zero
-    my $pkg   = 'npg::model::run';
-    my $query = qq(SELECT @{[join q(, ), $pkg->fields()]}
-                   FROM   @{[$pkg->table()]}
-                   WHERE  batch_id = ?
-                   ORDER BY id_run asc);
-    $ids = $self->gen_getarray($pkg, $query, $batch_id);
+
+  if (defined $batch_id) {
+    if ($batch_id ne $DEFAULT_BATCH_ID) {
+      my $query = qq(SELECT @{[join q(, ), __PACKAGE__->fields()]}
+                     FROM   @{[__PACKAGE__->table()]}
+                     WHERE  batch_id = ?
+                     ORDER BY id_run asc);
+      $ids = $self->gen_getarray(__PACKAGE__, $query, $batch_id);
+    }
   }
 
   return $ids;
@@ -397,8 +394,6 @@ sub is_batch_duplicate {
   my ($self, $batch_id) = @_;
 
   defined $batch_id or croak 'Batch id should be given';
-
-  $batch_id or return 0; # if zero, then nothing to compare to
 
   my @runs = @{$self->runs_on_batch($batch_id)};
   my @run_statuses =
@@ -531,10 +526,10 @@ sub create {
     if (!$self->validate_team($self->{team})) {
       croak 'Invalid team name ' . $self->{team};
     }
-    $self->{batch_id} ||= 0;
+    $self->{batch_id} ||= $DEFAULT_BATCH_ID;
     if ($self->is_batch_duplicate($self->{batch_id})) {
       croak sprintf
-        'Batch %i might have been already used for an active run', $self->{batch_id};
+        'Batch %s might have been already used for an active run', $self->{batch_id};
     }
     $self->{is_paired}          ||= 0;
     $self->{actual_cycle_count} ||= 0;
