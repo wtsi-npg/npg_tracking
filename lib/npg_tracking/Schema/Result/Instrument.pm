@@ -712,6 +712,18 @@ sub manufacturer_is_ElementBiosciences() {
   return $self->manufacturer_name() eq 'Element Biosciences';
 }
 
+=head2 manufacturer_is_UltimaGenomics
+
+Returns a true value if this instrument's manufacturer is Ultima Genomics,
+a false value otherwise.
+
+=cut
+
+sub manufacturer_is_UltimaGenomics() {
+  my $self = shift;
+  return $self->manufacturer_name() eq 'Ultima Genomics';
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;

@@ -266,7 +266,7 @@ subtest 'retrieve latest instrument modification revision' => sub {
 };
 
 subtest 'instrument manufacturer' => sub {
-  plan tests => 6;
+  plan tests => 12;
 
   my $rs = $schema->resultset('Instrument');
   my $instr = $rs->search({name => 'NV2'})->next();
@@ -274,12 +274,23 @@ subtest 'instrument manufacturer' => sub {
   ok ($instr->manufacturer_is_Illumina(), 'manufacturer is Illumina');
   ok (!$instr->manufacturer_is_ElementBiosciences(),
     'manufacturer is not Element Biosciences');
+  ok (!$instr->manufacturer_is_UltimaGenomics(),
+    'manufacturer is not Ultima Genomics');
 
   $instr = $rs->search({name => 'AV2'})->next();
   is ($instr->manufacturer_name(), 'Element Biosciences', 'correct manufacturer name');
   ok (!$instr->manufacturer_is_Illumina(), 'manufacturer is not Illumina');
+  ok (!$instr->manufacturer_is_UltimaGenomics(),
+    'manufacturer is not Ultima Genomics');
   ok ($instr->manufacturer_is_ElementBiosciences(),
     'manufacturer is Element Biosciences');
+
+  $instr = $rs->search({name => 'UG1'})->next();
+  is ($instr->manufacturer_name(), 'Ultima Genomics', 'correct manufacturer name');
+  ok (!$instr->manufacturer_is_Illumina(), 'manufacturer is not Illumina');
+  ok (!$instr->manufacturer_is_ElementBiosciences(),
+    'manufacturer is not Element Biosciences');
+  ok ($instr->manufacturer_is_UltimaGenomics(), 'manufacturer is Ultima Genomics');
 };
 
 1;
