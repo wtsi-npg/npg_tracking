@@ -1,7 +1,9 @@
 LIST OF CHANGES
 
+release 106.1.0 (2026-01-09)
  - Added manufacturer_is_UltimaGenomics method to npg_tracking::Schema::Result::Instrument
    class.
+ - CI updates
 
 release 106.0.0 (2025-11-18)
  - Consolidated functionality of the Ultimagen staging monitor in one class.
