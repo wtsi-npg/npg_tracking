@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 106.1.1 (2026-02-03)
  - Because of changes on CPAN, a request for an older version of Test::Compile
    does not work any longer. Allowed for the latest version of the package to
    be fetched during the build.
