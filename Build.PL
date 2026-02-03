@@ -86,7 +86,6 @@ my $builder = $class->new(
           },
 
           'test_requires' => {
-                'Test::Compile'                   => '< 1.4',
                 'File::Copy::Recursive'           => 0,
           },
 
