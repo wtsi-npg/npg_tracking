@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+ - Because of changes on CPAN, a request for an older version of Test::Compile
+   does not work any longer. Allowed for the latest version of the package to
+   be fetched during the build.
+
 release 106.1.0 (2026-01-09)
  - Added manufacturer_is_UltimaGenomics method to npg_tracking::Schema::Result::Instrument
    class.
