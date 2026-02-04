@@ -5,12 +5,10 @@ use MooseX::StrictConstructor;
 use namespace::autoclean;
 use List::MoreUtils qw/uniq/;
 use Template;
-use Try::Tiny;
 use Readonly;
 use Carp;
 
 use npg_tracking::util::types;
-use st::api::lims;
 use npg::util::mailer;
 
 with 'WTSI::DNAP::Utilities::Loggable';
@@ -22,7 +20,6 @@ Readonly::Scalar my $TEMPLATE_EXT           => q[.tt2];
 Readonly::Scalar my $DEFAULT_RECIPIENT_HOST => q[@sanger.ac.uk];
 ## use critic
 Readonly::Scalar my $DEFAULT_AUTHOR         => q[srpipe];
-Readonly::Scalar my $MLWH_DRIVER_TYPE       => q[ml_warehouse_fc_cache];
 
 has 'dry_run' => (
   isa       => 'Bool',
@@ -35,86 +32,15 @@ has 'event_entity' => (
   isa      => 'DBIx::Class::Row',
 );
 
-has 'schema_mlwh' => (
-  isa        => 'WTSI::DNAP::Warehouse::Schema',
-  is         => 'ro',
-  required   => 0,
-  predicate  => '_has_schema_mlwh',
-);
-
-has 'lims' => (
-  is         => 'ro',
-  required   => 0,
-  isa        => 'ArrayRef[st::api::lims]',
-  lazy_build => 1,
-);
-sub _build_lims {
-  my $self = shift;
-
-  my @lims_list = ();
-  # Instrument status has not affiliation with a run,
-  # report does not include LIMs information
-  if (!$self->_is_instrument_event()) {
-    # If non-instrument entity does not have id_run accessor,
-    # it's an error we do not want to catch.
-    my $id_run = $self->event_entity->id_run();
-    try {
-      my $schema = $self->event_entity->result_source()->schema();
-      my $run_row = $schema->resultset('Run')->find($id_run);
-      my $ref = { id_run => $id_run };
-      if ($self->event_entity->can('position')) {
-        $ref->{'position'} = $self->event_entity->position();
-      }
-      if ($self->_has_schema_mlwh()) {
-        $ref->{'id_flowcell_lims'} = $run_row->batch_id();
-        $ref->{'flowcell_barcode'} = $run_row->flowcell_id();
-        $ref->{'driver_type'}      = $MLWH_DRIVER_TYPE;
-        $ref->{'mlwh_schema'}      = $self->schema_mlwh();
-      }
-      # Fall back on some other driver type, for example,
-      # samplesheet. This will allow to easily test this utility.
-      my $lims = st::api::lims->new($ref);
-      # Explicitly forbid using the xml driver.
-      if ($lims->driver_type() eq 'xml') {
-        $self->logcroak('XML driver type is not allowed');
-      }
-      @lims_list =  $ref->{'position'} ? ($lims) : $lims->children();
-    } catch {
-      $self->logcroak(qq[Failed to get LIMs data for run ${id_run}: $_]);
-    };
-  }
-
-  return \@lims_list;
-}
-
-has '_is_instrument_event' => (
-  is         => 'ro',
-  required   => 0,
-  isa        => 'Bool',
-  lazy_build => 1,
-);
-sub _build__is_instrument_event {
-  my $self = shift;
-  my $table_name = $self->event_entity->result_source()->name();
-  return $table_name =~ /^instrument/xms;
-}
-
-has 'template_name' => (
-  is         => 'ro',
-  required   => 0,
-  isa        => 'Str',
-  lazy_build => 1,
-);
-sub _build_template_name {
-  my $self = shift;
-  return $self->_is_instrument_event ? 'instrument' : 'run_or_lane2subscribers';
-}
-
 has 'template_dir_path' => (
   isa        => 'NpgTrackingDirectory',
   is         => 'ro',
   required   => 1,
 );
+
+sub template_name {
+  return 'instrument';
+}
 
 sub report_full {
   my ($self, $lims) = @_;
@@ -126,12 +52,15 @@ sub report_full {
     OUTPUT       => \$text,
   )  || $self->logcroak($Template::ERROR);
 
-  $t->process(
-    $self->template_name() . $TEMPLATE_EXT, {
-      lanes        => $lims,
-      event_entity => $self->event_entity()
-    }
-  ) || $self->logcroak($t->error());
+  my $vars = {
+    event_entity => $self->event_entity(),
+  };
+  if ($lims) {
+    $vars->{lanes} = $lims;
+  }
+
+  $t->process($self->template_name() . $TEMPLATE_EXT, $vars )
+    || $self->logcroak($t->error());
 
   return $text;
 }
@@ -158,7 +87,7 @@ sub username2email_address {
 
 sub _subscribers {
   my $self = shift;
-  my $group = $self->_is_instrument_event ? q[engineers] : q[events];
+  my $group = q[engineers];
   my @subscribers = ();
   my $schema = $self->event_entity->result_source->schema;
   my $group_row = $schema->resultset('Usergroup')->search(
@@ -189,7 +118,7 @@ sub _build_reports {
     push @reports, npg::util::mailer->new({
       from    => $self->report_author(),
       subject => $self->report_short(),
-      body    => $self->report_full($self->lims()),
+      body    => $self->report_full(),
       to      => $subscribers,
     });
   }
@@ -214,6 +143,7 @@ sub emit {
 }
 
 1;
+
 __END__
 
 =head1 NAME
@@ -305,8 +235,6 @@ npg_tracking::report::event2subscribers
 
 =item Template
 
-=item Try::Tiny
-
 =item Readonly
 
 =item Carp
@@ -314,8 +242,6 @@ npg_tracking::report::event2subscribers
 =item npg_tracking::util::types
 
 =item npg::util::mailer
-
-=item st::api::lims
 
 =back
 
@@ -329,7 +255,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017,2021,2023 Genome Research Ltd.
+Copyright (C) 2017,2021,2023,2026 Genome Research Ltd.
 
 This file is part of NPG.
 

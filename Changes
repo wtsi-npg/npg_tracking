@@ -1,9 +1,21 @@
 LIST OF CHANGES
 
+<<<<<<< HEAD
  - The condition for the 'NPG SeqQC' button to appear on the tracking run web
    page was presence of 'analysis in progress' run status in the history of run
    statuses. This button did not appear for non-Illumina platform runs. Changed
    the condition so that for non-Illumina runs the button is always displayed.
+ - Simplified the implementation of email notifications for run-related
+   information. Only study followers and similar will recieve email notifications
+   for run-related events (selected status changes).
+   - Removed notification which were sent to members of the 'events' group.
+     These were notifications for changes to run and lane statuses and new
+     run and lane annotations. The 'events' group has not had any active
+     members for quite a while, therefore in practice no emails were sent.
+   - The 'events' group database record is marked as not public and not current.
+     This ensures that the 'subscribe' UI bitton is not displayed on the user page.
+   - Removed creation of new run-related `events` table records from Clearpress
+     models. This means that only DBIx models generate new `events` table records.
 
 release 106.1.1 (2026-02-03)
  - Because of changes on CPAN, a request for an older version of Test::Compile

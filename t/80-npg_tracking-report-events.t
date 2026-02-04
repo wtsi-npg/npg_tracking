@@ -159,9 +159,9 @@ subtest 'process instrument events' => sub {
   my $e = npg_tracking::report::events->new(dry_run     => 1,
                                             schema_npg  => $schema,
                                             schema_mlwh => undef);
-  my @counts;
-  lives_ok {@counts = $e->process()} 'no error processing events (no new events)';
-  ok (($counts[0] == 0) && ($counts[1] == 0), 'zero successes, zero failures');
+  my $count;
+  lives_ok {$count = $e->process()} 'no error processing events (no new events)';
+  is ($count, 0, 'zero successes');
   # create two unprocessed events
   my $event_row1 = $event_rs->create({
     id_event_type     => $entity2event{'instrument_status'},
@@ -180,8 +180,8 @@ subtest 'process instrument events' => sub {
   });
   ok (!$event_row2->notification_sent(), 'notification date not set');
 
-  lives_ok {@counts = $e->process()} 'no error processing events (two new events)';
-  ok (($counts[0] == 2) && ($counts[1] == 0), 'two successes, zero failures');
+  lives_ok {$count = $e->process()} 'no error processing events (two new events)';
+  is ($count, 2, 'two successes');
   ok (!$event_row1->notification_sent(), 'dry run - notification date not set');
   ok (!$event_row2->notification_sent(), 'dry run - notification date not set');
 };
@@ -207,9 +207,9 @@ subtest 'tolerance to failures' => sub {
   my $e = npg_tracking::report::events->new(dry_run     => 1,
                                             schema_npg  => $schema,
                                             schema_mlwh => undef);
-  my @counts;
-  lives_ok {@counts = $e->process()} 'no error processing events (three new events)';
-  ok (($counts[0] == 2) && ($counts[1] == 1), 'two successes, one failure');
+  my $count;
+  lives_ok {$count = $e->process()} 'no error processing events (three new events)';
+  is ($count, 2, 'two successes');
 
   # create event for a non-existing event type
   my $event_row1 = $event_rs->create({
@@ -221,8 +221,8 @@ subtest 'tolerance to failures' => sub {
   });
   ok (!$event_row1->notification_sent(), 'notification date not set');
 
-  lives_ok {@counts = $e->process()} 'no error processing events (four new events)';
-  ok (($counts[0] == 2) && ($counts[1] == 2), 'two successes, two failures');
+  lives_ok {$count = $e->process()} 'no error processing events (four new events)';
+  is ($count, 2, 'two successes');
 
   lives_ok { $event_row->delete();$event_row1->delete(); }
     'event rows that cause failures deleted';
@@ -317,23 +317,22 @@ subtest 'process run and runlane events' => sub {
   my $e = npg_tracking::report::events->new(dry_run     => 1,
                                             schema_npg  => $schema,
                                             schema_mlwh => undef);
-  my @counts;
-  lives_ok {@counts = $e->process()} 'no error processing four new events)';
-  ok (($counts[0] == 4) && ($counts[1] == 0), 'four successes, zero failures');
+  my $count;
+  lives_ok { $count = $e->process() } 'no error processing four new events)';
+  is ($count, 1, 'one success');
 };
 
 subtest 'tests with mlwarehouse driver' => sub {
   my $num_tests = 4;
   plan tests => $num_tests;
 
-    # We created a test database, but there are no data there
+    # We created a test database with no data.
     my $e = npg_tracking::report::events->new(dry_run     => 1,
                                               schema_npg  => $schema,
                                               schema_mlwh => $mlwh_schema);
-    my @counts;
-    lives_ok {@counts = $e->process()} 'no error processing four new events';
-    ok (($counts[0] == 0) && ($counts[1] == 4),
-      'zero successes, four failures since no LIMs data available');
+    my $count;
+    lives_ok {$count = $e->process()} 'no error processing four new events';
+    is ($count, 0, 'zero processed since no LIMs data available');
 
     # Load LIMs data for the flowcell the test run is linked to
     # only for one lane. Absence of data for lane 2 should cause
@@ -360,9 +359,8 @@ subtest 'tests with mlwarehouse driver' => sub {
     $e = npg_tracking::report::events->new(dry_run     => 1,
                                            schema_npg  => $schema,
                                            schema_mlwh => $mlwh_schema);
-    lives_ok {@counts = $e->process()} 'no error processing four new events';
-    ok (($counts[0] == 3) && ($counts[1] == 1),
-      'three successes, one failure with wh LIMs data available');
+    lives_ok {$count = $e->process()} 'no error processing four new events';
+    is ($count, 1, 'one success with wh LIMs data available');
 };
 
 subtest 'test non-Illumina run' => sub {
@@ -376,9 +374,9 @@ subtest 'test non-Illumina run' => sub {
   my $e = npg_tracking::report::events->new(dry_run     => 1,
                                             schema_npg  => $schema,
                                             schema_mlwh => undef);
-  my @counts;
-  lives_ok {@counts = $e->process()} 'no error processing four new events';
-  ok (($counts[0] == 4) && ($counts[1] == 0), 'no error');
+  my $count;
+  lives_ok {$count = $e->process()} 'no error processing four new events';
+  is ($count, 0, 'no events processed');
 };
 
 1;

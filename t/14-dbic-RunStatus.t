@@ -26,7 +26,7 @@ is($row->summary(), 'Run 1 was assigned status "run pending"',
 is($row->information(),
   'Run 1 was assigned status "run pending" on 2007-06-05 10:04:23 by joe_admin',
   'correct information string');
-is_deeply([$row->event_report_types()], [], 'no additional reports');
+ok(!$row->is_reportable(), 'status is not reportable');
 
 my @followers_report_statuses = ('qc review pending', 'qc complete');
 my @rows = $schema->resultset( q{RunStatusDict} )->search({
@@ -47,8 +47,7 @@ while ($i < $count) {
   is($row->information(),
     qq{Run 1 was assigned status "$status" on 2007-06-05 10:04:23 by joe_admin},
     'correct information string');
-  is_deeply([$row->event_report_types()], ['followers'],
-    qq{followers report for status "$status"});
+  ok($row->is_reportable(), qq{Status "$status" is reportable});
   $i++;
 }
 

@@ -1,0 +1,1 @@
+UPDATE usergroup SET is_public=0, iscurrent=0 WHERE groupname='events';
