@@ -1,7 +1,3 @@
-#########
-# Author:        ajb
-# Created:       2008-05-08
-#
 package npg::model::run_lane_annotation;
 use strict;
 use warnings;
@@ -10,8 +6,6 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::annotation;
 use npg::model::run_lane;
-use npg::model::event;
-use npg::model::entity_type;
 
 our $VERSION = '0';
 
@@ -52,19 +46,6 @@ sub create {
 
   $self->{'id_annotation'} = $annotation->id_annotation();
   $self->SUPER::create();
-
-  my $en_type = npg::model::entity_type->new({
-                                            util        => $util,
-                                            description => 'run_lane_annotation',
-                                            });
-  my $event = npg::model::event->new({
-                                    util                   => $util,
-                                    event_type_description => 'annotation',
-                                    entity_id              => $self->id_run_lane_annotation(),
-                                    description            => $annotation->user->username() .q{ annotated run lane position } . $self->run_lane->position() . q{ of run } . $self->run_lane->run->name() . qq{\n} . $annotation->comment(),
-                                    id_entity_type => $en_type->id_entity_type(),
-                                    });
-  $event->create();
 
   return 1;
 }
@@ -117,7 +98,7 @@ Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2007 GRL, by Roger Pettett
+Copyright (C) 2007, 2026 Genome Research Ltd.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.4 or,
