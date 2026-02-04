@@ -1,7 +1,3 @@
-#########
-# Author:        rmp
-# Created:       2006-10-31
-#
 package npg::model::run_annotation;
 use strict;
 use warnings;
@@ -10,8 +6,6 @@ use English qw(-no_match_vars);
 use Carp;
 use npg::model::annotation;
 use npg::model::run;
-use npg::model::event;
-use npg::model::entity_type;
 use npg::model::instrument_annotation;
 
 our $VERSION = '0';
@@ -185,18 +179,8 @@ sub _single_run_annotation_create {
   }
 
   $self->{id_annotation} = $annotation->id_annotation();
-  # we create this row here, so that the event table can receive the correct info
   # Yes, we do want SUPER, as we would otherwise end up in a loop
   $self->SUPER::create();
-
-  my $event = npg::model::event->new({
-    util                    => $self->util(),
-    entity_type_description => 'run_annotation',
-    event_type_description  => 'annotation',
-    entity_id               => $self->id_run_annotation(),
-    description             => $description,
-  });
-  $event->create({run => $self->id_run()});
 
   ##########
   # add the annotation to the instrument if checked to do so
@@ -271,7 +255,7 @@ Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2007 GRL, by Roger Pettett
+Copyright (C) 2007, 2026 Genome Research Ltd.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.8.4 or,
