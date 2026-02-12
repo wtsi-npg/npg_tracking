@@ -1,0 +1,18 @@
+---
+- cancelled: 0
+  id_run: 51815
+  input_num_reads: 17739977866
+  instrument_external_name: V125
+  instrument_model: UG 100
+  instrument_name: UG1
+  last_changed: 2026-02-17 17:54:37
+  num_reads: 12897999993
+  qc_seq: ~
+  run_archived: ~
+  run_folder_name: 433681-20260205_1327
+  run_in_progress: 2026-02-05 13:27:00
+  run_priority: 1
+  tags_decode_percent: 96.3648
+  ultimagen_library_pool: 107185_NT1882031W_2
+  ultimagen_run_id: 433681
+

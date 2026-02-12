@@ -284,9 +284,11 @@ lib/npg_tracking/util/types.pm
 lib/st/api/lims.pm
 lib/st/api/lims/samplesheet.pm
 lib/st/api/lims/ml_warehouse/driver.pm
+lib/st/api/lims/ml_warehouse/generic_driver.pm
 lib/st/api/lims/ml_warehouse.pm
 lib/st/api/lims/ml_warehouse_auto.pm 
 lib/st/api/lims/ml_warehouse_fc_cache.pm
+lib/st/api/lims/useq_ml_warehouse.pm
 MANIFEST			This list of files
 README
 README.md
@@ -413,6 +415,7 @@ t/37-ultimagen-monitor-runfolder.t
 t/37-ultimagen-monitor-staging.t
 t/40-st-lims-merge.t
 t/40-st-lims-mlwarehouse.t
+t/40-st-lims-useq_ml_warehouse.t
 t/40-st-lims-ml_warehouse-drivers.t
 t/40-st-lims-samplesheet.t
 t/40-st-lims.t
@@ -517,6 +520,9 @@ t/data/fixtures_lims_wh_samplesheet/000-Sample.yml
 t/data/fixtures_lims_wh_samplesheet/000-Study.yml
 t/data/fixtures_lims_wh_samplesheet/100-StudyUser.yml
 t/data/fixtures_lims_wh_samplesheet/100-IseqFlowcell.yml
+t/data/fixtures_lims_wh_samplesheet/100-UseqRunMetric.yml
+t/data/fixtures_lims_wh_samplesheet/100-UseqWafer.yml
+t/data/fixtures_lims_wh_samplesheet/200-UseqProductMetric.yml
 t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/RunInfo.xml
 t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/runParameters.xml
 t/data/long_info/nfs/sf20/ILorHSany_sf20/incoming/100914_HS3_05281_A_205MBABXX/Data/Intensities/BaseCalls/config.xml
