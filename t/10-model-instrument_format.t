@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use List::MoreUtils qw/any/;
-use Test::More tests => 61;
+use Test::More tests => 66;
 use Test::Exception;
 
 use t::util;
@@ -28,6 +28,7 @@ my $util = t::util->new({fixtures => 1});
   lives_ok { $name = $if->manufacturer_name }
     'no error calling manufacturer_name on an object used in list context';
   is($name, undef, 'manufacturer name is undefined');
+  is($if->manufacturer_is_Illumina, 0, 'manufacturer is not Illumina');
 }
 
 {
@@ -39,6 +40,16 @@ my $util = t::util->new({fixtures => 1});
   isa_ok($is, 'ARRAY');
   is((scalar @{$is}), 13, 'instruments');
   is($if->manufacturer_name, 'Illumina', 'correct manufacturer name');
+  is($if->manufacturer_is_Illumina, 1, 'manufacturer is Illumina');
+
+  $if = $IF->new({
+         util => $util,
+         id_instrument_format => 16,
+        });
+  $is = $if->instruments();
+  is((scalar @{$is}), 1, 'one instrument');
+  is($if->manufacturer_name, 'Element Biosciences', 'correct manufacturer name');
+  is($if->manufacturer_is_Illumina, 0, 'manufacturer is not Illumina');
 }
 
 {
