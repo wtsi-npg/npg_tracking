@@ -284,9 +284,11 @@ lib/npg_tracking/util/types.pm
 lib/st/api/lims.pm
 lib/st/api/lims/samplesheet.pm
 lib/st/api/lims/ml_warehouse/driver.pm
+lib/st/api/lims/ml_warehouse/generic_driver.pm
 lib/st/api/lims/ml_warehouse.pm
 lib/st/api/lims/ml_warehouse_auto.pm 
 lib/st/api/lims/ml_warehouse_fc_cache.pm
+lib/st/api/lims/useq_ml_warehouse.pm
 MANIFEST			This list of files
 README
 README.md
