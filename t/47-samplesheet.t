@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 12;
 use Test::LongString;
 use Test::Exception;
 use File::Slurp;
@@ -319,6 +319,44 @@ subtest 'samplesheets for data for multiple runs' => sub {
   lives_ok { $ss->process() } 'processed without any error';
   ok ($ss->_add_id_run_column, 'flag for id_run column is set');
   is_string($result, read_file($path));
+};
+
+subtest 'expended samplesheet for an Ultimagen run' => sub {
+  plan tests => 3;
+
+  my $id_run = 51815;
+  my $result = q();
+
+  my $ss = npg::samplesheet->new(
+    extend => 1,
+    id_run => $id_run,
+    batch_id => 'yrtyrytry',
+    mlwh_schema => $mlwh_schema,
+    driver_type => 'useq_ml_warehouse',
+    output=> \$result
+  );
+  # This test is just to demosnstrate that the samplesheet generator is
+  # geared towards Illumina data and does not work out of the box.
+  throws_ok { $ss->process }
+    qr/No record retrieved for st::api::lims::ml_warehouse id_flowcell_lims yrtyrytry/,
+    'the default st::api::lims driver is for Illumina';
+  
+  # If st::api::lims objects are supplied, all goes well.
+  my @l = st::api::lims->new(
+    driver_type => 'useq_ml_warehouse',
+    mlwh_schema => $mlwh_schema,
+    id_run => $id_run,
+    position => 1
+  )->children();
+
+  $ss = npg::samplesheet->new(
+    extend => 1,
+    id_run => $id_run,
+    lims => \@l,
+    output=> \$result
+  );
+  lives_ok { $ss->process } 'generate samplesheet, LIMS objects are given';
+  is_string($result, read_file('t/data/samplesheet/ultimagen_51815.csv'));
 };
 
 1;
