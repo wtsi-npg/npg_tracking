@@ -1,6 +1,8 @@
 LIST OF CHANGES
 
  - Added st::api::lims driver for Ultimagen data.
+ - Added a script npg_samplesheet4ultimagen for generating a samplesheet for
+   Ultimagen data.
  - The condition for the 'NPG SeqQC' button to appear on the tracking run web
    page was presence of 'analysis in progress' run status in the history of run
    statuses. This button did not appear for non-Illumina platform runs. Changed

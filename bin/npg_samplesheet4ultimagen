@@ -1,0 +1,142 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use Try::Tiny;
+use English;
+use Log::Log4perl qw(:levels);
+use Pod::Usage;
+use Getopt::Long;
+
+use npg::samplesheet;
+use st::api::lims;
+
+our $VERSION = '0';
+
+Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
+                          level  => $INFO,
+                          utf8   => 1});
+my $id_run;
+my $path;
+
+GetOptions (
+  'help' => sub { pod2usage(-verbose => 1, -exitval => 0) },
+  'id_run=i' => \$id_run,
+  'path=s'   => \$path
+) or pod2usage(-message => "Error in command line arguments\n",
+               -verbose => 1, -exitval => 1);
+
+my $logger = Log::Log4perl->get_logger('main');
+
+if (-f $path) {
+  my $backup = "${path}.back";
+  $logger->info("$path exists, will be moved out of the way to $backup");
+  my $result = rename $path, $backup;
+  if (!$result) {
+    $logger->warn("Failed to move $path to $backup out of the way: $OS_ERROR");
+  }
+}
+
+my $ref = {
+  driver_type => 'useq_ml_warehouse',
+  id_run      => $id_run,
+  position    => 1
+};
+
+try {
+  npg::samplesheet->new(
+    id_run => $id_run,
+    lims   => [st::api::lims->new($ref)->children()],
+    extend => 1,
+    output => $path,
+  )->process();
+} catch {
+  my $error = $_;
+  $logger->error("Failed to generate a samplesheet for run $id_run: $error");
+  exit 1;
+};
+
+$logger->info("Samplesheet for Ultimagen run $id_run is written to $path");
+
+1;
+
+__END__
+
+=head1 NAME
+
+ npg_samplesheet4ultimagen
+
+=head1 USAGE
+
+ npg_samplesheet4ultimagen --id_run 3456 --path 3456_samplesheet.csv
+
+=head1 REQUIRED ARGUMENTS
+
+=head1 OPTIONS
+
+ --id_run NPG ttarcking run ID
+ 
+ --path   the path for the samplesheet, including the file name
+ 
+=head1 DESCRIPTION
+
+ Creates NPG samplesheet for an Ultimagen run. If a file exists at a given
+ path, tries to move it out of teh way.
+
+=head1 EXIT STATUS
+
+ 0
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 DEPENDENCIES
+
+=over
+
+=item strict
+
+=item warnings
+
+=item FindBin
+
+=item lib
+
+=item Log::Log4perl
+
+=item Pod::Usage
+
+=item Getopt::Long
+
+=item st::api::lims
+
+=item npg::samplesheet
+
+=back
+
+=head1 AUTHOR
+
+Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (C) 2026 Genome Research Ltd
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut
+

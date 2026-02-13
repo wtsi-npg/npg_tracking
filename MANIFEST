@@ -6,6 +6,7 @@ bin/npg_daemon_control
 bin/npg_move_runfolder
 bin/npg_samplesheet4MiSeq
 bin/npg_samplesheet4NovaSeqX
+bin/npg_samplesheet4ultimagen
 bin/npg_samplesheet_generator_NovaSeqXSeries
 bin/npg_status_save
 bin/staging_area_monitor
