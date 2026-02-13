@@ -1,6 +1,8 @@
 LIST OF CHANGES
 
  - Added st::api::lims driver for Ultimagen data.
+ - Added a script npg_samplesheet4ultimagen for generating a samplesheet for
+   Ultimagen data.
 
 release 106.1.1 (2026-02-03)
  - Because of changes on CPAN, a request for an older version of Test::Compile
