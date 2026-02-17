@@ -1,5 +1,10 @@
 LIST OF CHANGES
 
+ - The condition for the 'NPG SeqQC' button to appear on the tracking run web
+   page was presence of 'analysis in progress' run status in the history of run
+   statuses. This button did not appear for non-Illumina platform runs. Changed
+   the condition so that for non-Illumina runs the button is always displayed.
+
 release 106.1.1 (2026-02-03)
  - Because of changes on CPAN, a request for an older version of Test::Compile
    does not work any longer. Allowed for the latest version of the package to
