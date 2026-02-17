@@ -302,7 +302,7 @@ David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2017,2021,2026 Genome Research Ltd.
+Copyright (C) 2013,2014,2017,2021,2023,2026 Genome Research Ltd.
 
 This file is part of NPG.
 
