@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 106.1.2 (2026-02-19)
  - The condition for the 'NPG SeqQC' button to appear on the tracking run web
    page was presence of 'analysis in progress' run status in the history of run
    statuses. This button did not appear for non-Illumina platform runs. Changed
