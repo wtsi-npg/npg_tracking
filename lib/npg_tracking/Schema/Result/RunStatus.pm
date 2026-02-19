@@ -241,22 +241,17 @@ sub information {
     $self->user()->username();
 }
 
-=head2 event_report_types
+=head2 is_reportable
 
-Additional event report types associated with creating a record
-in this table.
+Returns true if this status change has to be reported, false otherwise;
 
 =cut
 
-sub event_report_types {
+sub is_reportable {
   my $self = shift;
-  my @types = ();
-  my $description = $self->description();
-  my @statuses = ('qc review pending', 'qc complete');
-  if (any { $_ eq $description} @statuses) {
-    push @types, 'followers';
-  }
-  return @types;
+ 
+  my $description = $self->description; 
+  return any { $_ eq $description}  ('qc review pending', 'qc complete');
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -307,7 +302,7 @@ David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2013,2014,2017,2021 Genome Research Ltd.
+Copyright (C) 2013,2014,2017,2021,2023,2026 Genome Research Ltd.
 
 This file is part of NPG.
 

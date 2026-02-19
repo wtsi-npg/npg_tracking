@@ -1,7 +1,0 @@
-[% WRAPPER wrapper.tt2 %]
-[%- event_entity.information %]
-
-[% FOREACH lane = lanes; PROCESS lane_detail.tt2; END %]
-NPG page for this run:
-[% PROCESS urls.tt2 %][% npg_tracking_url %]/run/[% event_entity.id_run %]
-[% END %]

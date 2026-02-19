@@ -5,7 +5,6 @@ use warnings;
 use English qw(-no_match_vars);
 use Carp;
 
-use npg::model::event;
 use npg::model::run_status_dict;
 
 use base qw(npg::model);
@@ -49,31 +48,8 @@ sub create {
 
     $util->transactions(0);
 
-    my $history = qq(Status History:\n @{[map {
-                    sprintf qq([%s] %s\n),
-                            $_->date(),
-                            $_->run_status_dict->description();
-                  } @{$self->run->run_statuses()}]});
-
-    my $contents_of_lanes = "\n\nBatch Id: @{[$self->run->batch_id()]}\n";
-    $contents_of_lanes .= 'Lanes : '.join q( ), map{$_->position} @{$self->run->run_lanes()};
-    $contents_of_lanes .= "\n";
-
-    my $desc = $self->run_status_dict->description();
-
-    my $msg = qq($desc for run @{[$self->run->name()]}\nhttp://sfweb.internal.sanger.ac.uk:12443/perl/npg/run/@{[$self->run->name()]}\n$history\n\n$contents_of_lanes);
-    my $event = npg::model::event->new({
-                                      run                => $self->run(),
-                                      status_description => $desc,
-                                      util               => $util,
-                                      id_event_type      => 1, # run_status/status change
-                                      entity_id          => $self->id_run_status(),
-                                      description        => $msg,
-                                      });
-    $event->{id_run} = $self->id_run();
-    $event->create({run => $self->id_run(), id_user => $self->id_user()});
-
-    $self->run()->instrument()->autochange_status_if_needed($desc);
+    $self->run()->instrument()->autochange_status_if_needed(
+      $self->run_status_dict->description());
 
     1;
 
@@ -157,8 +133,6 @@ npg::model::run_status
 
 =item Carp
 
-=item npg::model::event
-
 =item npg::model::run_status_dict
 
 =back
@@ -179,7 +153,7 @@ npg::model::run_status
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2007-2012, 2013,2014,2018,2025 Genome Research Ltd.
+Copyright (C) 2007-2012, 2013,2014,2018,2025,2026  Genome Research Ltd.
 
 This file is part of NPG.
 
