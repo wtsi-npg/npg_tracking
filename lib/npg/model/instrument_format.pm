@@ -217,6 +217,14 @@ sub manufacturer_name {
   return $name;
 }
 
+## no critic(NamingConventions::Capitalization)
+sub manufacturer_is_Illumina {
+  my $self = shift;
+  my $manufacturer_name = $self->manufacturer_name;
+  return ($manufacturer_name &&
+    ($manufacturer_name eq $DEFAULT_MANUFACTURER_NAME)) ? 1 : 0;
+}
+
 1;
 
 __END__
@@ -245,6 +253,10 @@ initialise an object based on model being provided
 =head2 manufacturer_name - the name of the manufacturer of this instrument format
 
   my $oManufacturer = $oInstrumentformat->manufacturer_name();
+
+=head2 manufacturer_is_Illumina - returns 1 if the manufacturer name is defined
+  and it is 'Illumina', otherwise returns 0. The method will be called from the
+  template, not to be changed to returning the outcome of a boolean evaluation.
 
 =head2 instruments - Arrayref of npg::model::instruments of this instrument_format
 
@@ -343,7 +355,7 @@ returned.
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2006,2008,2013,2014,2016,2018,2021,2023,2025 Genome Research Ltd.
+Copyright (C) 2006,2008,2013,2014,2016,2018,2021,2023,2025,2026 Genome Research Ltd.
 
 This file is part of NPG.
 
