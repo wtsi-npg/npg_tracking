@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 [%- image = requestor.username == 'public' ? 'key' : 'logout';
-    address = SCRIPT_NAME _ '/enigmatic.cgi';
+    address = SCRIPT_NAME _ '/okta-login.cgi';
     address = address.replace('/npg/', '/');
     dev = view.is_prod ? '' : ' DEV';
     npg_title = 'NPG' _ dev _ ' v' _  view.app_version _ ' [' _ view.time_rendered _ ']';
@@ -36,8 +36,8 @@
   <div class="lfloat"><img src="/icons/[% icon_prefix %]logo.png" alt="[% icon_prefix ? 'Welcome Sanger Institute' : 'Organisation' %] logo" /></div>
   <div class="rfloat">
     <div class="npg_title [% dev ? 'dev_highlight' : '' %]">[% npg_title %]</div>
-    <div><a href="/perl/enigmatic.cgi"><img src="/icons/navigation/[% image %].gif" alt="[% image == 'logout' ? 'Logout' : 'Login';  %] button" /></a>
-   [%- IF image == 'logout' %]Logged in as <a href="[% SCRIPT_NAME %]/user/[% requestor.username %]">[% view.realname(requestor.username);%]</a>[% ELSE %]&nbsp;<a href="/perl/enigmatic.cgi">Log in</a>[% END -%]
+    <div><a href="/perl/okta-login.cgi"><img src="/icons/navigation/[% image %].gif" alt="[% image == 'logout' ? 'Logout' : 'Login';  %] button" /></a>
+   [%- IF image == 'logout' %]Logged in as <a href="[% SCRIPT_NAME %]/user/[% requestor.username %]">[% view.realname(requestor.username);%]</a>[% ELSE %]&nbsp;<a href="/perl/okta-login.cgi">Log in</a>[% END -%]
 <div>Group[% IF requestor.usergroups.size > 1; 's'; END; %]:[% FOREACH usergroup = requestor.usergroups %]&nbsp;[% usergroup.groupname %][% END %]</div>
     </div>
     [% IF rfid -%]
