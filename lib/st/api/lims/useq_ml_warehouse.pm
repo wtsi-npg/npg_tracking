@@ -18,8 +18,8 @@ st::api::lims::useq_ml_warehouse
 
 =head1 SYNOPSIS
 
- # Not definingposition.
- my $l = st::api::lims->new(id_run => 51000, driver_type =>useq_nl_warehouse');
+ # Not defining position.
+ my $l = st::api::lims->new(id_run => 51000, driver_type =>useq_ml_warehouse');
  for my $p ($l->children) {
     print 'Tag index ' . $p->tag_index;
  }
@@ -28,7 +28,7 @@ st::api::lims::useq_ml_warehouse
  $l = st::api::lims->new(
    id_run => 51000,
    position => 1,
-   driver_type =>useq_nl_warehouse'
+   driver_type =>useq_ml_warehouse'
  );
  for my $p ($l->children) {
     print 'Tag index ' . $p->tag_index;
@@ -39,7 +39,7 @@ st::api::lims::useq_ml_warehouse
 Implementation of the C<useq_ml_warehouse> driver type for C<st::api::lims>
 class, the driver for Ultimagen data.
 
-Since the consept of a lane is absent in Ultimagen sequencing, the lane-level
+Since the concept of a lane is absent in Ultimagen sequencing, the lane-level
 objects are not implemented. The children of the run level object are plexes,
 ie target products. The control sample tag is not included into the list of
 children.
@@ -183,8 +183,8 @@ sub qc_state {
 =head2 spiked_phix_tag_index
 
 NPG tag index for Ultimagen sequencing control. The control is not necessary
-a PhiX sample. The nam eof teh attribute is retained to be compatible with the
-code originally  written for Illumina data.
+a PhiX sample. The name of the attribute is retained to be compatible with the
+code which was originally written for Illumina data.
 
 Read-only integer attribute, not possible to set from the constructor.
 Inherited from parent C<st::api::lims:::ml_warehouse::generic_driver>.
@@ -207,7 +207,7 @@ sub _build_spiked_phix_tag_index {
 
 #####
 # useq_product_metrics table row for this entity. The attribute is defined
-# for plex-level non-tag zero objects only. Both the bsence of the database
+# for plex-level non-tag zero objects only. Both the absence of the database
 # record and multiple records are error conditions.
 has '_product_row' => (
   isa        => 'Maybe[WTSI::DNAP::Warehouse::Schema::Result::UseqProductMetric]',
@@ -234,8 +234,8 @@ sub _build__product_row {
 
 #####
 # useq_wafer table row for this entity. Is undefined if the value of
-# _product_row is undefined. Handles a number ofstandard for st::api::lims
-# driver methods for LIMS data retrieval. See details of how this methods
+# _product_row is undefined. Handles a number of st::api::lims standard
+# driver methods for LIMS data retrieval. See details of how these methods
 # are implemented in UseqWafer Result class.
 has '_lims_row' => (
   isa        => 'Maybe[WTSI::DNAP::Warehouse::Schema::Result::UseqWafer]',
@@ -253,7 +253,7 @@ sub _build__lims_row {
 }
 
 #####
-# Returns a list of standard for a driver methods to retrieve LIMS data.
+# Returns a list of standard driver methods to retrieve LIMS data.
 sub _delegated_methods {
   my $package = 'WTSI::DNAP::Warehouse::Schema::Result::UseqWafer';
   my @methods = grep { $package->can($_) }
@@ -263,7 +263,7 @@ sub _delegated_methods {
 
 #####
 # Delegated methods are modified to ensure that the absence of a link from the
-# product row to a useq_wafer row does not lead to the code failure. 
+# product row to the useq_wafer row does not lead to a run-time failure. 
 foreach my $method (_delegated_methods()) {
   around $method => sub {
     my ($orig, $self) = @_;
