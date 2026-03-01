@@ -3,9 +3,9 @@ use warnings;
 use Test::More tests => 7;
 use Test::Exception;
 
+#####
 # The tests below demonstrate the behaviour of st::api::lims class with
-# useq_ml_warehouse driver type. These are not teh tests for the driver class
-# itself.
+# the useq_ml_warehouse driver type.
 
 use_ok('st::api::lims');
 
