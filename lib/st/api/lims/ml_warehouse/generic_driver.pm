@@ -31,8 +31,14 @@ Inherited from C<npg_tracking::glossary::run>.
 
 =head2 position
 
-Position, required.
+Position, an optional attribute.
 Inherited from C<npg_tracking::glossary::lane>.
+
+=cut
+
+has '+position' => (
+  required => 0,
+);
 
 =head2 tag_index
 
@@ -41,8 +47,7 @@ Inherited from C<npg_tracking::glossary::tag>.
 
 =head2 mlwh_schema
 
-C<WTSI::DNAP::Warehouse::Schema> connection. A child class should provide
-a builder method C<_build_mlwh_schema>.
+C<WTSI::DNAP::Warehouse::Schema> connection.
 
 =cut
 
@@ -51,6 +56,9 @@ has 'mlwh_schema' => (
   is         => 'ro',
   lazy_build => 1,
 );
+sub _build_mlwh_schema {
+  return WTSI::DNAP::Warehouse::Schema->connect();
+}
 
 =head2 is_pool
 
@@ -86,28 +94,17 @@ has 'spiked_phix_tag_index' => (
   lazy_build => 1,
 );
 
-=head2 count
+=head2 delegated_methods
 
-Number of underlying records used for evaluating this object.
-
-A child class should provide a driver-specific implementation of this method.
+Returns a list of standard driver methods for retrieving LIMS data.
 
 =cut
 
-sub count {
-  return 0;
-}
-
-=head2 children
-
-A list of child entities for this entity.
-
-A child class should provide a driver-specific implementation of this method.
-
-=cut
-
-sub children {
-  return ();
+sub delegated_methods {
+  my ($package, $lims_result_class) = @_;
+  my @methods = grep { $lims_result_class->can($_) }
+    st::api::lims->driver_method_list_short($package->meta->get_attribute_list);
+  return \@methods;
 }
 
 =head2 copy_init_attrs
@@ -121,14 +118,15 @@ trigger building this attribute.
 
 sub copy_init_attrs {
   my $self = shift;
-  my $init = {};
+  # Pass the database connection to any children to avoid creating a new
+  # connection for each child.
+  my $init = {'mlwh_schema' => $self->mlwh_schema()};
   foreach my $init_attr ( qw/id_run position/) {
     my $pred = "has_$init_attr";
     if ($self->$pred) {
       $init->{$init_attr} = $self->$init_attr;
     }
   }
-  $init->{mlwh_schema} = $self->mlwh_schema();
   return $init;
 }
 

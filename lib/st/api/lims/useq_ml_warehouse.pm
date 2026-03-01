@@ -4,13 +4,18 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::autoclean;
 use Carp;
+use Readonly;
 
-use st::api::lims;
 use WTSI::DNAP::Warehouse::Schema;
 
 extends 'st::api::lims::ml_warehouse::generic_driver';
 
 our $VERSION = '0';
+
+Readonly::Scalar my $LIMS_RESULT_CLASS =>
+  'WTSI::DNAP::Warehouse::Schema::Result::UseqWafer';
+Readonly::Array my @DELEGATED_METHODS =>
+  @{__PACKAGE__->delegated_methods($LIMS_RESULT_CLASS)};
 
 =head1 NAME
 
@@ -62,13 +67,12 @@ Inherited from parent C<st::api::lims::ml_warehouse::generic_driver>.
 
 =head2 position
 
-Position, optional attribute. The only allowed value is 1.
+Position, an optional attribute. The only allowed value is 1.
 Inherited from parent C<st::api::lims::ml_warehouse::generic_driver>.
 
 =cut
 
 has '+position' => (
-  required => 0,
   trigger => \&_position_filter,
 );
 sub _position_filter {
@@ -87,28 +91,20 @@ Inherited from parent C<st::api::lims::ml_warehouse::generic_driver>.
 
 WTSI::DNAP::Warehouse::Schema connection.
 Inherited from parent C<st::api::lims::ml_warehouse::generic_driver>.
-This class implements a builder.
-
-=cut
-
-sub _build_mlwh_schema {
-  return WTSI::DNAP::Warehouse::Schema->connect();
-}
 
 =head2 is_pool
 
 Inherited from parent C<st::api::lims::ml_warehouse::generic_driver>.
-
-=head2 count
-
-Number of underlying records used for evaluating this object.
-Errors if no database product rows are found for this run.
 
 =head2 children
 
 A list of child objects for this entity. Expected to be non-empty only for
 a run-level or tag zero entity. Errors if no database product rows are found
 for this run.
+
+=head2 count
+
+Number of child objects.
 
 =cut
 
@@ -238,11 +234,11 @@ sub _build__product_row {
 # driver methods for LIMS data retrieval. See details of how these methods
 # are implemented in UseqWafer Result class.
 has '_lims_row' => (
-  isa        => 'Maybe[WTSI::DNAP::Warehouse::Schema::Result::UseqWafer]',
+  isa        => "Maybe[$LIMS_RESULT_CLASS]",
   is         => 'bare',
   init_arg   => undef,
   lazy_build => 1,
-  handles    => _delegated_methods(),
+  handles    => \@DELEGATED_METHODS,
   reader     => '_get_lims_row',
 );
 
@@ -253,24 +249,14 @@ sub _build__lims_row {
 }
 
 #####
-# Returns a list of standard driver methods to retrieve LIMS data.
-sub _delegated_methods {
-  my $package = 'WTSI::DNAP::Warehouse::Schema::Result::UseqWafer';
-  my @methods = grep { $package->can($_) }
-    st::api::lims->driver_method_list_short(__PACKAGE__->meta->get_attribute_list);
-  return \@methods;
-}
-
-#####
 # Delegated methods are modified to ensure that the absence of a link from the
 # product row to the useq_wafer row does not lead to a run-time failure. 
-foreach my $method (_delegated_methods()) {
+foreach my $method (@DELEGATED_METHODS) {
   around $method => sub {
     my ($orig, $self) = @_;
     return $self->_get_lims_row() ? $self->$orig() : undef;
   };
 }
-
 
 __PACKAGE__->meta->make_immutable;
 
@@ -294,7 +280,7 @@ __END__
 
 =item namespace::autoclean
 
-=item st::api::lims
+=item Readonly
 
 =item WTSI::DNAP::Warehouse::Schema
 
