@@ -3,9 +3,9 @@ use warnings;
 use Test::More tests => 7;
 use Test::Exception;
 
+#####
 # The tests below demonstrate the behaviour of st::api::lims class with
-# useq_ml_warehouse driver type. These are not teh tests for the driver class
-# itself.
+# the useq_ml_warehouse driver type.
 
 use_ok('st::api::lims');
 
@@ -41,7 +41,7 @@ subtest 'no product table entries' => sub {
 };
 
 subtest 'family tree, product table entries are present' => sub {
-  plan tests => 82;
+  plan tests => 85;
 
   my $l = st::api::lims->new(
     id_run      => $id_run,
@@ -49,7 +49,11 @@ subtest 'family tree, product table entries are present' => sub {
     mlwh_schema => $schema_wh
   );
   ok ($l->is_pool, 'run is a pool');
-
+  ok (!$l->is_control, 'run is not a sequencing control');
+  is ($l->tag_index, undef, 'tag index is not defined for a run');
+  is ($l->spiked_phix_tag_index, $control_tag_index,
+    'control tag index is defined for a run and is correct');
+  
   my @products = $l->children();
   is (scalar @products, 7, 'seven products');
   is ($l->num_children, 7, 'seven children');
@@ -63,8 +67,8 @@ subtest 'family tree, product table entries are present' => sub {
     is (scalar $p->children(), 0, 'no children');
     is ($p->num_children, 0, 'no children');
     ok ($p->tag_index, 'tag index is defined and is not zero');
-    ok (!$l->is_control, 'product is not sequencing control');
-    is ($l->spiked_phix_tag_index, $control_tag_index,
+    ok (!$p->is_control, 'product is not sequencing control');
+    is ($p->spiked_phix_tag_index, $control_tag_index,
       'control tag index is correct');
     push @indices, $p->tag_index;
   }
