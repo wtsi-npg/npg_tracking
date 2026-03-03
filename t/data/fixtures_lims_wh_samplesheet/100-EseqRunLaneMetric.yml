@@ -1,0 +1,62 @@
+---
+- cancelled: 0
+  cycles: 618
+  flowcell_barcode: 2447444602
+  id_run: 50805
+  instrument_external_name: AV244103
+  instrument_model: AVITI24
+  instrument_name: AV2
+  instrument_side: B
+  lane: 1
+  lane_released: ~
+  last_changed: 2025-07-31 01:43:09
+  num_polonies: 213081434
+  paired_read: 1
+  qc_seq: ~
+  run_archived: ~
+  run_complete: 2025-07-30 23:46:42
+  run_folder_name: 20250728_AV244103_NT1859733M_run_three
+  run_priority: 1
+  run_started: 2025-07-28 12:15:36
+  tags_decode_percent: 98.86
+- cancelled: 0
+  cycles: 318
+  flowcell_barcode: 2530586613
+  id_run: 51922
+  instrument_external_name: AV244103
+  instrument_model: AVITI24
+  instrument_name: AV2
+  instrument_side: B
+  lane: 1
+  lane_released: ~
+  last_changed: 2026-02-28 15:15:25
+  num_polonies: 68749881
+  paired_read: 1
+  qc_seq: ~
+  run_archived: ~
+  run_complete: 2026-02-28 14:02:08
+  run_folder_name: 20260227_AV244103_107441
+  run_priority: 1
+  run_started: 2026-02-27 09:32:37
+  tags_decode_percent: 95.13
+- cancelled: 0
+  cycles: 318
+  flowcell_barcode: 2530586613
+  id_run: 51922
+  instrument_external_name: AV244103
+  instrument_model: AVITI24
+  instrument_name: AV2
+  instrument_side: B
+  lane: 2
+  lane_released: ~
+  last_changed: 2026-02-28 15:15:25
+  num_polonies: 69495600
+  paired_read: 1
+  qc_seq: ~
+  run_archived: ~
+  run_complete: 2026-02-28 14:02:08
+  run_folder_name: 20260227_AV244103_107441
+  run_priority: 1
+  run_started: 2026-02-27 09:32:37
+  tags_decode_percent: 95.27
+

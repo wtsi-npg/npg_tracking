@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - Added st::api::lims driver for Elembio data. 
  - Added st::api::lims driver for Ultimagen data.
  - Added a script npg_samplesheet4ultimagen for generating a samplesheet for
    Ultimagen data.
