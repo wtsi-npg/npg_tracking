@@ -8,7 +8,6 @@ use Scalar::Util qw(isweak weaken);
 use Carp;
 use POSIX qw(strftime);
 use List::MoreUtils qw(none);
-use List::Util qw(first);
 use JSON;
 use DateTime;
 use DateTime::Format::Strptime;
@@ -20,7 +19,6 @@ use npg::model::run_lane;
 use npg::model::run_status;
 use npg::model::annotation;
 use npg::model::run_annotation;
-use npg::model::event;
 use npg::model::tag;
 use npg::model::entity_type;
 use npg::model::tag_frequency;
@@ -1224,8 +1222,6 @@ $instruments is undefined
 
 =item npg::model::run_annotation
 
-=item npg::model::event
-
 =item npg::model::tag
 
 =item npg::model::entity_type
@@ -1260,7 +1256,8 @@ $instruments is undefined
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2006-2012, 2013,2014,2015,2016,2017,2020,2021,2022,2025 Genome Research Ltd.
+Copyright (C) 2006-2012,2013,2014,2015,2016,2017,2020,2021,2022,
+2025,2026 Genome Research Ltd.
 
 This file is part of NPG.
 

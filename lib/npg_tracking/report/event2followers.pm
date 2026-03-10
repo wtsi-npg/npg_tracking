@@ -4,14 +4,61 @@ use Moose;
 use MooseX::StrictConstructor;
 use namespace::autoclean;
 use List::MoreUtils qw/uniq/;
+use Readonly;
+use Try::Tiny;
 
+use st::api::lims;
 use npg::util::mailer;
 
 extends 'npg_tracking::report::event2subscribers';
 
+Readonly::Scalar my $MLWH_DRIVER_TYPE => q[ml_warehouse_fc_cache];
+
 our $VERSION = '0';
 
-sub _build_template_name {
+has 'schema_mlwh' => (
+  isa        => 'WTSI::DNAP::Warehouse::Schema',
+  is         => 'ro',
+  required   => 0,
+  predicate  => '_has_schema_mlwh',
+);
+
+has 'lims' => (
+  is         => 'ro',
+  required   => 0,
+  isa        => 'ArrayRef[st::api::lims]',
+  lazy_build => 1,
+);
+sub _build_lims {
+  my $self = shift;
+
+  my @lims_list = ();
+    my $id_run = $self->event_entity->id_run();
+    try {
+      my $schema = $self->event_entity->result_source()->schema();
+      my $run_row = $schema->resultset('Run')->find($id_run);
+      my $ref = { id_run => $id_run };
+      if ($self->event_entity->can('position')) {
+        $ref->{'position'} = $self->event_entity->position();
+      }
+      if ($self->_has_schema_mlwh()) {
+        $ref->{'id_flowcell_lims'} = $run_row->batch_id();
+        $ref->{'flowcell_barcode'} = $run_row->flowcell_id();
+        $ref->{'driver_type'}      = $MLWH_DRIVER_TYPE;
+        $ref->{'mlwh_schema'}      = $self->schema_mlwh();
+      }
+      # Fall back on some other driver type, for example,
+      # samplesheet. This will allow to easily test this utility.
+      my $lims = st::api::lims->new($ref);
+      @lims_list =  $ref->{'position'} ? ($lims) : $lims->children();
+    } catch {
+      $self->logcroak(qq[Failed to get LIMs data for run ${id_run}: $_]);
+    };
+
+  return \@lims_list;
+}
+
+sub template_name {
   return 'run_status2followers';
 }
 
@@ -84,6 +131,7 @@ sub _build_reports {
 }
 
 1;
+
 __END__
 
 =head1 NAME
@@ -111,7 +159,15 @@ npg_tracking::report::event2followers
 
 =head2 schema_mlwh
 
+ DBIx handle for a warehouse containing LIMs data, see WTSI::DNAP::Warehouse::Schema.
+ This attribute is not lazy.
+
 =head2 lims
+
+ An array of lane-level st::api::lims type objects. An optional attribute, will be built
+ if not set. To avoid circular dependencies between different NPG packages, if the
+ schema_mlwh attribute is not set, the driver type will not be specified when building
+ this attribute. The st::api::lims object should then figure out itself what driver to use.
 
 =head2 reports
 
@@ -121,7 +177,7 @@ npg_tracking::report::event2followers
 
 =head2 template_dir_path
 
-  Required attribute.
+ Required attribute.
 
 =head2 report_short
 
@@ -147,6 +203,12 @@ npg_tracking::report::event2followers
 
 =item List::MoreUtils
 
+=item Try::Tiny
+
+=item Readonly
+
+=item st::api::lims
+
 =item npg::util::mailer
 
 =back
@@ -161,7 +223,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2017,2021 Genome Research Ltd.
+Copyright (C) 2017,2021,2026 Genome Research Ltd.
 
 This file is part of NPG.
 

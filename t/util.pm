@@ -17,7 +17,7 @@ use Readonly;
 # Inherit from npg::util, which, in turn, inherits from Clearpress::util
 use base qw(npg::util Exporter);
 
-use npg::model::user;
+use npg::model::instrument;
 use t::dbh;
 
 Readonly::Scalar our $DEFAULT_FIXTURES_PATH => q[t/data/fixtures];
