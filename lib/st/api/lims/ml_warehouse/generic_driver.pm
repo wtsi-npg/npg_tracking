@@ -63,6 +63,7 @@ sub _build_mlwh_schema {
 =head2 is_pool
 
 Read-only boolean attribute, not possible to set from the constructor.
+A child class should provide a builder method for this attribute.
 
 =cut
 
@@ -79,7 +80,7 @@ NPG tag index of the sequencing control.
 Read-only integer attribute, not possible to set from the constructor.
 Defined for a lane and tags, including tag zero.
 
-A child class should provide teh builder method for this attribute.
+A child class should provide a builder method for this attribute.
 
 =cut
 

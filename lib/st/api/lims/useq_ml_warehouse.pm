@@ -46,12 +46,22 @@ class, the driver for Ultimagen data.
 
 Since the concept of a lane is absent in Ultimagen sequencing, the lane-level
 objects are not implemented. The children of the run level object are plexes,
-ie target products. The control sample tag is not included into the list of
+i.e. target products. The control sample tag is not included into the list of
 children.
 
 Some NPG application will not work correctly if a position attribute is not
 defined for a single component entity. The position attribute can be set to 1
 via the constructor. No other position value is accepted.
+
+=head2 Exclusion of the control library
+
+The control sample data is present both on the file system and in the
+C<useq_product_metrics> MLWH table. However the barcode of this library is not
+known. The current convention for plex-level C<st::api::lims> object is to have
+at least one indexed library barcode defined. Breaking this convention might
+result in unexpected code failures. If the representation of the control sample
+becomes necessary in future, the decision to exclude the control sample
+might be reversed.
 
 =head1 SUBROUTINES/METHODS
 
@@ -137,6 +147,7 @@ sub _build__lchildren {
     my $package_name = ref $self;
     my $init = $self->copy_init_attrs();
 
+    # Note the exclusion of the sequencing control.
     my @tag_indices =
       map { $_->tag_index}
       $self->mlwh_schema->resultset('UseqProductMetric')->search(
