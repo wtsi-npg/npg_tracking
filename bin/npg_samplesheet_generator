@@ -12,6 +12,7 @@ use Getopt::Long;
 
 use npg::samplesheet;
 use st::api::lims;
+use WTSI::DNAP::Warehouse::Schema;
 
 our $VERSION = '0';
 
@@ -30,6 +31,29 @@ GetOptions (
 
 my $logger = Log::Log4perl->get_logger('main');
 
+my $schema = WTSI::DNAP::Warehouse::Schema->connect();
+
+my $rs_names2drivers = {
+  'UseqRunMetric' => 'useq_ml_warehouse',
+  'EseqRunLaneMetric' => 'eseq_ml_warehouse',
+  'IseqRunLaneMetric' => 'ml_warehouse_auto'
+};
+
+my $driver_type;
+foreach my $rs_name (keys %{$rs_names2drivers}) {
+  if ($schema->resultset($rs_name)->search({id_run => $id_run})->count()) {
+    $driver_type = $rs_names2drivers->{$rs_name};
+    last;
+  }
+} 
+ 
+if ($driver_type) {
+  $logger->info("Using $driver_type driver type");
+} else {
+  $logger->error("Data for run $id_run is not available in MLWH");
+  exit 1;
+}
+
 if (-f $path) {
   my $backup = "${path}.back";
   $logger->info("$path exists, will be moved out of the way to $backup");
@@ -40,10 +64,13 @@ if (-f $path) {
 }
 
 my $ref = {
-  driver_type => 'useq_ml_warehouse',
-  id_run      => $id_run,
-  position    => 1
+  mlwh_schema => $schema,
+  driver_type => $driver_type,
+  id_run      => $id_run
 };
+if ($driver_type eq 'useq_ml_warehouse') {
+  $ref->{position} = 1;
+}
 
 try {
   npg::samplesheet->new(
@@ -58,7 +85,7 @@ try {
   exit 1;
 };
 
-$logger->info("Samplesheet for Ultimagen run $id_run is written to $path");
+$logger->info("Samplesheet for run $id_run is written to $path");
 
 1;
 
@@ -66,24 +93,27 @@ __END__
 
 =head1 NAME
 
- npg_samplesheet4ultimagen
+ npg_samplesheet_generator
 
 =head1 USAGE
 
- npg_samplesheet4ultimagen --id_run 3456 --path 3456_samplesheet.csv
+ npg_samplesheet_generator --id_run 3456 --path 3456_samplesheet.csv
 
 =head1 REQUIRED ARGUMENTS
 
 =head1 OPTIONS
 
- --id_run NPG ttarcking run ID
+ --id_run NPG tracking run ID
  
  --path   the path for the samplesheet, including the file name
  
 =head1 DESCRIPTION
 
- Creates NPG samplesheet for an Ultimagen run. If a file exists at a given
- path, tries to move it out of teh way.
+ Creates an extended NPG samplesheet for a sequencing run. Automatically
+ detects the appropriate driver type. The run data should be available in one
+ of platform-specific NPG MLWH tables.
+
+ If a file exists at a given path, tries to move it out of the way.
 
 =head1 EXIT STATUS
 
@@ -115,6 +145,8 @@ __END__
 
 =item npg::samplesheet
 
+=item WTSI::DNAP::Warehouse::Schema
+
 =back
 
 =head1 AUTHOR
@@ -123,7 +155,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENCE AND COPYRIGHT
 
-Copyright (C) 2026 Genome Research Ltd
+Copyright (C) 2026 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
