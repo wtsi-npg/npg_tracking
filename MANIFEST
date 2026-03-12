@@ -288,6 +288,7 @@ lib/st/api/lims/ml_warehouse/generic_driver.pm
 lib/st/api/lims/ml_warehouse.pm
 lib/st/api/lims/ml_warehouse_auto.pm 
 lib/st/api/lims/ml_warehouse_fc_cache.pm
+lib/st/api/lims/eseq_ml_warehouse.pm
 lib/st/api/lims/useq_ml_warehouse.pm
 MANIFEST			This list of files
 README
@@ -415,6 +416,7 @@ t/37-ultimagen-monitor-runfolder.t
 t/37-ultimagen-monitor-staging.t
 t/40-st-lims-merge.t
 t/40-st-lims-mlwarehouse.t
+t/40-st-lims-eseq_ml_warehouse.t
 t/40-st-lims-useq_ml_warehouse.t
 t/40-st-lims-ml_warehouse-drivers.t
 t/40-st-lims-samplesheet.t
@@ -519,6 +521,9 @@ t/data/fixtures_stlims_wh/200-IseqProductMetric.yml
 t/data/fixtures_lims_wh_samplesheet/000-Sample.yml
 t/data/fixtures_lims_wh_samplesheet/000-Study.yml
 t/data/fixtures_lims_wh_samplesheet/100-StudyUser.yml
+t/data/fixtures_lims_wh_samplesheet/100-EseqFlowcell.yml
+t/data/fixtures_lims_wh_samplesheet/100-EseqRunLaneMetric.yml
+t/data/fixtures_lims_wh_samplesheet/200-EseqProductMetric.yml
 t/data/fixtures_lims_wh_samplesheet/100-IseqFlowcell.yml
 t/data/fixtures_lims_wh_samplesheet/100-UseqRunMetric.yml
 t/data/fixtures_lims_wh_samplesheet/100-UseqWafer.yml
