@@ -1,7 +1,3 @@
-#########
-# Author:        rmp
-# Created:       2007-03-28
-#
 package npg::model::usergroup;
 use strict;
 use warnings;
@@ -9,7 +5,6 @@ use base qw(npg::model);
 use English qw(-no_match_vars);
 use Carp;
 use npg::model::user;
-use npg::model::event_type;
 
 our $VERSION = '0';
 
@@ -125,8 +120,6 @@ npg::model::usergroup - data model for user groups
 
 =item npg::model::user
 
-=item npg::model::event_type
-
 =back
 
 =head1 INCOMPATIBILITIES
@@ -139,7 +132,7 @@ Roger Pettett, E<lt>rmp@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008 GRL, by Roger Pettett
+Copyright (C) 2007,2008,2013,2014,2016,2017,2026 Genome Research Ltd.
 
 This file is part of NPG.
 
