@@ -21,8 +21,8 @@ st::api::lims::ml_warehouse::driver
 
 =head1 DESCRIPTION
 
-Parent class for a family of ml_warehouse drivers for
-st::api::lims class.
+Parent class for a family of ml_warehouse drivers for st::api::lims class
+for Illumina platform data.
 
 =head1 SUBROUTINES/METHODS
 

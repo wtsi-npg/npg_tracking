@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+ - Added st::api::lims driver for Elembio data.
+ - Added st::api::lims driver for Ultimagen data.
+ - Added a script npg_samplesheet4ultimagen for generating a samplesheet for
+   Ultimagen data.
 release 106.2.0 (2026-03-13)
  - Simplified the implementation of email notifications for run-related
    information. Only study followers and similar will recieve email notifications

@@ -1,0 +1,154 @@
+---
+- bait_name: ~
+  entity_id_lims: 77167532
+  entity_type: library_indexed
+  id_eseq_flowcell_tmp: 29105
+  id_flowcell_lims: 107441
+  id_library_lims: SQPP-96307-Q:E1
+  id_lims: SQSCP
+  id_pool_lims: NT1883463A
+  id_sample_tmp: 4339300
+  id_study_tmp: 2208
+  lane: 1
+  last_updated: 2026-03-02 22:01:43
+  pipeline_id_lims: PCR with TruSeq tails amplicon
+  primer_panel: ~
+  recorded_at: 2026-03-03 10:53:51
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  tag2_sequence: TTCCAGGT
+  tag_sequence: CAGTGCTT
+- bait_name: ~
+  entity_id_lims: 77167532
+  entity_type: library_indexed
+  id_eseq_flowcell_tmp: 29106
+  id_flowcell_lims: 107441
+  id_library_lims: SQPP-96307-Q:F1
+  id_lims: SQSCP
+  id_pool_lims: NT1883463A
+  id_sample_tmp: 4339303
+  id_study_tmp: 2208
+  lane: 1
+  last_updated: 2026-03-02 22:01:43
+  pipeline_id_lims: PCR with TruSeq tails amplicon
+  primer_panel: ~
+  recorded_at: 2026-03-03 10:53:52
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  tag2_sequence: TCATCTCC
+  tag_sequence: CTTGCTAG
+- bait_name: ~
+  entity_id_lims: 77167532
+  entity_type: library_indexed
+  id_eseq_flowcell_tmp: 29107
+  id_flowcell_lims: 107441
+  id_library_lims: SQPP-96307-Q:A1
+  id_lims: SQSCP
+  id_pool_lims: NT1883463A
+  id_sample_tmp: 4339304
+  id_study_tmp: 2208
+  lane: 1
+  last_updated: 2026-03-02 22:01:43
+  pipeline_id_lims: PCR with TruSeq tails amplicon
+  primer_panel: ~
+  recorded_at: 2026-03-03 10:53:52
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  tag2_sequence: TGGAAGCA
+  tag_sequence: GAGAGTAC
+- bait_name: ~
+  entity_id_lims: 77167532
+  entity_type: library_indexed
+  id_eseq_flowcell_tmp: 29108
+  id_flowcell_lims: 107441
+  id_library_lims: SQPP-96307-Q:G1
+  id_lims: SQSCP
+  id_pool_lims: NT1883463A
+  id_sample_tmp: 4339312
+  id_study_tmp: 2208
+  lane: 1
+  last_updated: 2026-03-02 22:01:43
+  pipeline_id_lims: PCR with TruSeq tails amplicon
+  primer_panel: ~
+  recorded_at: 2026-03-03 10:53:52
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  tag2_sequence: GAGAGTAC
+  tag_sequence: TGGAAGCA
+- bait_name: ~
+  entity_id_lims: 77167533
+  entity_type: library_indexed
+  id_eseq_flowcell_tmp: 29141
+  id_flowcell_lims: 107441
+  id_library_lims: SQPP-96307-Q:E1
+  id_lims: SQSCP
+  id_pool_lims: NT1883463A
+  id_sample_tmp: 4339300
+  id_study_tmp: 2208
+  lane: 2
+  last_updated: 2026-03-02 22:01:43
+  pipeline_id_lims: PCR with TruSeq tails amplicon
+  primer_panel: ~
+  recorded_at: 2026-03-03 10:53:52
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  tag2_sequence: TTCCAGGT
+  tag_sequence: CAGTGCTT
+- bait_name: ~
+  entity_id_lims: 77167533
+  entity_type: library_indexed
+  id_eseq_flowcell_tmp: 29142
+  id_flowcell_lims: 107441
+  id_library_lims: SQPP-96307-Q:F1
+  id_lims: SQSCP
+  id_pool_lims: NT1883463A
+  id_sample_tmp: 4339303
+  id_study_tmp: 2208
+  lane: 2
+  last_updated: 2026-03-02 22:01:43
+  pipeline_id_lims: PCR with TruSeq tails amplicon
+  primer_panel: ~
+  recorded_at: 2026-03-03 10:53:52
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  tag2_sequence: TCATCTCC
+  tag_sequence: CTTGCTAG
+- bait_name: ~
+  entity_id_lims: 77167533
+  entity_type: library_indexed
+  id_eseq_flowcell_tmp: 29143
+  id_flowcell_lims: 107441
+  id_library_lims: SQPP-96307-Q:A1
+  id_lims: SQSCP
+  id_pool_lims: NT1883463A
+  id_sample_tmp: 4339304
+  id_study_tmp: 2208
+  lane: 2
+  last_updated: 2026-03-02 22:01:43
+  pipeline_id_lims: PCR with TruSeq tails amplicon
+  primer_panel: ~
+  recorded_at: 2026-03-03 10:53:52
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  tag2_sequence: TGGAAGCA
+  tag_sequence: GAGAGTAC
+- bait_name: ~
+  entity_id_lims: 77167533
+  entity_type: library_indexed
+  id_eseq_flowcell_tmp: 29144
+  id_flowcell_lims: 107441
+  id_library_lims: SQPP-96307-Q:G1
+  id_lims: SQSCP
+  id_pool_lims: NT1883463A
+  id_sample_tmp: 4339312
+  id_study_tmp: 2208
+  lane: 2
+  last_updated: 2026-03-02 22:01:43
+  pipeline_id_lims: PCR with TruSeq tails amplicon
+  primer_panel: ~
+  recorded_at: 2026-03-03 10:53:52
+  requested_insert_size_from: ~
+  requested_insert_size_to: ~
+  tag2_sequence: GAGAGTAC
+  tag_sequence: TGGAAGCA
+
