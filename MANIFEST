@@ -222,6 +222,7 @@ lib/npg_tracking/data/reference/find.pm
 lib/npg_tracking/data/reference/info.pm
 lib/npg_tracking/data/reference/list.pm
 lib/npg_tracking/data/reference/util.pm
+lib/npg_tracking/elembio/runfolder.pm
 lib/npg_tracking/data/snv.pm
 lib/npg_tracking/data/snv/find.pm
 lib/npg_tracking/data/transcriptome.pm
@@ -245,6 +246,7 @@ lib/npg_tracking/illumina/run.pm
 lib/npg_tracking/illumina/run/folder.pm
 lib/npg_tracking/illumina/run/long_info.pm
 lib/npg_tracking/illumina/runfolder.pm
+lib/npg_tracking/runfolder.pm
 lib/npg_tracking/report/event2followers.pm
 lib/npg_tracking/report/event2subscribers.pm
 lib/npg_tracking/report/events.pm
@@ -506,6 +508,7 @@ t/60-illumina-run-folder.t
 t/60-illumina-run-long_info.t
 t/60-illumina-run.t
 t/60-illumina-runfolder.t
+t/60-runfolder.t
 t/60-util-mailer.t
 t/70-bin-npg_status2file.t
 t/80-npg_tracking-report-event2followers.t
