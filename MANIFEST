@@ -246,6 +246,7 @@ lib/npg_tracking/illumina/run.pm
 lib/npg_tracking/illumina/run/folder.pm
 lib/npg_tracking/illumina/run/long_info.pm
 lib/npg_tracking/illumina/runfolder.pm
+lib/npg_tracking/runfolder/folder.pm
 lib/npg_tracking/runfolder.pm
 lib/npg_tracking/report/event2followers.pm
 lib/npg_tracking/report/event2subscribers.pm

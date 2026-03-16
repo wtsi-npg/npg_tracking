@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More tests => 5;
+use File::Basename qw(basename);
 use File::Path qw(make_path);
 use File::Slurp qw(write_file);
 use File::Spec::Functions qw(catdir catfile);
@@ -39,6 +40,36 @@ sub _assert_read_structure {
     "$label expected cycle count");
 }
 
+sub _assert_same_public_api {
+  my ($generic, $concrete, $label) = @_;
+
+  is($generic->run_folder, $concrete->run_folder, "$label run_folder");
+  is($generic->manufacturer, $concrete->manufacturer, "$label manufacturer");
+  is($generic->lane_count, $concrete->lane_count, "$label lane_count");
+  is($generic->expected_cycle_count, $concrete->expected_cycle_count,
+    "$label expected_cycle_count");
+  is($generic->is_paired_read, $concrete->is_paired_read,
+    "$label is_paired_read");
+  is($generic->is_indexed, $concrete->is_indexed, "$label is_indexed");
+  is($generic->is_dual_index, $concrete->is_dual_index,
+    "$label is_dual_index");
+  is($generic->index_length, $concrete->index_length, "$label index_length");
+  is_deeply([$generic->read_cycle_counts], [$concrete->read_cycle_counts],
+    "$label read_cycle_counts");
+  is_deeply([$generic->reads_indexed], [$concrete->reads_indexed],
+    "$label reads_indexed");
+  is_deeply([$generic->indexing_cycle_range], [$concrete->indexing_cycle_range],
+    "$label indexing_cycle_range");
+  is_deeply([$generic->read1_cycle_range], [$concrete->read1_cycle_range],
+    "$label read1_cycle_range");
+  is_deeply([$generic->read2_cycle_range], [$concrete->read2_cycle_range],
+    "$label read2_cycle_range");
+  is_deeply([$generic->index_read1_cycle_range], [$concrete->index_read1_cycle_range],
+    "$label index_read1_cycle_range");
+  is_deeply([$generic->index_read2_cycle_range], [$concrete->index_read2_cycle_range],
+    "$label index_read2_cycle_range");
+}
+
 sub _write_single_end_runparams {
   my ($runfolder_path) = @_;
   my $json = encode_json({
@@ -66,7 +97,7 @@ sub _write_single_end_runparams {
 }
 
 subtest 'npg_tracking::elembio::runfolder read structure' => sub {
-  plan tests => 51;
+  plan tests => 53;
 
   my $single_index = npg_tracking::elembio::runfolder->new(
     runfolder_path => q[t/data/elembio_staging/AV244103/20250127_AV244103_1234_NT1850075L]
@@ -97,6 +128,8 @@ subtest 'npg_tracking::elembio::runfolder read structure' => sub {
   );
   is($dual_index->manufacturer, q[Element Biosciences],
     q[Elembio manufacturer is correct for dual-index run]);
+  is($dual_index->run_folder, q[20250101_AV244103_NT1234567E],
+    q[Elembio run_folder follows the directory name even without JSON metadata]);
   _assert_read_structure(
     $dual_index,
     q[dual-index paired run],
@@ -161,27 +194,32 @@ subtest 'npg_tracking::elembio::runfolder read structure' => sub {
       expected_cycle_count    => 151,
     }
   );
+  is(
+    npg_tracking::elembio::runfolder->new(runfolder_path => $single_end_dir)
+      ->run_folder,
+    basename($single_end_dir),
+    q[Elembio run_folder follows the local directory name]
+  );
 };
 
 subtest 'npg_tracking::runfolder delegates to Elembio implementation' => sub {
-  plan tests => 12;
+  plan tests => 20;
 
+  my $path = q[t/data/elembio_staging/AV244103/20250127_AV244103_1234_NT1850075L];
   my $rf = npg_tracking::runfolder->new(
-    runfolder_path => q[t/data/elembio_staging/AV244103/20250127_AV244103_1234_NT1850075L]
+    runfolder_path => $path
+  );
+  my $concrete = npg_tracking::elembio::runfolder->new(
+    runfolder_path => $path
   );
   isa_ok($rf, 'npg_tracking::runfolder');
-  is($rf->manufacturer, q[Element Biosciences],
-    q[manufacturer is delegated to Elembio implementation]);
-  is($rf->run_folder, q[20250127_AV244103_1234_NT1850075L],
-    q[run folder name comes from path]);
-  is($rf->lane_count, 2, q[lane count delegated to Elembio implementation]);
-  is($rf->is_paired_read, 1, q[paired-read flag delegated to Elembio implementation]);
-  is($rf->is_indexed, 1, q[indexed flag delegated to Elembio implementation]);
-  is($rf->is_dual_index, 0, q[dual-index flag delegated to Elembio implementation]);
-  is($rf->index_length, 8, q[index length delegated to Elembio implementation]);
-  is($rf->expected_cycle_count, 310, q[expected cycle count delegated to Elembio implementation]);
-  is_deeply([$rf->read_cycle_counts], [8, 151, 151],
-    q[read cycle counts delegated to Elembio implementation]);
+  _assert_same_public_api($rf, $concrete, q[generic and Elembio objects agree]);
+
+  my $rf_missing_metadata = npg_tracking::runfolder->new(
+    runfolder_path => q[t/data/elembio_staging/AV244103/20250101_AV244103_NT1234567E]
+  );
+  is($rf_missing_metadata->run_folder, q[20250101_AV244103_NT1234567E],
+    q[generic run_folder is path-based when Elembio metadata is incomplete]);
 
   my $runfolder_path = catdir(tempdir(CLEANUP => 1), 'elembio_subpath_runfolder');
   make_path(catdir($runfolder_path, 'BaseCalls'));
@@ -191,6 +229,8 @@ subtest 'npg_tracking::runfolder delegates to Elembio implementation' => sub {
   );
   is($lazy_rf->runfolder_path, $runfolder_path,
     q[runfolder_path is inferred from a subpath via RunParameters.json]);
+  is($lazy_rf->run_folder, q[elembio_subpath_runfolder],
+    q[generic run_folder follows the inferred directory name]);
   is_deeply([$lazy_rf->read_cycle_counts], [151],
     q[lazy-built runfolder_path still enables Elembio read parsing]);
 };

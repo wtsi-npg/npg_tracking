@@ -3,6 +3,7 @@ package npg_tracking::elembio::runfolder;
 use Moose;
 use namespace::autoclean;
 use Readonly;
+use File::Basename qw/basename/;
 
 extends 'Monitor::Elembio::RunParametersParser';
 
@@ -37,7 +38,11 @@ the subset of the Illumina runfolder interface that downstream code uses.
 
 =head2 run_folder
 
-Returns the Elembio run folder name from C<RunParameters.json>.
+Returns the on-disk Elembio run folder name.
+
+=head2 metadata_folder_name
+
+Returns the run folder name recorded in C<RunParameters.json>.
 
 =head2 manufacturer
 
@@ -143,6 +148,11 @@ sub _build__read_structure {
 }
 
 sub run_folder {
+  my $self = shift;
+  return basename $self->runfolder_path;
+}
+
+sub metadata_folder_name {
   my $self = shift;
   return $self->folder_name;
 }
