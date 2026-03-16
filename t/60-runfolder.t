@@ -236,7 +236,7 @@ subtest 'npg_tracking::runfolder delegates to Elembio implementation' => sub {
 };
 
 subtest 'npg_tracking::runfolder preserves Illumina behaviour' => sub {
-  plan tests => 4;
+  plan tests => 10;
 
   my $runfolder_path = catdir(tempdir(CLEANUP => 1), 'illumina_rf');
   make_path($runfolder_path);
@@ -264,11 +264,33 @@ END_XML
     runfolder_path      => $runfolder_path,
     npg_tracking_schema => undef,
   );
+  my $concrete = npg_tracking::illumina::runfolder->new(
+    runfolder_path      => $runfolder_path,
+    npg_tracking_schema => undef,
+  );
   is($rf->manufacturer, q[Illumina], q[Illumina manufacturer is unchanged]);
   is($rf->lane_count, 8, q[Illumina lane count is unchanged]);
   is($rf->index_length, 8, q[Illumina index length is unchanged]);
   is_deeply([$rf->read_cycle_counts], [76, 8, 76],
     q[Illumina read cycle counts are unchanged]);
+  is($rf->platform_HiSeq, $concrete->platform_HiSeq,
+    q[generic platform_HiSeq matches Illumina implementation]);
+  is($rf->platform_MiSeq, $concrete->platform_MiSeq,
+    q[generic platform_MiSeq matches Illumina implementation]);
+  is($rf->platform_NovaSeqX, $concrete->platform_NovaSeqX,
+    q[generic platform_NovaSeqX matches Illumina implementation]);
+  is($rf->surface_count, $concrete->surface_count,
+    q[generic surface_count matches Illumina implementation]);
+
+  my $override = npg_tracking::runfolder->new(
+    runfolder_path        => $runfolder_path,
+    npg_tracking_schema   => undef,
+    is_indexed            => 0,
+    expected_cycle_count  => 160,
+  );
+  is($override->is_indexed, 0, q[constructor can override is_indexed]);
+  is($override->expected_cycle_count, 160,
+    q[constructor can override expected_cycle_count]);
 };
 
 1;
