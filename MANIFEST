@@ -222,6 +222,7 @@ lib/npg_tracking/data/reference/find.pm
 lib/npg_tracking/data/reference/info.pm
 lib/npg_tracking/data/reference/list.pm
 lib/npg_tracking/data/reference/util.pm
+lib/npg_tracking/elembio/runfolder.pm
 lib/npg_tracking/data/snv.pm
 lib/npg_tracking/data/snv/find.pm
 lib/npg_tracking/data/transcriptome.pm
@@ -245,6 +246,8 @@ lib/npg_tracking/illumina/run.pm
 lib/npg_tracking/illumina/run/folder.pm
 lib/npg_tracking/illumina/run/long_info.pm
 lib/npg_tracking/illumina/runfolder.pm
+lib/npg_tracking/runfolder/folder.pm
+lib/npg_tracking/runfolder.pm
 lib/npg_tracking/report/event2followers.pm
 lib/npg_tracking/report/event2subscribers.pm
 lib/npg_tracking/report/events.pm
@@ -300,6 +303,9 @@ lib/st/api/lims/ml_warehouse/driver.pm
 lib/st/api/lims/ml_warehouse/generic_driver.pm
 lib/st/api/lims/ml_warehouse_auto.pm
 lib/st/api/lims/ml_warehouse_fc_cache.pm
+lib/st/api/lims/ml_warehouse_flowcell.pm
+lib/st/api/lims/ml_warehouse_flowcell/elembio.pm
+lib/st/api/lims/ml_warehouse_flowcell/ultima.pm
 lib/st/api/lims/samplesheet.pm
 lib/st/api/lims/useq_ml_warehouse.pm
 MANIFEST			This list of files
@@ -492,6 +498,7 @@ t/37-ultimagen-monitor-runfolder.t
 t/37-ultimagen-monitor-staging.t
 t/40-st-lims-eseq_ml_warehouse.t
 t/40-st-lims-merge.t
+t/40-st-lims-ml_warehouse_flowcell.t
 t/40-st-lims-ml_warehouse-drivers.t
 t/40-st-lims-mlwarehouse.t
 t/40-st-lims-samplesheet.t
@@ -506,6 +513,7 @@ t/60-illumina-run-folder.t
 t/60-illumina-run-long_info.t
 t/60-illumina-run.t
 t/60-illumina-runfolder.t
+t/60-runfolder.t
 t/60-util-mailer.t
 t/70-bin-npg_status2file.t
 t/80-npg_tracking-report-event2followers.t
