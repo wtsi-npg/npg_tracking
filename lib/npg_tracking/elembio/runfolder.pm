@@ -56,6 +56,10 @@ Returns true when a reverse read is present.
 
 Returns true when a second index read is present.
 
+=head2 is_i5opposite
+
+Returns true for dual-index Elembio runs, where observed data as of March 2026 indicates the i5 index should be treated as opposite-orientation. bases2fastq also infers index-read orientation from supplied tag sets during deplexing.
+
 =head2 index_length
 
 Returns the combined index length.
@@ -169,6 +173,17 @@ sub is_paired_read {
 sub is_dual_index {
   my $self = shift;
   return $self->index_read2_cycle_range ? 1 : 0;
+}
+
+sub is_i5opposite {
+  my $self = shift;
+  # Empirically, dual-index Elembio runs have used opposite-orientation i5
+  # over several months of observed data as of March 2026.
+  # N.b. bases2fastq infers index-read orientation from the supplied tag
+  # sets when deplexing so the manufacturer process is fairly robost to
+  # getting this wrong - we may not exhibit such robustness to ill-defined
+  # data if driving explicitly...
+  return $self->is_dual_index ? 1 : 0;
 }
 
 sub index_length {

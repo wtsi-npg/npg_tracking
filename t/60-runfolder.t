@@ -97,13 +97,15 @@ sub _write_single_end_runparams {
 }
 
 subtest 'npg_tracking::elembio::runfolder read structure' => sub {
-  plan tests => 53;
+  plan tests => 57;
 
   my $single_index = npg_tracking::elembio::runfolder->new(
     runfolder_path => q[t/data/elembio_staging/AV244103/20250127_AV244103_1234_NT1850075L]
   );
   is($single_index->manufacturer, q[Element Biosciences],
     q[Elembio manufacturer is correct for single-index run]);
+  ok(!$single_index->is_i5opposite, q[Elembio single-index run does not use opposite-orientation i5 handling]);
+
   _assert_read_structure(
     $single_index,
     q[single-index paired run],
@@ -130,6 +132,8 @@ subtest 'npg_tracking::elembio::runfolder read structure' => sub {
     q[Elembio manufacturer is correct for dual-index run]);
   is($dual_index->run_folder, q[20250101_AV244103_NT1234567E],
     q[Elembio run_folder follows the directory name even without JSON metadata]);
+  ok($dual_index->is_i5opposite, q[Elembio dual-index run uses opposite-orientation i5 handling]);
+
   _assert_read_structure(
     $dual_index,
     q[dual-index paired run],
@@ -154,6 +158,8 @@ subtest 'npg_tracking::elembio::runfolder read structure' => sub {
   );
   is($unindexed->manufacturer, q[Element Biosciences],
     q[Elembio manufacturer is correct for unindexed run]);
+  ok(!$unindexed->is_i5opposite, q[Elembio unindexed run does not use opposite-orientation i5 handling]);
+
   _assert_read_structure(
     $unindexed,
     q[unindexed paired run],
@@ -176,8 +182,11 @@ subtest 'npg_tracking::elembio::runfolder read structure' => sub {
   my $single_end_dir = tempdir(CLEANUP => 1);
   _write_single_end_runparams($single_end_dir);
 
+  my $single_end = npg_tracking::elembio::runfolder->new(runfolder_path => $single_end_dir);
+  ok(!$single_end->is_i5opposite, q[Elembio single-end run does not use opposite-orientation i5 handling]);
+
   _assert_read_structure(
-    npg_tracking::elembio::runfolder->new(runfolder_path => $single_end_dir),
+    $single_end,
     q[single-end run],
     {
       is_paired_read          => 0,
