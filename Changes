@@ -1,5 +1,12 @@
 LIST OF CHANGES
 
+ - With bionic hosts no longer in production, unpinned DBD::mysql from 4.050.
+   All production hosts are now at least jammy.
+   Background:
+   - the automatic reconnection feature is deprecated since MySQL version 8.0.34,
+     see https://dev.mysql.com/doc/c-api/8.4/en/c-api-auto-reconnect.html
+   - libdbd-mysql-perl 4.050-5ubuntu0.22.04.1 on jammy was patched in 2023
+     
  - Added st::api::lims driver for Elembio data.
  - Added st::api::lims driver for Ultimagen data.
  - Added a generic samplesheet generator npg_samplesheet_generator. The script

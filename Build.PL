@@ -132,7 +132,7 @@ my $builder = $class->new(
                 'DateTime::TimeZone'              => 0,
                 'DateTime::Format::MySQL'         => 0,
                 'DateTime::Format::Strptime'      => '1.0702',
-                'DBD::mysql'                      => '== 4.050',
+                'DBD::mysql'                      => 0,
                 'DBI'                             => '1.608',
                 'DBIx::Class'                     => '0.08119',
                 'DBIx::Class::Core'               => 0,
