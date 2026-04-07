@@ -89,6 +89,9 @@ __PACKAGE__->table("run");
 
   data_type: 'varchar'
   is_nullable: 1
+  size: 255
+
+LIMS-specific or user-defined identifier for run data
 
 =head2 id_instrument_format
 
@@ -160,7 +163,7 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
   "batch_id",
-  { data_type => "varchar", size => 255, is_nullable => 1 },
+  { data_type => "varchar", is_nullable => 1, size => 255 },
   "id_instrument_format",
   {
     data_type => "bigint",
@@ -313,8 +316,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:CQYOGdpHICplAd+i+cHeUA
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-04-07 16:49:52
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:M494Zuo62jQ4wf7tN6l4sA
 
 # Created:       2010-04-08
 
@@ -848,7 +851,7 @@ David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2014 Genome Research Limited
+Copyright (C) 2013,2014,2015,2017,2018,2023,2025,2026 Genome Research Ltd.
 
 This file is part of NPG.
 

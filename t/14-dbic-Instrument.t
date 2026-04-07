@@ -28,7 +28,6 @@ subtest 'basic instrument tests - create and retrieve' => sub {
 
   my $name = 'new name';
   lives_ok { $test = $schema->resultset('Instrument')->create({
-      id_instrument => 100,
       id_instrument_format => 10,
       name => $name,
       external_name => 'external',
@@ -42,7 +41,6 @@ subtest 'basic instrument tests - create and retrieve' => sub {
     'wash required', 'initial instrument status is set');
 
   throws_ok { $schema->resultset('Instrument')->create({
-      id_instrument => 101,
       id_instrument_format => 20,
       name => $name . '1',
       external_name => 'external',
@@ -54,7 +52,6 @@ subtest 'basic instrument tests - create and retrieve' => sub {
 
   $name = $name . q[2];
   lives_ok { $test = $schema->resultset('Instrument')->create({
-      id_instrument => 102,
       id_instrument_format => 7,
       name => $name,
       external_name => 'external',

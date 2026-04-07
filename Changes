@@ -1,6 +1,14 @@
 LIST OF CHANGES
 
- - Upgrade MySQL version in GitHub CI to 8.4
+ - Upgraded MySQL version in GitHub CI to 8.4
+ - Made database schema compliant with MySQL 8.4 requirement not to have
+   non-standard foreign keys.
+   'instrument' and 'run_lane_status_dict' tables had two-column primary keys,
+   while the tables which referred to an instrument or a lane status had a
+   foreign key pointing to the relevant auto-incremented record ID, which caused
+   an error in tests running against MySQL database v.8.4
+   To resolve the problem, the two-column primary keys are dropped and correct
+   primary keys are added.
  - With bionic hosts no longer in production, unpinned DBD::mysql from 4.050.
    All production hosts are now at least jammy.
    Background:
