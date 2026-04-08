@@ -175,13 +175,11 @@ __PACKAGE__->add_columns(
 
 =item * L</id_instrument>
 
-=item * L</name>
-
 =back
 
 =cut
 
-__PACKAGE__->set_primary_key("id_instrument", "name");
+__PACKAGE__->set_primary_key("id_instrument");
 
 =head1 UNIQUE CONSTRAINTS
 
@@ -290,8 +288,8 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07051 @ 2023-10-23 17:02:30
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:EZWWx8ih32aSy82wpKEPLQ
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-04-07 16:48:22
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ps7K321ePxIaprddg9fwFQ
 
 use DateTime;
 use DateTime::TimeZone;
@@ -771,7 +769,7 @@ Marina Gourtovaia E<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2010,2013,2014,2016,2017,2018,2019,2021,2022,2023,2025 Genome Research Ltd.
+Copyright (C) 2010,2013,2014,2016,2017,2018,2019,2021,2022,2023,2025,2026 Genome Research Ltd.
 
 This file is part of NPG.
 

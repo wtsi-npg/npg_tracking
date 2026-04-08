@@ -1,0 +1,7 @@
+ALTER TABLE instrument
+  DROP PRIMARY KEY,
+  ADD PRIMARY KEY (id_instrument);
+
+ALTER TABLE run_lane_status_dict
+  DROP PRIMARY KEY,
+  ADD PRIMARY KEY (id_run_lane_status_dict);

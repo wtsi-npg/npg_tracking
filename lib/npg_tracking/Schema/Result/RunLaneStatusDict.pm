@@ -72,13 +72,11 @@ __PACKAGE__->add_columns(
 
 =item * L</id_run_lane_status_dict>
 
-=item * L</description>
-
 =back
 
 =cut
 
-__PACKAGE__->set_primary_key("id_run_lane_status_dict", "description");
+__PACKAGE__->set_primary_key("id_run_lane_status_dict");
 
 =head1 UNIQUE CONSTRAINTS
 
@@ -114,14 +112,37 @@ __PACKAGE__->has_many(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07049 @ 2018-12-18 14:30:14
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:E6WgJgGO6lJccubTfi0tjg
+# Created by DBIx::Class::Schema::Loader v0.07053 @ 2026-04-07 20:57:31
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Mtta8CAP6X2SVezDziqTyQ
 
-# Author:        david.jackson@sanger.ac.uk
-# Created:       2010-04-08
 
 our $VERSION = '0';
 
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+=head1 AUTHOR
+
+David Jackson E<lt>david.jackson@sanger.ac.ukE<gt>
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2010,2013,2014,2018,2026 Genome Research Ltd.
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+=cut
