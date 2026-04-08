@@ -19,6 +19,7 @@ LIST OF CHANGES
  - Added st::api::lims driver for Ultimagen data.
  - Added a generic samplesheet generator npg_samplesheet_generator. The script
    can generate samplesheets for Illumina, Elembio and Ultimagen runs.
+ - Update matrix of CI perl versions, remove 5.26.3 and add 5.38.2
 
 release 106.2.0 (2026-03-13)
  - Simplified the implementation of email notifications for run-related
