@@ -126,7 +126,7 @@ CREATE TABLE `instrument` (
   `latest_contact` datetime DEFAULT NULL,
   `percent_complete` tinyint(3) unsigned DEFAULT NULL,
   `lab` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`id_instrument`,`name`),
+  PRIMARY KEY (`id_instrument`),
   UNIQUE KEY `name` (`name`),
   KEY `id_if` (`id_instrument_format`),
   CONSTRAINT `id_if` FOREIGN KEY (`id_instrument_format`) REFERENCES `instrument_format` (`id_instrument_format`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -431,8 +431,9 @@ DROP TABLE IF EXISTS `run_lane_status_dict`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `run_lane_status_dict` (
   `id_run_lane_status_dict` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `description` varchar(64) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id_run_lane_status_dict`,`description`)
+  `description` varchar(64) NOT NULL,
+  PRIMARY KEY (`id_run_lane_status_dict`),
+  UNIQUE KEY `unique_rlstdict_description` (`description`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -494,7 +495,8 @@ CREATE TABLE `run_status_dict` (
   `iscurrent` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `temporal_index` smallint(5) unsigned DEFAULT NULL,
   PRIMARY KEY (`id_run_status_dict`),
-  KEY `description` (`description`)
+  UNIQUE KEY `unique_rstdict_temporali` (`temporal_index`),
+  UNIQUE KEY `unique_rstdict_description` (`description`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

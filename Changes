@@ -1,5 +1,27 @@
 LIST OF CHANGES
 
+release 107.0.0 (2026-04-16)
+ - Upgraded MySQL version in GitHub CI to 8.4
+ - Made database schema compliant with MySQL 8.4 requirement not to have
+   non-standard foreign keys.
+   'instrument' and 'run_lane_status_dict' tables had two-column primary keys,
+   while the tables which referred to an instrument or a lane status had a
+   foreign key pointing to the relevant auto-incremented record ID, which caused
+   an error in tests running against MySQL database v.8.4
+   To resolve the problem, the two-column primary keys are dropped and correct
+   primary keys are added.
+ - With bionic hosts no longer in production, unpinned DBD::mysql from 4.050.
+   All production hosts are now at least jammy.
+   Background:
+   - the automatic reconnection feature is deprecated since MySQL version 8.0.34,
+     see https://dev.mysql.com/doc/c-api/8.4/en/c-api-auto-reconnect.html
+   - libdbd-mysql-perl 4.050-5ubuntu0.22.04.1 on jammy was patched in 2023     
+ - Added st::api::lims driver for Elembio data.
+ - Added st::api::lims driver for Ultimagen data.
+ - Added a generic samplesheet generator npg_samplesheet_generator. The script
+   can generate samplesheets for Illumina, Elembio and Ultimagen runs.
+ - Update matrix of CI perl versions, remove 5.26.3 and add 5.38.2
+
 release 106.2.0 (2026-03-13)
  - Simplified the implementation of email notifications for run-related
    information. Only study followers and similar will recieve email notifications
