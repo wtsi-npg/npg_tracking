@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 107.0.0 (2026-04-16)
  - Upgraded MySQL version in GitHub CI to 8.4
  - Made database schema compliant with MySQL 8.4 requirement not to have
    non-standard foreign keys.
