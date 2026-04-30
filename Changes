@@ -1,5 +1,14 @@
 LIST OF CHANGES
 
+ - Events are created for all run statuses. The customers are interested only
+   in some of them. Prior to release 106.2.0 all events were ticked off as
+   processed regardless of whether they triggered a notification. This was
+   changed in release 106.2.0, which resulted in over 1000 unprocessed events
+   being accumulated in the event table of the tracking database in a month.
+   Now the code is reverted to ticking off all events as processed once they
+   were considered. A unit test is added.
+ - Tests for email notifications use a test mailer.
+
 release 107.0.0 (2026-04-16)
  - Upgraded MySQL version in GitHub CI to 8.4
  - Made database schema compliant with MySQL 8.4 requirement not to have

@@ -11,6 +11,10 @@ use List::MoreUtils qw/all/;
 use Perl6::Slurp;
 
 use t::dbic_util;
+use t::util;
+
+my $util = t::util->new({});
+$util->catch_email($util);
 
 my $logfile = join q[/], tempdir(CLEANUP => 1), 'logfile';
 note "Log file: $logfile";
