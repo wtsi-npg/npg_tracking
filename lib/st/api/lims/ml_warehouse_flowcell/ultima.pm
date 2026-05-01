@@ -110,6 +110,19 @@ has 'spiked_phix_tag_index' => (
   init_arg   => undef,
   lazy_build => 1,
 );
+sub _build_spiked_phix_tag_index {
+  my $self = shift;
+  my $id_run = $self->id_run;
+  if (defined $id_run) {
+    my $rs = $self->mlwh_schema->resultset('UseqProductMetric')->search(
+      {id_run => $id_run, is_sequencing_control => 1}
+    );
+    my $row = $rs->next;
+    $row && $rs->next && croak 'Multiple rows for sequencing control';
+    return $row ? $row->tag_index : undef;
+  }
+  return;
+}
 
 has '_wafer_rows_cache' => (
   isa        => 'ArrayRef',
@@ -194,20 +207,15 @@ sub qc_state {
   return @values == 1 ? $values[0] : undef;
 }
 
-sub _build_spiked_phix_tag_index {
-  my $self = shift;
-  my $id_run = $self->id_run;
-  if (defined $id_run) {
-    my $rs = $self->mlwh_schema->resultset('UseqProductMetric')->search(
-      {id_run => $id_run, is_sequencing_control => 1}
-    );
-    my $row = $rs->next;
-    $row && $rs->next && croak 'Multiple rows for sequencing control';
-    return $row ? $row->tag_index : undef;
-  }
-  return;
-}
-
+has 'dbix_row' => (
+  isa        => "Maybe[$LIMS_RESULT_CLASS]",
+  is         => 'bare',
+  init_arg   => undef,
+  lazy_build => 1,
+  handles    => \@DELEGATED_METHODS,
+  reader     => '_get_dbix_row',
+  builder    => '_build_dbix_row',
+);
 sub _build_dbix_row {
   my $self = shift;
   if (!$self->has_tag_index || !$self->tag_index) {
@@ -252,16 +260,6 @@ sub to_string {
   $s =~ s/,\Z/\./xms;
   return $s;
 }
-
-has 'dbix_row' => (
-  isa        => "Maybe[$LIMS_RESULT_CLASS]",
-  is         => 'bare',
-  init_arg   => undef,
-  lazy_build => 1,
-  handles    => \@DELEGATED_METHODS,
-  reader     => '_get_dbix_row',
-  builder    => '_build_dbix_row',
-);
 
 foreach my $method (@DELEGATED_METHODS) {
   around $method => sub {

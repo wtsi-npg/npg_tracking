@@ -103,6 +103,9 @@ has 'spiked_phix_tag_index' => (
   init_arg   => undef,
   lazy_build => 1,
 );
+sub _build_spiked_phix_tag_index {
+  return;
+}
 
 has '_batch_rows_cache' => (
   isa        => 'ArrayRef',
@@ -200,10 +203,15 @@ sub qc_state {
   return @values == 1 ? $values[0] : undef;
 }
 
-sub _build_spiked_phix_tag_index {
-  return;
-}
-
+has 'dbix_row' => (
+  isa        => "Maybe[$LIMS_RESULT_CLASS]",
+  is         => 'bare',
+  init_arg   => undef,
+  lazy_build => 1,
+  handles    => \@DELEGATED_METHODS,
+  reader     => '_get_dbix_row',
+  builder    => '_build_dbix_row',
+);
 sub _build_dbix_row {
   my $self = shift;
   if ($self->has_position && (!$self->has_tag_index || !$self->tag_index)) {
@@ -248,16 +256,6 @@ sub to_string {
   $s =~ s/,\Z/\./xms;
   return $s;
 }
-
-has 'dbix_row' => (
-  isa        => "Maybe[$LIMS_RESULT_CLASS]",
-  is         => 'bare',
-  init_arg   => undef,
-  lazy_build => 1,
-  handles    => \@DELEGATED_METHODS,
-  reader     => '_get_dbix_row',
-  builder    => '_build_dbix_row',
-);
 
 foreach my $method (@DELEGATED_METHODS) {
   around $method => sub {
