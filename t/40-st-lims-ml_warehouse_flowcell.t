@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 6;
+use Test::More tests => 7;
 use Test::Exception;
 
 use_ok('st::api::lims');
@@ -63,6 +63,42 @@ subtest 'Elembio flowcell lookup' => sub {
   is($plex->sample_name, '6133STDY8786700', 'sample name is correct');
   is($plex->study_name, 'MPN Whole Genomes', 'study name is correct');
   is($plex->default_tagtwo_sequence, 'TCATCTCC', 'second barcode is correct');
+};
+
+subtest 'Elembio flowcell lookup without product metrics' => sub {
+  plan tests => 9;
+
+  my $l = st::api::lims->new(
+    id_flowcell_lims => 107442,
+    driver_type      => 'ml_warehouse_flowcell',
+    mlwh_schema      => $schema_wh,
+  );
+
+  is($l->driver->manufacturer, 'Element Biosciences',
+    'manufacturer is Element Biosciences');
+  is($l->id_run, undef, 'run id is undefined without product metrics');
+
+  my @lanes = $l->children;
+  is(scalar @lanes, 1, 'one lane child');
+  ok($lanes[0]->is_pool, 'lane is a pool');
+
+  my @plexes = $lanes[0]->children;
+  is(join(q[,], map { $_->tag_index } @plexes), '1,2',
+    'tag indices are derived from flowcell rows');
+
+  my $plex = st::api::lims->new(
+    id_flowcell_lims => 107442,
+    position         => 1,
+    tag_index        => 1,
+    driver_type      => 'ml_warehouse_flowcell',
+    mlwh_schema      => $schema_wh,
+  );
+  is($plex->sample_name, '6133STDY8786700', 'sample name is from flowcell row');
+  is($plex->default_tag_sequence, 'AAAA',
+    'first derived tag index maps to first tag sequence by sort order');
+  is($plex->qc_state, undef, 'qc state is undefined without product metrics');
+  is($plex->spiked_phix_tag_index, undef,
+    'spiked PhiX tag index is undefined without product metrics');
 };
 
 subtest 'Ultima flowcell lookup' => sub {
