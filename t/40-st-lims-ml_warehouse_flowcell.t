@@ -69,7 +69,7 @@ subtest 'Ultima flowcell lookup' => sub {
   plan tests => 6;
 
   my $l = st::api::lims->new(
-    id_flowcell_lims => 107185,
+    id_flowcell_lims => '107185_NT1882031W_2',
     driver_type      => 'ml_warehouse_flowcell',
     mlwh_schema      => $schema_wh,
   );
@@ -82,7 +82,7 @@ subtest 'Ultima flowcell lookup' => sub {
   is(scalar @products, 7, 'seven wafer-linked products');
 
   my $product = st::api::lims->new(
-    id_flowcell_lims => 107185,
+    id_flowcell_lims => '107185_NT1882031W_2',
     tag_index        => 100,
     driver_type      => 'ml_warehouse_flowcell',
     mlwh_schema      => $schema_wh,

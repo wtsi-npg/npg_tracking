@@ -31,7 +31,7 @@ st::api::lims::ml_warehouse_flowcell::ultima
 =head1 SYNOPSIS
 
   my $d = st::api::lims::ml_warehouse_flowcell::ultima->new(
-    id_flowcell_lims => 107185
+    id_flowcell_lims => '107185_NT1882031W_2'
   );
 
 =head1 DESCRIPTION
@@ -126,7 +126,7 @@ sub _build__wafer_rows_cache {
 
   return [
     $self->mlwh_schema->resultset('UseqWafer')->search(
-      {batch_for_opentrons => $self->id_flowcell_lims},
+      {id_wafer_lims => $self->id_flowcell_lims},
       {prefetch => [qw/sample study useq_product_metrics/]}
     )->all
   ];

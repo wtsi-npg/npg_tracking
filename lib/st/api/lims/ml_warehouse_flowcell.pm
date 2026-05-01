@@ -33,7 +33,7 @@ Readonly::Hash my %MANUFACTURER_CONFIG => (
   q[Ultima Genomics] => {
     driver_class => q[st::api::lims::ml_warehouse_flowcell::ultima],
     resultset    => q[UseqWafer],
-    query_column => q[batch_for_opentrons],
+    query_column => q[id_wafer_lims],
   },
 );
 
