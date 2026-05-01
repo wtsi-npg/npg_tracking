@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Test::Exception;
 
 use_ok('st::api::lims');
@@ -90,6 +90,38 @@ subtest 'Ultima flowcell lookup' => sub {
   ok(!$product->is_control, 'product is not a control');
   is($product->sample_name, '6133STDY8786709', 'sample name is correct');
   is($product->default_tag_sequence, 'CGGATCATGCGTGAT', 'barcode is correct');
+};
+
+subtest 'Ultima wafer lookup without product metrics' => sub {
+  plan tests => 8;
+
+  my $l = st::api::lims->new(
+    id_flowcell_lims => '107186_NT1882031W_1',
+    driver_type      => 'ml_warehouse_flowcell',
+    mlwh_schema      => $schema_wh,
+  );
+
+  is($l->driver->manufacturer, 'Ultima Genomics',
+    'manufacturer is Ultima Genomics');
+  is($l->id_run, undef, 'run id is undefined without product metrics');
+
+  my @products = $l->children;
+  is(scalar @products, 2, 'two wafer-linked products');
+  is(join(q[,], map { $_->tag_index } @products), '1,2',
+    'tag indices are derived from wafer rows');
+
+  my $product = st::api::lims->new(
+    id_flowcell_lims => '107186_NT1882031W_1',
+    tag_index        => 1,
+    driver_type      => 'ml_warehouse_flowcell',
+    mlwh_schema      => $schema_wh,
+  );
+  is($product->sample_name, '6133STDY8786700', 'sample name is from wafer row');
+  is($product->default_tag_sequence, 'AAAA',
+    'first derived tag index maps to first tag sequence by sort order');
+  is($product->qc_state, undef, 'qc state is undefined without product metrics');
+  is($product->spiked_phix_tag_index, undef,
+    'spiked PhiX tag index is undefined without product metrics');
 };
 
 1;
