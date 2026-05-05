@@ -9,8 +9,7 @@ use Try::Tiny;
 use npg::util;
 use npg::model::user;
 use npg::model::usergroup;
-use npg::authentication::sanger_sso qw/sanger_cookie_name sanger_username/;
-use npg::authentication::sanger_ldap qw/person_info/;
+use npg::authentication::sanger_oidc;
 use npg_tracking::util::config qw/get_config/;
 
 use base qw(ClearPress::view);
@@ -30,10 +29,8 @@ sub new {
   }
 
   if (!$username) {
-    my $cookie = $cgi ? $cgi->cookie(sanger_cookie_name()) : q();
-    if($cookie) {
-      $username = sanger_username($cookie, $self->util()->decription_key());
-    }
+      my $user_info = npg::authentication::sanger_oidc->new();
+      $username = $user_info->username;
   }
 
   my $requestor      = $util->requestor() || npg::model::user->new({
@@ -96,7 +93,7 @@ sub realname {
 
   my $realname;
   try {
-    $realname = $self->person($username)->{'name'};
+    $realname = $self->person()->name;
   } catch {
     carp $_;
   };
@@ -106,13 +103,11 @@ sub realname {
 }
 
 sub person {
-  my ($self, $username) = @_;
-
-  $username ||= $self->util->requestor->username();
+  my ($self) = @_;
 
   my $info = {};
   try {
-    $info = person_info($username);
+    $info = npg::authentication::sanger_oidc->new();
   } catch {
     carp $_;
   };
@@ -220,7 +215,7 @@ View superclass for the NPG MVC application
 
 =head2 realname
 
-  the real name of the user (from LDAP server interface)
+  the real name of the user (from OIDC provider)
 
   my $sRealName = $oViewer->realname();
 
@@ -264,9 +259,7 @@ residing on staging areas.
 
 =item npg::model::usergroup
 
-=item npg::authentication::sanger_sso qw/sanger_cookie_name sanger_username/
-
-=item npg::authentication::sanger_ldap qw/person_info/
+=item use npg::authentication::sanger_oidc
 
 =item ClearPress::view
 
