@@ -3,7 +3,7 @@ package npg::authentication::sanger_oidc;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0';
 
 sub new {
     my ($class) = @_;
@@ -33,11 +33,19 @@ sub new {
 sub subject      { return shift->{claims}->{sub}; }
 sub email        { return shift->{claims}->{email}; }
 sub name         { return shift->{claims}->{name}; }
-sub username     { return shift->{claims}->{username}; }
 sub groups       { return shift->{claims}->{groups}; }
 
 sub access_token { return shift->{tokens}->{access_token}; }
 sub id_token     { return shift->{tokens}->{id_token}; }
+
+sub username {
+    my $preferred_username = shift->{claims}->{username};
+
+    if ($preferred_username) {
+       return (split /@/smx, $preferred_username)[0];
+    }
+    return;
+}
 
 ##########
 # Helper #

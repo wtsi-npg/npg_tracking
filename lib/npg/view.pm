@@ -11,7 +11,6 @@ use npg::model::user;
 use npg::model::usergroup;
 use npg::authentication::sanger_oidc;
 use npg_tracking::util::config qw/get_config/;
-use Readonly;
 
 use base qw(ClearPress::view);
 
@@ -31,14 +30,7 @@ sub new {
 
   if (!$username) {
       my $user_info = npg::authentication::sanger_oidc->new();
-      my $preferred_username = $user_info->username;
-
-      Readonly my $NOT_FOUND => -1;
-      if (index($preferred_username, q{@}) != $NOT_FOUND) {
-           $username = (split /@/smx, $preferred_username)[0];
-      } else {
-           $username = $preferred_username;
-      };
+      $username = $user_info->username;
   }
 
   my $requestor      = $util->requestor() || npg::model::user->new({
