@@ -8,6 +8,7 @@ LIST OF CHANGES
    Now the code is reverted to ticking off all events as processed once they
    were considered. A unit test is added.
  - Tests for email notifications use a test mailer.
+ - Fix file name for upgrade schema to match actual release version
 
 release 107.0.0 (2026-04-16)
  - Upgraded MySQL version in GitHub CI to 8.4
