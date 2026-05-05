@@ -12,9 +12,9 @@ sub main {
   my $q = CGI->new;
 
   my $current_url = $ENV{'HTTP_REFERER'};
-  my $username    = $ENV{'OIDC_CLAIM_preferred_username'} // 'not-defined';
+  my $username    = $ENV{'OIDC_CLAIM_preferred_username'} || q{};
 
-  if ($username eq 'not-defined') {
+  if (!$username) {
     perform_user_login($q, $current_url);
   } else {
     perform_user_logout($q, $current_url);
@@ -30,17 +30,6 @@ sub create_cookie {
     -path    => q{/},
     -secure  => 0,
     -expires => '+1h',
-  );
-}
-
-sub clear_cookie {
-  my ($q, $name) = @_;
-  return $q->cookie(
-    -name    => $name,
-    -value   => q{},
-    -path    => q{/},
-    -secure  => 0,
-    -expires => '-1d',
   );
 }
 

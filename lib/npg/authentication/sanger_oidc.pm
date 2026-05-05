@@ -3,55 +3,35 @@ package npg::authentication::sanger_oidc;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0';
 
 sub new {
   my ($class) = @_;
   my $self = {};
 
   $self->{claims} = {
-    sub      => $ENV{'OIDC_CLAIM_sub'},
-    email    => $ENV{'OIDC_CLAIM_email'},
     name     => $ENV{'OIDC_CLAIM_name'},
     username => $ENV{'OIDC_CLAIM_preferred_username'},
-    groups   => $ENV{'OIDC_CLAIM_groups'},
     };
-
-  $self->{tokens} = {
-    access_token => $ENV{'OIDC_access_token'},
-    id_token     => $ENV{'OIDC_id_token'},
-  };
 
   bless $self, $class;
   return $self;
 }
 
-#############
-# Accessors #
-#############
-
-sub subject      { return shift->{claims}->{sub}; }
-sub email        { return shift->{claims}->{email}; }
-sub name         { return shift->{claims}->{name}; }
-sub username     { return shift->{claims}->{username}; }
-sub groups       { return shift->{claims}->{groups}; }
-
-sub access_token { return shift->{tokens}->{access_token}; }
-sub id_token     { return shift->{tokens}->{id_token}; }
-
-##########
-# Helper #
-##########
-
-sub has_group {
-  my ($self, $group) = @_;
-  return 0 if !$self->groups;
-
-  return grep { $_ eq $group }
-    map  { s/^\s+|\s+$//grxms }
-    split /\s*,\s*/xsm, $self->groups;
+sub name {
+  my $self = shift;
+  return $self->{claims}->{name};
 }
 
+sub username {
+  my $self = shift;
+  my $preferred_username = $self->{claims}->{username} || q{};
+
+  if ($preferred_username) {
+    return (split /@/smx, $preferred_username)[0];
+  }
+  return;
+}
 1;
 =pod
 
@@ -61,8 +41,6 @@ npg::authentication::sanger_oidc - Simple OIDC claim wrapper
 
 =head1 VERSION
 
-Version 0.01
-
 =head1 SYNOPSIS
 
   use npg::authentication::sanger_oidc;
@@ -71,10 +49,6 @@ Version 0.01
 
   print $auth->name;
   print $auth->username;
-
-  if ($auth->has_group('admin')) {
-    print "User is an admin";
-  }
 
 =head1 DESCRIPTION
 
@@ -99,15 +73,31 @@ provides convenient accessor methods.
 Creates a new instance and loads OIDC claims and tokens from the
 environment.
 
+Currently only few user attributes are fetched from OIDC. Additional,
+attributes can be fetched as below:
+
+sub new {
+  my ($class) = @_;
+  my $self = {};
+
+  $self->{claims} = {
+    sub      => $ENV{'OIDC_CLAIM_sub'},
+    email    => $ENV{'OIDC_CLAIM_email'},
+    name     => $ENV{'OIDC_CLAIM_name'},
+    username => $ENV{'OIDC_CLAIM_preferred_username'},
+    groups   => $ENV{'OIDC_CLAIM_groups'},
+    };
+
+  $self->{tokens} = {
+    access_token => $ENV{'OIDC_access_token'},
+    id_token     => $ENV{'OIDC_id_token'},
+  };
+
+  bless $self, $class;
+  return $self;
+}
+
 =head1 METHODS
-
-=head2 subject
-
-Returns the subject (unique user identifier).
-
-=head2 email
-
-Returns the user's email address.
 
 =head2 name
 
@@ -117,25 +107,57 @@ Returns the user's display name.
 
 Returns the preferred username.
 
-=head2 groups
+=head2 Additional methods
 
-Returns the raw groups string as provided by the OIDC provider.
+Subject: Returns the subject (unique user identifier).
 
-=head2 access_token
+sub subject {
+  my $self = shift;
+  return $self->{claims}->{sub};
+}
 
-Returns the OIDC access token.
+Email: Returns the user's email address.
 
-=head2 id_token
+sub email {
+  my $self = shift;
+  return $self->{claims}->{email};
+}
 
-Returns the OIDC ID token.
+Groups: Returns the raw groups string as provided by the OIDC provider.
 
-=head2 has_group
+sub groups {
+  my $self = shift;
+  return $self->{claims}->{groups};
+}
 
-  if ($auth->has_group('admin')) { ... }
+Access Token: Returns the OIDC access token.
+
+sub access_token {
+  my $self = shift;
+  return $self->{tokens}->{access_token};
+}
+
+ID Token: Returns the OIDC ID token.
+
+sub id_token {
+  my $self = shift;
+  return $self->{tokens}->{id_token};
+}
+
+has_group:
 
 Returns true if the user is a member of the specified group.
 Group membership is determined by splitting the C<groups> string
 on commas.
+
+sub has_group {
+  my ($self, $group) = @_;
+  return 0 if !$self->groups;
+
+  return grep { $_ eq $group }
+    map  { s/^\s+|\s+$//grxms }
+    split /\s*,\s*/xsm, $self->groups;
+}
 
 =head1 ENVIRONMENT
 
@@ -143,19 +165,9 @@ This module relies on the following environment variables being set:
 
 =over 4
 
-=item * OIDC_CLAIM_sub
-
-=item * OIDC_CLAIM_email
-
 =item * OIDC_CLAIM_name
 
 =item * OIDC_CLAIM_preferred_username
-
-=item * OIDC_CLAIM_groups
-
-=item * OIDC_access_token
-
-=item * OIDC_id_token
 
 =back
 

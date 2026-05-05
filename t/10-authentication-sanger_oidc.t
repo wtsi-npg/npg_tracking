@@ -5,93 +5,79 @@ use Test::More;
 
 use_ok('npg::authentication::sanger_oidc');
 
-# -----------------------
-# Test data
-# -----------------------
-
-local %ENV = (
-  OIDC_CLAIM_sub                => 'user-123',
-  OIDC_CLAIM_email              => 'tiger@example.com',
-  OIDC_CLAIM_name               => 'Tiger Cat',
-  OIDC_CLAIM_preferred_username => 'tiger',
-  OIDC_CLAIM_groups             => 'admin,users,dev',
-  OIDC_access_token             => 'access-token-abc',
-  OIDC_id_token                 => 'id-token-xyz',
-);
-
-my $oidc = npg::authentication::sanger_oidc->new();
-
-# -----------------------
 # Constructor
-# -----------------------
 
-isa_ok($oidc, 'npg::authentication::sanger_oidc');
+{
+  local %ENV = (
+    OIDC_CLAIM_name               => 'Tiger Cat',
+    OIDC_CLAIM_preferred_username => 'tiger',
+  );
+  my $oidc = npg::authentication::sanger_oidc->new();
+  isa_ok($oidc, 'npg::authentication::sanger_oidc', 'object created');
+}
 
-# -----------------------
-# Accessors
-# -----------------------
+# name accessor
 
-is($oidc->subject,  'user-123',        'subject accessor works');
-is($oidc->email,    'tiger@example.com','email accessor works');
-is($oidc->name,     'Tiger Cat',     'name accessor works');
-is($oidc->username, 'tiger',           'username accessor works');
+{
+  local %ENV = (OIDC_CLAIM_name => 'Tiger Cat');
+  is(npg::authentication::sanger_oidc->new()->name, 'Tiger Cat', 'name returns display name');
+}
 
-is($oidc->access_token, 'access-token-abc', 'access token works');
-is($oidc->id_token,     'id-token-xyz',     'id token works');
+# username: plain username, no domain
 
-# -----------------------
-# Groups parsing
-# -----------------------
+{
+  local %ENV = (OIDC_CLAIM_preferred_username => 'tiger');
+  is(npg::authentication::sanger_oidc->new()->username, 'tiger', 'username returns plain username');
+}
 
-is(
-  $oidc->groups,
-  'admin,users,dev',
-  'groups accessor returns raw string'
-);
+# username: strips domain from email-format preferred_username
 
-# -----------------------
-# has_group
-# -----------------------
+{
+  local %ENV = (OIDC_CLAIM_preferred_username => 'tiger@email.ac.uk');
+  is(npg::authentication::sanger_oidc->new()->username, 'tiger',
+    'username strips domain from email-format preferred_username');
+}
 
-ok($oidc->has_group('admin'),   'has_group detects admin');
-ok($oidc->has_group('users'),   'has_group detects users');
-ok(!$oidc->has_group('missing'),'has_group rejects unknown group');
+# username: only the local part before the first @
 
-# -----------------------
-# Edge cases: missing env
-# -----------------------
+{
+  local %ENV = (OIDC_CLAIM_preferred_username => 'tiger@foo@bar');
+  is(npg::authentication::sanger_oidc->new()->username, 'tiger',
+    'username takes only the part before the first @');
+}
 
-local %ENV = ();
+# username: improper value starting with @ (missing local part)
 
-my $empty = npg::authentication::sanger_oidc->new();
+{
+  local %ENV = (OIDC_CLAIM_preferred_username => '@email.ac.uk');
+  is(npg::authentication::sanger_oidc->new()->username, q{},
+    'username starting with @ returns empty string (no local part)');
+}
 
-ok(!defined $empty->subject, 'missing sub returns undef');
-ok(!defined $empty->email,   'missing email returns undef');
-ok(!defined $empty->username,'missing username returns undef');
+# Independent env vars: name unaffected by missing username and vice versa
 
-is($empty->groups, undef, 'missing groups returns undef');
+{
+  local %ENV = (OIDC_CLAIM_name => 'Tiger Cat');
+  my $auth = npg::authentication::sanger_oidc->new();
+  is($auth->name, 'Tiger Cat', 'name works when username env is absent');
+  ok(!defined $auth->username,  'username undef when only name env is set');
+}
 
-ok(!$empty->has_group('admin'), 'has_group false when no groups');
+# Missing env vars
 
-# -----------------------
-# Edge case: malformed env (object still works safely)
-# -----------------------
+{
+  local %ENV = ();
+  my $empty = npg::authentication::sanger_oidc->new();
+  ok(!defined $empty->name,     'missing OIDC_CLAIM_name returns undef');
+  ok(!defined $empty->username, 'missing OIDC_CLAIM_preferred_username returns undef');
+}
 
-my $bad = npg::authentication::sanger_oidc->new();
+# Empty string env var treated as missing
 
-ok(defined $bad, 'object created even with empty env');
-
-# -----------------------
-# Edge case: whitespace groups
-# -----------------------
-
-local %ENV = (
-  OIDC_CLAIM_groups => 'admin, users , dev',
-);
-
-my $ws = npg::authentication::sanger_oidc->new();
-
-ok($ws->has_group('admin'), 'handles admin group');
-ok(!$ws->has_group(' users '), 'whitespace trimmed correctly');
+{
+  local %ENV = (OIDC_CLAIM_preferred_username => q{});
+  ok(!defined npg::authentication::sanger_oidc->new()->username,
+    'empty preferred_username returns undef');
+}
 
 done_testing();
