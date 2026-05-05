@@ -147,7 +147,6 @@ lib/Monitor/RunFolder/Staging.pm
 lib/Monitor/Staging.pm
 lib/Monitor/Ultimagen/RunFolder.pm
 lib/Monitor/Ultimagen/Staging.pm
-lib/npg/authentication/sanger_ldap.pm
 lib/npg/authentication/sanger_oidc.pm
 lib/npg/controller.pm
 lib/npg/decorator.pm
@@ -381,7 +380,6 @@ t/00-distribution.t
 t/00-pod.t
 t/00-podcoverage.t
 t/00-scripts_compile.t
-t/10-authentication-sanger_ldap.t
 t/10-authentication-sanger_oidc.t
 t/10-bait.t
 t/10-gbs_plex.t
