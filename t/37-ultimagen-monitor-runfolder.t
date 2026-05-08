@@ -3,7 +3,7 @@ use warnings;
 use File::Basename;
 use File::Copy;
 use File::Copy::Recursive qw( dircopy );
-use Test::More tests => 4;
+use Test::More tests => 5;
 use Test::Exception;
 use File::Temp qw( tempdir );
 use File::Path qw( make_path );
@@ -25,7 +25,7 @@ subtest 'test error conditions' => sub {
   my $run_folder_name = "${ultimagen_runid}-${date}";
   my $nodate_folder_name = "${ultimagen_runid}_1212";
   my $data_folder = catdir('t/data/ultimagen_staging/Runs', $run_folder_name);
-  my $runfolder_path = catdir($testdir, 'Runs', $nodate_folder_name);
+  my $runfolder_path = catdir($testdir, 'V125', $nodate_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
   my $test = Monitor::Ultimagen::RunFolder->new(
@@ -43,8 +43,8 @@ subtest 'test error conditions' => sub {
   my $run_folder_name1 = "${ultimagen_runid}-${date}";
   my $run_folder_name2 = "RE-${ultimagen_runid}-${date}";
   $data_folder = catdir('t/data/ultimagen_staging/Runs', $run_folder_name1);
-  my $runfolder_path1 = catdir($testdir, 'Runs', $run_folder_name1);
-  my $runfolder_path2 = catdir($testdir, 'Runs', $run_folder_name2);
+  my $runfolder_path1 = catdir($testdir, 'V125', $run_folder_name1);
+  my $runfolder_path2 = catdir($testdir, 'V125', $run_folder_name2);
   dircopy($data_folder, $runfolder_path1) or die "cannot copy test directory $!";
   dircopy($data_folder, $runfolder_path2) or die "cannot copy test directory $!";
 
@@ -71,7 +71,7 @@ subtest 'test tracking update on new run' => sub {
   my $ultimagen_runid = '424090';
   my $run_folder_name = "${ultimagen_runid}-${date}";
   my $data_folder = catdir('t/data/ultimagen_staging/Runs', $run_folder_name);
-  my $runfolder_path = catdir($testdir, 'Runs', $run_folder_name);
+  my $runfolder_path = catdir($testdir, 'V125', $run_folder_name);
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
   my $test = Monitor::Ultimagen::RunFolder->new( runfolder_path      => $runfolder_path,
@@ -112,7 +112,7 @@ subtest 'test on status progress' =>  sub {
   my $ultimagen_runid = '424090';
   my $run_folder_name = "${ultimagen_runid}-${date}";
   my $data_folder = catdir('t/data/ultimagen_staging/Runs', $run_folder_name);
-  my $runfolder_path = catdir($testdir, 'Runs', $run_folder_name);
+  my $runfolder_path = catdir($testdir, 'V125', $run_folder_name);
   my $upload_completed_path = catfile($runfolder_path, 'UploadCompleted.json');
   dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
 
@@ -139,6 +139,34 @@ subtest 'test on status progress' =>  sub {
 
   lives_ok {$test->process_run();} 'process_run succeeds on early return';
   is( $test->tracking_run()->current_run_status_description, 'run mirrored', 'status on run mirrored after early return');
+};
+
+subtest 'test on instrument name parsed out from the staging area path' => sub {
+  plan tests => 2;
+
+  my $schema  = t::dbic_util->new->test_schema();
+  my $testdir = tempdir( CLEANUP => 1 );
+  my $run_folder_name = '424090-20250822_0117';
+
+  my $staging_path = catdir($testdir, 'staging', 'UNKNOWN', $run_folder_name);
+  make_path($staging_path);
+  my $test = Monitor::Ultimagen::RunFolder->new(
+    runfolder_path      => $staging_path,
+    npg_tracking_schema => $schema,
+  );
+  throws_ok {$test->instrument_external_name}
+    qr/Unknown[ ]instrument[ ]external[ ]name/,
+    'Unknown instrument name returned when staging path has no known value';
+
+  my $instrument_name = 'U010';
+  my $instr_path = catdir($testdir, 'staging', $instrument_name, $run_folder_name);
+  make_path($instr_path);
+  $test = Monitor::Ultimagen::RunFolder->new(
+    runfolder_path      => $instr_path,
+    npg_tracking_schema => $schema,
+  );
+  is($test->instrument_external_name, $instrument_name,
+    'instrument name parsed from staging path');
 };
 
 1;

@@ -5,6 +5,8 @@ LIST OF CHANGES
  - Remove 'Runs' subfolder when globbing for Ultimagen run folders and the
    the old 'staging/Runs' folder used for 'V125' from the daemon.
  - Add a new instrument, instrument format and designation records for 'UG 200'.
+ - Add tracking monitor support for new Ultimagen instruments by parsing out
+   the instrument external name from the staging path.
 
 release 107.1.0 (2026-05-11)
  - Events are created for all run statuses. The customers are interested only
