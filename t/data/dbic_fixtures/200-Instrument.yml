@@ -174,3 +174,16 @@
   latest_contact:
   percent_complete:
   lab:
+- external_name: U010
+  id_instrument: 131
+  id_instrument_format: 26
+  serial: ''
+  name: UG2
+  iscurrent: 1
+  ipaddr: ''
+  instrument_comp: ''
+  mirroring_host:
+  staging_dir:
+  latest_contact:
+  percent_complete:
+  lab:
