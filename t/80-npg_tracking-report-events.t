@@ -11,6 +11,10 @@ use Cwd qw/cwd/;
 
 use npg_tracking::util::abs_path qw/abs_path/;
 use t::dbic_util;
+use t::util;
+
+my $util = t::util->new({});
+$util->catch_email($util);
 
 local $ENV{'HOME'}       = 't'; # ensures we cannot read production
                                 # db credentials
@@ -229,7 +233,7 @@ subtest 'tolerance to failures' => sub {
 };
 
 subtest 'process run and runlane events' => sub {
-  plan tests => 2;
+  plan tests => 10;
 
   local $ENV{'NPG_CACHED_SAMPLESHEET_FILE'} = 't/data/report/samplesheet_21915.csv';
 
@@ -237,6 +241,8 @@ subtest 'process run and runlane events' => sub {
   my $rsd_rs        = $schema->resultset('RunStatusDict');
   # mark all existing events as notified
   map { $_->notification_sent ? 1 : $_->mark_as_reported()} $event_rs->search({})->all();
+
+  my @events = ();
 
   # create two run status events
   my $entity = $schema->resultset('RunStatus')->create({
@@ -247,9 +253,8 @@ subtest 'process run and runlane events' => sub {
     iscurrent          => 1,
     id_run             => $id_run
   });
-  $event_rs->create({
+  push @events, $event_rs->create({
     id_event_type     => $entity2event{'run_status'},
-    date              => $date,
     description       => 'Some text',
     entity_id         => $entity->id_run_status(),
     id_user           => 6,
@@ -262,9 +267,8 @@ subtest 'process run and runlane events' => sub {
     iscurrent          => 1,
     id_run             => $id_run
   });
-  $event_rs->create({
+  push @events, $event_rs->create({
     id_event_type     => $entity2event{'run_status'},
-    date              => $date,
     description       => 'Some text',
     entity_id         => $entity->id_run_status(),
     id_user           => 6,
@@ -281,9 +285,8 @@ subtest 'process run and runlane events' => sub {
       id_annotation => $annotation->id_annotation(),
       id_run        => $new_run->id_run()
     });
-  $event_rs->create({
+  push @events, $event_rs->create({
     id_event_type     => $entity2event{'run_annotation'},
-    date              => $date,
     description       => 'Some text',
     entity_id         => $entity->id_run_annotation(),
     id_user           => 6,
@@ -306,20 +309,29 @@ subtest 'process run and runlane events' => sub {
       id_annotation => $annotation->id_annotation(),
       id_run_lane   => $runlane->id_run_lane()
     });
-  $event_rs->create({
+  push @events, $event_rs->create({
     id_event_type     => $entity2event{'run_lane_annotation'},
-    date              => $date,
     description       => 'Some text',
     entity_id         => $entity->id_run_lane_annotation(),
     id_user           => 6,
   });
 
-  my $e = npg_tracking::report::events->new(dry_run     => 1,
+  for my $e_obj (@events) {
+    ok (!$e_obj->notification_sent, 'initially the notification date is not set');
+  }
+
+  my $e = npg_tracking::report::events->new(dry_run     => 0,
                                             schema_npg  => $schema,
                                             schema_mlwh => undef);
   my $count;
   lives_ok { $count = $e->process() } 'no error processing four new events)';
   is ($count, 1, 'one success');
+  for my $e_obj (@events) {
+    my $e_new = $event_rs->find({id_event => $e_obj->id_event});
+    ok ($e_new->notification_sent, 'notification date has been set'); 
+    $e_new->notification_sent('0000-00-00 00:00:00'); # some tests below
+    $e_new->update();                                 # depend on this
+  }
 };
 
 subtest 'tests with mlwarehouse driver' => sub {

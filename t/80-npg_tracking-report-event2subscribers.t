@@ -9,6 +9,10 @@ use Log::Log4perl qw(:levels);
 use File::Temp qw(tempdir);
 
 use t::dbic_util;
+use t::util;
+
+my $util = t::util->new({});
+$util->catch_email($util);
 
 my $logfile = join q[/], tempdir(CLEANUP => 1), 'logfile';
 note "Log file: $logfile";

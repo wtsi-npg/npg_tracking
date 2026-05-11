@@ -107,13 +107,16 @@ sub process {
         my $report = $self->_get_report_obj($report_type, $entity);
         $report->reports();
         $report->emit(); # should have provisions for dry_run
-        if (!$self->dry_run) {
-          $event->mark_as_reported(); # Probably no email sent, but mark as done anyway.
-        }
         $scount++;
       } catch {
         $self->info('Error creating or sending report : ' . $_);
       };
+    }
+
+    if (!$self->dry_run) {
+      # This might have been an unreportable event (for a run status we do
+      # not report) or no email has been sent, but mark as done anyway.
+      $event->mark_as_reported();
     }
   }
 

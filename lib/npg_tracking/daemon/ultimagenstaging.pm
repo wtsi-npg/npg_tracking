@@ -9,7 +9,9 @@ extends 'npg_tracking::daemon';
 our $VERSION = '0';
 
 Readonly::Scalar my $SCRIPT_NAME => q[ultimagen_staging_area_monitor];
-Readonly::Array  my @STAGING_AREAS => qw(/lustre/scratch120/openstack/default/ultima/staging);
+Readonly::Array  my @STAGING_AREAS =>
+  map { '/lustre/scratch120/openstack/default/ultima/' . $_ }
+  qw( staging staging/V125 staging/U10 );
 
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };
 override 'command'      => sub {
@@ -70,7 +72,7 @@ Marco M. Mosca E<lt>mm51@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2025 Genome Research Ltd.
+Copyright (C) 2025, 2026 Genome Research Ltd.
 
 This file is part of NPG software.
 
