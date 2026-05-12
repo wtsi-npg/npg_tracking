@@ -6,24 +6,24 @@ use warnings;
 our $VERSION = '0.01';
 
 sub new {
-    my ($class) = @_;
-    my $self = {};
+  my ($class) = @_;
+  my $self = {};
 
-    $self->{claims} = {
-        sub          => $ENV{'OIDC_CLAIM_sub'},
-        email        => $ENV{'OIDC_CLAIM_email'},
-        name         => $ENV{'OIDC_CLAIM_name'},
-        username     => $ENV{'OIDC_CLAIM_preferred_username'},
-        groups       => $ENV{'OIDC_CLAIM_groups'},
+  $self->{claims} = {
+    sub      => $ENV{'OIDC_CLAIM_sub'},
+    email    => $ENV{'OIDC_CLAIM_email'},
+    name     => $ENV{'OIDC_CLAIM_name'},
+    username => $ENV{'OIDC_CLAIM_preferred_username'},
+    groups   => $ENV{'OIDC_CLAIM_groups'},
     };
 
-    $self->{tokens} = {
-        access_token => $ENV{'OIDC_access_token'},
-        id_token     => $ENV{'OIDC_id_token'},
-    };
+  $self->{tokens} = {
+    access_token => $ENV{'OIDC_access_token'},
+    id_token     => $ENV{'OIDC_id_token'},
+  };
 
-    bless $self, $class;
-    return $self;
+  bless $self, $class;
+  return $self;
 }
 
 #############
@@ -44,12 +44,12 @@ sub id_token     { return shift->{tokens}->{id_token}; }
 ##########
 
 sub has_group {
-    my ($self, $group) = @_;
-    return 0 if !$self->groups;
+  my ($self, $group) = @_;
+  return 0 if !$self->groups;
 
-    return grep { $_ eq $group }
-       map  { s/^\s+|\s+$//grxms }
-       split /\s*,\s*/xsm, $self->groups;
+  return grep { $_ eq $group }
+    map  { s/^\s+|\s+$//grxms }
+    split /\s*,\s*/xsm, $self->groups;
 }
 
 1;
@@ -65,16 +65,16 @@ Version 0.01
 
 =head1 SYNOPSIS
 
-    use npg::authentication::sanger_oidc;
+  use npg::authentication::sanger_oidc;
 
-    my $auth = npg::authentication::sanger_oidc->new();
+  my $auth = npg::authentication::sanger_oidc->new();
 
-    print $auth->name;
-    print $auth->username;
+  print $auth->name;
+  print $auth->username;
 
-    if ($auth->has_group('admin')) {
-        print "User is an admin";
-    }
+  if ($auth->has_group('admin')) {
+    print "User is an admin";
+  }
 
 =head1 DESCRIPTION
 
@@ -94,7 +94,7 @@ provides convenient accessor methods.
 
 =head2 new
 
-    my $auth = npg::authentication::sanger_oidc->new();
+  my $auth = npg::authentication::sanger_oidc->new();
 
 Creates a new instance and loads OIDC claims and tokens from the
 environment.
@@ -131,7 +131,7 @@ Returns the OIDC ID token.
 
 =head2 has_group
 
-    if ($auth->has_group('admin')) { ... }
+  if ($auth->has_group('admin')) { ... }
 
 Returns true if the user is a member of the specified group.
 Group membership is determined by splitting the C<groups> string

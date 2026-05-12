@@ -10,13 +10,13 @@ use_ok('npg::authentication::sanger_oidc');
 # -----------------------
 
 local %ENV = (
-    OIDC_CLAIM_sub                => 'user-123',
-    OIDC_CLAIM_email              => 'tiger@example.com',
-    OIDC_CLAIM_name               => 'Tiger Cat',
-    OIDC_CLAIM_preferred_username => 'tiger',
-    OIDC_CLAIM_groups             => 'admin,users,dev',
-    OIDC_access_token             => 'access-token-abc',
-    OIDC_id_token                 => 'id-token-xyz',
+  OIDC_CLAIM_sub                => 'user-123',
+  OIDC_CLAIM_email              => 'tiger@example.com',
+  OIDC_CLAIM_name               => 'Tiger Cat',
+  OIDC_CLAIM_preferred_username => 'tiger',
+  OIDC_CLAIM_groups             => 'admin,users,dev',
+  OIDC_access_token             => 'access-token-abc',
+  OIDC_id_token                 => 'id-token-xyz',
 );
 
 my $oidc = npg::authentication::sanger_oidc->new();
@@ -44,9 +44,9 @@ is($oidc->id_token,     'id-token-xyz',     'id token works');
 # -----------------------
 
 is(
-    $oidc->groups,
-    'admin,users,dev',
-    'groups accessor returns raw string'
+  $oidc->groups,
+  'admin,users,dev',
+  'groups accessor returns raw string'
 );
 
 # -----------------------
@@ -86,7 +86,7 @@ ok(defined $bad, 'object created even with empty env');
 # -----------------------
 
 local %ENV = (
-    OIDC_CLAIM_groups => 'admin, users , dev',
+  OIDC_CLAIM_groups => 'admin, users , dev',
 );
 
 my $ws = npg::authentication::sanger_oidc->new();
