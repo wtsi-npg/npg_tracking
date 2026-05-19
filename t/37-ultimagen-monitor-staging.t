@@ -17,10 +17,8 @@ subtest 'test ultimagen staging monitor find_run_folders' => sub {
   plan tests => 3;
 
   my $testdir = tempdir( CLEANUP => 1 );
-  my $allruns_folder = 'Runs';
-  my $data_folder = catdir('t/data/ultimagen_staging', $allruns_folder);
-  my $test_allruns_folder = catdir($testdir, $allruns_folder);
-  dircopy($data_folder, $test_allruns_folder) or die "cannot copy test directory $!";
+  my $data_folder = 't/data/ultimagen_staging/Runs';
+  dircopy($data_folder, $testdir) or die "cannot copy test directory $!";
   throws_ok { find_run_folders() }
             qr/Top[ ]level[ ]staging[ ]path[ ]required/msx,
             'Require path argument';

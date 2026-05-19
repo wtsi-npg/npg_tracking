@@ -2,6 +2,8 @@ LIST OF CHANGES
 
  - Fix the staging area path for Ultimagen 'UG 200' instrument in the daemon.
    The external name 'U10' is now updated to 'U010'.
+ - Remove 'Runs' subfolder when globbing for Ultimagen run folders and the
+   the old 'staging/Runs' folder used for 'V125' from the daemon.
 
 release 107.1.0 (2026-05-11)
  - Events are created for all run statuses. The customers are interested only

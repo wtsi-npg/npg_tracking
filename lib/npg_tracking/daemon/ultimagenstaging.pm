@@ -11,7 +11,7 @@ our $VERSION = '0';
 Readonly::Scalar my $SCRIPT_NAME => q[ultimagen_staging_area_monitor];
 Readonly::Array  my @STAGING_AREAS =>
   map { '/lustre/scratch120/openstack/default/ultima/' . $_ }
-  qw( staging staging/V125 staging/U010 );
+  qw( staging/V125 staging/U010 );
 
 override 'daemon_name'  => sub { return $SCRIPT_NAME; };
 override 'command'      => sub {
