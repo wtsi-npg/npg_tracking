@@ -315,6 +315,7 @@ scripts/upgrade_schema/update_data-104.1.0
 scripts/upgrade_schema/update_data-105.9.0
 scripts/upgrade_schema/update_data-105.9.0.sql
 scripts/upgrade_schema/update_data-106.2.0
+scripts/upgrade_schema/update_data-107.2.0
 scripts/upgrade_schema/update_data-77.3
 scripts/upgrade_schema/update_data-93.0.0
 scripts/upgrade_schema/upgrade_schema-10.0
