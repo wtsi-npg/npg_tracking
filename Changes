@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+ - Okta implementation with OIDC setup
  - Fix the staging area path for Ultimagen 'UG 200' instrument in the daemon.
    The external name 'U10' is now updated to 'U010'.
  - Remove 'Runs' subfolder when globbing for Ultimagen run folders and the
