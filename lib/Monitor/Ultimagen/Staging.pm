@@ -12,7 +12,7 @@ use Exporter;
 our @ISA= qw( Exporter );
 our @EXPORT = qw( find_run_folders );
 
-Readonly::Scalar my $RUN_LIBRARYINFO_GLOB => 'Runs/**/*_LibraryInfo.xml';
+Readonly::Scalar my $RUN_LIBRARYINFO_GLOB => '**/*_LibraryInfo.xml';
 
 our $VERSION = '0';
 
