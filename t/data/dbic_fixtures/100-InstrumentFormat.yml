@@ -75,3 +75,9 @@
   iscurrent: 1
   default_columns: 0
   default_tiles: 0
+- id_instrument_format: 26
+  id_manufacturer: 22
+  model: 'UG 200'
+  iscurrent: 1
+  default_columns: 0
+  default_tiles: 0

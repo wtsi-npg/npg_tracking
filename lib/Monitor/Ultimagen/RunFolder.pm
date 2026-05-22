@@ -28,8 +28,6 @@ Readonly::Scalar my $USERNAME => 'useq_pipeline';
 Readonly::Scalar my $RUN_UPLOADED_FILE => 'UploadCompleted.json';
 Readonly::Scalar my $RUN_STATUS_MIRRORED => 'run mirrored';
 
-Readonly::Scalar my $INSTRUMENT_NAME => 'V125';
-
 =head1 NAME
 
 Monitor::Ultimagen::RunFolder
@@ -61,6 +59,25 @@ has q{runfolder_path} => (
   is            => q{ro},
   required      => 1,
 );
+
+# The instrument (external) name parsed out from the
+# runfolder_path attribute.
+# Ultima does not store instrument info on disk, so 
+# we need to infer the instrument (external) name for
+# the run from the path where it writes to.
+has q{_instrument_external_name} => (
+  isa               => q{Str},
+  is                => q{ro},
+  required          => 0,
+  lazy_build        => 1,
+);
+sub _build__instrument_external_name {
+  my $self = shift;
+  my ($instrument_name) = $self->runfolder_path =~ m/staging\/(\w+)\//ms;
+  $instrument_name or croak 
+    'Failed to parse instrument name from runfolder path ' . $self->runfolder_path;
+  return $instrument_name;
+}
 
 =head2 runfolder_glob
 
@@ -113,7 +130,9 @@ sub _build_tracking_run {
   my $ultimagen_runid = $self->_get_ultimagen_run_attr('RunId');
 
   my $rs = $self->npg_tracking_schema->resultset('Run');
-  my $run_row = $rs->find_with_attributes($ultimagen_runid, $INSTRUMENT_NAME);
+  my $run_row = $rs->find_with_attributes(
+    $ultimagen_runid,
+    $self->tracking_instrument()->external_name);
   if ($run_row) {
     $self->info('Found run ' . $run_row->folder_name . ' with ID ' . $run_row->id_run);
     if ($run_row->folder_name ne $self->folder_name) {
@@ -170,15 +189,14 @@ has q{tracking_instrument} => (
 sub _build_tracking_instrument {
   my $self = shift;
   my $rs = $self->npg_tracking_schema->resultset('Instrument');
-  my $params = {
-    external_name => $INSTRUMENT_NAME
-  };
-  my @instrument_rows = $rs->search($params)->all();
+  my @instrument_rows = grep {
+    $_->manufacturer_is_UltimaGenomics()
+  } $rs->search({external_name => $self->_instrument_external_name})->all();
 
   my $instrument_count = scalar @instrument_rows;
   if ($instrument_count != 1) {
     $self->logcroak('No current or multiple instruments found in NPG tracking DB with name '
-      . $INSTRUMENT_NAME);
+      . $self->_instrument_external_name);
   }
 
   my $instrument_row = $instrument_rows[0];
@@ -350,7 +368,7 @@ __END__
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2025 Genome Research Ltd.
+Copyright (C) 2025, 2026 Genome Research Ltd.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
