@@ -124,6 +124,7 @@ my $builder = $class->new(
                 'ClearPress'                      => '>= 473.3.3',
                 'Config::Any'                     => 0,
                 'Config::Auto'                    => 0,
+                'Crypt::Blowfish'                 => 0,
                 'Crypt::CBC'                      => 0,
                 'Cwd'                             => 0,
                 'Data::UUID'                      => 0,
