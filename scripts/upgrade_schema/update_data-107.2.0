@@ -1,0 +1,50 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use Carp;
+use npg_tracking::Schema;
+
+my $schema = npg_tracking::Schema->connect();
+
+######
+# Create new Ultimagen instrument record for UG200.
+my $transaction = sub {
+  my $manufacturer = 'Ultima Genomics';
+  my $ug_manufacturer = $schema->resultset('Manufacturer')
+                          ->search({name => $manufacturer})->next();
+  if (! $ug_manufacturer) {croak "No manufacturer '$manufacturer' found";}
+  print "Found manufacturer record for '$manufacturer'\n";
+
+  my $rs_if =  $schema->resultset('InstrumentFormat');
+  my $model = 'UG 200';
+  my $format = $rs_if->create({
+    'model' => $model,
+    'iscurrent' => 1,
+    'id_manufacturer' => $ug_manufacturer->id_manufacturer
+  });
+  print "Created instrument format '$model'\n";
+
+  my $designations = {};
+  map { $designations->{$_->description} = $_->id_designation }
+    $schema->resultset('Designation')->all();
+
+  my $rs_id = $schema->resultset('InstrumentDesignation');
+  my $rs_in =  $schema->resultset('Instrument');
+
+  my $instrument = $rs_in->create({
+    'name' => 'UG2',
+    'id_instrument_format' => $format->id_instrument_format,
+    'external_name' => 'U010',
+    'iscurrent' => 1
+  });
+  $rs_id->create({
+    id_instrument => $instrument->id_instrument,
+    id_designation => $designations->{'Accepted'}
+  });
+  print "Created instrument record for 'UG2'. External name: U010\n";
+};
+
+$schema->txn_do($transaction);
+
+1;

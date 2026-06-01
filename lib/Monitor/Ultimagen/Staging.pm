@@ -12,7 +12,7 @@ use Exporter;
 our @ISA= qw( Exporter );
 our @EXPORT = qw( find_run_folders );
 
-Readonly::Scalar my $RUN_LIBRARYINFO_GLOB => 'Runs/**/*_LibraryInfo.xml';
+Readonly::Scalar my $RUN_LIBRARYINFO_GLOB => '**/*_LibraryInfo.xml';
 
 our $VERSION = '0';
 
@@ -38,7 +38,7 @@ Utilities to interrogate the staging area designated to an Ultimagen instrument.
 Find valid run folders for Ultimagen runs in a top folder (or staging area).
 A valid run folder has RunID_LibraryInfo.xml file.
 
-The path pattern matches [staging_area]/Runs/[run_folder]
+The path pattern matches .../staging/[instrument_name]/[run_folder]
 
 A list of run folder paths is returned.
 =cut
