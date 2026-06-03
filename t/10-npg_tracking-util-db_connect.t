@@ -97,6 +97,12 @@ my $password = q[testpass];
 }
 
 {
+  my $mc = t::magic::connection->new(config_file => 't/.npg/t-magic-connection-special-chars');
+  cmp_deeply ( [$mc->connection()], [ "a#b", "a#b", "a#b", undef ],
+    'magic object: strings containing # can be specified with and without quotes');
+}
+
+{
   package t::magic::connection2;
   use Moose;
   extends 't::magic::connection';

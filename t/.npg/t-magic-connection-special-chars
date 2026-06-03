@@ -1,0 +1,4 @@
+[live]
+dbhost=a#b
+dbname="a#b"
+dbuser='a#b'
