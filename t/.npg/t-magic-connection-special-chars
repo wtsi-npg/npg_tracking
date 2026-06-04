@@ -1,4 +1,6 @@
 [live]
 dbhost=a#b
 dbname="a#b"
-dbuser='a#b'
+dbuser=npgtest
+dbpass='a#b'
+dbport=3306

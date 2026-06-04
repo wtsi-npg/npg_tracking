@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 15;
+use Test::More tests => 16;
 use Test::Deep;
 use Test::Exception;
 use Cwd;
@@ -97,9 +97,11 @@ my $password = q[testpass];
 }
 
 {
+  local $ENV{dev} = q[live];
   my $mc = t::magic::connection->new(config_file => 't/.npg/t-magic-connection-special-chars');
-  cmp_deeply ( [$mc->connection()], [ "a#b", "a#b", "a#b", undef ],
-    'magic object: strings containing # can be specified with and without quotes');
+  cmp_deeply ( [$mc->connection()],
+    [ 'DBI:mysql:database="a#b";host=a#b;port=3306', 'npgtest', q['a#b'], undef ],
+    'magic object: strings containing # can be specified without quotes, quotes are read');
 }
 
 {
