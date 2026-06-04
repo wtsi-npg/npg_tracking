@@ -97,7 +97,7 @@ my $password = q[testpass];
 }
 
 {
-  local $ENV{dev} = q[live];
+  local $ENV{dev} = q[test];
   my $mc = t::magic::connection->new(config_file => 't/.npg/t-magic-connection-special-chars');
   cmp_deeply ( [$mc->connection()],
     [ 'DBI:mysql:database="a#b";host=a#b;port=3306', 'npgtest', q['a#b'], undef ],

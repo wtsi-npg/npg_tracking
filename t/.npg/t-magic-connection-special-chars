@@ -1,4 +1,4 @@
-[live]
+[test]
 dbhost=a#b
 dbname="a#b"
 dbuser=npgtest
