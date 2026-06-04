@@ -372,6 +372,7 @@ scripts/upgrade_schema/upgrade_schema_155_to_158
 scripts/upgrade_schema/upgrade_schema_76.0
 t/.npg/npg_tracking
 t/.npg/t-magic-connection
+t/.npg/t-magic-connection-special-chars
 t/.npg/t-magic-connection2
 t/.npg/t-magic-connection3
 t/00-critic.t
