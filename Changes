@@ -4,6 +4,7 @@ LIST OF CHANGES
    the same module causing issues with perl interpreter. Limiting the re-use of
    child processes is a workaround until the library is fixed or we
    discontinue the use.
+ - Test handling of special characters in config.
 
 release 107.2.0 (2026-06-01)
  - Fix the staging area path for Ultimagen 'UG 200' instrument in the daemon.
