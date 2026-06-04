@@ -5,6 +5,7 @@ LIST OF CHANGES
    child processes is a workaround until the library is fixed or we
    discontinue the use.
  - Test handling of special characters in config.
+ - Add missing file to manifest (t/.npg/t-magic-connection-special-chars)
 
 release 107.2.0 (2026-06-01)
  - Fix the staging area path for Ultimagen 'UG 200' instrument in the daemon.
