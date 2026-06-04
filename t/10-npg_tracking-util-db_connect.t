@@ -100,8 +100,8 @@ my $password = q[testpass];
   local $ENV{dev} = q[test];
   my $mc = t::magic::connection->new(config_file => 't/.npg/t-magic-connection-special-chars');
   cmp_deeply ( [$mc->connection()],
-    [ 'DBI:mysql:database="a#b";host=a#b;port=3306', 'npgtest', q['a#b'], undef ],
-    'magic object: strings containing # can be specified without quotes, quotes are read');
+    [ 'DBI:mysql:database="a#@b";host=a#@b;port=3306', 'npgtest', q['a#@b'], undef ],
+    'magic object: strings containing # and @ can be specified without quotes, quotes are read');
 }
 
 {
