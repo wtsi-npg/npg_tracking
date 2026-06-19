@@ -198,7 +198,7 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
     $complete = 0;
     warnings_like { $complete = $run_folder->is_run_complete() } [
         { carped => qr/with RTAComplete\.txt but not CopyComplete\.txt/ },
-        { carped => qr/Has waited for over 21600 secs, consider copied/ }
+        { carped => qr/Has waited for over 14400 secs, consider copied/ }
     ], 'Missing CopyComplete.txt and end of the wait are logged';
     is($complete, 1, 'RTAComplete + long wait time is enough for NovaSeq');
 };
@@ -455,7 +455,7 @@ subtest 'run completion for NovaSeqX' => sub {
     my $complete = 0;
     warnings_like { $complete = $monitor->is_run_complete() } [
         { carped => qr/with RTAComplete\.txt but not CopyComplete\.txt/ },
-        { carped => qr/Has waited for over 21600 secs, consider copied/ }
+        { carped => qr/Has waited for over 14400 secs, consider copied/ }
     ], 'Missing CopyComplete.txt and end of the wait are logged';
     ok( $complete,
         'RTAComplete + long wait time is enough for NovaSeqX');
