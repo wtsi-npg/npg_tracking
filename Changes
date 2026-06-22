@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+ - Reduced the standard waiting period after rtacomplete (but no copycomplete)
+   from 6 hours to 4 hours, based on customer feedback regarding delayed
+   creation of the copycomplete status file on some instruments.
+
 release 107.2.1 (2026-06-16)
  - Crypt pbkdf2 library has an known issue. Trying to import multiple times
    the same module causing issues with perl interpreter. Limiting the re-use of
