@@ -190,7 +190,7 @@ subtest 'folder identifies copy complete for NovaSeq' => sub {
         'RTAComplete + short wait time is not enough for NovaSeq');
 
     ($atime, $mtime) = (stat($path_to_rta_complete))[8,9];
-    $atime -= 9 * $SECONDS_PER_HOUR; # make it 12 hours ago
+    $atime -= 9 * $SECONDS_PER_HOUR; # make it 9 hours ago
     $mtime = $atime;
 
     utime($atime, $mtime, $path_to_rta_complete)
