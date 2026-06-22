@@ -78,7 +78,7 @@ sub current_instrument_formats {
 sub instrument_formats_sorted {
   my ($self, $manufacturer) = @_;
 
-  $manufacturer ||= $DEFAULT_MANUFACTURER_NAME;
+  $manufacturer ||= $SHOW_ALL_PARAM_VALUE;
 
   my @if = @{$self->current_instrument_formats};
   if ($manufacturer ne $SHOW_ALL_PARAM_VALUE ) {
@@ -138,8 +138,8 @@ sub is_recently_used_sequencer_format {
   my ($self, $manufacturer) = @_;
 
   # This method is called from the run listing template.
-  # Default the manufacturer name to Illumina as for the rest of that view.
-  $manufacturer ||= $DEFAULT_MANUFACTURER_NAME;
+  # Default the manufacturer name to all as for the rest of that view.
+  $manufacturer ||= $SHOW_ALL_PARAM_VALUE;
   my $registered_manufacturer = $self->manufacturer_name;
   my $recent = ($manufacturer eq $SHOW_ALL_PARAM_VALUE ) ||
     ($registered_manufacturer eq $manufacturer);

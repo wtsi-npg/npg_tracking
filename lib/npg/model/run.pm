@@ -179,7 +179,7 @@ sub _create_query {
   my $id_instr_format = $params->{id_instrument_format};
   $id_instr_format ||= $show_all;
   my $manufacturer_name = $params->{manufacturer};
-  $manufacturer_name ||= $npg::model::instrument_format::DEFAULT_MANUFACTURER_NAME;
+  $manufacturer_name ||= $npg::model::instrument_format::SHOW_ALL_PARAM_VALUE;
   my $id_instr = $params->{id_instrument};
   my $id_status_dict = $params->{id_run_status_dict};
 

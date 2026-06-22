@@ -167,7 +167,7 @@ sub list {
     $params->{len} ||= $PAGINATION_LEN;
     $params->{start} ||= $PAGINATION_START;
     $params->{id_instrument_format} ||= $npg::model::instrument_format::SHOW_ALL_PARAM_VALUE;
-    $params->{manufacturer} ||= $npg::model::instrument_format::DEFAULT_MANUFACTURER_NAME;
+    $params->{manufacturer} ||= $npg::model::instrument_format::SHOW_ALL_PARAM_VALUE;
 
     if ( !$params->{id_run_status_dict} ) {
       $params->{id_run_status_dict} = npg::model::run_status_dict->new({
@@ -420,7 +420,7 @@ npg::view::run - view handling for runs
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2007-2012,2013,2014,2016,2017,2021,2025 Genome Research Ltd.
+Copyright (C) 2007-2012,2013,2014,2016,2017,2021,2025,2026 Genome Research Ltd.
 
 This file is part of NPG.
 
