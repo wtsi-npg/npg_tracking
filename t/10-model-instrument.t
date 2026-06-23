@@ -29,13 +29,13 @@ use_ok('npg::model::instrument');
 
   my $current_instruments = $model->current_instruments();
   isa_ok($current_instruments, 'ARRAY', '$model->current_instruments()');
-  my $num_current_instruments_illumina = scalar@{$current_instruments};
-  is($num_current_instruments_illumina, 21,
-    'number of Illumina current instruments');
+  my $num_current_instruments_default = scalar@{$current_instruments};
+  is($num_current_instruments_default, 23,
+    'number of current instruments shown by default filter (all)');
 
-  is(@{ $model->current_instruments('all')}, 23,
+  is(@{ $model->current_instruments('all')}, $num_current_instruments_default,
     'number of current instruments by all manufacturers');
-  is(@{ $model->current_instruments('Illumina')}, $num_current_instruments_illumina,
+  is(@{ $model->current_instruments('Illumina')}, 21,
     'number of Illumina current instruments');
   is(@{ $model->current_instruments('Applied Biosystems')}, 0,
     'no current instruments by Applied Biosystems (existing manufacturer)');
