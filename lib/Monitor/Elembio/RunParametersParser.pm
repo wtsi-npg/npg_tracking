@@ -248,7 +248,7 @@ RunParameters.json file.
 
 =cut
 has q{expected_cycle_count}  => (
-  isa               => q{Int},
+  isa               => q{Maybe[Int]},
   is                => q{ro},
   required          => 0,
   lazy_build        => 1,

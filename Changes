@@ -1,6 +1,7 @@
 LIST OF CHANGES
 
  - Changed the default manufacturer to All for the web pages.
+ - Support Ultimagen 'only cell paint' cytoprofiling runs
 
 release 107.2.2 (2026-06-24)
  - Reduced the standard waiting period after rtacomplete (but no copycomplete)
