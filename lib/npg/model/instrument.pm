@@ -116,7 +116,7 @@ sub instrument_by_instrument_comp {
 sub current_instruments {
   my ($self, $manufacturer)  = @_;
 
-  $manufacturer ||= $npg::model::instrument_format::DEFAULT_MANUFACTURER_NAME;
+  $manufacturer ||= $npg::model::instrument_format::SHOW_ALL_PARAM_VALUE;
   my $table = $self->table();
   my $pkg = ref $self;
 
@@ -743,7 +743,7 @@ returns true if the instrument is a MiSeq, false otherwise
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2006,2008,2013,2014,2016,2018,2021,2024,2025 Genome Research Ltd.
+Copyright (C) 2006,2008,2013,2014,2016,2018,2021,2024,2025,2026 Genome Research Ltd.
 
 This file is part of NPG.
 

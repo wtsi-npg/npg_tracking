@@ -176,7 +176,7 @@ our $INS = q{npg::model::instrument};
     my $format_object = npg::model::instrument_format->new(
       {util => $util, model => $format}
     );
-    for my $flag (($format_object->is_recently_used_sequencer_format(),
+    for my $flag (($format_object->is_recently_used_sequencer_format('Illumina'),
       $format_object->is_recently_used_sequencer_format('Illumina'))) {;
       if (any { $_ eq $format } @no_show_formats) {
         ok (!$flag, "$format is not a recent Illumina sequencer format");
@@ -194,7 +194,7 @@ our $INS = q{npg::model::instrument};
       ok (!$flag, "$format is not a recent Roche/454 sequencer format");
     }
 
-    $flag = $format_object->is_recently_used_sequencer_format('all');
+    $flag = $format_object->is_recently_used_sequencer_format();
     if ($format eq 'cBot') {
       ok (!$flag, "$format is not a recent sequencer format");
     } else {
@@ -210,22 +210,23 @@ our $INS = q{npg::model::instrument};
   is (scalar @{$if_object->instrument_formats_sorted('Applied Biosystems')}, 0,
     'no instruments for a registered format with no instruments');
 
-  my @illumina_instr = qw/1G HK HiSeq HiSeqX MiSeq NovaSeq NovaSeqX cBot/;
-  push @illumina_instr, 'cBot 2';
+  my @expected_instr = qw/1G HK HiSeq HiSeqX MiSeq NovaSeq NovaSeqX cBot/;
+  push @expected_instr, 'cBot 2';
   is_deeply (
     [map { $_->model() } @{$if_object->instrument_formats_sorted('Illumina')}],
-    \@illumina_instr, 'sorted Illumina instrument formats');
-  is_deeply (
-    [map { $_->model() } @{$if_object->instrument_formats_sorted()}],
-    \@illumina_instr, 'sorted default (Illumina) instrument formats');
-  
-  my $first = shift @illumina_instr;
-  unshift @illumina_instr, 'GS20';
-  unshift @illumina_instr, 'AVITI24';
-  unshift @illumina_instr, $first;
+    \@expected_instr, 'sorted Illumina instrument formats');
+
+  my $first = shift @expected_instr;
+  unshift @expected_instr, 'GS20';
+  unshift @expected_instr, 'AVITI24';
+  unshift @expected_instr, $first;
   is_deeply (
     [map { $_->model() } @{$if_object->instrument_formats_sorted('all')}],
-    \@illumina_instr, 'sorted formats for all instruments');
+    \@expected_instr, 'sorted formats for all instruments');
+  is_deeply (
+    [map { $_->model() } @{$if_object->instrument_formats_sorted()}],
+    \@expected_instr, 'sorted default (all) instrument formats');
+
 }
 
 1;
