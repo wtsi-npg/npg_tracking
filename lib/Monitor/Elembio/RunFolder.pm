@@ -7,7 +7,7 @@ use JSON;
 use File::Basename;
 use File::Spec::Functions qw( catfile catdir );
 use DateTime;
-use List::Util qw( sum );
+use List::Util qw( sum first );
 use List::MoreUtils qw( any );
 use DateTime::Format::Strptime;
 use Perl6::Slurp;
@@ -186,36 +186,37 @@ sub _build_tracking_instrument {
 
 The number of sequencing cycles that the instrument
 has currently completed.
+It returns 'undef' when there is no BaseCalls folder.
 
 =cut
 has q{actual_cycle_count}  => (
-  isa               => q{Int},
+  isa               => q{Maybe[Int]},
   is                => q{ro},
   required          => 0,
   lazy_build        => 1,
 );
 sub _build_actual_cycle_count {
   my $self = shift;
- 
+
   my $dir_name = 'BaseCalls';
-  my $basecalls_dir = catdir $self->runfolder_path, $dir_name;
-  if (!-d $basecalls_dir) {
-    $basecalls_dir = catdir $self->runfolder_path, 'BaseCalling', $dir_name;
+  my @basecall_dirs = (
+    catdir($self->runfolder_path, $dir_name),
+    catdir($self->runfolder_path, 'BaseCalling', $dir_name)
+  );
+  my $basecalls_dir = first { -d $_ } @basecall_dirs;
+  if (! $basecalls_dir) {
+    return;
   }
- 
+
   my @cycle_files = ();
-  if (-d $basecalls_dir) {
-    my $cycle_pattern = ($self->run_type
-      && ($self->run_type eq $RUN_CYTOPROFILE)) ?
-        $CYCLE_FILE_PATTERN_CYTO : $CYCLE_FILE_PATTERN;
-    my @files = glob catfile($basecalls_dir, '*.zip');
-    foreach my $f ( @files ) {
-      if (basename($f) =~ qr/$cycle_pattern/) {
-        push @cycle_files, $f;
-      }
+  my $cycle_pattern = ($self->run_type
+    && ($self->run_type eq $RUN_CYTOPROFILE)) ?
+      $CYCLE_FILE_PATTERN_CYTO : $CYCLE_FILE_PATTERN;
+  my @files = glob catfile($basecalls_dir, '*.zip');
+  foreach my $f ( @files ) {
+    if (basename($f) =~ qr/$cycle_pattern/) {
+      push @cycle_files, $f;
     }
-  } else {
-    $self->warn("$dir_name not found");
   }
 
   return scalar @cycle_files;
@@ -224,14 +225,18 @@ sub _build_actual_cycle_count {
 #####
 # Inspect the file system to retrieve the number of cycles
 # that have been completed so far and update the DB if
-# it is not up-to-date.
+# it is not up-to-date. 
+# No action is performed when the actual cycle count is 'undef'
+# meaning that there is no BaseCalls folder.
 sub _set_actual_cycle_count {
   my ($self) = shift;
+  my $actual_cycle_count = $self->actual_cycle_count;
+  if (! defined $actual_cycle_count) {
+    return;
+  }
 
   my $tracking_run = $self->tracking_run();
   my $remote_cycle_count = $tracking_run->actual_cycle_count();
-  my $actual_cycle_count = $self->actual_cycle_count;
-
   if (! defined $remote_cycle_count) {
     $tracking_run->update({actual_cycle_count => $actual_cycle_count});
     $self->info("Run parameter $CYCLES: actual cycle count initiated");
@@ -243,7 +248,7 @@ sub _set_actual_cycle_count {
   } else {
     $tracking_run->update({actual_cycle_count => $actual_cycle_count});
     $self->info("Run parameter $CYCLES: actual cycle count updated");
-  }
+  } 
 }
 
 sub _set_tags {
@@ -272,6 +277,10 @@ sub _set_tags {
 When the run finishes with failed outcome and it has not
 completed the expected cycle number return 1, otherwise 0.
 
+Sometimes 'OutcomeFailed' in RunUploaded.json means failure
+during upload. If the run has finished and the cycle
+count is correct the run is considered successfully completed.
+
 =cut
 has q{is_failed}  => (
   isa               => q{Bool},
@@ -283,18 +292,26 @@ sub _build_is_failed {
   my $self = shift;
   my $upload_data = $self->_run_uploaded_data();
   my $data_ok = defined $upload_data and exists $upload_data->{$OUTCOME};
-  if ( $data_ok
-        and $upload_data->{$OUTCOME} eq $OUTCOME_FAILED
-        and $self->actual_cycle_count < $self->expected_cycle_count ) {
-    return 1;
+  my $result = 0;
+  if ( $data_ok ) {
+    if ($upload_data->{$OUTCOME} eq $OUTCOME_FAILED) {
+      $result = 1;
+      if (defined $self->expected_cycle_count and defined $self->actual_cycle_count) {
+        if ($self->actual_cycle_count == $self->expected_cycle_count) {
+          $result = 0;
+        }
+      }
+    }
   }
-  return 0;
+  return $result;
 }
 
 =head2 is_completed
 
 When the run has been successfully completed with the full
 expected cycle number return 1, otherwise 0.
+Cytoprofiling runs with type 'only cell paint' have no
+sequenced files so no actual or expected cycle count defined.
 
 =cut
 has q{is_completed}  => (
@@ -305,10 +322,20 @@ has q{is_completed}  => (
 );
 sub _build_is_completed {
   my $self = shift;
-  if ( $self->actual_cycle_count == $self->expected_cycle_count ) {
-    return 1;
+  if ( $self->is_failed ) {
+    return;
   }
-  return 0;
+  my $upload_data = $self->_run_uploaded_data();
+  my $data_ok = defined $upload_data and exists $upload_data->{$OUTCOME};
+  if ($data_ok) {
+    if (! defined $self->expected_cycle_count) {
+      return 1;
+    }
+    if (defined $self->actual_cycle_count and ($self->actual_cycle_count == $self->expected_cycle_count)) {
+      return 1;
+    }
+  }
+  return;
 }
 
 #####
