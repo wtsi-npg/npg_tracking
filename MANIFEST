@@ -550,6 +550,9 @@ t/data/elembio_staging/AV244103/20250415_AV244103_2345/RunUploaded.json
 t/data/elembio_staging/AV244103/20250417_AV244103_1234/RunManifest.json
 t/data/elembio_staging/AV244103/20250417_AV244103_1234/RunParameters.json
 t/data/elembio_staging/AV244103/20250417_AV244103_1234/RunUploaded.json
+t/data/elembio_staging/AV244103/20260706_AV244103_DZ_NVEC_onboard_cellpaint/RunManifest.json
+t/data/elembio_staging/AV244103/20260706_AV244103_DZ_NVEC_onboard_cellpaint/RunParameters.json
+t/data/elembio_staging/AV244103/20260706_AV244103_DZ_NVEC_onboard_cellpaint/RunUploaded.json
 t/data/fixtures/000-designation.yml
 t/data/fixtures/000-entity_type.yml
 t/data/fixtures/000-instrument_mod_dict.yml

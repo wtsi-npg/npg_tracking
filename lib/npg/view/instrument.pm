@@ -98,7 +98,7 @@ sub list {
 
   my $manufacturer = $cgi->param('manufacturer');
   $manufacturer ||=
-    $npg::model::instrument_format::DEFAULT_MANUFACTURER_NAME;
+    $npg::model::instrument_format::SHOW_ALL_PARAM_VALUE;
   my $filter_lab = $cgi->param('filter_lab');
 
   my $model = $self->model();
@@ -605,7 +605,7 @@ npg::view::instrument - view handling for instruments
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2007-2012,2013,2014,2016,2017,2018,2019,2022,2023,2025 Genome Research Ltd.
+Copyright (C) 2007-2012,2013,2014,2016,2017,2018,2019,2022,2023,2025,2026 Genome Research Ltd.
 
 This file is part of NPG.
 

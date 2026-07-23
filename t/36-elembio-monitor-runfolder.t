@@ -3,7 +3,7 @@ use warnings;
 use File::Basename;
 use File::Copy;
 use File::Copy::Recursive qw( dircopy );
-use Test::More tests => 9;
+use Test::More tests => 10;
 use Test::Exception;
 use Test::Warn;
 use File::Temp qw/ tempdir /;
@@ -130,10 +130,50 @@ subtest 'test on cytoprofiling run' => sub {
   my $rs = $test->tracking_run()->current_run_status;
   ok( $rs, 'current run status is set');
   is( $rs->user->username, 'eseq_pipeline',
-   'current run status is set is set by eseq_pipeline');
+   'current run status is set by eseq_pipeline');
   is( $test->tracking_run()->current_run_status_description, 'run in progress',
     'current_run_status_description correct');
   ok( $test->tracking_run()->is_tag_set('cytoprofiling'), 'cytoprofiling tag is set');
+};
+
+subtest 'test on cytoprofiling run, cell paint only' => sub {
+  plan tests => 14;
+
+  my $schema = t::dbic_util->new->test_schema();
+  my $testdir = tempdir( CLEANUP => 1 );
+  my $instrument_folder = 'AV244103';
+  my $run_name = 'DZ_NVEC_onboard_cellpaint';
+  my $run_folder_name = "20260706_${instrument_folder}_${run_name}";
+  my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
+  my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
+  dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
+  unlink catfile($runfolder_path, 'RunUploaded.json');
+
+  my $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
+                                                npg_tracking_schema => $schema);
+  isa_ok( $test, 'Monitor::Elembio::RunFolder' );
+  is( $test->batch_id, undef, 'batch_id value undef' );
+  is( $test->actual_cycle_count, undef, 'no BaseCalls tree and actual cycle value undef' );
+  is( $test->run_type, 'Cytoprofiling', 'run_type value correct' );
+  ok( ! $test->tracking_run()->current_run_status, 'current_run_status not set');
+  ok( ! $test->tracking_run()->current_run_status_description, 'current_run_status_description undef');
+  lives_ok {$test->process_run_parameters();} 'process_run_parameters succeeds, no RunUploaded.json';
+  my $rs = $test->tracking_run()->current_run_status;
+  ok( $rs, 'current run status is set');
+  is( $rs->user->username, 'eseq_pipeline',
+   'current run status is set by eseq_pipeline');
+  is( $test->tracking_run()->current_run_status_description, 'run in progress',
+    'current_run_status_description correct');
+  ok( $test->tracking_run()->is_tag_set('cytoprofiling'), 'cytoprofiling tag is set');
+
+  copy(catfile($data_folder, 'RunUploaded.json'), catfile($runfolder_path, 'RunUploaded.json'))
+    or die "cannot copy RunUploaded.json file $!";
+  $test = Monitor::Elembio::RunFolder->new( runfolder_path      => $runfolder_path,
+                                              npg_tracking_schema => $schema);
+  lives_ok {$test->process_run_parameters();} 'process_run_parameters succeeds, with RunUploaded.json';
+  is( $test->actual_cycle_count, undef, 'actual cycle value undef after completion' );
+  is( $test->tracking_run()->current_run_status_description, 'run complete',
+    'current_run_status_description correct after completion');
 };
 
 subtest 'test run parameters update on new run' => sub {

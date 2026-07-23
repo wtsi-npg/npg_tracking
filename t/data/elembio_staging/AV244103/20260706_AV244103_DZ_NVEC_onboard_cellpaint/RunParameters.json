@@ -1,0 +1,40 @@
+{
+  "FileVersion": "6.1.0",
+  "RunName": "DZ_NVEC_onboard_cellpaint",
+  "RunID": "cto_6a4b6a0cc38ef7c6eabeb634",
+  "RunType": "Cytoprofiling",
+  "RunDescription": "Nematostella vectensis cells fixed and adhered to slide",
+  "Side": "SideA",
+  "Date": "2026-07-06T09:36:04.11095854Z",
+  "InstrumentName": "AV244103",
+  "RunFolderName": "20260706_AV244103_DZ_NVEC_onboard_cellpaint",
+  "Tiles": [
+    "L1R01C01S1",
+    "L1R02C01S1",
+    "L1R03C01S1",
+    "L1R04C01S1"
+  ],
+  "KitType": "KitTypeAntibodyScreening",
+  "PanelName": "Cell Paint Only",
+  "Batches": [
+    {
+      "Cycles": 1,
+      "Name": "CP01",
+      "PMGMask": "",
+      "RunOrder": 1,
+      "Type": "PreAmpImagingBatch"
+    }
+  ],
+  "CytoprofilingCartridge": "Teton Custom Screen Cartridge",
+  "PlatformVersion": "3.4.2-interface-logs",
+  "AnalysisLanes": "1+2",
+  "Consumables": {
+    "Flowcell": {
+      "SerialNumber": "0124382728"
+    }
+  },
+  "Lanes": [
+    1,
+    2
+  ]
+}

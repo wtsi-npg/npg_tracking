@@ -3,7 +3,7 @@ use warnings;
 use File::Copy::Recursive qw( dircopy );
 use File::Spec::Functions qw( catdir );
 use File::Temp qw( tempdir );
-use Test::More tests => 4;
+use Test::More tests => 5;
 use Test::Exception;
 use Test::Warn;
 
@@ -65,6 +65,28 @@ subtest 'test on cytoprofiling run' => sub {
   is( $test->run_name, '2345', 'run name is correct');
   is( $test->batch_id, undef, 'batch_id value undef' );
   is( $test->expected_cycle_count, 77, 'expected cycle value correct' );
+  is( $test->is_paired, 0, 'is_paired value correct' );
+  is( $test->is_indexed, 0, 'is_indexed value correct' );
+  is( $test->run_type, 'Cytoprofiling', 'run_type value correct' );
+};
+
+subtest 'test on cytoprofiling run, cell paint only' => sub {
+  plan tests => 7;
+
+  my $testdir = tempdir( CLEANUP => 1 );
+  my $instrument_folder = 'AV244103';
+  my $run_name = 'DZ_NVEC_onboard_cellpaint';
+  my $run_folder_name = "20260706_${instrument_folder}_${run_name}";
+  my $data_folder = catdir('t/data/elembio_staging', $instrument_folder, $run_folder_name);
+  my $runfolder_path = catdir($testdir, $instrument_folder, $run_folder_name);
+  dircopy($data_folder, $runfolder_path) or die "cannot copy test directory $!";
+
+  my $test = Monitor::Elembio::RunParametersParser->new(
+    runfolder_path => $runfolder_path);
+  isa_ok( $test, 'Monitor::Elembio::RunParametersParser' );
+  is( $test->run_name, 'DZ_NVEC_onboard_cellpaint', 'run name is correct');
+  is( $test->batch_id, undef, 'batch_id value undef' );
+  is( $test->expected_cycle_count, undef, 'expected cycle value undef' );
   is( $test->is_paired, 0, 'is_paired value correct' );
   is( $test->is_indexed, 0, 'is_indexed value correct' );
   is( $test->run_type, 'Cytoprofiling', 'run_type value correct' );

@@ -101,7 +101,7 @@ sub new {
   }
 
   if($self->{fixtures}) {
-    foreach my $i (@{npg::model::instrument->new({util=>$self})->current_instruments()}) {
+    foreach my $i (@{npg::model::instrument->new({util=>$self})->current_instruments($npg::model::instrument_format::ILLUMINA)}) {
       if ($i->does_sequencing) {
         if(!$i->current_instrument_status()) {
           $i->status_reset('wash required');

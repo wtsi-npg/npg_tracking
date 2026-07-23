@@ -12,7 +12,7 @@ use base qw(npg::model);
 
 our $VERSION = '0';
 
-Readonly::Scalar our $DEFAULT_MANUFACTURER_NAME => q{Illumina};
+Readonly::Scalar our $ILLUMINA => q{Illumina};
 Readonly::Scalar our $SHOW_ALL_PARAM_VALUE      => q{all};
 
 __PACKAGE__->mk_accessors(fields());
@@ -78,7 +78,7 @@ sub current_instrument_formats {
 sub instrument_formats_sorted {
   my ($self, $manufacturer) = @_;
 
-  $manufacturer ||= $DEFAULT_MANUFACTURER_NAME;
+  $manufacturer ||= $SHOW_ALL_PARAM_VALUE;
 
   my @if = @{$self->current_instrument_formats};
   if ($manufacturer ne $SHOW_ALL_PARAM_VALUE ) {
@@ -138,12 +138,12 @@ sub is_recently_used_sequencer_format {
   my ($self, $manufacturer) = @_;
 
   # This method is called from the run listing template.
-  # Default the manufacturer name to Illumina as for the rest of that view.
-  $manufacturer ||= $DEFAULT_MANUFACTURER_NAME;
+  # Default the manufacturer name to all as for the rest of that view.
+  $manufacturer ||= $SHOW_ALL_PARAM_VALUE;
   my $registered_manufacturer = $self->manufacturer_name;
   my $recent = ($manufacturer eq $SHOW_ALL_PARAM_VALUE ) ||
     ($registered_manufacturer eq $manufacturer);
-  if ($recent && ($registered_manufacturer eq $DEFAULT_MANUFACTURER_NAME)) {
+  if ($recent && ($registered_manufacturer eq $ILLUMINA)) {
     my $format = $self->model();
     $recent = any { $format =~ /^$_/smx } qw/MiSeq NovaSeq HiSeq/;
   }
@@ -222,7 +222,7 @@ sub manufacturer_is_Illumina {
   my $self = shift;
   my $manufacturer_name = $self->manufacturer_name;
   return ($manufacturer_name &&
-    ($manufacturer_name eq $DEFAULT_MANUFACTURER_NAME)) ? 1 : 0;
+    ($manufacturer_name eq $ILLUMINA)) ? 1 : 0;
 }
 
 1;
