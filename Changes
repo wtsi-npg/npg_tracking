@@ -1,5 +1,8 @@
 LIST OF CHANGES
 
+ - Added `npg_tag_manage`, a script to add or remove tags for a tracked
+   sequencing run.
+
 release 107.3.0 (2026-07-23)
  - Changed the default manufacturer to All for the web pages.
  - Support Ultimagen 'only cell paint' cytoprofiling runs
