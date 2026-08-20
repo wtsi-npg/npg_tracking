@@ -5,6 +5,9 @@ LIST OF CHANGES
    method and the package-level constant used by this function and added a comment.
  - Added bin/ultimagen_product_id_generator - a script to generate product id
    for Ultimagen data.
+ - Added an alternative source of tag indexes to the useq_ml_warehouse
+   st::api::lims driver. Information about tag indexes and the wafer LIMS
+   identifier can be sourced from either the manifest or LibraryInfo.xml file.
 
 release 107.4.0 (2026-09-02)
  - Imported `npg_qc::ultimagen::sample_retriever` and its dependencies.

@@ -120,6 +120,8 @@ Readonly::Hash   my  %METHODS_PER_CATEGORY => {
                            id_flowcell_lims
                            flowcell_barcode
                            rpt_list
+                           manifest_path
+                           runfolder_path
                       /],
 
     'general'    =>   [qw/ spiked_phix_tag_index
@@ -203,44 +205,54 @@ has '_primary_arguments' => (
 
 =head2 BUILD
 
-Custom post construction method to help propagate varied arguments to driver constructors
+Custom post-construction method to help propagate varied arguments to driver constructors.
 
 =cut
 sub BUILD {
   my $self = shift;
-  my %args = %{shift||{}};
-  delete $args{'driver'}; # better not to have this extra reference
+  my %args = %{shift || {}};
+  delete $args{'driver'}; # Better not to have this extra reference
   $self->_set__driver_arguments(\%args);
   my %dargs=();
   my %pargs=();
   my %primary_arg_type = map {$_ => 1} @{$METHODS_PER_CATEGORY{'primary'}};
   my $driver_class=$self->_driver_package_name;
 
-  foreach my$k (grep {defined && $_ !~ /^_/smx} map{ $_->has_init_arg ? $_->init_arg : $_->name}
-                $driver_class->meta->get_all_attributes) {
-    if(exists $args{$k}){
-      $dargs{$k}=$args{$k};
-      if ( not $primary_arg_type{$k} ){ #allow caching of primary args later even if driver provides methods - important for when passing tag_index=>0 and a lane level lims driver object to constructor
+  foreach my $k ( grep { defined && $_ !~ /^_/smx }
+                  map  { $_->has_init_arg ? $_->init_arg : $_->name }
+                  $driver_class->meta->get_all_attributes ) {
+    if (exists $args{$k}) {
+      $dargs{$k} = $args{$k};
+      # Allow caching of primary args later even if driver provides methods - 
+      # important for when passing tag_index=>0 and a lane level lims driver
+      # object to constructor
+      if ( not $primary_arg_type{$k} ) {
         delete $args{$k};
       }
     }
   }
   $self->_set__driver_arguments(\%dargs);
 
-  foreach my$k (grep {defined} map{$_->has_init_arg ? $_->init_arg : $_->name}
-      __PACKAGE__->meta->get_all_attributes) {
+  # Delete own attributes from the argument hash.
+  foreach my $k ( grep { defined }
+                  map { $_->has_init_arg ? $_->init_arg : $_->name }
+                  __PACKAGE__->meta->get_all_attributes) {
     delete $args{$k};
   }
 
-  #only allow primary args - to recreate Strictness of constructor
-  foreach my$k( @{$METHODS_PER_CATEGORY{'primary'}} ) {
-    if(exists $args{$k}) {
-      $pargs{$k}=$args{$k};
+  # Only allow primary args - to recreate Strictness of constructor.
+  # Known remaining primary arguments will be assigned to the _primary_arguments
+  # attribute.
+  foreach my $k( @{$METHODS_PER_CATEGORY{'primary'}} ) {
+    if (exists $args{$k}) {
+      $pargs{$k} = $args{$k};
       delete $args{$k};
     }
   }
   croak 'Unknown attributes: '.join q(, ), keys %args if keys %args;
+
   $self->_set__primary_arguments(\%pargs);
+
   return;
 }
 

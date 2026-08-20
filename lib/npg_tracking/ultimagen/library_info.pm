@@ -34,7 +34,7 @@ the input file.
 
 =head2 input_file_path
 
-[RunId]_LibraryInfo.xml, a full path, required. This file is available
+[UltimagenRunId]_LibraryInfo.xml, a full path, required. This file is available
 at the top level of the run folder. The content of this file is the input
 for the parser.
 
@@ -61,6 +61,23 @@ has 'xml_doc' => (
 sub _build_xml_doc {
   my $self = shift;
   return XML::LibXML->load_xml(location => $self->input_file_path);
+}
+
+=head2 library_pool
+
+=cut
+
+has 'library_pool' => (
+  isa        => 'Str',
+  is         => 'ro',
+  init_arg   => undef,
+  lazy_build => 1,
+);
+sub _build_library_pool {
+  my $self = shift;
+  my $lp = $self->xml_doc()->documentElement()->getAttribute('Library_Pool');
+  $lp or croak 'Library_Pool attribute is not defined';
+  return $lp;
 }
 
 =head2 application

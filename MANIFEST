@@ -835,6 +835,7 @@ t/data/test_staging_daemon/novaseqxplus/RunInfo.xml
 t/data/test_staging_daemon/novaseqxplus/RunParameters.xml
 t/data/ultimagen/425347-20250821_1214/425347_LibraryInfo.xml
 t/data/ultimagen/425347-20250821_1214/manifest.csv
+t/data/ultimagen/433681-20260205_1327/433681_LibraryInfo.xml
 t/data/ultimagen_staging/Runs/222222-20250911_1212/222222_LibraryInfo.xml
 t/data/ultimagen_staging/Runs/424090-20250822_0117/424090_LibraryInfo.xml
 t/dbh.pm

@@ -4,6 +4,7 @@ use Moose;
 use namespace::autoclean;
 use Text::CSV;
 use autodie;
+use File::Basename;
 use Carp;
 
 use npg_tracking::util::types;
@@ -45,6 +46,31 @@ has input_file_path => (
   is       => 'ro',
   required => 1,
 );
+
+=head2 library_pool
+
+This property is listed in [UG_RUN_ID]_LibraryInfo.xml file produced by the
+instrument. By convention this is the only LIMS wafer identifier available to
+the analysis pipeline. The value of the property is derived from the name of
+the manifest CSV file used to start the run. 
+
+=cut
+
+has 'library_pool' => (
+  isa        => 'Str',
+  is         => 'ro',
+  required   => 1,
+  lazy_build => 1,
+);
+sub _build_library_pool {
+  my $self = shift;
+  my($filename, $dirs, $suffix) = fileparse($self->input_file_path, qr/.csv/sxmi);
+  if (!$suffix) {
+    croak sprintf 'Input file name %s does not have the CSV extension',
+      $filename;
+  }
+  return $filename;
+}
 
 =head2 samples
 
@@ -134,6 +160,8 @@ __END__
 =item autodie
 
 =item Carp
+
+=item File::Basename
 
 =item npg_tracking::util::types
 
