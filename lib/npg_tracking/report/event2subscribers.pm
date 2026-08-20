@@ -156,9 +156,8 @@ npg_tracking::report::event2subscribers
  
 =head1 DESCRIPTION
 
- Reports new statuses or annotations by email to NPG subscribers. Instrument related events
- are reported to NPG users who are members of the group 'engineers'. Run and lane related
- events are reported to NPG users who are members of the group 'events'.
+ Reports instrument-related events to NPG users who are members of the group
+ 'engineers'.
 
 =head1 SUBROUTINES/METHODS
 
@@ -175,14 +174,6 @@ npg_tracking::report::event2subscribers
 
  DBIx handle for a warehouse containing LIMs data, see WTSI::DNAP::Warehouse::Schema.
  This attribute is not lazy.
-
-=head2 lims
-
- An array of lane-level st::api::lims type objects. An optional attribute, will be built
- if not set. To avoid circular dependencies between different NPG packages, if the
- schema_mlwh attribute is not set, the driver type will not be specified when building
- this attribute. The st::api::lims object shoudl then figure out itself what driver to use.
- Objects generated using an xml driver are not accepted, resulting in an error.
 
 =head2 reports
 
