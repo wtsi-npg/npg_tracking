@@ -4,8 +4,8 @@ use Moose;
 use namespace::autoclean;
 use MooseX::StrictConstructor;
 use Moose::Util::TypeConstraints;
-use Readonly;
 use Carp;
+use Try::Tiny;
 
 use npg_tracking::Schema;
 
@@ -13,8 +13,6 @@ with qw/ MooseX::Getopt
          npg_tracking::glossary::run /;
 
 our $VERSION = '0';
-
-Readonly::Array my @TAG_ACTIONS => qw/add remove/;
 
 # This custom type should accept both a scalar strings and a list of strings.
 subtype q{ArrayRefOfStr},
@@ -32,13 +30,14 @@ has q{tag} => (
                    q{at least one tag should be given},
 );
 
-has q{action} => (
-  isa      => q{Str},
+has q{rm} => (
+  isa      => q{Bool},
   is       => q{ro},
   required => 0,
-  default  => $TAG_ACTIONS[0],
+  default  => 0,
   documentation =>
-    q{Action to perform, ie "add" or "remove" tag(s), defaults to "add"},
+    q{A boolean option. If true, the tags are removed } .
+    q{If false (the default) the tags are added},
 );
 
 has q{username} => (
@@ -64,10 +63,8 @@ sub BUILD {
   my $self = shift;
 
   @{$self->tag} or croak 'At least one tag should be given.';
-  ($self->action eq $TAG_ACTIONS[0]) || ($self->action eq $TAG_ACTIONS[1]) ||
-    croak sprintf q[Invalid action '%s'.], $self->action;
-  if (($self->action eq $TAG_ACTIONS[0]) && !$self->username) {
-    croak 'username should be given for action ' . $self->action;
+  if (!$self->rm && !$self->username) {
+    croak 'username should be given for adding tags';
   }
 
   return;
@@ -81,13 +78,25 @@ sub perform_action {
     croak sprintf 'Run id %i does not exist', $self->id_run;
   }
 
-  for my $t (@{$self->tag}) {
-    if ($self->action eq 'add') {
-      $run_row->set_tag($self->username, $t);
+  try {
+    $self->schema->txn_do( sub {
+      for my $t (@{$self->tag}) {
+        if (!$self->rm) {
+          $run_row->set_tag($self->username, $t);
+        } else {
+          $run_row->unset_tag($t);
+        }
+      }
+    });
+  } catch {
+    my $error = shift;
+    if ($error =~ /Rollback failed/smx) {
+      $error .= ' The tags might have been added or removed partially.';
     } else {
-      $run_row->unset_tag($t);
+      $error .= ' No tags have been added or removed.';
     }
-  }
+    croak $error;
+  };
 
   return;
 }
@@ -104,23 +113,25 @@ __END__
 
 =head1 SYNOPSIS
 
+ # Add one tag
  npg_tracking::tag_manager->new(
    id_run => 33,
    tag    => 'staging',
    username => 'srpipe'
  )->perform_action();
 
+ # Add multiple tags
  npg_tracking::tag_manager->new(
    id_run => 33,
    tag    => [qw/staging multiplexed/],
-   username => 'srpipe',
-   action => 'add'
+   username => 'srpipe'
  )->perform_action();
 
-  npg_tracking::tag_manager->new(
+ # Remove one tag
+ npg_tracking::tag_manager->new(
    id_run => 33,
    tag    => 'staging',
-   action => 'remove'
+   rm     => 1
  )->perform_action();
 
 =head1 DESCRIPTION
@@ -139,11 +150,12 @@ __END__
 
 =head2 username
 
- Username for saving the tags to the database. Needed if the action is C<add>.
+ Username for saving the tags to the database. Needed for adding tag(s).
 
-=head2 action
+=head2 rm
 
- Action to perform on tags, i.e. C<add> or C<remove>, defaults to C<add>.
+ A boolean option. If true, the tags are removed. If false, the tags are added.
+ False by default.
 
 =head2 schema
 
@@ -176,9 +188,9 @@ __END__
 
 =item MooseX::Getopt
 
-=item Readonly
-
 =item Carp
+
+=item Try:Tiny
 
 =item npg_tracking::glossary::run
 
