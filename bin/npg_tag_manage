@@ -22,15 +22,14 @@ npg_tag_manage
   # Add a single tag
   npg_tag_manage --id_run 1234 --tag 'staging' --username pipeline
 
-  # Add multiple tags, specify the action explicitly
-  npg_tag_manage --id_run 1234 --tag 'no auto' --tag 'staging' \
-    --action add --username pipeline
+  # Add multiple tags
+  npg_tag_manage --id_run 1234 --tag 'no auto' --tag 'staging' --username pipeline
 
   # Remove a single tag
-  npg_tag_manage--id_run 1234 --tag 'staging' --action remove
+  npg_tag_manage --id_run 1234 --tag 'staging' --rm
 
   # Remove multiple tags
-  npg_tag_manage--id_run 1234 --tag 'staging' --tag 'no auto' --action remove
+  npg_tag_manage --id_run 1234 --tag 'staging' --tag 'no auto' --rm
 
 =head1 REQUIRED ARGUMENTS
 
@@ -40,10 +39,11 @@ npg_tag_manage
 
 =head1 OPTIONS
 
- action - action to perform, on tag(s), C<add> or C<remove>, default to C<add>
+ rm - a boolean flag, switches the script from adding (default,
+      the option value is false) to removing the tags
 
- username - the name of the user for the database record, required for the
-            C<add> action
+ username - the name of the user for the database record, required for
+            adding tags
 
 =head1 EXIT STATUS
 
@@ -54,6 +54,12 @@ npg_tag_manage
 =head1 DESCRIPTION
 
  A script to add or remove a tag or tags for a tracked NPG sequencing run.
+
+ If the database operation fails for one of the tags, all changes are rolled back,
+ the exit code of the script is non-zero.
+
+ Adding a tag the run already has or removing a tag the run does not have does
+ not cause an error.
 
 =head1 DIAGNOSTICS
 
