@@ -1,4 +1,4 @@
-package npg_qc::ultimagen::library_info;
+package npg_tracking::ultimagen::library_info;
 
 use Moose;
 use namespace::autoclean;
@@ -6,19 +6,17 @@ use XML::LibXML;
 use Carp;
 
 use npg_tracking::util::types;
-use npg_qc::ultimagen::sample;
+use npg_tracking::ultimagen::sample;
 
 our $VERSION = '0';
 
-##no critic (Documentation::RequirePodAtEnd)
-
 =head1 NAME
 
-npg_qc::ultimagen::library_info
+npg_tracking::ultimagen::library_info
 
 =head1 SYNOPSIS
 
-  my $li = npg_qc::ultimagen::library_info->new(input_file_path => '123_LibraryInfo.xml');
+  my $li = npg_tracking::ultimagen::library_info->new(input_file_path => '123_LibraryInfo.xml');
   foreach my $sample ( @{$li->samples} ) {
     print $sample->index_sequence();
   }
@@ -118,13 +116,13 @@ sub _build_sample_elements {
 
 The main output of the parser.
 
-A list of C<npg_qc::ultimagen::sample> objects in the order the samples
+A list of C<npg_tracking::ultimagen::sample> objects in the order the samples
 are listed in the input file. 
 
 =cut
 
 has 'samples' => (
-  isa        => 'ArrayRef[npg_qc::ultimagen::sample]',
+  isa        => 'ArrayRef[npg_tracking::ultimagen::sample]',
   is         => 'ro',
   init_arg   => undef,
   lazy_build => 1,
@@ -152,7 +150,7 @@ sub _build_samples {
         . $init->{index_label};
     }
 
-    push @samples, npg_qc::ultimagen::sample->new($init);
+    push @samples, npg_tracking::ultimagen::sample->new($init);
   }
   return \@samples;
 }
@@ -191,7 +189,7 @@ Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2025 Genome Research Ltd.
+Copyright (C) 2025, 2026 Genome Research Ltd.
 
 This file is part of NPG.
 

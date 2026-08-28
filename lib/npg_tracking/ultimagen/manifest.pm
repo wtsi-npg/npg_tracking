@@ -1,4 +1,4 @@
-package npg_qc::ultimagen::manifest;
+package npg_tracking::ultimagen::manifest;
 
 use Moose;
 use namespace::autoclean;
@@ -7,19 +7,17 @@ use autodie;
 use Carp;
 
 use npg_tracking::util::types;
-use npg_qc::ultimagen::sample;
+use npg_tracking::ultimagen::sample;
 
 our $VERSION = '0';
 
-##no critic (Documentation::RequirePodAtEnd)
-
 =head1 NAME
 
-npg_qc::ultimagen::manifest
+npg_tracking::ultimagen::manifest
 
 =head1 SYNOPSIS
 
-  my $m = npg_qc::ultimagen::manifest->new(input_file_path => '123_458.csv');
+  my $m = npg_tracking::ultimagen::manifest->new(input_file_path => '123_458.csv');
   foreach my $sample ( @{$m->samples} ) {
     print $sample->index_sequence();
   }
@@ -52,13 +50,13 @@ has input_file_path => (
 
 The output of the parser.
 
-A list of C<npg_qc::ultimagen::sample> type objects in the order the samples
+A list of C<npg_tracking::ultimagen::sample> type objects in the order the samples
 are listed in the manifest. 
 
 =cut
 
 has 'samples' => (
-  isa        => 'ArrayRef[npg_qc::ultimagen::sample]',
+  isa        => 'ArrayRef[npg_tracking::ultimagen::sample]',
   is         => 'ro',
   init_arg   => undef,
   lazy_build => 1,
@@ -67,7 +65,7 @@ sub _build_samples {
   my $self = shift;
   my @samples = ();
   foreach my $row (@{$self->_sample_rows}) {
-    push @samples, npg_qc::ultimagen::sample->new(
+    push @samples, npg_tracking::ultimagen::sample->new(
       id => $row->{'sample_id'},
       library_name => $row->{'library_name'},
       index_label => $row->{'index_barcode_num'},
@@ -151,7 +149,7 @@ Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2025 Genome Research Ltd.
+Copyright (C) 2025, 2026 Genome Research Ltd.
 
 This file is part of NPG.
 

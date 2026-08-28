@@ -1,6 +1,6 @@
 package sample_retriever_test;
 use Moose;
-with 'npg_qc::ultimagen::sample_retriever';
+with 'npg_tracking::ultimagen::sample_retriever';
 
 package main_test;
 use strict;

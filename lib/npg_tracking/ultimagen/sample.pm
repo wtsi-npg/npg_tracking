@@ -1,4 +1,4 @@
-package npg_qc::ultimagen::sample;
+package npg_tracking::ultimagen::sample;
 
 use Moose;
 use namespace::autoclean;
@@ -11,8 +11,6 @@ with qw/npg_tracking::glossary::tag/;
 
 our $VERSION = '0';
 
-##no critic (Documentation::RequirePodAtEnd)
-
 Readonly::Scalar our $ULTIMA_CONTROL_INDEX_SEQUENCE => q[TT];
 # Highest allowed according to our spec
 Readonly::Scalar our $NPG_TAG_INDEX_FOR_ULTIMA_CONTROL =>
@@ -20,7 +18,7 @@ Readonly::Scalar our $NPG_TAG_INDEX_FOR_ULTIMA_CONTROL =>
 
 =head1 NAME
 
-npg_qc::ultimagen::sample
+npg_tracking::ultimagen::sample
 
 =head1 SYNOPSIS
 
@@ -161,7 +159,7 @@ Marina Gourtovaia
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2025 Genome Research Ltd.
+Copyright (C) 2025, 2026 Genome Research Ltd.
 
 This file is part of NPG.
 

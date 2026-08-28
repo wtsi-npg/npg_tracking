@@ -1,19 +1,17 @@
-package npg_qc::ultimagen::sample_retriever;
+package npg_tracking::ultimagen::sample_retriever;
 
 use Moose::Role;
 use Carp;
 
 use npg_tracking::util::types;
-use npg_qc::ultimagen::library_info;
-use npg_qc::ultimagen::manifest;
+use npg_tracking::ultimagen::library_info;
+use npg_tracking::ultimagen::manifest;
 
 our $VERSION = '0';
 
-##no critic (Documentation::RequirePodAtEnd)
-
 =head1 NAME
 
-npg_qc::ultimagen::sample_retriever
+npg_tracking::ultimagen::sample_retriever
 
 =head1 SYNOPSIS
 
@@ -51,7 +49,7 @@ has 'runfolder_path' => (
 
 =head2 get_samples
 
-Returns an array of C<npg_qc::ultimagen::sample> objects, which can be empty.
+Returns an array of C<npg_tracking::ultimagen::sample> objects, which can be empty.
 
 =cut
 
@@ -60,11 +58,11 @@ sub get_samples {
 
   my $si;
   if ($self->has_manifest_path) {
-    $si = npg_qc::ultimagen::manifest->new(input_file_path => $self->manifest_path);
+    $si = npg_tracking::ultimagen::manifest->new(input_file_path => $self->manifest_path);
   } elsif ($self->has_runfolder_path) {
     my @library_info_paths = glob join q[/], $self->runfolder_path, '*LibraryInfo.xml';
     (@library_info_paths == 1) or croak 'Too many or no *LibraryInfo.xml files';
-    $si = npg_qc::ultimagen::library_info->new(input_file_path => $library_info_paths[0]);
+    $si = npg_tracking::ultimagen::library_info->new(input_file_path => $library_info_paths[0]);
     if ($si->application && ($si->application =~ /quantum/xmsi)) {
       carp 'Skipping quantum application';
       $si = undef;
@@ -106,7 +104,7 @@ Marina GourtovaiaE<lt>mg8@sanger.ac.ukE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2025 Genome Research Ltd.
+Copyright (C) 2025, 2026 Genome Research Ltd.
 
 This file is part of NPG.
 
