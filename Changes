@@ -1,5 +1,10 @@
 LIST OF CHANGES
 
+ - Imported `npg_qc::ultimagen::sample_retriever` and its dependencies.
+   New class is `npg_tracking::ultimagen::sample_retriever`.
+   The `sample_retriever` class is wrapper for Ultimagen manifest and
+   LibraryInfo files. It will be used by a combo `st::api::lims` driver for
+   Ultimagen data when `tag_index` information is not yet available in mlwh.
  - Added `npg_tag_manage`, a script to add or remove tags for a tracked
    sequencing run.
 
