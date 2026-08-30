@@ -31,10 +31,18 @@ directory heirarchy and from the files within it.
 
 =head1 SUBROUTINES/METHODS
 
+=head2 manufacturer
+
+Returns the manufacturer name for Illumina runfolders.
+
 =cut
 
 with 'npg_tracking::illumina::run::folder';
 with 'npg_tracking::illumina::run::long_info';
+
+sub manufacturer {
+  return q{Illumina};
+}
 
 __PACKAGE__->meta->make_immutable;
 
