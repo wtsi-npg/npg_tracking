@@ -1,5 +1,6 @@
 LIST OF CHANGES
 
+release 107.4.0 (2026-09-02)
  - Imported `npg_qc::ultimagen::sample_retriever` and its dependencies.
    New class is `npg_tracking::ultimagen::sample_retriever`.
    The `sample_retriever` class is wrapper for Ultimagen manifest and
@@ -7,6 +8,7 @@ LIST OF CHANGES
    Ultimagen data when `tag_index` information is not yet available in mlwh.
  - Added `npg_tag_manage`, a script to add or remove tags for a tracked
    sequencing run.
+ - Updated POD to reflect the reduced scope of emails to subscribers.
 
 release 107.3.0 (2026-07-23)
  - Changed the default manufacturer to All for the web pages.
