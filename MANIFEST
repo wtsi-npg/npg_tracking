@@ -11,6 +11,7 @@ bin/npg_samplesheet4NovaSeqX
 bin/npg_samplesheet_generator
 bin/npg_samplesheet_generator_NovaSeqXSeries
 bin/npg_status_save
+bin/npg_tag_manage
 bin/staging_area_monitor
 bin/ultimagen_staging_area_monitor
 Build.PL
@@ -284,6 +285,11 @@ lib/npg_tracking/Schema/Result/Usergroup.pm
 lib/npg_tracking/Schema/ResultSet/Run.pm
 lib/npg_tracking/Schema/Retriever.pm
 lib/npg_tracking/status.pm
+lib/npg_tracking/tag_manager.pm
+lib/npg_tracking/ultimagen/library_info.pm
+lib/npg_tracking/ultimagen/manifest.pm
+lib/npg_tracking/ultimagen/sample.pm
+lib/npg_tracking/ultimagen/sample_retriever.pm
 lib/npg_tracking/util/abs_path.pm
 lib/npg_tracking/util/build.pm
 lib/npg_tracking/util/config.pm
@@ -428,6 +434,7 @@ t/10-npg_tracking-glossary-composition.t
 t/10-npg_tracking-glossary-moniker.t
 t/10-npg_tracking-glossary-rpt.t
 t/10-npg_tracking-status.t
+t/10-npg_tracking-tag_manager.t
 t/10-npg_tracking-util-config.t
 t/10-npg_tracking-util-db_connect.t
 t/10-npg_tracking-util-messages.t
@@ -483,6 +490,7 @@ t/20-view-user2usergroup.t
 t/20-view-usergroup.t
 t/20-view.t
 t/25-template-actions.t
+t/30-ultimagen-sample_retriever.t
 t/34-monitor-runfolder-staging.t
 t/34-monitor-runfolder.t
 t/34-monitor-staging.t
@@ -824,6 +832,8 @@ t/data/test40_lims/samplesheet_novaseq4lanes.csv
 t/data/test40_lims/samplesheet_rapidrun_nopool.csv
 t/data/test_staging_daemon/novaseqxplus/RunInfo.xml
 t/data/test_staging_daemon/novaseqxplus/RunParameters.xml
+t/data/ultimagen/425347-20250821_1214/425347_LibraryInfo.xml
+t/data/ultimagen/425347-20250821_1214/manifest.csv
 t/data/ultimagen_staging/Runs/222222-20250911_1212/222222_LibraryInfo.xml
 t/data/ultimagen_staging/Runs/424090-20250822_0117/424090_LibraryInfo.xml
 t/dbh.pm
