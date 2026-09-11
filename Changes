@@ -1,5 +1,9 @@
 LIST OF CHANGES
 
+ - To help the reader understand a link between lane and run status changes,
+   renamed variable in npg_tracking::Schema::Result::Run::propagate_status_from_lanes
+   method and the package-level constant used by this function and added a comment.
+
 release 107.4.0 (2026-09-02)
  - Imported `npg_qc::ultimagen::sample_retriever` and its dependencies.
    New class is `npg_tracking::ultimagen::sample_retriever`.
