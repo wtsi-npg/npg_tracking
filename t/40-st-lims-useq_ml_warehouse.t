@@ -36,7 +36,7 @@ subtest 'no product table entries' => sub {
   $init->{position} = 1;
   $init->{tag_index} = 300;
   throws_ok { st::api::lims->new($init)->qc_state }
-    qr/No database record retrieved/,
+    qr/No useq_product_metrics database record retrieved/,
     'error calling a method that requires db data present';
 };
 
