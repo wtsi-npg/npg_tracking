@@ -13,6 +13,7 @@ bin/npg_samplesheet_generator_NovaSeqXSeries
 bin/npg_status_save
 bin/npg_tag_manage
 bin/staging_area_monitor
+bin/ultimagen_product_id_generator
 bin/ultimagen_staging_area_monitor
 Build.PL
 cgi-bin/locate_runfolder
