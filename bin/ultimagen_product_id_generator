@@ -1,0 +1,140 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use FindBin qw($Bin);
+use lib ( -d "$Bin/../lib/perl5" ? "$Bin/../lib/perl5" : "$Bin/../lib" );
+use Getopt::Long;
+use Carp;
+use Readonly;
+use Pod::Usage;
+
+use npg_tracking::ultimagen::sample;
+use npg_tracking::glossary::composition;
+use npg_tracking::glossary::composition::component::illumina;
+
+# No concept of lanes in Ultimagen sequencing. To shoe-horn into Illumina-style
+# product, setting position to 1.
+Readonly::Scalar my $POSITION => 1;
+
+my %options = (); 
+my $sections = ['NAME', 'DESCRIPTION', 'SYNOPSIS', 'REQUIRED ARGUMENTS'];
+
+my $result = GetOptions(
+  \%options,
+  'help',
+  'id_run=i',
+  'index_label=s'
+);
+
+if ($options{help}) {
+  pod2usage(-exitval => 1, -verbose => 99, -sections => $sections);
+}
+
+if (!$result || !$options{id_run} || !$options{index_label}) {
+  pod2usage(
+    -msg => "Incorrect options when invoking the script",
+    -exitval => 2,
+    -verbose => 99,
+    -sections => $sections,
+    -output => \*STDERR
+  );
+}
+
+my $tag_index = npg_tracking::ultimagen::sample
+                ->tag_index_from_read_group($options{index_label});
+my $composition = npg_tracking::glossary::composition->new(
+  components => [
+    npg_tracking::glossary::composition::component::illumina->new(
+      id_run => $options{id_run}, position => $POSITION, tag_index => $tag_index
+    )
+  ]
+);
+
+print $composition->digest();
+
+1;
+
+=head1 NAME
+
+ultimagen_product_id_generator
+
+=head1 CONFIGURATION
+
+=head1 SYNOPSIS
+
+ultimagen_product_id_generator --id_run 222 --index_label Z0076
+
+=head1 DESCRIPTION
+
+Generates and writes to STDOUT Illumina-style unique 64 char long product
+identifier for an Ultimagen product.
+
+=head1 REQUIRED ARGUMENTS
+
+=over
+
+=item id_run
+
+=item index_label
+ 
+=back
+
+=head1 OPTIONS
+
+=head1 DIAGNOSTICS
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+=head1 DEPENDENCIES
+
+=over
+
+=item strict
+
+=item warnings
+
+=item Readonly
+
+=item Getopt::Long
+
+=item Carp
+
+=item npg_tracking::ultimagen::sample
+
+=item npg_tracking::glossary::composition
+
+=item npg_tracking::glossary::composition::component::illumina
+
+=back
+
+=head1 INCOMPATIBILITIES
+
+=head1 EXIT STATUS
+
+=head1 BUGS AND LIMITATIONS
+
+=head1 AUTHOR
+
+Marina Gourtovaia
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (C) 2026 Genome Research Ltd.
+
+This file is part of NPG.
+
+NPG is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+=cut

@@ -331,7 +331,10 @@ with qw/
          npg_tracking::Schema::Retriever
        /;
 
-Readonly::Hash   my %STATUS_PROPAGATE_AUTO => (
+# Some lane statuses, when assigned to all lanes of the run, should trigger
+# run status change. The dictionary below maps lane statuses to run statuses
+# for these cases.
+Readonly::Hash   my %LANE_STATUS_PROPAGATE_AUTO => (
   'analysis complete'  => 'analysis complete',
   'manual qc complete' => 'archival pending',
 );
@@ -547,10 +550,10 @@ sub propagate_status_from_lanes {
       $statuses{$current->description} = 1;
     }
     if (scalar(keys %statuses) == 1) {
-        my ($description, $value)  = each %statuses;
-        my $auto = $STATUS_PROPAGATE_AUTO{$description};
-        if ( $auto ) {
-            $self->update_run_status($auto);
+        my ($lane_status_description, $num_lanes)  = each %statuses;
+        my $run_status_auto = $LANE_STATUS_PROPAGATE_AUTO{$lane_status_description};
+        if ( $run_status_auto ) {
+            $self->update_run_status($run_status_auto);
             $propagated = 1;  
         }
     }
