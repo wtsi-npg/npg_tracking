@@ -47,31 +47,67 @@ has 'runfolder_path' => (
   documentation => 'Ultima Genomics run folder path, optional',
 );
 
+=head2 input_file_path
+
+The path of the file that is used by an underlying parser.
+
+=cut
+
+sub input_file_path {
+  my $self = shift;
+  return $self->_parser->input_file_path;
+}
+
+=head2 library_pool
+
+The name of what is considered a library pool by Ultimagen applications.
+
+=cut
+
+sub library_pool {
+  my $self = shift;
+  return $self->_parser->library_pool;
+}
+
 =head2 get_samples
 
-Returns an array of C<npg_tracking::ultimagen::sample> objects, which can be empty.
+Returns an array of C<npg_tracking::ultimagen::sample> objects, which in the
+case of a quantum application is empty.
 
 =cut
 
 sub get_samples {
   my $self= shift;
+  if ((ref $self->_parser eq 'npg_tracking::ultimagen::library_info') &&
+      $self->_parser->application &&
+      ($self->_parser->application =~ /quantum/xmsi)) {
+    carp 'Skipping quantum application';
+    return [];
+  }
+  return $self->_parser->samples;
+}
 
-  my $si;
+has '_parser' => (
+  isa        => 'npg_tracking::ultimagen::manifest|npg_tracking::ultimagen::library_info',
+  is         => 'ro',
+  required   => 0,
+  lazy_build => 1,
+);
+sub _build__parser {
+  my $self= shift;
+
+  my $parser;
   if ($self->has_manifest_path) {
-    $si = npg_tracking::ultimagen::manifest->new(input_file_path => $self->manifest_path);
+    $parser = npg_tracking::ultimagen::manifest->new(input_file_path => $self->manifest_path);
   } elsif ($self->has_runfolder_path) {
     my @library_info_paths = glob join q[/], $self->runfolder_path, '*LibraryInfo.xml';
     (@library_info_paths == 1) or croak 'Too many or no *LibraryInfo.xml files';
-    $si = npg_tracking::ultimagen::library_info->new(input_file_path => $library_info_paths[0]);
-    if ($si->application && ($si->application =~ /quantum/xmsi)) {
-      carp 'Skipping quantum application';
-      $si = undef;
-    }
+    $parser = npg_tracking::ultimagen::library_info->new(input_file_path => $library_info_paths[0]);
   } else {
     croak 'Either runfolder_path or manifest_path should be set';
   }
 
-  return defined $si ? $si->samples : [];
+  return $parser;
 }
 
 1;
