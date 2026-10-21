@@ -5,7 +5,7 @@ with 'npg_tracking::ultimagen::sample_retriever';
 package main_test;
 use strict;
 use warnings;
-use Test::More tests => 28;
+use Test::More tests => 33;
 use Test::Exception;
 
 use_ok('sample_retriever_test');
@@ -16,16 +16,31 @@ throws_ok { sample_retriever_test->new()->get_samples() }
   qr/Either runfolder_path or manifest_path should be set/,
   'error if no attributes are set';
 
-my $samples_li = sample_retriever_test->new(
-  runfolder_path => $rf
-)->get_samples();
+my $samples_rli = sample_retriever_test->new(runfolder_path => $rf);
+my $samples_li = $samples_rli->get_samples();
 is (scalar @{$samples_li}, 8, 'returned eight samples');
+is ($samples_rli->library_pool, '18Aug25 D7_CooperSteer_5priem plus guide',
+  'library pool name is correct');
+is ($samples_rli->input_file_path, "${rf}/425347_LibraryInfo.xml",
+  'input file path is correct');
 
-my $samples_ma = sample_retriever_test->new(
+my $samples_rma = sample_retriever_test->new(
+  runfolder_path => $rf,
+  manifest_path => "${rf}/425347_LibraryInfo.xml",
+);
+throws_ok { $samples_rma->library_pool }
+  qr/Input file name 425347_LibraryInfo.xml does not have the CSV extension/,
+  'error if the manifest file does not have correct extension';
+
+$samples_rma = sample_retriever_test->new(
   runfolder_path => $rf,
   manifest_path => "${rf}/manifest.csv"
-)->get_samples();
+);
+my $samples_ma = $samples_rma->get_samples();
 is (scalar @{$samples_ma}, 8, 'returned eight samples');
+is ($samples_rma->library_pool, 'manifest', 'library pool name is correct');
+is ($samples_rma->input_file_path, "${rf}/manifest.csv",
+  'input file path is correct');
 
 for my $sample (($samples_li->[0], $samples_ma->[0])) {
   is ($sample->id(), 'iNeuron15923026', 'correct sample id');

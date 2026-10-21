@@ -1,0 +1,52 @@
+<SampleInfo RunId="433681" Library_Pool="107185_NT1882031W_2">
+  <Attributes>
+    <Attribute Name="Application" Value="WGS native gDNA" />
+    <Attribute Name="sequencing_recipe" Value="UG_116cycles_Baseline_1.8.5.2" />
+    <Attribute Name="analysis_recipe" Value="wgs1" />
+  </Attributes>
+  <Samples>
+    <Sample Id="s1@7682STDY14732080" Index_Label="Z0097" Index_Sequence="CAGTCAGTTGCAGAT">
+      <Attribute Name="Barcode_Plate_Num" Value="2" />
+      <Attribute Name="Barcode_Plate_Well" Value="A1" />
+      <Attribute Name="application_type" Value="native" />
+      <Attribute Name="study_id" Value="7682" />
+    </Sample>
+    <Sample Id="s2@7682STDY14732083" Index_Label="Z0098" Index_Sequence="CAACAGATGTATGAT">
+      <Attribute Name="Barcode_Plate_Num" Value="2" />
+      <Attribute Name="Barcode_Plate_Well" Value="B1" />
+      <Attribute Name="application_type" Value="native" />
+      <Attribute Name="study_id" Value="7682" />
+    </Sample>
+    <Sample Id="s3@7682STDY14732084" Index_Label="Z0099" Index_Sequence="CTCATCTGCGCAATGAT">
+      <Attribute Name="Barcode_Plate_Num" Value="2" />
+      <Attribute Name="Barcode_Plate_Well" Value="C1" />
+      <Attribute Name="application_type" Value="native" />
+      <Attribute Name="study_id" Value="7682" />
+    </Sample>
+    <Sample Id="s4@7682STDY14732085" Index_Label="Z0100" Index_Sequence="CGGATCATGCGTGAT">
+      <Attribute Name="Barcode_Plate_Num" Value="2" />
+      <Attribute Name="Barcode_Plate_Well" Value="D1" />
+      <Attribute Name="application_type" Value="native" />
+      <Attribute Name="study_id" Value="7682" />
+    </Sample>
+    <Sample Id="s5@7682STDY14732086" Index_Label="Z0101" Index_Sequence="CTATTGCATGCTCTGAT">
+      <Attribute Name="Barcode_Plate_Num" Value="2" />
+      <Attribute Name="Barcode_Plate_Well" Value="E1" />
+      <Attribute Name="application_type" Value="native" />
+      <Attribute Name="study_id" Value="7682" />
+    </Sample>
+    <Sample Id="s6@7682STDY14732087" Index_Label="Z0102" Index_Sequence="CTACCTGATGCAGAT">
+      <Attribute Name="Barcode_Plate_Num" Value="2" />
+      <Attribute Name="Barcode_Plate_Well" Value="F1" />
+      <Attribute Name="application_type" Value="native" />
+      <Attribute Name="study_id" Value="7682" />
+    </Sample>
+    <Sample Id="s7@7682STDY14732090" Index_Label="Z0103" Index_Sequence="CATATAATCACAGAT">
+      <Attribute Name="Barcode_Plate_Num" Value="2" />
+      <Attribute Name="Barcode_Plate_Well" Value="G1" />
+      <Attribute Name="application_type" Value="native" />
+      <Attribute Name="study_id" Value="7682" />
+    </Sample>
+  </Samples>
+  <Sequencing />
+  <Analysis_Recipe Name="WGS1" />107185_NT1882031W_2</SampleInfo>
