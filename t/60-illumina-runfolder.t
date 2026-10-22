@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 26;
+use Test::More tests => 27;
 use Test::Exception;
 use Test::Warn;
 use File::Copy;
@@ -23,6 +23,7 @@ mkdir $testrundir;
     runfolder_path => $testrundir,
     npg_tracking_schema => undef
   );
+  is ($rf->manufacturer, 'Illumina', 'manufacturer name is correct');
   is ($rf->run_folder, $rf_name, 'run folder name is correct');
   throws_ok { $rf->id_run } qr/File not found/,
     'id_run cannot be computed, RunParameters.xml file is not found';
