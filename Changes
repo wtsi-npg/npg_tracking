@@ -1,6 +1,9 @@
 LIST OF CHANGES
 
  - Update email template to use https url for seqqc
+ - npg_samplesheet_generator script is extended to allow for generation of
+   the data for Ultimagen run in the absence of data in useq_product_metrics
+   mlwh table.
 
 release 107.5.0 (2026-10-14)
  - To help the reader understand a link between lane and run status changes,
