@@ -1,4 +1,4 @@
 [%
-  seqqc_url = 'http://sfweb.internal.sanger.ac.uk:1959';
+  seqqc_url = 'https://sfweb.internal.sanger.ac.uk:5402';
   npg_tracking_url = 'https://sfweb.internal.sanger.ac.uk:12443/perl/npg';
 %]
