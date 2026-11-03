@@ -1,5 +1,7 @@
 LIST OF CHANGES
 
+ - Update email template to use https url for seqqc
+
 release 107.5.0 (2026-10-14)
  - To help the reader understand a link between lane and run status changes,
    renamed variable in npg_tracking::Schema::Result::Run::propagate_status_from_lanes
