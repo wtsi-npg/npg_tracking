@@ -19,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        perl: ["5.38.2"]
+        perl: ["osnative","5.38.2"]
 
     services:
        mysql:
@@ -59,7 +59,7 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.perl }}-perl
 
       - name: "Install Perlbrew"
-        if: steps.cache-perl.outputs.cache-hit != 'true'
+        if: matrix.perl != 'osnative' && steps.cache-perl.outputs.cache-hit != 'true'
         run: |
           curl -sSL https://install.perlbrew.pl -o perlbrew.sh
           sha256sum -c .github/workflows/perlbrew.sha256
@@ -72,7 +72,13 @@ jobs:
           perlbrew use perl-${{ matrix.perl }}
           perlbrew install-cpanm
 
+      - name: "OS native Perl cpanminus"
+        if: matrix.perl == 'osnative'
+        run: |
+          sudo apt-get install -y cpanminus
+
       - name: "Initialize Perlbrew"
+        if: matrix.perl != 'osnative'
         run: |
           echo "source ${{ env.PERL_CACHE }}/etc/bashrc" >> "$HOME/.bash_profile"
 
