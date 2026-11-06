@@ -4,7 +4,12 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: ["ubuntu-24.04"]
+        perl: ["osnative","5.38.2"]
+
+    runs-on: ${{ matrix.os }}
 
     defaults:
       run:
@@ -16,10 +21,6 @@ jobs:
       WSI_NPG_GITHUB_URL: https://github.com/wtsi-npg
       WSI_NPG_BUILD_BRANCH: ${{ github.base_ref}}
       WSI_NPG_GITHUB_REPO_OWNER: ${{ github.repository_owner }}
-
-    strategy:
-      matrix:
-        perl: ["osnative","5.38.2"]
 
     services:
        mysql:
@@ -56,7 +57,7 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ${{ env.PERL_CACHE }}
-          key: ${{ runner.os }}-${{ matrix.perl }}-perl
+          key: ${{ runner.os }}-${{ matrix.os }}-${{ matrix.perl }}-perl
 
       - name: "Install Perlbrew"
         if: matrix.perl != 'osnative' && steps.cache-perl.outputs.cache-hit != 'true'
