@@ -8,12 +8,11 @@ jobs:
       matrix:
         include:
           - os: "ubuntu-24.04"
-            perl: "osnative" 
-          - os: "ubuntu-24.04"
-            perl: "5.34.1"
-          - os: "ubuntu-latest"
-            perl: "osnative"
-            experimental: true
+            perl: "5.34.1" # whilst we're stuck on 22.04 (unavailable in GHA) where this is the Perl
+          - os: "ubuntu-26.04"
+            perl: "osnative" # anticipated (2026-11) next move
+            experimental: true # TODO - fix the tracking instrument image problem on 26.04
+            # use experimental: true to allow for a failing NPG test or build
 
     runs-on: ${{ matrix.os }}
 
@@ -55,6 +54,7 @@ jobs:
           sudo apt-get update
           # https://github.com/actions/runner-images/issues/2139
           sudo apt-get remove -y nginx libgd3
+          # libdevel-patchperl-perl is needed for perlbrew
           sudo apt-get install -y libgd-dev uuid-dev libgd-text-perl libdevel-patchperl-perl \
             libmodule-runtime-perl
 
@@ -75,19 +75,33 @@ jobs:
             
           source ${{ env.PERL_CACHE }}/etc/bashrc
           perlbrew available
-          perlbrew install --notest perl-${{ matrix.perl }}
+          if [[ "${{ matrix.perl }}" == "5.34.1" ]]; then # default gcc for 26.04 too strict for 5.34.1
+            perlbrew install --notest \
+              -Dnoextensions=SDBM_File \
+              perl-${{ matrix.perl }}
+          else
+            perlbrew install --notest perl-${{ matrix.perl }}
+          fi
           perlbrew use perl-${{ matrix.perl }}
           perlbrew install-cpanm
 
-      - name: "OS native Perl cpanminus"
-        if: matrix.perl == 'osnative'
-        run: |
-          sudo apt-get install -y cpanminus
+      - name: "Archive Perlbrew logs on install failure"
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: perlbrew_log
+          path: ~/perl5/build.perl-*.log
+          retention-days: 5
 
       - name: "Initialize Perlbrew"
         if: matrix.perl != 'osnative'
         run: |
           echo "source ${{ env.PERL_CACHE }}/etc/bashrc" >> "$HOME/.bash_profile"
+
+      - name: "OS native Perl cpanminus"
+        if: matrix.perl == 'osnative'
+        run: |
+          sudo apt-get install -y cpanminus
 
       - name: "Install Perl dependencies"
         run: |
