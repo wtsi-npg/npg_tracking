@@ -1,9 +1,12 @@
 LIST OF CHANGES
 
+release 107.6.0 (2026-11-19)
  - Update email template to use https url for seqqc
  - npg_samplesheet_generator script is extended to allow for generation of
    the data for Ultimagen run in the absence of data in useq_product_metrics
    mlwh table.
+ - GHA: refinement, matrix change and cope with Ubuntu 26.04 Perl 5.34.1
+     combination
 
 release 107.5.0 (2026-10-14)
  - To help the reader understand a link between lane and run status changes,
