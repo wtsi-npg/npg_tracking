@@ -9,6 +9,7 @@ use Readonly;
 use WTSI::DNAP::Warehouse::Schema;
 
 extends 'st::api::lims::ml_warehouse::generic_driver';
+with 'npg_tracking::ultimagen::sample_retriever';
 
 our $VERSION = '0';
 
@@ -49,7 +50,7 @@ objects are not implemented. The children of the run level object are plexes,
 i.e. target products. The control sample tag is not included into the list of
 children.
 
-Some NPG application will not work correctly if a position attribute is not
+Some NPG applications will not work correctly if a position attribute is not
 defined for a single component entity. The position attribute can be set to 1
 via the constructor. No other position value is accepted.
 
@@ -62,6 +63,21 @@ at least one indexed library barcode defined. Breaking this convention might
 result in unexpected code failures. If the representation of the control sample
 becomes necessary in future, the decision to exclude the control sample
 might be reversed.
+
+=head2 Tag index values
+
+C<useq_wafer> MLWH table does not track C<tag_index> values. When
+C<useq_product_metrics> data is available, C<tag_index> data can be derived
+from the C<tag_index> column of this table. At early stages of the in-house
+processing pipeline MLWH data for products might not be available.
+
+This driver can get C<tag_index> values either from C<[UG RUN ID]_LibraryInfo.xml>
+file in the run folder or the manifest CSV file. Either the C<runfolder_path>
+or the C<manifest_path> attribute should be set to enable this way of getting
+information about tag indexes. No fall back to C<useq_product_metrics> MLWH table
+is implemented.
+
+=cut 
 
 =head1 SUBROUTINES/METHODS
 
@@ -97,10 +113,45 @@ sub _position_filter {
 Tag index, optional attribute.
 Inherited from parent C<st::api::lims::ml_warehouse::generic_driver>.
 
+=head2 runfolder_path
+
+Run folder path, optional attribute.
+Inherited from C<npg_tracking::ultimagen::sample_retriever>
+
+=head2 manifest_path
+
+Manifest file path, optional attribute.
+Inherited from C<npg_tracking::ultimagen::sample_retriever>
+
 =head2 mlwh_schema
 
 WTSI::DNAP::Warehouse::Schema connection.
 Inherited from parent C<st::api::lims::ml_warehouse::generic_driver>.
+
+=head2 get_samples
+
+Method, returns a reference to a list of C<npg_tracking::ultimagen::sample> objects.
+Inherited from C<npg_tracking::ultimagen::sample_retriever>
+
+=head2 copy_init_attrs
+
+Inherited from parent C<st::api::lims::ml_warehouse::generic_driver>.
+Extended to return runfolder_path and runfolder_path attribute names
+and values if they are defined.
+
+=cut
+
+override 'copy_init_attrs' => sub {
+  my $self = shift;
+  my $attrs = super();
+  for my $name ( qw/runfolder_path manifest_path/) {
+    my $has_name = "has_${name}";
+    if ($self->$has_name) {
+      $attrs->{$name} = $self->$name;
+    }
+  }
+  return $attrs;
+};
 
 =head2 is_pool
 
@@ -146,25 +197,30 @@ sub _build__lchildren {
 
     my $package_name = ref $self;
     my $init = $self->copy_init_attrs();
+    my @tag_indices;
 
-    # Note the exclusion of the sequencing control.
-    my @tag_indices =
-      map { $_->tag_index}
-      $self->mlwh_schema->resultset('UseqProductMetric')->search(
-        {
-          id_run => $self->id_run,
-          tag_index => {q[!=], 0},
-          is_sequencing_control => 0
-        },
-        {
-          columns =>  'tag_index',
-          order_by => 'tag_index'
-        }
-      )->all;
+    # Note that in both scenarios below the computed list of tag indexes
+    # does not include sequencing control.
+    if ($self->has_runfolder_path || $self->has_manifest_path) {
+      @tag_indices = map { $_->tag_index() } @{$self->get_samples()};
+    } else {
+      @tag_indices =
+        map { $_->tag_index}
+        $self->mlwh_schema->resultset('UseqProductMetric')->search(
+          {
+            id_run => $self->id_run,
+            tag_index => {q[!=], 0},
+            is_sequencing_control => 0
+          },
+          {
+            columns =>  'tag_index'
+          }
+        )->all;
 
-    @tag_indices or croak 'No product records for run ' . $self->id_run;
+        @tag_indices or croak 'No product records for run ' . $self->id_run;
+    }
 
-    foreach my $tag_index (@tag_indices) {
+    foreach my $tag_index ( sort { $a <=> $b } @tag_indices) {
       $init->{'tag_index'} = $tag_index;
       push @children, $package_name->new($init);
     }
@@ -173,14 +229,16 @@ sub _build__lchildren {
   return \@children;
 }
 
-
 =head2 is_control
 
 =cut
 
 sub is_control {
   my $self = shift;
-  my $row = $self->_get_product_row;
+  my $row;
+  if (!$self->_combo_driver_flag) {
+    $row = $self->_get_product_row;
+  }
   return $row ? $row->is_sequencing_control : undef;
 }
 
@@ -192,7 +250,10 @@ QC pass or fail, can be defined as 0 or 1 for a product.
 
 sub qc_state {
   my $self = shift;
-  my $row = $self->_get_product_row;
+  my $row;
+  if (!$self->_combo_driver_flag) {
+    $row = $self->_get_product_row;
+  }
   return $row ? $row->qc : undef;
 }
 
@@ -216,9 +277,14 @@ sub _build_spiked_phix_tag_index {
   my $rs = $self->mlwh_schema->resultset('UseqProductMetric')
                 ->search({id_run => $self->id_run, is_sequencing_control => 1});
   my $row = $rs->next;
-  $row && $rs->next && croak 'Multiple rows for sequencing control';
+  $row && $rs->next && croak 'Multiple useq_product_metrics rows for sequencing control';
 
   return $row ? $row->tag_index : undef;
+}
+
+sub _combo_driver_flag {
+  my $self = shift;
+  return ($self->has_runfolder_path || $self->has_manifest_path) ? 1 : 0;
 }
 
 #####
@@ -240,8 +306,11 @@ sub _build__product_row {
     my $rs = $self->mlwh_schema->resultset('UseqProductMetric')
          ->search({id_run => $self->id_run, tag_index => $self->tag_index});
     my $row = $rs->next;
-    $row or croak 'No database record retrieved for ' . $self->to_string;
-    croak 'Multiple database records for ' . $self->to_string if $rs->next;
+    $row or croak 'No useq_product_metrics database record retrieved for ' .
+      $self->to_string;
+    if ($rs->next) {
+      croak 'Multiple useq_product_metrics database records for ' . $self->to_string;
+    }
     return $row;
   }
 
@@ -249,10 +318,9 @@ sub _build__product_row {
 }
 
 #####
-# useq_wafer table row for this entity. Is undefined if the value of
-# _product_row is undefined. Handles a number of st::api::lims standard
-# driver methods for LIMS data retrieval. See details of how these methods
-# are implemented in UseqWafer Result class.
+# useq_wafer table row for this entity. Handles a number of st::api::lims
+# standard driver methods for LIMS data retrieval. See details of how these
+# methods are implemented in the UseqWafer Result class.
 has '_lims_row' => (
   isa        => "Maybe[$LIMS_RESULT_CLASS]",
   is         => 'bare',
@@ -261,11 +329,46 @@ has '_lims_row' => (
   handles    => \@DELEGATED_METHODS,
   reader     => '_get_lims_row',
 );
-
 sub _build__lims_row {
   my $self = shift;
-  my $row = $self->_get_product_row();
-  return $row ? $row->useq_wafer : undef;
+  my $useq_wafer_row;
+  if ($self->_combo_driver_flag) {
+    if ($self->tag_index) {
+      my $id_wafer_lims = $self->library_pool;
+      my @samples = grep { $_->tag_index == $self->tag_index}
+                    @{$self->get_samples()};
+      if (!@samples) {
+        croak sprintf
+          'Not data corresponding to tag index %i in the input file %s',
+          $self->tag_index, $self->input_file_path;
+      }
+      if (@samples > 1) {
+        croak sprintf
+          'Multiple samples corresponding to tag index %i in the input file %s',
+          $self->tag_index, $self->input_file_path;
+      }
+      my $rs = $self->mlwh_schema->resultset('UseqWafer')->search({
+        id_wafer_lims => $id_wafer_lims,
+        tag_sequence  => $samples[0]->index_sequence()
+      });
+      $useq_wafer_row = $rs->next;
+      $useq_wafer_row or croak sprintf
+        'No useq_wafer database record retrieved for wafer ID "%s" and %s',
+        $id_wafer_lims, $self->to_string;
+      if ($rs->next) {
+        croak sprintf
+          'Multiple useq_wafer database records for wafer ID "%s" and %s',
+          $id_wafer_lims, $self->to_string;
+      }
+    }
+  } else {
+    my $row = $self->_get_product_row();
+    if ($row) {
+      $useq_wafer_row = $row->useq_wafer;
+    }
+  }
+
+  return $useq_wafer_row;
 }
 
 #####
@@ -303,6 +406,8 @@ __END__
 =item Readonly
 
 =item WTSI::DNAP::Warehouse::Schema
+
+=item npg_tracking::ultimagen::sample_retriever
 
 =back
 

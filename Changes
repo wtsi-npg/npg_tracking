@@ -1,11 +1,22 @@
 LIST OF CHANGES
 
+release 107.6.0 (2026-11-19)
+ - Update email template to use https url for seqqc
+ - npg_samplesheet_generator script is extended to allow for generation of
+   the data for Ultimagen run in the absence of data in useq_product_metrics
+   mlwh table.
+ - GHA: refinement, matrix change and cope with Ubuntu 26.04 Perl 5.34.1
+     combination
+
 release 107.5.0 (2026-10-14)
  - To help the reader understand a link between lane and run status changes,
    renamed variable in npg_tracking::Schema::Result::Run::propagate_status_from_lanes
    method and the package-level constant used by this function and added a comment.
  - Added bin/ultimagen_product_id_generator - a script to generate product id
    for Ultimagen data.
+ - Added an alternative source of tag indexes to the useq_ml_warehouse
+   st::api::lims driver. Information about tag indexes and the wafer LIMS
+   identifier can be sourced from either the manifest or LibraryInfo.xml file.
 
 release 107.4.0 (2026-09-02)
  - Imported `npg_qc::ultimagen::sample_retriever` and its dependencies.

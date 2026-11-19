@@ -9,50 +9,50 @@ use English;
 use Log::Log4perl qw(:levels);
 use Pod::Usage;
 use Getopt::Long;
+use Readonly;
 
 use npg::samplesheet;
 use st::api::lims;
+use npg_tracking::Schema;
 use WTSI::DNAP::Warehouse::Schema;
 
 our $VERSION = '0';
+
+Readonly::Scalar my $UG_DRIVER_TYPE => 'useq_ml_warehouse';
+
+Readonly::Hash my %MANUFACTURERS2DRIVERS => (
+  'Illumina'            => 'ml_warehouse_auto',
+  'Element Biosciences' => 'eseq_ml_warehouse',
+  'Ultima Genomics'     => $UG_DRIVER_TYPE,
+);
 
 Log::Log4perl->easy_init({layout => '%d %-5p %c - %m%n',
                           level  => $INFO,
                           utf8   => 1});
 my $id_run;
 my $path;
+my $runfolder_path;
 
 GetOptions (
   'help' => sub { pod2usage(-verbose => 1, -exitval => 0) },
-  'id_run=i' => \$id_run,
-  'path=s'   => \$path
+  'id_run=i'      => \$id_run,
+  'path=s'        => \$path,
+  'runfolder_path=s' => \$runfolder_path,
 ) or pod2usage(-message => "Error in command line arguments\n",
                -verbose => 1, -exitval => 1);
 
 my $logger = Log::Log4perl->get_logger('main');
 
-my $schema = WTSI::DNAP::Warehouse::Schema->connect();
+my $manufacturer = npg_tracking::Schema->connect()->resultset('Run')
+                   ->find($id_run)->instrument()->manufacturer_name();
 
-my $rs_names2drivers = {
-  'UseqRunMetric' => 'useq_ml_warehouse',
-  'EseqRunLaneMetric' => 'eseq_ml_warehouse',
-  'IseqRunLaneMetric' => 'ml_warehouse_auto'
-};
-
-my $driver_type;
-foreach my $rs_name (keys %{$rs_names2drivers}) {
-  if ($schema->resultset($rs_name)->search({id_run => $id_run})->count()) {
-    $driver_type = $rs_names2drivers->{$rs_name};
-    last;
-  }
-} 
- 
-if ($driver_type) {
-  $logger->info("Using $driver_type driver type");
-} else {
-  $logger->error("Data for run $id_run is not available in MLWH");
+my $driver_type = $MANUFACTURERS2DRIVERS{$manufacturer};
+if (!$driver_type) {
+  $logger->error("Unsupported platform '${manufacturer}' " .
+                 'Valid platforms: ' . join q[, ], keys %MANUFACTURERS2DRIVERS);
   exit 1;
 }
+$logger->info("Using $driver_type driver type");
 
 if (-f $path) {
   my $backup = "${path}.back";
@@ -64,12 +64,15 @@ if (-f $path) {
 }
 
 my $ref = {
-  mlwh_schema => $schema,
+  mlwh_schema => WTSI::DNAP::Warehouse::Schema->connect(),
   driver_type => $driver_type,
   id_run      => $id_run
 };
-if ($driver_type eq 'useq_ml_warehouse') {
+if ($driver_type eq $UG_DRIVER_TYPE) {
   $ref->{position} = 1;
+  if ($runfolder_path) {
+    $ref->{runfolder_path} = $runfolder_path;
+  }
 }
 
 try {
@@ -99,21 +102,29 @@ __END__
 
  npg_samplesheet_generator --id_run 3456 --path 3456_samplesheet.csv
 
+ npg_samplesheet_generator --id_run 3456 --path 3456_samplesheet.csv \
+                           --runfolder_path my_path
+
 =head1 REQUIRED ARGUMENTS
 
 =head1 OPTIONS
 
- --id_run NPG tracking run ID
+ --id_run         NPG tracking run ID
  
- --path   the path for the samplesheet, including the file name
+ --path           The path for the samplesheet, including the file name.
+
+ --runfolder_path Staging server runfolder path, currently relevant for
+                  Ultimagen platform only. If given, this attribute is passed
+                  to the driver.  
  
 =head1 DESCRIPTION
 
- Creates an extended NPG samplesheet for a sequencing run. Automatically
- detects the appropriate driver type. The run data should be available in one
- of platform-specific NPG MLWH tables.
+ Creates an extended NPG samplesheet for a sequencing run. Automatically detects
+ the appropriate driver type. If a file exists at a given path, tries to move it
+ out of the way.
 
- If a file exists at a given path, tries to move it out of the way.
+ Set the  C<--runfolder_path> arguments to circumvent the requirement to have
+ data in C<useq_product_metrics> MLWH table.
 
 =head1 EXIT STATUS
 
@@ -141,9 +152,13 @@ __END__
 
 =item Getopt::Long
 
+=item Readonly
+
 =item st::api::lims
 
 =item npg::samplesheet
+
+=item npg_tracking::Schema
 
 =item WTSI::DNAP::Warehouse::Schema
 

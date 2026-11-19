@@ -174,7 +174,7 @@ subtest 'test on instrument name parsed out from the staging area path' => sub {
   is($test->tracking_instrument()->instrument_format->model, 'UG 200',
     'instrument model correct');
 
-  my $instr_path = catdir($testdir, $instrument_name, $run_folder_name);
+  $instr_path = catdir($testdir, $instrument_name, $run_folder_name);
   make_path($instr_path);
   $test = Monitor::Ultimagen::RunFolder->new(
     runfolder_path      => $instr_path,
@@ -184,7 +184,7 @@ subtest 'test on instrument name parsed out from the staging area path' => sub {
     qr/Failed[ ]to[ ]parse[ ]instrument[ ]name[ ]from[ ]runfolder[ ]path[ ]$instr_path/,
     "No 'staging' component in the runfolder path";
 
-  my $instr_path = catdir($testdir, $instrument_name, 'staging', 'otherfolder', $run_folder_name);
+  $instr_path = catdir($testdir, $instrument_name, 'staging', 'otherfolder', $run_folder_name);
   make_path($instr_path);
   $test = Monitor::Ultimagen::RunFolder->new(
     runfolder_path      => $instr_path,
@@ -194,7 +194,7 @@ subtest 'test on instrument name parsed out from the staging area path' => sub {
     qr/No[ ]current[ ]or[ ]multiple[ ]instruments[ ]found[ ]in[ ]NPG[ ]tracking[ ]DB[ ]with[ ]name[ ]otherfolder/,
     "'staging' component in the wrong position";
   
-  my $instr_path = catdir($testdir, $instrument_name, $run_folder_name, 'staging');
+  $instr_path = catdir($testdir, $instrument_name, $run_folder_name, 'staging');
   make_path($instr_path);
   $test = Monitor::Ultimagen::RunFolder->new(
     runfolder_path      => $instr_path,
